@@ -41,6 +41,25 @@ class TrafficSweepContract(unittest.TestCase):
         self.assertTrue(all(row['legal_movement_judgment'] == 'independent_original_source_review_required'
                             for row in receipt['probe_rows']))
 
+    def test_safe_operation_grid_and_held_setup(self):
+        read = lambda name: json.loads((HERE / 'proposals' / name).read_text())
+        canonical = read('canonical-cases.json')
+        binding = read('bindings.json')
+        spec = next(s for s in canonical['sweep_specs'] if s['sweep_id'] == 'c179480-safe-operation-gap')
+        receipt = json.loads((HERE/'safe-operation-sweep-probe.json').read_text())
+        self.assertEqual([p['hazard_center_gap_m'] for p in grid(spec)], [6.0, 10.0, 8.0])
+        self.assertEqual(sorted(r['hazard_gap_setting_m'] for r in receipt['probe_rows']), [6.0, 8.0, 10.0])
+        self.assertFalse(receipt['original_native_observed'])
+        members = [c for c in canonical['cases'] if c.get('sweep_id') == spec['sweep_id']]
+        self.assertEqual([c['case_id'] for c in members], spec['selection_order'])
+        held = assignments('safe_operation_stop', binding)
+        for case, point in zip(members, grid(spec)):
+            self.assertEqual(case['sweep_point'], point)
+            self.assertEqual(case['variable_assignments']['hazard_center_gap_m']['value'], point['hazard_center_gap_m'])
+            for key in set(held) - {'hazard_center_gap_m'}:
+                self.assertEqual(case['variable_assignments'][key], held[key])
+            self.assertIn('hazard_center_gap_m', {c['name'] for c in case['recording_description']['channels']})
+
 
 if __name__ == '__main__':
     unittest.main()

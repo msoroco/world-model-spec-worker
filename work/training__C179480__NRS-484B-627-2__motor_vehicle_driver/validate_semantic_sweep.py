@@ -47,10 +47,10 @@ def main():
     })
     specs = canonical['sweep_specs']
     if [(s['status'], s.get('planned_case_count', 0)) for s in specs] != [
-        ('complete', 3), ('incomplete', 0), ('incomplete', 0)]:
+        ('complete', 3), ('complete', 3), ('incomplete', 0)]:
         raise ValueError('Unexpected judgment sweep status or size')
     return {'validated': True, 'canonical_cases': len(canonical['cases']),
-            'complete_sweep_cases': 3, 'incomplete_sweeps': 2,
+            'complete_sweep_cases': 6, 'incomplete_sweeps': 1,
             'index_sha256': sha(root / 'semantic-index.json'),
             'cases_sha256': sha(root / 'canonical-cases.json')}
 

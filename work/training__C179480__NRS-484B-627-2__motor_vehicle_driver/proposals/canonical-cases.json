@@ -157,6 +157,10 @@
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
         },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
+        },
         "other_vehicle_hazard": {
           "kind": "world_setup",
           "value": "no_hazard_designated; scoped inventory retained"
@@ -333,6 +337,10 @@
         "governing_stop_control": {
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
         },
         "other_vehicle_hazard": {
           "kind": "world_setup",
@@ -513,6 +521,10 @@
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
         },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
+        },
         "other_vehicle_hazard": {
           "kind": "world_setup",
           "value": "no_hazard_designated; scoped inventory retained"
@@ -692,6 +704,10 @@
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
         },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
+        },
         "other_vehicle_hazard": {
           "kind": "world_setup",
           "value": "designated_source_visible_hazard"
@@ -870,6 +886,10 @@
         "governing_stop_control": {
           "kind": "world_setup",
           "value": "designated_surveyed_red_light"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
         },
         "other_vehicle_hazard": {
           "kind": "world_setup",
@@ -1060,7 +1080,7 @@
       "sweep_point": {
         "following_gap_m": 7.0
       },
-      "sweep_spec_version": "b40bb3a4d10776b6c58fd659b564e5705d7b89481a2a586411846956ab216e64",
+      "sweep_spec_version": "65fa642201041cf86c286d3f7b129c89a974df8c65bbd4c8ef4297657636d58f",
       "target_law_id": "NRS-484B-627-2",
       "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
@@ -1085,6 +1105,10 @@
         "governing_stop_control": {
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
         },
         "other_vehicle_hazard": {
           "kind": "world_setup",
@@ -1275,7 +1299,7 @@
       "sweep_point": {
         "following_gap_m": 12.0
       },
-      "sweep_spec_version": "b40bb3a4d10776b6c58fd659b564e5705d7b89481a2a586411846956ab216e64",
+      "sweep_spec_version": "65fa642201041cf86c286d3f7b129c89a974df8c65bbd4c8ef4297657636d58f",
       "target_law_id": "NRS-484B-627-2",
       "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
@@ -1300,6 +1324,10 @@
         "governing_stop_control": {
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
         },
         "other_vehicle_hazard": {
           "kind": "world_setup",
@@ -1490,7 +1518,7 @@
       "sweep_point": {
         "following_gap_m": 9.5
       },
-      "sweep_spec_version": "b40bb3a4d10776b6c58fd659b564e5705d7b89481a2a586411846956ab216e64",
+      "sweep_spec_version": "65fa642201041cf86c286d3f7b129c89a974df8c65bbd4c8ef4297657636d58f",
       "target_law_id": "NRS-484B-627-2",
       "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
@@ -1516,9 +1544,670 @@
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
         },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
+        },
         "other_vehicle_hazard": {
           "kind": "world_setup",
           "value": "no_hazard_designated; scoped inventory retained"
+        },
+        "roadway_stop_placement": {
+          "kind": "world_setup",
+          "value": "travel_lane_overlap"
+        }
+      }
+    },
+    {
+      "case_id": "c179480-safe-operation-gap-0000",
+      "deliberate_differences": [
+        "hazard_center_gap_m"
+      ],
+      "judgment_refs": [
+        {
+          "note": "Safety necessity depends on the actual hazard and feasible alternative action.",
+          "phrase": "necessary for safe operation"
+        }
+      ],
+      "paired_probe_id": "c179480-safe-operation-gap",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "hazard_center_gap_m",
+        "target_value_or_branch": {
+          "hazard_center_gap_m": 6.0
+        }
+      },
+      "rationale": "Sample source-visible hazard placement while holding ego stop, following traffic and governing-control designation fixed; preserve original hazard and ego histories for independent safety review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "roadway_surface_grounding",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_lane_footprint",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_deceleration",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_velocity_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "traffic_effect_evidence",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "hazard_actor_state",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_hazard_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "governing_control_readback",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "derive ego-to-hazard center separation from original Native actor position rows; report minimum over the stop window",
+            "name": "hazard_center_gap_m",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; setpoint may differ from realized minimum; original Native capture required",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native survey and live map readback",
+            "name": "surveyed_map_lane_shoulder_and_blueprints",
+            "reference_frame": "surveyed CARLA map identity",
+            "uncertainty": "Original map and actor identity require Native execution",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "normal and reasonable impediment, safe-operation necessity, law compliance and physical acceptance require original-source review"
+        ]
+      },
+      "selection_rank": 0,
+      "sweep_id": "c179480-safe-operation-gap",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "derive center separation from original ego and hazard actor positions on each synchronized CARLA frame",
+            "statistic": "min",
+            "time_window": "all 600 frames / 30 seconds including the complete roadway stop"
+          },
+          "observable": "hazard_center_gap_m",
+          "unit": "m",
+          "variable": "hazard_center_gap_m"
+        }
+      ],
+      "sweep_point": {
+        "hazard_center_gap_m": 6.0
+      },
+      "sweep_spec_version": "d292eefc3bb61f39408ee82f7e8cba9c7e5b23eaf1d1953b9c34e7c793c6034c",
+      "target_law_id": "NRS-484B-627-2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "in compliance with law",
+        "necessary for safe operation",
+        "normal and reasonable movement of traffic"
+      ],
+      "variable_assignments": {
+        "ego_stop_controller": {
+          "kind": "controller",
+          "value": "source_measured_complete_stop_request"
+        },
+        "following_gap_m": {
+          "kind": "controller",
+          "value": 9.5
+        },
+        "following_vehicle_controller": {
+          "kind": "controller",
+          "value": "fixed_approach_and_gap_response"
+        },
+        "governing_stop_control": {
+          "kind": "world_setup",
+          "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "value": 6.0
+        },
+        "other_vehicle_hazard": {
+          "kind": "world_setup",
+          "value": "designated_source_visible_hazard"
+        },
+        "roadway_stop_placement": {
+          "kind": "world_setup",
+          "value": "travel_lane_overlap"
+        }
+      }
+    },
+    {
+      "case_id": "c179480-safe-operation-gap-0001",
+      "deliberate_differences": [
+        "hazard_center_gap_m"
+      ],
+      "judgment_refs": [
+        {
+          "note": "Safety necessity depends on the actual hazard and feasible alternative action.",
+          "phrase": "necessary for safe operation"
+        }
+      ],
+      "paired_probe_id": "c179480-safe-operation-gap",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "hazard_center_gap_m",
+        "target_value_or_branch": {
+          "hazard_center_gap_m": 10.0
+        }
+      },
+      "rationale": "Sample source-visible hazard placement while holding ego stop, following traffic and governing-control designation fixed; preserve original hazard and ego histories for independent safety review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "roadway_surface_grounding",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_lane_footprint",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_deceleration",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_velocity_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "traffic_effect_evidence",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "hazard_actor_state",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_hazard_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "governing_control_readback",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "derive ego-to-hazard center separation from original Native actor position rows; report minimum over the stop window",
+            "name": "hazard_center_gap_m",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; setpoint may differ from realized minimum; original Native capture required",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native survey and live map readback",
+            "name": "surveyed_map_lane_shoulder_and_blueprints",
+            "reference_frame": "surveyed CARLA map identity",
+            "uncertainty": "Original map and actor identity require Native execution",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "normal and reasonable impediment, safe-operation necessity, law compliance and physical acceptance require original-source review"
+        ]
+      },
+      "selection_rank": 1,
+      "sweep_id": "c179480-safe-operation-gap",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "derive center separation from original ego and hazard actor positions on each synchronized CARLA frame",
+            "statistic": "min",
+            "time_window": "all 600 frames / 30 seconds including the complete roadway stop"
+          },
+          "observable": "hazard_center_gap_m",
+          "unit": "m",
+          "variable": "hazard_center_gap_m"
+        }
+      ],
+      "sweep_point": {
+        "hazard_center_gap_m": 10.0
+      },
+      "sweep_spec_version": "d292eefc3bb61f39408ee82f7e8cba9c7e5b23eaf1d1953b9c34e7c793c6034c",
+      "target_law_id": "NRS-484B-627-2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "in compliance with law",
+        "necessary for safe operation",
+        "normal and reasonable movement of traffic"
+      ],
+      "variable_assignments": {
+        "ego_stop_controller": {
+          "kind": "controller",
+          "value": "source_measured_complete_stop_request"
+        },
+        "following_gap_m": {
+          "kind": "controller",
+          "value": 9.5
+        },
+        "following_vehicle_controller": {
+          "kind": "controller",
+          "value": "fixed_approach_and_gap_response"
+        },
+        "governing_stop_control": {
+          "kind": "world_setup",
+          "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "value": 10.0
+        },
+        "other_vehicle_hazard": {
+          "kind": "world_setup",
+          "value": "designated_source_visible_hazard"
+        },
+        "roadway_stop_placement": {
+          "kind": "world_setup",
+          "value": "travel_lane_overlap"
+        }
+      }
+    },
+    {
+      "case_id": "c179480-safe-operation-gap-0002",
+      "deliberate_differences": [
+        "hazard_center_gap_m"
+      ],
+      "judgment_refs": [
+        {
+          "note": "Safety necessity depends on the actual hazard and feasible alternative action.",
+          "phrase": "necessary for safe operation"
+        }
+      ],
+      "paired_probe_id": "c179480-safe-operation-gap",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "hazard_center_gap_m",
+        "target_value_or_branch": {
+          "hazard_center_gap_m": 8.0
+        }
+      },
+      "rationale": "Sample source-visible hazard placement while holding ego stop, following traffic and governing-control designation fixed; preserve original hazard and ego histories for independent safety review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "roadway_surface_grounding",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_lane_footprint",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_deceleration",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_velocity_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "traffic_effect_evidence",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "hazard_actor_state",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_hazard_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "governing_control_readback",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "derive ego-to-hazard center separation from original Native actor position rows; report minimum over the stop window",
+            "name": "hazard_center_gap_m",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; setpoint may differ from realized minimum; original Native capture required",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native survey and live map readback",
+            "name": "surveyed_map_lane_shoulder_and_blueprints",
+            "reference_frame": "surveyed CARLA map identity",
+            "uncertainty": "Original map and actor identity require Native execution",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "normal and reasonable impediment, safe-operation necessity, law compliance and physical acceptance require original-source review"
+        ]
+      },
+      "selection_rank": 2,
+      "sweep_id": "c179480-safe-operation-gap",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "derive center separation from original ego and hazard actor positions on each synchronized CARLA frame",
+            "statistic": "min",
+            "time_window": "all 600 frames / 30 seconds including the complete roadway stop"
+          },
+          "observable": "hazard_center_gap_m",
+          "unit": "m",
+          "variable": "hazard_center_gap_m"
+        }
+      ],
+      "sweep_point": {
+        "hazard_center_gap_m": 8.0
+      },
+      "sweep_spec_version": "d292eefc3bb61f39408ee82f7e8cba9c7e5b23eaf1d1953b9c34e7c793c6034c",
+      "target_law_id": "NRS-484B-627-2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "in compliance with law",
+        "necessary for safe operation",
+        "normal and reasonable movement of traffic"
+      ],
+      "variable_assignments": {
+        "ego_stop_controller": {
+          "kind": "controller",
+          "value": "source_measured_complete_stop_request"
+        },
+        "following_gap_m": {
+          "kind": "controller",
+          "value": 9.5
+        },
+        "following_vehicle_controller": {
+          "kind": "controller",
+          "value": "fixed_approach_and_gap_response"
+        },
+        "governing_stop_control": {
+          "kind": "world_setup",
+          "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "value": 8.0
+        },
+        "other_vehicle_hazard": {
+          "kind": "world_setup",
+          "value": "designated_source_visible_hazard"
         },
         "roadway_stop_placement": {
           "kind": "world_setup",
@@ -1706,7 +2395,7 @@
         "c179480-traffic-effect-gap-0001",
         "c179480-traffic-effect-gap-0002"
       ],
-      "spec_version": "b40bb3a4d10776b6c58fd659b564e5705d7b89481a2a586411846956ab216e64",
+      "spec_version": "65fa642201041cf86c286d3f7b129c89a974df8c65bbd4c8ef4297657636d58f",
       "status": "complete",
       "sweep_id": "c179480-traffic-effect-gap",
       "target_law_id": "NRS-484B-627-2",
@@ -1727,6 +2416,10 @@
           "kind": "world_setup",
           "value": "no_governing_control_designated; scoped inventory retained"
         },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
+        },
         "other_vehicle_hazard": {
           "kind": "world_setup",
           "value": "no_hazard_designated; scoped inventory retained"
@@ -1738,20 +2431,215 @@
       }
     },
     {
+      "axes": [
+        {
+          "feasibility_evidence": "safe-operation-sweep-probe.json, sha256 5c10717ad2698add605921be7cc4ffee63cb62d71a8bdc86c23ed1eeb7334198; synthetic geometry only; Native realization pending.",
+          "max": 10.0,
+          "measurement": {
+            "method": "derive center separation from original ego and hazard actor positions on each synchronized CARLA frame",
+            "statistic": "min",
+            "time_window": "all 600 frames / 30 seconds including the complete roadway stop"
+          },
+          "min": 6.0,
+          "observable": "hazard_center_gap_m",
+          "range_rationale": "6, 8 and 10 m source-shaped diagnostic placements retain positive, distinct lane-visible hazard gaps across the 600-frame CPU sample; these are physical coverage points only.",
+          "spacing": 2.0,
+          "spacing_rationale": "2 m includes both endpoints and one midpoint and produces three distinct 20 Hz hazard histories with unchanged ego and follower sources.",
+          "unit": "m",
+          "variable": "hazard_center_gap_m"
+        }
+      ],
       "judgment_refs": [
         {
           "note": "Safety necessity depends on the actual hazard and feasible alternative action.",
           "phrase": "necessary for safe operation"
         }
       ],
-      "missing_inputs": [
-        "Source-reviewed physical sampling range and comparison isolation",
-        "Selected additional cases if original evidence leaves this judgment uncovered"
+      "landmarks": [],
+      "mode": "one_dimensional",
+      "planned_case_count": 3,
+      "rationale": "Sample source-visible hazard placement while holding ego stop, following traffic and governing-control designation fixed; preserve original hazard and ego histories for independent safety review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "roadway_surface_grounding",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_lane_footprint",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_deceleration",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_velocity_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "traffic_effect_evidence",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "hazard_actor_state",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_hazard_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "governing_control_readback",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "derive ego-to-hazard center separation from original Native actor position rows; report minimum over the stop window",
+            "name": "hazard_center_gap_m",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; setpoint may differ from realized minimum; original Native capture required",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native survey and live map readback",
+            "name": "surveyed_map_lane_shoulder_and_blueprints",
+            "reference_frame": "surveyed CARLA map identity",
+            "uncertainty": "Original map and actor identity require Native execution",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "normal and reasonable impediment, safe-operation necessity, law compliance and physical acceptance require original-source review"
+        ]
+      },
+      "selection_order": [
+        "c179480-safe-operation-gap-0000",
+        "c179480-safe-operation-gap-0001",
+        "c179480-safe-operation-gap-0002"
       ],
-      "rationale": "Qualitative statutory judgment requires original source and independent review, with no invented numeric cutoff.",
-      "status": "incomplete",
-      "sweep_id": "c179480-safe-operation-pending",
-      "target_law_id": "NRS-484B-627-2"
+      "spec_version": "d292eefc3bb61f39408ee82f7e8cba9c7e5b23eaf1d1953b9c34e7c793c6034c",
+      "status": "complete",
+      "sweep_id": "c179480-safe-operation-gap",
+      "target_law_id": "NRS-484B-627-2",
+      "variable_assignments": {
+        "ego_stop_controller": {
+          "kind": "controller",
+          "value": "source_measured_complete_stop_request"
+        },
+        "following_gap_m": {
+          "kind": "controller",
+          "value": 9.5
+        },
+        "following_vehicle_controller": {
+          "kind": "controller",
+          "value": "fixed_approach_and_gap_response"
+        },
+        "governing_stop_control": {
+          "kind": "world_setup",
+          "value": "no_governing_control_designated; scoped inventory retained"
+        },
+        "hazard_center_gap_m": {
+          "kind": "world_setup",
+          "value": 8.0
+        },
+        "other_vehicle_hazard": {
+          "kind": "world_setup",
+          "value": "designated_source_visible_hazard"
+        },
+        "roadway_stop_placement": {
+          "kind": "world_setup",
+          "value": "travel_lane_overlap"
+        }
+      }
     },
     {
       "judgment_refs": [

@@ -16,7 +16,8 @@ PROPOSALS = HERE / 'proposals'
 CASES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
 VARIABLES = ('roadway_stop_placement', 'other_vehicle_hazard',
              'governing_stop_control', 'ego_stop_controller',
-             'following_vehicle_controller', 'following_gap_m')
+             'following_vehicle_controller', 'following_gap_m',
+             'hazard_center_gap_m')
 
 
 def read(path):
@@ -39,6 +40,7 @@ def assignments(name, binding):
         'ego_stop_controller': 'source_measured_complete_stop_request',
         'following_vehicle_controller': 'fixed_approach_and_gap_response',
         'following_gap_m': 9.5,
+        'hazard_center_gap_m': 8.0,
     }
     kinds = {item['name']: item['kind'] for item in binding['variable_parameters']}
     if set(values) != set(kinds) or set(values) != set(VARIABLES):
@@ -155,6 +157,41 @@ def build():
                 }],
                 'landmarks': [],
                 'variable_assignments': assignments('reference', binding),
+                'recording_description': recording,
+            }
+        elif slug == 'safe-operation':
+            probe = read(HERE/'safe-operation-sweep-probe.json')
+            settings = [row['hazard_gap_setting_m'] for row in probe['probe_rows']]
+            if not probe['passed'] or settings != [6.0, 8.0, 10.0] or probe['original_native_observed']:
+                raise ValueError('Safe-operation engineering probe changed')
+            recording = deepcopy(old['safe_operation_stop']['recording_description'])
+            recording['channels'].append({
+                'name': 'hazard_center_gap_m', 'unit': 'm',
+                'method': 'derive ego-to-hazard center separation from original Native actor position rows; report minimum over the stop window',
+                'sampling_rate_hz': 20, 'time_window': 'all 600 frames / 30 seconds',
+                'reference_frame': 'original CARLA frame joined to four video sources',
+                'uncertainty': '50 ms sampling; setpoint may differ from realized minimum; original Native capture required',
+            })
+            spec = {
+                'sweep_id': 'c179480-safe-operation-gap',
+                'target_law_id': template['law_id'],
+                'judgment_refs': [item],
+                'rationale': 'Sample source-visible hazard placement while holding ego stop, following traffic and governing-control designation fixed; preserve original hazard and ego histories for independent safety review.',
+                'status': 'complete', 'mode': 'one_dimensional',
+                'axes': [{
+                    'variable': 'hazard_center_gap_m', 'observable': 'hazard_center_gap_m',
+                    'unit': 'm', 'min': 6.0, 'max': 10.0, 'spacing': 2.0,
+                    'measurement': {
+                        'method': 'derive center separation from original ego and hazard actor positions on each synchronized CARLA frame',
+                        'time_window': 'all 600 frames / 30 seconds including the complete roadway stop',
+                        'statistic': 'min',
+                    },
+                    'range_rationale': '6, 8 and 10 m source-shaped diagnostic placements retain positive, distinct lane-visible hazard gaps across the 600-frame CPU sample; these are physical coverage points only.',
+                    'spacing_rationale': '2 m includes both endpoints and one midpoint and produces three distinct 20 Hz hazard histories with unchanged ego and follower sources.',
+                    'feasibility_evidence': 'safe-operation-sweep-probe.json, sha256 '+sha(HERE/'safe-operation-sweep-probe.json')+'; synthetic geometry only; Native realization pending.',
+                }],
+                'landmarks': [],
+                'variable_assignments': assignments('safe_operation_stop', binding),
                 'recording_description': recording,
             }
         specs.append(spec)
