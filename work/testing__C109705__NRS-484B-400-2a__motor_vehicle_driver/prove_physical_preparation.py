@@ -45,7 +45,7 @@ def run(case, kind, output):
         write(attempt / 'config.json', config)
         for name in ('trace.jsonl', 'video_frames.jsonl', 'body_history.jsonl', 'road_geometry.json'):
             (attempt / name).write_text(sources[name])
-        write(attempt / 'acquisition-provenance.json', {'provenance_kind': 'native', 'diagnostic_fixture': True,
+        write(attempt / 'acquisition-provenance.json', {'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
                                                        'scope': 'source-shaped CPU protocol proof only'})
         if kind == 'lifecycle':
             saved = read(HERE / entry['post_capture']['test_log'])
@@ -96,7 +96,7 @@ def run(case, kind, output):
         check = result['physical_checks']['maneuver']
         if check['status'] != expected or result['maneuver_completed'] != (expected == 'met') or not check['method'] or not check['sources'] or result['physical_acceptance_claimed'] is not False:
             raise AssertionError('Physical outcome fixture differs: ' + kind)
-        if expected == 'met' and (result['provenance_kind'] != 'native' or not result['realized_observables']):
+        if expected == 'met' and (result['provenance_kind'] != 'synthetic_fixture' or not result['realized_observables']):
             raise AssertionError('Complete fixture lacks realized original motion')
         write(output, result)
         print(json.dumps({'case_id': case, 'kind': kind, 'status': expected,

@@ -46,7 +46,7 @@ def prove(case, output_dir):
             (attempt/'config.json').write_text(files['config.json'])
             (attempt/'video_frames.jsonl').write_text(diagnostic['video_frames.jsonl'])
             (attempt/'trace.jsonl').write_text(diagnostic['trace.jsonl'])
-            write(attempt/'acquisition-provenance.json', {'provenance_kind':'native',
+            write(attempt/'acquisition-provenance.json', {'provenance_kind':'synthetic_fixture',
                   'diagnostic_fixture':True, 'scope':'synthetic CPU classifier test only'})
             if kind == 'missing_evidence':
                 (attempt/'trace.jsonl').unlink()
