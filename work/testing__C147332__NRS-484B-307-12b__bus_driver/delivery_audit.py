@@ -11,6 +11,7 @@ import subprocess
 from pathlib import Path
 
 from analysis import build_report
+from stationary_hold import audit as audit_stationary_hold
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -99,8 +100,10 @@ def audit_attempt(path, *, diagnostic=False):
         raise ValueError("adjacent-lane baseline entered or drove in red-X lane")
     if suffix == "lateral_entry" and not measured["red_x_entry_frames"]:
         raise ValueError("lateral red-X lane entry absent")
-    if suffix == "red_lane_stand" and measured["red_x_driving_frames"]:
-        raise ValueError("stationary red-X lane baseline moved")
+    if suffix == "red_lane_stand":
+        if measured["red_x_driving_frames"]:
+            raise ValueError("stationary red-X lane baseline moved")
+        audit_stationary_hold(path)
     if suffix == "red_lane_drive" and not measured["red_x_driving_frames"]:
         raise ValueError("red-X in-lane driving absent")
     if suffix not in ("adjacent_travel", "lateral_entry", "red_lane_stand", "red_lane_drive"):

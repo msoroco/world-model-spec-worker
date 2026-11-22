@@ -144,7 +144,8 @@ def saved_result(attempt, report):
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": str(target.relative_to(attempt))})
     context = channel_dir / "reviewed-context.json"
-    context.write_text(json.dumps(report["site_review"], allow_nan=False) + "\n")
+    context.write_text(json.dumps({"reviewed_highway_and_official_device": report["site_review"]},
+                                  allow_nan=False) + "\n")
     evidence.append({"name": "reviewed_highway_and_official_device",
                      "unit": "retained original source packet",
                      "reference": str(context.relative_to(attempt))})

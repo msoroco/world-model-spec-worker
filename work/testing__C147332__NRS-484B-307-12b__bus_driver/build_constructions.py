@@ -15,7 +15,7 @@ REPO = ROOT.parents[1]
 ASSIGNMENT = ROOT.name
 FILES = ("runner.py", "native_construction.py", "bus_route.py", "source_review.py",
          "lane_signal_measurement.py", "analysis.py", "native_driver.py",
-         "native_capture.py", "delivery_audit.py", "comparison_audit.py")
+         "native_capture.py", "stationary_hold.py", "delivery_audit.py", "comparison_audit.py")
 
 
 def sha(path):
@@ -140,8 +140,14 @@ def build():
                                       "failure_condition": "primary original pixels obscure the reviewed head or its lane association"}}],
                       "preparation_status": "partial_offline_pending"}
         prior = previous_entries.get(scene["case_id"], {})
+        if prior.get("fixture_recipe"):
+            entry["fixture_recipe"] = prior["fixture_recipe"]
+        for key in ("acquisition", "native_handoff"):
+            if key in prior:
+                entry[key] = prior[key]
         if prior.get("construction_sha256") == entry["construction_sha256"]:
-            for key in ("offline", "compatibility", "post_capture", "delivery_acceptance"):
+            for key in ("offline", "compatibility", "post_capture", "delivery_acceptance",
+                        "physical_preparation", "negative"):
                 if key in prior:
                     entry[key] = prior[key]
             prior_fallbacks = {candidate.get("id"): candidate for candidate in prior.get("candidates", [])}
@@ -155,6 +161,8 @@ def build():
         cases.append(entry)
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
                 "cases": cases, "preparation_status": "partial_offline_pending"}
+    if previous.get("runtime_manifest_sha256"):
+        manifest["runtime_manifest_sha256"] = previous["runtime_manifest_sha256"]
     write(ROOT / "execution-manifest.json", manifest)
     return cases
 

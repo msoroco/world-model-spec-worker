@@ -21,14 +21,14 @@ def main():
     runtime_root = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).resolve()
     if not runtime_root.is_relative_to((REPO / ".runtime-work").resolve()):
         raise ValueError("runtime output root must stay under .runtime-work")
-    proof = REPO / ".runtime-work" / "c147332-saved-v5"
+    proof = REPO / ".runtime-work" / "c147332-saved-v7"
     if proof.exists():
         raise ValueError("retain prior saved proof root; select a new version")
     proof.mkdir(parents=True)
     for kind in ROUTES:
         attempt = proof / kind
         make_attempt(attempt, kind)
-        materialized = REPO / ".runtime-work" / "c147332-offline-v7" / kind / "primary"
+        materialized = REPO / ".runtime-work" / "c147332-offline-v9" / kind / "primary"
         for name in ("config.json", "construction.json"):
             shutil.copy2(materialized / name, attempt / name)
         positions = [(0.0, -5.4), (3.0, -5.4)] if kind == "adjacent_travel" else (

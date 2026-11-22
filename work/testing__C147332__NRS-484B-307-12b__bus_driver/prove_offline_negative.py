@@ -17,7 +17,7 @@ ASSIGNMENT = ROOT.name
 
 def main():
     for kind in ROUTES:
-        materialized = REPO / ".runtime-work" / "c147332-offline-v7" / kind / "primary"
+        materialized = REPO / ".runtime-work" / "c147332-offline-v9" / kind / "primary"
         if not materialized.is_dir():
             raise ValueError("positive offline materialization missing: " + kind)
         road = materialized / "road.xodr"
