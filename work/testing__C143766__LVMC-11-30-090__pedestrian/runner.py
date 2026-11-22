@@ -76,6 +76,7 @@ def run_native(scene, scene_path, map_path, output, host, port):
     import carla
     from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot as snapshot_world, restore
+    from walker_pipeline_capture import WalkerPipelineCapture
 
     client = carla.Client(host, port)
     client.set_timeout(30)
@@ -83,6 +84,7 @@ def run_native(scene, scene_path, map_path, output, host, port):
     world = None
     actor = None
     videos = None
+    capture = None
     frame_map = None
     captured = []
     cleanup = []
@@ -96,18 +98,18 @@ def run_native(scene, scene_path, map_path, output, host, port):
         settings = world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
+        settings.no_rendering_mode = False
         world.apply_settings(settings)
         actor = spawn_walker(world, scene, carla)
         write(output/"acquisition-provenance.json", {
             "provenance_kind": "native", "diagnostic_fixture": False,
             "method": "original CARLA walker world vertices and four synchronized RGB sensors",
             "authored_road_sha256": sha(source), "case_id": scene["case_id"]})
-        (output/"road.xodr").write_text(world.get_map().to_opendrive())
         videos = FourVideoRecorder(world, scene, carla, output)
+        capture = WalkerPipelineCapture(client, actor, output, scene["case_id"])
         frame_map = FrameMap(output/"video_frames.jsonl")
         target_index = 1
-        with (output/"trace.jsonl").open("x", buffering=1) as trace, \
-             (output/"walker-body-history.jsonl").open("x", buffering=1) as body, \
+        with (output/"walker-body-history.jsonl").open("x", buffering=1) as body, \
              (output/"camera-frame-joins.jsonl").open("x", buffering=1) as joins:
             for _ in range(FRAMES):
                 request = apply_walker_request(actor, carla, scene, target_index)
@@ -118,17 +120,23 @@ def run_native(scene, scene_path, map_path, output, host, port):
                     raise RuntimeError("Native world tick/snapshot frame mismatch")
                 sample = sample_original_walker(scene, actor, snap)
                 join = videos.append(sample)
+                captured_trace = capture.capture(frame, sample["time_s"], sample)
+                if captured_trace["frame"] != frame:
+                    raise RuntimeError("canonical walker graph and body frame mismatch")
                 frame_map.append(frame, sample["time_s"])
-                trace.write(json.dumps(_trace(actor, sample), allow_nan=False)+"\n")
                 body.write(json.dumps(sample, allow_nan=False)+"\n")
                 joins.write(json.dumps(join, allow_nan=False)+"\n")
                 captured.append(frame)
     except BaseException as exc:
         error = repr(exc)
     finally:
-        for resource in (frame_map, videos):
+        for resource in (frame_map, capture, videos):
             if resource is not None:
-                try: resource.close()
+                try:
+                    if resource is capture:
+                        resource.close(confirmed=error is None)
+                    else:
+                        resource.close()
                 except BaseException as exc: cleanup.append(repr(exc))
         if actor is not None:
             try: actor.destroy()

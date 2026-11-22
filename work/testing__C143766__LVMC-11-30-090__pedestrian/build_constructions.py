@@ -11,6 +11,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 SUFFIXES = ("roadway_walk", "sidewalk_walk", "shoulder_walk")
 SOURCES = ("runner.py", "native_capture.py", "native_driver.py",
+           "walker_pipeline_capture.py",
            "corridor_construction.py", "corridor_map.py", "saved_measurement.py",
            "delivery_audit.py", "comparison_audit.py", "analysis.py")
 
