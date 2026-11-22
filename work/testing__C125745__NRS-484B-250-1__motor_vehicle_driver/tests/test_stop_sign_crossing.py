@@ -357,16 +357,25 @@ class CrossingTests(unittest.TestCase):
             second.mkdir()
             self.fixture(first)
             self.fixture(second)
+            config = {"frames": 4, "rate_hz": 20,
+                      "cameras": list(cameras.CAMERAS)}
+            for root in (first, second):
+                (root / "config.json").write_text(json.dumps(config))
+            for root in (first, second):
+                rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+                for row, ego_x in zip(rows, [-20, -18, 1, 3]):
+                    row["ego"]["body_vertices_xy_m"] = body(ego_x)
+                    row["ego"]["distance_to_intersection_m"] = max(0, -ego_x)
+                (root / "crossing_history.jsonl").write_text(
+                    "".join(json.dumps(row) + "\n" for row in rows))
             rows = [json.loads(line) for line in (second / "crossing_history.jsonl").read_text().splitlines()]
-            ego_bodies = [row["ego"]["body_vertices_xy_m"] for row in rows]
-            other_bodies = [row["other"]["body_vertices_xy_m"] for row in rows]
-            for row, ego_body, other_body in zip(rows, ego_bodies, other_bodies):
-                row["ego"]["body_vertices_xy_m"] = other_body
-                row["other"]["body_vertices_xy_m"] = ego_body
+            for row, other_x in zip(rows, [-4, -3, -2, 1]):
+                row["other"]["body_vertices_xy_m"] = body(other_x)
+                row["other"]["distance_to_intersection_m"] = max(0, -other_x)
             (second / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
             receipt = comparison.compare(first, second, expected_frames=4)
             self.assertFalse(receipt["physical_acceptance_claimed"])
-            with self.assertRaisesRegex(ValueError, "Incomplete original"):
+            with self.assertRaisesRegex(ValueError, "Fixed source cameras or duration changed"):
                 comparison.compare(first, second)
             context = json.loads((second / "junction_context.json").read_text())
             context["native_stop_sign_id"] = 99
