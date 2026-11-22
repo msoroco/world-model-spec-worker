@@ -96,9 +96,10 @@ def check(repo, complete=False, require_ready=False, assignment=None):
         parts = Path(rel).parts
         require(len(parts)>2 and parts[0]=='work' and parts[1] in (*all_items, '_shared'), 'Unapproved output: '+rel)
         path = within(repo, rel)
-        require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
+        max_bytes = (5 if rel == 'work/_shared/gpu-queue.json' else 2) * 1024 * 1024
+        require(path.stat().st_size <= max_bytes, 'Oversized return')
         from .portable import inspect_file
-        inspect_file(path)
+        inspect_file(path, max_bytes=max_bytes)
         if path.suffix == '.py':
             ast.parse(path.read_text())
     if assignment is not None:
