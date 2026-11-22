@@ -4,65 +4,827 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared reference request for exact pair design; no separate planned recording or legal result.",
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "crossing",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
+    },
+    {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
-      "target_law_id": "NRS-484B-250-1", "target_type": "boundary_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Other vehicle requested to enter the same crossing before ego; actual entry and clearance require original frames.",
-      "variable_assignments": {"crossing_entry_order": {"kind": "world_setup", "value": "other_first", "note": "request only"}},
-      "unresolved_judgment_calls": ["yield the right-of-way", "intersection from a different highway", "subsection 4 qualification"],
-      "paired_probe_id": "crossing_precedence", "deliberate_differences": ["ego_response_request"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "crossing",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way",
+        "intersection from a different highway",
+        "subsection 4 qualification"
+      ],
+      "paired_probe_id": "crossing_precedence",
+      "deliberate_differences": [
+        "ego_response_request"
+      ],
+      "probe": {
+        "primary_variable": "ego_response_request",
+        "comparison_or_standard": "crossing_precedence",
+        "target_value_or_branch": "yield"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__advance",
-      "target_law_id": "NRS-484B-250-1", "target_type": "boundary_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Same crossing approach with ego advance request; realized right-of-way behavior remains measured, not labeled.",
-      "variable_assignments": {"ego_response_request": {"kind": "controller", "value": "advance", "note": "request only"}},
-      "unresolved_judgment_calls": ["yield the right-of-way", "subsection 4 qualification"],
-      "paired_probe_id": "crossing_precedence", "deliberate_differences": ["ego_response_request"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "advance",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "crossing",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way",
+        "subsection 4 qualification"
+      ],
+      "paired_probe_id": "crossing_precedence",
+      "deliberate_differences": [
+        "ego_response_request"
+      ],
+      "probe": {
+        "primary_variable": "ego_response_request",
+        "comparison_or_standard": "crossing_precedence",
+        "target_value_or_branch": "advance"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later",
-      "target_law_id": "NRS-484B-250-1", "target_type": "boundary_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Other vehicle requested to enter after ego at the same crossing.",
-      "variable_assignments": {"crossing_entry_order": {"kind": "world_setup", "value": "ego_first", "note": "request only"}},
-      "unresolved_judgment_calls": ["intersection from a different highway", "subsection 4 qualification"],
-      "paired_probe_id": "crossing_entry_order", "deliberate_differences": ["crossing_entry_order"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "ego_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "advance",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "crossing",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "intersection from a different highway",
+        "subsection 4 qualification"
+      ],
+      "paired_probe_id": "crossing_entry_order",
+      "deliberate_differences": [
+        "crossing_entry_order"
+      ],
+      "probe": {
+        "primary_variable": "crossing_entry_order",
+        "comparison_or_standard": "crossing_entry_order",
+        "target_value_or_branch": "ego_first"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_straight",
-      "target_law_id": "NRS-484B-250-1", "target_type": "exception_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Opposite-direction straight approach for subsection-5 qualification comparison.",
-      "variable_assignments": {"approach_and_left_turn_context": {"kind": "world_setup", "value": "opposite_straight", "note": "actual route and intent require sources"}},
-      "unresolved_judgment_calls": ["opposite-direction qualification", "intention to turn left"],
-      "paired_probe_id": "opposite_intention", "deliberate_differences": ["left_turn_intent"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "opposite",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "opposite-direction qualification",
+        "intention to turn left"
+      ],
+      "paired_probe_id": "opposite_intention",
+      "deliberate_differences": [
+        "left_turn_intent"
+      ],
+      "probe": {
+        "primary_variable": "left_turn_intent",
+        "comparison_or_standard": "opposite_intention",
+        "target_value_or_branch": false
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left",
-      "target_law_id": "NRS-484B-250-1", "target_type": "exception_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Separate requested left-turn intention from any actual left turn.",
-      "variable_assignments": {"approach_and_left_turn_context": {"kind": "world_setup", "value": "opposite_intends_left", "note": "intention source required"}},
-      "unresolved_judgment_calls": ["opposite-direction qualification", "intention to turn left"],
-      "paired_probe_id": "opposite_intention", "deliberate_differences": ["left_turn_intent"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "opposite",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "opposite-direction qualification",
+        "intention to turn left"
+      ],
+      "paired_probe_id": "opposite_intention",
+      "deliberate_differences": [
+        "left_turn_intent"
+      ],
+      "probe": {
+        "primary_variable": "left_turn_intent",
+        "comparison_or_standard": "opposite_intention",
+        "target_value_or_branch": true
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_makes_left",
-      "target_law_id": "NRS-484B-250-1", "target_type": "exception_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Actual left-turn body trajectory requires original motion, separate from intent.",
-      "variable_assignments": {"approach_and_left_turn_context": {"kind": "world_setup", "value": "opposite_makes_left", "note": "realized turn must be measured"}},
-      "unresolved_judgment_calls": ["opposite-direction qualification", "intention to turn left"],
-      "paired_probe_id": "opposite_actual_left", "deliberate_differences": ["left_turn_realized"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "opposite",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "left",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "first",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "opposite-direction qualification",
+        "intention to turn left"
+      ],
+      "paired_probe_id": "opposite_actual_left",
+      "deliberate_differences": [
+        "left_turn_motion_request"
+      ],
+      "probe": {
+        "primary_variable": "left_turn_motion_request",
+        "comparison_or_standard": "opposite_actual_left",
+        "target_value_or_branch": "left"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__wide_same_crossing",
-      "target_law_id": "NRS-484B-250-1", "target_type": "geometry_probe",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
       "rationale": "Wide divided roadway requires source-backed first-versus-second physical intersection review.",
-      "variable_assignments": {"roadway_intersection_identity": {"kind": "world_setup", "value": "first_or_second", "note": "exact geometry pending"}},
-      "unresolved_judgment_calls": ["separate-roadway intersection qualification", "intersection from a different highway"],
-      "paired_probe_id": "separate_roadway_intersection", "deliberate_differences": ["roadway_intersection_identity"]
+      "variable_assignments": {
+        "crossing_entry_order": {
+          "kind": "world_setup",
+          "value": "other_first",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "approach_relation": {
+          "kind": "world_setup",
+          "value": "crossing",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_intent": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "left_turn_motion_request": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "requested setup or controller target; realization requires original source"
+        },
+        "roadway_intersection_identity": {
+          "kind": "world_setup",
+          "value": "second",
+          "note": "requested setup or controller target; realization requires original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "separate-roadway intersection qualification",
+        "intersection from a different highway"
+      ],
+      "paired_probe_id": "separate_roadway_intersection",
+      "deliberate_differences": [
+        "roadway_intersection_identity"
+      ],
+      "probe": {
+        "primary_variable": "roadway_intersection_identity",
+        "comparison_or_standard": "separate_roadway_intersection",
+        "target_value_or_branch": "second"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          },
+          {
+            "name": "other_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor body polygon and timestamp",
+            "time_window": "approach through crossing clearance",
+            "reference_frame": "CARLA world XY and original frame",
+            "uncertainty": "20 Hz sampling and Native body geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_geometry",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "highway_identity",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "device_inventory",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          },
+          {
+            "name": "driver_scope",
+            "unit": "structured record",
+            "method": "Original Native map or reviewed scene context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic source labels do not establish public-roadway legal scope.",
+          "Actual Native map, vehicle motion and camera evidence need review."
+        ]
+      },
+      "execution_readiness": "diagnostic_only_pending_reviewed_source"
     }
   ],
   "sweep_specs": [
-    {"sweep_id": "c125714-yield", "target_law_id": "NRS-484B-250-1", "status": "incomplete", "judgment_refs": [{"phrase": "yield the right-of-way"}], "rationale": "No numeric legal cutoff; source-backed physical response range and real crossing still required.", "missing_inputs": ["inspected crossing", "feasible original response range"]},
-    {"sweep_id": "c125714-intersection", "target_law_id": "NRS-484B-250-1", "status": "incomplete", "judgment_refs": [{"phrase": "intersection from a different highway"}], "rationale": "Public-highway and separated-roadway source review required.", "missing_inputs": ["reviewed map geometry", "public highway identity"]}
+    {
+      "sweep_id": "c125714-yield",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "No numeric legal yielding boundary is supplied; report observed entry, clearance, braking and progress separately."
+        }
+      ],
+      "rationale": "No numeric legal cutoff; source-backed physical response range and real crossing still required.",
+      "missing_inputs": [
+        "inspected crossing",
+        "feasible original response range"
+      ]
+    },
+    {
+      "sweep_id": "c125714-intersection",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "intersection from a different highway",
+          "note": "Statutory intersection, public access and distinct-highway identity require review beyond OpenDRIVE lane geometry."
+        }
+      ],
+      "rationale": "Public-highway and separated-roadway source review required.",
+      "missing_inputs": [
+        "reviewed map geometry",
+        "public highway identity"
+      ]
+    }
   ],
   "sweeps_expanded": false
 }

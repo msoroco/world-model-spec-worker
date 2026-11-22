@@ -6,12 +6,14 @@ from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+import uuid
 
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
-from reviewed_delivery_author import SUFFIXES, author, source_files
+from reviewed_delivery_author import (SUFFIXES, author, check_comparison_isolation,
+                                      compatibility_manifest, source_files)
 from case_builder import config
 
 
@@ -79,6 +81,33 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                         text=True, timeout=60)
                     self.assertEqual(completed.returncode, 0, suffix + "/" + candidate + ": " +
                                      completed.stderr + completed.stdout)
+            validator = REPO / ".runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+            self.assertTrue(validator.is_file(), "pinned Lean decoder must be built before proof")
+            manifest = ROOT / ("protocol-compatibility-" + uuid.uuid4().hex + ".json")
+            try:
+                compatibility_manifest(output, manifest)
+                for suffix in SUFFIXES:
+                    for candidate in ("primary", "fallback1"):
+                        completed = subprocess.run(
+                            [sys.executable, str(REPO / "runtime.py"), "compatibility",
+                             "--manifest", str(manifest),
+                             "--case", ROOT.name + "__" + suffix,
+                             "--candidate", candidate,
+                             "--output", str(Path(proof) / ("compat-" + suffix + "-" + candidate)),
+                             "--library", str(REPO / "runtime/library"),
+                             "--validator", str(validator)], cwd=REPO, capture_output=True,
+                            text=True, timeout=180)
+                        self.assertEqual(completed.returncode, 0, suffix + "/" + candidate +
+                                         ": " + completed.stderr + completed.stdout)
+                        receipt_root = Path(proof) / ("compat-" + suffix + "-" + candidate)
+                        receipt = json.loads((receipt_root / "compatibility.json").read_text())
+                        self.assertIs(receipt["passed"], True)
+                        self.assertEqual(receipt["case_id"], ROOT.name + "__" + suffix)
+                        self.assertEqual(receipt["candidate_id"], candidate)
+                        self.assertIn(receipt["negative_error_contains"],
+                                      (receipt_root / "negative-analysis.log").read_text())
+            finally:
+                manifest.unlink(missing_ok=True)
             tampered = Path(source) / "precedence" / "device_inventory_source.txt"
             tampered.write_text("changed")
             with self.assertRaisesRegex(ValueError, "reviewed source hash changed"):
@@ -95,9 +124,20 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             scene = json.loads(scene_path.read_text())
             scene["ego_route_xy_m"][0][0] += 1
             scene_path.write_text(json.dumps(scene))
-            with self.assertRaisesRegex(ValueError, "comparison is not isolated"):
+            with self.assertRaisesRegex(ValueError, "fixed scene field"):
                 author(source, ROOT / "candidate-map.xodr", Path(destination) / "candidate",
                        Path(proof) / "preflight")
+            scenes = {suffix: json.loads((Path(source) / suffix / "scene.json").read_text())
+                      for suffix in SUFFIXES}
+            scenes["other_later"]["ego_route_xy_m"][0][0] -= 1
+            check_comparison_isolation(scenes)
+            scenes["opposite_intends_left"]["other_highway"] = "changed"
+            with self.assertRaisesRegex(ValueError, "fixed scene field"):
+                check_comparison_isolation(scenes)
+            scenes["opposite_intends_left"]["other_highway"] = scenes["opposite_straight"]["other_highway"]
+            scenes["wide_same_crossing"]["crossing"]["roadway_id"] = scenes["precedence"]["crossing"]["roadway_id"]
+            with self.assertRaisesRegex(ValueError, "distinct roadway_id"):
+                check_comparison_isolation(scenes)
 
 
 if __name__ == "__main__":

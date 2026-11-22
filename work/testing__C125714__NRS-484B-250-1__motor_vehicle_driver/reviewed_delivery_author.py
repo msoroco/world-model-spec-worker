@@ -6,6 +6,7 @@ scene, packet, and source byte must be supplied by a reviewer first.
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
@@ -75,6 +76,41 @@ def source_files(scene_path):
     return scene, files
 
 
+def check_comparison_isolation(by_name):
+    common = ("crossing", "ego_highway", "other_highway", "ego_route_xy_m",
+              "other_route_xy_m", "capture_rate_hz", "duration_s",
+              "ego_approach_road_id", "other_approach_road_id",
+              "approach_relation", "left_turn_intent", "left_turn_realized",
+              "other_entered_first", "ego_response_request")
+    for left, right, changed in (
+            ("precedence", "advance", ("ego_response_request",)),
+            ("advance", "other_later", ("other_entered_first",)),
+            ("opposite_straight", "opposite_intends_left", ("left_turn_intent",)),
+            ("opposite_intends_left", "opposite_makes_left",
+             ("left_turn_realized", "other_route_xy_m"))):
+        a, b = by_name[left], by_name[right]
+        if any(a.get(key) != b.get(key) for key in common if key not in changed):
+            raise ValueError("frozen comparison changed a fixed scene field: " + left + "/" + right)
+        if any(a.get(key) == b.get(key) for key in changed):
+            raise ValueError("frozen comparison lacks declared scene difference: " + left + "/" + right)
+    a, b = by_name["precedence"], by_name["wide_same_crossing"]
+    wide_fixed = ("ego_highway", "other_highway", "other_route_xy_m", "capture_rate_hz",
+                  "duration_s", "other_approach_road_id", "approach_relation",
+                  "left_turn_intent", "left_turn_realized", "other_entered_first",
+                  "ego_response_request")
+    if any(a.get(key) != b.get(key) for key in wide_fixed):
+        raise ValueError("separate-roadway comparison changed a fixed scene field")
+    for key in ("crossing_id", "roadway_id"):
+        if a["crossing"][key] == b["crossing"][key]:
+            raise ValueError("separate-roadway comparison lacks distinct " + key)
+    if a["crossing"]["map_source_sha256"] != b["crossing"]["map_source_sha256"]:
+        raise ValueError("separate-roadway comparison changed the map")
+    left_dx = a["ego_route_xy_m"][-1][0] - a["ego_route_xy_m"][0][0]
+    right_dx = b["ego_route_xy_m"][-1][0] - b["ego_route_xy_m"][0][0]
+    if left_dx * right_dx >= 0:
+        raise ValueError("separate-roadway comparison lacks opposite ego approach directions")
+
+
 def author(source_root, map_path, output_root, proof_root):
     source_root, map_path, output_root, proof_root = map(
         Path, (source_root, map_path, output_root, proof_root))
@@ -100,20 +136,18 @@ def author(source_root, map_path, output_root, proof_root):
         if scene["crossing"]["map_source_sha256"] != digest(map_path):
             raise ValueError("reviewed map differs from scene: " + suffix)
         staged.append((suffix, scene_path, scene, files))
-    # Validate the fixed condition of the two frozen crossing comparisons.
-    by_name = {suffix: scene for suffix, _, scene, _ in staged}
-    for left, right, variable in (("precedence", "advance", "ego_response_request"),
-                                  ("advance", "other_later", "other_entered_first")):
-        a, b = by_name[left], by_name[right]
-        shared = ("crossing", "ego_highway", "other_highway", "ego_route_xy_m",
-                  "other_route_xy_m", "capture_rate_hz", "duration_s")
-        if any(a.get(key) != b.get(key) for key in shared) or a.get(variable) == b.get(variable):
-            raise ValueError("frozen crossing comparison is not isolated: " + left + "/" + right)
+    check_comparison_isolation({suffix: scene for suffix, _, scene, _ in staged})
     for suffix, scene_path, _, _ in staged:
         preflight(scene_path, map_path, proof_root / suffix)
     output_root.mkdir(parents=True)
+    (output_root / "proposals").mkdir()
+    for source, destination in ((ROOT / "case-plan.json", output_root / "case-plan.json"),
+                                (ROOT / "proposals/cases.json", output_root / "proposals/cases.json")):
+        destination.write_bytes(source.read_bytes())
     manifest = {"format": "worker-reviewed-delivery-candidates", "assignment_id": ROOT.name,
-                "reviewed_map_sha256": digest(map_path), "cases": []}
+                "reviewed_map_sha256": digest(map_path),
+                "runtime_manifest_sha256": digest(REPO / "runtime/SOURCE-MANIFEST.json"),
+                "cases": []}
     for suffix, _, scene, files in staged:
         folder = output_root / suffix
         folder.mkdir()
@@ -144,9 +178,15 @@ def author(source_root, map_path, output_root, proof_root):
         if fallback_path.stat().st_size > 2 * 1024 * 1024:
             fallback_path.unlink()
             raise ValueError("delivery fallback exceeds the 2 MiB return limit")
+        diagnostic_folder = ROOT if suffix == "precedence" else ROOT / "cases" / suffix
+        contract_path = folder / "measurement-contract.json"
+        contract_path.write_bytes((diagnostic_folder / "measurement-contract.json").read_bytes())
         manifest["cases"].append({"case_id": scene["case_id"],
                                   "construction": str(path.relative_to(output_root)),
                                   "construction_sha256": digest(path),
+                                  "measurement_contract": str(contract_path.relative_to(output_root)),
+                                  "measurement_procedure": {"entrypoint": "analysis.py"},
+                                  "fixture_recipe": str((diagnostic_folder / "diagnostic-recipe.json").relative_to(REPO)),
                                   "candidate_risk": {"status": "physical", "reason":
                                       "An initial actor spawn can be occupied before capture."},
                                   "candidates": [{"id": "fallback1",
@@ -161,15 +201,36 @@ def author(source_root, map_path, output_root, proof_root):
     return manifest
 
 
+def compatibility_manifest(candidate_root, destination):
+    """Bind staged paths to the assignment root for pinned compatibility CLI."""
+    candidate_root, destination = Path(candidate_root).resolve(), Path(destination).resolve()
+    if not candidate_root.is_relative_to(ROOT) or destination.parent != ROOT:
+        raise ValueError("compatibility manifest must resolve from the assignment root")
+    if destination.exists():
+        raise ValueError("retain the previous compatibility manifest")
+    result = deepcopy(json.loads((candidate_root / "candidate-index.json").read_text()))
+    prefix = candidate_root.relative_to(ROOT)
+    for entry in result["cases"]:
+        for key in ("construction", "measurement_contract"):
+            entry[key] = str(prefix / entry[key])
+        for candidate in entry["candidates"]:
+            candidate["construction"] = str(prefix / candidate["construction"])
+    write_json(destination, result)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", required=True)
     parser.add_argument("--map", required=True)
     parser.add_argument("--output-root", required=True)
     parser.add_argument("--preflight-root", required=True)
+    parser.add_argument("--compatibility-manifest")
     args = parser.parse_args()
-    print(json.dumps(author(args.source_root, args.map, args.output_root,
-                            args.preflight_root), indent=2))
+    result = author(args.source_root, args.map, args.output_root, args.preflight_root)
+    if args.compatibility_manifest:
+        compatibility_manifest(args.output_root, args.compatibility_manifest)
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
