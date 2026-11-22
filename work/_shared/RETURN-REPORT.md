@@ -6298,3 +6298,7 @@ C183370 cutover continuation: isolated current-runtime probe 48/48 offline and r
 C183370 fallback1 cutover diagnostic also passes positive/negative compatibility and recorded-only saved; proof SHA-256 `e6e36dd32e76b12003246a29fb9b2cd6ae8d2c5592bbab34bb028b10a3af4629`. Count 2/48 full chains, 48/48 offline; selected manifest remains old-runtime and partial.
 
 C183370 scoped strict still exits 1 on partial status, log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`; full batch delivery gate remains unpassed.
+
+C183370 cutover checkpoint: 48/48 offline, 16/48 full current-runtime candidate CPU chains, and 2/6 diagnostic comparisons with swapped-source negatives. Chain audit SHA-256 `297bfa1b1b3abf2b3f1a03950489c6916f835c46e986d86408a5a04656ae7bac`; main/barrier proof SHA-256 `d806c907f2af1a6caa492c6c6dd5b2486fe291972da87456a5fb50ddc51389c2` / `bc05ab5ca68334dc3a08a0a144bf824b550e551ef5d84e7cad7bca364ce17898`. Selected manifest remains old-runtime; status partial, 32 chains and final audits pending. No original Native or frozen edits.
+
+C183370 return-format correction: renamed returned generated-style logs, rebound 16 proofs, independent audit SHA-256 `297bfa1b1b3abf2b3f1a03950489c6916f835c46e986d86408a5a04656ae7bac`; ordinary scoped complete passes. Scoped strict exits 1 on partial status, log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`.

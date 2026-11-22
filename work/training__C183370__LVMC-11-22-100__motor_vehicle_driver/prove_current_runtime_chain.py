@@ -93,8 +93,8 @@ def prove(short, candidate):
             processing['timestamp_joins']['frames'] == 600):
         raise ValueError('Required positive/negative/saved proof incomplete')
     source_files = {'compatibility.json': compat / 'compatibility.json',
-                    'compatibility-analysis.log': compat / 'compatibility-analysis.log',
-                    'negative-analysis.log': compat / 'negative-analysis.log',
+                    'analysis.log': compat / 'compatibility-analysis.log',
+                    'negative.log': compat / 'negative-analysis.log',
                     'processing.json': saved / 'v0001/processing.json'}
     hashes = {}
     for name, src in source_files.items():
