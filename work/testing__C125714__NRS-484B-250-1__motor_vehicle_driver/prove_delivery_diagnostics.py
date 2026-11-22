@@ -10,6 +10,7 @@ import shutil
 
 from delivery_audit import (CAMERAS, ORIGINALS, REVIEW_SOURCES, audit_attempt,
                             audit_media_time, audit_pair)
+from precedence_response_audit import audit_response_pair
 
 
 ROOT = Path(__file__).resolve().parent
@@ -24,6 +25,62 @@ def sha(path):
 
 def write(path, value):
     Path(path).write_text(json.dumps(value, indent=2) + "\n")
+
+
+def write_rows(path, rows):
+    Path(path).write_text("".join(json.dumps(row) + "\n" for row in rows))
+
+
+def reseal(attempt):
+    """Keep explicit synthetic perturbations bound to their diagnostic seal."""
+    acquisition = json.loads((attempt / "acquisition.json").read_text())
+    seal = json.loads((attempt / "capture-seal.json").read_text())
+    for name in ORIGINALS:
+        digest = sha(attempt / name)
+        acquisition[name]["sha256"] = digest
+        seal["sources"][name] = digest
+    write(attempt / "acquisition.json", acquisition)
+    write(attempt / "capture-seal.json", seal)
+    exit_receipt = json.loads((attempt / "native-exit.json").read_text())
+    exit_receipt["capture_seal_sha256"] = sha(attempt / "capture-seal.json")
+    write(attempt / "native-exit.json", exit_receipt)
+
+
+def prepare_synthetic_response_pair(output):
+    """Exercise realized-response audit using labeled synthetic source changes."""
+    for kind, request in (("precedence", "brake"), ("advance", "proceed")):
+        attempt = output / kind
+        controls = [json.loads(line) for line in
+                    (attempt / "controller-history.jsonl").read_text().splitlines()]
+        for row in controls:
+            row["ego_next_tick_request"] = {"request": request if row["frame"] >= 2 else "brake"}
+            row["synthetic_response_probe"] = True
+        write_rows(attempt / "controller-history.jsonl", controls)
+        reseal(attempt)
+    try:
+        audit_response_pair(output / "precedence", output / "advance", diagnostic=True)
+    except ValueError as error:
+        if "controller-only response difference lacks realized ego progress" not in str(error):
+            raise
+    else:
+        raise AssertionError("request-only exact pair passed realized-response audit")
+    attempt = output / "advance"
+    body_path = attempt / "ego-body-history.jsonl"
+    bodies = [json.loads(line) for line in body_path.read_text().splitlines()]
+    if len(bodies) < 5:
+        raise ValueError("synthetic response fixture needs five original-shaped frames")
+    for vertex in bodies[3]["body_vertices_xy_m"]:
+        vertex[0] += .5
+    write_rows(body_path, bodies)
+    trace_path = attempt / "trace.jsonl"
+    trace = [json.loads(line) for line in trace_path.read_text().splitlines()]
+    if trace[3]["frame"] != bodies[3]["frame"]:
+        raise ValueError("synthetic response trace/body frame differs")
+    trace[3]["position"]["x"] += .5
+    if "position_m" in trace[3]:
+        trace[3]["position_m"][0] += .5
+    write_rows(trace_path, trace)
+    reseal(attempt)
 
 
 def prepare(origin, attempt, case_id):
@@ -106,6 +163,7 @@ def main():
                         "changed_source_rejected": True,
                         "physical_acceptance_claimed": False})
         print(case_id, "four-camera decode and audit negatives passed", flush=True)
+    prepare_synthetic_response_pair(output)
     comparison_specs = (
         ("crossing_entry_order", "advance", "other_later", ("entry_order",)),
         ("opposite_intention", "opposite_straight", "opposite_intends_left",
@@ -137,20 +195,19 @@ def main():
                             "independent_audit_passed": True,
                             "undeclared_difference_rejected": True})
         print(comparison_id, "independent comparison passed", flush=True)
-    try:
-        audit_pair(output / "precedence", output / "advance",
-                   ("ego_response_request",), diagnostic=True)
-    except ValueError as error:
-        if "unsupported declared comparison variable" not in str(error):
-            raise
-    else:
-        raise AssertionError("authored request was mistaken for realized motion")
+    response = audit_response_pair(output / "precedence", output / "advance",
+                                   diagnostic=True)
+    if (response["realized_progress_difference_m"] < .25 or
+            response["legal_verdict_claimed"] or not response["diagnostic_fixture"]):
+        raise AssertionError("synthetic realized response audit missed its evidence")
     comparisons.append({"comparison_id": "crossing_precedence",
                         "case_ids": [ROOT.name + "__precedence",
                                      ROOT.name + "__advance"],
-                        "authored_request_only": True,
-                        "realized_response_claimed": False,
-                        "independent_audit_passed": False})
+                        "synthetic_response_probe": True,
+                        "request_only_negative_rejected": True,
+                        "realized_progress_difference_m": response["realized_progress_difference_m"],
+                        "physical_acceptance_claimed": False,
+                        "independent_audit_passed": True})
     for kind in KINDS:
         source = output / kind / REVIEW_SOURCES["device_inventory_source"]
         source.write_bytes(source.read_bytes() + b"tampered\n")

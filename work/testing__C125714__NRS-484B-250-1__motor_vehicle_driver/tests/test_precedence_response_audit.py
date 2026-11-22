@@ -52,11 +52,13 @@ class PrecedenceResponseAuditTest(unittest.TestCase):
             for body in bodies:
                 body["frame"] += 100
             write_rows(body_path, bodies)
-            for name in ("other-body-history.jsonl", "controller-history.jsonl"):
+            for name in ("trace.jsonl", "other-body-history.jsonl", "controller-history.jsonl"):
                 path = Path(right) / name
                 shifted = [json.loads(line) for line in path.read_text().splitlines()]
                 for item in shifted:
                     item["frame"] += 100
+                    if name == "trace.jsonl" and item["frame"] == 103:
+                        item["position"]["y"] += .5
                 write_rows(path, shifted)
             reseal(right)
             receipt = audit_response_pair(left, right, diagnostic=True)
@@ -72,6 +74,15 @@ class PrecedenceResponseAuditTest(unittest.TestCase):
             reseal(right)
             with self.assertRaisesRegex(ValueError, "fixed other body route"):
                 audit_response_pair(left, right, diagnostic=True)
+            trace_path = Path(right) / "trace.jsonl"
+            trace_rows = [json.loads(line) for line in trace_path.read_text().splitlines()]
+            trace_rows[3]["position"]["y"] += .5
+            write_rows(trace_path, trace_rows)
+            reseal(right)
+            with self.assertRaisesRegex(ValueError, "trace/body motion differs"):
+                audit_response_pair(left, right, diagnostic=True)
+            trace_rows[3]["position"]["y"] -= .5
+            write_rows(trace_path, trace_rows)
             other_path.write_text(unchanged_other)
             reseal(right)
             context_path = Path(right) / "intersection-context.json"

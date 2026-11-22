@@ -31,10 +31,15 @@ def native_shaped_fixture(folder):
     context["reviewed_context_sha256"] = sha(folder / "reviewed-context.json")
     context_path.write_text(json.dumps(context))
     (folder / "road.xodr").write_text("map")
-    for name in ("trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
+    for name in ("video_frames.jsonl", "carla_recorder.log",
                  "controller-history.jsonl", "overview.mkv", "approach.mkv",
                  "reference_corner.mkv", "driver_reference.mkv"):
         (folder / name).write_text("diagnostic placeholder")
+    ego_rows = [json.loads(line) for line in (folder / "ego-body-history.jsonl").read_text().splitlines()]
+    (folder / "trace.jsonl").write_text("".join(json.dumps({
+        "frame": row["frame"], "time_s": row["time_s"],
+        "position": {"x": 0, "y": sum(vertex[1] for vertex in row["body_vertices_xy_m"]) / 4,
+                     "z": 0}}) + "\n" for row in ego_rows))
     (folder / "acquisition-provenance.json").write_text(json.dumps({
         "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True,
         "reviewed_context_sha256": sha(folder / "reviewed-context.json")}))
