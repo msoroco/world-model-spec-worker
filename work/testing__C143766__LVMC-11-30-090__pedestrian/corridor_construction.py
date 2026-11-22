@@ -106,21 +106,31 @@ def measure_original(scene, frames):
                 covered = True
         if not covered:
             raise ValueError("original pedestrian body is outside corridor")
-    if any(b[0] <= a[0] for a, b in zip(centers, centers[1:])):
+    if centers[-1][0]-centers[0][0] < .1:
         raise ValueError("original pedestrian did not progress along corridor")
+    if any(b[0] < a[0]-.05 for a, b in zip(centers, centers[1:])):
+        raise ValueError("original pedestrian reversed along corridor")
     if any(abs((b-a)-.05) > .005 for a, b in zip(times, times[1:])):
         raise ValueError("original frame timing is not 20 Hz")
     speeds = [(b[0]-a[0])/(tb-ta) for a, b, ta, tb in
               zip(centers, centers[1:], times, times[1:])]
-    if any(speed > 2.0 for speed in speeds):
+    if any(abs(speed) > 2.0 for speed in speeds):
         raise ValueError("original pedestrian motion exceeds engineering speed envelope")
     endpoint = scene["pedestrian_route_xy_m"][-1]
     reached_endpoint = math.hypot(centers[-1][0]-endpoint[0],
                                   centers[-1][1]-endpoint[1]) <= .5
+    band = scene["bounds_xy_m"][scene["route_band"]]
+    all_body_inside_route_band = all(
+        min(p[0] for p in f["body_xy_m"]) >= band[0] and
+        max(p[0] for p in f["body_xy_m"]) <= band[2] and
+        min(p[1] for p in f["body_xy_m"]) >= band[1] and
+        max(p[1] for p in f["body_xy_m"]) <= band[3]
+        for f in frames)
     return {"frames": len(frames), "band_overlap_frame_counts": counts,
             "first_center_xy_m": list(centers[0]), "last_center_xy_m": list(centers[-1]),
             "duration_s": times[-1]-times[0], "maximum_forward_speed_mps": max(speeds),
             "authored_endpoint_reached": reached_endpoint,
+            "all_body_inside_route_band": all_body_inside_route_band,
             "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
 
 

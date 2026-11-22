@@ -59,6 +59,15 @@ class CorridorTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "did not progress"):
             measure_original(scene, frames)
 
+    def test_original_walk_may_pause_after_progress(self):
+        scene = make_scene("test", "roadway")
+        frames = [{"frame": i, "time_s": i/20,
+                   "body_xy_m": body(x, 1.5)}
+                  for i, x in enumerate((2.0, 2.06, 2.12, 2.12))]
+        measured = measure_original(scene, frames)
+        self.assertTrue(measured["all_body_inside_route_band"])
+        self.assertAlmostEqual(measured["maximum_forward_speed_mps"], 1.2)
+
     def test_teleport_and_bad_frame_rate_rejected(self):
         scene = make_scene("test", "roadway")
         frames = [{"frame": i, "time_s": i/20,

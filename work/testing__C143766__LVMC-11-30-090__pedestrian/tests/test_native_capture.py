@@ -38,6 +38,8 @@ class NativeCaptureTests(unittest.TestCase):
                 for name, (width, height) in CAMERA_SPECS.items()}
 
     def test_original_bbox_and_four_exact_camera_joins(self):
+        self.assertEqual(list(CAMERA_SPECS), ["overview", "approach",
+                                                   "reference_corner", "driver_reference"])
         sample = sample_original_walker({"case_id": "exact"}, self.actor(), self.snapshot())
         self.assertEqual(sample["body_xy_m"], [[2.0, 1.25], [2.4, 1.25],
                                               [2.4, 1.75], [2.0, 1.75]])
@@ -53,10 +55,10 @@ class NativeCaptureTests(unittest.TestCase):
         for problem in ("missing", "stale", "size", "bytes"):
             with self.subTest(problem=problem):
                 images = self.images()
-                if problem == "missing": del images["trail"]
-                if problem == "stale": images["trail"].frame = 9
-                if problem == "size": images["trail"].width = 20
-                if problem == "bytes": images["trail"].raw_data.size -= 4
+                if problem == "missing": del images["driver_reference"]
+                if problem == "stale": images["driver_reference"].frame = 9
+                if problem == "size": images["driver_reference"].width = 20
+                if problem == "bytes": images["driver_reference"].raw_data.size -= 4
                 join = FourViewJoin()
                 with self.assertRaises(ValueError): join.append(sample, images)
                 self.assertEqual(join.append(sample, self.images())["frame"], 10)
@@ -113,7 +115,7 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertEqual([call[0]["image_size_x"] for call in world.calls],
                          [str(CAMERA_SPECS[name][0]) for name in CAMERA_SPECS])
         failing = World(fail_at=3)
-        with self.assertRaisesRegex(ValueError, "sidewalk Native camera spawn failed"):
+        with self.assertRaisesRegex(ValueError, "reference_corner Native camera spawn failed"):
             spawn_native_cameras(failing, scene, Carla)
         self.assertTrue(all(sensor.destroyed for sensor in failing.sensors))
 

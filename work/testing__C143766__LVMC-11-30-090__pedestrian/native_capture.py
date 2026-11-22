@@ -13,8 +13,9 @@ from pathlib import Path
 from corridor_construction import validate_scene
 
 
-CAMERA_SPECS = {"overview": (1920, 1080), "route": (1280, 720),
-                "sidewalk": (1280, 720), "trail": (1280, 720)}
+CAMERA_SPECS = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720),
+                "driver_reference": (1280, 720)}
 
 
 def camera_placements(scene):
@@ -25,9 +26,9 @@ def camera_placements(scene):
     sidewalk = scene["bounds_xy_m"]["sidewalk"]
     trail = scene["bounds_xy_m"]["nonmotorized_trail"]
     sites = {"overview": (x, 14.0, 25.0),
-             "route": (x-8.0, y-6.0, 4.0),
-             "sidewalk": (x+4.0, sidewalk[3]+2.0, 5.0),
-             "trail": (x-4.0, trail[3]+2.0, 5.0)}
+             "approach": (x-8.0, y-6.0, 4.0),
+             "reference_corner": (x+4.0, sidewalk[3]+2.0, 5.0),
+             "driver_reference": (x-4.0, trail[3]+2.0, 5.0)}
     target = (x, y, 1.0)
     placements = {}
     for name, location in sites.items():

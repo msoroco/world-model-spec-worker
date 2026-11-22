@@ -2,30 +2,48 @@
   "assignment_id": "testing__C143766__LVMC-11-30-090__pedestrian",
   "input_sha256": "a0bc00da91d231e3f614a4be794a964e32895c9d06e6fdc00fae17e13746d1b9",
   "status": "partial",
-  "readiness_kind": "source_bound_candidate_map_synthetic_saved_pairs_and_native_capture_checks",
+  "readiness_kind": "exact_draft_offline_constructions_and_lazy_native_source_audit",
   "applied_update": 0,
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C143766__LVMC-11-30-090__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "e0a70509d8463e8e449cb6e4ad331e36936a53ebf87f5c3b08b90240832e5fdf"
+      "sha256": "4a66c4cc298a25462d2b5e30981e2f0b186c39e750c5aed92a2dbb5ba50001a0"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/build_corridor_diagnostics.py",
       "exit_code": 0,
       "log": "corridor-diagnostic-proof.json",
-      "sha256": "bde0e9d2608f06654fa0aee565734dc077a6562aa37cdc3da71c3529c4008a02"
+      "sha256": "67cd2600e55df46ee800651bd571050dc47371e249dfbc6799354a65c8c042d3"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/prove_comparisons.py",
       "exit_code": 0,
       "log": "diagnostic-comparison-proof.json",
       "sha256": "67536a6975a81a8be1a188c4fea8f54b85303661b5b297680c541118e2da417b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-offline-roadway_walk-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "construction-check-roadway_walk.log",
+      "sha256": "5d308652980957c83dcd140e995489cd0fcaaf0142b8f5b418a1ac857db0a2d2"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-offline-sidewalk_walk-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "construction-check-sidewalk_walk.log",
+      "sha256": "032d8925e4241bc344302da5f33585575a88000a92823a38bb2b5bb9c3eef374"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-offline-shoulder_walk-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "construction-check-shoulder_walk.log",
+      "sha256": "207e8241814399b1fa30be9e7644f9ed79067ba503043100af2975f7415c0154"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact diagnostic corridor scenes, paced 20 Hz generated body histories, two independent source-bound comparison audits, and lazy original walker bounding-box/four-camera spawn and frame-join checks are authored. Twenty assignment CPU tests pass. These do not prove a Native capture or legal sidewalk/trail context. Actual delivery construction, semantic proposals, pinned offline/compatibility/saved processing, full original acquisition and independent physical delivery audits remain worker-owned CPU preparation. Status stays partial."
+  "reason": "Three exact primary construction bundles each pass the pinned materialized runtime.py offline check, and 29 assignment CPU tests pass. The bundles include the candidate OpenDRIVE, exact scene, pedestrian Native runner, source audit and four canonical camera views. Generated diagnostic saved pairs and source hashes remain CPU fixtures. Positive/negative pinned compatibility, canonical graph/adapter conversion, semantic proposals, selected measurement contracts, delivery execution manifest, full pixel/physical and paired delivery audits and reviewed legal site context remain worker-owned CPU preparation. Status stays partial."
 }

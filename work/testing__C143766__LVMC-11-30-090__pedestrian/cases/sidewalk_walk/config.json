@@ -1,0 +1,83 @@
+{
+  "law_id": "LVMC-11-30-090",
+  "cell_id": "C143766",
+  "actor": "pedestrian",
+  "selected_case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
+  "rate_hz": 20,
+  "duration_s": 21.75,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "whole corridor and walker from above"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "route approach toward walking body"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "sidewalk context toward walking body"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "trail context toward walking body"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
+    "physical_target": "sidewalk walker body along corridor",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "walker_body_xy_m",
+          "unit": "m",
+          "method": "eight world-space original CARLA walker body vertices at 20 Hz",
+          "time_window": "all captured frames"
+        },
+        {
+          "name": "walker_route_progress",
+          "unit": "m and s",
+          "method": "original pose, body, velocity and frame timestamps",
+          "time_window": "all captured frames"
+        },
+        {
+          "name": "sidewalk_roadway_shoulder_trail_context",
+          "unit": "source and pixels",
+          "method": "source-hashed authored OpenDRIVE plus four original camera views",
+          "time_window": "all captured frames"
+        }
+      ],
+      "limitations": [
+        "Authored corridor is an engineering candidate; sidewalk purpose and trail access require source review.",
+        "Requested pedestrian control and generated diagnostics do not prove realized walking or actual pixel visibility."
+      ]
+    }
+  },
+  "physical_completion": {
+    "format": "worker-physical-completion-criteria",
+    "criterion": "travel_progress",
+    "motion_source": "walker-body-history.jsonl",
+    "body_key": "body_xy_m",
+    "minimum_progress_m": 20,
+    "minimum_samples": 435,
+    "direction_xy": [
+      1,
+      0
+    ],
+    "engineering_tolerances_not_legal": true
+  }
+}
