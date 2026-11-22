@@ -78,6 +78,25 @@ def check_map(mapping, scene, carla):
     if not connected_turn(waypoints[0],waypoints[-1],scene['stripe_y_m']):
         raise ValueError('no connected left-turn waypoint path crosses stripe and reaches exit')
     marking = approach.left_lane_marking
+    samples=[]
+    start=scene['start_x_m'];end=scene['crossing_x_m']-3
+    count=math.ceil((end-start)/5)
+    for index in range(count+1):
+        requested=start+(end-start)*index/count
+        wp=mapping.get_waypoint(location(requested,scene['approach_lane_center_y_m']))
+        if wp is None:
+            raise ValueError('marked approach has a missing waypoint sample')
+        sample_marking=getattr(wp,'left_lane_marking',None)
+        samples.append({'requested_x_m':requested,
+                        'mapped_x_m':float(wp.transform.location.x),
+                        'mapped_y_m':float(wp.transform.location.y),
+                        'road_id':int(wp.road_id),'lane_id':int(wp.lane_id),
+                        'marking_type':str(sample_marking.type) if sample_marking else None,
+                        'marking_color':str(sample_marking.color) if sample_marking else None})
+    if not all(item['road_id']==approach.road_id and item['lane_id']==approach.lane_id
+               and item['marking_type'] and 'solid' in item['marking_type'].lower()
+               for item in samples):
+        raise ValueError('solid striping does not cover the sampled approach')
     return {'zone_kind': scene['zone_kind'], 'striping_source': 'native_map',
             'stripe_y_m': scene['stripe_y_m'],
             'crossing_x_m': scene['crossing_x_m'],
@@ -86,6 +105,8 @@ def check_map(mapping, scene, carla):
             'marking_type': str(marking.type),
             'marking_color': str(marking.color),
             'marking_lane_change': str(marking.lane_change),
+            'approach_marking_samples':samples,
+            'sample_interval_max_m':5,
             'zone_extent_verified': False,
             'statutory_exceptions_verified': False,
             'limitation': 'A Native lane marking does not establish statutory zone extent or subsection 3/4 applicability.'}

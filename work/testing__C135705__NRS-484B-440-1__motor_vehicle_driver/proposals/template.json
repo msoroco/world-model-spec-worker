@@ -1,0 +1,79 @@
+{
+  "template_id": "NRS-484B-440-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-440-1",
+  "actor": "motor_vehicle_driver",
+  "quote": "Upon any highway outside of a business or residence district no person shall stop, park or leave standing any vehicle, whether attended or unattended, upon the paved or main-traveled part of the highway when it is practicable to stop, park or so leave such vehicle off such part of the highway, but in every event an unobstructed width of the highway opposite a standing vehicle shall be left for the free passage of other vehicles and a clear view of such stopped vehicles shall be available from a distance of 200 feet in each direction upon such highway. This section shall not apply to the driver of any vehicle which is disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position.",
+  "structure": {
+    "law_id": "NRS-484B-440-1",
+    "activation": {
+      "condition": "Stopping, parking or leaving a vehicle standing on a highway outside a business or residence district.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "When practicable, leave the paved or main-traveled part; in every event retain unobstructed opposite width for free passage and clear view of the stopped vehicle from 200 feet in each direction.",
+      "type": "standing_location_passage_and_visibility",
+      "numeric_conditions": [
+        {
+          "name": "two_sided_clear_view_distance",
+          "value": 200,
+          "unit": "ft",
+          "metres": 60.96
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "This section shall not apply to the driver of any vehicle which is disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position.",
+        "description": "Mechanical disability alone is insufficient; onset while on traveled portion, impossibility and temporary duration need independent evidence."
+      }
+    ],
+    "timing": {
+      "description": "Observe stopped body and passing traffic across every original frame; assess both approach directions at 200 feet.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "outside of a business or residence district",
+        "note": "Administrative road/district source required."
+      },
+      {
+        "phrase": "practicable",
+        "note": "Shoulder geometry and real vehicle/traffic conditions plus contextual review required."
+      },
+      {
+        "phrase": "unobstructed width ... free passage",
+        "note": "Measure actual remaining width and full-body passage; no statutory width cutoff supplied."
+      },
+      {
+        "phrase": "clear view ... 200 feet in each direction",
+        "note": "At-boundary two-sided original visibility and physical occluders must be reviewed."
+      },
+      {
+        "phrase": "disabled ... impossible to avoid ... temporarily",
+        "note": "Mechanism, onset, failed movement and elapsed duration must be separately observed and judged."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "standing_body_position",
+      "kind": "world_setup",
+      "range_or_domain": "road edge versus opposing route intrusion"
+    },
+    {
+      "name": "two_sided_occluders",
+      "kind": "world_setup",
+      "range_or_domain": "absent versus two constructed prop footprints"
+    },
+    {
+      "name": "passing_body_route",
+      "kind": "world_setup",
+      "range_or_domain": "westbound full-body passage, fixed within comparisons"
+    },
+    {
+      "name": "disability_mechanism",
+      "kind": "world_setup",
+      "range_or_domain": "engine off and brake lock attempt; exception facts unverified"
+    }
+  ]
+}

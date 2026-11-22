@@ -1,0 +1,115 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cameras": [
+    {
+      "fov_deg": 90,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "top_down_centered_on_reviewed_median_opening",
+      "width": 1920
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "source_right_roadway_toward_opening",
+      "width": 1280
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "closed_divider_and_opening_corner",
+      "width": 1280
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "ego_attached_driver_reference",
+      "width": 1280
+    }
+  ],
+  "case": {
+    "multiple_movement_requested": false,
+    "opening_id": "candidate-intersection-candidate",
+    "physical_target": "opening_uturn",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "Original CARLA eight-vertex box projected to four XY corners",
+          "name": "ego_body_history",
+          "reference_frame": "live OpenDRIVE XY world",
+          "sampling_rate_hz": 20,
+          "time_window": "every captured original frame",
+          "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+          "unit": "m"
+        },
+        {
+          "method": "Original CARLA actor transform yaw",
+          "name": "ego_heading_history",
+          "reference_frame": "live OpenDRIVE XY world",
+          "sampling_rate_hz": 20,
+          "time_window": "every captured original frame",
+          "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+          "unit": "deg"
+        },
+        {
+          "method": "Original CARLA actor velocity XY components",
+          "name": "ego_velocity_history",
+          "reference_frame": "live OpenDRIVE XY world",
+          "sampling_rate_hz": 20,
+          "time_window": "every captured original frame",
+          "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+          "unit": "m/s"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "retained reviewed median packet and exact live OpenDRIVE SHA",
+          "name": "median_geometry",
+          "unit": "structured record"
+        },
+        {
+          "method": "separately retained administrative review source; judgment unresolved",
+          "name": "authority_review",
+          "unit": "structured record"
+        }
+      ],
+      "limitations": [
+        "Physical opening and roadway measurements do not decide statutory exceptions.",
+        "Public-authority establishment requires independent source review."
+      ]
+    }
+  },
+  "cell_id": "C126120",
+  "duration_s": 30,
+  "law_id": "NRS-484B-227-1",
+  "physical_completion": {
+    "body_key": "body_vertices_xy_m",
+    "context_sources": [
+      "median-context.json"
+    ],
+    "criterion": "turn",
+    "engineering_tolerances_not_legal": true,
+    "format": "worker-physical-completion-criteria",
+    "heading_key": "heading_deg",
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 3,
+    "motion_source": "ego-body-history.jsonl",
+    "turn_degrees": 180,
+    "turn_tolerance_deg": 30
+  },
+  "rate_hz": 20,
+  "selected_case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
+  "supported_case_ids": [
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn"
+  ],
+  "vehicle_blueprint_id": "vehicle.tesla.model3"
+}

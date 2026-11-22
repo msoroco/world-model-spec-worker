@@ -15,6 +15,10 @@ def validate_scene(scene):
     barriers = [box(*item) for item in context["closed_divider_bounds_xy_m"]]
     source = box(*context["source_right_roadway_bounds_xy_m"])
     destination = box(*context["destination_right_roadway_bounds_xy_m"])
+    wrong_roadway = scene.get("physical_target") == "non_right_roadway"
+    no_turn = scene.get("physical_target") == "source_right_roadway_continuation"
+    wrong_destination = (box(*context["opposite_non_right_roadway_bounds_xy_m"])
+                         if wrong_roadway else None)
     route = scene["route_xy_m"]
     directions = scene["segment_directions"]
     half_width = scene["vehicle_half_width_m"]
@@ -22,11 +26,40 @@ def validate_scene(scene):
             any(item not in ("forward", "reverse") for item in directions) or
             not isinstance(half_width, (int,float)) or not 0 < half_width < 3):
         raise ValueError("invalid authored maneuver segments")
-    if not source.covers(Point(route[0])) or not destination.covers(Point(route[-1])):
+    closed_approach = scene.get("physical_target") == "closed_divider_approach"
+    if not source.covers(Point(route[0])) or (not closed_approach and not no_turn and not
+            (wrong_destination if wrong_roadway else destination).covers(Point(route[-1]))):
         raise ValueError("U-turn endpoints differ from source/destination right roadways")
     path = LineString(route)
     corridor = path.buffer(half_width, cap_style=2, join_style=2)
-    if path.length <= 0 or not path.intersects(opening):
+    if path.length <= 0:
+        raise ValueError("authored route has no motion")
+    if closed_approach:
+        half_length = scene.get("vehicle_half_length_m")
+        if not isinstance(half_length,(int,float)) or not 1 < half_length < 5:
+            raise ValueError("closed-divider approach needs a planned vehicle half length")
+        end_clearance = min(Point(route[-1]).distance(barrier) for barrier in barriers)
+        if (any(direction != "forward" for direction in directions) or
+                corridor.intersects(opening) or
+                any(corridor.intersects(barrier) for barrier in barriers) or
+                not half_length + .25 <= end_clearance <= half_length + 1):
+            raise ValueError("closed-divider approach does not stop clear of the barrier")
+        return {"route_length_m":path.length,
+                "minimum_divider_clearance_m":min(corridor.distance(b) for b in barriers),
+                "planned_end_clearance_m":end_clearance,
+                "physical_success_claimed":False}
+    if no_turn:
+        if (not source.covers(corridor) or corridor.intersects(opening) or
+                any(corridor.intersects(barrier) for barrier in barriers) or
+                any(direction != "forward" for direction in directions) or
+                path.length < 5 or
+                abs(route[-1][1]-route[0][1]) > .5 or
+                route[-1][0]-route[0][0] < 5):
+            raise ValueError("no-turn route leaves source right-hand roadway")
+        return {"route_length_m":path.length,
+                "source_right_roadway_continuation":True,
+                "physical_success_claimed":False}
+    if not path.intersects(opening):
         raise ValueError("authored U-turn route misses the median opening")
     if any(corridor.intersects(barrier) for barrier in barriers):
         raise ValueError("authored full-width route contacts closed divider")
@@ -35,8 +68,7 @@ def validate_scene(scene):
               destination_center.y-source_center.y)
     if math.hypot(*vector) <= 0:
         raise ValueError("source and destination roadway centers coincide")
-    middle = ((source_center.x+destination_center.x)/2,
-              (source_center.y+destination_center.y)/2)
+    middle = (opening.centroid.x, opening.centroid.y)
     signed = [((point[0]-middle[0])*vector[0]+(point[1]-middle[1])*vector[1])
               for point in route]
     through_opening = False
@@ -48,6 +80,9 @@ def validate_scene(scene):
             through_opening |= opening.covers(crossing)
     if not through_opening:
         raise ValueError("authored roadway transition bypasses median opening")
+    if wrong_roadway and (destination.intersects(corridor) or
+                          not wrong_destination.covers(Point(route[-1]))):
+        raise ValueError("wrong-roadway route enters destination right-hand corridor")
     if len({tuple(point) for point in route}) < 4:
         raise ValueError("authored route has insufficient distinct points")
     start = math.atan2(route[1][1]-route[0][1],route[1][0]-route[0][0])
@@ -66,16 +101,25 @@ def bind_map(world_map, scene, location_factory):
     if digest != scene["context"]["map_source_sha256"]:
         raise ValueError("live OpenDRIVE differs from inspected route source")
     route = scene["route_xy_m"]
+    closed_approach = scene.get("physical_target") == "closed_divider_approach"
+    no_turn = scene.get("physical_target") == "source_right_roadway_continuation"
     bound = []
-    for point in (route[0], route[-1]):
+    for point in ((route[0],) if closed_approach else (route[0],route[-1])):
         waypoint = world_map.get_waypoint(location_factory(*point), project_to_road=False)
         if waypoint is None:
             raise ValueError("U-turn endpoint lacks Native driving waypoint")
         bound.append(waypoint)
-    if (bound[0].road_id != scene["source_road_id"] or
+    if bound[0].road_id != scene["source_road_id"]:
+        raise ValueError("Native source roadway identity differs from source plan")
+    if scene.get("source_lane_id") is not None and bound[0].lane_id != scene["source_lane_id"]:
+        raise ValueError("Native source driving lane differs from source plan")
+    if not closed_approach and (
             bound[1].road_id != scene["destination_road_id"] or
-            bound[0].road_id == bound[1].road_id):
+            (not no_turn and bound[0].road_id == bound[1].road_id)):
         raise ValueError("Native roadway identities differ from source plan")
+    if not closed_approach and scene.get("destination_lane_id") is not None and (
+            bound[1].lane_id != scene["destination_lane_id"]):
+        raise ValueError("Native destination driving lane differs from source plan")
     return bound
 
 

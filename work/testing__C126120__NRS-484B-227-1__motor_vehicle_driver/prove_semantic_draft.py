@@ -1,4 +1,4 @@
-"""Validate pinned semantic stages without claiming an exact construction."""
+"""Validate pinned semantic stages against seven source-exact draft constructions."""
 from __future__ import annotations
 
 import json
@@ -19,18 +19,13 @@ from worker_exchange.semantic_delivery import validate
 def main():
     assignment=json.loads((REPO/"inputs"/ROOT.name/"assignment.json").read_text())
     plan=json.loads((ROOT/"case-plan.json").read_text())
-    manifest={"cases":[{"case_id":c["case_id"],"construction":"construction.json"}
+    manifest={"cases":[{"case_id":c["case_id"],
+                        "construction":"cases/"+c["case_id"].rsplit("__",1)[-1]+"/construction.json"}
                        for c in plan["cases"]]}
-    try:
-        validate(ROOT,assignment,manifest)
-    except FileNotFoundError as exc:
-        if Path(exc.filename).name!="construction.json":
-            raise
-    else:
-        raise AssertionError("draft unexpectedly acquired a complete construction")
+    stage=validate(ROOT,assignment,manifest)
     print(json.dumps({"canonical_semantic_stages_valid":True,
-                      "selected_case_count":len(plan["cases"]),
-                      "per_case_construction_pending":True,
+                      "selected_case_count":stage["selected_cases"],
+                      "per_case_construction_drafts_bound":True,
                       "delivery_ready_claimed":False}))
 
 

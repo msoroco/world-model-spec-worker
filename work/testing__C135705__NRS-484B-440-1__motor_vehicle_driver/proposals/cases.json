@@ -1,0 +1,460 @@
+{
+  "cell_id": "C135705",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c135705-judgment-1",
+      "target_law_id": "NRS-484B-440-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "outside of a business or residence district",
+          "note": "Administrative road/district source required."
+        }
+      ],
+      "rationale": "Original physical and source review are needed; no judgment threshold inferred from fixture geometry.",
+      "missing_inputs": [
+        "original Native capture and independent source review"
+      ]
+    },
+    {
+      "sweep_id": "c135705-judgment-2",
+      "target_law_id": "NRS-484B-440-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "practicable",
+          "note": "Shoulder geometry and real vehicle/traffic conditions plus contextual review required."
+        }
+      ],
+      "rationale": "Original physical and source review are needed; no judgment threshold inferred from fixture geometry.",
+      "missing_inputs": [
+        "original Native capture and independent source review"
+      ]
+    },
+    {
+      "sweep_id": "c135705-judgment-3",
+      "target_law_id": "NRS-484B-440-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "unobstructed width ... free passage",
+          "note": "Measure actual remaining width and full-body passage; no statutory width cutoff supplied."
+        }
+      ],
+      "rationale": "Original physical and source review are needed; no judgment threshold inferred from fixture geometry.",
+      "missing_inputs": [
+        "original Native capture and independent source review"
+      ]
+    },
+    {
+      "sweep_id": "c135705-judgment-4",
+      "target_law_id": "NRS-484B-440-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "clear view ... 200 feet in each direction",
+          "note": "At-boundary two-sided original visibility and physical occluders must be reviewed."
+        }
+      ],
+      "rationale": "Original physical and source review are needed; no judgment threshold inferred from fixture geometry.",
+      "missing_inputs": [
+        "original Native capture and independent source review"
+      ]
+    },
+    {
+      "sweep_id": "c135705-judgment-5",
+      "target_law_id": "NRS-484B-440-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "disabled ... impossible to avoid ... temporarily",
+          "note": "Mechanism, onset, failed movement and elapsed duration must be separately observed and judged."
+        }
+      ],
+      "rationale": "Original physical and source review are needed; no judgment threshold inferred from fixture geometry.",
+      "missing_inputs": [
+        "original Native capture and independent source review"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "boundary_probe",
+      "rationale": "Reference: measured passage and both 200-foot sight rays clear.",
+      "variable_assignments": {
+        "standing_body_position": {
+          "kind": "world_setup",
+          "value": [
+            -2.5,
+            -3.5,
+            2.5,
+            -1.5
+          ]
+        },
+        "two_sided_occluders": {
+          "kind": "world_setup",
+          "value": []
+        }
+      },
+      "paired_probe_id": "standing_passage_sight_contrasts",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "standing_body_position",
+        "comparison_or_standard": "controlled physical contrast under one exact law branch",
+        "target_value_or_branch": "passage_clear_view"
+      },
+      "unresolved_judgment_calls": [
+        "outside of a business or residence district",
+        "practicable",
+        "unobstructed width ... free passage",
+        "clear view ... 200 feet in each direction",
+        "disabled ... impossible to avoid ... temporarily"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "standing_body_xy_m",
+            "unit": "m",
+            "method": "Original standing actor eight-vertex box projected to four XY corners at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "other_vehicle_body_xy_m",
+            "unit": "m",
+            "method": "Original westbound passing actor body, pose and velocity at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "two_sided_200ft_sight",
+            "unit": "m and original pixels",
+            "method": "Actual prop bodies plus frame-joined cameras at negative and positive 60.96 m",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "mechanical_failure_attempt",
+            "unit": "command and m",
+            "method": "Original worker disable/brake commands joined to standing body and duration",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_road",
+            "unit": "OpenDRIVE metres",
+            "method": "source-hashed candidate paved/shoulder geometry"
+          },
+          {
+            "name": "district_review",
+            "unit": "administrative source",
+            "method": "not supplied; remains unverified"
+          }
+        ],
+        "limitations": [
+          "XY occlusion alone does not establish clear view in original pixels.",
+          "A disable command alone does not establish the subsection (2) exception."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "boundary_probe",
+      "rationale": "Car-sized standing body intrudes into westbound passing route.",
+      "variable_assignments": {
+        "standing_body_position": {
+          "kind": "world_setup",
+          "value": [
+            -2.5,
+            -0.1,
+            2.5,
+            1.9
+          ]
+        },
+        "two_sided_occluders": {
+          "kind": "world_setup",
+          "value": []
+        }
+      },
+      "paired_probe_id": "standing_passage_sight_contrasts",
+      "deliberate_differences": [
+        "standing_body_position"
+      ],
+      "probe": {
+        "primary_variable": "standing_body_position",
+        "comparison_or_standard": "controlled physical contrast under one exact law branch",
+        "target_value_or_branch": "passage_blocked"
+      },
+      "unresolved_judgment_calls": [
+        "outside of a business or residence district",
+        "practicable",
+        "unobstructed width ... free passage",
+        "clear view ... 200 feet in each direction",
+        "disabled ... impossible to avoid ... temporarily"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "standing_body_xy_m",
+            "unit": "m",
+            "method": "Original standing actor eight-vertex box projected to four XY corners at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "other_vehicle_body_xy_m",
+            "unit": "m",
+            "method": "Original westbound passing actor body, pose and velocity at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "two_sided_200ft_sight",
+            "unit": "m and original pixels",
+            "method": "Actual prop bodies plus frame-joined cameras at negative and positive 60.96 m",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "mechanical_failure_attempt",
+            "unit": "command and m",
+            "method": "Original worker disable/brake commands joined to standing body and duration",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_road",
+            "unit": "OpenDRIVE metres",
+            "method": "source-hashed candidate paved/shoulder geometry"
+          },
+          {
+            "name": "district_review",
+            "unit": "administrative source",
+            "method": "not supplied; remains unverified"
+          }
+        ],
+        "limitations": [
+          "XY occlusion alone does not establish clear view in original pixels.",
+          "A disable command alone does not establish the subsection (2) exception."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "boundary_probe",
+      "rationale": "Two actual props obstruct opposite 200-foot approach rays.",
+      "variable_assignments": {
+        "standing_body_position": {
+          "kind": "world_setup",
+          "value": [
+            -2.5,
+            -3.5,
+            2.5,
+            -1.5
+          ]
+        },
+        "two_sided_occluders": {
+          "kind": "world_setup",
+          "value": [
+            [
+              -31,
+              -0.5,
+              -29,
+              0.3
+            ],
+            [
+              29,
+              -0.5,
+              31,
+              0.3
+            ]
+          ]
+        }
+      },
+      "paired_probe_id": "standing_passage_sight_contrasts",
+      "deliberate_differences": [
+        "two_sided_occluders"
+      ],
+      "probe": {
+        "primary_variable": "two_sided_occluders",
+        "comparison_or_standard": "controlled physical contrast under one exact law branch",
+        "target_value_or_branch": "view_occluded_both"
+      },
+      "unresolved_judgment_calls": [
+        "outside of a business or residence district",
+        "practicable",
+        "unobstructed width ... free passage",
+        "clear view ... 200 feet in each direction",
+        "disabled ... impossible to avoid ... temporarily"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "standing_body_xy_m",
+            "unit": "m",
+            "method": "Original standing actor eight-vertex box projected to four XY corners at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "other_vehicle_body_xy_m",
+            "unit": "m",
+            "method": "Original westbound passing actor body, pose and velocity at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "two_sided_200ft_sight",
+            "unit": "m and original pixels",
+            "method": "Actual prop bodies plus frame-joined cameras at negative and positive 60.96 m",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "mechanical_failure_attempt",
+            "unit": "command and m",
+            "method": "Original worker disable/brake commands joined to standing body and duration",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_road",
+            "unit": "OpenDRIVE metres",
+            "method": "source-hashed candidate paved/shoulder geometry"
+          },
+          {
+            "name": "district_review",
+            "unit": "administrative source",
+            "method": "not supplied; remains unverified"
+          }
+        ],
+        "limitations": [
+          "XY occlusion alone does not establish clear view in original pixels.",
+          "A disable command alone does not establish the subsection (2) exception."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "baseline",
+      "rationale": "Shared semantic reference for the two selected physical comparisons; no additional recording.",
+      "variable_assignments": {
+        "standing_body_position": {
+          "kind": "world_setup",
+          "value": [
+            -2.5,
+            -3.5,
+            2.5,
+            -1.5
+          ]
+        },
+        "two_sided_occluders": {
+          "kind": "world_setup",
+          "value": []
+        }
+      },
+      "deliberate_differences": [],
+      "unresolved_judgment_calls": [
+        "outside of a business or residence district",
+        "practicable",
+        "unobstructed width ... free passage",
+        "clear view ... 200 feet in each direction",
+        "disabled ... impossible to avoid ... temporarily"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "standing_body_xy_m",
+            "unit": "m",
+            "method": "Original standing actor eight-vertex box projected to four XY corners at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "other_vehicle_body_xy_m",
+            "unit": "m",
+            "method": "Original westbound passing actor body, pose and velocity at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "two_sided_200ft_sight",
+            "unit": "m and original pixels",
+            "method": "Actual prop bodies plus frame-joined cameras at negative and positive 60.96 m",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          },
+          {
+            "name": "mechanical_failure_attempt",
+            "unit": "command and m",
+            "method": "Original worker disable/brake commands joined to standing body and duration",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_road",
+            "unit": "OpenDRIVE metres",
+            "method": "source-hashed candidate paved/shoulder geometry"
+          },
+          {
+            "name": "district_review",
+            "unit": "administrative source",
+            "method": "not supplied; remains unverified"
+          }
+        ],
+        "limitations": [
+          "XY occlusion alone does not establish clear view in original pixels.",
+          "A disable command alone does not establish the subsection (2) exception."
+        ]
+      }
+    }
+  ]
+}

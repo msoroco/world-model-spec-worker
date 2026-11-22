@@ -46,6 +46,10 @@ def measure(trace):
         raise ValueError("opening overlaps closed divider geometry")
     source = _region(context["source_right_roadway_bounds_xy_m"])
     destination = _region(context["destination_right_roadway_bounds_xy_m"])
+    wrong_region = (_region(context["opposite_non_right_roadway_bounds_xy_m"])
+                    if context.get("opposite_non_right_roadway_bounds_xy_m") else None)
+    if wrong_region is not None and wrong_region.intersection(destination).area > 0:
+        raise ValueError("reviewed non-right and right roadway regions overlap")
     rows = trace["samples"]
     if not isinstance(rows, list) or len(rows) < 3:
         raise ValueError("insufficient original body history")
@@ -99,8 +103,7 @@ def measure(trace):
                  destination_center.y-source_center.y)
     if math.hypot(*direction) <= 0:
         raise ValueError("reviewed source and destination roadway centers coincide")
-    middle = ((source_center.x+destination_center.x)/2,
-              (source_center.y+destination_center.y)/2)
+    middle = (opening.centroid.x, opening.centroid.y)
     signed = [((center[0]-middle[0])*direction[0] +
                (center[1]-middle[1])*direction[1]) for center in centers]
     crossings = []
@@ -113,14 +116,20 @@ def measure(trace):
                               "to_frame":rows[i+1]["frame"],
                               "through_opening":opening.covers(Point(point))})
     crossing_through_opening = any(item["through_opening"] for item in crossings)
+    final_clearance = min(bodies[-1].distance(barrier) for barrier in barriers)
     return {"opening_id": context["opening_id"],
             "opening_contact_frames": opening_frames,
             "opening_full_body_frames": opening_full_body_frames,
             "roadway_centerline_crossings": crossings,
             "closed_divider_contact_frames": closed_frames,
+            "final_closed_divider_clearance_m": final_clearance,
             "net_heading_change_deg": change,
             "u_turn_orientation_observed": 150 <= abs(change) <= 210,
             "destination_right_roadway_departure_observed": departure,
+            "source_right_roadway_all_frames": all(source.covers(body) for body in bodies),
+            "source_right_roadway_final_occupancy": source.covers(bodies[-1]),
+            "non_right_roadway_final_occupancy": bool(wrong_region and
+                                                       wrong_region.covers(bodies[-1])),
             "reverse_motion_frames": reverse_frames,
             "multiple_movement_observed": bool(reverse_frames and
                                                any(f < reverse_frames[0] for f in forward_frames) and
@@ -151,7 +160,8 @@ def compare(left, right, varying):
     if left["context"]["opening_id"] != right["context"]["opening_id"] and "opening_id" not in varying:
         raise ValueError("fixed opening changed")
     allowed = {"multiple_movement_observed", "engineering_crossing_observed",
-               "destination_right_roadway_departure_observed", "opening_id"}
+               "destination_right_roadway_departure_observed",
+               "non_right_roadway_final_occupancy", "opening_id"}
     if not varying or any(item not in allowed for item in varying):
         raise ValueError("unsupported comparison difference")
     for key in varying:

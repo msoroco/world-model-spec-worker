@@ -1,198 +1,484 @@
 {
-  "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C126120",
-  "law_id": "NRS-484B-227-1",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-227-1",
-      "cell_id": "C126120",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-227-1",
-      "branch": "U-turn through a median opening, including a multiple-movement variant.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 355,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [
-        "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
-        "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131"
-      ],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority.",
-  "law_source": "NRS 484B.227(1)",
-  "topic_inventory": {
-    "exact-text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority."
+  "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "approach through departure",
+        "subject": "ego body and median opening",
+        "view": "overview"
+      },
+      {
+        "interval": "approach and entry",
+        "subject": "source right-hand roadway approach",
+        "view": "approach"
+      },
+      {
+        "interval": "every U-turn movement",
+        "subject": "divider end and opening clearance",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full recording",
+        "subject": "ego travel orientation",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability",
+    "status": "engineering_candidate_duration_set_native_visibility_unverified"
   },
   "cases": [
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
-      "target_law_id": "NRS-484B-227-1",
+      "construction_candidate": "scene.json",
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
+        "risk": "Primary route could strike the end of a closed divider or fail to reverse orientation within the opening.",
+        "status": "physical"
+      },
       "purpose": "U-turn through a reviewed median opening in one continuous forward movement.",
       "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "Primary route could strike the end of a closed divider or fail to reverse orientation within the opening.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      },
-      "construction_candidate": "scene.json",
-      "candidate_limitations": [
-        "Local OpenDRIVE authored for CPU checks; live CARLA map parse and lane binding unverified.",
-        "Static.prop.streetbarrier presence and true actor footprint unverified.",
-        "Public-authority establishment and realized U-turn unverified."
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
       ]
     },
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
-      "target_law_id": "NRS-484B-227-1",
+      "construction_candidate": "cases/opening_multiple/scene.json",
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
+        "risk": "Observed-stop gear changes and reverse clearance may fail in the available opening width.",
+        "status": "physical"
+      },
       "purpose": "U-turn through the same reviewed opening with a physically realized reverse and subsequent forward movement.",
       "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "Observed-stop gear changes and reverse clearance may fail in the available opening width.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      },
-      "construction_candidate": "cases/opening_multiple/scene.json",
-      "candidate_limitations": [
-        "Local OpenDRIVE authored for CPU checks; live CARLA map parse and lane binding unverified.",
-        "Static.prop.streetbarrier presence and true actor footprint unverified.",
-        "Public-authority establishment and realized U-turn unverified."
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
       ]
     },
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
-      "target_law_id": "NRS-484B-227-1",
-      "purpose": "Controlled crossing attempt at closed divider geometry, with no physical opening contact.",
-      "status": "draft_source_geometry_and_runtime_case_pending",
+      "construction_candidate": "cases/closed_divider/scene.json",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
         "risk": "A full-width body could contact a barrier; stop before impact and retain the attempted trajectory as distinct from success.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      }
+        "status": "physical"
+      },
+      "purpose": "Controlled crossing attempt at closed divider geometry, with no physical opening contact.",
+      "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
     },
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
-      "target_law_id": "NRS-484B-227-1",
-      "purpose": "Controlled departure toward the opposite roadway segment outside its right-hand travel corridor.",
-      "status": "draft_source_geometry_and_runtime_case_pending",
+      "construction_candidate": "cases/wrong_roadway/scene.json",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
         "risk": "Waypoints can project to a plausible lane while the full body remains on the wrong roadway.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      }
+        "status": "physical"
+      },
+      "purpose": "Controlled departure toward the opposite roadway segment outside its right-hand travel corridor.",
+      "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
     },
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate",
-      "target_law_id": "NRS-484B-227-1",
-      "purpose": "U-turn through a distinct crossover whose public-authority establishment is separately reviewed.",
-      "status": "draft_source_geometry_and_runtime_case_pending",
+      "construction_candidate": "cases/crossover_candidate/scene.json",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
         "risk": "Authored crossover geometry cannot establish public authority or guarantee body clearance.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      }
+        "status": "physical"
+      },
+      "purpose": "U-turn through a distinct crossover whose public-authority establishment is separately reviewed.",
+      "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
     },
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
-      "target_law_id": "NRS-484B-227-1",
-      "purpose": "U-turn at a distinct intersection whose public-authority establishment is separately reviewed.",
-      "status": "draft_source_geometry_and_runtime_case_pending",
+      "construction_candidate": "cases/intersection_candidate/scene.json",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
         "risk": "Intersection identity and administrative establishment may remain unsupported despite a rendered road junction.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      }
+        "status": "physical"
+      },
+      "purpose": "U-turn at a distinct intersection whose public-authority establishment is separately reviewed.",
+      "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
     },
     {
+      "candidate_limitations": [
+        "Authored OpenDRIVE/map topology and Native asset footprints remain unverified.",
+        "Physical motion, camera visibility and public-authority establishment remain unverified."
+      ],
       "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn",
-      "target_law_id": "NRS-484B-227-1",
-      "purpose": "Continue in the source right-hand roadway without entering the divider.",
-      "status": "draft_source_geometry_and_runtime_case_pending",
+      "construction_candidate": "cases/right_roadway_no_turn/scene.json",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
         "risk": "A route or controller error could leave the correct carriageway despite a no-turn target.",
-        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
-      }
+        "status": "physical"
+      },
+      "purpose": "Continue in the source right-hand roadway without entering the divider.",
+      "status": "engineering_candidate_cpu_geometry_checked_native_unverified",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
     }
   ],
+  "cell_id": "C126120",
   "comparisons": [
     {
-      "comparison_id": "continuous_vs_multiple_movement",
+      "audit_script": "comparison_audit.py",
       "case_ids": [
         "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
         "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple"
+      ],
+      "comparison_id": "continuous_vs_multiple_movement",
+      "cpu_proof": "comparisons/continuous_vs_multiple_movement.json",
+      "deliberate_differences": [
+        "physically realized reverse segment versus continuous forward movement"
       ],
       "fixed_conditions": [
         "same reviewed divided-highway identity and vehicle",
         "same camera and duration profile",
         "same source right-hand roadway and opening geometry"
       ],
-      "deliberate_differences": [
-        "physically realized reverse segment versus continuous forward movement"
-      ],
-      "status": "cpu_audit_tested_original_pair_pending",
-      "audit_script": "comparison_audit.py"
+      "status": "diagnostic_pair_audit_passed_original_native_pair_pending"
     },
     {
-      "comparison_id": "opening_vs_closed_divider",
+      "audit_script": "comparison_audit.py",
       "case_ids": [
         "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
         "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider"
+      ],
+      "comparison_id": "opening_vs_closed_divider",
+      "cpu_proof": "comparisons/opening_vs_closed_divider.json",
+      "deliberate_differences": [
+        "full-body crossing through a reviewed opening versus closed divider contact/avoidance"
       ],
       "fixed_conditions": [
         "same roadway and vehicle",
         "same camera and duration profile",
         "same source approach"
       ],
-      "deliberate_differences": [
-        "full-body crossing through a reviewed opening versus closed divider contact/avoidance"
-      ],
-      "status": "cpu_audit_tested_original_pair_pending",
-      "audit_script": "comparison_audit.py"
+      "status": "diagnostic_pair_audit_passed_original_native_pair_pending"
     },
     {
-      "comparison_id": "right_roadway_departure",
+      "audit_script": "comparison_audit.py",
       "case_ids": [
         "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
         "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway"
+      ],
+      "comparison_id": "right_roadway_departure",
+      "cpu_proof": "comparisons/right_roadway_departure.json",
+      "deliberate_differences": [
+        "actual destination right-hand roadway occupancy"
       ],
       "fixed_conditions": [
         "same reviewed source roadway and vehicle",
         "same camera and duration profile"
       ],
-      "deliberate_differences": [
-        "actual destination right-hand roadway occupancy"
-      ],
-      "status": "cpu_audit_tested_original_pair_pending",
-      "audit_script": "comparison_audit.py"
+      "status": "diagnostic_pair_audit_passed_original_native_pair_pending"
     }
   ],
+  "construction_draft": {
+    "implemented": [
+      "full-width authored route corridor avoids closed divider",
+      "opening crossing and source/destination right-roadway endpoints",
+      "live OpenDRIVE hash and endpoint road binding",
+      "forward/reverse next-tick control with observed-stop gear transition",
+      "lazy conventional Native vehicle spawn and original four-corner body projection",
+      "20 Hz original-frame capture with four source-relative cameras and body/control/frame streams",
+      "reviewed map, median and authority source hashes retained in original acquisition",
+      "saved-only source hash and actor/frame/time joins before physical U-turn assessment",
+      "exact case config builder and recording description",
+      "independent saved seal, restoration, source hash and physical-target audit",
+      "seven source-pending exact case IDs with physical-risk assessments and three controlled comparisons",
+      "pinned semantic relevance/template/judgment/bindings/cases draft chain validated to construction boundary",
+      "pinned saved physical-result fixture proof with tampered original rejection",
+      "fake full Native frame loop and restoration-before-seal CPU proof",
+      "authored and observed source-to-destination median centerline crossing must pass through opening, rejecting opening-touch plus divider-end bypass",
+      "source-reviewed closed-divider props cover each barrier without entering opening",
+      "actual Native prop footprints checked at spawn and retained as original source geometry",
+      "saved finalizer rejects changed divider actor identities and footprints",
+      "movement-pair comparison rejects changes to fixed OpenDRIVE, authority review and roadway context",
+      "exact seven-case ID and four-camera capability profile generated by case_builder; duration awaits source-reviewed scene",
+      "pinned selected-requirement measurement contract validates original source hashes and rejects missing case-specific history",
+      "diagnostic saved sources carry explicit synthetic_fixture provenance; Native delivery audit rejects diagnostic provenance"
+    ],
+    "module": "uturn_control.py; native_driver.py; native_capture.py; runner.py; case_builder.py; analysis.py; delivery_audit.py; prove_saved.py; divider_construction.py; prove_measurement.py",
+    "status": "native_divider_capture_saved_finalizer_and_semantic_drafts_cpu_tested",
+    "unresolved": [
+      "inspected actual median opening and independent public-authority establishment source",
+      "materialized source-backed exact case scenes and per-case constructions",
+      "offline and positive/negative full package compatibility",
+      "actual CARLA motion and video verification"
+    ]
+  },
+  "evidence_review": {
+    "facts": [
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 556 frames, case C126120-227-1-opposite-roadway, and decoder_passed=True. Frozen review context describes the authored setting as: Lane direction.north roadway.direction xy: [1, 0]",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131/metadata.json",
+            "sha256": "07f8c34fc4ddc4346a6445106982ca9687aa8f7c65298f42c7591186c9c22407"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 556 frames, case C126120-227-1-right-roadway, and decoder_passed=True. Frozen review context describes the authored setting as: Lane direction.north roadway.direction xy: [-1, 0]",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf/metadata.json",
+            "sha256": "d619d0986b62baa4fc442fdce206719f16a50e97bf5595200bef2a2c8a03630d"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening, and decoder_passed=None. Frozen review context describes the authored setting as: opening",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "b36f7fc39e8ac059a4a0c7cf8fca0356731ad6771d863b6c88431932c57a0997",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/b36f7fc39e8ac059a4a0c7cf8fca0356731ad6771d863b6c88431932c57a0997/metadata.json",
+            "sha256": "95544dd19d9a533f07a147f553f1f080d464a36e3ac647cfb857f296bccf4465"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider, and decoder_passed=None. Frozen review context describes the authored setting as: closed divider",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "b5fd29d5da60cf9a16e1904bc467f12de9a997bc5740aa0c3c99cf7f34f497bc",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/b5fd29d5da60cf9a16e1904bc467f12de9a997bc5740aa0c3c99cf7f34f497bc/metadata.json",
+            "sha256": "f9902396031713fb21ab49322ef91527d20628f3fd7c353e881d035ed775761f"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway, and decoder_passed=None. Frozen review context describes the authored setting as: wrong roadway",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "ce71b5839a6137eb6261596675e0199b8d4ce8b67bd6d8608b1504521c3ee128",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/ce71b5839a6137eb6261596675e0199b8d4ce8b67bd6d8608b1504521c3ee128/metadata.json",
+            "sha256": "8042fb6a6f9005f6ef88ce560027b71cc3be819c9e093f2594b251ff4c38daca"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__paused_uturn, and decoder_passed=None. Frozen review context describes the authored setting as: paused uturn",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "9cd9d189fe06a52cf6929da4be9c4dc27bbfa163fcfbfb5704fef65bb45478d5",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/9cd9d189fe06a52cf6929da4be9c4dc27bbfa163fcfbfb5704fef65bb45478d5/metadata.json",
+            "sha256": "2c63ddf96c276922b041ee257f7d8ac0b2d35e20fbf70ad838a0d6558cb56838"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_crossover, and decoder_passed=None. Frozen review context describes the authored setting as: authority crossover",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "d6fba96d493db66a371084a85dbba41891db4d4738ea64ee1f25f008aa0fa076",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/d6fba96d493db66a371084a85dbba41891db4d4738ea64ee1f25f008aa0fa076/metadata.json",
+            "sha256": "fe751fb0d703ec78795936e29207fd0c6adfb5a14d42a9477ca8769be127b8f5"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_intersection, and decoder_passed=None. Frozen review context describes the authored setting as: authority intersection",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "5a40509039d36547448d0343f6a5c9321754d436b605eb15b90882215b01b9a9",
+        "sources": [
+          {
+            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/5a40509039d36547448d0343f6a5c9321754d436b605eb15b90882215b01b9a9/metadata.json",
+            "sha256": "9753c0ed19750e906e42fbf092269ba78ea552901369e4828318350baf997c6c"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Review the full-test accepted recording inventory and source-backed coverage for these assigned branches: U-turn through a median opening, including a multiple-movement variant.. Plan only evidence still missing; record explicit reuse with proof and do not replay accepted originals.",
+        "source": {
+          "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+          "sha256": "3740def47a60983630b119dfb77f26db0fa909e75b8b1708fd7237af141b1a74"
+        },
+        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [
+    "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131",
+    "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
+    "b36f7fc39e8ac059a4a0c7cf8fca0356731ad6771d863b6c88431932c57a0997",
+    "b5fd29d5da60cf9a16e1904bc467f12de9a997bc5740aa0c3c99cf7f34f497bc",
+    "ce71b5839a6137eb6261596675e0199b8d4ce8b67bd6d8608b1504521c3ee128",
+    "9cd9d189fe06a52cf6929da4be9c4dc27bbfa163fcfbfb5704fef65bb45478d5",
+    "d6fba96d493db66a371084a85dbba41891db4d4738ea64ee1f25f008aa0fa076",
+    "5a40509039d36547448d0343f6a5c9321754d436b605eb15b90882215b01b9a9"
+  ],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-227-1",
+  "law_source": "NRS 484B.227(1)",
+  "law_text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority.",
+  "measurement_contract_draft": {
+    "path": "measurement-contract.json",
+    "sha256": "9f415a25018774d41fea0936d19fcbd25df31062568ef7d3eec509b77289e283",
+    "status": "pinned_cpu_positive_negative_fixture_validated_exact_case_package_pending"
+  },
   "observations": [
     {
+      "mandatory": true,
       "name": "ego_body_history",
-      "mandatory": true,
-      "unit": "m",
+      "purpose": "original full-body opening, closed-divider and roadway occupancy",
       "source": "ego-body-history.jsonl",
-      "purpose": "original full-body opening, closed-divider and roadway occupancy"
+      "unit": "m"
     },
     {
+      "mandatory": true,
       "name": "ego_heading_history",
-      "mandatory": true,
-      "unit": "deg",
+      "purpose": "net direction reversal and cumulative heading change",
       "source": "ego-body-history.jsonl",
-      "purpose": "net direction reversal and cumulative heading change"
+      "unit": "deg"
     },
     {
-      "name": "ego_velocity_history",
       "mandatory": true,
-      "unit": "m/s",
+      "name": "ego_velocity_history",
+      "purpose": "signed forward and reverse motion corroborated by displacement",
       "source": "ego-body-history.jsonl",
-      "purpose": "signed forward and reverse motion corroborated by displacement"
+      "unit": "m/s"
     }
   ],
+  "planning_status": "draft_exact_cases_source_scene_and_delivery_pending",
+  "prior_review_context": {
+    "comparison_ids": [
+      "C126120-227-1-roadway-direction-pair",
+      "over_across_within_divider",
+      "right_hand_roadway",
+      "continuous_multiple_movement",
+      "established_crossover",
+      "established_intersection"
+    ],
+    "remaining_requirements_note": null
+  },
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn"
+      ],
+      "evidence_or_gap": "All seven draft cases contribute opening/closed-divider, movement or roadway contrast; exact source-reviewed scene and original evidence remain pending.",
+      "requirement": "U-turn through a median opening, including a multiple-movement variant.",
+      "source": {
+        "path": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+        "sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+        "source_index": 355
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
+    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+  ],
+  "saved_trace_audit": {
+    "comparison_guard": "fixed map identity and declared realized difference",
+    "legal_judgment": "unresolved",
+    "module": "uturn_audit.py",
+    "observables": [
+      "original full-body opening contact",
+      "closed divider contact",
+      "source and destination right-hand roadway occupancy",
+      "net heading reversal",
+      "realized reverse movement versus pause"
+    ],
+    "source_guard": "SHA-checked saved trace; map and authority review source identities required in context but independent authority packet validation remains pending",
+    "status": "physical_measurement_core_cpu_tested_no_original_accepted_trace"
+  },
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "U-turn through a median opening, including a multiple-movement variant.",
+      "cell_id": "C126120",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-227-1",
+      "law_partition": "training",
+      "recording_ids": [
+        "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
+        "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131"
+      ],
+      "requirement": "NRS-484B-227-1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 355,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "semantic_draft": {
+    "delivery_ready_claimed": false,
+    "index": "proposals/semantic-index.json",
+    "index_sha256": "ed7563c9d8d877db015fe4349cea4cbe5461905749411f372b468a5ab34939cb",
+    "proof_log": "semantic-draft-proof.log",
+    "status": "canonical_stage_chain_cpu_validated_exact_constructions_pending"
+  },
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
@@ -253,169 +539,59 @@
     {
       "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/README.md",
       "sha256": "d61f2ee34664da109b7b20ac33ab9340b6126a7c0b845b544f87546cff83c7eb"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-median-opening.xodr",
+      "sha256": "c5f5f86ba883d973632deb919336c3eda0ccf8ac4c5107931e818fa3e5cb1b4c",
+      "source_kind": "worker_engineering_candidate"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-crossover-candidate.xodr",
+      "sha256": "9ff03542f2c99191b8f3a18bbdb2e66fce647f97354a3de40b2308519d816fe5",
+      "source_kind": "worker_engineering_candidate"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-intersection-candidate.xodr",
+      "sha256": "616d3e861b10258018219e4f031025578c7c6e61dbd5590129a6924a151142ca",
+      "source_kind": "worker_engineering_candidate"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-reviewed-median.json",
+      "sha256": "94dcc1ffb3d8368aad1680dde37029f2aae96453084429931627038ec8e35cd4",
+      "source_kind": "worker_engineering_candidate"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-reviewed-crossover-candidate.json",
+      "sha256": "9aaf30f5a0a644c0a9143eb9529154f6fc66bd1a745bc80e9f211613e090e3a4",
+      "source_kind": "worker_engineering_candidate"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-reviewed-intersection-candidate.json",
+      "sha256": "430e01a1e07f8b013c5538f3f654e2632a1e181fe3a0ff23ca260796f1a52795",
+      "source_kind": "worker_engineering_candidate"
+    },
+    {
+      "claim": "CPU construction only; no public-authority or Native realization claim",
+      "path": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/candidate-authority-review.json",
+      "sha256": "4a421100d9b4f531885f6e51fe5890954e0b9245c2eda16bd538f4faed787154",
+      "source_kind": "worker_engineering_candidate"
     }
   ],
-  "existing_evidence": [
-    "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131",
-    "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
-    "b36f7fc39e8ac059a4a0c7cf8fca0356731ad6771d863b6c88431932c57a0997",
-    "b5fd29d5da60cf9a16e1904bc467f12de9a997bc5740aa0c3c99cf7f34f497bc",
-    "ce71b5839a6137eb6261596675e0199b8d4ce8b67bd6d8608b1504521c3ee128",
-    "9cd9d189fe06a52cf6929da4be9c4dc27bbfa163fcfbfb5704fef65bb45478d5",
-    "d6fba96d493db66a371084a85dbba41891db4d4738ea64ee1f25f008aa0fa076",
-    "5a40509039d36547448d0343f6a5c9321754d436b605eb15b90882215b01b9a9"
-  ],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
-    "facts": [
-      {
-        "recording_id": "6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 556 frames, case C126120-227-1-opposite-roadway, and decoder_passed=True. Frozen review context describes the authored setting as: Lane direction.north roadway.direction xy: [1, 0]",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/6a938d9ea05657d38e43da89df4fb1daf58ef4d839e1539d0390f373824f7131/metadata.json",
-            "sha256": "07f8c34fc4ddc4346a6445106982ca9687aa8f7c65298f42c7591186c9c22407"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 556 frames, case C126120-227-1-right-roadway, and decoder_passed=True. Frozen review context describes the authored setting as: Lane direction.north roadway.direction xy: [-1, 0]",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/5152b5e2f221e247f54a9ba7cfbf80add3b9c8d9fee1c4fe35e7c79f4fb1eadf/metadata.json",
-            "sha256": "d619d0986b62baa4fc442fdce206719f16a50e97bf5595200bef2a2c8a03630d"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "b36f7fc39e8ac059a4a0c7cf8fca0356731ad6771d863b6c88431932c57a0997",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening, and decoder_passed=None. Frozen review context describes the authored setting as: opening",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/b36f7fc39e8ac059a4a0c7cf8fca0356731ad6771d863b6c88431932c57a0997/metadata.json",
-            "sha256": "95544dd19d9a533f07a147f553f1f080d464a36e3ac647cfb857f296bccf4465"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "b5fd29d5da60cf9a16e1904bc467f12de9a997bc5740aa0c3c99cf7f34f497bc",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider, and decoder_passed=None. Frozen review context describes the authored setting as: closed divider",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/b5fd29d5da60cf9a16e1904bc467f12de9a997bc5740aa0c3c99cf7f34f497bc/metadata.json",
-            "sha256": "f9902396031713fb21ab49322ef91527d20628f3fd7c353e881d035ed775761f"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "ce71b5839a6137eb6261596675e0199b8d4ce8b67bd6d8608b1504521c3ee128",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway, and decoder_passed=None. Frozen review context describes the authored setting as: wrong roadway",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/ce71b5839a6137eb6261596675e0199b8d4ce8b67bd6d8608b1504521c3ee128/metadata.json",
-            "sha256": "8042fb6a6f9005f6ef88ce560027b71cc3be819c9e093f2594b251ff4c38daca"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "9cd9d189fe06a52cf6929da4be9c4dc27bbfa163fcfbfb5704fef65bb45478d5",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__paused_uturn, and decoder_passed=None. Frozen review context describes the authored setting as: paused uturn",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/9cd9d189fe06a52cf6929da4be9c4dc27bbfa163fcfbfb5704fef65bb45478d5/metadata.json",
-            "sha256": "2c63ddf96c276922b041ee257f7d8ac0b2d35e20fbf70ad838a0d6558cb56838"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "d6fba96d493db66a371084a85dbba41891db4d4738ea64ee1f25f008aa0fa076",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_crossover, and decoder_passed=None. Frozen review context describes the authored setting as: authority crossover",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/d6fba96d493db66a371084a85dbba41891db4d4738ea64ee1f25f008aa0fa076/metadata.json",
-            "sha256": "fe751fb0d703ec78795936e29207fd0c6adfb5a14d42a9477ca8769be127b8f5"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      },
-      {
-        "recording_id": "5a40509039d36547448d0343f6a5c9321754d436b605eb15b90882215b01b9a9",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1200 frames, case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__authority_intersection, and decoder_passed=None. Frozen review context describes the authored setting as: authority intersection",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/accepted/5a40509039d36547448d0343f6a5c9321754d436b605eb15b90882215b01b9a9/metadata.json",
-            "sha256": "9753c0ed19750e906e42fbf092269ba78ea552901369e4828318350baf997c6c"
-          },
-          {
-            "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "c1f2d2625556f131014c0740c952537c932992e121e120c6c4c66ee46514f024"
-          }
-        ]
-      }
-    ],
-    "gaps": [
-      {
-        "id": "unverified-law-coverage",
-        "requirement": "Review the full-test accepted recording inventory and source-backed coverage for these assigned branches: U-turn through a median opening, including a multiple-movement variant.. Plan only evidence still missing; record explicit reuse with proof and do not replay accepted originals.",
-        "source": {
-          "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
-          "sha256": "3740def47a60983630b119dfb77f26db0fa909e75b8b1708fd7237af141b1a74"
-        },
-        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "draft_exact_cases_source_scene_and_delivery_pending",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 355,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "U-turn through a median opening, including a multiple-movement variant.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The fixed U-turn and median opening support observation of direction reversal and the exception context.",
       "required_context": [
         "Establish highway and conventional-vehicle scope, opposing roadways and roadway boundaries excluding shoulders.",
         "Establish statutory highway and vehicle scope and opposing roadways.",
@@ -425,127 +601,9 @@
         "Realize explicit barrier extents and an opening wide enough for the selected vehicle's U-turn route; do not place the barrier across that opening.",
         "Retain every movement, initial and final directions, and the complete footprint trajectory."
       ],
-      "reason": "The fixed U-turn and median opening support observation of direction reversal and the exception context."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 355,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "prior_review_context": {
-    "comparison_ids": [
-      "C126120-227-1-roadway-direction-pair",
-      "over_across_within_divider",
-      "right_hand_roadway",
-      "continuous_multiple_movement",
-      "established_crossover",
-      "established_intersection"
-    ],
-    "remaining_requirements_note": null
-  },
-  "saved_trace_audit": {
-    "module": "uturn_audit.py",
-    "status": "physical_measurement_core_cpu_tested_no_original_accepted_trace",
-    "observables": [
-      "original full-body opening contact",
-      "closed divider contact",
-      "source and destination right-hand roadway occupancy",
-      "net heading reversal",
-      "realized reverse movement versus pause"
-    ],
-    "source_guard": "SHA-checked saved trace; map and authority review source identities required in context but independent authority packet validation remains pending",
-    "comparison_guard": "fixed map identity and declared realized difference",
-    "legal_judgment": "unresolved"
-  },
-  "construction_draft": {
-    "module": "uturn_control.py; native_driver.py; native_capture.py; runner.py; case_builder.py; analysis.py; delivery_audit.py; prove_saved.py; divider_construction.py; prove_measurement.py",
-    "status": "native_divider_capture_saved_finalizer_and_semantic_drafts_cpu_tested",
-    "implemented": [
-      "full-width authored route corridor avoids closed divider",
-      "opening crossing and source/destination right-roadway endpoints",
-      "live OpenDRIVE hash and endpoint road binding",
-      "forward/reverse next-tick control with observed-stop gear transition",
-      "lazy conventional Native vehicle spawn and original four-corner body projection",
-      "20 Hz original-frame capture with four source-relative cameras and body/control/frame streams",
-      "reviewed map, median and authority source hashes retained in original acquisition",
-      "saved-only source hash and actor/frame/time joins before physical U-turn assessment",
-      "exact case config builder and recording description",
-      "independent saved seal, restoration, source hash and physical-target audit",
-      "seven source-pending exact case IDs with physical-risk assessments and three controlled comparisons",
-      "pinned semantic relevance/template/judgment/bindings/cases draft chain validated to construction boundary",
-      "pinned saved physical-result fixture proof with tampered original rejection",
-      "fake full Native frame loop and restoration-before-seal CPU proof",
-      "authored and observed source-to-destination median centerline crossing must pass through opening, rejecting opening-touch plus divider-end bypass",
-      "source-reviewed closed-divider props cover each barrier without entering opening",
-      "actual Native prop footprints checked at spawn and retained as original source geometry",
-      "saved finalizer rejects changed divider actor identities and footprints",
-      "movement-pair comparison rejects changes to fixed OpenDRIVE, authority review and roadway context",
-      "exact seven-case ID and four-camera capability profile generated by case_builder; duration awaits source-reviewed scene",
-      "pinned selected-requirement measurement contract validates original source hashes and rejects missing case-specific history",
-      "diagnostic saved sources carry explicit synthetic_fixture provenance; Native delivery audit rejects diagnostic provenance"
-    ],
-    "unresolved": [
-      "inspected actual median opening and independent public-authority establishment source",
-      "materialized source-backed exact case scenes and per-case constructions",
-      "offline and positive/negative full package compatibility",
-      "actual CARLA motion and video verification"
-    ]
-  },
-  "semantic_draft": {
-    "index": "proposals/semantic-index.json",
-    "index_sha256": "ed7563c9d8d877db015fe4349cea4cbe5461905749411f372b468a5ab34939cb",
-    "status": "canonical_stage_chain_cpu_validated_exact_constructions_pending",
-    "proof_log": "semantic-draft-proof.log",
-    "delivery_ready_claimed": false
-  },
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": null,
-    "status": "draft_duration_and_source_scene_pending",
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "subject": "ego body and median opening",
-        "interval": "approach through departure",
-        "view": "overview"
-      },
-      {
-        "subject": "source right-hand roadway approach",
-        "interval": "approach and entry",
-        "view": "approach"
-      },
-      {
-        "subject": "divider end and opening clearance",
-        "interval": "every U-turn movement",
-        "view": "reference_corner"
-      },
-      {
-        "subject": "ego travel orientation",
-        "interval": "full recording",
-        "view": "driver_reference"
-      }
-    ]
-  },
-  "requirement_dispositions": [
-    {
-      "requirement": "U-turn through a median opening, including a multiple-movement variant.",
-      "source": {
-        "path": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-        "sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-        "source_index": 355
-      },
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate",
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
-        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn"
-      ],
-      "evidence_or_gap": "All seven draft cases contribute opening/closed-divider, movement or roadway contrast; exact source-reviewed scene and original evidence remain pending."
-    }
-  ],
-  "measurement_contract_draft": {
-    "path": "measurement-contract.json",
-    "sha256": "9f415a25018774d41fea0936d19fcbd25df31062568ef7d3eec509b77289e283",
-    "status": "pinned_cpu_positive_negative_fixture_validated_exact_case_package_pending"
-  }
+  ]
 }

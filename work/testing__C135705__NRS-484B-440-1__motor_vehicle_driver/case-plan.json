@@ -1,32 +1,166 @@
 {
-  "assignment_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C135705",
-  "law_id": "NRS-484B-440-1",
-  "selected_branches": [
+  "assignment_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver",
+  "cases": [
     {
-      "law_id": "NRS-484B-440-1",
-      "cell_id": "C135705",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-440-1",
-      "branch": "In-every-event passage-width and clear-view obligations",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 435,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
+      "construction_candidate": "cases/passage_clear_view/scene.json",
+      "gap_ids": [
+        "passage-and-200ft-view-unverified"
+      ],
+      "physical_risk_assessment": {
+        "fallback_construction": "cases/passage_clear_view/fallback1-scene.json",
+        "fallback_policy": "source-inspect and test fallback1 geometry if primary Native target fails",
+        "risk": "Native car and road footprint may differ from authored clearance",
+        "status": "physical",
+        "trigger": "original actor body or sight measurement misses the requested physical target"
+      },
+      "purpose": "standing footprint leaves a full-body route and both 200-foot sight lines clear",
+      "status": "native_source_bound_construction_and_saved_audits_cpu_tested_physical_pending",
+      "target_law_id": "NRS-484B-440-1"
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
+      "construction_candidate": "cases/passage_blocked/scene.json",
+      "gap_ids": [
+        "passage-and-200ft-view-unverified"
+      ],
+      "physical_risk_assessment": {
+        "fallback_construction": "cases/passage_blocked/fallback1-scene.json",
+        "fallback_policy": "source-inspect and test fallback1 geometry if primary Native target fails",
+        "risk": "Native driver may steer around the standing vehicle instead of exposing blocked passage",
+        "status": "physical",
+        "trigger": "original actor body or sight measurement misses the requested physical target"
+      },
+      "purpose": "standing footprint intersects the other vehicle's full-body route while sight geometry stays fixed",
+      "status": "native_source_bound_construction_and_saved_audits_cpu_tested_physical_pending",
+      "target_law_id": "NRS-484B-440-1"
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both",
+      "construction_candidate": "cases/view_occluded_both/scene.json",
+      "gap_ids": [
+        "passage-and-200ft-view-unverified"
+      ],
+      "physical_risk_assessment": {
+        "fallback_construction": "cases/view_occluded_both/fallback1-scene.json",
+        "fallback_policy": "source-inspect and test fallback1 geometry if primary Native target fails",
+        "risk": "Authored occluders may not block camera sight lines in live CARLA",
+        "status": "physical",
+        "trigger": "original actor body or sight measurement misses the requested physical target"
+      },
+      "purpose": "two authored occluder rectangles block the 200-foot sight lines while passage remains clear",
+      "status": "native_source_bound_construction_and_saved_audits_cpu_tested_physical_pending",
+      "target_law_id": "NRS-484B-440-1"
     }
   ],
-  "law_text": "Upon any highway outside of a business or residence district no person shall stop, park or leave standing any vehicle, whether attended or unattended, upon the paved or main-traveled part of the highway when it is practicable to stop, park or so leave such vehicle off such part of the highway, but in every event an unobstructed width of the highway opposite a standing vehicle shall be left for the free passage of other vehicles and a clear view of such stopped vehicles shall be available from a distance of 200 feet in each direction upon such highway. This section shall not apply to the driver of any vehicle which is disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position.",
-  "law_source": "NRS 484B.440(1); with 484B.440(2)",
-  "topic_inventory": {
-    "exact-text": "Upon any highway outside of a business or residence district no person shall stop, park or leave standing any vehicle, whether attended or unattended, upon the paved or main-traveled part of the highway when it is practicable to stop, park or so leave such vehicle off such part of the highway, but in every event an unobstructed width of the highway opposite a standing vehicle shall be left for the free passage of other vehicles and a clear view of such stopped vehicles shall be available from a distance of 200 feet in each direction upon such highway. This section shall not apply to the driver of any vehicle which is disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position."
+  "cell_id": "C135705",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked"
+      ],
+      "comparison_id": "passage_width_with_fixed_view",
+      "deliberate_differences": [
+        "standing full-body intrusion into passing path"
+      ],
+      "fixed_conditions": [
+        "same road, other vehicle path, dimensions and clear sight sources"
+      ],
+      "status": "saved_comparison_audit_implemented_diagnostic_proof_pending"
+    },
+    {
+      "case_ids": [
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both"
+      ],
+      "comparison_id": "two_sided_visibility_with_fixed_passage",
+      "deliberate_differences": [
+        "two explicit sight occluder footprints"
+      ],
+      "fixed_conditions": [
+        "same road, standing footprint and other vehicle passage path"
+      ],
+      "status": "saved_comparison_audit_implemented_diagnostic_proof_pending"
+    }
+  ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "passage-and-200ft-view-unverified",
+        "requirement": "In-every-event unobstructed passage width opposite a standing vehicle and clear view from 200 feet in each direction",
+        "source": {
+          "path": "inputs/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/assignment.json",
+          "sha256": "1c11bcc8f279566b1365fe2604ff39cbe311ee80db7325c942f9f568551e1f31"
+        },
+        "why_existing_insufficient": "No accepted recording or original source with passage and two-sided visibility measurements exists in the frozen inventory."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-440-1",
+  "law_source": "NRS 484B.440(1); with 484B.440(2)",
+  "law_text": "Upon any highway outside of a business or residence district no person shall stop, park or leave standing any vehicle, whether attended or unattended, upon the paved or main-traveled part of the highway when it is practicable to stop, park or so leave such vehicle off such part of the highway, but in every event an unobstructed width of the highway opposite a standing vehicle shall be left for the free passage of other vehicles and a clear view of such stopped vehicles shall be available from a distance of 200 feet in each direction upon such highway. This section shall not apply to the driver of any vehicle which is disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position.",
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "standing_body_xy_m",
+      "source": "original Native actor bounding box each stopped frame"
+    },
+    {
+      "mandatory": true,
+      "name": "other_vehicle_body_xy_m",
+      "source": "original Native other-vehicle bounding box and path each frame"
+    },
+    {
+      "mandatory": true,
+      "name": "two_sided_200ft_sight",
+      "source": "original camera geometry, occluders and full decoded pixels at both statutory probe positions"
+    }
+  ],
+  "planning_status": "three_exact_native_constructions_and_fallbacks_cpu_tested_delivery_proofs_pending",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
+        "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both"
+      ],
+      "evidence_or_gap": "No accepted original; three CPU geometry candidates contrast passage and two-sided sight, with Native proof pending.",
+      "requirement": "In-every-event unobstructed passage width opposite a standing vehicle and clear view from 200 feet in each direction",
+      "source": {
+        "path": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+        "sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+        "source_index": 435
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
+    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "In-every-event passage-width and clear-view obligations",
+      "cell_id": "C135705",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-440-1",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-440-1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 435,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/assignment.json",
@@ -49,27 +183,15 @@
       "sha256": "6fb17a6641dac03451cbac22f2f7574c12725842eef3d218f116eaf8185bd058"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "exact-text": "Upon any highway outside of a business or residence district no person shall stop, park or leave standing any vehicle, whether attended or unattended, upon the paved or main-traveled part of the highway when it is practicable to stop, park or so leave such vehicle off such part of the highway, but in every event an unobstructed width of the highway opposite a standing vehicle shall be left for the free passage of other vehicles and a clear view of such stopped vehicles shall be available from a distance of 200 feet in each direction upon such highway. This section shall not apply to the driver of any vehicle which is disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 435,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "In-every-event passage-width and clear-view obligations",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "Parking on a narrow highway can expose the independent passage-width obligation; narrowness alone establishes no legal outcome.",
       "required_context": [
         "Construct a parking location, road-edge and shoulder geometry, and the other vehicle's actual route, dimensions and movement.",
         "Construct road edges, shoulders, parking footprint, off-part alternatives and the other vehicle's actual route, dimensions, motion and purpose.",
@@ -80,7 +202,37 @@
         "Record unobstructed width opposite the standing vehicle and physical passage geometry.",
         "Retain unobstructed width, passage geometry and views from 200 feet in both directions throughout the stopped interval."
       ],
-      "reason": "Parking on a narrow highway can expose the independent passage-width obligation; narrowness alone establishes no legal outcome."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 435,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 9,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "paved road, shoulders, standing and passing body",
+        "interval": "all 180 original frames at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "stopped body from negative x 200 feet",
+        "interval": "all 180 original frames at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "stopped body from positive x 200 feet",
+        "interval": "all 180 original frames at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "westbound other vehicle passage",
+        "interval": "all 180 original frames at 20 Hz"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

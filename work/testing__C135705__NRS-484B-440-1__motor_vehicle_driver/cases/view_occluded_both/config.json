@@ -1,0 +1,123 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cameras": [
+    {
+      "fov_deg": 75,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "top down whole road and standing vehicle",
+      "width": 1920
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "negative x exact 60.96 m sight toward standing body",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "positive x exact 60.96 m sight toward standing body",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "westbound passing route body view",
+      "width": 1280
+    }
+  ],
+  "case": {
+    "physical_target": "view_occluded_both",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "Original standing actor eight-vertex box projected to four XY corners at 20 Hz",
+          "name": "standing_body_xy_m",
+          "reference_frame": "authored OpenDRIVE world XY",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff",
+          "unit": "m"
+        },
+        {
+          "method": "Original westbound passing actor body, pose and velocity at 20 Hz",
+          "name": "other_vehicle_body_xy_m",
+          "reference_frame": "authored OpenDRIVE world XY",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff",
+          "unit": "m"
+        },
+        {
+          "method": "Actual prop bodies plus frame-joined cameras at negative and positive 60.96 m",
+          "name": "two_sided_200ft_sight",
+          "reference_frame": "authored OpenDRIVE world XY",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff",
+          "unit": "m and original pixels"
+        },
+        {
+          "method": "Original worker disable/brake commands joined to standing body and duration",
+          "name": "mechanical_failure_attempt",
+          "reference_frame": "authored OpenDRIVE world XY",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "uncertainty": "Native body geometry and optical pixels require physical review; no legal cutoff",
+          "unit": "command and m"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "source-hashed candidate paved/shoulder geometry",
+          "name": "authored_road",
+          "unit": "OpenDRIVE metres"
+        },
+        {
+          "method": "not supplied; remains unverified",
+          "name": "district_review",
+          "unit": "administrative source"
+        }
+      ],
+      "limitations": [
+        "XY occlusion alone does not establish clear view in original pixels.",
+        "A disable command alone does not establish the subsection (2) exception."
+      ]
+    },
+    "sight_probe_distances_m": [
+      60.0,
+      60.96,
+      61.9
+    ]
+  },
+  "cell_id": "C135705",
+  "duration_s": 9,
+  "law_id": "NRS-484B-440-1",
+  "physical_completion": {
+    "body_key": "body_vertices_xy_m",
+    "criterion": "travel_progress",
+    "direction_xy": [
+      -1,
+      0
+    ],
+    "engineering_tolerances_not_legal": true,
+    "format": "worker-physical-completion-criteria",
+    "minimum_progress_m": 10,
+    "minimum_samples": 3,
+    "motion_source": "passing-body-history.jsonl"
+  },
+  "rate_hz": 20,
+  "required_atoms": [],
+  "selected_case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both",
+  "source_packets": [],
+  "supported_case_ids": [
+    "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
+    "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
+    "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both"
+  ],
+  "vehicle_blueprint_id": "vehicle.tesla.model3"
+}

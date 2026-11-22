@@ -22,7 +22,8 @@ def trace():
         "opening_bounds_xy_m": [-1,-1,1,1],
         "closed_divider_bounds_xy_m": [[-4,-1,-1.1,1],[1.1,-1,4,1]],
         "source_right_roadway_bounds_xy_m": [-4,-4,4,-1.2],
-        "destination_right_roadway_bounds_xy_m": [-4,1.2,4,4]},
+        "destination_right_roadway_bounds_xy_m": [-4,1.2,4,4],
+        "opposite_non_right_roadway_bounds_xy_m": [-4,.2,4,.8]},
         "samples": [
             {"frame": i, "time_s": i/20, "body_vertices_xy_m": body(x,y),
              "heading_deg": heading, "velocity_xy_mps": velocity}

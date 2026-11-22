@@ -47,7 +47,7 @@ def _resolve(scene, scene_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--scene", required=True)
+    parser.add_argument("--scene", default="scene.json")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")

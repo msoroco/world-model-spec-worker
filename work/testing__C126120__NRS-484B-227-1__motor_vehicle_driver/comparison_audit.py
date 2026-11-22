@@ -15,7 +15,8 @@ PAIRS = {
     "opening_vs_closed_divider": ("opening_single", "closed_divider",
                                   ["engineering_crossing_observed"]),
     "right_roadway_departure": ("opening_single", "wrong_roadway",
-                                ["destination_right_roadway_departure_observed"]),
+                                ["destination_right_roadway_departure_observed",
+                                 "non_right_roadway_final_occupancy"]),
 }
 
 

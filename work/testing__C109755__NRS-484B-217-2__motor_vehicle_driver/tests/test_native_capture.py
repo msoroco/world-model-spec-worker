@@ -61,7 +61,11 @@ class NativeCaptureTests(unittest.TestCase):
         try:
             from runner import load_scene
             scene=load_scene()
-            self.assertFalse(native.check_map(Map(crossing_x=scene['crossing_x_m']),scene,Carla)['zone_extent_verified'])
+            observed=native.check_map(Map(crossing_x=scene['crossing_x_m']),scene,Carla)
+            self.assertFalse(observed['zone_extent_verified'])
+            self.assertGreater(len(observed['approach_marking_samples']),20)
+            self.assertEqual(observed['sample_interval_max_m'],5)
+            self.assertTrue(all(s['marking_type']=='Solid' for s in observed['approach_marking_samples']))
             with self.assertRaisesRegex(ValueError,'too far'):
                 native.check_map(Map(2,crossing_x=scene['crossing_x_m']),scene,Carla)
             with self.assertRaisesRegex(ValueError,'no connected left-turn waypoint path'):

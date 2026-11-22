@@ -13,6 +13,8 @@ from divider_construction import verify_recorded_divider
 SOURCES = ("median-context.json", "divider-geometry.json", "ego-body-history.jsonl", "controller-history.jsonl",
            "video_frames.jsonl", "trace.jsonl", "road.xodr",
            "reviewed-median-context.json", "authority-review-source.json")
+MEASUREMENT_SOURCES = ("median-context.json", "divider-geometry.json", "ego-body-history.jsonl",
+                       "controller-history.jsonl", "video_frames.jsonl", "trace.jsonl")
 
 
 def sha(path):
@@ -95,7 +97,7 @@ def build_report(attempt):
             "measurements":{"median_uturn_measurement":{
                 "value":observed,
                 "method":"measure_median_uturn",
-                "sources":{name:acquisition[name]["sha256"] for name in SOURCES}}},
+                "sources":{name:acquisition[name]["sha256"] for name in MEASUREMENT_SOURCES}}},
             "limitations":["Public-authority establishment requires independent source review.",
                            "Physical opening contact does not establish a legal exception."],
             "analysis_complete":True,"legal_verdict_claimed":False}
@@ -115,8 +117,12 @@ def saved_result(attempt, report):
     expected = config["case"]["recording_description"]
     if description != expected:
         raise ValueError("recording description differs from exact config")
+    closed_approach = config["case"].get("physical_target") == "closed_divider_approach"
+    wrong_roadway = config["case"].get("physical_target") == "non_right_roadway"
+    no_turn = config["case"].get("physical_target") == "source_right_roadway_continuation"
+    criterion = "travel_progress" if closed_approach or wrong_roadway or no_turn else "turn"
     if (config["physical_completion"]["motion_source"] != "ego-body-history.jsonl" or
-            config["physical_completion"]["criterion"] != "turn"):
+            config["physical_completion"]["criterion"] != criterion):
         raise ValueError("physical completion differs from original U-turn history")
     body = rows(source(attempt,acquisition,"ego-body-history.jsonl"))
     values = {
@@ -149,8 +155,61 @@ def saved_result(attempt, report):
                          "reference":str(context_path.relative_to(attempt))})
     observed = report["measurements"]["median_uturn_measurement"]["value"]
     requested = config["case"]["multiple_movement_requested"]
-    result = {"case_id":config["selected_case_id"],"measured_values":observed,
-        "target_checks":[{"target":"realized multiple-movement U-turn",
+    if no_turn:
+        stayed = (observed["source_right_roadway_all_frames"] and
+                  observed["source_right_roadway_final_occupancy"] and
+                  not observed["opening_contact_frames"] and
+                  not observed["closed_divider_contact_frames"] and
+                  not observed["u_turn_orientation_observed"] and
+                  not observed["destination_right_roadway_departure_observed"])
+        target_checks = [{"target":"source right roadway continued without turn",
+            "requested":True,"measured":stayed,
+            "method":"original full-body roadway occupancy and heading history",
+            "tolerance":0,"matched":stayed,
+            "physical_cause_confirmed":False,
+            "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]}]
+    elif wrong_roadway:
+        reached_wrong = (observed["non_right_roadway_final_occupancy"] and
+                         bool(observed["opening_full_body_frames"]) and
+                         any(item["through_opening"] for item in
+                             observed["roadway_centerline_crossings"]) and
+                         not observed["closed_divider_contact_frames"] and
+                         not observed["destination_right_roadway_departure_observed"])
+        target_checks = [{"target":"non-right roadway reached through opening",
+            "requested":True,"measured":reached_wrong,
+            "method":"original final body occupancy and original centerline crossing",
+            "tolerance":0,"matched":reached_wrong,
+            "physical_cause_confirmed":False,
+            "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]},
+            {"target":"destination right roadway not reached",
+             "requested":False,
+             "measured":observed["destination_right_roadway_departure_observed"],
+             "method":"original final body versus reviewed destination right roadway",
+             "tolerance":0,
+             "matched":not observed["destination_right_roadway_departure_observed"],
+             "physical_cause_confirmed":False,
+             "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]}]
+    elif closed_approach:
+        clearance = observed["final_closed_divider_clearance_m"]
+        approach = (not observed["opening_contact_frames"] and
+                    not observed["closed_divider_contact_frames"] and
+                    .0 < clearance <= 1.0)
+        target_checks = [{"target":"closed-divider approach with full-body clearance",
+            "requested":True,"measured":approach,
+            "method":"original body distance to the reviewed closed divider at final frame",
+            "tolerance":"0 < clearance <= 1 metre engineering approach window",
+            "matched":approach,"physical_cause_confirmed":False,
+            "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]},
+            {"target":"destination right roadway not reached",
+             "requested":False,
+             "measured":observed["destination_right_roadway_departure_observed"],
+             "method":"original final body versus reviewed destination right roadway",
+             "tolerance":0,
+             "matched":not observed["destination_right_roadway_departure_observed"],
+             "physical_cause_confirmed":False,
+             "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]}]
+    else:
+        target_checks = [{"target":"realized multiple-movement U-turn",
             "requested":requested,"measured":observed["multiple_movement_observed"],
             "method":"original signed velocity and body displacement before/after reverse interval",
             "tolerance":0,"matched":observed["multiple_movement_observed"] == requested,
@@ -161,7 +220,9 @@ def saved_result(attempt, report):
             "method":"original body intersection with reviewed opening and closed-divider geometry",
             "tolerance":0,"matched":observed["engineering_crossing_observed"],
             "physical_cause_confirmed":False,
-            "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]}],
+            "cause_evidence":report["measurements"]["median_uturn_measurement"]["sources"]}]
+    result = {"case_id":config["selected_case_id"],"measured_values":observed,
+        "target_checks":target_checks,
         "setup_confirmed":False,"behavior_attempted":False,"maneuver_completed":False,
         "termination_reason":"Saved original evidence assessment pending",
         "physical_failure_flags":[],"trace_reference":"trace.jsonl",
