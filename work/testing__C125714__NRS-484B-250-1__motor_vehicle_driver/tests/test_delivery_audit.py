@@ -7,7 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from delivery_audit import ORIGINALS, audit_attempt, audit_pair, sha
+from delivery_audit import ORIGINALS, audit_attempt, audit_pair, audit_reviewed_context, sha
 from test_analysis import fixture
 
 
@@ -60,6 +60,24 @@ class DeliveryAuditTests(unittest.TestCase):
             native_shaped_fixture(right)
             with self.assertRaisesRegex(ValueError, "did not differ"):
                 audit_pair(left, right, ["entry_order"])
+
+    def test_reviewed_packet_cannot_be_reseated_on_another_map_or_scene(self):
+        with TemporaryDirectory() as tmp:
+            native_shaped_fixture(tmp)
+            root = Path(tmp)
+            self.assertEqual(audit_reviewed_context(root)["original_map_sha256"],
+                             sha(root / "road.xodr"))
+            context_path = root / "intersection-context.json"
+            context = json.loads(context_path.read_text())
+            context["law_context"]["public_access"] = False
+            context_path.write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "differs from original scene"):
+                audit_reviewed_context(root)
+            context["law_context"]["public_access"] = True
+            context_path.write_text(json.dumps(context))
+            (root / "road.xodr").write_text("different map")
+            with self.assertRaisesRegex(ValueError, "differs from original OpenDRIVE"):
+                audit_reviewed_context(root)
 
 
 if __name__ == "__main__": unittest.main()

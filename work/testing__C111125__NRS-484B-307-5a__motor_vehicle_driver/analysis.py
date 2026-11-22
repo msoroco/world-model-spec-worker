@@ -174,6 +174,13 @@ def saved_result(attempt,report):
       'vehicle_body_history':[(row['time_s'],[p for p in row['participants'] if p['role']=='vehicle']) for row in traffic],
       'pedestrian_body_history':[(row['time_s'],[p for p in row['participants'] if p['role']=='pedestrian']) for row in traffic],
     }
+    context_value={'intersection_geometry':{'intersection_bounds_m':context['intersection_bounds_m'],
+                                            'stop_line_x_m':context['stop_line_x_m']},
+                   'crosswalk_geometry':context['adjacent_crosswalk_bounds_m'],
+                   'lawful_presence_context':{'source':'original participant history and phase context',
+                     'source_sha256':acquisition['participant-history.jsonl']['sha256']}}
+    for name,value in context_value.items():
+        streams[name]=[(row['time_s'],value) for row in signals]
     evidence=[]
     for channel in planned['channels']:
         name=channel['name']
@@ -183,11 +190,6 @@ def saved_result(attempt,report):
             for time_s,value in streams[name]:
                 stream.write(json.dumps({'time_s':time_s,'value':value},allow_nan=False)+'\n')
         evidence.append({'name':name,'unit':channel['unit'],'reference':str(path.relative_to(attempt))})
-    context_value={'intersection_geometry':{'intersection_bounds_m':context['intersection_bounds_m'],
-                                            'stop_line_x_m':context['stop_line_x_m']},
-                   'crosswalk_geometry':context['adjacent_crosswalk_bounds_m'],
-                   'lawful_presence_context':{'source':'original participant history and phase context',
-                     'source_sha256':acquisition['participant-history.jsonl']['sha256']}}
     context_path=output/'context.json'
     with context_path.open('x') as stream:stream.write(json.dumps(context_value,allow_nan=False)+'\n')
     for item in planned['context_inputs']:

@@ -25,6 +25,34 @@ def _read(path):
     return json.loads(Path(path).read_text())
 
 
+def audit_reviewed_context(path):
+    """Recheck the retained site packet against original map and scene context."""
+    path = Path(path)
+    packet = _read(path / "reviewed-context.json")
+    context = _read(path / "intersection-context.json")
+    provenance = _read(path / "acquisition-provenance.json")
+    if (provenance.get("reviewed_context_sha256") != sha(path / "reviewed-context.json") or
+            context.get("reviewed_context_sha256") != sha(path / "reviewed-context.json")):
+        raise ValueError("reviewed context provenance differs from retained packet")
+    if (context.get("crossing") != packet.get("crossing") or
+            context.get("law_context") != packet.get("law_context")):
+        raise ValueError("reviewed crossing or law context differs from original scene")
+    law = packet["law_context"]
+    if law.get("map_source") != sha(path / "road.xodr"):
+        raise ValueError("reviewed map differs from original OpenDRIVE")
+    if (law.get("public_access") is not True or law.get("human_driver") is not True or
+            law.get("devices") != [] or
+            not all(law.get(key) for key in ("public_access_source",
+                                             "device_inventory_source",
+                                             "driver_scope_source"))):
+        raise ValueError("reviewed public-highway, driver or device context incomplete")
+    if (law.get("approach_relation") == "crossing" and
+            law.get("ego_highway") == law.get("other_highway")):
+        raise ValueError("reviewed crossing lacks distinct highway identities")
+    return {"reviewed_context_sha256": sha(path / "reviewed-context.json"),
+            "original_map_sha256": sha(path / "road.xodr")}
+
+
 def audit_attempt(path):
     """Verify original closure and source binding before using measurements."""
     path = Path(path)
@@ -52,11 +80,13 @@ def audit_attempt(path):
                 acquisition[name].get("sha256") != sha(source) or
                 seal.get("sources", {}).get(name) != sha(source)):
             raise ValueError("original source missing or changed: " + name)
+    site_review = audit_reviewed_context(path)
     report = build_report(path)
     measurement = report["measurements"]["crossing_entry_measurement"]["value"]
     if measurement["legal_judgment"] != "unresolved":
         raise ValueError("legal judgment must remain unresolved in physical audit")
     return {"source_hashes": {name: sha(path / name) for name in ORIGINALS},
+            "site_review": site_review,
             "measurements": measurement, "legal_verdict_claimed": False,
             "physical_acceptance_claimed": False}
 

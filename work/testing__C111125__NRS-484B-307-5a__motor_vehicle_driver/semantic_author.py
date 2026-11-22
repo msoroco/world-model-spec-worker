@@ -77,14 +77,14 @@ def main():
     for name,method in [('signal_head_history','Per-frame facing-head indication readback'),
                         ('ego_body_history','Per-frame Native ego body and heading'),
                         ('vehicle_body_history','Per-frame Native other-vehicle body readback'),
-                        ('pedestrian_body_history','Per-frame Native pedestrian body readback')]:
+                        ('pedestrian_body_history','Per-frame Native pedestrian body readback'),
+                        ('intersection_geometry','Source-bound intersection and stop-line context joined to every frame'),
+                        ('crosswalk_geometry','Source-bound adjacent crosswalk context joined to every frame'),
+                        ('lawful_presence_context','Source-bound participant phase context joined to every frame')]:
         channels.append({'name':name,'unit':'structured record','sampling_rate_hz':20,
                          'method':method,'time_window':'signal exhibition through intersection clearance',
                          'reference_frame':'CARLA world with frame and time','uncertainty':'20 Hz sampling and simulator geometry precision'})
-    contexts=[{'name':name,'unit':'structured record','method':method}
-              for name,method in [('intersection_geometry','Native map and stop-line readback'),
-                                  ('crosswalk_geometry','Native map crosswalk readback'),
-                                  ('lawful_presence_context','Independent phase and priority source review')]]
+    contexts=[]
     recording={'channels':channels,'context_inputs':contexts,
                'limitations':['Arrow asset and lawful presence need source verification.',
                               'Physical occupancy is retained without a legal yield verdict.']}

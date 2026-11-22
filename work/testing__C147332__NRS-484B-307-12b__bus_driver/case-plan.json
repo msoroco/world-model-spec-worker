@@ -24,9 +24,132 @@
   "topic_inventory": {
     "exact-text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A red “X” symbol means a driver facing the signal must not enter or drive in any lane over which the red signal is shown."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "baseline_probe",
+      "scenario": "Bus continues in adjacent lane without entering red-X lane",
+      "preparation_status": "planned_cpu_implementation",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead lane signal provenance",
+        "signal-to-lane association",
+        "facing direction",
+        "original bus full-body footprint",
+        "signal and bus frame-time join",
+        "original camera frames"
+      ],
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "entry_probe",
+      "scenario": "Bus crosses laterally into governed red-X lane",
+      "preparation_status": "planned_cpu_implementation",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead lane signal provenance",
+        "signal-to-lane association",
+        "facing direction",
+        "original bus full-body footprint",
+        "signal and bus frame-time join",
+        "original camera frames"
+      ],
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "motion_baseline",
+      "scenario": "Bus already inside governed lane and remains stationary during red X",
+      "preparation_status": "planned_cpu_implementation",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead lane signal provenance",
+        "signal-to-lane association",
+        "facing direction",
+        "original bus full-body footprint",
+        "signal and bus frame-time join",
+        "original camera frames"
+      ],
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "driving_probe",
+      "scenario": "Bus already inside governed lane and travels longitudinally during red X",
+      "preparation_status": "planned_cpu_implementation",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead lane signal provenance",
+        "signal-to-lane association",
+        "facing direction",
+        "original bus full-body footprint",
+        "signal and bus frame-time join",
+        "original camera frames"
+      ],
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "red_x_lateral_entry",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry"
+      ],
+      "fixed_conditions": [
+        "same one-way multilane highway",
+        "same bus and red-X governed lane",
+        "same signal state and facing direction",
+        "same camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "bus lateral route into governed lane"
+      ],
+      "status": "planned_cpu_implementation"
+    },
+    {
+      "comparison_id": "red_x_in_lane_driving",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive"
+      ],
+      "fixed_conditions": [
+        "same one-way multilane highway",
+        "same bus initially inside red-X governed lane",
+        "same signal state and facing direction",
+        "same camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "longitudinal bus motion while red X shown"
+      ],
+      "status": "planned_cpu_implementation"
+    }
+  ],
+  "observations": [
+    {
+      "name": "red_x_entry_frames",
+      "source": "lane_signal_measurement.py; original body, lane signal and camera frames",
+      "judgment": "unresolved"
+    },
+    {
+      "name": "red_x_driving_frames",
+      "source": "lane_signal_measurement.py; original body, lane signal and camera frames",
+      "judgment": "unresolved"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C147332__NRS-484B-307-12b__bus_driver/assignment.json",
@@ -51,8 +174,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original highway and official overhead signal provenance still need retained source support.",
+    "Actual CARLA geometry, synchronized lane signal, bus movement and camera visibility await local execution.",
+    "Inline constructions, semantic proposals, compatibility, saved and independent delivery proofs remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +185,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_case_split_measurement_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
