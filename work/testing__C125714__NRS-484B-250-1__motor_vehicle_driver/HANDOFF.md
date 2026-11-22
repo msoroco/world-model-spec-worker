@@ -151,3 +151,7 @@ After the audit change, the assignment `--complete` static gate passes (`assignm
 ## Return file consolidation
 
 Five historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c125714-archive/`. These remain prior diagnostic proofs, not new readiness evidence.
+
+## 2026-11-22 CPU environment recheck
+
+With the pinned CPU environment now installed, reran the 14-test assignment suite and `runtime.py preflight`; both pass. Refreshed their byte-hashed members in `command-log-archive.json` and the `result.json` archive binding. The scoped `worker_check.py --complete` gate passes. This assignment remains partial: it has no exact returned execution manifest or primary inline construction, so current exact offline/compatibility/recorded-only saved processing and required fallbacks remain to be built. The existing 1100-frame source fixture and independent audit are synthetic software proofs only.
