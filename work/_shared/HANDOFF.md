@@ -3507,3 +3507,9 @@ Full batch strict gate was rerun after this checkpoint with `PYTHONDONTWRITEBYTE
 Pinned CPU positive compatibility rerun passed (exit 0) for `following_under_500_ft` primary at `.runtime-work/c149752-root-compat-recheck`, including actual analysis, four source cameras, Lean decoder, render, final decode, and negative missing-source check; no Native run or physical acceptance.
 
 C149752 width checkpoint: six width case IDs and two comparisons added; source-bound 80-inch auditor and nine unit tests pass. Exact inline width bundles and receipts remain worker-owned; status stays partial. See C149752 HANDOFF for hashes and command.
+
+### 2026-11-22 C149752 width bundle checkpoint
+
+C149752 now returns one new exact primary width construction, `work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/width-constructions/ego_width_below_80in.json` (SHA-256 `d7a72e0eb8b3bf4eb82bf1ca9978297178c15497cd01af0807752de3300f0f67`). Its CPU offline check passed with `.venv-cpu/bin/python`; ignored proof log `.runtime-work/c149752-width-below-offline/offline.log` has SHA-256 `215e9584ed635d67a3a582999bf2249a6a96a58f52adc0e637e5d93d5a5bb050`. C149752 scoped `worker_check.py --complete` passed after the addition. The batch remains partial. The returned file count is at the 8,600 cap, so further returned artifacts require reclaiming room from demonstrably unbound historical files without changing required evidence. The C149752 result and handoff identify the remaining construction/proof tasks; no ready claim is made.
+
+C149752 scoped strict gate after this checkpoint returns `Preparation acceptance failed: partial/missing packages remain`, as expected for its truthful partial status. The full batch strict gate was started with `PYTHONDONTWRITEBYTECODE=1` and interrupted after more than four minutes without output (exit 130); no full-batch acceptance claim is made.
