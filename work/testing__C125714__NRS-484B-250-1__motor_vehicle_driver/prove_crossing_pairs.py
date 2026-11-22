@@ -49,6 +49,8 @@ def prove(proof_root):
     if (scenes["precedence"][0]["ego_response_request"] != "yield" or
             scenes["advance"][0]["ego_response_request"] != "advance"):
         raise ValueError("authored controller requests did not isolate yield/advance")
+    if scenes["other_later"][0]["ego_response_request"] != "advance":
+        raise ValueError("entry-order pair changed the fixed advance request")
     for name in ("intersection-context.json", "ego-body-history.jsonl", "other-body-history.jsonl"):
         if traces["precedence"][1][name] != traces["advance"][1][name]:
             raise ValueError("synthetic source changed across response-request pair: " + name)
@@ -59,7 +61,7 @@ def prove(proof_root):
             raise
     else:
         raise ValueError("undeclared controller request was accepted")
-    entry_pair = audit_comparison(traces["precedence"][0], traces["other_later"][0],
+    entry_pair = audit_comparison(traces["advance"][0], traces["other_later"][0],
                                   ("entry_order",))
     if (entry_pair["left"]["other_entered_before_ego"] is not True or
             entry_pair["right"]["other_entered_before_ego"] is not False or
@@ -67,7 +69,7 @@ def prove(proof_root):
             entry_pair["right"]["legal_judgment"] != "unresolved"):
         raise ValueError("original diagnostic entry order was not isolated")
     try:
-        audit_comparison(traces["precedence"][0], traces["other_later"][0], ("devices",))
+        audit_comparison(traces["advance"][0], traces["other_later"][0], ("devices",))
     except ValueError as error:
         if "entry_order" not in str(error):
             raise
@@ -78,6 +80,8 @@ def prove(proof_root):
                "construction_sha256": {suffix: scenes[suffix][1] for suffix in scenes},
                "fixture_source_sha256": {suffix: traces[suffix][1] for suffix in traces},
                "authored_request_difference": sorted(request_changes),
+               "entry_order_case_ids": [ROOT.name + "__advance",
+                                        ROOT.name + "__other_later"],
                "request_realization_claimed": False,
                "measured_entry_order_difference": entry_pair["declared_differences"],
                "negative_undeclared_differences_rejected": True,

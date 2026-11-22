@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 from case_builder import config, recording_description
@@ -12,7 +13,7 @@ from map_inventory import inventory
 ROOT = Path(__file__).resolve().parent
 CASE_VARIANTS = (("precedence", True, "yield"),
                  ("advance", True, "advance"),
-                 ("other_later", False, "yield"),
+                 ("other_later", False, "advance"),
                  ("opposite_straight", True, "yield"),
                  ("opposite_intends_left", True, "yield"),
                  ("opposite_makes_left", True, "yield"),
@@ -26,6 +27,28 @@ def write_json(path, value):
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def spawn_clearance_candidate(primary):
+    """Move both initial spawn points two metres away along their approach.
+
+    This is an engineering alternative for an occupied initial spawn point.
+    The crossing, route through it, legal context and response request stay fixed.
+    """
+    candidate = deepcopy(primary)
+    scene_file = next(item for item in candidate["files"] if item["path"] == "scene.json")
+    scene = json.loads(scene_file["content"])
+    for party in ("ego", "other"):
+        route = scene[party + "_route_xy_m"]
+        start, next_point = route[:2]
+        delta = [next_point[i] - start[i] for i in (0, 1)]
+        norm = sum(value * value for value in delta) ** .5
+        if norm <= 2:
+            raise ValueError("candidate approach segment is too short")
+        route[0] = [round(start[i] - 2 * delta[i] / norm, 6) for i in (0, 1)]
+    scene_file["content"] = json.dumps(scene, indent=2, ensure_ascii=False) + "\n"
+    candidate["mechanisms"].append("alternate initial spawn clearance, same crossing route")
+    return candidate
 
 
 def build():
@@ -112,14 +135,24 @@ def build():
                               "ego yield and advance request branches"],
             "termination_rules": ["diagnostic CPU check only; Native launch requires reviewed source replacement"]}
         write_json(folder / "construction.json", construction)
+        fallback = spawn_clearance_candidate(construction)
+        write_json(folder / "fallback1-construction.json", fallback)
         entries.append({"case_id": case_id, "kind": "diagnostic",
                         "construction": str((folder / "construction.json").relative_to(ROOT)),
                         "construction_sha256": sha(folder / "construction.json"),
                         "measurement_contract": str((folder / "measurement-contract.json").relative_to(ROOT)),
                         "measurement_procedure": {"entrypoint": "analysis.py"},
                         "fixture_recipe": str((folder / "diagnostic-recipe.json").relative_to(ROOT.parent.parent)),
-                        "candidate_risk": {"status": "physical", "reason": "Native waypoint loading and public-roadway context are unverified."},
-                        "candidates": []})
+                        "candidate_risk": {"status": "physical", "reason":
+                            "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."},
+                        "candidates": [{"id": "fallback1",
+                            "construction": str((folder / "fallback1-construction.json").relative_to(ROOT)),
+                            "construction_sha256": sha(folder / "fallback1-construction.json"),
+                            "trigger": {"source": "Native spawn_vehicles attempt log",
+                                        "metric": "initial ego or other actor spawn result",
+                                        "failure_condition": "either spawn_actor returns no actor at the primary start point"},
+                            "changed_knobs": ["ego initial spawn point 2 m upstream on the same approach",
+                                              "other initial spawn point 2 m upstream on the same approach"]}]})
     manifest = {
         "format": "worker-execution-manifest", "assignment_id": ROOT.name,
         "runtime_manifest_sha256": sha(ROOT.parent.parent / "runtime" / "SOURCE-MANIFEST.json"),

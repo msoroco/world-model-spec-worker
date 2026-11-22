@@ -25,7 +25,7 @@ class DiagnosticBundleTests(unittest.TestCase):
         suffix = scene["case_id"].rsplit("__", 1)[1]
         expected = {"precedence": (True, "yield", "brake"),
                     "advance": (True, "advance", "proceed"),
-                    "other_later": (False, "yield", "proceed"),
+                    "other_later": (False, "advance", "proceed"),
                     "opposite_straight": (True, "yield", "brake"),
                     "opposite_intends_left": (True, "yield", "brake"),
                     "opposite_makes_left": (True, "yield", "brake"),

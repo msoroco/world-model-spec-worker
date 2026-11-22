@@ -8,7 +8,7 @@
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
       "kind": "diagnostic",
       "construction": "construction.json",
-      "construction_sha256": "ab281396a39a4f0383a0a39c4d3c3490855ad12d3100153d40891416dcbd8156",
+      "construction_sha256": "944fdad6077c2f071f00d67467a830cc27ef4282406e162d0fdf2d3eea624599",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -16,15 +16,43 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "68445c562e415d23ffbddcf0416d677e1327468f649e528daceaf26980671b13",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/precedence/offline",
+            "exit_code": 0,
+            "construction_sha256": "68445c562e415d23ffbddcf0416d677e1327468f649e528daceaf26980671b13",
+            "log": "fallback1-offline.log",
+            "log_sha256": "b512f05777a25fd652d496fcbbfa30792fe065076801e354bb2bb20b63d4d1d4"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility.json",
+            "sha256": "91cd5faa8f3135f05c462c38165923c603eb87313c28d3f4cfc8eb10b3a4a49c",
+            "log": "fallback1-compatibility-analysis.log",
+            "negative_log": "fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__advance",
       "kind": "diagnostic",
       "construction": "cases/advance/construction.json",
-      "construction_sha256": "606294e7e548aceb6672666ad544b5389af184a119ca92d6a16e82ef0682b404",
+      "construction_sha256": "6184593c17ff11d1e3c3b951a295dfa3842f3767a3ad2b07eabec63c958bfa53",
       "measurement_contract": "cases/advance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -32,15 +60,43 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/cases/advance/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/advance/fallback1-construction.json",
+          "construction_sha256": "6aad5cd490d91bea99a645b61a9d0156526362ed61df30252b5c5f172c1ad4ba",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__advance --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/advance/offline",
+            "exit_code": 0,
+            "construction_sha256": "6aad5cd490d91bea99a645b61a9d0156526362ed61df30252b5c5f172c1ad4ba",
+            "log": "cases/advance/fallback1-offline.log",
+            "log_sha256": "0c601ce48b6375c6fee7355593feedb613bb44817ae5a4192190fbe1cd5fb402"
+          },
+          "compatibility": {
+            "receipt": "cases/advance/fallback1-compatibility.json",
+            "sha256": "1e7977253bdc415587418e9201a873a9a123b4be50fc243f73f6873b17d688a4",
+            "log": "cases/advance/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/advance/fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later",
       "kind": "diagnostic",
       "construction": "cases/other_later/construction.json",
-      "construction_sha256": "48f28371a2f545674395f41e8383f3c945340405f156b7db1ac5641dcf689574",
+      "construction_sha256": "b8cac972d72bb85c2c92449aa9cb2a1df9745e6bf668ff6ed61a7270f526f6db",
       "measurement_contract": "cases/other_later/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -48,15 +104,43 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/cases/other_later/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/other_later/fallback1-construction.json",
+          "construction_sha256": "12cc1d76f03232408732f3e76e4bdc910d83ff24c604f64af7a2fdf7c3eece48",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/other_later/offline",
+            "exit_code": 0,
+            "construction_sha256": "12cc1d76f03232408732f3e76e4bdc910d83ff24c604f64af7a2fdf7c3eece48",
+            "log": "cases/other_later/fallback1-offline.log",
+            "log_sha256": "eb380730acbf04f6593d9aef7b4c763ee24a006435c2d8c5dbe698a2c35307ee"
+          },
+          "compatibility": {
+            "receipt": "cases/other_later/fallback1-compatibility.json",
+            "sha256": "37499db1092f67928912326a56299c209eae20c283f3aca782385c64cfe60c5e",
+            "log": "cases/other_later/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/other_later/fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_straight",
       "kind": "diagnostic",
       "construction": "cases/opposite_straight/construction.json",
-      "construction_sha256": "da525ae5d419c4066689ec88c9a166d627e70c0adb6c114e2fa81a8e9f8e1a60",
+      "construction_sha256": "487383c4203d7812583abe30597344735d729e3d7347dc4f6bf54975c958889d",
       "measurement_contract": "cases/opposite_straight/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -64,15 +148,43 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/cases/opposite_straight/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_straight/fallback1-construction.json",
+          "construction_sha256": "1f371196229f4e94455884461e0c6f00c603c3c3e9e60135db0711a2b1539f75",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_straight --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/opposite_straight/offline",
+            "exit_code": 0,
+            "construction_sha256": "1f371196229f4e94455884461e0c6f00c603c3c3e9e60135db0711a2b1539f75",
+            "log": "cases/opposite_straight/fallback1-offline.log",
+            "log_sha256": "60a0cb4723c92241fcdd28828a8c6599892edb8c8e18b88cf84c9a1c3301483c"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_straight/fallback1-compatibility.json",
+            "sha256": "3f1016e8d6cd6675b78587636c77dff9159864f1d7fd75dbb6e406d9088c013e",
+            "log": "cases/opposite_straight/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/opposite_straight/fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left",
       "kind": "diagnostic",
       "construction": "cases/opposite_intends_left/construction.json",
-      "construction_sha256": "9cf59a6f0997ec12d5eee9a395f8d00b827da0dffdb72513c29cd6985b2e5e55",
+      "construction_sha256": "e8ad6145757ed50746a105836f6c8d85cd57ff83b031558ab06166df44cf9bb9",
       "measurement_contract": "cases/opposite_intends_left/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -80,15 +192,43 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/cases/opposite_intends_left/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_intends_left/fallback1-construction.json",
+          "construction_sha256": "21d3d112664ab4824a78de31fb4f3870d4ed2b7acb882369160112f7143f60c1",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/opposite_intends_left/offline",
+            "exit_code": 0,
+            "construction_sha256": "21d3d112664ab4824a78de31fb4f3870d4ed2b7acb882369160112f7143f60c1",
+            "log": "cases/opposite_intends_left/fallback1-offline.log",
+            "log_sha256": "88675f8892f64eccc7e3c12c88613a449ef057588abeb4fda6b66aa6d7c37ab5"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_intends_left/fallback1-compatibility.json",
+            "sha256": "5c18b9eb7e0a3b4e167337b366a1e68b9c8aa20b093a13a5cbf3f12141d041ee",
+            "log": "cases/opposite_intends_left/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/opposite_intends_left/fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_makes_left",
       "kind": "diagnostic",
       "construction": "cases/opposite_makes_left/construction.json",
-      "construction_sha256": "8aa64651b1d58ab6f512bfef6fe6b0b37cbf8afcc4bc87577f14999f03283c48",
+      "construction_sha256": "a773798fc8d0c56fafab4e690220ac4db2b1dd3827e7fc6409dc0faf2ed1ff7d",
       "measurement_contract": "cases/opposite_makes_left/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -96,15 +236,43 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/cases/opposite_makes_left/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_makes_left/fallback1-construction.json",
+          "construction_sha256": "9ea2cc80d300547d3f13d7eff3e7aa9e4f20a7e5df7985413fe1b8398093d297",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_makes_left --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/opposite_makes_left/offline",
+            "exit_code": 0,
+            "construction_sha256": "9ea2cc80d300547d3f13d7eff3e7aa9e4f20a7e5df7985413fe1b8398093d297",
+            "log": "cases/opposite_makes_left/fallback1-offline.log",
+            "log_sha256": "ac53dd5bdacc74c0fb37b22ec9885456c74f4ba107297896ce739018901047c5"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_makes_left/fallback1-compatibility.json",
+            "sha256": "d7ae71bc75b0ac746955780541bcbf24db69c0d8bc5ccc3718a9234c6ea5ece9",
+            "log": "cases/opposite_makes_left/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/opposite_makes_left/fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__wide_same_crossing",
       "kind": "diagnostic",
       "construction": "cases/wide_same_crossing/construction.json",
-      "construction_sha256": "b37ac2e7ce9873de9673ed8ebff659d347ad3db2d3cf504222294c8048e44a25",
+      "construction_sha256": "fece4c5be23013d5598d208ef9e7be7e4d0f7309826604e4d01bef7bdb4d0981",
       "measurement_contract": "cases/wide_same_crossing/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -112,9 +280,37 @@
       "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/cases/wide_same_crossing/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native waypoint loading and public-roadway context are unverified."
+        "reason": "The authored initial vehicle spawn may be occupied on the Native map; a spawn failure is measurable before capture."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/wide_same_crossing/fallback1-construction.json",
+          "construction_sha256": "91de023511f4520f412e1ca3f8f4e65c4ffd9d19c10ad706a3e776a6dd0001b5",
+          "trigger": {
+            "source": "Native spawn_vehicles attempt log",
+            "metric": "initial ego or other actor spawn result",
+            "failure_condition": "either spawn_actor returns no actor at the primary start point"
+          },
+          "changed_knobs": [
+            "ego initial spawn point 2 m upstream on the same approach",
+            "other initial spawn point 2 m upstream on the same approach"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__wide_same_crossing --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-fallback-seven-v1/wide_same_crossing/offline",
+            "exit_code": 0,
+            "construction_sha256": "91de023511f4520f412e1ca3f8f4e65c4ffd9d19c10ad706a3e776a6dd0001b5",
+            "log": "cases/wide_same_crossing/fallback1-offline.log",
+            "log_sha256": "571395e5c71442cf2ebf51bb79e3b36461ed32b0641a5f399ab9e8348abc5feb"
+          },
+          "compatibility": {
+            "receipt": "cases/wide_same_crossing/fallback1-compatibility.json",
+            "sha256": "bf45f55d30c815d175858ab49f63aee347916e1dd65c57d3646357e3f96739d9",
+            "log": "cases/wide_same_crossing/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/wide_same_crossing/fallback1-compatibility-negative.log"
+          }
+        }
+      ]
     }
   ]
 }
