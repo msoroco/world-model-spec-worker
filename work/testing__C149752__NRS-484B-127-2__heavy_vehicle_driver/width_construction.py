@@ -14,7 +14,10 @@ from truck_site import CLASS_MAP, MIN_EDGE_MARGIN_M, ROAD_LENGTH_M, validate_sit
 WIDTH_M = 80 * .0254
 CASES = {'ego_width_below_80in': ('ego','below'),
          'ego_width_at_80in': ('ego','at'),
-         'lead_width_below_80in': ('lead','below')}
+         'ego_width_above_80in': ('ego','above'),
+         'lead_width_below_80in': ('lead','below'),
+         'lead_width_at_80in': ('lead','at'),
+         'lead_width_above_80in': ('lead','above')}
 
 
 def _truck_blueprint(blueprint):
@@ -27,6 +30,7 @@ def _truck_blueprint(blueprint):
 def _matches(width,category,tolerance_m):
     if category=='below':return width < WIDTH_M-tolerance_m
     if category=='at':return abs(width-WIDTH_M)<=tolerance_m
+    if category=='above':return width > WIDTH_M+tolerance_m
     raise ValueError('Unknown width category')
 
 

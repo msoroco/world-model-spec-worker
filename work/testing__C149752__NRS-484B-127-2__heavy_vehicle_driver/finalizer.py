@@ -12,7 +12,10 @@ GAP_TARGETS_M = {'following_under_500_ft': 150.0, 'gap_at_500ft': 152.4,
                  'gap_above_500ft': 155.0}
 WIDTH_CASES = {'ego_width_below_80in': ('ego','below'),
                'ego_width_at_80in': ('ego','at'),
-               'lead_width_below_80in': ('lead','below')}
+               'ego_width_above_80in': ('ego','above'),
+               'lead_width_below_80in': ('lead','below'),
+               'lead_width_at_80in': ('lead','at'),
+               'lead_width_above_80in': ('lead','above')}
 
 
 def sha(path):
@@ -110,7 +113,7 @@ def finalize(attempt: Path, output: Path):
         role, category = WIDTH_CASES[suffix]
         threshold = 80 * .0254
         value = widths[role]
-        requested = 2.0 if category=='below' else threshold
+        requested = {'below': 2.0, 'at': threshold, 'above': 2.1}[category]
         target_check = {'target': role+'_minimum_overall_width_m',
                         'requested': requested, 'measured': value,
                         'method': 'minimum original Native overall body width for '+role,

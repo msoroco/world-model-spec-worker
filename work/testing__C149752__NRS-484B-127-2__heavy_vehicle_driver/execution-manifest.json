@@ -7,7 +7,7 @@
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
       "construction": "construction.json",
-      "construction_sha256": "e50c07bc2651fec5f41a0d3e3a91bc4fb6408ffd76477db463571da50209087e",
+      "construction_sha256": "df1829a04cfa971b54a676904610520d39577b1bce05e8443fd20a3eb888894d",
       "kind": "delivery",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe.json",
       "measurement_contract": "measurement-contract.json",
@@ -77,25 +77,25 @@
         }
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --output .runtime-work/c149752-first-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "e50c07bc2651fec5f41a0d3e3a91bc4fb6408ffd76477db463571da50209087e",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --output .runtime-work/c149752-root-refresh/offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "df1829a04cfa971b54a676904610520d39577b1bce05e8443fd20a3eb888894d",
         "exit_code": 0,
-        "log": "cpu-tests.log",
-        "log_sha256": "143ffde725a33e2c5e250775fb904716778641e2857057450f2afc77b437d826"
+        "log": "root-refresh-offline.log",
+        "log_sha256": "f8dff44f4103f852d5b29fc87b933007522922ab489a4ef2f714219bf0a2b68a"
       },
       "compatibility": {
         "receipt": "following-under-compatibility.json",
-        "sha256": "a3a586abd2c9a6346841dca84f3c60998e054ad37d9dc35263d1359af2755f76",
+        "sha256": "9449c5a25c911a91599be873dd219c0d3176e3fe01b1b3f7d13b535eb6c277b6",
         "log": "following-under-compatibility-analysis.log"
       },
       "negative": {
         "log": "following-under-negative-analysis.log",
-        "log_sha256": "90b027c1dd1bdc98af93f7713aaa56083a23f3aafc71c5ed8925e0025da1f883"
+        "log_sha256": "ee0f6837d88c05abc3175ba39f2d8a043b19726622c211434b5c89f03c7b5301"
       },
       "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --attempt .runtime-work/c149752-first-saved-attempt-v1 --output .runtime-work/c149752-first-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --attempt .runtime-work/c149752-root-refresh/compat --output .runtime-work/c149752-root-refresh/saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "receipt": "following-under-saved-processing.json",
-        "receipt_sha256": "bb447d2a00451aded0d30871d97d2d56d4048a471575b3836525a478e7e65907",
+        "receipt_sha256": "8a41794f35048aaac262480349c51d373b2af1685c89b0070a0bd4fb2efeec52",
         "recorded_only": true,
         "scope": "nine-frame synthetic diagnostic saved-only software processing",
         "test_exit_code": 0,
@@ -104,7 +104,7 @@
       },
       "physical_preparation": {
         "receipt": "physical-proofs/following_under_500_ft/receipt.json",
-        "sha256": "eb341421ab5199c33b0e0ce8c50a46a1d2c3a81ad87252050ba7668065f334f7"
+        "sha256": "8d4b2bdba502c601e6b29d2f31906a7f520db1dd0115152a826d2026c24ef800"
       },
       "candidate_risk": {
         "reason": "following_under_500_ft: source-camera coverage of the truck body and relation may fail under Native motion; distinct camera poses are predeclared alternatives",
@@ -228,6 +228,32 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-root-refresh/saved/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --output-root .runtime-work/c149752-delivery-audit/following_under_500_ft",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/following_under_500_ft/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/following_under_500_ft/pixel-review.json --output .runtime-work/c149752-delivery-audit/following_under_500_ft/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/following_under_500_ft/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -454,6 +480,32 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-at-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft --output-root .runtime-work/c149752-delivery-audit/following_at_500_ft",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/following_at_500_ft/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/following_at_500_ft/pixel-review.json --output .runtime-work/c149752-delivery-audit/following_at_500_ft/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/following_at_500_ft/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -680,6 +732,32 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-overtake-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass --output-root .runtime-work/c149752-delivery-audit/overtaking_pass",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/overtaking_pass/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/overtaking_pass/pixel-review.json --output .runtime-work/c149752-delivery-audit/overtaking_pass/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/overtaking_pass/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -906,6 +984,32 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_over_500_ft",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-over-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_over_500_ft --output-root .runtime-work/c149752-delivery-audit/following_over_500_ft",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/following_over_500_ft/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_over_500_ft --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/following_over_500_ft/pixel-review.json --output .runtime-work/c149752-delivery-audit/following_over_500_ft/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/following_over_500_ft/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -1132,6 +1236,32 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_lanes",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-lanes-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_lanes --output-root .runtime-work/c149752-delivery-audit/two_lanes",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/two_lanes/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_lanes --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/two_lanes/pixel-review.json --output .runtime-work/c149752-delivery-audit/two_lanes/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/two_lanes/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -1166,7 +1296,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_above_80in-fallback1-compatibility.json",
-            "sha256": "dac10355b139f3715f37007c41c9efd096e82d4bf9b55eb1674b6277bc4de123",
+            "sha256": "7a3405e3917afbb56cb02b590868265e0e809fba198ed1574fdb139d28f3cffa",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_above_80in-fallback1-negative.log"
           },
@@ -1204,7 +1334,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_above_80in-fallback2-compatibility.json",
-            "sha256": "009121d9fa0b7871660f4dde12ea5b55260ddfa6c6e7080ae9764286153471b6",
+            "sha256": "08626970f10c704b4bf593916a8c9fdd80e59c19418b7b47f739cf5695c7435d",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_above_80in-fallback2-negative.log"
           },
@@ -1242,7 +1372,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_above_80in-fallback3-compatibility.json",
-            "sha256": "7a562587f78316eee86bf67875860f3e85359061618cab01b2b40d602dc7e1ac",
+            "sha256": "8a1f673ca1f10be795f40082a453513938dbec58ef0abfea2d60d30ad9923f1d",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_above_80in-fallback3-negative.log"
           },
@@ -1355,6 +1485,37 @@
       "physical_preparation": {
         "receipt": "physical-proofs/ego_width_above_80in/receipt.json",
         "sha256": "ef4acde41b752d50f00d6b53565d3f0b66807f9ac385011372e584a3ad38d2f8"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-ego_width_above_80in-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in --output-root .runtime-work/c149752-delivery-audit/ego_width_above_80in",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/ego_width_above_80in/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/ego_width_above_80in/pixel-review.json --output .runtime-work/c149752-delivery-audit/ego_width_above_80in/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/ego_width_above_80in/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -1389,7 +1550,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_at_80in-fallback1-compatibility.json",
-            "sha256": "fd921e760e6a49987e288e5782121765d4338098892ef67de316be2440a168a0",
+            "sha256": "b95aa3c1cff7ae23ee0fabdbd655505a5b890ed22be7c088bfc39c405033da5e",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_at_80in-fallback1-negative.log"
           },
@@ -1427,7 +1588,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_at_80in-fallback2-compatibility.json",
-            "sha256": "6aa02906b508f6afc20d411225a130fd74c9a39c5560a1ac6f2cc012e7f6e26d",
+            "sha256": "8e2bb46424306fc671295db0ad972d9b0b08a4acbb967af776c899a16bf3d345",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_at_80in-fallback2-negative.log"
           },
@@ -1465,7 +1626,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_at_80in-fallback3-compatibility.json",
-            "sha256": "5c933ff39b9b739d1acb37ec1efa675a3cfc738d1c08b1d824497d3e7125c722",
+            "sha256": "fcee5a4ae6c0140413714a0d54661f5184dc3cfe4bb9e49612544caeb8977b71",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_at_80in-fallback3-negative.log"
           },
@@ -1578,6 +1739,37 @@
       "physical_preparation": {
         "receipt": "physical-proofs/ego_width_at_80in/receipt.json",
         "sha256": "7deff7dd1ef6d3263063ba0c51c971af4706982fe04bb26fcfd7a50a9a71b862"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-ego_width_at_80in-saved-v2/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --output-root .runtime-work/c149752-delivery-audit/ego_width_at_80in",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/ego_width_at_80in/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/ego_width_at_80in/pixel-review.json --output .runtime-work/c149752-delivery-audit/ego_width_at_80in/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/ego_width_at_80in/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -1612,7 +1804,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_below_80in-fallback1-compatibility.json",
-            "sha256": "48a34a07dc6754ff117356b656e65da1800ab04c68e0e3289707d7e9ebdfbdd3",
+            "sha256": "dec880693ca4424a2571cfeb02e336a89683eb2ce3979e1eeb68f5fea612dadd",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_below_80in-fallback1-negative.log"
           },
@@ -1650,7 +1842,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_below_80in-fallback2-compatibility.json",
-            "sha256": "6d008730894160911b88cda786a3610c63fbfa04bce44cd0933688b2891c8534",
+            "sha256": "c35b89a6b1052eabf8737824307a453a6446328367a24963b7b6a692663adcaa",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_below_80in-fallback2-negative.log"
           },
@@ -1688,7 +1880,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/ego_width_below_80in-fallback3-compatibility.json",
-            "sha256": "e54912176b15ed39a51e1eb7d85a6833c7d20023a80ffd5669d0e24849666d0c",
+            "sha256": "71285a61cc9cf020978bc4362ee60796f06b150093288b200abd2e02671d2b52",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/ego_width_below_80in-fallback3-negative.log"
           },
@@ -1801,6 +1993,37 @@
       "physical_preparation": {
         "receipt": "physical-proofs/ego_width_below_80in/receipt.json",
         "sha256": "425283cd96db6f276705718298e5a3c9a7fd6e096c5ef2b7209e9f2488dba4a6"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-ego-width-below-saved-v2/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --output-root .runtime-work/c149752-delivery-audit/ego_width_below_80in",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/ego_width_below_80in/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/ego_width_below_80in/pixel-review.json --output .runtime-work/c149752-delivery-audit/ego_width_below_80in/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/ego_width_below_80in/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -1835,7 +2058,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_above_80in-fallback1-compatibility.json",
-            "sha256": "7bc9d5b300deaac24c788402c5f7b55037d9d39bdf15b323f5fddc94fd4d3c51",
+            "sha256": "72e0175272fb177900966cec0ed13d314bf8c5cd8bb6ff6ce7d5ab015e4b0346",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_above_80in-fallback1-negative.log"
           },
@@ -1873,7 +2096,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_above_80in-fallback2-compatibility.json",
-            "sha256": "1429904342ff6ba28bc147023a1663c6027f4464b6f647d039cad486796706d1",
+            "sha256": "b60c2cdf81faabfe3274ce37ff69385a9586fd831ae442c20d14b3606ee6a15b",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_above_80in-fallback2-negative.log"
           },
@@ -1911,7 +2134,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_above_80in-fallback3-compatibility.json",
-            "sha256": "6418e0c7d3932b0d2852d27f1a5c7aa8f8f2afd595fbb4ad0a20016b75555a06",
+            "sha256": "5bb0ed6bcba7dcdf6eb42548383d7ed732dde9d74092ebf8df755151c348e793",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_above_80in-fallback3-negative.log"
           },
@@ -2024,6 +2247,37 @@
       "physical_preparation": {
         "receipt": "physical-proofs/lead_width_above_80in/receipt.json",
         "sha256": "ff8cc1281469671075b4d6b0c7655b85f12d24c23dbe90a70f74ff5ef512a746"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-lead_width_above_80in-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in --output-root .runtime-work/c149752-delivery-audit/lead_width_above_80in",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/lead_width_above_80in/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/lead_width_above_80in/pixel-review.json --output .runtime-work/c149752-delivery-audit/lead_width_above_80in/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/lead_width_above_80in/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -2058,7 +2312,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_at_80in-fallback1-compatibility.json",
-            "sha256": "829b28bae5c2ea41721a49237cf471ac0fa28a3ac9dc24a95b943bb267246f80",
+            "sha256": "0a4cc69e89822d4f3cd548e13696993b0ab6595e6c2e9ebaa544d1aa68ce231c",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_at_80in-fallback1-negative.log"
           },
@@ -2096,7 +2350,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_at_80in-fallback2-compatibility.json",
-            "sha256": "b9eac79747cb7b05966b78b8dd5aaa278e19d5d11ba69eece5e9d106c4ec4ea0",
+            "sha256": "37ce1d80126690e42d88bdac48cf94d58086e02f2b33d0ee4be236e99ce3b2e3",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_at_80in-fallback2-negative.log"
           },
@@ -2134,7 +2388,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_at_80in-fallback3-compatibility.json",
-            "sha256": "75afefe2204ec1312b407f691d62961642b63b1dc11b1cc18e2aa3a8282932dc",
+            "sha256": "e5230587a7c374a016c5ee4ea32dc09c15daa53240ddb1fece2a86e0b328350e",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_at_80in-fallback3-negative.log"
           },
@@ -2247,6 +2501,37 @@
       "physical_preparation": {
         "receipt": "physical-proofs/lead_width_at_80in/receipt.json",
         "sha256": "e4392c2551796f3cf8a4df148c1e91bc1ea0ffe0101c24d3d6f0334a1311122d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-lead_width_at_80in-saved-v1/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in --output-root .runtime-work/c149752-delivery-audit/lead_width_at_80in",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/lead_width_at_80in/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/lead_width_at_80in/pixel-review.json --output .runtime-work/c149752-delivery-audit/lead_width_at_80in/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/lead_width_at_80in/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     },
     {
@@ -2281,7 +2566,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_below_80in-fallback1-compatibility.json",
-            "sha256": "1d97c19de31190adeee60438d3c32e87455e52201fd65ff77add4ad37690bfd5",
+            "sha256": "8c4ab7c33bfb51a5a461dbcfa9fb85812d792cdcaa31b741370d85ad953bfbc5",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_below_80in-fallback1-negative.log"
           },
@@ -2319,7 +2604,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_below_80in-fallback2-compatibility.json",
-            "sha256": "a9ae77257ee74829173d6a091377b602288e3755e44edb0af0663d1cbc30d6fa",
+            "sha256": "54780530914c4d61e1eaefa22e3d8f13b7f1b96d7d072f7121115eed2174e9b2",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_below_80in-fallback2-negative.log"
           },
@@ -2357,7 +2642,7 @@
           },
           "compatibility": {
             "receipt": "width-proofs/lead_width_below_80in-fallback3-compatibility.json",
-            "sha256": "84f413b7b9910428497fe9317e02895e5fbd96ca6b2e3b78e12aa115364f81fc",
+            "sha256": "f1e8592b91511c1b1954807296b39b7b32a76c2fcd2b11822bc38b531a9e6ae6",
             "log": "following-under-compatibility-analysis.log",
             "negative_log": "width-proofs/lead_width_below_80in-fallback3-negative.log"
           },
@@ -2470,6 +2755,37 @@
       "physical_preparation": {
         "receipt": "physical-proofs/lead_width_below_80in/receipt.json",
         "sha256": "0de8b8d4f99e199560a57bcad446ebc66e8f2a21ca29912e49d3064196b241b8"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149752-lead_width_below_80in-saved-v2/v0001/analysis --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --output-root .runtime-work/c149752-delivery-audit/lead_width_below_80in",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149752-delivery-audit/lead_width_below_80in/attempt --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149752-delivery-audit/lead_width_below_80in/pixel-review.json --output .runtime-work/c149752-delivery-audit/lead_width_below_80in/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149752-delivery-audit/lead_width_below_80in/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "delivery-audits-negative.log",
+        "negative_log_sha256": "fdc6d675c387944fc66154e9c1a025608433676af6bb51c048e95c94ae42f4b2",
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-audits-positive.log",
+        "test_log_sha256": "128e9759d060ed51dbb9f6297ef8b926dc871147834fdc61e1671ffa781f1c26"
       }
     }
   ]
