@@ -163,6 +163,13 @@ class CrossingTests(unittest.TestCase):
                 (root / (camera + ".mkv")).write_text("CPU fixture placeholder; no pixel claim\n")
             runtime_output = root / "runtime-analysis.json"
             measured = measure.runtime_finalize(root, runtime_output)
+            from worker_exchange.measurement_contract import validate, verify_report
+            contract = json.loads((ROOT / "measurement-contract.json").read_text())
+            plan = json.loads((ROOT / "case-plan.json").read_text())
+            self.assertEqual(len(validate(contract, plan["requirement_dispositions"],
+                (ROOT / "crossing_measurements.py").read_text(), config["selected_case_id"])), 4)
+            self.assertEqual(set(verify_report(contract,
+                json.loads(runtime_output.read_text()), root)), set(measured))
             runtime_result = json.loads((root / "result.json").read_text())
             self.assertEqual(len(measured), 4)
             self.assertEqual(runtime_result["case_id"], config["selected_case_id"])

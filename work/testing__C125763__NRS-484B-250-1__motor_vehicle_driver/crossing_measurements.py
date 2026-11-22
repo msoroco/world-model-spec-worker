@@ -127,6 +127,24 @@ def finalize(root: Path, output: Path) -> dict:
     return report
 
 
+def source_crossing_identity(context):
+    return {key: context[key] for key in
+            ("native_map_id", "intersection_id", "ego_highway_id", "other_highway_id")}
+
+
+def complete_body_first_entry(report):
+    return report["first_body_entry"]
+
+
+def original_conflict_brake_frames(frames):
+    return {"conflict_brake_frames": frames, "legal_yield_judgment": "unresolved"}
+
+
+def native_yield_sign_identity(context):
+    return {"native_yield_sign_id": context["native_yield_sign_id"],
+            "official_device_exclusion_judgment": "unresolved"}
+
+
 def runtime_finalize(attempt: Path, output: Path) -> dict:
     """Finalize a retained Native attempt through the pinned result protocol."""
     from worker_exchange.native_output import physical_result, write_result
@@ -180,21 +198,18 @@ def runtime_finalize(attempt: Path, output: Path) -> dict:
                for name in required}
     measurements = {
         "crossing_identity": {"method": "source_crossing_identity",
-            "value": {key: context[key] for key in
-                      ("native_map_id", "intersection_id", "ego_highway_id", "other_highway_id")},
+            "value": source_crossing_identity(context),
             "sources": {"junction_context.json": sources["junction_context.json"]}},
         "entry_order": {"method": "complete_body_first_entry",
-            "value": report["first_body_entry"],
+            "value": complete_body_first_entry(report),
             "sources": {name: sources[name] for name in
                         ("crossing_history.jsonl", "video_frames.jsonl", "junction_context.json")}},
         "yield_observation": {"method": "original_conflict_brake_frames",
-            "value": {"conflict_brake_frames": conflict_frames,
-                      "legal_yield_judgment": "unresolved"},
+            "value": original_conflict_brake_frames(conflict_frames),
             "sources": {name: sources[name] for name in
                         ("controller_history.jsonl", "crossing_history.jsonl", "video_frames.jsonl")}},
         "device_qualification": {"method": "native_yield_sign_identity",
-            "value": {"native_yield_sign_id": context["native_yield_sign_id"],
-                      "official_device_exclusion_judgment": "unresolved"},
+            "value": native_yield_sign_identity(context),
             "sources": {name: sources[name] for name in
                         ("junction_context.json", "crossing_history.jsonl")}},
     }
