@@ -188,7 +188,8 @@ def main():
     args=parser.parse_args()
     if args.check:check();return
     if not args.output_dir:parser.error('--output-dir is required for Native capture')
-    raise ValueError('Native signal-head source binding and capture remain under construction')
+    from native_capture import run_native
+    run_native(load_scene(),args.output_dir,args.host,args.port)
 
 
 if __name__=='__main__':main()

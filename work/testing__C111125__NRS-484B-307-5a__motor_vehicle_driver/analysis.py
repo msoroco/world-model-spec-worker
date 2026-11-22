@@ -42,6 +42,7 @@ def measure(attempt):
     if len({len(signals),len(ego),len(traffic)})!=1:
         raise ValueError('original signal, ego and participant frame counts differ')
     first_arrow=None;first_entry=None;occupied_frames=[];unresolved=[];violated_hold=[]
+    unverified_presence=[]
     headings=[];previous=None
     for signal,body,participants in zip(signals,ego,traffic):
         identity=(signal.get('frame'),signal.get('time_s'))
@@ -66,15 +67,17 @@ def measure(attempt):
         headings.append(heading)
         if right>=context['intersection_bounds_m'][0] and first_entry is None:
             first_entry=identity
-        if first_arrow is None:continue
         present=[]
         for person in participants.get('participants',[]):
             if not {'id','role','body_vertices_m','lawfully_present','lawful_presence_source'}<=person.keys():
                 raise ValueError('participant source or lawful presence missing')
-            if not person['lawful_presence_source']:
-                raise ValueError('lawful presence lacks source')
             footprint=person['body_vertices_m']
             body_bounds(footprint)
+            if person['lawfully_present'] is None:
+                unverified_presence.append(identity[0]);continue
+            if type(person['lawfully_present']) is not bool or not person['lawful_presence_source']:
+                raise ValueError('lawful presence lacks source')
+            if first_arrow is None:continue
             regions=[context['intersection_bounds_m'],*context['adjacent_crosswalk_bounds_m']]
             if person['lawfully_present'] and any(overlaps(footprint,r) for r in regions):
                 present.append(person['id'])
@@ -90,6 +93,7 @@ def measure(attempt):
             'first_ego_intersection_entry_frame':first_entry[0] if first_entry else None,
             'first_ego_intersection_entry_time_s':first_entry[1] if first_entry else None,
             'lawfully_occupied_frames':occupied_frames,
+            'unverified_lawful_presence_frames':sorted(set(unverified_presence)),
             'ego_past_stop_line_during_occupancy_frames':violated_hold,
             'entry_without_verified_arrow_frames':unresolved,
             'observed_heading_change_deg':(headings[-1]-headings[0]+180)%360-180,

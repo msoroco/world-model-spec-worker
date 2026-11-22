@@ -50,6 +50,8 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
             raise ValueError('original frame/time join changed')
     from analysis import measure
     measured=measure(attempt)
+    if measured['unverified_lawful_presence_frames']:
+        raise ValueError('original participant lawful-presence source unverified')
     if measured['first_sole_arrow_frame'] is None or measured['first_ego_intersection_entry_frame'] is None:
         raise ValueError('sole arrow or straight entry unobserved')
     if measured['entry_without_verified_arrow_frames']:

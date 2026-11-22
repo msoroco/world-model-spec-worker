@@ -78,5 +78,20 @@ class SavedArrowTests(unittest.TestCase):
             result=analysis.measure(path)
             self.assertIn(5,result['entry_without_verified_arrow_frames'])
 
+    def test_unverified_lawful_presence_is_retained_not_inferred(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=write_fixture(temp)
+            rows=[json.loads(line) for line in (path/'participant-history.jsonl').read_text().splitlines()]
+            rows[1]['participants'][0]['lawfully_present']=None
+            rows[1]['participants'][0]['lawful_presence_source']=None
+            source=path/'participant-history.jsonl'
+            source.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            acquisition=json.loads((path/'acquisition.json').read_text())
+            acquisition[source.name]['sha256']=hashlib.sha256(source.read_bytes()).hexdigest()
+            (path/'acquisition.json').write_text(json.dumps(acquisition))
+            measured=analysis.measure(path)
+            self.assertEqual(measured['unverified_lawful_presence_frames'],[1])
+            self.assertEqual([row['frame'] for row in measured['lawfully_occupied_frames']],[2])
+
 
 if __name__=='__main__':unittest.main()
