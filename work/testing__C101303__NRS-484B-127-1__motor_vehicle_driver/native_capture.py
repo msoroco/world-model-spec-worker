@@ -233,6 +233,12 @@ def run_native(scene, output, host, port):
                    'tire_friction_request': scene.get('tire_friction'),
                    'camera_profile': 'overview1080-capability'}
         _write(output/'following-context.json', context)
+        _write(output/'surface_context.json', {
+            'case_id': scene['case_id'], 'map_source': native_map.name,
+            'road_id': geometry['road_id'],
+            'following_lane_id': geometry['following_lane_id'],
+            'destination_lane_id': geometry['target_lane_id'],
+            'source_ref': 'original Native map and weather context'})
         _write(output/'acquisition-provenance.json', {
             'provenance_kind': 'native', 'diagnostic_fixture': False,
             'method': 'original CARLA live run'})
@@ -241,7 +247,8 @@ def run_native(scene, output, host, port):
         frame_map = FrameMap(output/'video_frames.jsonl')
         start_time = world.get_snapshot().timestamp.elapsed_seconds
         phase = 'capturing'
-        with (output/'following-history.jsonl').open('x', buffering=1) as stream:
+        with ((output/'following-history.jsonl').open('x', buffering=1) as stream,
+              (output/'following_samples.jsonl').open('x', buffering=1) as physical_stream):
             for index in range(round(scene['duration_s']*scene['rate_hz'])):
                 t = (index+1)/scene['rate_hz']
                 gap = body_gap(_body(ego), _body(leader), route_xy)
@@ -275,6 +282,11 @@ def run_native(scene, output, host, port):
                              relative_time_s=elapsed,
                              following_lane_id=geometry['following_lane_id'])
                 stream.write(json.dumps(row, allow_nan=False)+'\n')
+                physical_stream.write(json.dumps({
+                    'frame': frame, 'time_s': elapsed,
+                    'ego_body_vertices_m': row['ego']['body_vertices_m'],
+                    'ego_lane_id': row['lane_change']['ego_lane_id']},
+                    allow_nan=False)+'\n')
                 rows += 1
         phase = 'closing'
         capture.close(); capture = None
@@ -282,6 +294,7 @@ def run_native(scene, output, host, port):
         cameras.close(); cameras = None
         names = ['trace.jsonl', 'video_frames.jsonl',
                  'following-history.jsonl', 'following-context.json',
+                 'following_samples.jsonl', 'surface_context.json',
                  'road.xodr', 'carla_recorder.log',
                  *[name+'.mkv' for name, *_ in CAMERAS]]
         _write(output/'acquisition.json', {name: {

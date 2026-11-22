@@ -27,7 +27,7 @@ def fixture(path, config, construction, kind):
         return
     xs = ([0, 1, 2, 3, 4, 5, 6, 7, 8] if kind == 'complete_motion'
           else [index / 10 for index in range(9)])
-    trace, mapping = [], []
+    trace, mapping, following = [], [], []
     for index, x in enumerate(xs):
         frame, time_s = 200 + index, index / 20
         trace.append({'frame': frame, 'time_s': time_s,
@@ -36,7 +36,16 @@ def fixture(path, config, construction, kind):
                       'speed_mps': 1})
         mapping.append({'video_frame': index, 'carla_frame': frame,
                         'time_s': time_s})
-    for name, values in [('trace.jsonl', trace), ('video_frames.jsonl', mapping)]:
+        following.append({'frame': frame, 'time_s': time_s,
+            'ego_body_vertices_m': [[x-1,-1,0],[x-1,1,0],
+                                    [x+1,-1,0],[x+1,1,0]],
+            'ego_lane_id': -2 if kind == 'complete_motion' and index >= 6 else -1})
+    write(path/'surface_context.json', {
+        'case_id': config['selected_case_id'],
+        'road_id': 12, 'following_lane_id': -1,
+        'destination_lane_id': -2, 'source_ref': 'synthetic CPU fixture'})
+    for name, values in [('trace.jsonl', trace), ('video_frames.jsonl', mapping),
+                         ('following_samples.jsonl', following)]:
         (path / name).write_text(''.join(json.dumps(row) + '\n' for row in values))
 
 

@@ -65,7 +65,19 @@ def write_case(case):
                             'leader_lane_id': -1, 'started': change}})
     files['following-history.jsonl'] = ''.join(json.dumps(row, sort_keys=True)+'\n'
                                                for row in history)
+    files['following_samples.jsonl'] = ''.join(json.dumps({
+        'frame': row['frame'], 'time_s': row['time_s'],
+        'ego_body_vertices_m': row['ego']['body_vertices_m'],
+        'ego_lane_id': row['lane_change']['ego_lane_id']}, sort_keys=True)+'\n'
+        for row in history)
+    files['surface_context.json'] = json.dumps({
+        'case_id': case['case_id'], 'map_source': context['map_source'],
+        'road_id': 12, 'following_lane_id': -1,
+        'destination_lane_id': -2,
+        'source_ref': 'synthetic diagnostic Native-shaped map context'},
+        sort_keys=True)+'\n'
     names = ['following-history.jsonl', 'following-context.json',
+             'following_samples.jsonl', 'surface_context.json',
              'video_frames.jsonl']
     files['acquisition.json'] = json.dumps({name: {'kind': 'original_native',
         'sha256': digest(files[name])} for name in names},sort_keys=True)+'\n'

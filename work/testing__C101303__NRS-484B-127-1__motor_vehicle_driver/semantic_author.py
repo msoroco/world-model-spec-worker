@@ -60,7 +60,14 @@ channels = [
     ('ego_leader_body_speed_history', 'Original distinct ego/leader bodies and both speeds.'),
     ('traffic_condition_history', 'Original surrounding actor inventory, weather and tire friction.'),
     ('following_lane_history', 'Original road/lane identities and lane-change onset.'),
-    ('camera_frame_map', 'Synchronized original camera frame identities.')]
+    ('camera_frame_map', 'Synchronized original camera frame identities.'),
+    ('along_route_body_gap', 'Original per-frame body spacing while following.'),
+    ('ego_speed', 'Original per-frame ego speed.'),
+    ('leader_speed', 'Original per-frame leader speed.'),
+    ('relative_speed', 'Original per-frame speed difference.'),
+    ('surrounding_vehicle_count', 'Original per-frame traffic count.'),
+    ('highway_condition', 'Original per-frame weather and tire friction.'),
+    ('lane_change_transition', 'Original per-frame lane transition.')]
 contexts = [
     ('hill_route_context', 'Original connected Native waypoints and hill crest elevation.'),
     ('highway_context', 'Original road/weather context; public-highway status requires review.')]

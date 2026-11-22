@@ -8,6 +8,7 @@ from analysis import measure
 
 
 ORIGINAL = ('following-history.jsonl', 'following-context.json',
+            'following_samples.jsonl', 'surface_context.json',
             'trace.jsonl', 'video_frames.jsonl', 'acquisition.json', 'road.xodr')
 VIDEOS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
           'driver_reference.mkv')
@@ -68,16 +69,22 @@ def audit(attempt, processing, decode_receipt, case_id,
         if source.get('kind') != 'original_native' or source.get('sha256') != sha(attempt/name):
             raise ValueError('original source absent or changed: '+name)
     history = rows(attempt/'following-history.jsonl')
+    physical = rows(attempt/'following_samples.jsonl')
     trace = rows(attempt/'trace.jsonl')
     mapping = rows(attempt/'video_frames.jsonl')
-    if not history or len(history) != len(trace) or len(history) != len(mapping):
-        raise ValueError('original following, trace or video frame history incomplete')
-    for index, (row, motion, frame) in enumerate(zip(history, trace, mapping)):
+    if (not history or len(history) != len(physical) or
+            len(history) != len(trace) or len(history) != len(mapping)):
+        raise ValueError('original following, physical, trace or video frame history incomplete')
+    for index, (row, transition, motion, frame) in enumerate(
+            zip(history, physical, trace, mapping)):
         identity = (frame.get('carla_frame'), frame.get('time_s'))
         if (frame.get('video_frame') != index or
                 any((item.get('frame'), item.get('time_s')) != identity
-                    for item in (row, motion))):
+                    for item in (row, transition, motion))):
             raise ValueError('original following/trace/camera frame join changed')
+        if (transition.get('ego_body_vertices_m') != row.get('ego', {}).get('body_vertices_m') or
+                transition.get('ego_lane_id') != row.get('lane_change', {}).get('ego_lane_id')):
+            raise ValueError('original physical lane transition differs from following history')
         ego, leader = row.get('ego', {}), row.get('leader', {})
         other_ids = row.get('traffic_actor_ids')
         if (not isinstance(other_ids, list) or
@@ -111,9 +118,14 @@ def audit(attempt, processing, decode_receipt, case_id,
     media_verify(video, decode_receipt, len(mapping),
                  mapping_sha256=sha(attempt/'video_frames.jsonl'))
     context = read(attempt/'following-context.json')
+    surface = read(attempt/'surface_context.json')
     route = context.get('common_following_route_xy_m')
     if (not isinstance(route, list) or len(route) < 2 or
             context.get('case_id') != case_id or
+            surface.get('case_id') != case_id or
+            surface.get('road_id') != context.get('road_id') or
+            surface.get('following_lane_id') != context.get('following_lane_id') or
+            surface.get('destination_lane_id') != context.get('target_lane_id') or
             context.get('route_source') != 'Native CARLA connected waypoints' or
             context.get('hill_crest', {}).get('source_ref') !=
             'Native CARLA map waypoint elevation'):

@@ -27,6 +27,14 @@ def setup(path):
     (path/'following-context.json').write_text(json.dumps(context))
     (path/'trace.jsonl').write_text(''.join(json.dumps({
         'frame': row['frame'], 'time_s': row['time_s']})+'\n' for row in rows))
+    (path/'following_samples.jsonl').write_text(''.join(json.dumps({
+        'frame': row['frame'], 'time_s': row['time_s'],
+        'ego_body_vertices_m': row['ego']['body_vertices_m'],
+        'ego_lane_id': row['lane_change']['ego_lane_id']})+'\n'
+        for row in rows))
+    (path/'surface_context.json').write_text(json.dumps({
+        'case_id': case_id, 'road_id': 12, 'following_lane_id': -1,
+        'destination_lane_id': -2}))
     (path/'video_frames.jsonl').write_text(''.join(json.dumps({
         'carla_frame': row['frame'], 'time_s': row['time_s'],
         'video_frame': i})+'\n' for i, row in enumerate(rows)))
@@ -35,6 +43,7 @@ def setup(path):
         (path/(name+'.mkv')).write_bytes(b'synthetic camera bytes')
     acquisition = {name: {'kind': 'original_native', 'sha256': sha(path/name)}
         for name in ('following-history.jsonl', 'following-context.json',
+                     'following_samples.jsonl', 'surface_context.json',
                      'trace.jsonl', 'video_frames.jsonl', 'road.xodr',
                      'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
                      'driver_reference.mkv')}

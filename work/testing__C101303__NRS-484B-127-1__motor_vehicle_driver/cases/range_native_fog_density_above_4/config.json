@@ -95,6 +95,69 @@
           "time_window": "45 s with steady following at 14..20 s and later lane change",
           "reference_frame": "original CARLA world frame and elapsed time",
           "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "along_route_body_gap",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame body gap during same-lane following; later frames mark the gap inapplicable.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "ego_speed",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame ego speed.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "leader_speed",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame leader speed.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "relative_speed",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame ego-minus-leader speed.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "surrounding_vehicle_count",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame leader-plus-traffic actor count.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "highway_condition",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame Native weather and wheel friction.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "lane_change_transition",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original per-frame road and lane transition.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
         }
       ],
       "context_inputs": [
@@ -116,9 +179,14 @@
     }
   },
   "physical_completion": {
-    "criterion": "travel_progress",
-    "motion_source": "trace.jsonl",
-    "position_key": "position_m",
+    "criterion": "lane_transition",
+    "motion_source": "following_samples.jsonl",
+    "body_key": "ego_body_vertices_m",
+    "lane_key": "ego_lane_id",
+    "destination_lane": -2,
+    "context_sources": [
+      "surface_context.json"
+    ],
     "minimum_progress_m": 5,
     "minimum_samples": 2,
     "engineering_tolerances_not_legal": true

@@ -39,7 +39,7 @@ def main():
                 'synthetic_cpu_audit_probe'):
             raise RuntimeError('synthetic audit proof failed for '+suffix)
         entry['delivery_acceptance'] = {
-            'case_id': entry['case_id'], 'sets': ['full-test'],
+            'case_id': entry['case_id'], 'sets': ['demo-test', 'full-test'],
             'checks': ['native_source', 'all_participants', 'time_join',
                        'full_video_decode', 'actual_pixels', 'physical_completion'],
             'script': 'delivery_audit.py',

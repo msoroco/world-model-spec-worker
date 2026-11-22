@@ -31,7 +31,14 @@ def recording_description():
     channels = [('ego_leader_body_speed_history', 'Original distinct actor bodies and speeds.'),
                 ('traffic_condition_history', 'Original surrounding actor inventory, weather and wheel friction.'),
                 ('following_lane_history', 'Original ego and leader lane/road identity by frame.'),
-                ('camera_frame_map', 'Synchronized original CARLA camera frame identities.')]
+                ('camera_frame_map', 'Synchronized original CARLA camera frame identities.'),
+                ('along_route_body_gap', 'Original per-frame body gap during same-lane following; later frames mark the gap inapplicable.'),
+                ('ego_speed', 'Original per-frame ego speed.'),
+                ('leader_speed', 'Original per-frame leader speed.'),
+                ('relative_speed', 'Original per-frame ego-minus-leader speed.'),
+                ('surrounding_vehicle_count', 'Original per-frame leader-plus-traffic actor count.'),
+                ('highway_condition', 'Original per-frame Native weather and wheel friction.'),
+                ('lane_change_transition', 'Original per-frame road and lane transition.')]
     return {'channels': [{'name': name, 'unit': 'structured record',
             'sampling_rate_hz': 20, 'method': method,
             'time_window': '45 s with steady following at 14..20 s and later lane change',
@@ -50,6 +57,11 @@ def recording_description():
 def build():
     plan = json.loads((ROOT/'case-plan.json').read_text())
     description = recording_description()
+    proposal_path = ROOT/'proposals/cases.json'
+    proposal = json.loads(proposal_path.read_text())
+    for item in proposal['cases']:
+        item['recording_description'] = description
+    write(proposal_path, proposal)
     all_ids = [case['case_id'] for case in plan['cases']]
     previous_path = ROOT/'execution-manifest.json'
     previous = json.loads(previous_path.read_text()) if previous_path.is_file() else {}
@@ -73,8 +85,11 @@ def build():
                       'fov_deg': 90} for name, width, height in CAMERAS],
                   'case': {'case_id': case_id,
                            'recording_description': description},
-                  'physical_completion': {'criterion': 'travel_progress',
-                      'motion_source': 'trace.jsonl', 'position_key': 'position_m',
+                  'physical_completion': {'criterion': 'lane_transition',
+                      'motion_source': 'following_samples.jsonl',
+                      'body_key': 'ego_body_vertices_m',
+                      'lane_key': 'ego_lane_id', 'destination_lane': -2,
+                      'context_sources': ['surface_context.json'],
                       'minimum_progress_m': 5, 'minimum_samples': 2,
                       'engineering_tolerances_not_legal': True}}
         config_path = folder/'config.json'

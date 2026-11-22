@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from following import measure as measure_following
+from following import body_gap, measure as measure_following
 
 
 def measure(attempt, case_id, *, diagnostic=False):
@@ -78,6 +78,7 @@ def saved_result(attempt, report):
             for row, frame in zip(history, frame_map)):
         raise ValueError('original camera/following frame join changed')
     context = json.loads(_original(attempt, acquisition, 'following-context.json').read_text())
+    route = context['common_following_route_xy_m']
     output = attempt/'channels'
     output.mkdir(exist_ok=True)
     streams = {
@@ -89,7 +90,20 @@ def saved_result(attempt, report):
              'highway_condition': row['highway_condition']}) for row in history],
         'following_lane_history': [(row['time_s'], row['lane_change']) for row in history],
         'camera_frame_map': [(row['time_s'], frame)
-                             for row, frame in zip(history, frame_map)]}
+                             for row, frame in zip(history, frame_map)],
+        'along_route_body_gap': [(row['time_s'], {
+            'gap_m': None if row['lane_change']['started'] else body_gap(
+                row['ego']['body_vertices_m'], row['leader']['body_vertices_m'], route),
+            'same_lane_following': not row['lane_change']['started']})
+            for row in history],
+        'ego_speed': [(row['time_s'], row['ego']['speed_mps']) for row in history],
+        'leader_speed': [(row['time_s'], row['leader']['speed_mps']) for row in history],
+        'relative_speed': [(row['time_s'],
+            row['ego']['speed_mps']-row['leader']['speed_mps']) for row in history],
+        'surrounding_vehicle_count': [(row['time_s'], row['surrounding_vehicle_count'])
+                                      for row in history],
+        'highway_condition': [(row['time_s'], row['highway_condition']) for row in history],
+        'lane_change_transition': [(row['time_s'], row['lane_change']) for row in history]}
     evidence = []
     for channel in planned['channels']:
         name = channel['name']

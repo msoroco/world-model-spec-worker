@@ -39,6 +39,9 @@ def main():
     context = json.loads((output/'following-context.json').read_text())
     context['case_id'] = args.case
     (output/'following-context.json').write_text(json.dumps(context))
+    surface = json.loads((output/'surface_context.json').read_text())
+    surface['case_id'] = args.case
+    (output/'surface_context.json').write_text(json.dumps(surface))
     config = json.loads((output/'config.json').read_text())
     config['selected_case_id'] = args.case
     (output/'config.json').write_text(json.dumps(config))
@@ -58,6 +61,7 @@ def main():
         shutil.copyfile(video, output/(name+'.mkv'))
     acquisition = json.loads((output/'acquisition.json').read_text())
     acquisition['following-context.json']['sha256'] = sha(output/'following-context.json')
+    acquisition['surface_context.json']['sha256'] = sha(output/'surface_context.json')
     for name in ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
                  'driver_reference.mkv'):
         acquisition[name]['sha256'] = sha(output/name)
