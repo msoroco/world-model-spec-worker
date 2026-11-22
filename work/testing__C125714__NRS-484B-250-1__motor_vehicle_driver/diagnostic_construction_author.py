@@ -115,7 +115,7 @@ def build():
         entries.append({"case_id": case_id, "kind": "diagnostic",
                         "construction": str((folder / "construction.json").relative_to(ROOT)),
                         "construction_sha256": sha(folder / "construction.json"),
-                        "measurement_contract": str((folder / "measurement-contract.json").relative_to(ROOT)) if suffix == "precedence" else None,
+                        "measurement_contract": str((folder / "measurement-contract.json").relative_to(ROOT)),
                         "measurement_procedure": {"entrypoint": "analysis.py"},
                         "fixture_recipe": str((folder / "diagnostic-recipe.json").relative_to(ROOT.parent.parent)),
                         "candidate_risk": {"status": "physical", "reason": "Native waypoint loading and public-roadway context are unverified."},

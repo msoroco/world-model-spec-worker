@@ -171,6 +171,8 @@ def audit_comparison(left_trace, right_trace, varying_fields):
             raise ValueError(f"fixed crossing changed: {name}")
     if "ego_approach_direction" not in fields and left["ego_approach_direction"] != right["ego_approach_direction"]:
         raise ValueError("undeclared difference: ego_approach_direction")
+    if "entry_order" not in fields and left["other_entered_before_ego"] != right["other_entered_before_ego"]:
+        raise ValueError("undeclared difference: entry_order")
     for name in ("devices", "approach_relation", "left_turn_intent", "left_turn_realized"):
         if name not in fields and left_trace["context"][name] != right_trace["context"][name]:
             raise ValueError(f"undeclared difference: {name}")
