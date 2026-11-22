@@ -127,10 +127,133 @@ def finalize(root: Path, output: Path) -> dict:
     return report
 
 
+def runtime_finalize(attempt: Path, output: Path) -> dict:
+    """Finalize a retained Native attempt through the pinned result protocol."""
+    from worker_exchange.native_output import physical_result, write_result
+
+    attempt, output = Path(attempt), Path(output)
+    assignment = "testing__C125763__NRS-484B-250-1__motor_vehicle_driver"
+    case = assignment + "__yield_sign_other_first"
+    required = ("config.json", "junction_context.json", "crossing_history.jsonl",
+                "controller_history.jsonl", "video_frames.jsonl", "trace.jsonl",
+                "capture/evidence.jsonl", *(name + ".mkv" for name in
+                  ("overview", "approach", "reference_corner", "driver_reference")))
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Use a fresh saved attempt and output")
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    if (config.get("assignment_id") != assignment or
+            config.get("selected_case_id") != case or
+            config.get("law_id") != "NRS-484B-250-1" or
+            config.get("cell_id") != "C125763" or
+            config.get("actor") != "motor_vehicle_driver" or
+            config.get("frames") != 900 or config.get("rate_hz") != 20 or
+            not isinstance(config.get("recording_description"), dict)):
+        raise ValueError("Exact C125763(1) saved case configuration required")
+    report = analyze(attempt)
+    if len(report["samples"]) != 900:
+        raise ValueError("Incomplete 900-frame original crossing history")
+    if not report["other_entered_before_ego_observed"]:
+        raise ValueError("Original other-first entry order missing")
+    context = json.loads((attempt / "junction_context.json").read_text())
+    if context.get("physical_acceptance_claimed") is not False:
+        raise ValueError("Original context cannot claim physical acceptance")
+    controls = _rows(attempt / "controller_history.jsonl")
+    if len(controls) != len(report["samples"]):
+        raise ValueError("Controller history does not cover original frames")
+    conflict_frames = []
+    for row, sample in zip(controls, report["samples"]):
+        if row.get("frame") != sample["frame"] or row.get("time_s") != sample["time_s"]:
+            raise ValueError("Original controller frame join failed")
+        if type(row.get("other_conflict_clear")) is not bool:
+            raise ValueError("Original controller conflict observation missing")
+        command = row.get("commands", {}).get("ego", {})
+        brake = command.get("brake")
+        if type(brake) not in (int, float) or not math.isfinite(brake) or not 0 <= brake <= 1:
+            raise ValueError("Original ego brake command missing")
+        if (sample["other"]["body_in_intersection"] and
+                not sample["ego"]["body_in_intersection"] and brake > 0):
+            conflict_frames.append(row["frame"])
+    sources = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+               for name in required}
+    measurements = {
+        "crossing_identity": {"method": "source_crossing_identity",
+            "value": {key: context[key] for key in
+                      ("native_map_id", "intersection_id", "ego_highway_id", "other_highway_id")},
+            "sources": {"junction_context.json": sources["junction_context.json"]}},
+        "entry_order": {"method": "complete_body_first_entry",
+            "value": report["first_body_entry"],
+            "sources": {name: sources[name] for name in
+                        ("crossing_history.jsonl", "video_frames.jsonl", "junction_context.json")}},
+        "yield_observation": {"method": "original_conflict_brake_frames",
+            "value": {"conflict_brake_frames": conflict_frames,
+                      "legal_yield_judgment": "unresolved"},
+            "sources": {name: sources[name] for name in
+                        ("controller_history.jsonl", "crossing_history.jsonl", "video_frames.jsonl")}},
+        "device_qualification": {"method": "native_yield_sign_identity",
+            "value": {"native_yield_sign_id": context["native_yield_sign_id"],
+                      "official_device_exclusion_judgment": "unresolved"},
+            "sources": {name: sources[name] for name in
+                        ("junction_context.json", "crossing_history.jsonl")}},
+    }
+    channels = attempt / "channels"
+    channels.mkdir()
+    (channels / "entry_context.json").write_text(json.dumps(
+        {"entry_context": {"case_id": case, "measurements": measurements,
+                           "legal_conclusion": "unresolved"}}, allow_nan=False) + "\n")
+    (channels / "entry_timing.jsonl").write_text("".join(json.dumps(
+        {"time_s": row["time_s"], "value": {"frame": row["frame"],
+         "ego_body_in_crossing": row["ego"]["body_in_intersection"],
+         "other_body_in_crossing": row["other"]["body_in_intersection"]}},
+        allow_nan=False) + "\n" for row in report["samples"]))
+    result = {"case_id": case,
+        "measured_values": {"other_entered_before_ego_observed": True,
+                            "conflict_brake_frame_count": len(conflict_frames)},
+        "target_checks": [{"target": "other_body_enters_same_crossing_before_ego",
+            "requested": True, "measured": True,
+            "method": "original complete-body polygon and frame join", "tolerance": 0,
+            "matched": True, "physical_cause_confirmed": False,
+            "cause_evidence": ["junction_context.json", "crossing_history.jsonl",
+                               "video_frames.jsonl"]}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False,
+        "termination_reason": "Saved source analysis; Native and legal review pending",
+        "physical_failure_flags": ["Official sign and statutory crossing judgments unresolved"],
+        "trace_reference": "trace.jsonl",
+        "video_references": [name + ".mkv" for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": config["recording_description"],
+        "recording_evidence": [
+            {"name": "entry_context", "unit": "structured record",
+             "reference": "channels/entry_context.json"},
+            {"name": "entry_timing", "unit": "structured record",
+             "reference": "channels/entry_timing.jsonl"}],
+        "source_evidence_hashes": sources,
+        "capture_evidence_sha256": sources["capture/evidence.jsonl"],
+        "realized_observables": {}}
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
+    output.write_text(json.dumps({"format": "worker-c125763-other-first-saved-analysis",
+        "case_id": case, "measurements": measurements,
+        "physical_acceptance_claimed": False,
+        "legal_acceptance_claimed": False}, allow_nan=False, indent=2) + "\n")
+    return measurements
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("source_dir", type=Path)
-    parser.add_argument("output", type=Path)
+    parser.add_argument("source_dir", type=Path, nargs="?")
+    parser.add_argument("positional_output", type=Path, nargs="?")
+    parser.add_argument("--attempt", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    finalize(args.source_dir, args.output)
+    if args.attempt and args.output:
+        runtime_finalize(args.attempt, args.output)
+    elif args.source_dir and args.positional_output:
+        finalize(args.source_dir, args.positional_output)
+    else:
+        parser.error("provide source_dir output or --attempt and --output")

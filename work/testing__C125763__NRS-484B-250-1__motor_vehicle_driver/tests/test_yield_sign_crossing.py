@@ -1,6 +1,7 @@
 import importlib.util
 import json
 import hashlib
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -51,6 +52,7 @@ class CrossingTests(unittest.TestCase):
                    "native_yield_sign_id": 10, "sign_governance_source": "native-trigger",
                    "yield_sign_video_source": "front-original", "intersection_polygon_source": "native-map-junction",
                    "yield_sign_erected": True, "yield_sign_governed_road_id": 3,
+                   "physical_acceptance_claimed": False,
                    "intersection_polygon_xy_m": [[0, -5], [10, -5], [10, 5], [0, 5]]}
         (root / "junction_context.json").write_text(json.dumps(context))
         ego_x, other_x = [-20, -18, -10, 1], [-4, 1, 3, 5]
@@ -142,7 +144,36 @@ class CrossingTests(unittest.TestCase):
             self.assertEqual(saved["sources"]["crossing_history.jsonl"],
                              hashlib.sha256((root / "crossing_history.jsonl").read_bytes()).hexdigest())
             self.assertEqual(report, saved)
+            construction = json.loads((ROOT / "construction.json").read_text())
+            config = next(json.loads(item["content"]) for item in construction["files"]
+                          if item["path"] == "config.json")
+            (root / "config.json").write_text(json.dumps(config))
+            controls = [{"frame": row["frame"], "time_s": row["time_s"],
+                         "other_conflict_clear": False,
+                         "commands": {"ego": {"brake": 1 if 184 <= i <= 196 else 0}}}
+                        for i, row in enumerate(history)]
+            (root / "controller_history.jsonl").write_text("".join(
+                json.dumps(row) + "\n" for row in controls))
+            (root / "trace.jsonl").write_text("".join(
+                json.dumps({"frame": row["frame"], "time_s": row["time_s"]}) + "\n"
+                for row in history))
+            (root / "capture").mkdir()
+            (root / "capture/evidence.jsonl").write_text("\n")
+            for camera in ("overview", "approach", "reference_corner", "driver_reference"):
+                (root / (camera + ".mkv")).write_text("CPU fixture placeholder; no pixel claim\n")
+            runtime_output = root / "runtime-analysis.json"
+            measured = measure.runtime_finalize(root, runtime_output)
+            runtime_result = json.loads((root / "result.json").read_text())
+            self.assertEqual(len(measured), 4)
+            self.assertEqual(runtime_result["case_id"], config["selected_case_id"])
+            self.assertTrue(runtime_result["measured_values"]["other_entered_before_ego_observed"])
+            self.assertFalse(runtime_result["setup_confirmed"])
+            self.assertFalse(json.loads(runtime_output.read_text())["physical_acceptance_claimed"])
+            (root / "result.json").unlink()
+            shutil.rmtree(root / "channels")
             (root / "video_frames.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing required source: video_frames.jsonl"):
+                measure.runtime_finalize(root, root / "negative-runtime-analysis.json")
             with self.assertRaisesRegex(ValueError, "Missing required source: video_frames.jsonl"):
                 measure.finalize(root, output)
 
