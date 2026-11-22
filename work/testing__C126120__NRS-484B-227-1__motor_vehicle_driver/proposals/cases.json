@@ -1,0 +1,736 @@
+{
+  "cell_id": "C126120",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "U-turn through a reviewed median opening in one continuous forward movement.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "requested construction; actual fact requires source and original frames"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "continuous_forward",
+          "note": "authored setup only; source and original motion required"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "unresolved_source_review",
+          "note": "authored setup only; source and original motion required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "opening_movement_pair",
+      "deliberate_differences": [
+        "movement_sequence"
+      ],
+      "probe": {
+        "primary_variable": "movement_sequence",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "continuous_forward"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "U-turn through the same reviewed opening with a physically realized reverse and subsequent forward movement.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "requested construction; actual fact requires source and original frames"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "reverse_then_forward",
+          "note": "requested construction; actual fact requires source and original frames"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "unresolved_source_review",
+          "note": "authored setup only; source and original motion required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "opening_movement_pair",
+      "deliberate_differences": [
+        "movement_sequence"
+      ],
+      "probe": {
+        "primary_variable": "movement_sequence",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "reverse_then_forward"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled crossing attempt at closed divider geometry, with no physical opening contact.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "closed_divider",
+          "note": "requested construction; actual fact requires source and original frames"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "continuous_forward",
+          "note": "authored setup only; source and original motion required"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "unresolved_source_review",
+          "note": "authored setup only; source and original motion required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "closed_divider_source_pair_pending",
+      "deliberate_differences": [
+        "opening_geometry"
+      ],
+      "probe": {
+        "primary_variable": "opening_geometry",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "closed_divider"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled departure toward the opposite roadway segment outside its right-hand travel corridor.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "authored setup only; source and original motion required"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "continuous_forward",
+          "note": "authored setup only; source and original motion required"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "wrong_roadway",
+          "note": "requested construction; actual fact requires source and original frames"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "unresolved_source_review",
+          "note": "authored setup only; source and original motion required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "wrong_roadway_source_pair_pending",
+      "deliberate_differences": [
+        "destination_roadway"
+      ],
+      "probe": {
+        "primary_variable": "destination_roadway",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "wrong_roadway"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "U-turn through a distinct crossover whose public-authority establishment is separately reviewed.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "authored setup only; source and original motion required"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "continuous_forward",
+          "note": "authored setup only; source and original motion required"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "crossover_source_pending",
+          "note": "requested construction; actual fact requires source and original frames"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "crossover_candidate_source_pair_pending",
+      "deliberate_differences": [
+        "authority_establishment"
+      ],
+      "probe": {
+        "primary_variable": "authority_establishment",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "crossover_source_pending"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "U-turn at a distinct intersection whose public-authority establishment is separately reviewed.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "authored setup only; source and original motion required"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "continuous_forward",
+          "note": "authored setup only; source and original motion required"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "intersection_source_pending",
+          "note": "requested construction; actual fact requires source and original frames"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "intersection_candidate_source_pair_pending",
+      "deliberate_differences": [
+        "authority_establishment"
+      ],
+      "probe": {
+        "primary_variable": "authority_establishment",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "intersection_source_pending"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "boundary_probe",
+      "rationale": "Continue in the source right-hand roadway without entering the divider.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "authored setup only; source and original motion required"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "no_turn",
+          "note": "requested construction; actual fact requires source and original frames"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "unresolved_source_review",
+          "note": "authored setup only; source and original motion required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      },
+      "paired_probe_id": "right_roadway_no_turn_source_pair_pending",
+      "deliberate_differences": [
+        "movement_sequence"
+      ],
+      "probe": {
+        "primary_variable": "movement_sequence",
+        "comparison_or_standard": "source-reviewed branch comparison pending",
+        "target_value_or_branch": "no_turn"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "baseline",
+      "rationale": "Shared source-right-roadway context without divider entry or U-turn request; semantic baseline only.",
+      "variable_assignments": {
+        "opening_geometry": {
+          "kind": "world_setup",
+          "value": "reviewed_opening",
+          "note": "authored setup only; source and original motion required"
+        },
+        "movement_sequence": {
+          "kind": "world_setup",
+          "value": "continuous_forward",
+          "note": "authored setup only; source and original motion required"
+        },
+        "destination_roadway": {
+          "kind": "world_setup",
+          "value": "destination_right_hand",
+          "note": "authored setup only; source and original motion required"
+        },
+        "authority_establishment": {
+          "kind": "world_setup",
+          "value": "unresolved_source_review",
+          "note": "authored setup only; source and original motion required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "right-hand roadway",
+        "established by a public authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "m",
+            "method": "Original CARLA eight-vertex box projected to four XY corners",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_history",
+            "unit": "deg",
+            "method": "Original CARLA actor transform yaw",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_velocity_history",
+            "unit": "m/s",
+            "method": "Original CARLA actor velocity XY components",
+            "time_window": "every captured original frame",
+            "reference_frame": "live OpenDRIVE XY world",
+            "uncertainty": "CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "median_geometry",
+            "unit": "structured record",
+            "method": "retained reviewed median packet and exact live OpenDRIVE SHA"
+          },
+          {
+            "name": "authority_review",
+            "unit": "structured record",
+            "method": "separately retained administrative review source; judgment unresolved"
+          }
+        ],
+        "limitations": [
+          "Physical opening and roadway measurements do not decide statutory exceptions.",
+          "Public-authority establishment requires independent source review."
+        ]
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c126120-roadway",
+      "target_law_id": "NRS-484B-227-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "right-hand roadway",
+          "note": "Roadway direction and boundaries excluding shoulders need reviewed map sources and observed body occupancy."
+        }
+      ],
+      "rationale": "No numeric legal cutoff; reviewed roadway boundaries and original body trajectory required.",
+      "missing_inputs": [
+        "reviewed divided-highway map",
+        "measured source/destination body occupancy"
+      ]
+    },
+    {
+      "sweep_id": "c126120-authority",
+      "target_law_id": "NRS-484B-227-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "established by a public authority",
+          "note": "An authored crossover or intersection label does not establish an administrative fact."
+        }
+      ],
+      "rationale": "Administrative establishment needs an independent source, not a numeric threshold.",
+      "missing_inputs": [
+        "public-authority crossover/intersection source"
+      ]
+    }
+  ],
+  "sweeps_expanded": false
+}

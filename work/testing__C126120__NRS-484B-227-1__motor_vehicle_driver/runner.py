@@ -14,6 +14,9 @@ ASSIGNMENT = "testing__C126120__NRS-484B-227-1__motor_vehicle_driver"
 
 def check_scene(scene):
     validate_scene(scene)
+    if any(not scene["context"].get(key) for key in
+           ("opening_id","source_right_roadway_id","destination_right_roadway_id")):
+        raise ValueError("reviewed opening and right-hand roadway identities required")
     if not scene.get("case_id", "").startswith(ASSIGNMENT + "__"):
         raise ValueError("case ID differs from exact assignment")
     if scene.get("capture_rate_hz") != 20 or not isinstance(scene.get("duration_s"), (int,float)):

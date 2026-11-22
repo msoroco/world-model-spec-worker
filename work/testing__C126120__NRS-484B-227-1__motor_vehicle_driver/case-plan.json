@@ -27,9 +27,157 @@
   "topic_inventory": {
     "exact-text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "U-turn through a reviewed median opening in one continuous forward movement.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Primary route could strike the end of a closed divider or fail to reverse orientation within the opening.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "U-turn through the same reviewed opening with a physically realized reverse and subsequent forward movement.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Observed-stop gear changes and reverse clearance may fail in the available opening width.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Controlled crossing attempt at closed divider geometry, with no physical opening contact.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A full-width body could contact a barrier; stop before impact and retain the attempted trajectory as distinct from success.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Controlled departure toward the opposite roadway segment outside its right-hand travel corridor.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Waypoints can project to a plausible lane while the full body remains on the wrong roadway.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "U-turn through a distinct crossover whose public-authority establishment is separately reviewed.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Authored crossover geometry cannot establish public authority or guarantee body clearance.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "U-turn at a distinct intersection whose public-authority establishment is separately reviewed.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Intersection identity and administrative establishment may remain unsupported despite a rendered road junction.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn",
+      "target_law_id": "NRS-484B-227-1",
+      "purpose": "Continue in the source right-hand roadway without entering the divider.",
+      "status": "draft_source_geometry_and_runtime_case_pending",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A route or controller error could leave the correct carriageway despite a no-turn target.",
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "continuous_vs_multiple_movement",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_multiple"
+      ],
+      "fixed_conditions": [
+        "same reviewed divided-highway identity and vehicle",
+        "same camera and duration profile",
+        "same source right-hand roadway and opening geometry"
+      ],
+      "deliberate_differences": [
+        "physically realized reverse segment versus continuous forward movement"
+      ],
+      "status": "planned_original_frame_comparison_pending"
+    },
+    {
+      "comparison_id": "opening_vs_closed_divider",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__closed_divider"
+      ],
+      "fixed_conditions": [
+        "same roadway and vehicle",
+        "same camera and duration profile",
+        "same source approach"
+      ],
+      "deliberate_differences": [
+        "full-body crossing through a reviewed opening versus closed divider contact/avoidance"
+      ],
+      "status": "planned_original_frame_comparison_pending"
+    },
+    {
+      "comparison_id": "right_roadway_departure",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__wrong_roadway"
+      ],
+      "fixed_conditions": [
+        "same reviewed source roadway and vehicle",
+        "same camera and duration profile"
+      ],
+      "deliberate_differences": [
+        "actual destination right-hand roadway occupancy"
+      ],
+      "status": "planned_original_frame_comparison_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true,
+      "unit": "m",
+      "source": "ego-body-history.jsonl",
+      "purpose": "original full-body opening, closed-divider and roadway occupancy"
+    },
+    {
+      "name": "ego_heading_history",
+      "mandatory": true,
+      "unit": "deg",
+      "source": "ego-body-history.jsonl",
+      "purpose": "net direction reversal and cumulative heading change"
+    },
+    {
+      "name": "ego_velocity_history",
+      "mandatory": true,
+      "unit": "m/s",
+      "source": "ego-body-history.jsonl",
+      "purpose": "signed forward and reverse motion corroborated by displacement"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
@@ -244,7 +392,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "draft_exact_cases_source_scene_and_delivery_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -279,23 +427,37 @@
   "saved_trace_audit": {
     "module": "uturn_audit.py",
     "status": "physical_measurement_core_cpu_tested_no_original_accepted_trace",
-    "observables": ["original full-body opening contact", "closed divider contact",
-                    "source and destination right-hand roadway occupancy",
-                    "net heading reversal", "realized reverse movement versus pause"],
+    "observables": [
+      "original full-body opening contact",
+      "closed divider contact",
+      "source and destination right-hand roadway occupancy",
+      "net heading reversal",
+      "realized reverse movement versus pause"
+    ],
     "source_guard": "SHA-checked saved trace; map and authority review source identities required in context but independent authority packet validation remains pending",
     "comparison_guard": "fixed map identity and declared realized difference",
     "legal_judgment": "unresolved"
   },
   "construction_draft": {
-    "module": "uturn_control.py; native_driver.py",
-    "status": "route_corridor_gear_transition_and_native_actor_adapter_cpu_tested_capture_pending",
-    "implemented": ["full-width authored route corridor avoids closed divider",
-                    "opening crossing and source/destination right-roadway endpoints",
-                    "live OpenDRIVE hash and endpoint road binding",
-                    "forward/reverse segment control with observed-stop gear transition",
-                    "lazy conventional Native vehicle spawn, original four-corner body projection and next-tick control application"],
-    "unresolved": ["inspected actual median opening and authority establishment source",
-                   "original full-frame acquisition and four-camera capture",
-                   "exact case and multiple-movement materialization"]
+    "module": "uturn_control.py; native_driver.py; native_capture.py; runner.py; case_builder.py; analysis.py; delivery_audit.py",
+    "status": "native_capture_saved_finalizer_and_delivery_audit_cores_cpu_tested_exact_case_pending",
+    "implemented": [
+      "full-width authored route corridor avoids closed divider",
+      "opening crossing and source/destination right-roadway endpoints",
+      "live OpenDRIVE hash and endpoint road binding",
+      "forward/reverse next-tick control with observed-stop gear transition",
+      "lazy conventional Native vehicle spawn and original four-corner body projection",
+      "20 Hz original-frame capture with four source-relative cameras and body/control/frame streams",
+      "reviewed map, median and authority source hashes retained in original acquisition",
+      "saved-only source hash and actor/frame/time joins before physical U-turn assessment",
+      "exact case config builder and recording description",
+      "independent saved seal, restoration, source hash and physical-target audit"
+    ],
+    "unresolved": [
+      "inspected actual median opening and authority establishment source",
+      "materialized exact single and multiple-movement cases",
+      "semantic proposals, compatibility and complete comparison audits",
+      "actual CARLA motion and video verification"
+    ]
   }
 }

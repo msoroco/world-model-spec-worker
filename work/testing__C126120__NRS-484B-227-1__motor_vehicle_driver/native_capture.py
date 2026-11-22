@@ -136,8 +136,11 @@ def run_native(scene, output, host, port):
 
     validate_scene(scene)
     output = Path(output).resolve()
-    if not output.is_dir() or any(output.iterdir()):
-        raise ValueError("Native attempt directory must exist and be empty")
+    if not output.is_dir():
+        raise ValueError("Native attempt directory must already exist")
+    if any((output/name).exists() for name in ("trace.jsonl", "video_frames.jsonl",
+                                             "ego-body-history.jsonl", "capture-seal.json")):
+        raise ValueError("Native attempt already contains original acquisition")
     if scene["capture_rate_hz"] != 20 or scene["duration_s"] <= 0:
         raise ValueError("synchronous world and camera rate must be 20 Hz")
     client = carla.Client(host, port)

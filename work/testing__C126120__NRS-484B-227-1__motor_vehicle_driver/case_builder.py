@@ -7,17 +7,23 @@ ASSIGNMENT = "testing__C126120__NRS-484B-227-1__motor_vehicle_driver"
 
 
 def recording_description():
-    return {"channels": [
-        {"name":"ego_body_history", "unit":"m"},
-        {"name":"ego_heading_history", "unit":"deg"},
-        {"name":"ego_velocity_history", "unit":"m/s"}],
-        "context_inputs": [
-            {"name":"median_geometry", "unit":"structured record"},
-            {"name":"authority_review", "unit":"structured record"}],
-        "capture_views": ["overview", "approach", "reference_corner", "driver_reference"],
-        "physical_measurements": ["original full-body opening and divider contact",
-                                  "source/destination right-roadway occupancy",
-                                  "net heading reversal and realized reverse motion"]}
+    channels = []
+    for name, unit, method in (
+        ("ego_body_history", "m", "Original CARLA eight-vertex box projected to four XY corners"),
+        ("ego_heading_history", "deg", "Original CARLA actor transform yaw"),
+        ("ego_velocity_history", "m/s", "Original CARLA actor velocity XY components")):
+        channels.append({"name":name,"unit":unit,"method":method,
+            "time_window":"every captured original frame", "reference_frame":"live OpenDRIVE XY world",
+            "uncertainty":"CARLA source sampling and body geometry; no legal threshold",
+            "sampling_rate_hz":20})
+    return {"channels":channels,
+        "context_inputs":[
+            {"name":"median_geometry","unit":"structured record",
+             "method":"retained reviewed median packet and exact live OpenDRIVE SHA"},
+            {"name":"authority_review","unit":"structured record",
+             "method":"separately retained administrative review source; judgment unresolved"}],
+        "limitations":["Physical opening and roadway measurements do not decide statutory exceptions.",
+                       "Public-authority establishment requires independent source review."]}
 
 
 def config(scene):
