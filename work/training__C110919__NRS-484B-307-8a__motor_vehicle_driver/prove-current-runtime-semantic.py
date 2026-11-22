@@ -11,6 +11,7 @@ output_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
 if not output_root or ROOT / ".runtime-work" not in Path(output_root).resolve().parents:
     raise RuntimeError("Export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work first")
 sys.path.insert(0, str(ROOT / "runtime/pipeline"))
+sys.path.insert(0, str(ROOT / "runtime/pipeline/scenario_pipeline"))
 from scenario_pipeline.worker_exchange.semantic_delivery import validate
 
 def sha(path):
