@@ -1,17 +1,22 @@
 """Bind the four source-visible C179480 drafts into canonical draft stages."""
 import hashlib
 import json
+import sys
+from copy import deepcopy
 from pathlib import Path
 
 from audit_control_cell import inspect_inventory
 from source_measurement import analyze_control, load_rows
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime' / 'pipeline'))
+from scenario_pipeline.batch_pipeline.sweeps import expand_sweeps
 
 HERE = Path(__file__).resolve().parent
 PROPOSALS = HERE / 'proposals'
 CASES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
 VARIABLES = ('roadway_stop_placement', 'other_vehicle_hazard',
              'governing_stop_control', 'ego_stop_controller',
-             'following_vehicle_controller')
+             'following_vehicle_controller', 'following_gap_m')
 
 
 def read(path):
@@ -33,6 +38,7 @@ def assignments(name, binding):
         'governing_stop_control': 'designated_surveyed_red_light' if name == 'law_required_stop' else 'no_governing_control_designated; scoped inventory retained',
         'ego_stop_controller': 'source_measured_complete_stop_request',
         'following_vehicle_controller': 'fixed_approach_and_gap_response',
+        'following_gap_m': 9.5,
     }
     kinds = {item['name']: item['kind'] for item in binding['variable_parameters']}
     if set(values) != set(kinds) or set(values) != set(VARIABLES):
@@ -66,6 +72,7 @@ def build():
         'rationale': 'Shared definition only; no baseline recording or legal label selected.',
         'variable_assignments': assignments('reference', binding),
         'recording_description': old['reference']['recording_description'],
+        'unresolved_judgment_calls': [],
     }
     entries.append(baseline)
     differences = {
@@ -101,7 +108,7 @@ def build():
         slug = {'normal and reasonable movement of traffic': 'traffic-effect',
                 'necessary for safe operation': 'safe-operation',
                 'in compliance with law': 'governing-law'}[item['phrase']]
-        specs.append({
+        spec = {
             'sweep_id': 'c179480-'+slug+'-pending',
             'target_law_id': template['law_id'],
             'judgment_refs': [item],
@@ -111,10 +118,56 @@ def build():
                 'Source-reviewed physical sampling range and comparison isolation',
                 'Selected additional cases if original evidence leaves this judgment uncovered',
             ],
-        })
+        }
+        if slug == 'traffic-effect':
+            # These settings are supported only by the synthetic CPU
+            # source/measurement probe. Actual Native realization remains a
+            # separate selected-case proof requirement.
+            probe = read(HERE/'traffic-effect-sweep-probe.json')
+            settings = [row['brake_gap_setting_m'] for row in probe['probe_rows']]
+            if not probe['passed'] or settings != [7.0, 9.5, 12.0] or probe['original_native_observed']:
+                raise ValueError('Traffic sweep engineering probe changed')
+            recording = deepcopy(old['reference']['recording_description'])
+            recording['channels'].append({
+                'name': 'following_gap_m', 'unit': 'm',
+                'method': 'derive each ego-minus-follower longitudinal gap from original Native actor rows; report minimum in the stop window',
+                'sampling_rate_hz': 20, 'time_window': 'all 600 frames / 30 seconds',
+                'reference_frame': 'original CARLA frame joined to four video sources',
+                'uncertainty': '50 ms sampling; controller target may differ from realized minimum; original Native capture required',
+            })
+            spec = {
+                'sweep_id': 'c179480-traffic-effect-gap',
+                'target_law_id': template['law_id'],
+                'judgment_refs': [item],
+                'rationale': 'Sample follower brake-gap engineering settings while holding roadway-stop placement, ego stop and non-axis setup fixed; preserve raw traffic history for independent judgment.',
+                'status': 'complete', 'mode': 'one_dimensional',
+                'axes': [{
+                    'variable': 'following_gap_m', 'observable': 'following_gap_m', 'unit': 'm',
+                    'min': 7.0, 'max': 12.0, 'spacing': 2.5,
+                    'measurement': {
+                        'method': 'derive longitudinal gap from original ego and follower actor positions on each synchronized CARLA frame',
+                        'time_window': 'all 600 frames / 30 seconds including the complete roadway stop',
+                        'statistic': 'min',
+                    },
+                    'range_rationale': 'The 7, 9.5 and 12 m engineering brake-gap settings produced distinct positive source-measured minimum gaps in the 600-frame synthetic CPU probe; these are coverage points, not legal bounds.',
+                    'spacing_rationale': '2.5 m yields both endpoints and a midpoint with distinct sampled follower histories at 20 Hz in the source-shaped CPU probe.',
+                    'feasibility_evidence': 'traffic-effect-sweep-probe.json, sha256 '+sha(HERE/'traffic-effect-sweep-probe.json')+'; synthetic diagnostic only; Native realization pending.',
+                }],
+                'landmarks': [],
+                'variable_assignments': assignments('reference', binding),
+                'recording_description': recording,
+            }
+        specs.append(spec)
     canonical = {'cell_id': binding['cell_id'], 'actor': binding['actor'],
                  'status': 'draft', 'cases': entries, 'sweep_specs': specs,
                  'sweeps_expanded': False}
+    enriched_template = deepcopy(template)
+    for judgment in enriched_template['structure']['judgment_calls_needed']:
+        observable = next(read(PROPOSALS/('judgment_observables_'+slug+'.json'))
+            for slug in ('traffic_movement', 'safe_operation', 'legal_compliance')
+            if read(PROPOSALS/('judgment_observables_'+slug+'.json'))['phrase'] == judgment['phrase'])
+        judgment['observable_requirements'] = observable['observable_requirements']
+    expand_sweeps(canonical, (enriched_template,), binding)
     write(PROPOSALS/'canonical-cases.json', canonical)
     names = {'relevance_batch': 'relevance_batch.json',
              'relevance': 'relevance.json', 'template': 'template.json',
@@ -128,7 +181,7 @@ def build():
     index = {'format': 'worker-semantic-delivery', 'assignment_id': HERE.name,
              'stages': stages}
     write(PROPOSALS/'semantic-index.json', index)
-    return {'cases': len(entries), 'incomplete_sweeps': len(specs),
+    return {'cases': len(canonical['cases']), 'incomplete_sweeps': sum(s['status']=='incomplete' for s in specs),
             'semantic_index_sha256': sha(PROPOSALS/'semantic-index.json')}
 
 
