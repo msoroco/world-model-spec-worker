@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 
 FIXED=('law_id','cell_id','actor_id','map_sha256','ego_route_sha256',
-       'wheelchair_identity_sha256','camera_contract_sha256','duration_s')
+       'wheelchair_identity_sha256','controller_policy_sha256',
+       'camera_contract_sha256','duration_s')
 
 
 def audit(clear,crossing):

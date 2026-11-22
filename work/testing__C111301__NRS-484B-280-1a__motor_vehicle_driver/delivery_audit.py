@@ -73,17 +73,23 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
     expected_setup='crossing' if case_id.endswith('__wheelchair_crossing') else 'clear_path'
     if context.get('wheelchair_path_setup')!=expected_setup:
         raise ValueError('Native wheelchair path setup differs from exact case')
-    return {'format':'worker-delivery-audit','passed':True,'case_id':case_id,
+    receipt={'format':'worker-delivery-audit','passed':True,'case_id':case_id,
       'law_id':config['law_id'],'cell_id':config['cell_id'],'actor_id':config['actor'],
       'map_sha256':sha(attempt/'road.xodr'),
       'ego_route_sha256':hashlib.sha256(json.dumps(route,sort_keys=True).encode()).hexdigest(),
       'wheelchair_identity_sha256':hashlib.sha256((context['person_asset_source']+'|'+context['manual_wheelchair_asset_source']).encode()).hexdigest(),
+      'controller_policy_sha256':hashlib.sha256(json.dumps({
+          'engineering_ttc_brake_s':context['engineering_ttc_brake_s'],
+          'ego_lane_bounds_y_m':context['ego_lane_bounds_y_m']},sort_keys=True).encode()).hexdigest(),
       'camera_contract_sha256':hashlib.sha256(json.dumps(config.get('cameras',[]),sort_keys=True).encode()).hexdigest(),
       'duration_s':config['duration_s'],'measurement':measured,
       'native_result_sha256':sha(attempt/'result.json'),'frame_count':len(mapping),
       'frame_map_sha256':sha(attempt/'video_frames.jsonl'),
       'video_sha256':sha(video),'source_decode_receipt_sha256':sha(decode_receipt),
       'legal_verdict':None}
+    from control_history_audit import audit as audit_control_history
+    receipt['controller_audit']=audit_control_history(attempt,receipt)
+    return receipt
 
 
 def main():

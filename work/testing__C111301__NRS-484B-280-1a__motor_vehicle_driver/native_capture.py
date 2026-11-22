@@ -172,7 +172,9 @@ def run_native(scene,output,host,port):
         chair_x=scene['pedestrian_path_start_xy_m'][0]
         chair_y=scene['pedestrian_path_start_xy_m'][1] if scene['wheelchair_path_setup']=='crossing' else 5
         context.update({'manual_wheelchair_asset_source':chair_bp.id,'person_asset_source':people[0].id,
-                        'ego_asset_source':vehicles[0].id,'wheelchair_path_setup':scene['wheelchair_path_setup']})
+                        'ego_asset_source':vehicles[0].id,'wheelchair_path_setup':scene['wheelchair_path_setup'],
+                        'ego_lane_bounds_y_m':scene['ego_lane_bounds_y_m'],
+                        'engineering_ttc_brake_s':scene['engineering_ttc_brake_s']})
         write(output/'intersection-context.json',context)
         write(output/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':False,
             'method':'original CARLA live run'})
@@ -192,7 +194,11 @@ def run_native(scene,output,host,port):
                             'body_vertices_m':person_body}
                 manual_chair={'kind':'manual_wheelchair','source_ref':chair_bp.id,
                               'body_vertices_m':chair_body}
-                observed=encounter(scene,ego_body,pedestrian,manual_chair,speed(ego),last_pedestrian_speed)
+                ego_speed=speed(ego)
+                control_inputs={'ego_body_vertices_m':ego_body,'ego_speed_mps':ego_speed,
+                    'pedestrian_speed_mps':last_pedestrian_speed,
+                    'person':pedestrian.copy(),'manual_wheelchair':manual_chair.copy()}
+                observed=encounter(scene,ego_body,pedestrian,manual_chair,ego_speed,last_pedestrian_speed)
                 command=control(scene,observed)
                 ego.apply_control(carla.VehicleControl(throttle=command['throttle'],brake=command['brake'],steer=command['steer']))
                 if scene['wheelchair_path_setup']=='crossing':
@@ -216,6 +222,7 @@ def run_native(scene,output,host,port):
                      'ego_speed_mps':speed(ego),'ego_brake':command['brake'],
                      'pedestrian_speed_mps':pedestrian_speed,
                      'person':pedestrian,'manual_wheelchair':manual_chair,
+                     'control_inputs':control_inputs,'control_command':command,
                      'surface_gap_m':observed['surface_gap_m'],
                      'contact_event':any(f==frame and a in (person.id,chair.id) for f,a in contact)}
                 stream.write(json.dumps(row,allow_nan=False)+'\n');rows.append(row)

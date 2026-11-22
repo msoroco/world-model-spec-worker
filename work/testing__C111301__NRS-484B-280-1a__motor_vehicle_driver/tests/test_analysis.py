@@ -42,6 +42,10 @@ class WheelchairAnalysisTests(unittest.TestCase):
             value=analysis.measure(root)
             self.assertEqual(value['minimum_surface_gap_m'],2)
             self.assertEqual(value['first_brake_frame'],101)
+            self.assertEqual(value['first_brake_observation']['surface_gap_m'],2)
+            self.assertEqual(value['first_brake_observation']['time_to_path_s'],1)
+            self.assertEqual(value['initial_surface_gap_m'],4)
+            self.assertEqual(value['observed_time_window_s'],[0,0.05])
             self.assertEqual(value['contact_frames'],[])
             self.assertEqual(value['legal_due_care_verdict'],'unresolved')
     def test_rejects_stale_source_and_reported_gap(self):

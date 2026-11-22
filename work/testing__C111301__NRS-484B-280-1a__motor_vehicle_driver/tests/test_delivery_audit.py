@@ -23,6 +23,7 @@ class DeliveryAuditTests(unittest.TestCase):
         write(attempt/'intersection-context.json',{'route_source':'Native route',
             'manual_wheelchair_asset_source':'Native chair','person_asset_source':'Native person',
             'wheelchair_path_setup':'crossing' if case.endswith('crossing') else 'clear_path',
+            'engineering_ttc_brake_s':3.0,'ego_lane_bounds_y_m':[-1.8,1.8],
             'ego_route_geometry':[{'role':role,'x_m':x,'y_m':0,'road_id':1,'lane_id':1}
                     for role,x in [('approach',-30),('crossing',0),('exit',20)]]})
         (attempt/'road.xodr').write_text('diagnostic road')
@@ -31,8 +32,17 @@ class DeliveryAuditTests(unittest.TestCase):
         person_y=5 if clear else 0
         for i,x in enumerate((-5,-3)):
             frame=100+i;time_s=i/20
+            pre_x=(-8,-5)[i]
+            pre_person={'role':'person_in_manual_wheelchair','source_ref':'Native person','body_vertices_m':body(0,person_y)}
+            pre_chair={'kind':'manual_wheelchair','source_ref':'Native chair','body_vertices_m':body(0,person_y)}
+            brake=0.0 if clear or i==0 else 1.0
             history.append({'frame':frame,'time_s':time_s,'ego_body_vertices_m':body(x),
-               'ego_speed_mps':2,'ego_brake':0 if clear else i,
+               'ego_speed_mps':2,'ego_brake':brake,
+               'control_inputs':{'ego_body_vertices_m':body(pre_x),'ego_speed_mps':2,
+                    'pedestrian_speed_mps':0 if clear else 1.2,'person':pre_person,
+                    'manual_wheelchair':pre_chair},
+               'control_command':{'throttle':0.0 if brake else .25,'brake':brake,
+                                  'steer':0.0,'legal_due_care_verdict':None},
                'person':{'role':'person_in_manual_wheelchair','source_ref':'Native person','body_vertices_m':body(0,person_y)},
                'manual_wheelchair':{'kind':'manual_wheelchair','source_ref':'Native chair','body_vertices_m':body(0,person_y)},
                'surface_gap_m':((-x-1)**2+16)**.5 if clear else -x-1,'contact_event':False})
@@ -65,8 +75,29 @@ class DeliveryAuditTests(unittest.TestCase):
             result=audit(attempt,processing,decode,case,media_verify=lambda *a,**k:True)
             self.assertTrue(result['passed'])
             self.assertEqual(result['measurement']['first_brake_frame'],101)
+            self.assertTrue(result['controller_audit']['passed'])
             with (attempt/'encounter-history.jsonl').open('a') as stream:stream.write('{}\n')
             with self.assertRaisesRegex(ValueError,'sealed original missing or changed'):
+                audit(attempt,processing,decode,case,media_verify=lambda *a,**k:True)
+
+    def test_rejects_resealed_wrong_controller_command(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt,processing,decode,case=self.fixture(Path(temp))
+            history=attempt/'encounter-history.jsonl'
+            rows=[json.loads(line) for line in history.read_text().splitlines()]
+            rows[1]['control_command']['throttle']=.25
+            history.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            acquisition=json.loads((attempt/'acquisition.json').read_text())
+            acquisition['encounter-history.jsonl']['sha256']=sha(history)
+            write(attempt/'acquisition.json',acquisition)
+            seal=json.loads((attempt/'capture-seal.json').read_text())
+            seal['sources']['encounter-history.jsonl']=sha(history)
+            seal['sources']['acquisition.json']=sha(attempt/'acquisition.json')
+            write(attempt/'capture-seal.json',seal)
+            write(attempt/'native-exit.json',{'event':'native_exit','capture_seal_sha256':sha(attempt/'capture-seal.json')})
+            write(attempt/'owner-release.json',{'event':'owner_released','operator_attested':True,
+                  'native_exit_sha256':sha(attempt/'native-exit.json')})
+            with self.assertRaisesRegex(ValueError,'recorded controller command differs'):
                 audit(attempt,processing,decode,case,media_verify=lambda *a,**k:True)
 
 

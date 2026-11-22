@@ -43,7 +43,8 @@ def main():
         files=[{'path':name,'content':(ROOT/name).read_text()} for name in
                ('runner.py','native_capture.py','analysis.py','tests/test_runner.py','tests/test_analysis.py',
                 'tests/test_comparison_audit.py','tests/test_native_capture.py',
-                'tests/test_delivery_audit.py','comparison_audit.py','delivery_audit.py')]
+                'tests/test_delivery_audit.py','comparison_audit.py','delivery_audit.py',
+                'control_history_audit.py')]
         files.extend([{'path':'scene.json','content':json.dumps(scene,indent=2)+'\n'},
                       {'path':'config.json','content':json.dumps(config,indent=2,ensure_ascii=False)+'\n'}])
         bundle={'law_id':'NRS-484B-280-1a','cell_id':'C111301','actor':'motor_vehicle_driver',

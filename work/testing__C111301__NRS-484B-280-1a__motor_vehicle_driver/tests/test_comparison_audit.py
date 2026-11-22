@@ -12,6 +12,7 @@ def record(suffix,gap,brake):
        'case_id':ROOT.name+'__'+suffix,
        'law_id':'NRS-484B-280-1a','cell_id':'C111301','actor_id':'driver',
        'map_sha256':'map','ego_route_sha256':'route','wheelchair_identity_sha256':'person-chair',
+       'controller_policy_sha256':'policy',
        'camera_contract_sha256':'cameras','duration_s':30,'frame_count':20,
        'native_result_sha256':'result','frame_map_sha256':'frames',
        'video_sha256':'video','source_decode_receipt_sha256':'decode',
@@ -29,6 +30,9 @@ class ComparisonTests(unittest.TestCase):
         crossing=record('wheelchair_crossing',1,120)
         self.assertTrue(comparison.audit(clear,crossing)['passed'])
         changed=record('wheelchair_crossing',1,120);changed['ego_route_sha256']='other'
+        with self.assertRaisesRegex(ValueError,'fixed condition differs'):
+            comparison.audit(clear,changed)
+        changed=record('wheelchair_crossing',1,120);changed['controller_policy_sha256']='other'
         with self.assertRaisesRegex(ValueError,'fixed condition differs'):
             comparison.audit(clear,changed)
         changed=record('wheelchair_crossing',1,None)

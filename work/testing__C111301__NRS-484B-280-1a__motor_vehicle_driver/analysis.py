@@ -29,7 +29,8 @@ def measure(attempt):
         raise ValueError('original route or wheelchair asset identity absent')
     rows=[json.loads(line) for line in paths['encounter-history.jsonl'].read_text().splitlines() if line.strip()]
     if len(rows)<2:raise ValueError('insufficient original encounter history')
-    previous=None;surface=[];ttc=[];brakes=[];contacts=[]
+    previous=None;surface=[];ttc=[];brakes=[];contacts=[];speeds=[]
+    first_brake_observation=None
     for row in rows:
         frame=row.get('frame');time_s=row.get('time_s')
         if type(frame) is not int or type(time_s) not in (int,float) or not math.isfinite(time_s):
@@ -50,14 +51,23 @@ def measure(attempt):
         ex_right=bounds(ego)[2];px_left=bounds(combined)[0]
         time_to_path=max(px_left-ex_right,0)/speed if speed>0 else None
         if time_to_path is not None:ttc.append(time_to_path)
-        surface.append(measured_gap)
-        if brake>0:brakes.append(frame)
+        surface.append(measured_gap);speeds.append(speed)
+        if brake>0:
+            brakes.append(frame)
+            if first_brake_observation is None:
+                first_brake_observation={'frame':frame,'time_s':time_s,
+                    'surface_gap_m':measured_gap,'time_to_path_s':time_to_path,
+                    'ego_speed_mps':speed,'brake':brake}
         if row.get('contact_event') is True:contacts.append(frame)
         elif row.get('contact_event') is not False:raise ValueError('original contact event missing')
     return {'format':'worker-manual-wheelchair-measurements',
             'frame_count':len(rows),'minimum_surface_gap_m':min(surface),
             'minimum_time_to_path_s':min(ttc) if ttc else None,
             'first_brake_frame':brakes[0] if brakes else None,
+            'first_brake_observation':first_brake_observation,
+            'initial_surface_gap_m':surface[0],
+            'observed_ego_speed_range_mps':[min(speeds),max(speeds)],
+            'observed_time_window_s':[rows[0]['time_s'],rows[-1]['time_s']],
             'contact_frames':contacts,
             'sources':{name:acquisition[name]['sha256'] for name in SOURCES},
             'legal_due_care_verdict':'unresolved'}
