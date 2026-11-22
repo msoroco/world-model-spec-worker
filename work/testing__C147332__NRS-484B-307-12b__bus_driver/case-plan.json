@@ -30,7 +30,7 @@
       "target_law_id": "NRS-484B-307-12b",
       "target_type": "baseline_probe",
       "scenario": "Bus continues in adjacent lane without entering red-X lane",
-      "preparation_status": "planned_cpu_implementation",
+      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -42,14 +42,16 @@
         "signal and bus frame-time join",
         "original camera frames"
       ],
-      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
+      "construction": "cases/adjacent_travel/construction.json",
+      "offline_proof": "cases/adjacent_travel/cpu-offline.log"
     },
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
       "target_law_id": "NRS-484B-307-12b",
       "target_type": "entry_probe",
       "scenario": "Bus crosses laterally into governed red-X lane",
-      "preparation_status": "planned_cpu_implementation",
+      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -61,14 +63,16 @@
         "signal and bus frame-time join",
         "original camera frames"
       ],
-      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
+      "construction": "cases/lateral_entry/construction.json",
+      "offline_proof": "cases/lateral_entry/cpu-offline.log"
     },
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
       "target_law_id": "NRS-484B-307-12b",
       "target_type": "motion_baseline",
       "scenario": "Bus already inside governed lane and remains stationary during red X",
-      "preparation_status": "planned_cpu_implementation",
+      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -80,14 +84,16 @@
         "signal and bus frame-time join",
         "original camera frames"
       ],
-      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
+      "construction": "cases/red_lane_stand/construction.json",
+      "offline_proof": "cases/red_lane_stand/cpu-offline.log"
     },
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
       "target_law_id": "NRS-484B-307-12b",
       "target_type": "driving_probe",
       "scenario": "Bus already inside governed lane and travels longitudinally during red X",
-      "preparation_status": "planned_cpu_implementation",
+      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -99,7 +105,9 @@
         "signal and bus frame-time join",
         "original camera frames"
       ],
-      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera."
+      "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
+      "construction": "cases/red_lane_drive/construction.json",
+      "offline_proof": "cases/red_lane_drive/cpu-offline.log"
     }
   ],
   "comparisons": [
@@ -185,7 +193,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "exact_case_split_measurement_in_progress",
+  "planning_status": "exact_primary_offline_cpu_proven_delivery_partial",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -204,5 +212,44 @@
       ],
       "reason": "A red X can govern one lane of the fixed one-way multilane road."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "Official signals placed over individual highway lanes; bus faces governed red-X head",
+      "source": "inputs/testing__C147332__NRS-484B-307-12b__bus_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Reviewed highway/device source packet and original facing/lane mapping remain to be retained",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "A facing driver must not enter the red-X-governed lane",
+      "source": "inputs/testing__C147332__NRS-484B-307-12b__bus_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Original full-bus footprint and signal frame-time join must show entry contrast",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "A facing driver must not drive in the red-X-governed lane",
+      "source": "inputs/testing__C147332__NRS-484B-307-12b__bus_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Original full-bus longitudinal motion and signal frame-time join must show driving contrast",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+        "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "selected_branch": "Bus approach or lateral entry into a red-X lane."
 }
