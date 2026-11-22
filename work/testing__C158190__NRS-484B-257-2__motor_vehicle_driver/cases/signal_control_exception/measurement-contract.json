@@ -1,0 +1,79 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "signed non-through-highway entrance and obligations at every entrance",
+      "source": "NRS 484B.257(2)",
+      "output_key": "signed_entrance_control",
+      "method": "measure_signed_entrance",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "intersection_context.json",
+        "stop_control_inventory.jsonl",
+        "signal_control_inventory.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "stop in obedience to the stop sign before entering the intersection",
+      "source": "NRS 484B.257(2)",
+      "output_key": "full_stop_before_entry",
+      "method": "measure_full_stop_before_entry",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "intersection_context.json",
+        "entry_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "yield to a vehicle not so obligated already within the intersection",
+      "source": "NRS 484B.257(2)",
+      "output_key": "other_intersection_occupancy",
+      "method": "measure_other_intersection_occupancy",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "entry_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "exception when traffic is controlled by a police officer or traffic-control signal",
+      "source": "NRS 484B.257(2)",
+      "output_key": "control_exception_state",
+      "method": "measure_control_exception",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "intersection_context.json",
+        "stop_control_inventory.jsonl",
+        "signal_control_inventory.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "approaching vehicle immediate-hazard context while driver crosses or is within the intersection",
+      "source": "NRS 484B.257(2)",
+      "output_key": "approaching_hazard_context",
+      "method": "measure_approaching_hazard_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "entry_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "entry_history.jsonl"
+    ],
+    "error_contains": "Missing required source: entry_history.jsonl"
+  }
+}

@@ -1,3 +1,7 @@
+## 2026-11-22 C158190 fifth primary proof checkpoint
+
+The fifth signal exception now has a validated synthetic complete/incomplete/missing-motion and lifecycle receipt (`physical-signal-receipt.json`); physical acceptance remains unclaimed. C158190 remains partial. A separate Green signal-control exception construction, runner, original signal inventory, saved analyzer and measurement contract now pass exact offline, positive/negative compatibility and recorded-only saved processing. Direct pinned receipt verification passes for all five C158190 primaries. The fifth construction hash is `182aa523dabb5b2ed2ffadac1a6c5120b3d126517f23825e8d9711c416928685`. Remaining worker CPU work is five-case fallback, physical fixture, independent audit/comparison and dispatch proof. Pinned preflight and C158190 partial check pass. Twenty-four additional unbound C101303 draft logs were archived byte-exact with hashes in `_shared/archived-unbound-replay-logs-20261122.json` to retain file capacity. No Native, physical or legal acceptance claimed.
+
 # Shared CPU preparation handoff
 
 Older checkpoint sections: [2026-11-15 early archive, byte-exact embedded entry](archived-unbound-c129731-logs-20261122-part2.json). Current sections follow.

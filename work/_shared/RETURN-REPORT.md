@@ -1,3 +1,7 @@
+# CPU preparation return report — 2026-11-22 latest checkpoint
+
+Goal active: 20 of 43 assignments are CPU ready; 23 remain partial. The full strict gate has not passed. C158190 now has all five exact primary cases, including the governing Green signal exception, passing exact offline, positive/negative compatibility, recorded-only saved processing and direct pinned receipt verification. Its fifth construction SHA-256 is `182aa523dabb5b2ed2ffadac1a6c5120b3d126517f23825e8d9711c416928685`. Its CPU preflight and scoped partial check pass. The fifth signal exception now has a validated synthetic complete/incomplete/missing-motion and lifecycle receipt (`physical-signal-receipt.json`); physical acceptance remains unclaimed. C158190 remains partial pending three fallbacks per case, physical outcome/lifecycle fixture proofs, independent delivery/comparison audits and dispatch. No Native motion, actual camera pixels, physical/legal acceptance or canonical recording membership is claimed. Twenty-four additional unbound C101303 draft logs were byte-exact archived in `_shared/archived-unbound-replay-logs-20261122.json`; restore if resuming those drafts. Generated outputs stayed under `.runtime-work/`. No frozen inputs, runtime or batch file was edited and no Git command was run.
+
 # CPU preparation return report — 2026-11-22
 
 Goal status: active. The batch has 43 assignments: 20 ready and 23 partial. The full strict delivery gate has not passed; it will run when all packages are ready. No Native, physical or legal acceptance is claimed.

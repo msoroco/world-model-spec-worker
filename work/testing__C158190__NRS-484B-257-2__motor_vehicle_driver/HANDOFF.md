@@ -1,3 +1,13 @@
+## 2026-11-22 fifth primary and exact proof checkpoint
+
+The fifth selected signal exception now has a distinct Native runner (`signal_case_runner.py`), Green state and affected-lane readback (`signal_exception.py`), source-joined saved analyzer (`signal_exception_measurements.py`), exact construction, generated controlled OpenDRIVE map, measurement contract and source-shaped fixture. CPU tests cover map control, config and staging. The saved analyzer rejects a Red-state mutation after updating the review hash. Its four source cameras, original `signal_control_inventory.jsonl` and derived `governing_signal_state` channel are present in compatibility and recorded-only saved processing.
+
+The fifth signal exception also passes a source-shaped three-outcome CPU physical fixture: authored clearance met, incomplete exit not met, and missing original motion unverified. Failed encoder and premature ownership release are rejected; lifecycle events end with the separately passed recorded-only saved receipt. `physical-signal-receipt.json` binds the current construction and fixture hashes. This is synthetic protocol evidence only.
+
+All five primary cases passed current exact offline, positive and negative compatibility and recorded-only processing. The pinned `check_receipts` verifier passes across the five current entries. Pinned CPU preflight and assignment-scoped partial check pass. Fifth construction SHA-256: `182aa523dabb5b2ed2ffadac1a6c5120b3d126517f23825e8d9711c416928685`. The fifth compatibility receipt is `fifth-primary-compatibility.json`; saved proof is `fifth-primary-saved.log`. Native CARLA motion, original pixels, physical acceptance and legal exception judgment remain unclaimed.
+
+Next worker-owned CPU work: three distinct physical-risk fallback constructions per case with exact offline and positive/negative compatibility; source-shaped complete, incomplete and missing-evidence physical outcome fixtures with lifecycle ordering; independent delivery and comparison audits and dispatch bindings. Run the assignment-scoped strict gate before setting ready.
+
 # C158190 CPU handoff — NRS 484B.257(2)
 
 Status: **partial**. The frozen binding assigns stop-sign governance on a one-way-to-two-way intersection to this cell because C158208 has a fixed yield sign. The exact law requires compliance with the sign before entry and continued caution/yield to non-obligated traffic within or immediately approaching the intersection; officer and signal control are express exceptions. The frozen evidence inventory has zero accepted recordings; no reuse is claimed.

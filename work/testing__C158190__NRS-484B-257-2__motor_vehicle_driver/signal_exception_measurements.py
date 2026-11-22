@@ -272,10 +272,11 @@ def finalize(attempt: Path, output: Path):
                   row["state"] in ("Green", "TrafficLightState.Green")
                   for row in report["governing_signal_states"]),
               "method": "original Native affected-lane signal state joined to video frames",
-              "tolerance": 0, "matched": True,
+              "tolerance": 0,
               "physical_cause_confirmed": False,
               "cause_evidence": ["signal_control_inventory.jsonl", "video_frames.jsonl",
                                  "stop_context_review.json"]}
+    target["matched"] = target["requested"] == target["measured"]
     values = {
         "governing_signal_state": [
             {"original_frame": row["frame"], "time_s": row["time_s"],

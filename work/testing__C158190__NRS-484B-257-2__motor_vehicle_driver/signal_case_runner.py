@@ -10,7 +10,10 @@ import json
 from pathlib import Path
 from queue import Queue
 
-import runner as base
+try:
+    import stop_base as base  # Exact materialized bundle.
+except ModuleNotFoundError:
+    import runner as base  # CPU source-tree check.
 import signal_exception as signal
 
 
@@ -61,7 +64,7 @@ class SignalStage:
     def target(self, distance_to_reference_m, observed_speed_mps, *,
                before_reference, within_intersection, other_clear):
         state = str(self.light.get_state())
-        if 'Green' not in state:
+        if state not in ('Green', 'TrafficLightState.Green'):
             raise ValueError('Governing Native signal left requested green phase')
         if not other_clear and distance_to_reference_m <= 18 and not within_intersection:
             return 0.0

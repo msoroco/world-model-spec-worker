@@ -1,7 +1,7 @@
 {
   "cell_id": "C158190",
   "actor": "motor_vehicle_driver",
-  "status": "draft_four_cases_only",
+  "status": "draft",
   "cases": [
     {
       "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside",
@@ -324,6 +324,103 @@
         "limitations": [
           "Authored map and CPU fixture do not establish legal non-through-highway status or sign-face legibility.",
           "Immediate hazard, caution and yielding remain qualitative source-review judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__signal_control_exception",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Exception probe: the same signed one-way entrance is governed by a distinct dynamic traffic signal with original-frame affected-lane and Green-state samples; statutory exception and legal governance remain source-review judgments.",
+      "variable_assignments": {
+        "entrance_device": {
+          "kind": "world_setup",
+          "value": "authored type 206 stop sign plus dynamic ego-governing head; Native and legal governance pending",
+          "unit": "categorical"
+        },
+        "other_actor_start": {
+          "kind": "world_setup",
+          "value": "inside_intersection",
+          "unit": "categorical"
+        },
+        "requested_stop": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "observed_full_stop": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "immediate_hazard": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "qualitative judgment"
+        },
+        "governing_signal_state": {
+          "kind": "world_setup",
+          "value": "Green engineering target with per-frame Native readback",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "properly erected sign and non-through-highway status",
+        "immediate hazard",
+        "proceed cautiously",
+        "yield throughout crossing",
+        "whether the source-observed signal controls traffic under the statutory exception"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_and_stop_reference",
+            "unit": "m/s and m",
+            "method": "original actor velocity and body vertices at every joined Native frame",
+            "time_window": "approach through intersection exit",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled body and speed; legal stop reference needs source review"
+          },
+          {
+            "name": "ego_and_other_intersection_occupancy",
+            "unit": "structured record",
+            "method": "original actor bounding-box vertices against authored junction bounds",
+            "time_window": "entire capture",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled overlap; between-frame occupancy unresolved"
+          },
+          {
+            "name": "other_approach_history",
+            "unit": "structured record",
+            "method": "original non-obligated vehicle position and velocity where staged",
+            "time_window": "entire capture",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "immediate-hazard judgment unresolved"
+          },
+          {
+            "name": "governing_signal_state",
+            "unit": "structured record",
+            "method": "original Native traffic-light state, affected ego lane and trigger geometry joined to each source-camera frame",
+            "time_window": "approach through intersection exit",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled state and lane; legal governance and between-frame phase remain unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stop_control_and_entrance_review",
+            "unit": "structured record",
+            "method": "authored OpenDRIVE, Native stop trigger, per-frame controls and original camera review"
+          }
+        ],
+        "limitations": [
+          "Authored map and CPU fixture do not establish legal non-through-highway status or sign-face legibility.",
+          "Immediate hazard, caution and yielding remain qualitative source-review judgments.",
+          "Signal-control exception requires Native affected-lane, original-frame phase and source-camera review; no legal exception is inferred from requested Green state."
         ]
       }
     }

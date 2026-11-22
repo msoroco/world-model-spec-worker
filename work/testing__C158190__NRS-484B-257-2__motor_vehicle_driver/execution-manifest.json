@@ -390,6 +390,117 @@
         "test_exit_code": 0,
         "proof_scope": "synthetic source-shaped recorded-only processing; physical/legal acceptance unclaimed"
       }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__signal_control_exception",
+      "kind": "delivery",
+      "construction": "cases/signal_control_exception/construction.json",
+      "construction_sha256": "182aa523dabb5b2ed2ffadac1a6c5120b3d126517f23825e8d9711c416928685",
+      "measurement_procedure": {
+        "entrypoint": "signal_exception_measurements.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native signal governance, phase continuity and camera visibility require physical observation"
+      },
+      "candidates": [],
+      "measurement_contract": "cases/signal_control_exception/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/cases/signal_control_exception/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__signal_control_exception --output .runtime-work/c158190-signal-offline-exact-c --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "182aa523dabb5b2ed2ffadac1a6c5120b3d126517f23825e8d9711c416928685",
+        "log": "fifth-primary-offline.log",
+        "log_sha256": "81b04d128712b201cf568eba596ea8db282409d35986310df5efc5f7daf6356c"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection, sign and signal observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ego_speed_and_stop_reference": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original actor velocity and body vertices at every joined Native frame; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_speed_and_stop_reference.jsonl"
+        },
+        "ego_and_other_intersection_occupancy": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original actor bounding-box vertices against authored junction bounds; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_and_other_intersection_occupancy.jsonl"
+        },
+        "other_approach_history": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original non-obligated vehicle position and velocity where staged; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/other_approach_history.jsonl"
+        },
+        "governing_signal_state": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "per-frame original Native traffic signal ID, affected ego road/lane and Green state joined to ego entrance history; saved-only projection",
+          "evidence": "signal_control_inventory.jsonl; video_frames.jsonl; channels/governing_signal_state.jsonl"
+        }
+      },
+      "compatibility": {
+        "receipt": "fifth-primary-compatibility.json",
+        "sha256": "e10c676ccd2d9183dc4310b409aa877736f13f986ed28b771f4a088104698698",
+        "log": "fifth-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "fifth-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__signal_control_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat $OUTPUT/feedback.json",
+        "test_log": "fifth-primary-saved.log",
+        "test_log_sha256": "3ef54fbb0f11ab25cc91309d202b26addfc9fe9b811cdfcd107204aefd82f434",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic source-shaped recorded-only processing; physical/legal acceptance unclaimed"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-signal-receipt.json",
+        "sha256": "dd8899d4d2889b1a76932d1bb67029a3b8974da10d672131e316d4592c5c042b"
+      }
     }
   ]
 }
