@@ -8,7 +8,8 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from phase_source import entry_observation,load
-from native_capture import apply_phase_sources,retain_phase_sources
+from native_capture import apply_phase_sources,bind_phase_sources,retain_phase_sources
+from delivery_audit import audit_phase_sources
 
 
 class PhaseSourceTests(unittest.TestCase):
@@ -74,3 +75,61 @@ class PhaseSourceTests(unittest.TestCase):
             self.assertTrue(later['lawfully_present'])
             apply_phase_sources([person(30)],lights,scene,bindings,prior,statuses,5)
             self.assertEqual(statuses,{})
+
+    def test_independent_audit_recomputes_phase_entry(self):
+        with tempfile.TemporaryDirectory() as folder, tempfile.TemporaryDirectory() as output:
+            self.packet(folder);attempt=Path(output)
+            bindings,names=retain_phase_sources(folder,attempt)
+            (attempt/'acquisition-provenance.json').write_text(json.dumps({'reviewed_phase_sources':names}))
+            hashes={name:hashlib.sha256((attempt/name).read_bytes()).hexdigest() for name in names}
+            acquisition={name:{'sha256':value} for name,value in hashes.items()}
+            seal={'sources':hashes}
+            context={'intersection_bounds_m':[-5,-5,8,5],
+                     'adjacent_crosswalk_bounds_m':[[-8,-5,-5,5],[8,-5,11,5]]}
+            def person(x):
+                return {'id':17,'role':'vehicle','body_vertices_m':[[x,0],[x+1,0],[x+1,1],[x,1]],
+                        'lawfully_present':None,'lawful_presence_source':None}
+            prior={};status={};signals=[];traffic=[]
+            for frame,x in ((1,-20),(2,0),(3,1)):
+                lights=[{'actor_id':29,'state':'Green'}]
+                people=apply_phase_sources([person(x)],lights,context,bindings,prior,status,frame)
+                signals.append({'frame':frame,'candidate_lights':lights})
+                traffic.append({'participants':people})
+            audit_phase_sources(attempt,acquisition,seal,signals,traffic,context)
+            traffic[1]['participants'][0]['lawfully_present']=False
+            with self.assertRaisesRegex(ValueError,'differs from reviewed entry'):
+                audit_phase_sources(attempt,acquisition,seal,signals,traffic,context)
+
+    def test_reviewed_slot_binds_fresh_spawned_actor_and_audit(self):
+        with tempfile.TemporaryDirectory() as folder, tempfile.TemporaryDirectory() as output:
+            path,_,packet=self.packet(folder)
+            del packet['participant_actor_id']
+            packet['participant_slot']='vehicle'
+            packet['participant_blueprint_id']='vehicle.test'
+            path.write_text(json.dumps(packet))
+            attempt=Path(output)
+            retained,names=retain_phase_sources(folder,attempt)
+            actor=type('A',(),{'id':42,'type_id':'vehicle.test'})()
+            bindings,receipt=bind_phase_sources(retained,{'vehicle':actor})
+            self.assertEqual(list(bindings),[42])
+            (attempt/'participant-phase-bindings.json').write_text(json.dumps(receipt))
+            (attempt/'acquisition-provenance.json').write_text(json.dumps({'reviewed_phase_sources':names}))
+            names.append('participant-phase-bindings.json')
+            hashes={name:hashlib.sha256((attempt/name).read_bytes()).hexdigest() for name in names}
+            acquisition={name:{'sha256':value} for name,value in hashes.items()}
+            context={'intersection_bounds_m':[-5,-5,8,5],
+                     'adjacent_crosswalk_bounds_m':[[-8,-5,-5,5],[8,-5,11,5]]}
+            prior={};status={};signals=[];traffic=[]
+            for frame,x in ((1,-20),(2,0)):
+                person={'id':42,'role':'vehicle','blueprint_id':'vehicle.test',
+                        'body_vertices_m':[[x,0],[x+1,0],[x+1,1],[x,1]],
+                        'lawfully_present':None,'lawful_presence_source':None}
+                lights=[{'actor_id':29,'state':'Green'}]
+                people=apply_phase_sources([person],lights,context,bindings,prior,status,frame)
+                signals.append({'frame':frame,'candidate_lights':lights})
+                traffic.append({'participants':people})
+            audit_phase_sources(attempt,acquisition,{'sources':hashes},signals,traffic,context)
+            receipt[0]['participant_blueprint_id']='vehicle.other'
+            (attempt/'participant-phase-bindings.json').write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError,'unsealed or stale'):
+                audit_phase_sources(attempt,acquisition,{'sources':hashes},signals,traffic,context)

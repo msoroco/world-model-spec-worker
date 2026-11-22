@@ -24,18 +24,19 @@ def main():
     attempt,processing,decode,case=fixture.DeliveryAuditTests().make(
         output,args.case.endswith('__yield_straight'))
     if case!=args.case:raise ValueError('audit probe selected another case')
+    frame_count=len((attempt/'video_frames.jsonl').read_text().splitlines())
     video=output/'analysis/raw.mkv'
     video.unlink()
     decode.unlink()
     subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n',
                     '-f','lavfi','-i','color=c=green:s=64x64:r=20',
-                    '-frames:v','2','-c:v','ffv1',str(video)],check=True)
+                    '-frames:v',str(frame_count),'-c:v','ffv1',str(video)],check=True)
     root=os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT')
     if not root or not Path(root).resolve().is_relative_to((REPO/'.runtime-work').resolve()):
         raise ValueError('Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work before runtime import')
     sys.path.insert(0,str(REPO/'runtime/scenario_pipeline'))
     from worker_exchange.media import audit as decode_audit
-    decode_audit(video,2,mapping_sha256=fixture.sha(attempt/'video_frames.jsonl'),receipt=decode)
+    decode_audit(video,frame_count,mapping_sha256=fixture.sha(attempt/'video_frames.jsonl'),receipt=decode)
     if args.negative:
         with (attempt/'signal-head-history.jsonl').open('a') as stream:stream.write('{}\n')
     result=fixture.delivery.audit(attempt,processing,decode,case)

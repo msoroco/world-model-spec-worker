@@ -20,6 +20,8 @@ def load_scene(path=None):
         raise ValueError('straight route must approach stop line and clear intersection')
     if scene['intersection_x_min_m']>=scene['intersection_x_max_m']:
         raise ValueError('invalid intersection bounds')
+    if not (0<scene['arrow_exhibition_after_s']<scene['duration_s']):
+        raise ValueError('arrow exhibition schedule outside capture')
     return scene
 
 
@@ -167,21 +169,23 @@ def control_step(scene, signal, participants, ego_vertices, *, first_arrow_frame
 def spawn_scene(world,scene,transform_factory):
     """Create distinct ego, vehicle and pedestrian actors for the exact case.
 
-    The occupied case places both participant classes in governed regions.
-    Lawful presence still requires independent original phase/right-of-way source.
+    The occupied case starts both participants outside the governed regions, so
+    original capture can observe their entry before arrow exhibition.
     """
     library=world.get_blueprint_library()
-    specs=[('ego','vehicle.*',scene['approach_x_m'],0),
-           ('vehicle','vehicle.*',0 if scene['participant_occupancy_setup']=='lawfully_present' else 35,0),
-           ('pedestrian','walker.pedestrian.*',9 if scene['participant_occupancy_setup']=='lawfully_present' else 35,0)]
+    specs=[('ego','vehicle.*',scene['approach_x_m'],0,0),
+           ('vehicle','vehicle.*',0 if scene['participant_occupancy_setup']=='lawfully_present' else 35,
+            -12 if scene['participant_occupancy_setup']=='lawfully_present' else 0,90),
+           ('pedestrian','walker.pedestrian.*',9 if scene['participant_occupancy_setup']=='lawfully_present' else 35,
+            -9 if scene['participant_occupancy_setup']=='lawfully_present' else 0,90)]
     if scene['participant_occupancy_setup'] not in ('clear','lawfully_present'):
         raise ValueError('unsupported occupancy setup')
     actors={}
     try:
-        for name,pattern,x,y in specs:
+        for name,pattern,x,y,yaw in specs:
             matches=list(library.filter(pattern))
             if not matches:raise ValueError('missing Native actor blueprint: '+pattern)
-            actors[name]=world.spawn_actor(matches[0],transform_factory(x,y,0,0))
+            actors[name]=world.spawn_actor(matches[0],transform_factory(x,y,0,yaw))
         if len({id(actor) for actor in actors.values()})!=len(actors):
             raise ValueError('Native world reused an actor for distinct roles')
     except BaseException:
@@ -189,6 +193,13 @@ def spawn_scene(world,scene,transform_factory):
             if hasattr(actor,'destroy'):actor.destroy()
         raise
     return actors
+
+
+def authored_arrow_state(scene,elapsed_s):
+    """Predeclared Red-to-Green stimulus; original readback controls inference."""
+    if type(elapsed_s) not in (int,float) or not math.isfinite(elapsed_s) or elapsed_s<0:
+        raise ValueError('invalid arrow schedule time')
+    return 'Red' if elapsed_s<scene['arrow_exhibition_after_s'] else 'Green'
 
 
 def participant_motion(scene, elapsed_s):

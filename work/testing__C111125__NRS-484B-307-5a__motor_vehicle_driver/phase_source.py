@@ -24,10 +24,20 @@ def load(packet_path, source_path):
         raise ValueError('participant phase source absent or hash mismatch')
     if packet.get('source_file')!=source_path.name:
         raise ValueError('participant phase source filename mismatch')
-    if type(packet.get('participant_actor_id')) is not int or packet['participant_actor_id']<0:
+    actor_id=packet.get('participant_actor_id')
+    slot=packet.get('participant_slot')
+    if actor_id is None and slot not in ('vehicle','pedestrian'):
+        raise ValueError('participant phase slot or actor ID missing')
+    if actor_id is not None and (type(actor_id) is not int or actor_id<0):
         raise ValueError('participant phase actor ID invalid')
+    if slot is not None and slot not in ('vehicle','pedestrian'):
+        raise ValueError('participant phase slot invalid')
     if packet.get('participant_role') not in ('vehicle','pedestrian'):
         raise ValueError('participant phase role invalid')
+    if slot is not None and packet['participant_role']!=slot:
+        raise ValueError('participant phase slot and role differ')
+    if slot is not None and not isinstance(packet.get('participant_blueprint_id'),str):
+        raise ValueError('participant phase blueprint identity missing')
     if type(packet.get('governing_signal_actor_id')) is not int or packet['governing_signal_actor_id']<0:
         raise ValueError('governing phase actor ID invalid')
     if packet.get('permitted_entry_states')!=['Green']:
@@ -41,7 +51,8 @@ def load(packet_path, source_path):
 def entry_observation(binding, participant, lights, *, frame, previous_inside, inside):
     """Classify an observed outside-to-inside transition from its raw phase."""
     packet=binding['packet']
-    if participant.get('id')!=packet['participant_actor_id'] or participant.get('role')!=packet['participant_role']:
+    expected_id=binding.get('bound_actor_id',packet.get('participant_actor_id'))
+    if participant.get('id')!=expected_id or participant.get('role')!=packet['participant_role']:
         raise ValueError('participant phase actor identity mismatch')
     if type(frame) is not int or frame<0:
         raise ValueError('participant entry frame invalid')

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from arrow_source import load_binding
+from phase_source import entry_observation, load as load_phase_source
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -36,7 +37,7 @@ def audit_arrow_source(attempt,acquisition,seal,signals,context):
     if context.get('arrow_review_packet_sha256')!=binding['packet_sha256'] or \
        context.get('arrow_review_asset_sha256')!=binding['asset_sha256']:
         raise ValueError('intersection context differs from reviewed arrow source')
-    for signal in signals:
+    for index,signal in enumerate(signals):
         aspect=signal.get('aspect',{})
         candidate=[item for item in signal.get('candidate_lights',[])
                    if item.get('actor_id')==packet['actor_id']]
@@ -48,6 +49,11 @@ def audit_arrow_source(attempt,acquisition,seal,signals,context):
            abs(((observed.get('yaw_deg',999)-packet['yaw_deg']+180)%360)-180)>2:
             raise ValueError('reviewed arrow installation differs from original frame')
         green=str(observed.get('state')).split('.')[-1]=='Green'
+        if signal.get('authored_state') is not None:
+            from runner import authored_arrow_state,load_scene
+            schedule=authored_arrow_state(load_scene(),index/20)
+            if signal['authored_state']!=schedule or str(observed.get('state')).split('.')[-1]!=schedule:
+                raise ValueError('original arrow state differs from predeclared schedule')
         if aspect.get('packet_sha256')!=binding['packet_sha256'] or \
            aspect.get('asset_sha256')!=binding['asset_sha256'] or \
            aspect.get('source_ref')!='reviewed-asset-sha256:'+binding['asset_sha256']+';packet-sha256:'+binding['packet_sha256'] or \
@@ -56,6 +62,78 @@ def audit_arrow_source(attempt,acquisition,seal,signals,context):
            aspect.get('source_verified') is not green or \
            aspect.get('illuminated_indications')!=(packet['green_indications'] if green else []):
             raise ValueError('per-frame arrow claim differs from reviewed source and live actor')
+
+
+def audit_phase_sources(attempt,acquisition,seal,signals,traffic,context):
+    """Recompute retained participant entry claims from original phase frames."""
+    from runner import overlaps
+    provenance=read(attempt/'acquisition-provenance.json')
+    names=provenance.get('reviewed_phase_sources',[])
+    if not isinstance(names,list) or len(names)%2:
+        raise ValueError('reviewed participant phase source inventory invalid')
+    receipt_path=attempt/'participant-phase-bindings.json'
+    binding_rows=[]
+    if receipt_path.is_file():
+        name='participant-phase-bindings.json'
+        if name not in seal['sources'] or acquisition.get(name,{}).get('sha256')!=sha(receipt_path):
+            raise ValueError('participant phase binding receipt unsealed or stale')
+        binding_rows=read(receipt_path)
+        if not isinstance(binding_rows,list):raise ValueError('participant phase binding receipt invalid')
+    bindings={}
+    for packet_name,source_name in zip(names[::2],names[1::2]):
+        if not all(isinstance(name,str) and name.startswith('reviewed-phase-sources/') and
+                   Path(name).as_posix()==name and '..' not in Path(name).parts
+                   for name in (packet_name,source_name)):
+            raise ValueError('reviewed participant phase source path invalid')
+        for name in (packet_name,source_name):
+            if name not in seal['sources'] or acquisition.get(name,{}).get('sha256')!=sha(attempt/name):
+                raise ValueError('reviewed participant phase source unsealed or stale')
+        binding=load_phase_source(attempt/packet_name,attempt/source_name)
+        packet=binding['packet']
+        if packet.get('participant_slot') is None:
+            ident=packet['participant_actor_id']
+        else:
+            matches=[row for row in binding_rows if row.get('packet_sha256')==binding['packet_sha256']]
+            if len(matches)!=1:raise ValueError('reviewed participant slot lacks unique Native binding')
+            row=matches[0]
+            if row.get('participant_slot')!=packet['participant_slot'] or \
+               row.get('participant_role')!=packet['participant_role'] or \
+               row.get('participant_blueprint_id')!=packet['participant_blueprint_id'] or \
+               type(row.get('participant_actor_id')) is not int:
+                raise ValueError('reviewed participant slot binding differs from source')
+            ident=row['participant_actor_id']
+            binding={**binding,'bound_actor_id':ident}
+        if ident in bindings:raise ValueError('duplicate reviewed participant phase actor')
+        bindings[ident]=binding
+    regions=[context['intersection_bounds_m'],*context['adjacent_crosswalk_bounds_m']]
+    previous={};entry_status={}
+    for signal,row in zip(signals,traffic):
+        current={}
+        for person in row['participants']:
+            ident=person['id']
+            inside=any(overlaps(person['body_vertices_m'],region) for region in regions)
+            current[ident]=inside
+            if not inside:
+                entry_status.pop(ident,None)
+                continue
+            if ident not in bindings:continue
+            expected_blueprint=bindings[ident]['packet'].get('participant_blueprint_id')
+            if expected_blueprint is not None and person.get('blueprint_id')!=expected_blueprint:
+                raise ValueError('original participant blueprint differs from reviewed source')
+            observed=entry_observation(bindings[ident],person,signal['candidate_lights'],
+                                       frame=signal['frame'],previous_inside=previous.get(ident),inside=inside)
+            if person.get('phase_entry_observation')!=observed:
+                raise ValueError('recorded participant entry differs from original phase')
+            if observed['reason']=='reviewed_entry_phase':entry_status[ident]=observed
+            established=entry_status.get(ident)
+            expected=established['status'] if established and type(established['status']) is bool else None
+            source=('reviewed-entry-phase:'+established['packet_sha256']) if expected is not None else None
+            if person.get('lawfully_present') is not expected or person.get('lawful_presence_source')!=source:
+                raise ValueError('participant lawful-presence claim differs from reviewed entry source')
+        for ident in tuple(entry_status):
+            if ident not in current:entry_status.pop(ident,None)
+        previous=current
+    return len(bindings)
 
 
 def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
@@ -99,6 +177,10 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
             for stream in (signal,body,participants,position,control)):
             raise ValueError('original frame/time join changed')
     audit_arrow_source(attempt,acquisition,seal,signals,read(attempt/'intersection-context.json'))
+    phase_source_count=audit_phase_sources(attempt,acquisition,seal,signals,traffic,
+                                           read(attempt/'intersection-context.json'))
+    if case_id.endswith('__yield_straight') and not phase_source_count:
+        raise ValueError('occupied case lacks reviewed original participant phase source')
     from runner import control_step,load_scene
     scene=load_scene();first_arrow_frame=None;exhibition_occupants=None
     for signal,body,participants,control in zip(signals,ego,traffic,controls):

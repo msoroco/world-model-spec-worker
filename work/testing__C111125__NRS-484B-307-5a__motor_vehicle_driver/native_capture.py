@@ -99,22 +99,51 @@ def retain_phase_sources(source_dir, output):
     if not source_dir.is_dir():raise ValueError('participant phase source directory absent')
     destination=Path(output)/'reviewed-phase-sources';destination.mkdir()
     bindings={};names=[]
-    for index,path in enumerate(sorted(source_dir.glob('*.json'))):
+    packets=[path for path in sorted(source_dir.glob('*.json'))
+             if json.loads(path.read_text()).get('format')=='c111125-reviewed-participant-phase-v1']
+    if not packets:raise ValueError('participant phase review packet absent')
+    for index,path in enumerate(packets):
         packet=json.loads(path.read_text())
         filename=packet.get('source_file')
-        if not isinstance(filename,str) or Path(filename).name!=filename or filename in ('','.','..'):
+        if not isinstance(filename,str) or Path(filename).name!=filename or filename in ('','.','..','review.json'):
             raise ValueError('participant phase source filename invalid')
         binding=load_phase_source(path,source_dir/filename)
-        ident=packet['participant_actor_id']
+        ident=packet.get('participant_slot',packet.get('participant_actor_id'))
         if ident in bindings:raise ValueError('duplicate participant phase actor ID')
-        packet_copy=destination/f'participant-{index}.json'
-        source_copy=destination/f'participant-{index}.txt'
+        slot=destination/f'participant-{index}';slot.mkdir()
+        packet_copy=slot/'review.json'
+        source_copy=slot/filename
         shutil.copy2(path,packet_copy);shutil.copy2(source_dir/filename,source_copy)
         if sha(packet_copy)!=binding['packet_sha256'] or sha(source_copy)!=binding['source_sha256']:
             raise ValueError('participant phase source changed during retention')
         bindings[ident]=binding
         names.extend([str(packet_copy.relative_to(output)),str(source_copy.relative_to(output))])
     return bindings,names
+
+
+def bind_phase_sources(bindings, actors):
+    """Bind reviewed owned slots to fresh Native actor IDs and retain the join."""
+    bound={};receipt=[]
+    for key,binding in bindings.items():
+        packet=binding['packet'];slot=packet.get('participant_slot')
+        if slot is None:
+            ident=packet['participant_actor_id']
+            blueprint=packet.get('participant_blueprint_id')
+        else:
+            actor=actors.get(slot)
+            if actor is None:raise ValueError('reviewed participant slot lacks owned actor')
+            ident=int(actor.id);blueprint=str(actor.type_id)
+            if blueprint!=packet['participant_blueprint_id']:
+                raise ValueError('reviewed participant blueprint differs from spawned actor')
+            if packet.get('participant_actor_id') is not None and packet['participant_actor_id']!=ident:
+                raise ValueError('reviewed participant actor ID differs from spawned actor')
+        if ident in bound:raise ValueError('duplicate bound participant phase actor')
+        bound[ident]={**binding,'bound_actor_id':ident}
+        receipt.append({'participant_actor_id':ident,'participant_slot':slot,
+                        'participant_role':packet['participant_role'],
+                        'participant_blueprint_id':blueprint,
+                        'packet_sha256':binding['packet_sha256']})
+    return bound,receipt
 
 
 def apply_phase_sources(people, lights, scene, bindings, prior_inside, entry_status, frame):
@@ -140,6 +169,8 @@ def apply_phase_sources(people, lights, scene, bindings, prior_inside, entry_sta
         if established is not None and type(established['status']) is bool:
             person['lawfully_present']=established['status']
             person['lawful_presence_source']='reviewed-entry-phase:'+established['packet_sha256']
+    for ident in tuple(entry_status):
+        if ident not in current:entry_status.pop(ident,None)
     prior_inside.clear();prior_inside.update(current)
     return people
 
@@ -156,6 +187,7 @@ def map_context(mapping, scene, carla):
         raise ValueError('authored straight route changes road or lane')
     return {'source':'native_map','road_id':points[0].road_id,'lane_id':points[0].lane_id,
             'stop_line_x_m':scene['stop_line_x_m'],
+            'arrow_exhibition_after_s':scene['arrow_exhibition_after_s'],
             'intersection_bounds_m':scene['intersection_bounds_m'],
             'adjacent_crosswalk_bounds_m':scene['adjacent_crosswalk_bounds_m'],
             'facing_head_id':None,
@@ -171,6 +203,7 @@ def participant_inventory(world, ego):
     for role,actor in candidates:
         if int(actor.id)==int(ego.id):continue
         rows.append({'id':int(actor.id),'role':role,'body_vertices_m':vertices(actor),
+                     'blueprint_id':str(getattr(actor,'type_id','')),
                      'lawfully_present':None,'lawful_presence_source':None})
     rows.sort(key=lambda item:item['id'])
     if len({item['id'] for item in rows})!=len(rows):
@@ -242,7 +275,7 @@ def run_native(scene,output,host,port):
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap,physical_result,write_result,seal_capture
     from worker_exchange.world_restore import fields,equal
-    from runner import apply_participant_motion,control_step,spawn_scene
+    from runner import apply_participant_motion,authored_arrow_state,control_step,spawn_scene
 
     output=Path(output).resolve()
     if not output.is_dir():raise ValueError('Native attempt directory must already exist')
@@ -254,6 +287,7 @@ def run_native(scene,output,host,port):
     client=carla.Client(host,port);client.set_timeout(30)
     world=client.get_world();original_settings=world.get_settings()
     actors={};cameras=None;capture=None;frame_map=None
+    scheduled_light=None;original_light_state=None
     phase='initializing';error=None;restored=False;rows=[];verified_arrow_frames=[]
     move_commands=0;pending={'throttle':0.0,'brake':1.0,'steer':0.0}
     first_arrow_frame=None;exhibition_occupants=None
@@ -268,6 +302,10 @@ def run_native(scene,output,host,port):
             return carla.Transform(carla.Location(x=x,y=y,z=wp.transform.location.z+.5),
                                    carla.Rotation(yaw=yaw))
         actors=spawn_scene(world,scene,transform)
+        phase_bindings,phase_binding_receipt=bind_phase_sources(phase_bindings,actors)
+        if phase_binding_receipt:
+            write(output/'participant-phase-bindings.json',phase_binding_receipt)
+            phase_names.append('participant-phase-bindings.json')
         ego=actors['ego']
         lights=list(world.get_actors().filter('traffic.traffic_light*'))
         context['candidate_light_actor_ids']=sorted(int(light.id) for light in lights)
@@ -276,6 +314,10 @@ def run_native(scene,output,host,port):
             context['facing_head_id']=first['facing_head_id']
             context['arrow_review_packet_sha256']=first['aspect']['packet_sha256']
             context['arrow_review_asset_sha256']=first['aspect']['asset_sha256']
+            selected=[light for light in lights if int(light.id)==first['facing_head_id']]
+            if len(selected)!=1:raise ValueError('scheduled facing arrow actor absent')
+            scheduled_light=selected[0]
+            original_light_state=scheduled_light.get_state()
         write(output/'intersection-context.json',context)
         cameras=CameraBank(world,ego,output,carla)
         capture=PipelineCapture(client,ego,output,scene['case_id'])
@@ -287,6 +329,9 @@ def run_native(scene,output,host,port):
              (output/'participant-history.jsonl').open('x',buffering=1) as participants, \
              (output/'controller-history.jsonl').open('x',buffering=1) as controller:
             for index in range(count):
+                if scheduled_light is not None:
+                    state=authored_arrow_state(scene,index/scene['capture_rate_hz'])
+                    scheduled_light.set_state(getattr(carla.TrafficLightState,state))
                 ego.apply_control(carla.VehicleControl(throttle=pending['throttle'],
                                                        brake=pending['brake'],steer=pending['steer']))
                 apply_participant_motion(scene,actors,carla,index/scene['capture_rate_hz'])
@@ -296,7 +341,9 @@ def run_native(scene,output,host,port):
                 capture.capture(frame,time_s);cameras.append(frame);frame_map.append(frame,time_s)
                 signal=signal_snapshot(lights,frame,bindings,scene.get('candidate_head_slot',0))
                 if signal['aspect']['source_verified']:verified_arrow_frames.append(frame)
-                signal.update(time_s=time_s)
+                signal.update(time_s=time_s,
+                              authored_state=authored_arrow_state(scene,index/scene['capture_rate_hz'])
+                                  if scheduled_light is not None else None)
                 ego_row={'frame':frame,'time_s':time_s,'body_vertices_m':vertices(ego),
                          'heading_deg':ego.get_transform().rotation.yaw}
                 people=apply_phase_sources(participant_inventory(world,ego),
@@ -368,6 +415,12 @@ def run_native(scene,output,host,port):
                 except BaseException as exc:cleanup.append(repr(exc))
         for actor in reversed(list(actors.values())):
             try:actor.destroy()
+            except BaseException as exc:cleanup.append(repr(exc))
+        if scheduled_light is not None and original_light_state is not None:
+            try:
+                scheduled_light.set_state(original_light_state)
+                if str(scheduled_light.get_state())!=str(original_light_state):
+                    cleanup.append('facing arrow original state restoration readback failed')
             except BaseException as exc:cleanup.append(repr(exc))
         try:
             world.apply_settings(original_settings)

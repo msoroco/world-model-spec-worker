@@ -31,6 +31,20 @@ class ArrowControllerTests(unittest.TestCase):
             self.assertEqual(set(actors),{'ego','vehicle','pedestrian'})
             self.assertEqual(tuple(call[1][0] for call in world.calls),positions)
             self.assertEqual(world.calls[-1][0],'walker.pedestrian.*')
+            if occupancy=='lawfully_present':
+                self.assertEqual(tuple(call[1][1] for call in world.calls),(0,-12,-9))
+                self.assertEqual(tuple(call[1][3] for call in world.calls),(0,90,90))
+    def test_predeclared_arrow_exhibition_follows_participant_entry_window(self):
+        self.assertEqual(runner.authored_arrow_state(self.scene,0),'Red')
+        self.assertEqual(runner.authored_arrow_state(self.scene,4.95),'Red')
+        self.assertEqual(runner.authored_arrow_state(self.scene,5.0),'Green')
+        self.assertEqual(runner.authored_arrow_state(self.scene,6.0),'Green')
+        with self.assertRaises(ValueError):runner.authored_arrow_state(self.scene,float('nan'))
+        for y,speed in ((-12,2),(-9,1.5)):
+            entry_time=(-5-y)/speed
+            exit_time=(5-y)/speed
+            self.assertLess(entry_time,self.scene['arrow_exhibition_after_s'])
+            self.assertGreater(exit_time,self.scene['arrow_exhibition_after_s'])
     def test_occupied_participants_have_bounded_clearance_motion(self):
         occupied=dict(self.scene,participant_occupancy_setup='lawfully_present')
         clear=dict(self.scene,participant_occupancy_setup='clear')

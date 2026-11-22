@@ -24,7 +24,7 @@ def build(case_id,occupancy):
                                    'intersection_polygon_xy_m':[[-5,-5],[8,-5],[8,5],[-5,5]],
                                    'minimum_progress_m':5,'minimum_samples':2}}
     files=[]
-    for name in ('runner.py','native_capture.py','arrow_source.py','phase_source.py','analysis.py',
+    for name in ('runner.py','native_capture.py','arrow_source.py','phase_source.py','analysis.py','delivery_audit.py',
                  'tests/test_runner.py','tests/test_native_capture.py','tests/test_phase_source.py','tests/test_analysis.py'):
         files.append({'path':name,'content':(ROOT/name).read_text()})
     files.append({'path':'scene.json','content':json.dumps(scene,indent=2)+'\n'})
