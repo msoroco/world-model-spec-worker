@@ -1133,6 +1133,445 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in",
+      "construction": "width-constructions/ego_width_above_80in.json",
+      "construction_sha256": "33d8d5b4d4c9b79a0a903d79a3814b6ea3fc1289b065b6f2776d2311ac0ffb55",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A pinned truck blueprint may lack the requested realized overall width; measured blueprint search must reject an unmatched body before capture."
+      },
+      "candidates": [],
+      "proof_status": "primary_offline_only",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in --output .runtime-work/c149752-width-offline-final/ego_width_above_80in --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "33d8d5b4d4c9b79a0a903d79a3814b6ea3fc1289b065b6f2776d2311ac0ffb55",
+        "exit_code": 0,
+        "log": "width-proofs/ego_width_above_80in.log",
+        "log_sha256": "7c05b3f8d1fd80d47a313e5c57d6b41b80c8b9c35c82452e145095a4872b354f"
+      },
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-ego_width_above_80in.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
+      "construction": "width-constructions/ego_width_at_80in.json",
+      "construction_sha256": "2d26bd79105ea5f20f415ebe75e1918e28f95ca58196aee0805180a61a2ead61",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A pinned truck blueprint may lack the requested realized overall width; measured blueprint search must reject an unmatched body before capture."
+      },
+      "candidates": [],
+      "proof_status": "primary_saved_processing_complete",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --output .runtime-work/c149752-width-offline-final/ego_width_at_80in --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "2d26bd79105ea5f20f415ebe75e1918e28f95ca58196aee0805180a61a2ead61",
+        "exit_code": 0,
+        "log": "width-proofs/ego_width_at_80in.log",
+        "log_sha256": "d863c453010198995f4ab9c83542c718b27396ac5a8a619fa51da123947cb7e3"
+      },
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-ego_width_at_80in.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      },
+      "compatibility": {
+        "receipt": "width-proofs/ego_width_at_80in-compatibility.json",
+        "sha256": "2bd271ddf203623b1591b6e390e591f4580e17d4473b09318c7b852dd1c97d41",
+        "log": "width-proofs/ego_width_at_80in-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "width-proofs/ego_width_at_80in-negative-analysis.log",
+        "log_sha256": "a9f120c4412c4868f6fddb18689934465ddffaa835ca0fd4ddbbdfa25bd193a3"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in --attempt .runtime-work/c149752-ego_width_at_80in-compat-v2 --output .runtime-work/c149752-ego_width_at_80in-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "width-proofs/ego_width_at_80in-saved-processing.json",
+        "receipt_sha256": "92cfe611eff86a43f5332810bb508bf56cfb44c93d5349786c88a03fa44bcd60",
+        "recorded_only": true,
+        "scope": "nine-frame synthetic diagnostic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "width-proofs/ego_width_at_80in-compatibility-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
+      "construction": "width-constructions/ego_width_below_80in.json",
+      "construction_sha256": "356b2fe6a828740cb911481dff213ccf3d1b7eff406e7fca32aa45134d80bbb4",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A pinned truck blueprint may lack the requested realized overall width; measured blueprint search must reject an unmatched body before capture."
+      },
+      "candidates": [],
+      "proof_status": "primary_saved_processing_complete",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --output .runtime-work/c149752-width-offline-final/ego_width_below_80in --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "356b2fe6a828740cb911481dff213ccf3d1b7eff406e7fca32aa45134d80bbb4",
+        "exit_code": 0,
+        "log": "width-proofs/ego_width_below_80in.log",
+        "log_sha256": "cf41a5883636f6564d5c7462e0c1b62b15939e4381e16a8e93a0b5756cbdafca"
+      },
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-ego_width_below_80in.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      },
+      "compatibility": {
+        "receipt": "width-proofs/ego_width_below_80in-compatibility.json",
+        "sha256": "651c0971345fb31b108e27fd69e9af8fff7e2beada6447fd5bc85ae3188c0e2e",
+        "log": "width-proofs/ego_width_below_80in-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "width-proofs/ego_width_below_80in-negative-analysis.log",
+        "log_sha256": "d323632db86a67a0ab9b9955e20199a08c81be42def6746eddc4c58f91614a79"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in --attempt .runtime-work/c149752-ego-width-below-compat-v4 --output .runtime-work/c149752-ego-width-below-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "width-proofs/ego_width_below_80in-saved-processing.json",
+        "receipt_sha256": "5f449a90e545441607d3fcbd2c2eb9f62fabd3b36578c68227ef7db6f9071dfd",
+        "recorded_only": true,
+        "scope": "nine-frame synthetic diagnostic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "width-proofs/ego_width_below_80in-compatibility-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in",
+      "construction": "width-constructions/lead_width_above_80in.json",
+      "construction_sha256": "c53f3e001e25dddf5a0e9ba254c61e5b7ce32370950e29c8cf4582f720721272",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A pinned truck blueprint may lack the requested realized overall width; measured blueprint search must reject an unmatched body before capture."
+      },
+      "candidates": [],
+      "proof_status": "primary_offline_only",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in --output .runtime-work/c149752-width-offline-final/lead_width_above_80in --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "c53f3e001e25dddf5a0e9ba254c61e5b7ce32370950e29c8cf4582f720721272",
+        "exit_code": 0,
+        "log": "width-proofs/lead_width_above_80in.log",
+        "log_sha256": "914ebf01399cdf1ab33bb9c6ab4e2676084f32cae1dd3d0eec0cdfc17aacf264"
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in",
+      "construction": "width-constructions/lead_width_at_80in.json",
+      "construction_sha256": "5a8e5ca245ef58b4ddf2fb167631b2d287ea5adc01bc27b120d778e70cf3ef0c",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A pinned truck blueprint may lack the requested realized overall width; measured blueprint search must reject an unmatched body before capture."
+      },
+      "candidates": [],
+      "proof_status": "primary_offline_only",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in --output .runtime-work/c149752-width-offline-final/lead_width_at_80in --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "5a8e5ca245ef58b4ddf2fb167631b2d287ea5adc01bc27b120d778e70cf3ef0c",
+        "exit_code": 0,
+        "log": "width-proofs/lead_width_at_80in.log",
+        "log_sha256": "5c2719794f76d22f2653e9b348107c57c5f8e69dd9dea37b8af329bb360507a8"
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in",
+      "construction": "width-constructions/lead_width_below_80in.json",
+      "construction_sha256": "5b33dc5650535484c9300f0252da6f5a63dcd0d57a3e4ff06f452a0ffcb05263",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A pinned truck blueprint may lack the requested realized overall width; measured blueprint search must reject an unmatched body before capture."
+      },
+      "candidates": [],
+      "proof_status": "primary_saved_processing_complete",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --output .runtime-work/c149752-width-offline-final/lead_width_below_80in --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "5b33dc5650535484c9300f0252da6f5a63dcd0d57a3e4ff06f452a0ffcb05263",
+        "exit_code": 0,
+        "log": "width-proofs/lead_width_below_80in.log",
+        "log_sha256": "dbe607ba3f5d5196fa394baa1e4e4a11a2b8ca1c6ce97e8496ebf85b7bb188e5"
+      },
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-lead_width_below_80in.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      },
+      "compatibility": {
+        "receipt": "width-proofs/lead_width_below_80in-compatibility.json",
+        "sha256": "8f279938aba52e4ffc3225730f65cd921216dcf40329be2af84f744cd15287a1",
+        "log": "width-proofs/lead_width_below_80in-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "width-proofs/lead_width_below_80in-negative-analysis.log",
+        "log_sha256": "8aa84fc9ef83dfc811884cd8d8dcb3cd4f96d4072ade8cdb4f3fa0d2080495e3"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in --attempt .runtime-work/c149752-lead_width_below_80in-compat-v2 --output .runtime-work/c149752-lead_width_below_80in-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "width-proofs/lead_width_below_80in-saved-processing.json",
+        "receipt_sha256": "e688d1e4e41445cb1a0e873771abe5e3f038db97a5a96d54751521b04f5e5e02",
+        "recorded_only": true,
+        "scope": "nine-frame synthetic diagnostic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "width-proofs/lead_width_below_80in-compatibility-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
     }
   ]
 }

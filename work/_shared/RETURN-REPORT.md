@@ -1,0 +1,11 @@
+# CPU preparation return report — 2026-11-22
+
+Goal status: active. The batch has 43 assigned packages: 19 ready, 24 partial, 0 missing. Strict delivery readiness has not passed. No Native execution, physical acceptance or legal conclusion is claimed.
+
+C149752 progress: six exact ego/lead 80-inch boundary constructions now have current SHA-256 bindings in `execution-manifest.json` and returned primary offline logs. The pinned CPU preflight and all six exact offline checks passed, with four unit tests per bundle and no simulation. Assignment-scoped `worker_check.py --complete` passed. Three width entries remain `primary_offline_only`. Ego-width-below, ego-width-at and lead-width-below each have passing positive/negative compatibility and recorded-only saved-processing receipts from nine-frame source-shaped diagnostics. Remaining compatibility, fallback and audit work is worker-owned. See the assignment HANDOFF for each hash and command.
+
+Return capacity: 8,592 of 8,600 files under `work/` after this report. Thirty-nine historical physical-proof logs from the partial C125763, C158196, C125745 and C147311 packages were preserved with exact bytes and SHA-256 in `archived-unbound-negative-logs-20261119.json`; they must be restored when those packages' proof chains resume. Early shared handoff sections are indexed at the top of `HANDOFF.md` and preserved in `HANDOFF-archive-20261115-part1.md`.
+
+Next CPU work: build source-specific fixture recipes and measurement bindings for the remaining three C149752 width cases, run their positive and missing-source negative compatibility, construct and prove risk-based fallbacks, run recorded-only processing and independent audits, and complete semantic proposals and ordered dispatch before claiming readiness.
+
+Verification at this checkpoint: C149752 assignment-scoped `worker_check.py --complete` exits 0. The scoped strict gate exits 1 at `preparation.py:276` because the package truthfully remains partial. A read-only return scan found 8,592 files, no file over 2 MiB (apart from the separately permitted queue, if present), and no trailing whitespace or conflict markers in this checkpoint's changed text files. No Git command was run.

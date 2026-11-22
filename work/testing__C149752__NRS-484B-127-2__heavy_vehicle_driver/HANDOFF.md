@@ -101,3 +101,44 @@ Pinned CPU positive compatibility rerun passed (exit 0) for `following_under_500
 Returned the exact C149752 `ego_width_below_80in` primary construction at `width-constructions/ego_width_below_80in.json` (SHA-256 `d7a72e0eb8b3bf4eb82bf1ca9978297178c15497cd01af0807752de3300f0f67`). It derives from the already source-bound C149752 20 Hz/45 s root bundle, changes the selected case identity to the ego-below width control, and pins the four candidate truck blueprints required by the width runner. `runtime.py offline` with `.venv-cpu/bin/python` passed (`.runtime-work/c149752-width-below-offline/offline.log`, SHA-256 `215e9584ed635d67a3a582999bf2249a6a96a58f52adc0e637e5d93d5a5bb050`); no simulation started. The assignment-scoped `worker_check.py --complete` passed after adding the returned construction. The offline log remains ignored runtime work; it is not yet a portable manifest proof receipt. Corrected the at/above width case-plan purposes to describe their respective threshold observations. Status remains partial pending returned manifest/proof wiring and the other width cases and proofs.
 
 Post-checkpoint scoped strict gate rejects the truthful partial status with `Preparation acceptance failed: partial/missing packages remain`. The full batch strict gate was started and interrupted after more than four minutes without output (exit 130); it did not establish delivery readiness.
+
+### 2026-11-22 six-width exact CPU checkpoint
+
+The prior ego-below bundle hash was superseded when all six bundles gained shared six-case category support and a meaningful width-boundary unit test. The hashes below are current. `runtime.py preflight` passed with the pinned CPU environment. Each manifest-bound `runtime.py offline` run exited 0, checked the exact case configuration and ran four unit tests without starting simulation. Returned logs live under `width-proofs/`; the current `execution-manifest.json` binds each construction and log SHA-256.
+
+| Width case | Construction SHA-256 | Offline log SHA-256 |
+|---|---|---|
+| ego_width_above_80in | `07f173a696243c30f0a4d7d1fe12bb83a309dfeb7ef953132f2b73d28fdaf6b7` | `3cfea65b1a492c653ffe151f3e5db73bc1629f40f82a3e9c8bd4bacd1e556684` |
+| ego_width_at_80in | `87fb7b4ae05b294a57a4a027fb96ef290fd5a3cf9d1a9500056dfce490b13bd2` | `d863c453010198995f4ab9c83542c718b27396ac5a8a619fa51da123947cb7e3` |
+| ego_width_below_80in | `b305c98f1e945834f888d563081ef7e4fd4e136c25c258254d4b285f8b67b3f4` | `d10c96cd1b03956e3e55553e59bbaf0f1593575fa34a2ef8bb4a910b45ec830b` |
+| lead_width_above_80in | `3a294aec003a2969c42f3e68d3a37e95e7f3f9678e1a44c57a42ebe69393212f` | `6300b2f3a2366d8e13a4c8703aaea7b980e2d86d1fe06b65a69872a20e76b533` |
+| lead_width_at_80in | `ce8a27e07a90b9b57e54fcaceeec66bc6fe1c6cae9fdc98dc358782fb846e294` | `d52851133273f85ab2d0fd8c8210de3538cf0b6bd0a193e688cd52b2aa407ff4` |
+| lead_width_below_80in | `02470ce5c87478aed15012d4edd00f16965ae960fd7218ec6f448ff5642867f7` | `8f7409f952248fcb75845111396c153852dc190ba298527e984c6d952ea1d4cc` |
+
+These six entries remain `primary_offline_only` in a partial manifest. They still need source-specific fixture recipes, measurement contract bindings, positive/negative compatibility, risk-based fallback constructions and proofs, recorded-only processing, audits and semantic/dispatch bindings. The assignment-scoped `worker_check.py --complete` passes; strict readiness has not been claimed.
+
+### 2026-11-22 width finalizer and first saved-processing proof
+
+The table below supersedes the earlier width construction hashes: the bundled finalizer now handles all six width relations, with the authored above-width target at 2.1 m to match the semantic proposals. All six exact primary offline checks were rerun against the returned manifest and passed four unit tests per bundle.
+
+| Case suffix | Construction SHA-256 | Offline log SHA-256 |
+|---|---|---|
+| ego_width_above_80in | `33d8d5b4d4c9b79a0a903d79a3814b6ea3fc1289b065b6f2776d2311ac0ffb55` | `7c05b3f8d1fd80d47a313e5c57d6b41b80c8b9c35c82452e145095a4872b354f` |
+| ego_width_at_80in | `2d26bd79105ea5f20f415ebe75e1918e28f95ca58196aee0805180a61a2ead61` | `d863c453010198995f4ab9c83542c718b27396ac5a8a619fa51da123947cb7e3` |
+| ego_width_below_80in | `356b2fe6a828740cb911481dff213ccf3d1b7eff406e7fca32aa45134d80bbb4` | `cf41a5883636f6564d5c7462e0c1b62b15939e4381e16a8e93a0b5756cbdafca` |
+| lead_width_above_80in | `c53f3e001e25dddf5a0e9ba254c61e5b7ce32370950e29c8cf4582f720721272` | `914ebf01399cdf1ab33bb9c6ab4e2676084f32cae1dd3d0eec0cdfc17aacf264` |
+| lead_width_at_80in | `5a8e5ca245ef58b4ddf2fb167631b2d287ea5adc01bc27b120d778e70cf3ef0c` | `5c2719794f76d22f2653e9b348107c57c5f8e69dd9dea37b8af329bb360507a8` |
+| lead_width_below_80in | `5b33dc5650535484c9300f0252da6f5a63dcd0d57a3e4ff06f452a0ffcb05263` | `dbe607ba3f5d5196fa394baa1e4e4a11a2b8ca1c6ce97e8496ebf85b7bb188e5` |
+
+The `ego_width_below_80in` proposal and selected requirement bindings are current. Its source-shaped diagnostic `diagnostic-ego_width_below_80in.json` and fixture recipe are in this assignment. Pinned positive/negative `runtime.py compatibility` at `.runtime-work/c149752-ego-width-below-compat-v4` passed all eleven checks; returned receipt SHA-256 `651c0971345fb31b108e27fd69e9af8fff7e2beada6447fd5bc85ae3188c0e2e` and negative log SHA-256 `d323632db86a67a0ab9b9955e20199a08c81be42def6746eddc4c58f91614a79`. Pinned `runtime.py process-saved` from that attempt into `.runtime-work/c149752-ego-width-below-saved-v2` passed nine-frame original joins, analysis, and final decode; returned receipt SHA-256 `5f449a90e545441607d3fcbd2c2eb9f62fabd3b36578c68227ef7db6f9071dfd`. This validates software processing of a synthetic diagnostic only. The remaining five width compatibility/saved proofs and all width fallback, physical-preparation, delivery and comparison proofs remain CPU work.
+
+Final scoped check for this checkpoint: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --complete` exited 0. The same command with `--require-delivery-ready` exited 1 at `preparation.py:276` because the result remains partial. The next CPU task is to adapt the remaining five exact width diagnostics and recipes, run their compatibility and saved-only proofs, then construct and prove their risk-based fallbacks and independent audits.
+
+### 2026-11-22 additional width saved-processing proofs
+
+`ego_width_at_80in` and `lead_width_below_80in` now have assignment-specific source-shaped diagnostics and fixture recipes adapted from same-law, same-geometry C149237 controls. Each exact primary `runtime.py compatibility` passed positive and missing-truck-history negative checks, Native/Core conversion, four source cameras, Lean decode, render and final media decode. Each `runtime.py process-saved` passed nine original-frame joins and source preservation. Current returned hashes are:
+| Case | Compatibility receipt SHA-256 | Negative log SHA-256 | Saved receipt SHA-256 |
+|---|---|---|---|
+| ego_width_at_80in | `2bd271ddf203623b1591b6e390e591f4580e17d4473b09318c7b852dd1c97d41` | `a9f120c4412c4868f6fddb18689934465ddffaa835ca0fd4ddbbdfa25bd193a3` | `92cfe611eff86a43f5332810bb508bf56cfb44c93d5349786c88a03fa44bcd60` |
+| lead_width_below_80in | `8f279938aba52e4ffc3225730f65cd921216dcf40329be2af84f744cd15287a1` | `8aa84fc9ef83dfc811884cd8d8dcb3cd4f96d4072ade8cdb4f3fa0d2080495e3` | `e688d1e4e41445cb1a0e873771abe5e3f038db97a5a96d54751521b04f5e5e02` |
+These are synthetic software proofs; three width cases still need primary compatibility and saved processing. The first attempt used `Path.resolve()` on the venv Python symlink, which launched the base interpreter and missed installed `networkx`; rerunning with the `.venv-cpu/bin/python` path passed. No package-install or external dependency remains from that attempt.
