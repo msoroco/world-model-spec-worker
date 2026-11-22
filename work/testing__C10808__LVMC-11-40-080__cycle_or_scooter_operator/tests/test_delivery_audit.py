@@ -39,7 +39,7 @@ class DeliveryAuditTests(unittest.TestCase):
         phases=(['mounted_approach','dismount_hold','afoot_reversal','turn_complete']
                 if dismounted else ['mounted_approach','mounted_reversal',
                                     'mounted_reversal','turn_complete'])
-        events=[];trace=[];mapping=[]
+        events=[];contexts=[];trace=[];mapping=[]
         for i,phase in enumerate(phases):
             x=2 if dismounted and i>=2 else 0
             def body(value):return [[value-.2,-.2,0.],[value-.2,.2,0.],
@@ -48,11 +48,18 @@ class DeliveryAuditTests(unittest.TestCase):
                 'phase':phase,'operator_id':1,'bicycle_id':2,'sign_id':3,
                 'operator_body_vertices_m':body(x),
                 'bicycle_body_vertices_m':body(0)})
+            contexts.append({'frame':100+i,'time_s':(i+1)/20,
+                'operator_id':1,'operator_position_m':[float(x),0.,0.],
+                'nearest_road_projection':None,
+                'nearby_crosswalk_vertices_m':[],
+                'nearby_control_devices':[],
+                'pedestrian_regulation_assessment':'unresolved'})
             trace.append({'frame':100+i,'time_s':(i+1)/20,
                           'position_m':[x,0.,0.]})
             mapping.append({'video_frame':i,'carla_frame':100+i,
                             'time_s':(i+1)/20})
-        for name,items in [('phase-events.jsonl',events),('trace.jsonl',trace),
+        for name,items in [('phase-events.jsonl',events),
+                           ('pedestrian-context.jsonl',contexts),('trace.jsonl',trace),
                            ('video_frames.jsonl',mapping)]:
             (attempt/name).write_text(''.join(json.dumps(item)+'\n' for item in items))
         write(attempt/'acquisition.json',{name:{'kind':'original_native',

@@ -136,6 +136,37 @@ def spawn_scene(world,scene,transform_factory):
     return actors
 
 
+def participant_motion(scene, elapsed_s):
+    """Native control targets that clear both governed regions after a hold.
+
+    The vehicle crosses northbound through the intersection; the pedestrian
+    crosses the adjacent crosswalk. This is a construction policy only. Body
+    positions and lawful presence must still be read back from original sources.
+    """
+    if type(elapsed_s) not in (int,float) or not math.isfinite(elapsed_s) or elapsed_s<0:
+        raise ValueError('invalid participant elapsed time')
+    if scene['participant_occupancy_setup']=='clear':
+        return {'vehicle_velocity_xyz_mps':(0.,0.,0.),
+                'pedestrian_direction_xyz':(0.,0.,0.),'pedestrian_speed_mps':0.}
+    if scene['participant_occupancy_setup']!='lawfully_present':
+        raise ValueError('unsupported occupancy setup')
+    # The target motion moves bodies beyond the y=5 m region boundary within
+    # the 30 s capture. A Native controller must stop them after readback clears.
+    return {'vehicle_velocity_xyz_mps':(0.,2.,0.),
+            'pedestrian_direction_xyz':(0.,1.,0.),'pedestrian_speed_mps':1.5}
+
+
+def apply_participant_motion(scene, actors, carla, elapsed_s):
+    """Issue the occupied/clear construction controls to owned Native actors."""
+    motion=participant_motion(scene,elapsed_s)
+    vx,vy,vz=motion['vehicle_velocity_xyz_mps']
+    dx,dy,dz=motion['pedestrian_direction_xyz']
+    actors['vehicle'].set_target_velocity(carla.Vector3D(x=vx,y=vy,z=vz))
+    actors['pedestrian'].apply_control(carla.WalkerControl(
+        direction=carla.Vector3D(x=dx,y=dy,z=dz),speed=motion['pedestrian_speed_mps']))
+    return motion
+
+
 def check():
     scene=load_scene()
     assert scene['approach_x_m']<scene['stop_line_x_m']<scene['intersection_x_max_m']<scene['exit_x_m']

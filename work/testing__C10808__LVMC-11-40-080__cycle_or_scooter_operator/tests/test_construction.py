@@ -163,6 +163,12 @@ class SavedAnalysisTests(unittest.TestCase):
                 for i,phase in enumerate(phases)]
         events = path/'phase-events.jsonl'
         events.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        (path/'pedestrian-context.jsonl').write_text(''.join(json.dumps({
+            'frame':row['frame'],'time_s':row['time_s'],
+            'operator_id':row['operator_id'],'operator_position_m':[0.,0.,0.],
+            'nearest_road_projection':None,'nearby_crosswalk_vertices_m':[],
+            'nearby_control_devices':[],
+            'pedestrian_regulation_assessment':'unresolved'})+'\n' for row in rows))
         (path/'video_frames.jsonl').write_text(''.join(json.dumps({
             'carla_frame':row['frame'],'time_s':row['time_s']})+'\n'
             for row in rows))
@@ -188,7 +194,8 @@ class SavedAnalysisTests(unittest.TestCase):
             'actor':'cycle_or_scooter_operator','duration_s':30}))
         (path/'construction.json').write_text(json.dumps({
             'recording_description':{'channels':[{'name':name} for name in
-                ('operator_pose','bicycle_pose','sign_inventory','phase_events')]}}))
+                ('operator_pose','bicycle_pose','sign_inventory','phase_events',
+                 'pedestrian_context')]}}))
         return path
 
     def test_dismounted_measurement(self):
@@ -208,6 +215,13 @@ class SavedAnalysisTests(unittest.TestCase):
             path=self.attempt(temp)
             (path/'phase-events.jsonl').unlink()
             with self.assertRaisesRegex(ValueError,'Missing required source: phase-events.jsonl'):
+                analysis.finalize(path)
+
+    def test_missing_pedestrian_context_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.attempt(temp)
+            (path/'pedestrian-context.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError,'Missing required source: pedestrian-context.jsonl'):
                 analysis.finalize(path)
 
     def test_stale_source_rejected(self):
@@ -255,7 +269,7 @@ class SavedAnalysisTests(unittest.TestCase):
             finally:
                 sys.path.remove(str(runtime))
             self.assertEqual(result['case_id'],json.loads((path/'config.json').read_text())['selected_case_id'])
-            self.assertEqual(len(result['recording_evidence']),4)
+            self.assertEqual(len(result['recording_evidence']),5)
             self.assertTrue((path/'channels/operator_pose.jsonl').is_file())
             self.assertTrue(report['measurements']['dismount_turn_measurement']['value']['dismounted_before_turn'])
             self.assertNotIn('legal_verdict',result)

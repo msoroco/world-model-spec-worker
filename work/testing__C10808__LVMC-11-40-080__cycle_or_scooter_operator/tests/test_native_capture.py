@@ -46,6 +46,28 @@ class Map:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_native_pedestrian_context_records_map_and_nearby_devices(self):
+        location=types.SimpleNamespace(x=1.,y=2.,z=0.)
+        operator=types.SimpleNamespace(id=7,type_id='walker.pedestrian.fixture',get_transform=lambda:
+            types.SimpleNamespace(location=location))
+        sign=types.SimpleNamespace(id=9,type_id='static.prop.sign.no_uturn',
+            get_transform=lambda:types.SimpleNamespace(location=
+                types.SimpleNamespace(x=3.,y=2.,z=0.)))
+        far=types.SimpleNamespace(id=10,type_id='traffic.traffic_light',
+            get_transform=lambda:types.SimpleNamespace(location=
+                types.SimpleNamespace(x=100.,y=100.,z=0.)))
+        world=types.SimpleNamespace(get_actors=lambda:[operator,sign,far])
+        native_map=types.SimpleNamespace(
+            get_waypoint=lambda point:types.SimpleNamespace(road_id=5,lane_id=-1,
+                lane_type='Driving',junction_id=None),
+            get_crosswalks=lambda:[types.SimpleNamespace(x=2.,y=2.,z=0.)])
+        result=native_capture.pedestrian_context(world,native_map,operator,41,.05)
+        self.assertEqual((result['frame'],result['operator_id']),(41,7))
+        self.assertEqual(result['nearest_road_projection']['road_id'],5)
+        self.assertEqual([d['actor_id'] for d in result['nearby_control_devices']],[9])
+        self.assertEqual(len(result['nearby_crosswalk_vertices_m']),1)
+        self.assertEqual(result['pedestrian_regulation_assessment'],'unresolved')
+
     def test_graph_capture_failure_releases_resources_and_restores_world(self):
         events=[]
         class World:

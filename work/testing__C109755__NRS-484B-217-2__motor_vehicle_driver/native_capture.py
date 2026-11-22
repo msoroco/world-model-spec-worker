@@ -80,6 +80,7 @@ def check_map(mapping, scene, carla):
     marking = approach.left_lane_marking
     return {'zone_kind': scene['zone_kind'], 'striping_source': 'native_map',
             'stripe_y_m': scene['stripe_y_m'],
+            'crossing_x_m': scene['crossing_x_m'],
             'approach_road_id': approach.road_id,
             'approach_lane_id': approach.lane_id,
             'marking_type': str(marking.type),
@@ -201,6 +202,7 @@ def run_native(scene, output, host, port):
                 cameras.append(frame)
                 frame_map.append(frame,time_s)
                 row={'frame':frame,'time_s':time_s,
+                     'ego_center_x_m':trace['position_m'][0],
                      'ego_center_y_m':trace['position_m'][1],
                      'ego_body_vertices_m':body_vertices(ego),
                      'left_signal':bool(ego.get_light_state() & carla.VehicleLightState.LeftBlinker),

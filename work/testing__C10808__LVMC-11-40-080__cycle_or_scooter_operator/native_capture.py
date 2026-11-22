@@ -30,6 +30,39 @@ def write(path, value):
     Path(path).write_text(json.dumps(value,indent=2,allow_nan=False)+'\n')
 
 
+def pedestrian_context(world, native_map, operator, frame, time_s):
+    """Retain Native post-dismount geography and devices without legal inference."""
+    location=operator.get_transform().location
+    point=[float(location.x),float(location.y),float(location.z)]
+    waypoint=native_map.get_waypoint(location)
+    projection=None if waypoint is None else {
+        'road_id':waypoint.road_id,'lane_id':waypoint.lane_id,
+        'lane_type':str(waypoint.lane_type),
+        'junction_id':getattr(waypoint,'junction_id',None),
+        'projection_method':'Native nearest-road waypoint; not a sidewalk or legal-crossing classification'}
+    crosswalks=[[float(p.x),float(p.y),float(p.z)] for p in native_map.get_crosswalks()
+                if math.dist(point[:2],[float(p.x),float(p.y)])<=40.]
+    devices=[]
+    for actor in world.get_actors():
+        kind=str(actor.type_id)
+        if not (kind.startswith('traffic.') or kind.startswith('static.prop.sign')):
+            continue
+        pose=actor.get_transform().location
+        distance=math.dist(point[:2],[float(pose.x),float(pose.y)])
+        if distance>40.:continue
+        state=actor.get_state() if hasattr(actor,'get_state') else None
+        devices.append({'actor_id':actor.id,'type_id':kind,
+            'position_m':[float(pose.x),float(pose.y),float(pose.z)],
+            'distance_to_operator_m':distance,
+            'state':None if state is None else str(state)})
+    devices.sort(key=lambda row:(row['distance_to_operator_m'],row['actor_id']))
+    return {'frame':frame,'time_s':time_s,'operator_id':operator.id,
+        'operator_position_m':point,'nearest_road_projection':projection,
+        'nearby_crosswalk_vertices_m':crosswalks,'nearby_control_devices':devices,
+        'source':'original Native CARLA operator transform, map and world actors',
+        'pedestrian_regulation_assessment':'unresolved'}
+
+
 def local_transform(carla, origin, x, y, z=0., yaw=0.):
     angle = math.radians(origin.rotation.yaw)
     location = carla.Location(
@@ -197,7 +230,8 @@ def run_native(scene, output, host, port, authorization_file):
                                  output,scene['case_id'])
         start=world.get_snapshot().timestamp.elapsed_seconds
         phase='capturing'
-        with (output/'phase-events.jsonl').open('x',buffering=1) as events:
+        with (output/'phase-events.jsonl').open('x',buffering=1) as events, \
+             (output/'pedestrian-context.jsonl').open('x',buffering=1) as contexts:
             for index in range(round(scene.get('duration_s',30)*20)):
                 requested=trajectory(scene,(index+1)/20)
                 for name in ('operator','bicycle'):
@@ -212,6 +246,8 @@ def run_native(scene, output, host, port, authorization_file):
                 row=sample(actors,frame=frame,time_s=elapsed,
                            phase=requested['phase'])
                 events.write(json.dumps(row,allow_nan=False)+'\n')
+                context=pedestrian_context(world,native_map,actors['operator'],frame,elapsed)
+                contexts.write(json.dumps(context,allow_nan=False)+'\n')
                 rows+=1
         phase='closing'
         frame_map.close();frame_map=None
@@ -221,7 +257,7 @@ def run_native(scene, output, host, port, authorization_file):
         if (capture_manifest.get('frames')!=rows or
                 capture_manifest.get('extraction_confirmed') is not True):
             raise ValueError('Pinned Native graph/evidence capture incomplete')
-        names=['phase-events.jsonl','sign-inventory.json',
+        names=['phase-events.jsonl','pedestrian-context.jsonl','sign-inventory.json',
                'sign-authorization-source','video_frames.jsonl','trace.jsonl',
                'road.xodr','carla_recorder.log',
                *[name+'.mkv' for name,*_ in CAMERAS]]

@@ -9,7 +9,7 @@ import json
 import math
 from pathlib import Path
 
-REQUIRED = ('phase-events.jsonl', 'sign-inventory.json',
+REQUIRED = ('phase-events.jsonl', 'pedestrian-context.jsonl', 'sign-inventory.json',
             'sign-authorization-source', 'video_frames.jsonl')
 
 
@@ -50,10 +50,12 @@ def finalize(attempt):
     attempt = Path(attempt)
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
     event_path = read_bound(attempt, acquisition, 'phase-events.jsonl')
+    context_path = read_bound(attempt, acquisition, 'pedestrian-context.jsonl')
     sign_path = read_bound(attempt, acquisition, 'sign-inventory.json')
     authorization_path = read_bound(attempt, acquisition, 'sign-authorization-source')
     frame_path = read_bound(attempt, acquisition, 'video_frames.jsonl')
     rows = [json.loads(line) for line in event_path.read_text().splitlines() if line.strip()]
+    contexts=[json.loads(line) for line in context_path.read_text().splitlines() if line.strip()]
     if not rows or any(rows[i]['frame'] >= rows[i+1]['frame'] or rows[i]['time_s'] >= rows[i+1]['time_s']
                        for i in range(len(rows)-1)):
         raise ValueError('phase events lack monotone original frame/time order')
@@ -69,6 +71,15 @@ def finalize(attempt):
             abs(row['time_s']-frame.get('time_s',float('inf'))) > 1e-4
             for row,frame in zip(rows,frames))):
         raise ValueError('original phase event/frame map join failed')
+    if len(contexts)!=len(rows) or any(
+            context.get('frame')!=row['frame'] or
+            abs(context.get('time_s',float('inf'))-row['time_s'])>1e-4 or
+            context.get('operator_id')!=row['operator_id'] or
+            context.get('pedestrian_regulation_assessment')!='unresolved' or
+            not isinstance(context.get('nearby_crosswalk_vertices_m'),list) or
+            not isinstance(context.get('nearby_control_devices'),list)
+            for row,context in zip(rows,contexts)):
+        raise ValueError('original pedestrian context/frame and operator join failed')
     separations = [body_separation(row) for row in rows]
     mounted = ('mounted_approach', 'mounted_reversal')
     if any(distance > .5 for row, distance in zip(rows, separations)
@@ -107,6 +118,10 @@ def finalize(attempt):
             'bicycle_id':next(iter(bikes)),'observed_sign':sign,'dismount_time_s':dismount_time,
             'turn_start_s':start,'turn_complete_s':phases['turn_complete'][0]['time_s'],
             'dismounted_before_turn':dismounted,
+            'pedestrian_context_frames':len(contexts),
+            'post_dismount_context_frames':sum(
+                row['phase'] in ('dismount_hold','afoot_reversal','turn_complete')
+                for row in rows) if dismounted else 0,
             'original_body_separation_m_by_frame': [
                 {'frame': row['frame'], 'separation_m': distance}
                 for row, distance in zip(rows, separations)],
@@ -136,6 +151,8 @@ def saved_result(attempt, report):
     acquisition = json.loads((attempt/'acquisition.json').read_text())
     event_path = read_bound(attempt, acquisition, 'phase-events.jsonl')
     rows = [json.loads(line) for line in event_path.read_text().splitlines() if line.strip()]
+    contexts=[json.loads(line) for line in read_bound(attempt,acquisition,
+        'pedestrian-context.jsonl').read_text().splitlines() if line.strip()]
     sign = json.loads(read_bound(attempt, acquisition, 'sign-inventory.json').read_text())
     channels = attempt/'channels'
     channels.mkdir(exist_ok=True)
@@ -147,6 +164,8 @@ def saved_result(attempt, report):
         name = channel['name']
         if name == 'sign_inventory':
             values = [sign for _ in rows]
+        elif name == 'pedestrian_context':
+            values=contexts
         elif name in fields:
             field = fields[name]
             if any(field not in row for row in rows):

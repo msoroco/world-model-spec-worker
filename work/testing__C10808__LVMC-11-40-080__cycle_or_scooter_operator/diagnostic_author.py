@@ -32,7 +32,7 @@ def author(dismounted):
     phases = (['mounted_approach']*3+['dismount_hold']+
               ['afoot_reversal']*3+['turn_complete']*2 if dismounted else
               ['mounted_approach']*3+['mounted_reversal']*4+['turn_complete']*2)
-    events=[]
+    events=[];contexts=[]
     for index,(frame,phase) in enumerate(zip(mapping,phases)):
         human_x=(min(index,2) if phase in ('mounted_approach','dismount_hold')
                  else index-1) if dismounted else index
@@ -46,14 +46,25 @@ def author(dismounted):
                        'bicycle_body_vertices_m':body(bicycle_x),
                        'sign_body_vertices_m':body(-8.),
                        'body_source':'synthetic diagnostic body geometry'})
+        contexts.append({'frame':frame['carla_frame'],'time_s':frame['time_s'],
+                         'operator_id':'fixture-operator',
+                         'operator_position_m':[float(human_x),0.,0.],
+                         'nearest_road_projection':{'road_id':1,'lane_id':-1,
+                             'lane_type':'Driving','junction_id':None,
+                             'projection_method':'synthetic diagnostic only'},
+                         'nearby_crosswalk_vertices_m':[],
+                         'nearby_control_devices':[],
+                         'source':'synthetic diagnostic map/device context',
+                         'pedestrian_regulation_assessment':'unresolved'})
     files=template['files']
     files['phase-events.jsonl']=''.join(json.dumps(row)+'\n' for row in events)
+    files['pedestrian-context.jsonl']=''.join(json.dumps(row)+'\n' for row in contexts)
     files['sign-authorization-source']='Synthetic source placeholder; no authorization established.\n'
     files['sign-inventory.json']=json.dumps({
         'message':'NO U TURN','erected':True,'sign_actor_id':'fixture-sign',
         'authorization_source_sha256':sha_bytes(files['sign-authorization-source'].encode()),
         'authorization_status':'unresolved_diagnostic_only'})+'\n'
-    required=('phase-events.jsonl','sign-inventory.json',
+    required=('phase-events.jsonl','pedestrian-context.jsonl','sign-inventory.json',
               'sign-authorization-source','video_frames.jsonl')
     files['acquisition.json']=json.dumps({name:{'kind':'original_native',
         'sha256':sha_bytes(files[name].encode())} for name in required})+'\n'

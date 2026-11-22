@@ -31,6 +31,27 @@ class ArrowControllerTests(unittest.TestCase):
             self.assertEqual(set(actors),{'ego','vehicle','pedestrian'})
             self.assertEqual(tuple(call[1][0] for call in world.calls),positions)
             self.assertEqual(world.calls[-1][0],'walker.pedestrian.*')
+    def test_occupied_participants_have_bounded_clearance_motion(self):
+        occupied=dict(self.scene,participant_occupancy_setup='lawfully_present')
+        clear=dict(self.scene,participant_occupancy_setup='clear')
+        move=runner.participant_motion(occupied,0)
+        self.assertGreater(move['vehicle_velocity_xyz_mps'][1],0)
+        self.assertGreater(move['pedestrian_speed_mps'],0)
+        self.assertGreater(move['pedestrian_direction_xyz'][1],0)
+        self.assertEqual(runner.participant_motion(clear,0)['vehicle_velocity_xyz_mps'],(0.,0.,0.))
+        with self.assertRaises(ValueError):runner.participant_motion(occupied,float('nan'))
+        class Actor:
+            def set_target_velocity(self,value):self.velocity=value
+            def apply_control(self,value):self.control=value
+        class Carla:
+            @staticmethod
+            def Vector3D(**value):return value
+            @staticmethod
+            def WalkerControl(**value):return value
+        actors={'vehicle':Actor(),'pedestrian':Actor()}
+        runner.apply_participant_motion(occupied,actors,Carla,2.)
+        self.assertEqual(actors['vehicle'].velocity['y'],2.)
+        self.assertEqual(actors['pedestrian'].control['speed'],1.5)
     def test_predeclared_alternate_head_selection(self):
         def head(ident,verified=True,facing=True):
             return {'source_verified':verified,'source_ref':'original/head-stream',

@@ -13,8 +13,12 @@ def load_scene(path=SCENE):
         raise ValueError('wrong frozen identity')
     if not scene['approach_lane_center_y_m'] < scene['stripe_y_m'] < scene['opposing_lane_center_y_m']:
         raise ValueError('striping is not between opposing lanes')
-    if not scene['start_x_m'] < scene['signal_start_x_m'] < scene['crossing_x_m']:
+    if not scene['start_x_m'] < scene['signal_start_x_m'] < scene['crossing_x_m']-4:
         raise ValueError('signal station must precede stripe crossing')
+    # A 300 foot approach covers the longer NRS 484B.413(2) district case.
+    # Actual continuous signaling and traveled distance are measured from capture.
+    if scene['crossing_x_m']-4-scene['signal_start_x_m'] < 300*0.3048:
+        raise ValueError('authored signal approach is shorter than 300 feet')
     if scene['exit_y_m'] <= scene['opposing_lane_center_y_m']:
         raise ValueError('left-turn exit must cross the opposing side')
     return scene

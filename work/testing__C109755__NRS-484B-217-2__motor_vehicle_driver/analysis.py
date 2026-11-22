@@ -49,9 +49,26 @@ def measure(attempt):
     if any(row['oncoming_body_gap_m']<0 or row['following_body_gap_m']<0 for row in rows):
         raise ValueError('invalid traffic gap measurement')
     activated=[r for r in rows if r['left_signal'] and r['time_s']<=first['time_s']]
+    # Count a continuous signal run ending at the turn onset, using observed
+    # center positions. No district or legal safety claim follows from this.
+    onset=next((i for i,r in enumerate(rows) if r.get('ego_center_x_m',float('-inf'))>=
+                context.get('crossing_x_m',0)-4),None)
+    signal_distance=None
+    if onset is not None and all(type(r.get('ego_center_x_m')) in (int,float) and
+                                 type(r.get('ego_center_y_m')) in (int,float) and
+                                 math.isfinite(r['ego_center_x_m']) and math.isfinite(r['ego_center_y_m'])
+                                 for r in rows[:onset+1]):
+        start=onset
+        while start>=0 and rows[start]['left_signal'] is True:start-=1
+        start+=1
+        signal_distance=sum(math.hypot(b['ego_center_x_m']-a['ego_center_x_m'],
+                                      b['ego_center_y_m']-a['ego_center_y_m'])
+                            for a,b in zip(rows[start:onset],rows[start+1:onset+1])) if start<onset else 0.0
     return {'format':'worker-stripe-measurements','crossing_frame':first['frame'],
             'crossing_time_s':first['time_s'],'signal_started_s':activated[0]['time_s'] if activated else None,
             'signal_active_at_crossing':bool(first['left_signal']),
+            'continuous_signal_before_turn_m':signal_distance,
+            'signal_300ft_observed':signal_distance is not None and signal_distance>=300*0.3048,
             'crossing_method':'first sampled original ego body edge over stripe after wholly-below sample',
             'minimum_oncoming_body_gap_m':min(r['oncoming_body_gap_m'] for r in rows),
             'minimum_following_body_gap_m':min(r['following_body_gap_m'] for r in rows),

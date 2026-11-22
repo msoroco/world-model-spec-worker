@@ -27,19 +27,20 @@ class Waypoint:
     def __init__(self,loc):self.transform=type('T',(),{'location':loc})();self.successors=[]
     def next(self,_):return self.successors
 class Map:
-    def __init__(self,shift=0,connected=True):
+    def __init__(self,shift=0,connected=True,crossing_x=0):
         self.shift=shift
-        self.start=Waypoint(Point(-25,-1.75+shift))
-        self.approach=Waypoint(Point(-3,-1.75+shift))
-        self.crossing=Waypoint(Point(0,1.75+shift))
-        self.exit=Waypoint(Point(0,25+shift))
+        self.start=Waypoint(Point(-115,-1.75+shift))
+        self.crossing_x=crossing_x
+        self.approach=Waypoint(Point(crossing_x-3,-1.75+shift))
+        self.crossing=Waypoint(Point(crossing_x,1.75+shift))
+        self.exit=Waypoint(Point(crossing_x,25+shift))
         if connected:
             self.start.successors=[self.approach]
             self.approach.successors=[self.crossing]
             self.crossing.successors=[self.exit]
     def get_waypoint(self,loc):
-        if loc.x < -15:return self.start
-        if loc.x < -1:return self.approach
+        if loc.x < -105:return self.start
+        if loc.x < self.crossing_x-1:return self.approach
         if loc.y < 10:return self.crossing
         return self.exit
 class Carla:
@@ -60,11 +61,11 @@ class NativeCaptureTests(unittest.TestCase):
         try:
             from runner import load_scene
             scene=load_scene()
-            self.assertFalse(native.check_map(Map(),scene,Carla)['zone_extent_verified'])
+            self.assertFalse(native.check_map(Map(crossing_x=scene['crossing_x_m']),scene,Carla)['zone_extent_verified'])
             with self.assertRaisesRegex(ValueError,'too far'):
-                native.check_map(Map(2),scene,Carla)
+                native.check_map(Map(2,crossing_x=scene['crossing_x_m']),scene,Carla)
             with self.assertRaisesRegex(ValueError,'no connected left-turn waypoint path'):
-                native.check_map(Map(connected=False),scene,Carla)
+                native.check_map(Map(connected=False,crossing_x=scene['crossing_x_m']),scene,Carla)
         finally:sys.path.remove(str(ROOT))
 
     def test_steering_is_bounded(self):

@@ -22,7 +22,8 @@ def description():
         ('operator_pose','Original Native operator body envelope per frame'),
         ('bicycle_pose','Original Native bicycle body envelope per frame'),
         ('sign_inventory','Source-bound sign identity and authorization-source hash per frame'),
-        ('phase_events','Constructed phase label joined to original frame and body state')):
+        ('phase_events','Constructed phase label joined to original frame and body state'),
+        ('pedestrian_context','Original operator position, nearest-road projection, crosswalk vertices and nearby device state per frame')):
         channels.append({'name':name,'unit':'structured record',
             'sampling_rate_hz':20,'method':method,'time_window':'entire 30 s U-turn attempt',
             'reference_frame':'original CARLA frame and elapsed time',
@@ -40,7 +41,7 @@ def main():
         {'disposition_index':0,'requirement':required['requirement'],
          'source':required['source'],'output_key':'dismount_turn_measurement',
          'method':'finalize','kind':'measured','value_type':'object',
-         'inputs':['phase-events.jsonl','sign-inventory.json',
+         'inputs':['phase-events.jsonl','pedestrian-context.jsonl','sign-inventory.json',
                    'sign-authorization-source','video_frames.jsonl']}],
          'negative':{'remove':['phase-events.jsonl'],
                      'error_contains':'Missing required source: phase-events.jsonl'}}
@@ -74,7 +75,8 @@ def main():
         entry['acquisition']={name:{'entrypoint':'analysis.py',
             'method':'Source-hashed original Native phase events and sign inventory projected by saved finalizer',
             'evidence':'channels/'+name+'.jsonl'}
-            for name in ('operator_pose','bicycle_pose','sign_inventory','phase_events')}
+            for name in ('operator_pose','bicycle_pose','sign_inventory','phase_events',
+                         'pedestrian_context')}
         entry['native_handoff']={'python_env_var':'CARLA_PYTHON',
             'host_env_var':'CARLA_HOST','port_env_var':'CARLA_PORT'}
         case=next(row for row in plan['cases'] if row['case_id']==entry['case_id'])

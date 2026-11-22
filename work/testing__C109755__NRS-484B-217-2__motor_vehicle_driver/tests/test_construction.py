@@ -27,6 +27,7 @@ class ConstructionTests(unittest.TestCase):
     def test_stripe_geometry_and_signal_station(self):
         self.assertTrue(runner.crosses_stripe(self.scene))
         self.assertLess(self.scene['signal_start_x_m'],self.scene['crossing_x_m'])
+        self.assertGreaterEqual(self.scene['crossing_x_m']-4-self.scene['signal_start_x_m'],300*.3048)
         self.assertEqual(runner.controller_command(self.scene,0,True)['left_signal'],
                          self.scene['signal_enabled'])
     def test_actual_spawn_calls_and_opposing_direction(self):
@@ -109,6 +110,22 @@ class SavedAnalysisTests(unittest.TestCase):
             measured=analysis.measure(path)
             self.assertEqual(measured['crossing_frame'],1)
             self.assertLess(rows[1]['ego_center_y_m'],0)
+
+    def test_observed_continuous_signal_distance(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.fixture(temp,True)
+            rows=[json.loads(line) for line in (path/'turn-history.jsonl').read_text().splitlines()]
+            for row,x in zip(rows,(-200.,-100.,-4.,0.)):
+                row['ego_center_x_m']=x
+            def measured():
+                (path/'turn-history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+                acquisition=json.loads((path/'acquisition.json').read_text())
+                acquisition['turn-history.jsonl']['sha256']=hashlib.sha256((path/'turn-history.jsonl').read_bytes()).hexdigest()
+                (path/'acquisition.json').write_text(json.dumps(acquisition))
+                return analysis.measure(path)
+            self.assertTrue(measured()['signal_300ft_observed'])
+            rows[1]['left_signal']=False
+            self.assertFalse(measured()['signal_300ft_observed'])
 
 spec_compare=importlib.util.spec_from_file_location('comparison_audit',FOLDER/'comparison_audit.py')
 compare=importlib.util.module_from_spec(spec_compare);spec_compare.loader.exec_module(compare)

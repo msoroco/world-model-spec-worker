@@ -8,7 +8,7 @@ from pathlib import Path
 PREFIX='testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__'
 VIDEOS=('overview.mkv','approach.mkv','reference_corner.mkv',
         'driver_reference.mkv')
-ORIGINAL=('phase-events.jsonl','sign-inventory.json',
+ORIGINAL=('phase-events.jsonl','pedestrian-context.jsonl','sign-inventory.json',
           'sign-authorization-source','trace.jsonl','video_frames.jsonl',
           'road.xodr',*VIDEOS)
 
@@ -73,9 +73,10 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
             sign.get('authorization_source_sha256')!=sha(attempt/'sign-authorization-source')):
         raise ValueError('sign identity or authorization-source binding missing')
     events=rows(attempt/'phase-events.jsonl')
+    contexts=rows(attempt/'pedestrian-context.jsonl')
     trace=rows(attempt/'trace.jsonl')
     mapping=rows(attempt/'video_frames.jsonl')
-    if not events or not len(events)==len(trace)==len(mapping):
+    if not events or not len(events)==len(contexts)==len(trace)==len(mapping):
         raise ValueError('original event/trace/video frame coverage incomplete')
     ids={(row.get('operator_id'),row.get('bicycle_id'),row.get('sign_id'))
          for row in events}
@@ -83,7 +84,7 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
             sign.get('sign_actor_id')!=next(iter(ids))[2]):
         raise ValueError('original sign/operator/bicycle continuity changed')
     separations=[];phases=[]
-    for index,(event,motion,frame) in enumerate(zip(events,trace,mapping)):
+    for index,(event,context,motion,frame) in enumerate(zip(events,contexts,trace,mapping)):
         if (frame.get('video_frame')!=index or
                 any(row.get('frame')!=frame.get('carla_frame') or
                     abs(row.get('time_s',float('inf'))-frame.get('time_s',0))>1e-4
@@ -91,6 +92,13 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
             raise ValueError('original event/trace/camera frame join changed')
         if index and frame['time_s']<=mapping[index-1]['time_s']:
             raise ValueError('original frame time order changed')
+        if (context.get('frame')!=event['frame'] or
+                abs(context.get('time_s',float('inf'))-event['time_s'])>1e-4 or
+                context.get('operator_id')!=event['operator_id'] or
+                context.get('pedestrian_regulation_assessment')!='unresolved' or
+                not isinstance(context.get('nearby_crosswalk_vertices_m'),list) or
+                not isinstance(context.get('nearby_control_devices'),list)):
+            raise ValueError('original pedestrian context source join changed')
         separation=math.dist(center(event.get('operator_body_vertices_m')),
                              center(event.get('bicycle_body_vertices_m')))
         separations.append(separation);phases.append(event.get('phase'))
