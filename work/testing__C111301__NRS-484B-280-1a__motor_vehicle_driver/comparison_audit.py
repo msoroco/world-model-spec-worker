@@ -16,6 +16,10 @@ def audit(clear,crossing):
         if clear[name]!=crossing[name]:
             raise ValueError('fixed condition differs: '+name)
     for record in (clear,crossing):
+        if record.get('format')!='worker-delivery-audit' or record.get('passed') is not True or not all(
+            record.get(key) for key in ('native_result_sha256','frame_map_sha256',
+                                        'video_sha256','source_decode_receipt_sha256')):
+            raise ValueError('source-audited delivery receipt missing')
         measured=record.get('measurement',{})
         if measured.get('format')!='worker-manual-wheelchair-measurements' or not all(
             measured.get('sources',{}).get(source) for source in
@@ -23,6 +27,8 @@ def audit(clear,crossing):
             raise ValueError('missing source-bound manual-wheelchair measurement')
         if measured.get('frame_count',0)<2 or measured.get('minimum_surface_gap_m') is None:
             raise ValueError('insufficient original encounter evidence')
+        if measured['frame_count']!=record.get('frame_count'):
+            raise ValueError('original frame counts differ from delivery audit')
         if measured.get('contact_frames'):
             raise ValueError('observed contact fails collision-avoidance target')
         if measured.get('legal_due_care_verdict')!='unresolved':

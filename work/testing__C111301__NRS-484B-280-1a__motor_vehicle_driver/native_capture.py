@@ -87,9 +87,14 @@ def placement(world,carla,scene):
         raise ValueError('Authored ego path is not on one connected Native road')
     if not connected_route(start,end):
         raise ValueError('No forward Native waypoint path connects ego approach and exit')
+    waypoints=[]
+    for name,wp in [('approach',start),('crossing',center),('exit',end)]:
+        location=wp.transform.location
+        waypoints.append({'role':name,'x_m':location.x,'y_m':location.y,
+                          'road_id':wp.road_id,'lane_id':wp.lane_id})
     return {'map_name':mapping.name,'road_id':start.road_id,'start_lane_id':start.lane_id,
             'end_lane_id':end.lane_id,'crossing_road_id':center.road_id,
-            'route_source':'Native CARLA waypoint map'}
+            'route_source':'Native CARLA waypoint map','ego_route_geometry':waypoints}
 
 
 class Cameras:

@@ -66,13 +66,17 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
     media_verify(video,decode_receipt,len(mapping),mapping_sha256=sha(attempt/'video_frames.jsonl'))
     context=read(attempt/'intersection-context.json')
     config=read(attempt/'config.json')
+    route=context.get('ego_route_geometry')
+    if not isinstance(route,list) or len(route)!=3 or any(not isinstance(row,dict) for row in route) or [row.get('role') for row in route]!=['approach','crossing','exit'] or any(
+       not all(key in row for key in ('x_m','y_m','road_id','lane_id')) for row in route):
+        raise ValueError('original Native ego route geometry missing')
     expected_setup='crossing' if case_id.endswith('__wheelchair_crossing') else 'clear_path'
     if context.get('wheelchair_path_setup')!=expected_setup:
         raise ValueError('Native wheelchair path setup differs from exact case')
     return {'format':'worker-delivery-audit','passed':True,'case_id':case_id,
       'law_id':config['law_id'],'cell_id':config['cell_id'],'actor_id':config['actor'],
       'map_sha256':sha(attempt/'road.xodr'),
-      'ego_route_sha256':hashlib.sha256(context['route_source'].encode()).hexdigest(),
+      'ego_route_sha256':hashlib.sha256(json.dumps(route,sort_keys=True).encode()).hexdigest(),
       'wheelchair_identity_sha256':hashlib.sha256((context['person_asset_source']+'|'+context['manual_wheelchair_asset_source']).encode()).hexdigest(),
       'camera_contract_sha256':hashlib.sha256(json.dumps(config.get('cameras',[]),sort_keys=True).encode()).hexdigest(),
       'duration_s':config['duration_s'],'measurement':measured,

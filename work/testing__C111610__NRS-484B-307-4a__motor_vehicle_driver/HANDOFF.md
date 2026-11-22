@@ -1,22 +1,31 @@
 # testing__C111610__NRS-484B-307-4a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: **partial construction**. Exact law: NRS 484B.307(4)(a), sole green turn arrow facing vehicular traffic; movement only in the arrow direction while illuminated; yield to pedestrians lawfully within the adjacent crosswalk and other traffic lawfully using the intersection. Assigned C111610 intersection / turn / pedestrian branch, driver actor. No accepted recordings and no exact-law judgment-range entries were supplied. No numerical legal yielding threshold is claimed.
 
-Exact law: NRS 484B.307(4)(a) — Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.
-Assigned branch(es): Turning interaction with adjacent-crosswalk pedestrian.
-Cell: C111610 (intersection, turn, pedestrian); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Exact cases and comparison
 
-## Next CPU actions
+- `testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn`: authored left turn with sole left arrow and clear adjacent crosswalk; root `scene.json`.
+- `testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield`: same turn and arrow with a lawful pedestrian present in the adjacent crosswalk until ego holds and the person clears; `cases/crosswalk_occupied_yield/scene.json`.
+- `adjacent_crosswalk_lawful_occupancy` varies lawful pedestrian occupancy. Map, ego route, facing signal, camera/duration contract and absence of other lawful intersection traffic are fixed. These are proposals, not completed recordings or accepted legal conclusions.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-4a__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Both cases have physical risk: the supplied inputs contain no CARLA map/signal asset demonstrating an official ego-facing **sole** left arrow and an adjacent marked crosswalk at the authored geometry. The Native constructor must reject any map without both. No fallback is claimed before a source-backed alternate retaining those conditions is found; a circular green light would change the branch.
 
-## Proven checks and dependency boundary
+The statute also names **other traffic lawfully using the intersection**. The current pair fixes other lawful traffic absent and the controller has a sourced hold path for its presence. This does not establish complete coverage of that alternative. On resume, review the frozen C111610 pedestrian scope and branch sources and either add an exact controlled other-traffic case in this cell if assigned, or record an explicit source-backed scope disposition. Do not silently count the current pair as testing that alternative.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## Implemented CPU work
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+- `runner.py` validates frozen identity, approach/exit and crosswalk geometry; requires an original source-marked facing-head observation for each frame; holds for sourced lawful adjacent-crosswalk occupants or lawful intersection traffic; computes bounded steering toward the authored left turn from observed heading. Its Native entry point still rejects execution pending capture implementation.
+- `analysis.py` measures saved original turn-history, context and camera frame-map sources only after SHA256 checks; rejects mismatched head/frame, changed crosswalk, wrong exact case, occupied-crosswalk movement, missing turn movement and fixed-context other lawful traffic. It leaves legal right-of-way unresolved.
+- `native_capture.py` binds a connected Native left-turn route, marked adjacent crosswalk and original ego-facing signal asset with sole left-arrow metadata; it checks frame green state and creates distinct ego/pedestrian actors with failure cleanup. This is CPU-tested map/signal/creation code, not a completed capture loop. Actual asset availability remains unverified.
+- `comparison_audit.py` remeasures both saved original source sets and rejects changed map, route, signal, crosswalk, camera or duration context and missing occupancy difference. It has a changed-camera negative test. Canonical delivery audit integration remains incomplete.
+- `tests/test_runner.py`, `tests/test_native_capture.py` and `tests/test_analysis.py` exercise both exact cases and negative source/arrow/yield/map/comparison paths. `.venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/tests -v` passes 11 tests; output is retained in `cpu-tests.log` and its hash in `result.json`. `.venv-cpu/bin/python work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/runner.py --check` passes geometry check. `.venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-4a__motor_vehicle_driver --complete` passes static structure only. Updated `.venv-cpu/bin/python runtime.py preflight` passes with pinned packages, FFmpeg and Lean tools.
+
+## Exact remaining CPU work and resume actions
+
+1. Finish Native scene/camera acquisition under the declared case IDs using the tested bindings in `native_capture.py`. Verify original signal phase and facing relationship at every frame, lawful pedestrian occupancy and absence of other lawful traffic. Establish a source for lawful pedestrian presence; map geometry alone cannot decide lawfulness. Reject incompatible maps rather than inventing arrow evidence. Extend CPU fake-world tests for capture and cleanup.
+2. Add exact construction/configuration and execution-manifest bundles for **both** cases; write finalizer, capture outputs and saved-only processing. Integrate `analysis.py` with retained Native source hashes and final result. Complete canonical semantic proposals and index using original stage contracts, then exact offline and positive/negative compatibility proofs for each case.
+3. Integrate `comparison_audit.py` into the canonical manifest, add source-bound receipt checks and remaining negative paths; implement the independent delivery audit. Assess source-backed physical feasibility and any concrete fallback with identical legal/control conditions. Run each assignment strict gate and repair its failures.
+
+The remaining implementation is worker-owned CPU preparation. Actual CARLA motion, camera visibility and capture quality are later GPU checks. The environment tools are present; missing dependencies are not a blocker. The latest assignment and complete-batch strict checks fail `Preparation acceptance failed: partial/missing packages remain`, consistent with the partial status. The independent timer publishes `work/`; do not run Git.
+
+`AGENT_PROMPT.md` was requested but is absent from this checkout (`rg --files -g AGENT_PROMPT.md` returned no path); `START_HERE.md`, the branch and delivery contracts, and the frozen assignment inputs govern this checkpoint. The missing prompt is not treated as a blocker to the listed CPU work.

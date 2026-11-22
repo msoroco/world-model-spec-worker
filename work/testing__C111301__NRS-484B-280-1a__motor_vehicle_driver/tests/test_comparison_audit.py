@@ -8,10 +8,13 @@ comparison=importlib.util.module_from_spec(spec);spec.loader.exec_module(compari
 
 
 def record(suffix,gap,brake):
-    return {'case_id':ROOT.name+'__'+suffix,
+    return {'format':'worker-delivery-audit','passed':True,
+       'case_id':ROOT.name+'__'+suffix,
        'law_id':'NRS-484B-280-1a','cell_id':'C111301','actor_id':'driver',
        'map_sha256':'map','ego_route_sha256':'route','wheelchair_identity_sha256':'person-chair',
-       'camera_contract_sha256':'cameras','duration_s':30,
+       'camera_contract_sha256':'cameras','duration_s':30,'frame_count':20,
+       'native_result_sha256':'result','frame_map_sha256':'frames',
+       'video_sha256':'video','source_decode_receipt_sha256':'decode',
        'measurement':{'format':'worker-manual-wheelchair-measurements',
                       'sources':{'encounter-history.jsonl':'history',
                                  'intersection-context.json':'context'},
@@ -33,6 +36,9 @@ class ComparisonTests(unittest.TestCase):
             comparison.audit(clear,changed)
         changed=record('wheelchair_crossing',1,120);changed['measurement']['contact_frames']=[115]
         with self.assertRaisesRegex(ValueError,'contact'):
+            comparison.audit(clear,changed)
+        changed=record('wheelchair_crossing',1,120);changed.pop('source_decode_receipt_sha256')
+        with self.assertRaisesRegex(ValueError,'source-audited delivery receipt'):
             comparison.audit(clear,changed)
 
 

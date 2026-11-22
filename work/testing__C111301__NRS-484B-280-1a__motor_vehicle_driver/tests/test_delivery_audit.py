@@ -22,7 +22,9 @@ class DeliveryAuditTests(unittest.TestCase):
               'actor':'motor_vehicle_driver','duration_s':30,'cameras':[]})
         write(attempt/'intersection-context.json',{'route_source':'Native route',
             'manual_wheelchair_asset_source':'Native chair','person_asset_source':'Native person',
-            'wheelchair_path_setup':'crossing' if case.endswith('crossing') else 'clear_path'})
+            'wheelchair_path_setup':'crossing' if case.endswith('crossing') else 'clear_path',
+            'ego_route_geometry':[{'role':role,'x_m':x,'y_m':0,'road_id':1,'lane_id':1}
+                    for role,x in [('approach',-30),('crossing',0),('exit',20)]]})
         (attempt/'road.xodr').write_text('diagnostic road')
         history=[];trace=[];frames=[]
         clear=case.endswith('clear_path')

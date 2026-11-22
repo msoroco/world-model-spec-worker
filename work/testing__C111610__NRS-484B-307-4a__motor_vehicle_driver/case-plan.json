@@ -22,11 +22,82 @@
   "law_text": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
   "law_source": "NRS 484B.307(4)(a)",
   "topic_inventory": {
-    "exact-text": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection."
+    "sole-turn-arrow": "A green turn arrow alone governs only facing vehicular traffic and only while illuminated.",
+    "direction": "Facing traffic may proceed only in the direction indicated by the illuminated arrow.",
+    "pedestrian-yield": "Traffic must yield to pedestrians lawfully within the adjacent crosswalk.",
+    "other-traffic-yield": "Traffic must yield to other traffic lawfully using the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+      "target_law_id": "NRS-484B-307-4a",
+      "purpose": "Sole left arrow with adjacent crosswalk clear; measured left turn and continued arrow illumination",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup.",
+        "fallback_policy": "No alternate construction is claimed until an original map asset with the same official sole-arrow and adjacent-crosswalk conditions is identified; changing to circular green would change the legal branch."
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "purpose": "Same sole left arrow and left turn; lawfully present pedestrian occupies adjacent crosswalk and ego holds until clear",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup.",
+        "fallback_policy": "No alternate construction is claimed until an original map asset with the same official sole-arrow and adjacent-crosswalk conditions is identified; changing to circular green would change the legal branch."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "adjacent_crosswalk_lawful_occupancy",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield"
+      ],
+      "fixed_conditions": [
+        "same ego-facing head and sole illuminated left arrow",
+        "same map and left-turn path",
+        "same actor and law",
+        "same camera and duration contract",
+        "other lawful intersection traffic absent in both"
+      ],
+      "deliberate_differences": [
+        "lawfully present pedestrian occupies adjacent crosswalk during arrow phase versus crosswalk clear"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "facing_signal_head_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_body_and_heading_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_and_lawful_presence_history",
+      "mandatory": true
+    },
+    {
+      "name": "other_traffic_history",
+      "mandatory": true
+    },
+    {
+      "name": "adjacent_crosswalk_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "ego_turn_path",
+      "mandatory": true
+    },
+    {
+      "name": "video_frame_map",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/assignment.json",
@@ -51,8 +122,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original CARLA arrow asset, facing relationship, marked crosswalk, lawful pedestrian presence and camera coverage still require source verification.",
+    "Native capture, exact stage bundles, semantic proposals, finalizer, compatibility proofs and independent delivery audit remain worker-owned CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +132,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -79,6 +150,35 @@
         "Specify turn direction, official signal governance, facing relationship and arrow-alone illumination interval."
       ],
       "reason": "The pedestrian control supports the adjacent-crosswalk yielding branch during a turn."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Sole green turn arrow facing the driver and illuminated during movement permits only the indicated direction",
+      "source": "NRS 484B.307(4)(a) exact text",
+      "evidence_or_gap": "Original ego-facing signal-head illumination and heading/path frames required; arrow indication cannot be inferred from label or nearby head.",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield"
+      ]
+    },
+    {
+      "status": "selected_required",
+      "requirement": "Yield to pedestrians lawfully within the adjacent crosswalk",
+      "source": "NRS 484B.307(4)(a) exact text",
+      "evidence_or_gap": "Original pedestrian body, lawful-presence source, crosswalk geometry and ego hold/entry frames required.",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield"
+      ]
+    },
+    {
+      "status": "alternative_pending",
+      "requirement": "Yield to other traffic lawfully using the intersection",
+      "source": "NRS 484B.307(4)(a) exact text",
+      "evidence_or_gap": "Other lawful intersection traffic is absent as a fixed condition in the assigned pedestrian pair. Controller support is CPU-tested, but no exact other-traffic case or source-backed exclusion disposition is complete.",
+      "case_ids": []
     }
   ]
 }
