@@ -194,3 +194,108 @@ def analyze_following(root: Path) -> dict:
             "sample_precision_m": .001, "samples": observations,
             "between_sample_gap": "unresolved", "conditions_permit_judgment": "unresolved",
             "safe_occupancy_judgment": "unresolved", "legal_conclusion": "unresolved"}
+
+
+def _inspect_saved_comparison(root: Path, suffix: str) -> dict:
+    """Recompute comparison facts from retained originals, independent of the finalizer."""
+    root = Path(root)
+    config = json.loads((root / "config.json").read_text())
+    result = json.loads((root / "result.json").read_text())
+    report = json.loads((root / "analysis-report.json").read_text())
+    road = json.loads((root / "road_context.json").read_text())
+    if not config["selected_case_id"].endswith("__" + suffix) or result["case_id"] != config["selected_case_id"]:
+        raise ValueError("Comparison case identity differs")
+    history = _rows(root / "truck_history.jsonl")
+    frames = _rows(root / "video_frames.jsonl")
+    if not history or len(history) != len(frames):
+        raise ValueError("Comparison original frame join differs")
+    tangent = road["lane_forward_xy"]
+    tx, ty = (_finite(v, "lane tangent") for v in tangent)
+    norm = math.hypot(tx, ty)
+    if norm <= 0:
+        raise ValueError("Comparison lane tangent missing")
+    tx, ty = tx / norm, ty / norm
+    gaps, phases = [], []
+    widths = {"ego": [], "lead": []}
+    blueprints = {"ego": set(), "lead": set()}
+    for index, (row, frame) in enumerate(zip(history, frames)):
+        if (frame.get("video_frame") != index or frame.get("carla_frame") != row.get("frame")
+                or frame.get("time_s") != row.get("time_s")):
+            raise ValueError("Comparison original frame join differs")
+        projected = {}
+        for role in ("ego", "lead"):
+            actor = row[role]
+            allowed = {road["lane_id"], road.get("passing_lane_id")} if role == "ego" and suffix == "overtaking_pass" else {road["lane_id"]}
+            if (not actor.get("is_truck_or_combination") or actor["road_id"] != road["road_id"]
+                    or actor["lane_id"] not in allowed or len(actor["body_vertices_xy_m"]) < 4):
+                raise ValueError("Comparison lost sourced truck road/lane relation")
+            projected[role] = [x * tx + y * ty for x, y in actor["body_vertices_xy_m"]]
+            widths[role].append(float(actor["overall_width_m"]))
+            blueprints[role].add(actor["blueprint_id"])
+        gap = min(projected["lead"]) - max(projected["ego"])
+        gaps.append(gap)
+        lane = row["ego"]["lane_id"]
+        phases.append("following_behind" if lane == road["lane_id"] and gap > 0 else
+                      "passing_behind" if lane == road.get("passing_lane_id") and gap > 0 else
+                      "passing_ahead" if lane == road.get("passing_lane_id") and gap < 0 else
+                      "returned_ahead" if lane == road["lane_id"] and gap < 0 else "ambiguous")
+    measure = report["measurements"]["minimum_sampled_body_gap_m"]
+    if not math.isclose(min(gaps), measure["value"], abs_tol=1e-6):
+        raise ValueError("Comparison finalizer gap differs from original bodies")
+    for name in ("truck_history.jsonl", "road_context.json", "video_frames.jsonl"):
+        checksum = hashlib.sha256((root / name).read_bytes()).hexdigest()
+        if measure["sources"].get(name) != checksum:
+            raise ValueError("Comparison source hash differs: " + name)
+    if suffix == "overtaking_pass" and report["measurements"]["overtaking_phase_sequence"]["value"] != phases:
+        raise ValueError("Comparison passing phases differ from original bodies/lanes")
+    if any(len(ids) != 1 for ids in blueprints.values()):
+        raise ValueError("Comparison truck blueprint changed within case")
+    return {"case_id": result["case_id"], "minimum_gap_m": min(gaps), "initial_gap_m": gaps[0],
+            "phases": phases, "lane_count": road["same_direction_lane_count"],
+            "road_id": road["road_id"], "lane_id": road["lane_id"],
+            "widths_m": {role: min(values) for role, values in widths.items()},
+            "blueprints": {role: next(iter(ids)) for role, ids in blueprints.items()},
+            "rate_hz": config["rate_hz"], "duration_s": config["duration_s"],
+            "cameras": config["cameras"], "required_atoms": config["required_atoms"]}
+
+
+def audit_saved_comparisons(paths: dict) -> dict:
+    """Audit the three selected controls from five exact saved diagnostics."""
+    names = ("following_under_500_ft", "following_at_500_ft", "following_over_500_ft",
+             "overtaking_pass", "two_lanes")
+    if set(paths) != set(names):
+        raise ValueError("Supply exactly five selected saved cases")
+    facts = {name: _inspect_saved_comparison(paths[name], name) for name in names}
+    under, at, over, passing, lanes = (facts[name] for name in names)
+    fixed = ("widths_m", "blueprints", "rate_hz", "duration_s", "cameras", "required_atoms")
+    for field in fixed:
+        if any(facts[name][field] != under[field] for name in names[1:]):
+            raise ValueError("Comparison changed fixed condition: " + field)
+    if any(facts[name]["road_id"] != under["road_id"] for name in names[1:]):
+        raise ValueError("Comparison changed sourced road")
+    if any(facts[name]["lane_count"] != 1 for name in names[:4]) or lanes["lane_count"] != 2:
+        raise ValueError("Comparison lane count contrast failed")
+    measured = [under["minimum_gap_m"], at["minimum_gap_m"], over["minimum_gap_m"]]
+    if not measured[0] < 152.4 or abs(measured[1] - 152.4) > .001 or measured[2] <= 152.4:
+        raise ValueError("Comparison gap boundary ordering failed")
+    if any(phase != "following_behind" for phase in under["phases"]):
+        raise ValueError("Comparison following control changed passing state")
+    sequence = ("following_behind", "passing_behind", "passing_ahead", "returned_ahead")
+    cursor = 0
+    for phase in sequence:
+        while cursor < len(passing["phases"]) and passing["phases"][cursor] != phase:
+            cursor += 1
+        if cursor == len(passing["phases"]):
+            raise ValueError("Comparison passing sequence omits " + phase)
+        cursor += 1
+    if abs(under["initial_gap_m"] - passing["initial_gap_m"]) > .05:
+        raise ValueError("Comparison initial passing gap changed")
+    if abs(under["minimum_gap_m"] - lanes["minimum_gap_m"]) > .05:
+        raise ValueError("Comparison two-lane gap changed")
+    return {"format": "worker-nrs-484b-127-2-saved-comparison-audit", "passed": True,
+            "comparisons": {"following_gap_boundary": measured,
+                            "overtaking_permission": passing["phases"],
+                            "same_direction_lane_exclusion": [under["lane_count"], lanes["lane_count"]]},
+            "case_ids": [facts[name]["case_id"] for name in names],
+            "fixed_conditions": list(fixed),
+            "scope": "synthetic saved-source software audit; Native, physical and legal status unresolved"}
