@@ -19,7 +19,7 @@ MODULES = ("parking_measurement.py", "parking_pose.py", "source_review.py",
            "parking_scene.py", "parking_control.py", "parking_native_driver.py",
            "parking_native_capture.py", "parking_cameras.py", "parking_tick_capture.py",
            "parking_finalizer.py", "parking_comparison_audit.py",
-           "parking_delivery_audit.py", "parking_runner.py")
+           "parking_delivery_audit.py", "parking_analysis.py", "parking_runner.py")
 
 
 def _sha(path):
@@ -146,6 +146,7 @@ if __name__ == "__main__": unittest.main()
                            "cases": [{"case_id": scene["case_id"], "kind": "diagnostic_only",
                                       "construction": "construction.json",
                                       "construction_sha256": _sha(construction_path),
+                                      "measurement_procedure": {"entrypoint": "parking_analysis.py"},
                                       "candidate_risk": {"status": "physical", "reason":
                                           "An 8 m straight approach may not fit a reviewed roadway segment while a shorter approach does."},
                                       "candidates": [candidate],

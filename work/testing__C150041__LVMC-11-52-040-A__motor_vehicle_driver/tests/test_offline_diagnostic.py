@@ -27,6 +27,8 @@ class OfflineDiagnosticTests(unittest.TestCase):
                 self.assertEqual(construction["source_kind"], "synthetic_offline_protocol_fixture_only")
                 self.assertEqual(construction["entrypoint"], "runner.py")
                 self.assertTrue(any(item["path"] == "tests/test_offline.py" for item in construction["files"]))
+                self.assertEqual(entry["measurement_procedure"]["entrypoint"], "parking_analysis.py")
+                self.assertTrue(any(item["path"] == "parking_analysis.py" for item in construction["files"]))
                 self.assertTrue(any("cannot launch Native capture" in item["content"]
                                     for item in construction["files"] if item["path"] == "runner.py"))
                 self.assertEqual(entry["candidate_risk"]["status"], "physical")

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from parking_pose import REQUESTS
@@ -48,10 +49,17 @@ def build(kind):
     camera_map = [{"frame": i + 1, "time_s": (i + 1) / 20,
                    "camera_names": list(scene["capture_plan"]["cameras"]),
                    "source_path": "video_frames.jsonl"} for i in range(len(history))]
+    trace = [{"frame": row["frame"], "time_s": row["time_s"],
+              "position": {"x": sum(point[0] for point in row["body_vertices_xy_m"]) / 4,
+                           "y": sum(point[1] for point in row["body_vertices_xy_m"]) / 4,
+                           "z": 0.0},
+              "heading_deg": math.degrees(math.atan2(row["vehicle_forward_xy"][1],
+                                                    row["vehicle_forward_xy"][0])),
+              "speed_mps": row["speed_m_s"]} for row in history]
     spec = {"files": {"parking-history.jsonl": lines(history),
                        "video_frames.jsonl": lines(mapping),
                        "camera-frame-map.jsonl": lines(camera_map),
-                       "trace.jsonl": lines(history)},
+                       "trace.jsonl": lines(trace)},
             "graphs": [],
             "videos": [{"path": name + ".mkv", "frames": len(history),
                         "width": 1920 if name == "overview" else 1280,
