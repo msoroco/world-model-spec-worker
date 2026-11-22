@@ -33,6 +33,7 @@ def build():
         sweep_id = semantic.get('sweep_id')
         if sweep_id not in SWEEPS:
             continue
+        cid = HERE.name+'__'+semantic['case_id']
         base, axis, points = SWEEPS[sweep_id]
         point = semantic['sweep_point']
         if set(point) != {axis} or point[axis] not in points:
@@ -40,12 +41,12 @@ def build():
         construction = deepcopy(json.loads(base_paths[base].read_text()))
         files = {item['path']:item['content'] for item in construction['files']}
         config = json.loads(files['config.json'])
-        config.update(case_id=semantic['case_id'], selected_case_id=semantic['case_id'],
-                      case_suffix=base, case={'case_id': semantic['case_id']},
+        config.update(case_id=cid, selected_case_id=cid,
+                      case_suffix=base, case={'case_id': cid},
                       sweep={'sweep_id': sweep_id, 'sweep_point': point},
                       recording_description=deepcopy(semantic['recording_description']))
         config['supported_case_ids'] = list(dict.fromkeys(
-            config['supported_case_ids'] + [semantic['case_id']]))
+            config['supported_case_ids'] + [cid]))
         if [item['name'] for item in config['recording_description']['channels']] != list(
                 channels_for(base, axis)):
             raise ValueError('Semantic sweep channels differ from source derivation')
@@ -53,16 +54,16 @@ def build():
         files['config.json'] = json.dumps(config, indent=2, sort_keys=True)+'\n'
         for name in MODULES:
             files[name] = (HERE/name).read_text()
-        construction.update(case_id=semantic['case_id'],
+        construction.update(case_id=cid,
                             status='draft_cpu_preparation_incomplete',
                             recording_description=config['recording_description'],
                             files=[{'path':name,'content':content} for name,content in files.items()])
-        construction['measurement_plan']['per_case_contracts'][0]['case_id'] = semantic['case_id']
+        construction['measurement_plan']['per_case_contracts'][0]['case_id'] = cid
         construction['mechanisms'] = list(dict.fromkeys(construction['mechanisms'] + [
             'source-measured '+axis+' controlled sweep at '+str(point[axis])]))
-        target = HERE/('sweep-'+semantic['case_id']+'-primary-construction.json')
+        target = HERE/('sweep-'+cid+'-primary-construction.json')
         write(target, construction)
-        entries.append({'case_id':semantic['case_id'], 'construction':target.name,
+        entries.append({'case_id':cid, 'construction':target.name,
                         'construction_sha256':sha(target)})
     if len(entries) != 9 or len({row['case_id'] for row in entries}) != 9:
         raise ValueError('Nine distinct exact sweep constructions required')

@@ -30,6 +30,8 @@ def resolve(config):
     if type(value) not in (int, float) or value not in values:
         raise ValueError('Unreviewed sweep value')
     index = values.index(value)
-    if config.get('case_id') != sweep['sweep_id']+f'-{index:04d}':
+    if config.get('case_id') not in (
+            sweep['sweep_id']+f'-{index:04d}',
+            ASSIGNMENT+'__'+sweep['sweep_id']+f'-{index:04d}'):
         raise ValueError('Exact expanded sweep case identity differs')
     return base, axis, value
