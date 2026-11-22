@@ -36,6 +36,23 @@ class DeliveryAuditTests(unittest.TestCase):
                 'green_indications':[{'color':'green','shape':'arrow','direction':'straight'}],
                 'other_illuminated_on_green':[],'position_m':[0,0,4],'yaw_deg':90}
         packet_path=reviewed/'head-0.json';write(packet_path,packet)
+        map_dir=attempt/'reviewed-map-source';map_dir.mkdir()
+        map_text='<OpenDRIVE><road id="1"/></OpenDRIVE>'
+        map_source=map_dir/'original.xodr';map_source.write_text(map_text)
+        (attempt/'road.xodr').write_text(map_text)
+        scene=load_scene()
+        map_packet={'format':'c111125-reviewed-map-installation-v1',
+                    'reviewer':'CPU synthetic fixture reviewer',
+                    'review_method':'original-opendrive-and-installed-signal-review',
+                    'source_file':'original.xodr','map_sha256':sha(map_source),
+                    'route':{'road_id':1,'lane_id':-1},
+                    'intersection_bounds_m':scene['intersection_bounds_m'],
+                    'adjacent_crosswalk_bounds_m':scene['adjacent_crosswalk_bounds_m'],
+                    'stop_line_x_m':scene['stop_line_x_m'],
+                    'geometry_source_ref':'CPU fixture geometry',
+                    'signal_installation_source_ref':'CPU fixture signal'}
+        map_packet_path=map_dir/'review.json';write(map_packet_path,map_packet)
+        map_names=['reviewed-map-source/review.json','reviewed-map-source/original.xodr']
         phase_names=[];phase_bindings={}
         if occupied:
             phase_dir=attempt/'reviewed-phase-sources/participant-0';phase_dir.mkdir(parents=True)
@@ -53,11 +70,15 @@ class DeliveryAuditTests(unittest.TestCase):
             phase_bindings={17:load_phase_source(phase_path,phase_text)}
         write(attempt/'acquisition-provenance.json',
               {'reviewed_arrow_sources':['reviewed-arrow-sources/head-0.json','reviewed-arrow-sources/head-0.mesh'],
-               'reviewed_phase_sources':phase_names})
+               'reviewed_phase_sources':phase_names,'reviewed_map_sources':map_names})
         context={'facing_head_id':7,'stop_line_x_m':-8,
                  'intersection_bounds_m':[-5,-5,8,5],
                  'adjacent_crosswalk_bounds_m':[[-8,-5,-5,5],[8,-5,11,5]],
-                 'arrow_review_packet_sha256':sha(packet_path),'arrow_review_asset_sha256':sha(asset)}
+                 'arrow_review_packet_sha256':sha(packet_path),'arrow_review_asset_sha256':sha(asset),
+                 'reviewed_map_source':{'packet_sha256':sha(map_packet_path),
+                                        'map_sha256':sha(map_source),'road_id':1,'lane_id':-1,
+                                        'reviewer':'CPU synthetic fixture reviewer',
+                                        'sampled_waypoints':[[1,-1]]*3}}
         write(attempt/'intersection-context.json',context)
         files={name:[] for name in ('signal-head-history.jsonl','ego-body-history.jsonl',
                                      'participant-history.jsonl','controller-history.jsonl',
@@ -120,14 +141,14 @@ class DeliveryAuditTests(unittest.TestCase):
                      ('signal-head-history.jsonl','ego-body-history.jsonl','participant-history.jsonl',
                       'intersection-context.json','controller-history.jsonl',
                       'reviewed-arrow-sources/head-0.json',
-                      'reviewed-arrow-sources/head-0.mesh',*phase_names,
+                      'reviewed-arrow-sources/head-0.mesh',*phase_names,*map_names,'road.xodr',
                       *(camera+'.mkv' for camera in CAMERAS))}
         write(attempt/'acquisition.json',acquisition)
         write(attempt/'result.json',{'case_id':case,'setup_confirmed':True,
                                     'behavior_attempted':True,'maneuver_completed':True})
         sealed={name:sha(attempt/name) for name in (*files,'intersection-context.json',
                 'acquisition.json','acquisition-provenance.json','result.json',
-                'reviewed-arrow-sources/head-0.json','reviewed-arrow-sources/head-0.mesh',*phase_names,
+                'reviewed-arrow-sources/head-0.json','reviewed-arrow-sources/head-0.mesh',*phase_names,*map_names,'road.xodr',
                 *(camera+'.mkv' for camera in CAMERAS))}
         write(attempt/'capture-seal.json',{'events':['capture_finished','encoders_closed','restoration_verified'],
                                            'sources':sealed})
@@ -217,6 +238,23 @@ class DeliveryAuditTests(unittest.TestCase):
                     delivery.read(attempt/'capture-seal.json'),signals,
                     delivery.read(attempt/'intersection-context.json'))
 
+    def test_reviewed_map_rejects_changed_geometry_and_original_source(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt,_,_,_=self.make(Path(temp))
+            acquisition=delivery.read(attempt/'acquisition.json')
+            seal=delivery.read(attempt/'capture-seal.json')
+            context=delivery.read(attempt/'intersection-context.json')
+            self.assertEqual(delivery.audit_map_source(attempt,acquisition,seal,context)['road_id'],1)
+            context['stop_line_x_m']=-7
+            with self.assertRaisesRegex(ValueError,'map geometry differs'):
+                delivery.audit_map_source(attempt,acquisition,seal,context)
+            context['stop_line_x_m']=-8
+            (attempt/'road.xodr').write_text('<OpenDRIVE><road id="2"/></OpenDRIVE>')
+            acquisition['road.xodr']['sha256']=sha(attempt/'road.xodr')
+            seal['sources']['road.xodr']=sha(attempt/'road.xodr')
+            with self.assertRaisesRegex(ValueError,'differs from captured original'):
+                delivery.audit_map_source(attempt,acquisition,seal,context)
+
     def test_occupied_case_rejects_missing_phase_source_after_reseal(self):
         with tempfile.TemporaryDirectory() as temp:
             attempt,processing,decode,case=self.make(Path(temp),occupied=True)
@@ -248,7 +286,8 @@ class DeliveryAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             attempt,processing,decode,case=self.make(Path(temp))
             provenance=attempt/'acquisition-provenance.json'
-            write(provenance,{'reviewed_arrow_sources':[]})
+            value=delivery.read(provenance);value['reviewed_arrow_sources']=[]
+            write(provenance,value)
             seal=json.loads((attempt/'capture-seal.json').read_text())
             seal['sources']['acquisition-provenance.json']=sha(provenance)
             write(attempt/'capture-seal.json',seal)

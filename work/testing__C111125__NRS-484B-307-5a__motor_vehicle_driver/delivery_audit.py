@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from arrow_source import load_binding
+from map_review import verify_retained as verify_map_review
 from phase_source import entry_observation, load as load_phase_source
 from pixel_review import audit as audit_pixels
 
@@ -12,6 +13,30 @@ from pixel_review import audit as audit_pixels
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def read(path):return json.loads(Path(path).read_text())
 def rows(path):return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
+
+
+def audit_map_source(attempt,acquisition,seal,context):
+    provenance=read(attempt/'acquisition-provenance.json')
+    names=provenance.get('reviewed_map_sources')
+    if not isinstance(names,list) or len(names)!=2 or not all(
+            isinstance(name,str) and name.startswith('reviewed-map-source/') and
+            Path(name).as_posix()==name and '..' not in Path(name).parts for name in names):
+        raise ValueError('reviewed map source pair absent or invalid')
+    for name in (*names,'road.xodr'):
+        if name not in seal['sources'] or acquisition.get(name,{}).get('sha256')!=sha(attempt/name):
+            raise ValueError('reviewed map source unsealed or stale')
+    from runner import load_scene
+    scene=load_scene()
+    receipt=verify_map_review(attempt/names[0],attempt/names[1],scene)
+    for key in ('intersection_bounds_m','adjacent_crosswalk_bounds_m','stop_line_x_m'):
+        if context.get(key)!=scene[key]:
+            raise ValueError('original map geometry differs from reviewed scene: '+key)
+    if (attempt/names[1]).read_bytes()!=(attempt/'road.xodr').read_bytes():
+        raise ValueError('reviewed map differs from captured original OpenDRIVE')
+    if context.get('reviewed_map_source')!= {**receipt,'sampled_waypoints':
+            [[receipt['road_id'],receipt['lane_id']]]*3}:
+        raise ValueError('original map context differs from reviewed source')
+    return receipt
 
 
 def audit_arrow_source(attempt,acquisition,seal,signals,context):
@@ -177,7 +202,9 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
         if frame.get('video_frame')!=index or any((stream.get('frame'),stream.get('time_s'))!=identity
             for stream in (signal,body,participants,position,control)):
             raise ValueError('original frame/time join changed')
-    audit_arrow_source(attempt,acquisition,seal,signals,read(attempt/'intersection-context.json'))
+    context=read(attempt/'intersection-context.json')
+    audit_map_source(attempt,acquisition,seal,context)
+    audit_arrow_source(attempt,acquisition,seal,signals,context)
     phase_source_count=audit_phase_sources(attempt,acquisition,seal,signals,traffic,
                                            read(attempt/'intersection-context.json'))
     if case_id.endswith('__yield_straight') and not phase_source_count:

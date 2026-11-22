@@ -22,13 +22,16 @@ def main():
         if negative:
             if run.returncode==0 or 'fixed condition differs: ego_route_sha256' not in run.stdout:
                 raise ValueError('fixed-route tamper was not rejected')
-        elif run.returncode or json.loads(run.stdout).get('passed') is not True:
+        elif run.returncode or json.loads(run.stdout).get('passed') is not True or \
+             json.loads(run.stdout).get('response_history_audit',{}).get('passed') is not True:
             raise ValueError('source-audited pair did not pass')
         proofs.append({'command':' '.join(args),'exit_code':run.returncode,
                        'log':log.name,'log_sha256':sha(log)})
     receipt={'format':'worker-comparison-cpu-proof','comparison_id':'manual_wheelchair_path_conflict',
       'script':'comparison_audit.py','script_sha256':sha(ROOT/'comparison_audit.py'),
       'source_auditor':'delivery_audit.py','source_auditor_sha256':sha(ROOT/'delivery_audit.py'),
+      'response_auditor':'response_history_audit.py',
+      'response_auditor_sha256':sha(ROOT/'response_history_audit.py'),
       'fixture_provenance':'synthetic CPU software diagnostic; no physical acceptance',
       'positive':proofs[0],'negative':proofs[1]}
     path=ROOT/'comparison-proof.json';path.write_text(json.dumps(receipt,indent=2)+'\n')

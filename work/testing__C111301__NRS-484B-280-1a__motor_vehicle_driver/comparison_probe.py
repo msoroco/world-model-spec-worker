@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 
 from comparison_audit import audit as compare
+from response_history_audit import audit as audit_response_history
 
 ROOT=Path(__file__).resolve().parent
 
@@ -19,15 +20,17 @@ def main():
     output.mkdir(parents=True)
     spec=importlib.util.spec_from_file_location('audit_fixture',ROOT/'tests/test_delivery_audit.py')
     fixture=importlib.util.module_from_spec(spec);spec.loader.exec_module(fixture)
-    records=[]
+    records=[];attempts=[]
     for label in ('clear_path','crossing'):
         folder=output/label;folder.mkdir()
         case=ROOT.name+'__wheelchair_'+label
         attempt,processing,decode,returned=fixture.DeliveryAuditTests().fixture(folder,case)
         if returned!=case:raise ValueError('comparison fixture selected another case')
         records.append(fixture.audit(attempt,processing,decode,case,media_verify=lambda *a,**k:True))
+        attempts.append(attempt)
     if args.negative:records[1]['ego_route_sha256']='changed-route-fingerprint'
     result=compare(*records)
+    result['response_history_audit']=audit_response_history(*attempts,*records)
     print(json.dumps(result,indent=2))
 
 
