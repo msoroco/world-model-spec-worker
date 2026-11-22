@@ -35,14 +35,10 @@ def write_rows(path,values):
 
 def fixture(entry, kind, output):
     suffix=entry['case_id'].split('__')[-1]
-    saved_dirs = {
-        'following_under_500_ft': 'c149752-first-saved-v1',
-        'following_at_500_ft': 'c149752-at-saved-v1',
-        'following_over_500_ft': 'c149752-over-saved-v1',
-        'overtaking_pass': 'c149752-overtake-saved-v1',
-        'two_lanes': 'c149752-lanes-saved-v1',
-    }
-    source = ROOT/'.runtime-work'/saved_dirs[suffix]/'v0001/analysis'
+    saved=read(Path(__file__).resolve().parent/entry['post_capture']['receipt'])
+    if saved.get('passed') is not True or saved.get('native_revision',{}).get('construction_sha256')!=entry['construction_sha256']:
+        raise ValueError('Current exact saved-processing proof missing')
+    source=Path(saved['analysis_directory'])
     with tempfile.TemporaryDirectory(prefix='c149752-physical-') as temporary:
         stage=Path(temporary)
         for name in ('config.json','truck_history.jsonl','video_frames.jsonl',
@@ -86,10 +82,8 @@ def fixture(entry, kind, output):
 
 
 def lifecycle(entry,output):
-    suffix=entry['case_id'].split('__')[-1]
     folder=Path(__file__).resolve().parent
-    saved_names = {'following_under_500_ft':'following-under-saved-processing.json', 'following_at_500_ft':'following-at-saved-processing.json', 'following_over_500_ft':'following-over-saved-processing.json', 'overtaking_pass':'overtaking-pass-saved-processing.json', 'two_lanes':'two-lanes-saved-processing.json'}
-    saved_path=folder/saved_names[suffix]
+    saved_path=folder/entry['post_capture']['receipt']
     saved=read(saved_path)
     if (saved.get('passed') is not True or saved.get('recorded_only') is not True or
             saved.get('native_revision',{}).get('construction_sha256')!=entry['construction_sha256']):
