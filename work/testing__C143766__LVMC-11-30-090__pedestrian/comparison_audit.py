@@ -23,6 +23,8 @@ def audit_pair(root, first_manifest, second_manifest, *, declared_band_change):
     first, second = histories
     if [row["frame"] for row in first] != [row["frame"] for row in second]:
         raise ValueError("comparison frame identities differ")
+    if [row["time_s"] for row in first] != [row["time_s"] for row in second]:
+        raise ValueError("comparison frame times differ")
     for a, b in zip(first, second):
         xs1 = [point[0] for point in a["body_xy_m"]]
         xs2 = [point[0] for point in b["body_xy_m"]]

@@ -30,9 +30,12 @@ def build(root):
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / "scene.json"
         path.write_text(json.dumps(scene, indent=2) + "\n")
-        frames = [{"frame": i, "body_xy_m": body(2+i*13, scene["pedestrian_route_xy_m"][0][1])}
-                  for i in range(3)]
+        frames = [{"frame": i, "time_s": i/20,
+                   "body_xy_m": body(2+1.2*i/20, scene["pedestrian_route_xy_m"][0][1])}
+                  for i in range(435)]
         measurement = measure_original(scene, frames)
+        if not measurement["authored_endpoint_reached"]:
+            raise ValueError("diagnostic walker did not reach route endpoint")
         history_path = folder / "diagnostic-body-history.jsonl"
         history_path.write_text("".join(json.dumps({"case_id": case_id, **frame}) + "\n" for frame in frames))
         sources = {"format": "c143766-original-pedestrian-sources-v1",

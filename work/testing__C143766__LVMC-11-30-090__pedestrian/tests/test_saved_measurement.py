@@ -19,8 +19,8 @@ class SavedMeasurementTests(unittest.TestCase):
         scene = make_scene("exact-case", "roadway")
         scene_path = root / "scene.json"
         scene_path.write_text(json.dumps(scene) + "\n")
-        frames = [{"case_id": scene["case_id"], "frame": i,
-                   "body_xy_m": body(2+i*13, 1.5)} for i in range(3)]
+        frames = [{"case_id": scene["case_id"], "frame": i, "time_s": i/20,
+                   "body_xy_m": body(2+.06*i, 1.5)} for i in range(3)]
         body_path = root / "body-history.jsonl"
         body_path.write_text("".join(json.dumps(frame)+"\n" for frame in frames))
         map_path = root / "candidate-corridor.xodr"

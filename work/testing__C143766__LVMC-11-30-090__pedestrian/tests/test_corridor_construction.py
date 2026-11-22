@@ -19,7 +19,9 @@ class CorridorTests(unittest.TestCase):
         self.assertEqual(len(proof["comparisons"]), 2)
         for band in ("roadway", "shoulder", "sidewalk"):
             item = proof["cases"][next(k for k in proof["cases"] if k.endswith("__"+band+"_walk"))]
-            self.assertEqual(item["measurement"]["band_overlap_frame_counts"][band], 3)
+            self.assertEqual(item["measurement"]["band_overlap_frame_counts"][band], 435)
+            self.assertTrue(item["measurement"]["authored_endpoint_reached"])
+            self.assertAlmostEqual(item["measurement"]["duration_s"], 21.7)
             self.assertEqual(item["measurement"]["legal_judgment"], "unresolved")
             self.assertEqual(item["first_walker_request"]["speed_mps"], 1.2)
 
@@ -39,7 +41,8 @@ class CorridorTests(unittest.TestCase):
 
     def test_original_frames_and_full_body_required(self):
         scene = make_scene("test", "roadway")
-        frames = [{"frame": i, "body_xy_m": body(2+i*13, 1.5)} for i in range(3)]
+        frames = [{"frame": i, "time_s": i/20,
+                   "body_xy_m": body(2+.06*i, 1.5)} for i in range(3)]
         self.assertEqual(measure_original(scene, frames)["frames"], 3)
         frames[1]["frame"] = 4
         with self.assertRaisesRegex(ValueError, "missing or stale"):
@@ -51,8 +54,21 @@ class CorridorTests(unittest.TestCase):
 
     def test_standing_still_is_not_walking_along_corridor(self):
         scene = make_scene("test", "roadway")
-        frames = [{"frame": i, "body_xy_m": body(2, 1.5)} for i in range(3)]
+        frames = [{"frame": i, "time_s": i/20,
+                   "body_xy_m": body(2, 1.5)} for i in range(3)]
         with self.assertRaisesRegex(ValueError, "did not progress"):
+            measure_original(scene, frames)
+
+    def test_teleport_and_bad_frame_rate_rejected(self):
+        scene = make_scene("test", "roadway")
+        frames = [{"frame": i, "time_s": i/20,
+                   "body_xy_m": body(2+.06*i, 1.5)} for i in range(3)]
+        frames[2]["body_xy_m"] = body(15, 1.5)
+        with self.assertRaisesRegex(ValueError, "speed envelope"):
+            measure_original(scene, frames)
+        frames[2]["body_xy_m"] = body(2.12, 1.5)
+        frames[2]["time_s"] = .2
+        with self.assertRaisesRegex(ValueError, "not 20 Hz"):
             measure_original(scene, frames)
 
     def test_comparison_rejects_undeclared_or_extra_changes(self):

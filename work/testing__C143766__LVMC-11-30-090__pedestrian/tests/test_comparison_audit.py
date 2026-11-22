@@ -28,7 +28,7 @@ class ComparisonAuditTests(unittest.TestCase):
                 shutil.copytree(ROOT / "cases" / name, root / "cases" / name)
             history = root / "cases" / "sidewalk_walk" / "diagnostic-body-history.jsonl"
             rows = [json.loads(line) for line in history.read_text().splitlines()]
-            rows[1]["body_xy_m"] = [[x+1, y] for x, y in rows[1]["body_xy_m"]]
+            rows[1]["body_xy_m"] = [[x+.03, y] for x, y in rows[1]["body_xy_m"]]
             history.write_text("".join(json.dumps(row)+"\n" for row in rows))
             manifest = root / "cases" / "sidewalk_walk" / "diagnostic-source-manifest.json"
             packet = json.loads(manifest.read_text())

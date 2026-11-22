@@ -85,7 +85,12 @@ def measure_original(scene, frames):
         raise ValueError("missing or stale original frames")
     counts = {name: 0 for name in BANDS}
     centers = []
+    times = []
     for f in frames:
+        time_s = float(f["time_s"])
+        if not math.isfinite(time_s):
+            raise ValueError("nonfinite original frame time")
+        times.append(time_s)
         body = f["body_xy_m"]
         if len(body) != 4 or any(len(point) != 2 for point in body):
             raise ValueError("original full-body polygon required")
@@ -103,8 +108,19 @@ def measure_original(scene, frames):
             raise ValueError("original pedestrian body is outside corridor")
     if any(b[0] <= a[0] for a, b in zip(centers, centers[1:])):
         raise ValueError("original pedestrian did not progress along corridor")
+    if any(abs((b-a)-.05) > .005 for a, b in zip(times, times[1:])):
+        raise ValueError("original frame timing is not 20 Hz")
+    speeds = [(b[0]-a[0])/(tb-ta) for a, b, ta, tb in
+              zip(centers, centers[1:], times, times[1:])]
+    if any(speed > 2.0 for speed in speeds):
+        raise ValueError("original pedestrian motion exceeds engineering speed envelope")
+    endpoint = scene["pedestrian_route_xy_m"][-1]
+    reached_endpoint = math.hypot(centers[-1][0]-endpoint[0],
+                                  centers[-1][1]-endpoint[1]) <= .5
     return {"frames": len(frames), "band_overlap_frame_counts": counts,
             "first_center_xy_m": list(centers[0]), "last_center_xy_m": list(centers[-1]),
+            "duration_s": times[-1]-times[0], "maximum_forward_speed_mps": max(speeds),
+            "authored_endpoint_reached": reached_endpoint,
             "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
 
 
