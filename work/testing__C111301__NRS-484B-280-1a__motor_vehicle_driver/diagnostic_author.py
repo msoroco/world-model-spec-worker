@@ -32,13 +32,14 @@ def write_case(label):
         measured=gap(ego,chair)
         rows.append({'frame':frame['frame'],'time_s':frame['time_s'],
           'ego_body_vertices_m':ego,'ego_speed_mps':4,'ego_brake':int(label=='crossing' and i>=2),
+          'pedestrian_speed_mps':1 if label=='crossing' else 0,
           'person':{'role':'person_in_manual_wheelchair','source_ref':'diagnostic/person',
                     'body_vertices_m':chair},
           'manual_wheelchair':{'kind':'manual_wheelchair','source_ref':'diagnostic/chair',
                                'body_vertices_m':chair},
           'surface_gap_m':measured,'contact_event':False})
     files['encounter-history.jsonl']=''.join(json.dumps(row,sort_keys=True)+'\n' for row in rows)
-    names=('encounter-history.jsonl','intersection-context.json')
+    names=('encounter-history.jsonl','intersection-context.json','video_frames.jsonl')
     files['acquisition.json']=json.dumps({name:{'kind':'original_native','sha256':sha(files[name])}
                                          for name in names},sort_keys=True)+'\n'
     files['fixture-provenance.json']=json.dumps({'scope':'CPU software diagnostic with synthetic source text and inherited adapter frames',

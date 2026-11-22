@@ -81,6 +81,12 @@ def saved_result(attempt,report):
     acquisition=json.loads((attempt/'acquisition.json').read_text())
     history=verified(attempt,'encounter-history.jsonl',acquisition)
     rows=[json.loads(line) for line in history.read_text().splitlines() if line.strip()]
+    frame_map=verified(attempt,'video_frames.jsonl',acquisition)
+    frames=[json.loads(line) for line in frame_map.read_text().splitlines() if line.strip()]
+    if len(frames)!=len(rows):raise ValueError('Original encounter and camera frame counts differ')
+    if any((frame.get('carla_frame'),frame.get('time_s'))!=(row.get('frame'),row.get('time_s'))
+           for row,frame in zip(rows,frames)):
+        raise ValueError('Original encounter and camera frame identities differ')
     context=json.loads(verified(attempt,'intersection-context.json',acquisition).read_text())
     output=attempt/'channels';output.mkdir(exist_ok=True)
     streams={
@@ -88,7 +94,12 @@ def saved_result(attempt,report):
       'wheelchair_person_body_history':[(r['time_s'],r['person']) for r in rows],
       'manual_wheelchair_body_history':[(r['time_s'],r['manual_wheelchair']) for r in rows],
       'ego_speed_and_brake_history':[(r['time_s'],{'speed_mps':r['ego_speed_mps'],'brake':r['ego_brake']}) for r in rows],
-      'contact_history':[(r['time_s'],{'contact_event':r['contact_event'],'surface_gap_m':r['surface_gap_m']}) for r in rows]}
+      'contact_history':[(r['time_s'],{'contact_event':r['contact_event'],'surface_gap_m':r['surface_gap_m']}) for r in rows],
+      'pedestrian_path_and_speed_history':[(r['time_s'],{'body_vertices_m':r['person']['body_vertices_m'],
+             'speed_mps':r['pedestrian_speed_mps']}) for r in rows],
+      'contact_events':[(r['time_s'],r['contact_event']) for r in rows],
+      'intersection_geometry':[(r['time_s'],context) for r in rows],
+      'camera_frame_map':[(r['time_s'],frame) for r,frame in zip(rows,frames)]}
     evidence=[]
     for channel in planned['channels']:
         name=channel['name']
@@ -100,7 +111,7 @@ def saved_result(attempt,report):
         evidence.append({'name':name,'unit':channel['unit'],'reference':str(path.relative_to(attempt))})
     context_path=output/'context.json'
     with context_path.open('x') as stream:
-        stream.write(json.dumps({'intersection_geometry':context,
+        stream.write(json.dumps({'intersection_context':context,
           'wheelchair_identity_context':{'source_sha256':acquisition['encounter-history.jsonl']['sha256'],
           'manual_wheelchair_asset_source':context['manual_wheelchair_asset_source']}},allow_nan=False)+'\n')
     for item in planned['context_inputs']:

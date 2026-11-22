@@ -27,6 +27,52 @@ def select_chair(library,pattern):
     return matches[0]
 
 
+def connected_route(start,end,limit=1200):
+    """Require a forward Native waypoint chain from approach to exit."""
+    target=end.transform.location
+    pending=[start];seen=set();index=0
+    while index<len(pending) and index<limit:
+        waypoint=pending[index];index+=1
+        location=waypoint.transform.location
+        key=(getattr(waypoint,'road_id',None),getattr(waypoint,'lane_id',None),
+             round(location.x,1),round(location.y,1))
+        if key in seen:continue
+        seen.add(key)
+        if math.hypot(location.x-target.x,location.y-target.y)<=2.5:return True
+        pending.extend(waypoint.next(2.0))
+    return False
+
+
+def pedestrian_station(scene,index):
+    start=scene['pedestrian_path_start_xy_m'][1]
+    if scene['wheelchair_path_setup']=='clear_path':return 5.0
+    if type(index) is not int or index<0 or scene['pedestrian_target_speed_mps']<=0:
+        raise ValueError('invalid authored pedestrian step')
+    return min(scene['pedestrian_path_end_xy_m'][1],
+               start+(index+1)*scene['pedestrian_target_speed_mps']/scene['rate_hz'])
+
+
+def spawn_entities(world,scene,vehicle_bp,chair_bp,person_bp,transform):
+    """Own three distinct actors or remove every partial spawn on failure."""
+    actors=[]
+    try:
+        ego=world.spawn_actor(vehicle_bp,transform(*scene['ego_start_xy_m']))
+        actors.append(ego)
+        chair_x=scene['pedestrian_path_start_xy_m'][0]
+        chair_y=scene['pedestrian_path_start_xy_m'][1] if scene['wheelchair_path_setup']=='crossing' else 5
+        chair=world.spawn_actor(chair_bp,transform(chair_x,chair_y,90))
+        actors.append(chair)
+        person=world.spawn_actor(person_bp,transform(chair_x,chair_y,90))
+        actors.append(person)
+        if any(actor is None for actor in actors) or len({actor.id for actor in actors})!=3:
+            raise ValueError('Native vehicle, person and chair actor identities are not distinct')
+        return actors
+    except BaseException:
+        for actor in reversed(actors):
+            if actor is not None:actor.destroy()
+        raise
+
+
 def placement(world,carla,scene):
     mapping=world.get_map()
     def checked(x,y,lane_type=None):
@@ -39,6 +85,8 @@ def placement(world,carla,scene):
     center=checked(scene['pedestrian_path_start_xy_m'][0],0)
     if start.road_id!=center.road_id or center.road_id!=end.road_id:
         raise ValueError('Authored ego path is not on one connected Native road')
+    if not connected_route(start,end):
+        raise ValueError('No forward Native waypoint path connects ego approach and exit')
     return {'map_name':mapping.name,'road_id':start.road_id,'start_lane_id':start.lane_id,
             'end_lane_id':end.lane_id,'crossing_road_id':center.road_id,
             'route_source':'Native CARLA waypoint map'}
@@ -106,12 +154,10 @@ def run_native(scene,output,host,port):
             wp=world.get_map().get_waypoint(carla.Location(x=x,y=y,z=0))
             z=wp.transform.location.z+.5 if wp else .5
             return carla.Transform(carla.Location(x=x,y=y,z=z),carla.Rotation(yaw=yaw))
-        ego=world.spawn_actor(vehicles[0],transform(*scene['ego_start_xy_m']));actors.append(ego)
+        actors=spawn_entities(world,scene,vehicles[0],chair_bp,people[0],transform)
+        ego,chair,person=actors
         chair_x=scene['pedestrian_path_start_xy_m'][0]
         chair_y=scene['pedestrian_path_start_xy_m'][1] if scene['wheelchair_path_setup']=='crossing' else 5
-        chair=world.spawn_actor(chair_bp,transform(chair_x,chair_y,90));actors.append(chair)
-        person=world.spawn_actor(people[0],transform(chair_x,chair_y,90));actors.append(person)
-        if len({actor.id for actor in actors})!=3:raise ValueError('Native actor identities are not distinct')
         context.update({'manual_wheelchair_asset_source':chair_bp.id,'person_asset_source':people[0].id,
                         'ego_asset_source':vehicles[0].id,'wheelchair_path_setup':scene['wheelchair_path_setup']})
         write(output/'intersection-context.json',context)
@@ -125,6 +171,7 @@ def run_native(scene,output,host,port):
         collision=world.spawn_actor(collision_bp,carla.Transform(),attach_to=ego);actors.append(collision)
         collision.listen(lambda event:contact.append((event.frame,event.other_actor.id)))
         phase='capturing'
+        previous_person_center=None;previous_time=None;last_pedestrian_speed=0.0
         with (output/'encounter-history.jsonl').open('x',buffering=1) as stream:
             for index in range(round(scene['duration_s']*20)):
                 person_body=vertices(person);chair_body=vertices(chair);ego_body=vertices(ego)
@@ -132,21 +179,29 @@ def run_native(scene,output,host,port):
                             'body_vertices_m':person_body}
                 manual_chair={'kind':'manual_wheelchair','source_ref':chair_bp.id,
                               'body_vertices_m':chair_body}
-                observed=encounter(scene,ego_body,pedestrian,manual_chair,speed(ego),0)
+                observed=encounter(scene,ego_body,pedestrian,manual_chair,speed(ego),last_pedestrian_speed)
                 command=control(scene,observed)
                 ego.apply_control(carla.VehicleControl(throttle=command['throttle'],brake=command['brake'],steer=command['steer']))
                 if scene['wheelchair_path_setup']=='crossing':
-                    next_y=min(scene['pedestrian_path_end_xy_m'][1],chair_y+index*.01)
+                    next_y=pedestrian_station(scene,index)
                     chair.set_transform(transform(chair_x,next_y,90));person.set_transform(transform(chair_x,next_y,90))
                 frame=world.tick();snapshot=world.get_snapshot()
                 if snapshot.frame!=frame:raise RuntimeError('Native frame identity changed')
                 time_s=snapshot.timestamp.elapsed_seconds
                 capture.capture(frame,time_s);cameras.append(frame);frame_map.append(frame,time_s)
                 ego_body=vertices(ego);person_body=vertices(person);chair_body=vertices(chair)
+                center=(sum(p[0] for p in person_body)/len(person_body),
+                        sum(p[1] for p in person_body)/len(person_body))
+                pedestrian_speed=(math.hypot(center[0]-previous_person_center[0],
+                   center[1]-previous_person_center[1])/(time_s-previous_time)
+                   if previous_person_center is not None else 0.0)
+                previous_person_center=center;previous_time=time_s
+                last_pedestrian_speed=pedestrian_speed
                 pedestrian['body_vertices_m']=person_body;manual_chair['body_vertices_m']=chair_body
-                observed=encounter(scene,ego_body,pedestrian,manual_chair,speed(ego),0)
+                observed=encounter(scene,ego_body,pedestrian,manual_chair,speed(ego),pedestrian_speed)
                 row={'frame':frame,'time_s':time_s,'ego_body_vertices_m':ego_body,
                      'ego_speed_mps':speed(ego),'ego_brake':command['brake'],
+                     'pedestrian_speed_mps':pedestrian_speed,
                      'person':pedestrian,'manual_wheelchair':manual_chair,
                      'surface_gap_m':observed['surface_gap_m'],
                      'contact_event':any(f==frame and a in (person.id,chair.id) for f,a in contact)}

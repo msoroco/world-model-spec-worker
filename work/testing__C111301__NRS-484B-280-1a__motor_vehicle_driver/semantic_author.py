@@ -45,8 +45,12 @@ def main():
                  named('wheelchair_person_body_history','Original person body and identity as a manual-wheelchair occupant.'),
                  named('manual_wheelchair_body_history','Original chair body and asset identity.'),
                  named('ego_speed_and_brake_history','Original speed, braking and deceleration frames.'),
-                 named('contact_history','Original contact events and body surface gap.')]
-    contexts=[named('intersection_geometry','Original ego corridor, pedestrian crossing and map context.'),
+                 named('contact_history','Original contact events and body surface gap.'),
+                 named('pedestrian_path_and_speed_history','Original wheelchair occupant path and sampled speed.'),
+                 named('contact_events','Original contact sensor event history.'),
+                 named('intersection_geometry','Original Native intersection and ego route geometry.'),
+                 named('camera_frame_map','Original synchronized four-camera frame identities.')]
+    contexts=[named('intersection_context','Original ego corridor, pedestrian crossing and map context.'),
               named('wheelchair_identity_context','Source-confirmed person and distinct manual chair association.')]
     refs['judgment_observables']=[write('judgment-1.json',{'template_id':TEMPLATE,
       'phrase':judgment['phrase'],'note':judgment['note'],'status':'draft',
