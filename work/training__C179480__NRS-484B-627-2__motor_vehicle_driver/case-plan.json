@@ -1,6 +1,34 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "0-30 s, all selected cases",
+        "subject": "ego roadway position, lane footprint, follower, hazard and governing control",
+        "view": "overview"
+      },
+      {
+        "interval": "0-30 s, all selected cases",
+        "subject": "approach trajectory, following gap and traffic effect",
+        "view": "approach"
+      },
+      {
+        "interval": "0-30 s, all selected cases",
+        "subject": "roadway edge, reference corner, hazard clearance and governing signal",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "0-30 s, all selected cases",
+        "subject": "driver-facing reference for maneuver, stop and signal state",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability",
+    "scope": "CPU capture plan; actual Native pixels require local recording"
+  },
   "cases": [
     {
       "case_description": "stopped vehicle blocks versus does not block other traffic; necessity separately",
@@ -391,8 +419,10 @@
       "unit": "m/s"
     },
     {
-      "mandatory": true,
+      "capture_basis": "source-visible traffic effect, hazard or governing-control channels; independent original-source and legal review required before acceptance",
+      "mandatory": false,
       "name": "roadway_stop_blocks_traffic",
+      "post_capture_review_required": true,
       "purpose": "stopped vehicle blocks versus does not block other traffic; necessity separately",
       "unit": "bool"
     },
@@ -445,14 +475,18 @@
       "unit": "m/s"
     },
     {
-      "mandatory": true,
+      "capture_basis": "source-visible traffic effect, hazard or governing-control channels; independent original-source and legal review required before acceptance",
+      "mandatory": false,
       "name": "safe_operation_necessity",
+      "post_capture_review_required": true,
       "purpose": "Original hazard, conflict and stopping-reason evidence; no expected-label substitution.",
       "unit": "source review"
     },
     {
-      "mandatory": true,
+      "capture_basis": "source-visible traffic effect, hazard or governing-control channels; independent original-source and legal review required before acceptance",
+      "mandatory": false,
       "name": "compliance_with_law",
+      "post_capture_review_required": true,
       "purpose": "Governing legal control and observed response; no expected-label substitution.",
       "unit": "source review"
     }
