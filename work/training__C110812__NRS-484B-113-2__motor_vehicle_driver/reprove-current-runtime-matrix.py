@@ -5,13 +5,19 @@ The receipt binds the current runtime and the unchanged selected construction.
 """
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+OUTPUT_ROOT = ROOT/'.runtime-work'/'c110812-matrix-runtime-output'
+if not os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT') or Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']).resolve() != OUTPUT_ROOT:
+    raise RuntimeError('Export SCENARIO_PIPELINE_OUTPUT_ROOT='+str(OUTPUT_ROOT)+' before importing runtime modules')
+OUTPUT_ROOT.mkdir(parents=True,exist_ok=True)
 sys.path[:0] = [str(ROOT/'runtime/pipeline'), str(ROOT/'runtime/pipeline/scenario_pipeline')]
 from scenario_pipeline.worker_exchange.fixture_recipe import materialize
 from scenario_pipeline.worker_exchange.package_compatibility import materialize_case
@@ -48,7 +54,7 @@ def proof_row(entry, candidate, document):
     saved_receipt = HERE/(stem+'-saved-receipt.json')
     saved_log = HERE/(stem+'-saved-command.log')
     if not (compat_receipt.is_file() and negative_log.is_file() and analysis_log.is_file()):
-        output = ROOT/'.runtime-work'/('c110812-'+stem+'-compat')
+        output = ROOT/'.runtime-work'/('c110812-'+stem+'-compat-'+str(time.time_ns()))
         command = [sys.executable,str(ROOT/'runtime.py'),'compatibility',
                    '--manifest',str(MANIFEST),'--case',entry['case_id'],
                    '--candidate',candidate,'--output',str(output),
@@ -69,7 +75,7 @@ def proof_row(entry, candidate, document):
             'Missing required source: native_samples.jsonl' not in negative_log.read_text()):
         raise ValueError('Compatibility or negative binding failed: '+stem)
     if not saved_receipt.is_file():
-        output = ROOT/'.runtime-work'/('c110812-'+stem+'-saved')
+        output = ROOT/'.runtime-work'/('c110812-'+stem+'-saved-'+str(time.time_ns()))
         output.mkdir(parents=True,exist_ok=True)
         with saved_log.open('w') as log:
             try:
