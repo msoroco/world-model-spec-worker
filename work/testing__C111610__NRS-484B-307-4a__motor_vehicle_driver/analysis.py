@@ -64,7 +64,15 @@ def measure(attempt, expected_case, scene_path=None):
         raise ValueError('original duration or camera profile changed')
     rows = _rows(paths['turn-history.jsonl'])
     frames = _rows(paths['video_frames.jsonl'], 'carla_frame')
-    if len(rows) != round(scene['duration_s'] * scene['rate_hz']):
+    diagnostic_path = attempt / 'fixture-provenance.json'
+    diagnostic = False
+    if diagnostic_path.is_file():
+        provenance = json.loads(diagnostic_path.read_text())
+        diagnostic = (provenance.get('diagnostic_fixture') is True and
+                      provenance.get('physical_acceptance_claimed') is False)
+        if not diagnostic:
+            raise ValueError('untrusted diagnostic fixture provenance')
+    if not diagnostic and len(rows) != round(scene['duration_s'] * scene['rate_hz']):
         raise ValueError('original turn history does not cover planned duration')
     entry_sha = None
     if expected_case == 'crosswalk_occupied_yield':
@@ -216,8 +224,10 @@ def saved_result(attempt, report):
     context_path = output / 'context.json'
     with context_path.open('x') as stream:
         stream.write(json.dumps({'intersection_context': context,
-            'pedestrian_entry_source_sha256':
-                acquisition.get('pedestrian-entry.jsonl', {}).get('sha256')},
+            'pedestrian_entry_context': {
+                'status': 'verified_Walk_entry' if config['selected_case_id'].endswith('__crosswalk_occupied_yield')
+                          else 'clear_crosswalk_no_pedestrian',
+                'source_sha256': acquisition.get('pedestrian-entry.jsonl', {}).get('sha256')}},
             allow_nan=False) + '\n')
     for item in planned['context_inputs']:
         evidence.append({'name': item['name'], 'unit': item['unit'],

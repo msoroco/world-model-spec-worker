@@ -31,6 +31,10 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
     suffix = case_id.rsplit('__', 1)[-1]
     if suffix not in ('crosswalk_clear_turn', 'crosswalk_occupied_yield'):
         raise ValueError('unknown exact left-arrow case')
+    if (attempt / 'fixture-provenance.json').exists():
+        provenance = read(attempt / 'fixture-provenance.json')
+        if provenance.get('diagnostic_fixture') is True:
+            raise ValueError('diagnostic fixture cannot establish Native delivery')
     required = set(ORIGINAL) | set(VIDEOS)
     if suffix == 'crosswalk_occupied_yield':
         required.add('pedestrian-entry.jsonl')
@@ -88,7 +92,11 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
         raise ValueError('saved result missing, stale or wrong case')
     if media_verify is None:
         from worker_exchange.media import verify_receipt
-        media_verify = verify_receipt
+        checker = sha(Path(__file__).with_name('pixel_checks.py'))
+        def media_verify(video, receipt, count, mapping_sha256):
+            return verify_receipt(video, receipt, count,
+                mapping_sha256=mapping_sha256,
+                required_checks={'pixel_presence': checker})
     video = Path(saved.get('analysis_directory', '')) / 'raw.mkv'
     if not video.is_file():
         raise ValueError('saved primary video missing')

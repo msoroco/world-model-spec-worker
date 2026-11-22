@@ -7,44 +7,200 @@
       "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "cad28c70a00d60ccbfa1150d809a2f06839fe78074eddd08686456ebbf94c64f",
+      "construction_sha256": "839eb9b97b78e051d65be8f758acb39053c318cc2e92cb77326b85729fe11bd0",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Official sole-arrow and marked adjacent-crosswalk Native asset availability is unverified."
+        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-crosswalk_clear_turn-construction.json",
+          "construction_sha256": "6a3401771da986d0b7c8b1c06527517657421324e4342eb06b3f86622b70a2e5",
+          "trigger": {
+            "source": "original Native turn-history.jsonl and trace.jsonl",
+            "metric": "30 s sampled left-turn heading change and travel progress",
+            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m"
+          },
+          "changed_knobs": [
+            "bounded route steering error divisor: 45 -> 35 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_clear_turn-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6a3401771da986d0b7c8b1c06527517657421324e4342eb06b3f86622b70a2e5",
+            "log": "proof-crosswalk_clear_turn-fallback1.log",
+            "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
+          },
+          "compatibility": {
+            "receipt": "compat-crosswalk_clear_turn-fallback1-receipt.json",
+            "sha256": "708869bd08bf2b576e4366d006bb02a205c9a754df3b0ef645cf7efb9decb71b",
+            "log": "compat-crosswalk_clear_turn-fallback1-analysis.log",
+            "negative_log": "compat-crosswalk_clear_turn-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-clear-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/diagnostic-crosswalk_clear_turn-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_clear_turn-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_clear_turn-primary-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
-        "construction_sha256": "cad28c70a00d60ccbfa1150d809a2f06839fe78074eddd08686456ebbf94c64f",
-        "log": "proof-crosswalk_clear_turn.log",
+        "construction_sha256": "839eb9b97b78e051d65be8f758acb39053c318cc2e92cb77326b85729fe11bd0",
+        "log": "proof-crosswalk_clear_turn-primary.log",
         "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
+      },
+      "physical_preparation": {
+        "receipt": "physical-crosswalk_clear_turn-proof.json",
+        "sha256": "f495d83a8aec0a2c9c643112bdf801ddee2eea75ce545e1a17f7b77a4a6e9aae"
+      },
+      "compatibility": {
+        "receipt": "compat-crosswalk_clear_turn-primary-receipt.json",
+        "sha256": "96d906077aa26b8268a451f3345ff7efc49475397c5943281e72865e0e6bbf11",
+        "log": "compat-crosswalk_clear_turn-primary-analysis.log",
+        "negative_log": "compat-crosswalk_clear_turn-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-clear-v3 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-crosswalk_clear_turn.log",
+        "test_log_sha256": "940ffd7f8faf4a635ecbbc19b2754949d151f38974ce993865d9c500ac100c41",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "23c619ae5f15ad342afcd319d83ca9937c4d2874538e55d38ed5b8d733864ef5",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_clear_turn-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-crosswalk_clear_turn-positive.log",
+        "test_log_sha256": "fe9932d29d0d988c3f69f4601b7ba114c8bd3afa3ebaf35d551019e30ea20a12",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_clear_turn-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-crosswalk_clear_turn-negative.log",
+        "negative_log_sha256": "b8513985e12d7e4103c657a89b46c5be31c7ae48ea219eaadf6873bcba44c0b0"
       }
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
       "kind": "delivery",
       "construction": "cases/crosswalk_occupied_yield/construction.json",
-      "construction_sha256": "79090d04cbf0e165cc03fff6b684d366a98a30ad8aafbf425ab3791fdb3f4757",
+      "construction_sha256": "949296837eae4a70e29118fac7e967d8999e5793135ef672862f3c65a7cb2ab6",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Official sole-arrow and marked adjacent-crosswalk Native asset availability is unverified."
+        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-crosswalk_occupied_yield-construction.json",
+          "construction_sha256": "65ca49cc845cad05b34f3cb0013211cf9341e6e87a1215f4203d920dc8c25049",
+          "trigger": {
+            "source": "original Native turn-history.jsonl and trace.jsonl",
+            "metric": "30 s sampled left-turn heading change and travel progress",
+            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m"
+          },
+          "changed_knobs": [
+            "bounded route steering error divisor: 45 -> 35 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_occupied_yield-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "65ca49cc845cad05b34f3cb0013211cf9341e6e87a1215f4203d920dc8c25049",
+            "log": "proof-crosswalk_occupied_yield-fallback1.log",
+            "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
+          },
+          "compatibility": {
+            "receipt": "compat-crosswalk_occupied_yield-fallback1-receipt.json",
+            "sha256": "e35c73709332d5c7dc3b685378859d54dcbf67bfd853d0e18321676f8a30a176",
+            "log": "compat-crosswalk_occupied_yield-fallback1-analysis.log",
+            "negative_log": "compat-crosswalk_occupied_yield-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-occupied-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
       "measurement_contract": "cases/crosswalk_occupied_yield/measurement-contract.json",
+      "fixture_recipe": "work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/diagnostic-crosswalk_occupied_yield-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_occupied_yield-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_occupied_yield-primary-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
-        "construction_sha256": "79090d04cbf0e165cc03fff6b684d366a98a30ad8aafbf425ab3791fdb3f4757",
-        "log": "proof-crosswalk_occupied_yield.log",
+        "construction_sha256": "949296837eae4a70e29118fac7e967d8999e5793135ef672862f3c65a7cb2ab6",
+        "log": "proof-crosswalk_occupied_yield-primary.log",
         "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
+      },
+      "physical_preparation": {
+        "receipt": "physical-crosswalk_occupied_yield-proof.json",
+        "sha256": "72b8f7abc435ad9a9aa491a85500e9040080c722eae83b65d7e94b5a088054aa"
+      },
+      "compatibility": {
+        "receipt": "compat-crosswalk_occupied_yield-primary-receipt.json",
+        "sha256": "012de1bbaf9ab0fa5dda34967df9935e87aaa22119d28e315c14a1c2ce775b92",
+        "log": "compat-crosswalk_occupied_yield-primary-analysis.log",
+        "negative_log": "compat-crosswalk_occupied_yield-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-occupied-primary-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-crosswalk_occupied_yield.log",
+        "test_log_sha256": "c0e3a35294b004c77edd01f4b6332dc47a75dd093c0b14bb20bb104f3dc5450a",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "23c619ae5f15ad342afcd319d83ca9937c4d2874538e55d38ed5b8d733864ef5",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_occupied_yield-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-crosswalk_occupied_yield-positive.log",
+        "test_log_sha256": "6cafd1011311b3e8ad6114a21fe5d0bda1da5303346e0148925504ffeeec82fb",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_occupied_yield-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-crosswalk_occupied_yield-negative.log",
+        "negative_log_sha256": "b8513985e12d7e4103c657a89b46c5be31c7ae48ea219eaadf6873bcba44c0b0"
       }
     }
   ]

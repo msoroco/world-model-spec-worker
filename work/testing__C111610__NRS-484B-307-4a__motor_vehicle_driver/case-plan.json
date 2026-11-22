@@ -34,8 +34,8 @@
       "purpose": "Sole left arrow with adjacent crosswalk clear; measured left turn and continued arrow illumination",
       "physical_risk_assessment": {
         "status": "physical",
-        "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup.",
-        "fallback_policy": "No alternate construction is claimed until an original map asset with the same official sole-arrow and adjacent-crosswalk conditions is identified; changing to circular green would change the legal branch."
+        "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup. The primary bounded steering gain may also leave the 30 s turn incomplete.",
+        "fallback_policy": "A source-measured heading change below 45 degrees or travel below 5 m triggers exact fallback1 with bounded steering divisor 35 rather than 45; its construction and CPU proofs are retained. An alternate map still requires an original official sole-arrow asset and adjacent marked crosswalk; a circular green signal changes the law branch."
       }
     },
     {
@@ -44,8 +44,8 @@
       "purpose": "Same sole left arrow and left turn; lawfully present pedestrian occupies adjacent crosswalk and ego holds until clear",
       "physical_risk_assessment": {
         "status": "physical",
-        "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup.",
-        "fallback_policy": "No alternate construction is claimed until an original map asset with the same official sole-arrow and adjacent-crosswalk conditions is identified; changing to circular green would change the legal branch."
+        "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup. The primary bounded steering gain may also leave the 30 s turn incomplete.",
+        "fallback_policy": "A source-measured heading change below 45 degrees or travel below 5 m triggers exact fallback1 with bounded steering divisor 35 rather than 45; its construction and CPU proofs are retained. An alternate map still requires an original official sole-arrow asset and adjacent marked crosswalk; a circular green signal changes the law branch."
       }
     }
   ],
@@ -122,8 +122,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Original CARLA arrow asset, facing relationship, marked crosswalk, lawful pedestrian presence and camera coverage still require source verification.",
-    "Native capture, exact stage bundles, semantic proposals, finalizer, compatibility proofs and independent delivery audit remain worker-owned CPU work."
+    "Original CARLA arrow asset, facing relationship, marked crosswalk, lawful pedestrian presence, actual motion and camera coverage require Native source verification.",
+    "The authored diagnostic fixtures and synthetic physical outcomes establish CPU contract behavior only; they are not Native observations or legal verdicts."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -132,7 +132,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_construction",
+  "planning_status": "cpu_construction_proved_physical_scope_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -177,8 +177,35 @@
       "status": "alternative_pending",
       "requirement": "Yield to other traffic lawfully using the intersection",
       "source": "NRS 484B.307(4)(a) exact text",
-      "evidence_or_gap": "Other lawful intersection traffic is absent as a fixed condition in the assigned pedestrian pair. Controller support is CPU-tested, but no exact other-traffic case or source-backed exclusion disposition is complete.",
+      "evidence_or_gap": "The frozen assignment.json remaining_requirement and sole selected witness index 402 specify turning interaction with an adjacent-crosswalk pedestrian. Other lawful intersection traffic is held absent in both exact cases; its yielding alternative is not claimed as covered by this pedestrian comparison. The controller retains a sourced hold path for later separately selected traffic coverage.",
       "case_ids": []
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego vehicle, facing sole left-arrow head, adjacent marked crosswalk and pedestrian",
+        "interval": "approach through clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "ego braking and left turn with illuminated arrow",
+        "interval": "approach through clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "pedestrian entry, occupied adjacent crosswalk and turn conflict point",
+        "interval": "approach through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver view of facing arrow and adjacent pedestrian encounter",
+        "interval": "approach through clearance",
+        "view": "driver_reference"
+      }
+    ]
+  }
 }

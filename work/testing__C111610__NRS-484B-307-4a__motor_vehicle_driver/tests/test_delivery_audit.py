@@ -85,3 +85,13 @@ class DeliveryAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'owner release missing'):
                 audit(path, path / 'processing.json', path / 'decode.json', case_id,
                       lambda *_args, **_kw: None)
+
+    def test_diagnostic_fixture_cannot_claim_native_delivery(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            case_id = setup(path)
+            (path / 'fixture-provenance.json').write_text(json.dumps({
+                'diagnostic_fixture': True, 'physical_acceptance_claimed': False}))
+            with self.assertRaisesRegex(ValueError, 'diagnostic fixture cannot establish Native delivery'):
+                audit(path, path / 'processing.json', path / 'decode.json', case_id,
+                      lambda *_args, **_kw: None)

@@ -158,12 +158,19 @@ def main():
         entry = {'case_id': case_id, 'kind': 'delivery',
                  'construction': relative, 'construction_sha256': sha(construction_path),
                  'candidate_risk': {'status': 'physical',
-                    'reason': 'Official sole-arrow and marked adjacent-crosswalk Native asset availability is unverified.'},
+                    'reason': 'The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends.'},
                  'candidates': [],
                  'measurement_contract': str(contract_path.relative_to(ROOT)),
-                 'measurement_procedure': {'entrypoint': 'analysis.py'}}
+                 'fixture_recipe': 'work/' + ASSIGNMENT + '/diagnostic-' + suffix + '-recipe.json',
+                 'measurement_procedure': {'entrypoint': 'analysis.py'},
+                 'native_handoff': {'python_env_var': 'CARLA_PYTHON',
+                                    'host_env_var': 'CARLA_HOST',
+                                    'port_env_var': 'CARLA_PORT'}}
         if prior.get('construction_sha256') == entry['construction_sha256']:
-            entry.update({key: prior[key] for key in ('offline',) if key in prior})
+            entry.update({key: prior[key] for key in
+                ('offline', 'physical_preparation', 'candidate_risk', 'candidates',
+                 'compatibility', 'post_capture', 'delivery_acceptance')
+                if key in prior})
         entries.append(entry)
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT,
