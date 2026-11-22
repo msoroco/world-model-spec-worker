@@ -25,7 +25,11 @@ class DiagnosticBundleTests(unittest.TestCase):
         suffix = scene["case_id"].rsplit("__", 1)[1]
         expected = {"precedence": (True, "yield", "brake"),
                     "advance": (True, "advance", "proceed"),
-                    "other_later": (False, "yield", "proceed")}[suffix]
+                    "other_later": (False, "yield", "proceed"),
+                    "opposite_straight": (True, "yield", "brake"),
+                    "opposite_intends_left": (True, "yield", "brake"),
+                    "opposite_makes_left": (True, "yield", "brake"),
+                    "wide_same_crossing": (True, "yield", "brake")}[suffix]
         self.assertEqual((scene["other_entered_first"], scene["ego_response_request"]),
                          expected[:2])
         def body(x, y):
@@ -61,7 +65,7 @@ class DiagnosticBundleTests(unittest.TestCase):
         inventory = json.loads((root / "candidate-map-inventory.json").read_text())
         self.assertEqual(inventory["source_sha256"],
                          json.loads((root / "scene.json").read_text())["crossing"]["map_source_sha256"])
-        self.assertEqual(len(inventory["junctions"][0]["connections"]), 3)
+        self.assertEqual(len(inventory["junctions"][0]["connections"]), 4)
 
 
 if __name__ == "__main__":

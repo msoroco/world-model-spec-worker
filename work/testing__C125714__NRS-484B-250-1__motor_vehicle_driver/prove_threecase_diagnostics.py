@@ -1,4 +1,4 @@
-"""Reproduce offline and saved positive/negative CPU proofs for three exact IDs."""
+"""Reproduce offline and saved positive/negative CPU diagnostic proofs."""
 from __future__ import annotations
 
 import argparse
@@ -12,7 +12,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-VARIANTS = ("precedence", "advance", "other_later")
+VARIANTS = ("precedence", "advance", "other_later",
+            "opposite_straight", "opposite_intends_left", "opposite_makes_left",
+            "wide_same_crossing")
 
 
 def sha(path):
@@ -86,6 +88,8 @@ def prove(base):
         expected_other_first = suffix != "other_later"
         if (result["case_id"] != case_id or
                 observed["other_entered_before_ego"] is not expected_other_first or
+                observed["opposite_left_exclusion"] is not (suffix in ("opposite_intends_left", "opposite_makes_left")) or
+                observed["observed_left_turn"] is not (suffix == "opposite_makes_left") or
                 result["physical_checks"]["maneuver"]["status"] != "met" or
                 result["measured_values"]["legal_judgment"] != "unresolved" or
                 result["physical_acceptance_claimed"] is not False):

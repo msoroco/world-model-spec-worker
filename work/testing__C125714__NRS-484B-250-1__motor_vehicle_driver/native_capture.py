@@ -49,8 +49,11 @@ def reviewed_context(scene, output, world):
         raise ValueError("reviewed OpenDRIVE differs from live map")
     if not all(law[key] is True for key in ("public_access", "human_driver")):
         raise ValueError("reviewed public driver scope is unestablished")
-    if law["approach_relation"] != "crossing" or law["left_turn_intent"] or law["left_turn_realized"]:
-        raise ValueError("reviewed context is outside the crossing branch")
+    for key in ("approach_relation", "left_turn_intent", "left_turn_realized"):
+        if law[key] != scene.get(key, False if key != "approach_relation" else "crossing"):
+            raise ValueError("reviewed approach or turn context differs from route")
+    if law["approach_relation"] not in ("crossing", "opposite"):
+        raise ValueError("reviewed approach relation is invalid")
     if law["devices"]:
         raise ValueError("official device exclusion applies to this primary case")
     target = Path(output) / "reviewed-context.json"

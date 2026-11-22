@@ -13,8 +13,13 @@ def validate_routes(scene):
     bounds = crossing["bounds_xy_m"]
     if not crossing.get("map_source_sha256") or not crossing.get("crossing_id"):
         raise ValueError("source-hashed map and crossing identity required")
-    if scene["ego_highway"] == scene["other_highway"]:
+    relation = scene.get("approach_relation", "crossing")
+    if relation not in ("crossing", "opposite"):
+        raise ValueError("approach relation not established")
+    if relation == "crossing" and scene["ego_highway"] == scene["other_highway"]:
         raise ValueError("distinct highway identities required")
+    if relation == "opposite" and scene["ego_highway"] != scene["other_highway"]:
+        raise ValueError("opposite approaches require one highway identity")
     directions = []
     for party in ("ego", "other"):
         route = scene[f"{party}_route_xy_m"]
@@ -22,11 +27,27 @@ def validate_routes(scene):
             raise ValueError(f"{party} route must start and end outside crossing")
         if not any(_inside(p, bounds) for p in route[1:-1]):
             raise ValueError(f"{party} route misses crossing")
-        directions.append((route[-1][0] - route[0][0], route[-1][1] - route[0][1]))
+        directions.append((route[1][0] - route[0][0], route[1][1] - route[0][1]))
     dot = sum(a*b for a, b in zip(*directions))
     norms = (sum(x*x for x in directions[0]) * sum(x*x for x in directions[1])) ** 0.5
-    if norms == 0 or abs(dot / norms) > 0.5:
+    if norms == 0:
+        raise ValueError("route direction is undefined")
+    cosine = dot / norms
+    if relation == "crossing" and abs(cosine) > 0.5:
         raise ValueError("routes do not form a crossing approach")
+    if relation == "opposite" and cosine > -0.8:
+        raise ValueError("routes do not form an opposite approach")
+    if relation == "opposite":
+        route = scene["other_route_xy_m"]
+        departure = (route[-1][0]-route[-2][0], route[-1][1]-route[-2][1])
+        length = (sum(x*x for x in directions[1]) * sum(x*x for x in departure)) ** 0.5
+        if length == 0:
+            raise ValueError("opposite departure direction is undefined")
+        signed_turn = (directions[1][0]*departure[1] -
+                       directions[1][1]*departure[0]) / length
+        observed_left_path = signed_turn > 0.8
+        if observed_left_path != scene.get("left_turn_realized", False):
+            raise ValueError("left-turn route differs from declared realization")
     return {"crossing_id": crossing["crossing_id"], "map_source_sha256": crossing["map_source_sha256"]}
 
 

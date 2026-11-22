@@ -77,13 +77,31 @@ def _first_entry(samples, rect):
     return entry, exit_frame
 
 
+def _observed_left_turn(samples):
+    """Use original body centers to distinguish an actual turn from stated intent."""
+    centers = [(sum(p[0] for p in sample["body_vertices_xy_m"])/4,
+                sum(p[1] for p in sample["body_vertices_xy_m"])/4)
+               for sample in samples]
+    moves = [(b[0]-a[0], b[1]-a[1]) for a, b in zip(centers, centers[1:])
+             if math.dist(a, b) > 0.1]
+    if len(moves) < 2:
+        raise ValueError("original other-body motion insufficient for turn measurement")
+    first, last = moves[0], moves[-1]
+    cross = first[0]*last[1] - first[1]*last[0]
+    length = math.hypot(*first)*math.hypot(*last)
+    return cross/length > 0.8
+
+
 def measure(trace):
     context = trace["context"]
     for name in REQUIRED_CONTEXT:
         if not context.get(name):
             raise ValueError(f"missing source-bound context: {name}")
-    if context["ego_highway"] == context["other_highway"]:
+    relation = context.get("approach_relation")
+    if relation == "crossing" and context["ego_highway"] == context["other_highway"]:
         raise ValueError("different highway not established")
+    if relation == "opposite" and context["ego_highway"] != context["other_highway"]:
+        raise ValueError("opposite approaches require one highway identity")
     if context.get("public_access") is not True or context.get("human_driver") is not True:
         raise ValueError("public highway or conventional driver scope not established")
     devices = context.get("devices")
@@ -102,10 +120,13 @@ def measure(trace):
     other_entry, other_exit = _first_entry(trace["other_samples"], rect)
     if ego_entry is None or other_entry is None:
         raise ValueError("both original entries must be observed at the same crossing")
-    if context.get("approach_relation") not in ("crossing", "opposite"):
+    if relation not in ("crossing", "opposite"):
         raise ValueError("approach relation not established")
     if context.get("left_turn_intent") not in (True, False) or context.get("left_turn_realized") not in (True, False):
         raise ValueError("left-turn intent and realization must be separately observed")
+    observed_left_turn = _observed_left_turn(trace["other_samples"]) if relation == "opposite" else False
+    if relation == "opposite" and observed_left_turn != context["left_turn_realized"]:
+        raise ValueError("declared left-turn realization differs from original body motion")
     device_exclusion = bool(devices)
     opposite_left_exclusion = (context["approach_relation"] == "opposite" and
                                (context["left_turn_intent"] or context["left_turn_realized"]))
@@ -117,6 +138,7 @@ def measure(trace):
         "other_cleared_before_ego_entry": other_exit is not None and other_exit < ego_entry,
         "official_device_exclusion": device_exclusion,
         "opposite_left_exclusion": opposite_left_exclusion,
+        "observed_left_turn": observed_left_turn,
         "subsection_4_qualification": "unresolved_source_review",
         "legal_judgment": "unresolved",
     }

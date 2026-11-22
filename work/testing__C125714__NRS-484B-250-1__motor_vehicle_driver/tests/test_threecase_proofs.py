@@ -18,7 +18,9 @@ class ThreeCaseProofTests(unittest.TestCase):
         proposed = {case["case_id"] for case in proposal["cases"]}
         entries = manifest["cases"]
         self.assertEqual([entry["case_id"].rsplit("__", 1)[1] for entry in entries],
-                         ["precedence", "advance", "other_later"])
+                         ["precedence", "advance", "other_later",
+                          "opposite_straight", "opposite_intends_left",
+                          "opposite_makes_left", "wide_same_crossing"])
         for entry in entries:
             case_id = entry["case_id"]
             self.assertIn(case_id, proposed)

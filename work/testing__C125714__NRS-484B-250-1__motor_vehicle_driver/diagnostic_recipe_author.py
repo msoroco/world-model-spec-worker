@@ -6,7 +6,9 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VARIANTS = (("precedence", 4, 2), ("advance", 4, 2), ("other_later", 2, 4))
+VARIANTS = (("precedence", 4, 2), ("advance", 4, 2), ("other_later", 2, 4),
+            ("opposite_straight", 4, 2), ("opposite_intends_left", 4, 2),
+            ("opposite_makes_left", 4, 3), ("wide_same_crossing", 4, 2))
 
 
 def encoded(value):
@@ -31,15 +33,29 @@ def build_variant(suffix, ego_entry, other_entry):
             "device_inventory_source": "synthetic CPU fixture only",
             "driver_scope_source": "synthetic CPU fixture only",
             "public_access": True, "human_driver": True, "devices": [],
-            "approach_relation": "crossing", "left_turn_intent": False,
-            "left_turn_realized": False}}
+            "approach_relation": scene["approach_relation"],
+            "left_turn_intent": scene["left_turn_intent"],
+            "left_turn_realized": scene["left_turn_realized"]}}
     files = {"intersection-context.json": encoded(context)}
     for name, actor, entry, cleared in (("ego", 11, ego_entry, 6),
                                         ("other", 22, other_entry, 6)):
         rows = []
         for frame in range(9):
             coordinate = -10 if frame < entry else (0 if frame < cleared else 10)
-            x, y = (coordinate, -5.75) if name == "ego" else (0, coordinate)
+            if suffix == "wide_same_crossing" and name == "ego":
+                x, y = -coordinate, 5.75
+            elif suffix == "wide_same_crossing":
+                x, y = 0, (-10 if frame < entry else (5.75 if frame < cleared else 10))
+            elif name == "ego":
+                x, y = coordinate, -5.75
+            elif suffix == "opposite_makes_left":
+                x, y = ((10, 5.75), (8, 5.75), (4, 5.75),
+                        (-.066, 4.066), (-1.75, 0), (-1.75, -5),
+                        (-1.75, -10), (-1.75, -13), (-1.75, -15))[frame]
+            elif scene["approach_relation"] == "opposite":
+                x, y = -coordinate, 5.75
+            else:
+                x, y = 0, coordinate
             rows.append(encoded({"frame": frame, "time_s": frame/20,
                                  "actor_id": actor, "body_vertices_xy_m": body(x, y)}))
         files[f"{name}-body-history.jsonl"] = "".join(rows)
@@ -51,7 +67,9 @@ def build_variant(suffix, ego_entry, other_entry):
     files["acquisition-provenance.json"] = encoded(
         {"provenance_kind": "synthetic_fixture", "diagnostic_fixture": True})
     files["trace.jsonl"] = "".join(encoded({"frame": frame, "time_s": frame/20,
-                                             "position_m": [-10 if frame < ego_entry else (0 if frame < 6 else 10), -5.75]})
+                                             "position_m": ([10 if frame < ego_entry else (0 if frame < 6 else -10), 5.75]
+                                                            if suffix == "wide_same_crossing" else
+                                                            [-10 if frame < ego_entry else (0 if frame < 6 else 10), -5.75])})
                                      for frame in range(9))
     files["video_frames.jsonl"] = "".join(encoded(
         {"video_frame": frame, "carla_frame": frame, "native_frame": frame,

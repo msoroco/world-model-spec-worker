@@ -13,7 +13,8 @@ from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent
 ROUTES = {"ego": [10, 110, 11], "other": [31, 131, 32],
-          "opposite_carriageway": [20, 120, 21]}
+          "opposite_carriageway": [20, 120, 21],
+          "opposite_left": [20, 140, 40]}
 
 
 def _road(root, ident, x, y, heading, length, junction, predecessor=None, successor=None):
@@ -68,12 +69,18 @@ def build(path=None):
              (32, -1.75, 6, math.pi/2, 14, -1, ("junction", 1, None), None),
              (20, 30, 4, math.pi, 26, -1, None, ("junction", 1, None)),
              (120, 4, 4, math.pi, 8, 1, ("road", 20, "end"), ("road", 21, "start")),
-             (21, -4, 4, math.pi, 26, -1, ("junction", 1, None), None))
+             (21, -4, 4, math.pi, 26, -1, ("junction", 1, None), None),
+             (140, 4, 4, math.pi, 2*math.pi, 1,
+              ("road", 20, "end"), ("road", 40, "start")),
+             (40, 0, 0, 3*math.pi/2, 20, -1, ("junction", 1, None), None))
     for row in paths:
         _road(root, *row)
+    turn_geometry = root.find("./road[@id='140']/planView/geometry")
+    turn_geometry.remove(turn_geometry.find("line"))
+    ET.SubElement(turn_geometry, "arc", {"curvature": "0.25"})
     junction = ET.SubElement(root, "junction", {"name": "candidate divided-road median opening",
                                                 "id": "1"})
-    for incoming, connecting in ((10, 110), (31, 131), (20, 120)):
+    for incoming, connecting in ((10, 110), (31, 131), (20, 120), (20, 140)):
         connection = ET.SubElement(junction, "connection", {"id": str(connecting),
                   "incomingRoad": str(incoming), "connectingRoad": str(connecting),
                   "contactPoint": "start"})
@@ -90,8 +97,8 @@ def inspect(path):
     data = path.read_bytes()
     root = ET.fromstring(data)
     roads = {int(road.get("id")): road for road in root.findall("road")}
-    if len(roads) != 9:
-        raise ValueError("candidate needs nine distinct approach and junction roads")
+    if len(roads) != 11:
+        raise ValueError("candidate needs eleven distinct approach and junction roads")
     junctions = root.findall("junction")
     if len(junctions) != 1 or junctions[0].get("id") != "1":
         raise ValueError("one declared median junction required")
@@ -118,6 +125,9 @@ def inspect(path):
         for ident in (approach, through, departure):
             if roads[ident].find("./lanes/laneSection/right/lane[@id='-1']") is None:
                 raise ValueError(f"{label} driving lane absent")
+    arc = roads[140].find("./planView/geometry/arc")
+    if arc is None or float(arc.get("curvature", "nan")) != 0.25:
+        raise ValueError("opposite left junction arc differs")
     return {"format": "c125714-candidate-topology", "map_sha256": hashlib.sha256(data).hexdigest(),
             "route_road_ids": ROUTES, "junction_connection_count": len(connections),
             "review_status": "CPU XML connectivity only; Native map loading and legal context unverified"}

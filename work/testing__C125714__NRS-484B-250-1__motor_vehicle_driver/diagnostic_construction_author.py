@@ -12,7 +12,11 @@ from map_inventory import inventory
 ROOT = Path(__file__).resolve().parent
 CASE_VARIANTS = (("precedence", True, "yield"),
                  ("advance", True, "advance"),
-                 ("other_later", False, "yield"))
+                 ("other_later", False, "yield"),
+                 ("opposite_straight", True, "yield"),
+                 ("opposite_intends_left", True, "yield"),
+                 ("opposite_makes_left", True, "yield"),
+                 ("wide_same_crossing", True, "yield"))
 MAP_SOURCE = ROOT / "connected-median-candidate.xodr"
 
 
@@ -33,19 +37,6 @@ def build():
                 "map_source_sha256": sha(MAP_SOURCE)}
     (ROOT / "candidate-map.xodr").write_bytes(MAP_SOURCE.read_bytes())
     write_json(ROOT / "candidate-map-inventory.json", inventory(ROOT / "candidate-map.xodr"))
-    packet = {
-        "diagnostic_only": True,
-        "source_note": "Worker-authored C125714 engineering OpenDRIVE with CPU XML topology checks; no public-highway, device, or Native waypoint review",
-        "source_path": str(MAP_SOURCE.relative_to(ROOT.parent.parent)),
-        "crossing": crossing,
-        "law_context": {
-            "map_source": crossing["map_source_sha256"],
-            "ego_highway": "candidate-east-west", "other_highway": "candidate-north-south",
-            "public_access_source": None, "device_inventory_source": None,
-            "driver_scope_source": None, "public_access": False, "human_driver": False,
-            "devices": [], "approach_relation": "crossing",
-            "left_turn_intent": False, "left_turn_realized": False}}
-    write_json(ROOT / "diagnostic-context.json", packet)
     base_scene = {
         "diagnostic_only": True,
         "crossing": crossing, "ego_highway": "candidate-east-west",
@@ -56,8 +47,7 @@ def build():
         "other_route_xy_m": [[0, -15], [0, -7], [0, -3],
                              [0, 3], [0, 7], [0, 15]],
         "capture_rate_hz": 20, "duration_s": 20,
-        "reviewed_context_source": "diagnostic-context.json",
-        "reviewed_context_sha256": sha(ROOT / "diagnostic-context.json")}
+        "reviewed_context_source": "diagnostic-context.json"}
     entries = []
     for suffix, other_first, response in CASE_VARIANTS:
         case_id = ROOT.name + "__" + suffix
@@ -65,6 +55,41 @@ def build():
                  "other_entered_first": other_first, "ego_response_request": response}
         folder = ROOT if suffix == "precedence" else ROOT / "cases" / suffix
         folder.mkdir(parents=True, exist_ok=True)
+        opposite = suffix.startswith("opposite_")
+        intent = suffix in ("opposite_intends_left", "opposite_makes_left")
+        realized = suffix == "opposite_makes_left"
+        if opposite:
+            scene.update(other_highway="candidate-east-west", other_approach_road_id=20,
+                         other_route_xy_m=[[15, 5.75], [5, 5.75], [2, 5.75],
+                                           [-2, 5.75], [-5, 5.75], [-15, 5.75]])
+        if realized:
+            scene["other_route_xy_m"] = [[15, 5.75], [5, 5.75], [4, 5.75],
+                                          [-0.066, 4.066], [-1.75, 0],
+                                          [-1.75, -5], [-1.75, -15]]
+        if suffix == "wide_same_crossing":
+            scene["crossing"] = {**crossing,
+                "crossing_id": "candidate-north-carriageway-crossing-diagnostic",
+                "roadway_id": "candidate-east-west-westbound-carriageway",
+                "bounds_xy_m": [-3.5, 3, 3.5, 7]}
+            scene["ego_approach_road_id"] = 20
+            scene["ego_route_xy_m"] = [[15, 5.75], [5, 5.75], [2, 5.75],
+                                       [-2, 5.75], [-5, 5.75], [-15, 5.75]]
+        scene.update(approach_relation="opposite" if opposite else "crossing",
+                     left_turn_intent=intent, left_turn_realized=realized)
+        packet = {
+            "diagnostic_only": True,
+            "source_note": "Worker-authored engineering OpenDRIVE; highway scope, devices, intent and Native waypoints are not source reviewed",
+            "source_path": str(MAP_SOURCE.relative_to(ROOT.parent.parent)),
+            "crossing": scene["crossing"],
+            "law_context": {
+                "map_source": scene["crossing"]["map_source_sha256"],
+                "ego_highway": scene["ego_highway"], "other_highway": scene["other_highway"],
+                "public_access_source": None, "device_inventory_source": None,
+                "driver_scope_source": None, "public_access": False, "human_driver": False,
+                "devices": [], "approach_relation": scene["approach_relation"],
+                "left_turn_intent": intent, "left_turn_realized": realized}}
+        write_json(folder / "diagnostic-context.json", packet)
+        scene["reviewed_context_sha256"] = sha(folder / "diagnostic-context.json")
         write_json(folder / "scene.json", scene)
         write_json(folder / "config.json", config(scene))
         files = []
@@ -73,7 +98,7 @@ def build():
                      "analysis.py", "delivery_audit.py", "scene.json", "config.json",
                      "diagnostic-context.json", "candidate-map.xodr", "candidate-map-inventory.json",
                      "tests/test_diagnostic_bundle.py"):
-            source = folder / name if name in ("scene.json", "config.json") else ROOT / name
+            source = folder / name if name in ("scene.json", "config.json", "diagnostic-context.json") else ROOT / name
             files.append({"path": name, "content": source.read_text()})
         construction = {
             "law_id": "NRS-484B-250-1", "cell_id": "C125714",

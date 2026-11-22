@@ -41,6 +41,23 @@ def trace(other_frames=(1, 2, 3, 4), ego_frames=(3, 4, 5, 6)):
 
 
 class CrossingAuditTests(unittest.TestCase):
+    def test_opposite_geometry_requires_same_highway_and_reversed_heading(self):
+        scene = {
+            "crossing": {"crossing_id": "A-median", "map_source_sha256": "a" * 64,
+                         "bounds_xy_m": [-1, -1, 1, 1]},
+            "approach_relation": "opposite", "ego_highway": "A", "other_highway": "A",
+            "ego_route_xy_m": [[-3, 0], [0, 0], [3, 0]],
+            "other_route_xy_m": [[3, 0], [0, 0], [-3, 0]],
+        }
+        self.assertEqual(control.validate_routes(scene)["crossing_id"], "A-median")
+        scene["other_route_xy_m"] = [[0, -3], [0, 0], [0, 3]]
+        with self.assertRaisesRegex(ValueError, "opposite approach"):
+            control.validate_routes(scene)
+        scene["other_route_xy_m"] = [[3, 0], [0, 0], [-3, 0]]
+        scene["other_highway"] = "B"
+        with self.assertRaisesRegex(ValueError, "one highway identity"):
+            control.validate_routes(scene)
+
     def test_map_binding_rejects_hash_and_road_mismatch(self):
         class Waypoint:
             def __init__(self, road_id, is_junction, x, y):
@@ -127,11 +144,19 @@ class CrossingAuditTests(unittest.TestCase):
     def test_exclusions_reported_without_verdict(self):
         t = trace()
         t["context"].update(approach_relation="opposite", left_turn_intent=True,
-                            devices=["stop_sign"])
+                            other_highway=t["context"]["ego_highway"], devices=["stop_sign"])
         result = audit.measure(t)
         self.assertTrue(result["official_device_exclusion"])
         self.assertTrue(result["opposite_left_exclusion"])
         self.assertEqual(result["subsection_4_qualification"], "unresolved_source_review")
+
+    def test_declared_actual_left_turn_requires_original_body_motion(self):
+        t = trace()
+        t["context"].update(approach_relation="opposite",
+                            other_highway=t["context"]["ego_highway"],
+                            left_turn_intent=True, left_turn_realized=True)
+        with self.assertRaisesRegex(ValueError, "realization differs"):
+            audit.measure(t)
 
     def test_missing_source_and_unobserved_entry_rejected(self):
         t = trace()

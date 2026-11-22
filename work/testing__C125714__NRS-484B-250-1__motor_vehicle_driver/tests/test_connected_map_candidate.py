@@ -19,16 +19,25 @@ def lane_endpoints(road):
                              ("x", "y", "hdg", "length"))
     offset = (1.75 * math.sin(heading), -1.75 * math.cos(heading))
     start = (x+offset[0], y+offset[1])
-    end = (start[0]+length*math.cos(heading),
-           start[1]+length*math.sin(heading))
+    arc = geometry.find("arc")
+    if arc is None:
+        end = (start[0]+length*math.cos(heading),
+               start[1]+length*math.sin(heading))
+    else:
+        curvature = float(arc.get("curvature"))
+        end_heading = heading + length*curvature
+        reference_end = (x + (math.sin(end_heading)-math.sin(heading))/curvature,
+                         y + (math.cos(heading)-math.cos(end_heading))/curvature)
+        end = (reference_end[0]+1.75*math.sin(end_heading),
+               reference_end[1]-1.75*math.cos(end_heading))
     return start, end
 
 
 class ConnectedMapCandidateTests(unittest.TestCase):
-    def test_three_forward_lane_paths_are_geometrically_continuous(self):
+    def test_four_forward_lane_paths_are_geometrically_continuous(self):
         path = ROOT / "connected-median-candidate.xodr"
         proof = inspect(path)
-        self.assertEqual(proof["junction_connection_count"], 3)
+        self.assertEqual(proof["junction_connection_count"], 4)
         roads = {int(road.get("id")): road for road in ET.parse(path).getroot().findall("road")}
         for route in ROUTES.values():
             for first, second in zip(route, route[1:]):
@@ -39,6 +48,18 @@ class ConnectedMapCandidateTests(unittest.TestCase):
         opposite_y = lane_endpoints(roads[20])[0][1]
         self.assertGreater(opposite_y-ego_y, 10)
         self.assertEqual(round(lane_endpoints(roads[31])[0][0], 6), 0)
+        self.assertAlmostEqual(lane_endpoints(roads[140])[1][0], -1.75)
+        self.assertAlmostEqual(lane_endpoints(roads[140])[1][1], 0)
+
+    def test_left_arc_and_connection_are_required(self):
+        root = ET.parse(ROOT / "connected-median-candidate.xodr").getroot()
+        root.find("./road[@id='140']/planView/geometry").remove(
+            root.find("./road[@id='140']/planView/geometry/arc"))
+        with TemporaryDirectory() as folder:
+            path = Path(folder) / "broken.xodr"
+            path.write_bytes(ET.tostring(root))
+            with self.assertRaisesRegex(ValueError, "left junction arc"):
+                inspect(path)
 
     def test_missing_other_junction_connection_rejected(self):
         root = ET.parse(ROOT / "connected-median-candidate.xodr").getroot()
