@@ -91,3 +91,31 @@ def apply_ego(actor, carla, decision):
     actor.apply_control(carla.VehicleControl(throttle=0.0 if hold else .25,
                                               brake=1.0 if hold else 0.0,
                                               steer=0.0))
+
+
+def apply_other(actor, carla, route, *, target_index=1):
+    """Steer the other vehicle through authored route points using live pose.
+
+    This is an actuator request. Original body histories, not route targets,
+    determine entry, clearance, and any eventual physical completion.
+    """
+    pose = actor.get_transform()
+    x, y = pose.location.x, pose.location.y
+    while target_index < len(route)-1 and math.hypot(
+            route[target_index][0]-x, route[target_index][1]-y) < 2.0:
+        target_index += 1
+    tx, ty = route[target_index]
+    desired = math.atan2(ty-y, tx-x)
+    current = math.radians(pose.rotation.yaw)
+    error = (desired-current+math.pi) % (2*math.pi)-math.pi
+    steer = max(-.65, min(.65, error * 1.2))
+    distance = math.hypot(route[-1][0]-x, route[-1][1]-y)
+    velocity = actor.get_velocity()
+    speed = math.hypot(velocity.x, velocity.y)
+    arrived = distance < 1.0
+    actor.apply_control(carla.VehicleControl(
+        throttle=0.0 if arrived else max(0.08, min(.38, .35-.08*speed)),
+        brake=1.0 if arrived else 0.0, steer=steer))
+    return {"target_index": target_index, "target_xy_m": [tx, ty],
+            "distance_to_endpoint_m": distance, "speed_mps": speed,
+            "heading_error_rad": error, "arrived_request": arrived}

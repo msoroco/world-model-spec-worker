@@ -1,0 +1,65 @@
+import hashlib
+import json
+from pathlib import Path
+import sys
+from tempfile import TemporaryDirectory
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from delivery_audit import ORIGINALS, audit_attempt, audit_pair, sha
+from test_analysis import fixture
+
+
+def native_shaped_fixture(folder):
+    folder = Path(folder)
+    fixture(folder)
+    context_path = folder / "intersection-context.json"
+    context = json.loads(context_path.read_text())
+    context["law_context"]["map_source"] = hashlib.sha256(b"map").hexdigest()
+    reviewed = {key: context[key] for key in ("crossing", "law_context")}
+    (folder / "reviewed-context.json").write_text(json.dumps(reviewed))
+    context["reviewed_context_sha256"] = sha(folder / "reviewed-context.json")
+    context_path.write_text(json.dumps(context))
+    (folder / "road.xodr").write_text("map")
+    for name in ("trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
+                 "controller-history.jsonl", "overview.mkv", "approach.mkv",
+                 "reference_corner.mkv", "driver_reference.mkv"):
+        (folder / name).write_text("diagnostic placeholder")
+    (folder / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "native", "diagnostic_fixture": False,
+        "reviewed_context_sha256": sha(folder / "reviewed-context.json")}))
+    hashes = {name: sha(folder / name) for name in ORIGINALS}
+    (folder / "acquisition.json").write_text(json.dumps({
+        name: {"kind": "original_native", "sha256": value} for name, value in hashes.items()}))
+    seal = {"format": "worker-sealed-capture", "events": [
+        "capture_finished", "encoders_closed", "restoration_verified"],
+        "restoration": {"restored": True},
+        "encoder_exit_codes": {name.removesuffix(".mkv"): 0 for name in ORIGINALS if name.endswith(".mkv")},
+        "sources": hashes}
+    (folder / "capture-seal.json").write_text(json.dumps(seal))
+    (folder / "native-exit.json").write_text(json.dumps({
+        "event": "native_exit", "capture_seal_sha256": sha(folder / "capture-seal.json"),
+        "native_process_exit_code": 0, "capture_command_failed": False}))
+
+
+class DeliveryAuditTests(unittest.TestCase):
+    def test_source_bound_diagnostic_shape_and_tamper_rejection(self):
+        with TemporaryDirectory() as tmp:
+            native_shaped_fixture(tmp)
+            observed = audit_attempt(tmp)
+            self.assertTrue(observed["measurements"]["other_entered_before_ego"])
+            self.assertFalse(observed["physical_acceptance_claimed"])
+            (Path(tmp) / "other-body-history.jsonl").write_text("tampered")
+            with self.assertRaisesRegex(ValueError, "source missing or changed"):
+                audit_attempt(tmp)
+
+    def test_pair_requires_realized_declared_difference(self):
+        with TemporaryDirectory() as left, TemporaryDirectory() as right:
+            native_shaped_fixture(left)
+            native_shaped_fixture(right)
+            with self.assertRaisesRegex(ValueError, "did not differ"):
+                audit_pair(left, right, ["entry_order"])
+
+
+if __name__ == "__main__": unittest.main()

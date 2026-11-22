@@ -44,6 +44,8 @@ def fixture(folder):
                           "sha256": hashlib.sha256((folder / name).read_bytes()).hexdigest()}
                    for name in names}
     (folder / "acquisition.json").write_text(json.dumps(acquisition))
+    (folder / "acquisition-provenance.json").write_text(json.dumps(
+        {"provenance_kind": "synthetic_fixture", "diagnostic_fixture": True}))
 
 
 class SavedAnalysisTests(unittest.TestCase):

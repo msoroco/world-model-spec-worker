@@ -39,6 +39,25 @@ def build_report(attempt):
     acquisition = json.loads((attempt / "acquisition.json").read_text())
     sources = {name: _source(attempt, acquisition, name) for name in SOURCES}
     context = json.loads(sources["intersection-context.json"].read_text())
+    provenance_path = attempt / "acquisition-provenance.json"
+    if not provenance_path.is_file():
+        raise ValueError("Missing acquisition provenance")
+    provenance = json.loads(provenance_path.read_text())
+    if provenance.get("provenance_kind") == "native":
+        reviewed_path = _source(attempt, acquisition, "reviewed-context.json")
+        map_path = _source(attempt, acquisition, "road.xodr")
+        reviewed_hash = _sha(reviewed_path)
+        if (context.get("reviewed_context_sha256") != reviewed_hash or
+                provenance.get("reviewed_context_sha256") != reviewed_hash):
+            raise ValueError("Native context review identity differs")
+        reviewed = json.loads(reviewed_path.read_text())
+        if any(context.get(key) != reviewed.get(key) for key in ("law_context", "crossing")):
+            raise ValueError("Native context differs from retained review")
+        map_hash = hashlib.sha256(map_path.read_text().encode()).hexdigest()
+        if reviewed["law_context"]["map_source"] != map_hash:
+            raise ValueError("Native map differs from retained review")
+    elif provenance.get("provenance_kind") != "synthetic_fixture":
+        raise ValueError("Unknown acquisition provenance kind")
     ego = _rows(sources["ego-body-history.jsonl"])
     other = _rows(sources["other-body-history.jsonl"])
     if len(ego) != len(other):
