@@ -35,7 +35,9 @@ def check_scene(scene):
 
 def _resolve(scene, scene_path):
     scene = dict(scene)
-    for key in ("reviewed_context_source", "authority_review_source"):
+    for key in ("reviewed_context_source", "authority_review_source", "map_source"):
+        if key not in scene:
+            continue
         source = Path(scene[key])
         if not source.is_absolute():
             source = scene_path.resolve().parent / source
@@ -59,6 +61,13 @@ def main():
     reviewed = json.loads(source.read_text())
     if reviewed.get("context") != scene["context"] or reviewed.get("divider_props") != scene["divider_props"]:
         raise ValueError("reviewed median geometry differs from scene")
+    if scene.get("map_source"):
+        map_source = Path(scene["map_source"])
+        if (hashlib.sha256(map_source.read_bytes()).hexdigest() !=
+                scene["context"]["map_source_sha256"]):
+            raise ValueError("authored OpenDRIVE source hash differs from scene")
+        if reviewed.get("map_source") != map_source.name:
+            raise ValueError("reviewed OpenDRIVE filename differs from scene")
     authority = Path(scene["authority_review_source"])
     if hashlib.sha256(authority.read_bytes()).hexdigest() != scene["context"]["authority_review_source_sha256"]:
         raise ValueError("authority review source hash differs from scene")

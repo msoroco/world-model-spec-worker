@@ -9,10 +9,16 @@ from uturn_control import apply, bind_map, next_request
 def spawn_vehicle(world, scene, carla):
     mapping = world.get_map()
     endpoints = bind_map(mapping, scene, lambda x,y: carla.Location(x=x,y=y,z=0))
-    blueprints = world.get_blueprint_library().filter("vehicle.*")
-    if not blueprints:
-        raise ValueError("no conventional Native vehicle blueprint")
-    blueprint = blueprints[0]
+    selected = scene.get("vehicle_blueprint_id")
+    if selected:
+        blueprint = world.get_blueprint_library().find(selected)
+        if blueprint is None:
+            raise ValueError("reviewed Native vehicle blueprint is absent")
+    else:
+        blueprints = world.get_blueprint_library().filter("vehicle.*")
+        if not blueprints:
+            raise ValueError("no conventional Native vehicle blueprint")
+        blueprint = blueprints[0]
     blueprint.set_attribute("role_name", "c126120_227_1_ego")
     actor = world.spawn_actor(blueprint, endpoints[0].transform)
     if actor is None:

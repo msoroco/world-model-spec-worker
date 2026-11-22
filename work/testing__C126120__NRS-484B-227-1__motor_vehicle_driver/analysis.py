@@ -23,9 +23,16 @@ def source(attempt, acquisition, name):
     path = attempt/name
     if not path.is_file():
         raise ValueError("Missing required source: " + name)
+    provenance = json.loads((attempt/"acquisition-provenance.json").read_text())
+    if provenance.get("provenance_kind") == "native" and provenance.get("diagnostic_fixture") is False:
+        expected_kind = "original_native"
+    elif provenance.get("provenance_kind") == "synthetic_fixture" and provenance.get("diagnostic_fixture") is True:
+        expected_kind = "diagnostic_fixture"
+    else:
+        raise ValueError("Unknown or contradictory acquisition provenance")
     item = acquisition.get(name, {})
-    if item.get("kind") != "original_native" or item.get("sha256") != sha(path):
-        raise ValueError("Missing or stale original Native source: " + name)
+    if item.get("kind") != expected_kind or item.get("sha256") != sha(path):
+        raise ValueError("Missing or stale provenance-bound source: " + name)
     return path
 
 
@@ -46,8 +53,11 @@ def build_report(attempt):
     acquisition = json.loads((attempt/"acquisition.json").read_text())
     paths = {name:source(attempt, acquisition, name) for name in SOURCES}
     provenance = json.loads((attempt/"acquisition-provenance.json").read_text())
-    if provenance.get("provenance_kind") != "native" or provenance.get("diagnostic_fixture"):
-        raise ValueError("original Native provenance required")
+    if not ((provenance.get("provenance_kind") == "native" and
+             provenance.get("diagnostic_fixture") is False) or
+            (provenance.get("provenance_kind") == "synthetic_fixture" and
+             provenance.get("diagnostic_fixture") is True)):
+        raise ValueError("explicit Native or diagnostic provenance required")
     context = json.loads(paths["median-context.json"].read_text())
     reviewed = json.loads(paths["reviewed-median-context.json"].read_text())
     reviewed_hash = sha(paths["reviewed-median-context.json"])

@@ -40,6 +40,7 @@ def main():
         result = saved_result(root,report)
         if (result["physical_checks"]["maneuver"]["status"] != "met" or
                 result["measured_values"]["legal_judgment"] != "unresolved" or
+                result["diagnostic_fixture"] is not True or
                 result["physical_acceptance_claimed"] is not False):
             raise AssertionError("pinned saved U-turn result differs from diagnostic expectation")
         context = json.loads((root/"median-context.json").read_text())
@@ -48,7 +49,7 @@ def main():
         try:
             build_report(root)
         except ValueError as exc:
-            if "stale original Native source" not in str(exc): raise
+            if "stale provenance-bound source" not in str(exc): raise
         else:
             raise AssertionError("tampered original median context accepted")
         print(json.dumps({"pinned_saved_result_valid":True,"fixture_turn_met":True,

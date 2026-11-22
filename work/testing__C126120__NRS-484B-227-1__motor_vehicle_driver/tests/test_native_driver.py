@@ -9,6 +9,29 @@ from test_uturn_control import scene
 
 
 class NativeDriverTests(unittest.TestCase):
+    def test_exact_vehicle_blueprint_binding(self):
+        class Map:
+            def to_opendrive(self): return "inspected map"
+            def get_waypoint(self, point, project_to_road=False):
+                return type("Waypoint",(),{"road_id":10 if point["y"]<0 else 20,
+                                            "transform":"pose"})()
+        class Blueprint:
+            def set_attribute(self, key, value): pass
+        class Library:
+            def __init__(self): self.requested=[]
+            def find(self, ident): self.requested.append(ident);return Blueprint()
+            def filter(self, pattern): raise AssertionError("unbound vehicle selection")
+        class World:
+            def __init__(self): self.library=Library()
+            def get_map(self): return Map()
+            def get_blueprint_library(self): return self.library
+            def spawn_actor(self, blueprint, pose): return object()
+        world=World()
+        selected=scene(); selected["vehicle_blueprint_id"]="vehicle.tesla.model3"
+        carla=type("Carla",(),{"Location":staticmethod(lambda **kwargs:kwargs)})
+        self.assertIsNotNone(spawn_vehicle(world,selected,carla))
+        self.assertEqual(world.library.requested,["vehicle.tesla.model3"])
+
     def test_spawn_original_body_and_next_tick_command(self):
         class Waypoint:
             def __init__(self, road): self.road_id=road;self.transform=(road,"pose")

@@ -49,10 +49,10 @@ class SavedAnalysisTests(unittest.TestCase):
         lines(root/"video_frames.jsonl",[{"carla_frame":r["frame"],
             "video_frame":i,"time_s":r["time_s"]} for i,r in enumerate(rows)])
         lines(root/"trace.jsonl",[{"frame":r["frame"]} for r in rows])
-        write(root/"acquisition-provenance.json",{"provenance_kind":"native",
-            "diagnostic_fixture":False,
+        write(root/"acquisition-provenance.json",{"provenance_kind":"synthetic_fixture",
+            "diagnostic_fixture":True,
             "reviewed_context_sha256":sha(root/"reviewed-median-context.json")})
-        write(root/"acquisition.json",{name:{"kind":"original_native","sha256":sha(root/name)}
+        write(root/"acquisition.json",{name:{"kind":"diagnostic_fixture","sha256":sha(root/name)}
                                         for name in SOURCES})
 
     def test_original_measurement_and_tamper_rejection(self):
@@ -67,7 +67,7 @@ class SavedAnalysisTests(unittest.TestCase):
             records = [json.loads(line) for line in mapping.read_text().splitlines()]
             records[2]["carla_frame"] = 90
             lines(mapping,records)
-            with self.assertRaisesRegex(ValueError,"stale original Native source"):
+            with self.assertRaisesRegex(ValueError,"stale provenance-bound source"):
                 build_report(root)
             acquisition = json.loads((root/"acquisition.json").read_text())
             acquisition["video_frames.jsonl"]["sha256"] = sha(mapping)

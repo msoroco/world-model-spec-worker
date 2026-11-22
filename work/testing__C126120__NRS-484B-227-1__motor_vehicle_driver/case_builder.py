@@ -40,6 +40,7 @@ def config(scene):
         "actor":"motor_vehicle_driver", "selected_case_id":case_id,
         "supported_case_ids":[ASSIGNMENT+"__"+suffix for suffix in CASE_SUFFIXES],
         "rate_hz":20, "duration_s":scene["duration_s"],
+        "vehicle_blueprint_id":scene.get("vehicle_blueprint_id"),
         "cameras":[
             {"name":name,"width":width,"height":height,"fov_deg":90,
              "pose_strategy":strategy}
