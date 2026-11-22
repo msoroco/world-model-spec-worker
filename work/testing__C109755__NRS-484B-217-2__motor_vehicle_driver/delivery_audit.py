@@ -39,7 +39,7 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
         raise ValueError('Native capture lifecycle incomplete')
     required_sources={'trace.jsonl','video_frames.jsonl','turn-history.jsonl',
                       'zone-context.json','zone-review-source.json','zone-authority-source.txt',
-                      'acquisition.json','result.json'}
+                      'traffic-policy.json','acquisition.json','result.json'}
     if not required_sources<=set(seal.get('sources',{})):
         raise ValueError('Native seal omits required original source')
     for name,checksum in seal.get('sources',{}).items():
@@ -63,7 +63,7 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
         raise ValueError('original frame/time join missing or changed')
     acquisition=read(attempt/'acquisition.json')
     for name in ('turn-history.jsonl','zone-context.json','zone-review-source.json',
-                 'zone-authority-source.txt'):
+                 'zone-authority-source.txt','traffic-policy.json'):
         source=acquisition.get(name,{})
         if source.get('kind')!='original_native' or not (attempt/name).is_file() or source.get('sha256')!=sha(attempt/name):
             raise ValueError('original turn source missing or changed: '+name)
@@ -95,6 +95,20 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
             raise ValueError('reviewed zone source differs from Native context: '+key)
     if zone.get('zone_extent_verified') is not True or zone.get('statutory_exceptions_verified') is not True:
         raise ValueError('statutory zone extent or exception context is unverified')
+    from traffic_sweep import select as select_traffic,commanded_velocities
+    policy=read(attempt/'traffic-policy.json')
+    scene=read(attempt/'scene.json')
+    _,expected_policy,_=select_traffic(scene,policy.get('variant_id'))
+    if policy!=expected_policy or zone.get('traffic_sweep_variant_id')!=policy['variant_id'] or \
+       zone.get('traffic_policy_sha256')!=sha(attempt/'traffic-policy.json'):
+        raise ValueError('traffic sweep policy differs from source-bound Native context')
+    provenance=read(attempt/'acquisition-provenance.json')
+    if provenance.get('traffic_sweep_variant_id')!=policy['variant_id'] or \
+       provenance.get('traffic_policy_sha256')!=sha(attempt/'traffic-policy.json'):
+        raise ValueError('traffic sweep provenance differs from sealed policy')
+    commands=commanded_velocities(policy)
+    if any(row.get('traffic_command_velocity_x_mps')!=commands for row in turns):
+        raise ValueError('recorded traffic commands differ from sealed sweep policy')
     processed=read(processing)
     if processed.get('format')!='worker-saved-processing' or processed.get('passed') is not True or processed.get('recorded_only') is not True:
         raise ValueError('saved processing receipt absent or failed')

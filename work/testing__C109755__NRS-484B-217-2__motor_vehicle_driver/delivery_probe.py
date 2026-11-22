@@ -9,6 +9,7 @@ import subprocess
 from pathlib import Path
 
 from delivery_audit import audit
+from traffic_sweep import select as select_traffic
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -19,6 +20,15 @@ def fixture(root,case):
     from worker_exchange.media import audit as media_audit
     root=Path(root).resolve();root.mkdir(parents=True,exist_ok=False)
     attempt=root/'attempt';stage=root/'stage';attempt.mkdir();stage.mkdir()
+    scene=json.loads((Path(__file__).with_name('scene.json')).read_text())
+    scene['case_id']=case
+    scene['signal_enabled']='__unsignaled_' not in case
+    write(attempt/'scene.json',scene)
+    _,traffic_policy,_=select_traffic(scene,'baseline')
+    write(attempt/'traffic-policy.json',traffic_policy)
+    write(attempt/'acquisition-provenance.json',{
+        'traffic_sweep_variant_id':'baseline',
+        'traffic_policy_sha256':sha(attempt/'traffic-policy.json')})
     subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-n',
         '-f','lavfi','-i','color=c=blue:s=32x32:r=20','-frames:v','1',
         '-c:v','ffv1',str(stage/'raw.mkv')],check=True,timeout=30)
@@ -32,6 +42,7 @@ def fixture(root,case):
          'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
     row['oncoming_velocity_xy_mps']=[-2.0,0.0]
     row['following_velocity_xy_mps']=[2.0,0.0]
+    row['traffic_command_velocity_x_mps']={'oncoming':-2.0,'following':2.0}
     (attempt/'turn-history.jsonl').write_text(json.dumps(row)+'\n')
     authority=b'DIAGNOSTIC ONLY: synthetic designated-zone source, not an official record.\n'
     (attempt/'zone-authority-source.txt').write_bytes(authority)
@@ -51,14 +62,17 @@ def fixture(root,case):
                                       for x in (-5,-1)]}
     from zone_source import validate as validate_zone_source
     zone.update(validate_zone_source(packet,authority,zone))
+    zone['traffic_sweep_variant_id']='baseline'
+    zone['traffic_policy_sha256']=sha(attempt/'traffic-policy.json')
     write(attempt/'zone-context.json',zone)
     write(attempt/'acquisition.json',{name:{'kind':'original_native','sha256':sha(attempt/name)}
         for name in ('turn-history.jsonl','zone-context.json','zone-review-source.json',
-                     'zone-authority-source.txt')})
+                     'zone-authority-source.txt','traffic-policy.json')})
     result={'case_id':case,'setup_confirmed':True,'behavior_attempted':True,'maneuver_completed':True}
     write(attempt/'result.json',result);write(stage/'result.json',result)
     originals=('trace.jsonl','video_frames.jsonl','turn-history.jsonl','zone-context.json',
                'zone-review-source.json','zone-authority-source.txt',
+               'traffic-policy.json','acquisition-provenance.json',
                'acquisition.json','result.json')
     write(attempt/'capture-seal.json',{'events':['capture_finished','encoders_closed','restoration_verified'],
          'sources':{name:sha(attempt/name) for name in originals}})

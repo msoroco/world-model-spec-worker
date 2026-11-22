@@ -48,6 +48,35 @@ class Carla:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_one_factor_traffic_sweep_issues_both_velocity_commands(self):
+        import sys
+        sys.path.insert(0,str(ROOT))
+        try:
+            from runner import load_scene
+            from traffic_sweep import CHANGES,select
+            scene=load_scene()
+            baseline,base_policy,_=select(scene,'baseline')
+            for variant in CHANGES:
+                changed,policy,_=select(scene,variant)
+                differences=[key for key in ('oncoming_start_x_m','following_start_x_m',
+                    'oncoming_velocity_x_mps','following_velocity_x_mps')
+                    if changed[key]!=baseline[key]]
+                self.assertEqual(len(differences),0 if variant=='baseline' else 1)
+                self.assertIsNone(policy['legal_cutoff'])
+            class Actor:
+                def set_target_velocity(self,value):self.velocity=value
+            class Vector:
+                def __init__(self,x,y,z):self.x=x;self.y=y;self.z=z
+            actors={'oncoming':Actor(),'following':Actor()}
+            commands=native.apply_traffic_policy(actors,
+                select(scene,'oncoming_faster')[1],type('C',(),{'Vector3D':Vector}))
+            self.assertEqual(commands,{'oncoming':-3.0,'following':2.0})
+            self.assertEqual(actors['oncoming'].velocity.x,-3.0)
+            self.assertEqual(actors['following'].velocity.x,2.0)
+            with self.assertRaisesRegex(ValueError,'undeclared'):
+                select(scene,'unsupported')
+        finally:sys.path.remove(str(ROOT))
+
     def test_original_body_envelope_gap_and_contact(self):
         ego=FakeActor([(0,0,0),(2,0,0),(2,2,0),(0,2,0)])
         other=FakeActor([(5,1,0),(7,1,0),(7,3,0),(5,3,0)])

@@ -43,6 +43,14 @@ def velocity_xy(actor):
     return [float(value.x),float(value.y)]
 
 
+def apply_traffic_policy(actors,policy,carla):
+    from traffic_sweep import commanded_velocities
+    commands=commanded_velocities(policy)
+    for role,velocity in commands.items():
+        actors[role].set_target_velocity(carla.Vector3D(x=velocity,y=0,z=0))
+    return commands
+
+
 def connected_turn(start, destination, stripe_y, *, limit=1200):
     """Require a forward waypoint path that crosses the stripe and reaches exit."""
     target=destination.transform.location
@@ -189,17 +197,25 @@ def run_native(scene, output, host, port):
     from worker_exchange.native_output import FrameMap, write_result, seal_capture
     from worker_exchange.world_restore import fields, equal
     from runner import spawn_scene
+    from traffic_sweep import select as select_traffic
 
     output=Path(output).resolve()
     if not output.is_dir():raise ValueError('Native attempt directory must already exist')
+    scene,traffic_policy,_=select_traffic(
+        scene,os.environ.get('C109755_TRAFFIC_SWEEP_ID','baseline'))
+    write(output/'traffic-policy.json',traffic_policy)
     write(output/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':False,
-          'method':'original CARLA live run; no replay or synthetic evidence'})
+          'method':'original CARLA live run; no replay or synthetic evidence',
+          'traffic_sweep_variant_id':traffic_policy['variant_id'],
+          'traffic_policy_sha256':sha(output/'traffic-policy.json')})
     client=carla.Client(host,port);client.set_timeout(30)
     world=client.get_world();original_settings=world.get_settings()
     actors={}; cameras=None; capture=None; frame_map=None
     phase='initializing'; error=None; restored=False
     try:
         zone=check_map(world.get_map(),scene,carla)
+        zone['traffic_sweep_variant_id']=traffic_policy['variant_id']
+        zone['traffic_policy_sha256']=sha(output/'traffic-policy.json')
         zone_packet=os.environ.get('ZONE_REVIEW_PACKET')
         if zone_packet:
             from zone_source import copy_review
@@ -225,8 +241,7 @@ def run_native(scene, output, host, port):
                 ego.set_light_state(carla.VehicleLightState.LeftBlinker if signal else carla.VehicleLightState.NONE)
                 ego.apply_control(carla.VehicleControl(throttle=.3 if position.y<scene['exit_y_m']-2 else 0,
                     steer=steering(ego,scene),brake=0 if position.y<scene['exit_y_m']-2 else .5))
-                for name,velocity in (('oncoming',-2.),('following',2.)):
-                    actors[name].set_target_velocity(carla.Vector3D(x=velocity,y=0,z=0))
+                traffic_commands=apply_traffic_policy(actors,traffic_policy,carla)
                 frame=world.tick();snapshot=world.get_snapshot();time_s=snapshot.timestamp.elapsed_seconds
                 if snapshot.frame!=frame:raise RuntimeError('world tick identity differs')
                 trace=capture.capture(frame,time_s)
@@ -243,13 +258,15 @@ def run_native(scene, output, host, port):
                      'following_body_vertices_m':body_vertices(actors['following']),
                      'oncoming_velocity_xy_mps':velocity_xy(actors['oncoming']),
                      'following_velocity_xy_mps':velocity_xy(actors['following'])}
+                row['traffic_command_velocity_x_mps']=traffic_commands
                 history.write(json.dumps(row,allow_nan=False)+'\n');rows.append(row)
         phase='closing'
         capture.close();capture=None
         frame_map.close();frame_map=None
         cameras.close();cameras=None
         source_names=['trace.jsonl','video_frames.jsonl','turn-history.jsonl','zone-context.json',
-                      'road.xodr','carla_recorder.log',*[name+'.mkv' for name,*_ in CameraBank.SPECS]]
+                      'traffic-policy.json','road.xodr','carla_recorder.log',
+                      *[name+'.mkv' for name,*_ in CameraBank.SPECS]]
         if zone_packet:
             source_names.extend(('zone-review-source.json','zone-authority-source.txt'))
         write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in source_names})

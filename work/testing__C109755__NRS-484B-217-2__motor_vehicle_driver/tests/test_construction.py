@@ -6,6 +6,7 @@ import unittest
 
 FOLDER=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(FOLDER))
+from traffic_sweep import select as select_traffic
 spec=importlib.util.spec_from_file_location('runner',FOLDER/'runner.py')
 runner=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -203,7 +204,15 @@ class DeliveryAuditTests(unittest.TestCase):
             'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
         history['oncoming_velocity_xy_mps']=[-2.0,0.0]
         history['following_velocity_xy_mps']=[2.0,0.0]
+        history['traffic_command_velocity_x_mps']={'oncoming':-2.0,'following':2.0}
         (root/'turn-history.jsonl').write_text(json.dumps(history)+'\n')
+        scene=json.loads((FOLDER/'scene.json').read_text())
+        (root/'scene.json').write_text(json.dumps(scene))
+        _,policy,_=select_traffic(scene,'baseline')
+        (root/'traffic-policy.json').write_text(json.dumps(policy))
+        (root/'acquisition-provenance.json').write_text(json.dumps({
+            'traffic_sweep_variant_id':'baseline',
+            'traffic_policy_sha256':delivery.sha(root/'traffic-policy.json')}))
         authority=b'synthetic zone authority fixture\n'
         (root/'zone-authority-source.txt').write_bytes(authority)
         packet={'format':'worker-zone-review-source-v1','reviewer':'CPU fixture',
@@ -221,12 +230,14 @@ class DeliveryAuditTests(unittest.TestCase):
                   for x in (-5,-1)]}
         from zone_source import validate as validate_zone_source
         zone.update(validate_zone_source(packet,authority,zone))
+        zone['traffic_sweep_variant_id']='baseline'
+        zone['traffic_policy_sha256']=delivery.sha(root/'traffic-policy.json')
         (root/'zone-context.json').write_text(json.dumps(zone))
         (root/'acquisition.json').write_text(json.dumps({name:{'kind':'original_native',
             'sha256':delivery.sha(root/name)} for name in ('turn-history.jsonl','zone-context.json',
-                'zone-review-source.json','zone-authority-source.txt')}))
+                'zone-review-source.json','zone-authority-source.txt','traffic-policy.json')}))
         seal={'events':['capture_finished','encoders_closed','restoration_verified'],
-              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json','turn-history.jsonl','zone-context.json','zone-review-source.json','zone-authority-source.txt','acquisition.json')}}
+              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json','turn-history.jsonl','zone-context.json','zone-review-source.json','zone-authority-source.txt','traffic-policy.json','acquisition-provenance.json','acquisition.json')}}
         (root/'capture-seal.json').write_text(json.dumps(seal))
         (root/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(root/'capture-seal.json')}))
         (root/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
@@ -241,6 +252,26 @@ class DeliveryAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             p=self.fixture(temp)
             self.assertTrue(delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)['passed'])
+    def test_resealed_wrong_traffic_command_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p=self.fixture(temp)
+            history=p/'turn-history.jsonl'
+            row=json.loads(history.read_text())
+            row['traffic_command_velocity_x_mps']['oncoming']=-3.0
+            history.write_text(json.dumps(row)+'\n')
+            acquisition=json.loads((p/'acquisition.json').read_text())
+            acquisition['turn-history.jsonl']['sha256']=delivery.sha(history)
+            (p/'acquisition.json').write_text(json.dumps(acquisition))
+            seal=json.loads((p/'capture-seal.json').read_text())
+            for name in ('turn-history.jsonl','acquisition.json'):
+                seal['sources'][name]=delivery.sha(p/name)
+            (p/'capture-seal.json').write_text(json.dumps(seal))
+            (p/'native-exit.json').write_text(json.dumps({'event':'native_exit',
+                'capture_seal_sha256':delivery.sha(p/'capture-seal.json')}))
+            (p/'owner-release.json').write_text(json.dumps({'event':'owner_released',
+                'operator_attested':True,'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
+            with self.assertRaisesRegex(ValueError,'recorded traffic commands differ'):
+                delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)
     def test_missing_sealed_source_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             p=self.fixture(temp);(p/'trace.jsonl').unlink()

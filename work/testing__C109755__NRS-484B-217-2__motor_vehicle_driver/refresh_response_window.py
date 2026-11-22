@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
 MANIFEST=ROOT/'execution-manifest.json'
-OUTPUT=REPO/'.runtime-work/c109755-response-window-proof'
+OUTPUT=REPO/'.runtime-work/c109755-traffic-sweep-proof'
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -41,8 +41,17 @@ def main():
             name=candidate.get('id','primary')
             path=ROOT/candidate['construction']
             construction=json.loads(path.read_text())
+            included=('analysis.py','native_capture.py','delivery_audit.py',
+                      'delivery_probe.py','traffic_sweep.py','traffic_sweep_audit.py',
+                      'tests/test_construction.py','tests/test_native_capture.py',
+                      'tests/test_traffic_sweep_audit.py')
+            existing={file['path'] for file in construction['files']}
+            for name in ('traffic_sweep.py','traffic_sweep_audit.py',
+                         'tests/test_traffic_sweep_audit.py'):
+                if name not in existing:
+                    construction['files'].append({'path':name,'content':''})
             for file in construction['files']:
-                if file['path'] in ('analysis.py','tests/test_construction.py'):
+                if file['path'] in included:
                     file['content']=(ROOT/file['path']).read_text()
             write(path,construction)
             candidate['construction_sha256']=sha(path)
