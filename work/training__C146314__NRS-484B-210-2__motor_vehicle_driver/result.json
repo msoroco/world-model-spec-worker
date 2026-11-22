@@ -1,36 +1,35 @@
 {
   "applied_update": 16,
   "assignment_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver",
-  "candidate_plans_proven": 0,
+  "candidate_plans_proven": 8,
   "carla_executed": false,
   "cases_planned": 2,
   "cases_selected": 2,
-  "comparison_audits_passed": 0,
+  "comparison_audits_passed": 1,
   "current_json_graph_cpu": {
     "candidate_chains_passed": 8,
     "exact_cases": 2,
-    "independent_audit_sha256": "6ce57bf65fa752d5ffe41795f61b49ef36ff1f3308f4beed491041ec87792d15",
-    "manifest_sha256": "d2cbdbba55272bdde38ce7569157a0472c65e9dde9988a932dec0c726e9e994f",
-    "matrix_sha256": "3718cd0852731bea255d4c7a8f0b5b06ad7520a825f1ff138ad0689a454e7c79",
+    "independent_audit_sha256": "4bdb9edc0707e10111e24e80f5f00e69c011f69e940bd06bc90d2b40160e1bd7",
+    "manifest_sha256": "1be7743c67156a1adbabd8a0c2b1fae1e1c4c5e00653bd8601b194cf119a5f2f",
+    "matrix_sha256": "366dd19f17eed9fcf13203d5d8f847feba8a2bc17230603f0238b22893c3d593",
     "original_native_accepted": false
   },
   "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C146314__NRS-484B-210-2__motor_vehicle_driver --case training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "c176b8e282e3593aa59138b378e9f18dacd4eaeff01049521c16fdc01105ebca",
-  "readiness_kind": "reproof_pending",
-  "reason": "Selected execution manifest binds runtime 5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3 but batch pins ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90; prior CPU receipts and strict pass are historical. Reprove exact selected candidates and audits under the pinned runtime before restoring ready.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Eight exact selected candidates passed current-runtime offline, positive/negative diagnostic compatibility and recorded-only saved processing. Independent source, physical CPU mock, original-delivery boundary and four-pair comparison audits passed. Original Native motion, pixels, physical acceptance and legal safety remain unverified.",
   "recordings_accepted": 0,
   "runtime_cutover_checkpoint": {
+    "status": "current_runtime_reproof_passed",
     "current_runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
-    "execution_manifest_sha256": "d2cbdbba55272bdde38ce7569157a0472c65e9dde9988a932dec0c726e9e994f",
-    "next_cpu_action": "Rebind exact selected manifest and regenerate current-runtime offline, positive/negative compatibility, recorded-only saved, physical, delivery and comparison proofs; rerun assignment-scoped strict gate.",
-    "previous_candidate_plans_proven": 8,
-    "previous_comparison_audits_passed": 1,
-    "previous_ready_reason": "Current JSON graph CPU preparation and source-bound final candidate matrix proved; original Native and legal safety remain unobserved.",
-    "previous_runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
-    "previous_strict_gate": null,
-    "status": "selected_proofs_historical_reproof_pending"
+    "execution_manifest_sha256": "1be7743c67156a1adbabd8a0c2b1fae1e1c4c5e00653bd8601b194cf119a5f2f",
+    "offline_chains": 8,
+    "compatibility_saved_chains": 8,
+    "independent_source_audits": 8,
+    "diagnostic_comparison_pairs": 4,
+    "original_native_observed": false
   },
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/native/build.py",
@@ -1333,6 +1332,30 @@
       "exit_code": 0,
       "log": "update807-final-comparison.log",
       "sha256": "9370e323096aff844851daed7314b30cd02e1161e785c11315eeb7c1c92e5795"
+    },
+    {
+      "command": "pinned current-runtime execution, semantic, delivery, physical and compatibility validators",
+      "exit_code": 0,
+      "log": "current-runtime-direct-validators.log",
+      "sha256": "617fed689cfb3fb68808b2ddaa52e5f2d6af1440a159df468a59320d67d94661"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/runner.py --check",
+      "exit_code": 0,
+      "log": "current-runtime-root-runner.log",
+      "sha256": "d803800464bbfc6d6d9714348bfc0954e2ab5ec0120363668bd9130d982c8744"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "current-runtime-root-tests.log",
+      "sha256": "c0eed83c6816351eb749f43b311d1c6b1c3bcda47f4c8ecddf5a6e5a802d8f19"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/bind-current-runtime-physical.py",
+      "exit_code": 0,
+      "log": "current-runtime-physical-validation.log",
+      "sha256": "3f35cd00a34d1532b0c50235a6f42cb50dc7bdbf6775f5b9dff07b2e219c9b38"
     }
   ]
 }
