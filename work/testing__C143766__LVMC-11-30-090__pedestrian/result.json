@@ -2,14 +2,14 @@
   "assignment_id": "testing__C143766__LVMC-11-30-090__pedestrian",
   "input_sha256": "a0bc00da91d231e3f614a4be794a964e32895c9d06e6fdc00fae17e13746d1b9",
   "status": "partial",
-  "readiness_kind": "exact_draft_offline_constructions_and_lazy_native_source_audit",
+  "readiness_kind": "exact_primary_fallback_offline_and_compatibility_cpu_proven",
   "applied_update": 0,
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C143766__LVMC-11-30-090__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "4a66c4cc298a25462d2b5e30981e2f0b186c39e750c5aed92a2dbb5ba50001a0"
+      "sha256": "9967fa573a89760dec7b79178c3403721617e709573c25a1d0db03fc137468cf"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/build_corridor_diagnostics.py",
@@ -24,26 +24,80 @@
       "sha256": "67536a6975a81a8be1a188c4fea8f54b85303661b5b297680c541118e2da417b"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-offline-roadway_walk-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-offline-roadway_walk-v5 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
       "log": "construction-check-roadway_walk.log",
+      "sha256": "a4d12be7d258e80e6344b807b0cdd96d27cd12792a942556140e0774c22b9417"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-offline-sidewalk_walk-v5 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "construction-check-sidewalk_walk.log",
+      "sha256": "42c28863db94e3afcb6585ccbc9ed3838466aa23b781a8e81399f6a1943ef74f"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-offline-shoulder_walk-v5 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "construction-check-shoulder_walk.log",
+      "sha256": "399ed1ba3b652b4e785a8fbbf14e844afbe41465c2d14af37053e91530708917"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-compat-roadway_walk-v4 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/roadway_walk/primary-compat-command.log",
+      "sha256": "96f2755537d39795646dc28b721cd880624eb655980f68a90ab92e60a5db66d7"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-compat-sidewalk_walk-v4 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/sidewalk_walk/primary-compat-command.log",
+      "sha256": "6a33c467364dc07ada6d0e71a085dc2b44a822da1732ddce2beea1dbd454a430"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-compat-shoulder_walk-v4 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/shoulder_walk/primary-compat-command.log",
+      "sha256": "ccf88218e0b83904b5dd8807cf298dd27ac69cfb17fa5c07213a5830ab050a33"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --candidate fallback1 --output .runtime-work/c143766-offline-roadway_walk-fallback1-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cases/roadway_walk/fallback1-offline.log",
       "sha256": "5d308652980957c83dcd140e995489cd0fcaaf0142b8f5b418a1ac857db0a2d2"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-offline-sidewalk_walk-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --candidate fallback1 --output .runtime-work/c143766-offline-sidewalk_walk-fallback1-v1 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "construction-check-sidewalk_walk.log",
+      "log": "cases/sidewalk_walk/fallback1-offline.log",
       "sha256": "032d8925e4241bc344302da5f33585575a88000a92823a38bb2b5bb9c3eef374"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-offline-shoulder_walk-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --candidate fallback1 --output .runtime-work/c143766-offline-shoulder_walk-fallback1-v1 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "construction-check-shoulder_walk.log",
+      "log": "cases/shoulder_walk/fallback1-offline.log",
       "sha256": "207e8241814399b1fa30be9e7644f9ed79067ba503043100af2975f7415c0154"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --candidate fallback1 --output .runtime-work/c143766-compat-roadway_walk-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/roadway_walk/fallback1-compat-command.log",
+      "sha256": "c46272c4090e181942544b280a5e1c590580dcda948cc5ab7447eac2ca633a77"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --candidate fallback1 --output .runtime-work/c143766-compat-sidewalk_walk-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/sidewalk_walk/fallback1-compat-command.log",
+      "sha256": "c1e785652a1d218de85553a0b79789409da76403f087623e97f82766780de44e"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --candidate fallback1 --output .runtime-work/c143766-compat-shoulder_walk-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/shoulder_walk/fallback1-compat-command.log",
+      "sha256": "17948c7f74f4f32f16dafcc1dde0a9f569be4d3882c0e513a8f443e92e776c38"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact primary construction bundles each pass the pinned materialized runtime.py offline check, and 29 assignment CPU tests pass. The bundles include the candidate OpenDRIVE, exact scene, pedestrian Native runner, source audit and four canonical camera views. Generated diagnostic saved pairs and source hashes remain CPU fixtures. Positive/negative pinned compatibility, canonical graph/adapter conversion, semantic proposals, selected measurement contracts, delivery execution manifest, full pixel/physical and paired delivery audits and reviewed legal site context remain worker-owned CPU preparation. Status stays partial."
+  "reason": "All three primary and three slower-walker fallback bundles pass pinned offline and case-specific positive/negative compatibility, including saved selected measurements, four-view diagnostic media decode, adapter conversion, Lean and final render. 32 assignment tests pass. These five-frame fixtures are synthetic software tests only. Canonical semantic stage validation, reviewed sidewalk/trail context, independent delivery/paired audits and actual Native physical/pixel review remain; status stays partial."
 }

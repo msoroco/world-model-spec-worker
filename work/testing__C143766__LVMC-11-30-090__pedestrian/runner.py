@@ -49,6 +49,8 @@ def _trace(actor, sample):
             "position": {"x": x, "y": y, "z": z},
             "heading_deg": yaw, "velocity_mps": [vx, vy, vz],
             "speed_mps": math.sqrt(vx*vx+vy*vy+vz*vz),
+            "speed_mph": math.sqrt(vx*vx+vy*vy+vz*vz)/.44704,
+            "control": {},
             "walker_control": {"direction_xyz": [dx, dy, dz],
                                "requested_speed_mps": speed,
                                "jump": bool(control.jump)}}

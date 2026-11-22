@@ -1,0 +1,283 @@
+{
+  "cell_id": "C143766",
+  "actor": "pedestrian",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c143766-judgment-1",
+      "target_law_id": "LVMC-11-30-090",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "sidewalks are provided",
+          "note": "Sidewalk purpose and actual provision require reviewed site evidence."
+        }
+      ],
+      "rationale": "No numerical legal boundary follows from the authored corridor.",
+      "missing_inputs": [
+        "reviewed site purpose and Native physical/pixel evidence"
+      ]
+    },
+    {
+      "sweep_id": "c143766-judgment-2",
+      "target_law_id": "LVMC-11-30-090",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "walk along and upon",
+          "note": "Measure original full-body afoot occupancy and longitudinal progress."
+        }
+      ],
+      "rationale": "No numerical legal boundary follows from the authored corridor.",
+      "missing_inputs": [
+        "reviewed site purpose and Native physical/pixel evidence"
+      ]
+    },
+    {
+      "sweep_id": "c143766-judgment-3",
+      "target_law_id": "LVMC-11-30-090",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "adjacent roadway",
+          "note": "Separate roadway, shoulder, sidewalk and trail boundaries."
+        }
+      ],
+      "rationale": "No numerical legal boundary follows from the authored corridor.",
+      "missing_inputs": [
+        "reviewed site purpose and Native physical/pixel evidence"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__shared_baseline",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "baseline",
+      "rationale": "Shared corridor and afoot route reference for controlled lateral contrasts.",
+      "variable_assignments": {
+        "pedestrian_route_band": {
+          "kind": "world_setup",
+          "value": "roadway"
+        }
+      },
+      "deliberate_differences": [],
+      "unresolved_judgment_calls": [
+        "sidewalks are provided",
+        "walk along and upon",
+        "adjacent roadway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "walker_body_xy_m",
+            "unit": "m",
+            "method": "eight world-space original CARLA walker body vertices at 20 Hz",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "CARLA bounding box readback"
+          },
+          {
+            "name": "walker_route_progress",
+            "unit": "m and s",
+            "method": "original pose, body, velocity and frame timestamps",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "sampled frame interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_roadway_shoulder_trail_context",
+            "unit": "source and pixels",
+            "method": "source-hashed authored OpenDRIVE plus four original camera views"
+          }
+        ],
+        "limitations": [
+          "Authored corridor is an engineering candidate; sidewalk purpose and trail access require source review.",
+          "Requested pedestrian control and generated diagnostics do not prove realized walking or actual pixel visibility."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "boundary_probe",
+      "rationale": "Measure whole-body roadway_walk occupancy against the same authored sidewalk, shoulder and trail context.",
+      "variable_assignments": {
+        "pedestrian_route_band": {
+          "kind": "world_setup",
+          "value": "roadway"
+        }
+      },
+      "paired_probe_id": "roadway_sidewalk_shoulder_contrast",
+      "deliberate_differences": [
+        "pedestrian_route_band"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_route_band",
+        "comparison_or_standard": "controlled authored band contrast",
+        "target_value_or_branch": "roadway_walk"
+      },
+      "unresolved_judgment_calls": [
+        "sidewalks are provided",
+        "walk along and upon",
+        "adjacent roadway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "walker_body_xy_m",
+            "unit": "m",
+            "method": "eight world-space original CARLA walker body vertices at 20 Hz",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "CARLA bounding box readback"
+          },
+          {
+            "name": "walker_route_progress",
+            "unit": "m and s",
+            "method": "original pose, body, velocity and frame timestamps",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "sampled frame interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_roadway_shoulder_trail_context",
+            "unit": "source and pixels",
+            "method": "source-hashed authored OpenDRIVE plus four original camera views"
+          }
+        ],
+        "limitations": [
+          "Authored corridor is an engineering candidate; sidewalk purpose and trail access require source review.",
+          "Requested pedestrian control and generated diagnostics do not prove realized walking or actual pixel visibility."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "boundary_probe",
+      "rationale": "Measure whole-body sidewalk_walk occupancy against the same authored sidewalk, shoulder and trail context.",
+      "variable_assignments": {
+        "pedestrian_route_band": {
+          "kind": "world_setup",
+          "value": "sidewalk"
+        }
+      },
+      "paired_probe_id": "roadway_sidewalk_shoulder_contrast",
+      "deliberate_differences": [
+        "pedestrian_route_band"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_route_band",
+        "comparison_or_standard": "controlled authored band contrast",
+        "target_value_or_branch": "sidewalk_walk"
+      },
+      "unresolved_judgment_calls": [
+        "sidewalks are provided",
+        "walk along and upon",
+        "adjacent roadway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "walker_body_xy_m",
+            "unit": "m",
+            "method": "eight world-space original CARLA walker body vertices at 20 Hz",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "CARLA bounding box readback"
+          },
+          {
+            "name": "walker_route_progress",
+            "unit": "m and s",
+            "method": "original pose, body, velocity and frame timestamps",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "sampled frame interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_roadway_shoulder_trail_context",
+            "unit": "source and pixels",
+            "method": "source-hashed authored OpenDRIVE plus four original camera views"
+          }
+        ],
+        "limitations": [
+          "Authored corridor is an engineering candidate; sidewalk purpose and trail access require source review.",
+          "Requested pedestrian control and generated diagnostics do not prove realized walking or actual pixel visibility."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "boundary_probe",
+      "rationale": "Measure whole-body shoulder_walk occupancy against the same authored sidewalk, shoulder and trail context.",
+      "variable_assignments": {
+        "pedestrian_route_band": {
+          "kind": "world_setup",
+          "value": "shoulder"
+        }
+      },
+      "paired_probe_id": "roadway_sidewalk_shoulder_contrast",
+      "deliberate_differences": [
+        "pedestrian_route_band"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_route_band",
+        "comparison_or_standard": "controlled authored band contrast",
+        "target_value_or_branch": "shoulder_walk"
+      },
+      "unresolved_judgment_calls": [
+        "sidewalks are provided",
+        "walk along and upon",
+        "adjacent roadway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "walker_body_xy_m",
+            "unit": "m",
+            "method": "eight world-space original CARLA walker body vertices at 20 Hz",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "CARLA bounding box readback"
+          },
+          {
+            "name": "walker_route_progress",
+            "unit": "m and s",
+            "method": "original pose, body, velocity and frame timestamps",
+            "time_window": "all captured frames",
+            "sampling_rate_hz": 20,
+            "reference_frame": "authored OpenDRIVE world XY",
+            "uncertainty": "sampled frame interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_roadway_shoulder_trail_context",
+            "unit": "source and pixels",
+            "method": "source-hashed authored OpenDRIVE plus four original camera views"
+          }
+        ],
+        "limitations": [
+          "Authored corridor is an engineering candidate; sidewalk purpose and trail access require source review.",
+          "Requested pedestrian control and generated diagnostics do not prove realized walking or actual pixel visibility."
+        ]
+      }
+    }
+  ]
+}

@@ -12,7 +12,7 @@ REPO = HERE.parents[1]
 SUFFIXES = ("roadway_walk", "sidewalk_walk", "shoulder_walk")
 SOURCES = ("runner.py", "native_capture.py", "native_driver.py",
            "corridor_construction.py", "corridor_map.py", "saved_measurement.py",
-           "delivery_audit.py", "comparison_audit.py")
+           "delivery_audit.py", "comparison_audit.py", "analysis.py")
 
 
 def sha(path):
@@ -81,6 +81,7 @@ def build():
         files = [file_entry(name, HERE/name) for name in SOURCES]
         files += [file_entry("candidate-corridor.xodr", HERE/"candidate-corridor.xodr"),
                   file_entry("scene.json", scene_path),
+                  file_entry("measurement-contract.json", folder/"measurement-contract.json"),
                   file_entry("config.json", cfg_path),
                   file_entry("tests/test_offline.py", HERE/"offline_test.py")]
         construction = {"law_id": "LVMC-11-30-090", "cell_id": "C143766",
@@ -98,9 +99,25 @@ def build():
                         "source_map_sha256": scene["map_source_sha256"]}
         packet_path = folder/"construction.json"
         write(packet_path, construction)
+        fallback = json.loads(json.dumps(construction))
+        fallback["files"] = [
+            file_entry("native_driver.py", HERE/"fallback_native_driver.py")
+            if item["path"] == "native_driver.py" else item
+            for item in fallback["files"]]
+        fallback["mechanisms"] = construction["mechanisms"] + [
+            "fallback walker request capped at 1.05 m/s while preserving the exact route"]
+        fallback_path = folder/"fallback1-construction.json"
+        write(fallback_path, fallback)
         entries.append({"case_id": scene["case_id"],
                         "construction": str(packet_path.relative_to(HERE)),
-                        "construction_sha256": sha(packet_path)})
+                        "construction_sha256": sha(packet_path),
+                        "candidates": [{"id": "fallback1",
+                            "construction": str(fallback_path.relative_to(HERE)),
+                            "construction_sha256": sha(fallback_path),
+                            "changed_knobs": ["walker requested speed 1.2 to 1.05 m/s"],
+                            "trigger": {"source": "original walker-body-history.jsonl",
+                                        "metric": "whole-body band occupancy or forward progress",
+                                        "failure_condition": "primary original body leaves band or misses 20 m progress"}}]})
     draft = {"format": "c143766-draft-offline-manifest",
              "assignment_id": HERE.name, "cases": entries,
              "limitations": "Offline construction only; no delivery-ready claim or execution manifest."}
