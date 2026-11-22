@@ -1,0 +1,808 @@
+{
+  "assignment_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle body pose"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle velocity"
+        },
+        "u_turn_at_intersection_or_opening": {
+          "entrypoint": "finalize_current.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "saved body path spatially joined to authored crossing geometry"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Requested U-turn may miss crossing, median opening, or four-camera visibility in Native capture",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "requested_approach_speed_mps"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/reference/fallback1/analysis.log",
+            "negative_log": "selected-current-proof/reference/fallback1/negative-analysis.log",
+            "receipt": "selected-current-proof/reference/fallback1/compatibility.json",
+            "sha256": "cb0ca11e02df7b9a339c48d8cae5d39c88f03de0279194b7e18c004cd30160b9"
+          },
+          "construction": "directional-approach-experiment/reference/fallback1/construction.json",
+          "construction_sha256": "d5b8c38ebd70d79ea618be49811d80a9b193d99f0d98bbb3765ae6362c93045e",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-reference-fallback1-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --candidate fallback1",
+            "construction_sha256": "d5b8c38ebd70d79ea618be49811d80a9b193d99f0d98bbb3765ae6362c93045e",
+            "exit_code": 0,
+            "log": "selected-current-proof/reference/fallback1/offline.log",
+            "log_sha256": "1909229baa1e80b8c855dd9853b4dafba7a09fb99f055bea0a894fea120235a8"
+          },
+          "trigger": {
+            "failure_condition": "primary requested path does not complete a measured turn at its speed",
+            "metric": "observed turn speed and heading reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/reference/fallback2/analysis.log",
+            "negative_log": "selected-current-proof/reference/fallback2/negative-analysis.log",
+            "receipt": "selected-current-proof/reference/fallback2/compatibility.json",
+            "sha256": "89820e2833cdeb035a5c75108fa99b82a643745e2709ce4226f592c92a1d8dd2"
+          },
+          "construction": "directional-approach-experiment/reference/fallback2/construction.json",
+          "construction_sha256": "e473af693be38a819c2aaa464f787bc8de0e62ed0996f05198c82da62bbf1c97",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-reference-fallback2-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --candidate fallback2",
+            "construction_sha256": "e473af693be38a819c2aaa464f787bc8de0e62ed0996f05198c82da62bbf1c97",
+            "exit_code": 0,
+            "log": "selected-current-proof/reference/fallback2/offline.log",
+            "log_sha256": "86c5bc1e879764ec76fd5bdfd2f730a52da68ad7c4afb884a952efa5e650c315"
+          },
+          "trigger": {
+            "failure_condition": "primary camera policy fails source-bound visibility review",
+            "metric": "decoded vehicle and road-reference pixel coverage",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "pre_turn_dwell_s"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/reference/fallback3/analysis.log",
+            "negative_log": "selected-current-proof/reference/fallback3/negative-analysis.log",
+            "receipt": "selected-current-proof/reference/fallback3/compatibility.json",
+            "sha256": "c47aa19d8af8299e174369b1d51a8585dd5a6110558a3278a1f150a10d5670dd"
+          },
+          "construction": "directional-approach-experiment/reference/fallback3/construction.json",
+          "construction_sha256": "ff955c5611186d1207a176816f3125c93ba3dc390934722cea66b345adfa99a8",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-reference-fallback3-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --candidate fallback3",
+            "construction_sha256": "ff955c5611186d1207a176816f3125c93ba3dc390934722cea66b345adfa99a8",
+            "exit_code": 0,
+            "log": "selected-current-proof/reference/fallback3/offline.log",
+            "log_sha256": "dc9b1dbe6258a41fa811be4f301b7964eb20866cc8f232ff205e2d23e5a43cf1"
+          },
+          "trigger": {
+            "failure_condition": "primary pre-turn interval is too short for complete source review",
+            "metric": "consecutive pre-turn frames before the observed reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        }
+      ],
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
+      "compatibility": {
+        "log": "selected-current-proof/reference/primary/analysis.log",
+        "negative_log": "selected-current-proof/reference/primary/negative-analysis.log",
+        "receipt": "selected-current-proof/reference/primary/compatibility.json",
+        "sha256": "1935520e0813074bf1dd46d7c50f07adf59c7ac96422bd38c91236766892797f"
+      },
+      "construction": "directional-approach-experiment/construction.json",
+      "construction_sha256": "452dc4ff6d89cd9694a84b5991cb64e04cb9631ae31940ad33fb70df255d126f",
+      "delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --selftest",
+        "negative_command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "update045-delivery/reference/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture and independent review unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "update045-delivery/reference/positive.log",
+        "test_log_sha256": "6112859dd5ce78d156fc21b191c00e350fb4335c67f432b4fd16bb59208661b9"
+      },
+      "fixture_recipe": "work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-experiment/recipe.json",
+      "historical_delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --selftest",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "proof-delivery-audit/reference/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture still unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-audit/reference/positive.log",
+        "test_log_sha256": "6112859dd5ce78d156fc21b191c00e350fb4335c67f432b4fd16bb59208661b9"
+      },
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contracts-current/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c111662-current-saved-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-current-proof/reference/primary/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-experiment-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --candidate primary",
+        "construction_sha256": "452dc4ff6d89cd9694a84b5991cb64e04cb9631ae31940ad33fb70df255d126f",
+        "exit_code": 0,
+        "log": "selected-current-proof/reference/primary/offline.log",
+        "log_sha256": "f8908ce79793bf444fdfb562bc036b8ec145761165166b7b4321354409cd89f3"
+      },
+      "physical_preparation": {
+        "receipt": "selected-current-physical/reference/proof.json",
+        "sha256": "090341b6d00a144a1315d2e75faf9fa1f35e560710a2ec6943873727967556dd"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update047-proof/reference/primary/saved.log",
+        "test_log_sha256": "1e135250d3ab5324121a05330d2379e83f2922dc90739ed22d981a239f4f7fee"
+      },
+      "preparation_status": "partial: staged selected receipt binding; physical and delivery checks pending"
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle body pose"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle velocity"
+        },
+        "u_turn_at_intersection_or_opening": {
+          "entrypoint": "finalize_current.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "saved body path spatially joined to authored crossing geometry"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Requested U-turn may miss crossing, median opening, or four-camera visibility in Native capture",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "requested_approach_speed_mps"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/contrast/fallback1/analysis.log",
+            "negative_log": "selected-current-proof/contrast/fallback1/negative-analysis.log",
+            "receipt": "selected-current-proof/contrast/fallback1/compatibility.json",
+            "sha256": "23d8ba904fbfe0376724d2c7d90a1865e1e19f10169622453e802ef39fd9cbba"
+          },
+          "construction": "directional-approach-experiment/contrast/fallback1/construction.json",
+          "construction_sha256": "220523e7983e3ce10ae2255ce33f400d53f17485b7321c92b71e83a04ad875d1",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-contrast-fallback1-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --candidate fallback1",
+            "construction_sha256": "220523e7983e3ce10ae2255ce33f400d53f17485b7321c92b71e83a04ad875d1",
+            "exit_code": 0,
+            "log": "selected-current-proof/contrast/fallback1/offline.log",
+            "log_sha256": "623527f55c679db3070a5d709f35ed51d3a6b8c8f395fc8dce7e998f3c5d7d53"
+          },
+          "trigger": {
+            "failure_condition": "primary requested path does not complete a measured turn at its speed",
+            "metric": "observed turn speed and heading reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/contrast/fallback2/analysis.log",
+            "negative_log": "selected-current-proof/contrast/fallback2/negative-analysis.log",
+            "receipt": "selected-current-proof/contrast/fallback2/compatibility.json",
+            "sha256": "75c49128cd3278b5d6b0c087419a6669a5c33261d6a824ad8cfa9a29d2aaf827"
+          },
+          "construction": "directional-approach-experiment/contrast/fallback2/construction.json",
+          "construction_sha256": "5a99c1b03a21b11f396a290971e218458578e99dc6edfa52c69c36307c60b61a",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-contrast-fallback2-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --candidate fallback2",
+            "construction_sha256": "5a99c1b03a21b11f396a290971e218458578e99dc6edfa52c69c36307c60b61a",
+            "exit_code": 0,
+            "log": "selected-current-proof/contrast/fallback2/offline.log",
+            "log_sha256": "76f0395d522d49f51ea5482d9be4186d8fc1d7c9b4c5b2907479d5198552b8d0"
+          },
+          "trigger": {
+            "failure_condition": "primary camera policy fails source-bound visibility review",
+            "metric": "decoded vehicle and road-reference pixel coverage",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "pre_turn_dwell_s"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/contrast/fallback3/analysis.log",
+            "negative_log": "selected-current-proof/contrast/fallback3/negative-analysis.log",
+            "receipt": "selected-current-proof/contrast/fallback3/compatibility.json",
+            "sha256": "4ea17037df07569695e675888d73e048077b1c48eb7c449a013c3f8f6ad8af92"
+          },
+          "construction": "directional-approach-experiment/contrast/fallback3/construction.json",
+          "construction_sha256": "d0ca05eb86246f6989799cb7ebc7848a948e63b013d022f83975bda6a0b48acc",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-contrast-fallback3-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --candidate fallback3",
+            "construction_sha256": "d0ca05eb86246f6989799cb7ebc7848a948e63b013d022f83975bda6a0b48acc",
+            "exit_code": 0,
+            "log": "selected-current-proof/contrast/fallback3/offline.log",
+            "log_sha256": "3f17262e063f39366816d2e942fd579f73e47bc368f98545d06612297b035000"
+          },
+          "trigger": {
+            "failure_condition": "primary pre-turn interval is too short for complete source review",
+            "metric": "consecutive pre-turn frames before the observed reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        }
+      ],
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast",
+      "compatibility": {
+        "log": "selected-current-proof/contrast/primary/analysis.log",
+        "negative_log": "selected-current-proof/contrast/primary/negative-analysis.log",
+        "receipt": "selected-current-proof/contrast/primary/compatibility.json",
+        "sha256": "018ba79be9057845786b6fc413c41066f1cfa63c5f2a1d473c485a4df6020052"
+      },
+      "construction": "directional-approach-experiment/contrast-construction.json",
+      "construction_sha256": "dfb78f219176b84019339321d4446055e80ed6b675e178b134ac19c00778b74d",
+      "delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --selftest",
+        "negative_command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "update045-delivery/contrast/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture and independent review unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "update045-delivery/contrast/positive.log",
+        "test_log_sha256": "756f74cf921eac150a7ab06c4e35760b0bf95d467e3c44cff1bd28c385b291b4"
+      },
+      "fixture_recipe": "work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-experiment/contrast-recipe.json",
+      "historical_delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --selftest",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "proof-delivery-audit/contrast/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture still unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-audit/contrast/positive.log",
+        "test_log_sha256": "756f74cf921eac150a7ab06c4e35760b0bf95d467e3c44cff1bd28c385b291b4"
+      },
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contracts-current/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c111662-current-saved-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-current-proof/contrast/primary/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/directional-approach-contrast-experiment-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --candidate primary",
+        "construction_sha256": "dfb78f219176b84019339321d4446055e80ed6b675e178b134ac19c00778b74d",
+        "exit_code": 0,
+        "log": "selected-current-proof/contrast/primary/offline.log",
+        "log_sha256": "d5c5b562fcd23523578d1b34d5b20ee759c05a5f6c70c040d0efd1161169eedf"
+      },
+      "physical_preparation": {
+        "receipt": "selected-current-physical/contrast/proof.json",
+        "sha256": "b4afe10c3719583b9154c8488947ffa670b59e02acb9d4f16f8617036d2caa53"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update047-proof/contrast/primary/saved.log",
+        "test_log_sha256": "66e24164120cb6eddecfd62723c240b33983ffa76503a0ea381be575f157bbb7"
+      },
+      "preparation_status": "partial: staged selected receipt binding; physical and delivery checks pending"
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle body pose"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle velocity"
+        },
+        "u_turn_at_intersection_or_opening": {
+          "entrypoint": "finalize_current.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "saved body path spatially joined to authored crossing geometry"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Requested U-turn may miss crossing, median opening, or four-camera visibility in Native capture",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "requested_approach_speed_mps"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/divided_reference/fallback1/analysis.log",
+            "negative_log": "selected-current-proof/divided_reference/fallback1/negative-analysis.log",
+            "receipt": "selected-current-proof/divided_reference/fallback1/compatibility.json",
+            "sha256": "b40d590be276ab065b48072d8d37a2732f8f1c97f974e9f52bbd844568436415"
+          },
+          "construction": "current-16-experiment/divided_reference/fallback1/construction.json",
+          "construction_sha256": "f4ac72bb173fbe2960548dca2b33999e2b0e8ea830d0ca583f83bb396754aef5",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_reference-fallback1.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --candidate fallback1",
+            "construction_sha256": "f4ac72bb173fbe2960548dca2b33999e2b0e8ea830d0ca583f83bb396754aef5",
+            "exit_code": 0,
+            "log": "selected-current-proof/divided_reference/fallback1/offline.log",
+            "log_sha256": "d18283cd3b75866516e28a7947ffdf03090dc6a73c67f43e16dc33af6fba9cca"
+          },
+          "trigger": {
+            "failure_condition": "primary requested path does not complete a measured turn at its speed",
+            "metric": "observed turn speed and heading reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/divided_reference/fallback2/analysis.log",
+            "negative_log": "selected-current-proof/divided_reference/fallback2/negative-analysis.log",
+            "receipt": "selected-current-proof/divided_reference/fallback2/compatibility.json",
+            "sha256": "3ce2f0111e243dd89c97836306b2c0ce650367dcfa1d2183c2a9ba284cda0b7b"
+          },
+          "construction": "current-16-experiment/divided_reference/fallback2/construction.json",
+          "construction_sha256": "69a435af22da9039b17c6195e0d584a9043b3a5573982527dcceab1cd0b59be2",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_reference-fallback2.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --candidate fallback2",
+            "construction_sha256": "69a435af22da9039b17c6195e0d584a9043b3a5573982527dcceab1cd0b59be2",
+            "exit_code": 0,
+            "log": "selected-current-proof/divided_reference/fallback2/offline.log",
+            "log_sha256": "fa7c650e2da14d7a8056fc9fd489f97bac9c426cf30a30fe344b282801bf4099"
+          },
+          "trigger": {
+            "failure_condition": "primary camera policy fails source-bound visibility review",
+            "metric": "decoded vehicle and road-reference pixel coverage",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "pre_turn_dwell_s"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/divided_reference/fallback3/analysis.log",
+            "negative_log": "selected-current-proof/divided_reference/fallback3/negative-analysis.log",
+            "receipt": "selected-current-proof/divided_reference/fallback3/compatibility.json",
+            "sha256": "4e9d702548cfdc0bfc74cbeadc581c1c9887ddb18fc084ce4c3ad9a8b3f8de14"
+          },
+          "construction": "current-16-experiment/divided_reference/fallback3/construction.json",
+          "construction_sha256": "84fdca0e323b11c1266f417d7d51d0e269bcabbfbe7645e0347b186f8b8aee3b",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_reference-fallback3.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --candidate fallback3",
+            "construction_sha256": "84fdca0e323b11c1266f417d7d51d0e269bcabbfbe7645e0347b186f8b8aee3b",
+            "exit_code": 0,
+            "log": "selected-current-proof/divided_reference/fallback3/offline.log",
+            "log_sha256": "61e15a356ee334df110666a1d1a584dbea565f929ea11d3d0da7cc28dfe5aad2"
+          },
+          "trigger": {
+            "failure_condition": "primary pre-turn interval is too short for complete source review",
+            "metric": "consecutive pre-turn frames before the observed reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        }
+      ],
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference",
+      "compatibility": {
+        "log": "selected-current-proof/divided_reference/primary/analysis.log",
+        "negative_log": "selected-current-proof/divided_reference/primary/negative-analysis.log",
+        "receipt": "selected-current-proof/divided_reference/primary/compatibility.json",
+        "sha256": "87ee4513665552bec514a4de71ab3caec0b167bad3de56ce8837b27632e77599"
+      },
+      "construction": "current-16-experiment/divided_reference/primary/construction.json",
+      "construction_sha256": "6f022587dff0fa8cbca1f012c98caaaa4706de58d78ea22d137ff73cdb17e26f",
+      "delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --selftest",
+        "negative_command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "update045-delivery/divided_reference/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture and independent review unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "update045-delivery/divided_reference/positive.log",
+        "test_log_sha256": "3b49607c132e6ed5dd8af8a90f74bfff38c947b6005aff3c4c3d8599525d99ec"
+      },
+      "fixture_recipe": "work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-experiment/divided_reference/primary/recipe.json",
+      "historical_delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --selftest",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "proof-delivery-audit/divided_reference/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture still unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-audit/divided_reference/positive.log",
+        "test_log_sha256": "3b49607c132e6ed5dd8af8a90f74bfff38c947b6005aff3c4c3d8599525d99ec"
+      },
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contracts-current/divided_reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c111662-current-saved-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-current-proof/divided_reference/primary/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_reference-primary.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --candidate primary",
+        "construction_sha256": "6f022587dff0fa8cbca1f012c98caaaa4706de58d78ea22d137ff73cdb17e26f",
+        "exit_code": 0,
+        "log": "selected-current-proof/divided_reference/primary/offline.log",
+        "log_sha256": "b8e11afc0ce78d24020d1379d609b5d9399ca0ec19f925fd36e7a3d5b504bf66"
+      },
+      "physical_preparation": {
+        "receipt": "selected-current-physical/divided_reference/proof.json",
+        "sha256": "3d23ea442a3f7940eb7517b5b4654edf25af7f0286266e40d35bb886ff27e2ff"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update047-proof/divided_reference/primary/saved.log",
+        "test_log_sha256": "5367cea7a929496255822c6be900380ab8bdd7e4defd63d38fa670466367e27f"
+      },
+      "preparation_status": "partial: staged selected receipt binding; physical and delivery checks pending"
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle body pose"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "frame-joined original vehicle velocity"
+        },
+        "u_turn_at_intersection_or_opening": {
+          "entrypoint": "finalize_current.py",
+          "evidence": "saved original Native body, frame map, source cameras and authored road geometry",
+          "method": "saved body path spatially joined to authored crossing geometry"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Requested U-turn may miss crossing, median opening, or four-camera visibility in Native capture",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "requested_approach_speed_mps"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/divided_opening/fallback1/analysis.log",
+            "negative_log": "selected-current-proof/divided_opening/fallback1/negative-analysis.log",
+            "receipt": "selected-current-proof/divided_opening/fallback1/compatibility.json",
+            "sha256": "1c26c88afbd5a9b3a75a410c7d82bb115b64fd40988b31a94576997b208d202b"
+          },
+          "construction": "current-16-experiment/divided_opening/fallback1/construction.json",
+          "construction_sha256": "a8d4f746b3fecf16770e703f139d93ae6a2b7b78b41bc0d87cd8bcff71506aab",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_opening-fallback1.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --candidate fallback1",
+            "construction_sha256": "a8d4f746b3fecf16770e703f139d93ae6a2b7b78b41bc0d87cd8bcff71506aab",
+            "exit_code": 0,
+            "log": "selected-current-proof/divided_opening/fallback1/offline.log",
+            "log_sha256": "426c77c7d5f669d8dec23dd9283e20bd6eed09de3ee11899618e674b6fd27351"
+          },
+          "trigger": {
+            "failure_condition": "primary requested path does not complete a measured turn at its speed",
+            "metric": "observed turn speed and heading reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/divided_opening/fallback2/analysis.log",
+            "negative_log": "selected-current-proof/divided_opening/fallback2/negative-analysis.log",
+            "receipt": "selected-current-proof/divided_opening/fallback2/compatibility.json",
+            "sha256": "0fd1026964adfa5f1ce1e51c356b373f9daa232fc61e434dde66da2b374cf644"
+          },
+          "construction": "current-16-experiment/divided_opening/fallback2/construction.json",
+          "construction_sha256": "b68732c5ca7ddcc97a58155a9c118808b7ea331334df37db409d9f7f457dc773",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_opening-fallback2.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --candidate fallback2",
+            "construction_sha256": "b68732c5ca7ddcc97a58155a9c118808b7ea331334df37db409d9f7f457dc773",
+            "exit_code": 0,
+            "log": "selected-current-proof/divided_opening/fallback2/offline.log",
+            "log_sha256": "18fc5e820a89054e9d2aa57eda4659c337b6737c3fb926c2064b6af7c082de96"
+          },
+          "trigger": {
+            "failure_condition": "primary camera policy fails source-bound visibility review",
+            "metric": "decoded vehicle and road-reference pixel coverage",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        },
+        {
+          "changed_knobs": [
+            "pre_turn_dwell_s"
+          ],
+          "compatibility": {
+            "log": "selected-current-proof/divided_opening/fallback3/analysis.log",
+            "negative_log": "selected-current-proof/divided_opening/fallback3/negative-analysis.log",
+            "receipt": "selected-current-proof/divided_opening/fallback3/compatibility.json",
+            "sha256": "3847128a7532d5cf254f3e37cf3545bf271a1c1632d78b093b95aaf82f3bbff7"
+          },
+          "construction": "current-16-experiment/divided_opening/fallback3/construction.json",
+          "construction_sha256": "8cdf7a5a93e34562db33a9a17bd1d85319b5cdf0e4643fa24befb70d4d626c74",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_opening-fallback3.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --candidate fallback3",
+            "construction_sha256": "8cdf7a5a93e34562db33a9a17bd1d85319b5cdf0e4643fa24befb70d4d626c74",
+            "exit_code": 0,
+            "log": "selected-current-proof/divided_opening/fallback3/offline.log",
+            "log_sha256": "ea45d21c0077ed1b8c759d38afccc30455b086e2e3cdd98b864bb955146ffa3c"
+          },
+          "trigger": {
+            "failure_condition": "primary pre-turn interval is too short for complete source review",
+            "metric": "consecutive pre-turn frames before the observed reversal",
+            "source": "saved Native actors, frame map and four original camera streams"
+          }
+        }
+      ],
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening",
+      "compatibility": {
+        "log": "selected-current-proof/divided_opening/primary/analysis.log",
+        "negative_log": "selected-current-proof/divided_opening/primary/negative-analysis.log",
+        "receipt": "selected-current-proof/divided_opening/primary/compatibility.json",
+        "sha256": "0b6d6417dbe838e508324ad4ae226ac7b6cc82ef76789cbad677e1615750eace"
+      },
+      "construction": "current-16-experiment/divided_opening/primary/construction.json",
+      "construction_sha256": "286f182efde0da2385def08144813e11867c8e0f52ff0b6caee01c631f52f6ad",
+      "delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --selftest",
+        "negative_command": ".venv-cpu/bin/python work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "update045-delivery/divided_opening/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture and independent review unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "update045-delivery/divided_opening/positive.log",
+        "test_log_sha256": "41b47f83fee394268518acdd7a2184c3766412c9a60786bda6f0b0da62689b19"
+      },
+      "fixture_recipe": "work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-experiment/divided_opening/primary/recipe.json",
+      "historical_delivery_acceptance": {
+        "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --selftest",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/native/delivery_audit.py --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds decoded video",
+        "negative_log": "proof-delivery-audit/divided_opening/negative.log",
+        "negative_log_sha256": "753820e86e47c654dba268c07206656650eca6c014426d075efff44b9f9d273c",
+        "scope": "synthetic CPU mechanics; original capture still unverified",
+        "script": "native/delivery_audit.py",
+        "script_sha256": "318e0bdb598fbd195c468682cc0be2406c64caf0f0e27186e9687d3ecf63f897",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-audit/divided_opening/positive.log",
+        "test_log_sha256": "41b47f83fee394268518acdd7a2184c3766412c9a60786bda6f0b0da62689b19"
+      },
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contracts-current/divided_opening.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c111662-current-saved-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-current-proof/divided_opening/primary/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/current-16-manifest-divided_opening-primary.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --candidate primary",
+        "construction_sha256": "286f182efde0da2385def08144813e11867c8e0f52ff0b6caee01c631f52f6ad",
+        "exit_code": 0,
+        "log": "selected-current-proof/divided_opening/primary/offline.log",
+        "log_sha256": "ea856ce5aa67ef68ffb4de3fa61852c3c36c0d1bdc0117dd2965b1cddd866303"
+      },
+      "physical_preparation": {
+        "receipt": "selected-current-physical/divided_opening/proof.json",
+        "sha256": "d5bf8f533eda5077b3538989986dcc71977986ecf50bd1eeba9ec30cfb9bc02f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update047-proof/divided_opening/primary/saved.log",
+        "test_log_sha256": "da96aef5c2db65138e4b1a0246f8e4ccd9ef5c487d0f9166d30d2ed269643edf"
+      },
+      "preparation_status": "partial: staged selected receipt binding; physical and delivery checks pending"
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "d36d645915b2e08993c163316e23892fd70fc2c72b0b4462a9c8cc92eaa3f2b0"
+  },
+  "status": "staging_current_runtime_selected_cpu_proofs_partial"
+}
