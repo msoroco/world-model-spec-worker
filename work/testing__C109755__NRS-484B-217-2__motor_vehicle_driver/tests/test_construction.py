@@ -1,0 +1,141 @@
+import importlib.util
+from pathlib import Path
+import unittest
+
+FOLDER=Path(__file__).resolve().parents[1]
+spec=importlib.util.spec_from_file_location('runner',FOLDER/'runner.py')
+runner=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(runner)
+
+class Marking:
+    type='Solid'
+class Waypoint:
+    left_lane_marking=Marking()
+class Map:
+    def __init__(self,marking=True):self.marking=marking
+    def get_waypoint(self,location):return Waypoint() if self.marking else None
+class Library:
+    def filter(self,pattern):return [pattern]
+class World:
+    def __init__(self):self.calls=[]
+    def get_blueprint_library(self):return Library()
+    def spawn_actor(self,blueprint,transform):
+        actor=object();self.calls.append((blueprint,transform,actor));return actor
+
+class ConstructionTests(unittest.TestCase):
+    def setUp(self):self.scene=runner.load_scene()
+    def test_stripe_geometry_and_signal_station(self):
+        self.assertTrue(runner.crosses_stripe(self.scene))
+        self.assertLess(self.scene['signal_start_x_m'],self.scene['crossing_x_m'])
+        self.assertTrue(runner.controller_command(self.scene,0,True)['left_signal'])
+    def test_actual_spawn_calls_and_opposing_direction(self):
+        world=World();actors=runner.spawn_scene(world,self.scene,lambda *args:args)
+        self.assertEqual(set(actors),{'ego','oncoming','following'})
+        self.assertEqual([c[1][-1] for c in world.calls],[0,180,0])
+        self.assertEqual(world.calls[1][1][1],self.scene['opposing_lane_center_y_m'])
+    def test_map_marking_rejection(self):
+        self.assertIsNotNone(runner.require_marking(Map(),(0,0)))
+        with self.assertRaisesRegex(ValueError,'no approach waypoint'):
+            runner.require_marking(Map(False),(0,0))
+    def test_unsignaled_variant_keeps_route(self):
+        other=dict(self.scene,signal_enabled=False)
+        self.assertEqual(runner.route(self.scene),runner.route(other))
+        self.assertFalse(runner.controller_command(other,0,True)['left_signal'])
+
+if __name__=='__main__':unittest.main()
+
+import hashlib
+import json
+import tempfile
+spec_analysis=importlib.util.spec_from_file_location('analysis',FOLDER/'analysis.py')
+analysis=importlib.util.module_from_spec(spec_analysis);spec_analysis.loader.exec_module(analysis)
+
+class SavedAnalysisTests(unittest.TestCase):
+    def fixture(self,root,signaled):
+        root=Path(root);rows=[]
+        for frame,y in enumerate((-1.75,-0.4,0.25,1.75)):
+            rows.append({'frame':frame,'time_s':frame/20,'ego_center_y_m':y,
+                         'left_signal':bool(signaled and frame>=1),
+                         'oncoming_body_gap_m':20-frame,'following_body_gap_m':15+frame})
+        (root/'turn-history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+        (root/'zone-context.json').write_text(json.dumps({'zone_kind':'marked_no_passing_zone',
+                                                          'striping_source':'native_map','stripe_y_m':0.0}))
+        acquisition={name:{'kind':'original_native','sha256':hashlib.sha256((root/name).read_bytes()).hexdigest()}
+                     for name in ('turn-history.jsonl','zone-context.json')}
+        (root/'acquisition.json').write_text(json.dumps(acquisition))
+        return root
+    def test_signaled_crossing(self):
+        with tempfile.TemporaryDirectory() as temp:
+            m=analysis.measure(self.fixture(temp,True))
+            self.assertEqual(m['crossing_frame'],2)
+            self.assertTrue(m['signal_active_at_crossing'])
+            self.assertLess(m['signal_started_s'],m['crossing_time_s'])
+    def test_unsignaled_crossing(self):
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertIsNone(analysis.measure(self.fixture(temp,False))['signal_started_s'])
+    def test_stale_source_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.fixture(temp,True)
+            (path/'zone-context.json').write_text('{}')
+            with self.assertRaisesRegex(ValueError,'stale original Native source'):
+                analysis.measure(path)
+
+spec_compare=importlib.util.spec_from_file_location('comparison_audit',FOLDER/'comparison_audit.py')
+compare=importlib.util.module_from_spec(spec_compare);spec_compare.loader.exec_module(compare)
+
+class ComparisonAuditTests(unittest.TestCase):
+    def records(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            measured_a=analysis.measure(SavedAnalysisTests().fixture(a,True))
+            measured_b=analysis.measure(SavedAnalysisTests().fixture(b,False))
+        fixed={name:'same' for name in compare.FIXED};fixed['duration_s']=30
+        return dict(fixed,measurement=measured_a),dict(fixed,measurement=measured_b)
+    def test_source_bound_comparison(self):
+        a,b=self.records();self.assertTrue(compare.audit(a,b)['passed'])
+    def test_missing_measurement_rejected(self):
+        a,b=self.records();del a['measurement']
+        with self.assertRaisesRegex(ValueError,'missing source-bound'):
+            compare.audit(a,b)
+    def test_changed_map_rejected(self):
+        a,b=self.records();b['map_sha256']='different'
+        with self.assertRaisesRegex(ValueError,'fixed condition differs'):
+            compare.audit(a,b)
+
+spec_delivery=importlib.util.spec_from_file_location('delivery_audit',FOLDER/'delivery_audit.py')
+delivery=importlib.util.module_from_spec(spec_delivery);spec_delivery.loader.exec_module(delivery)
+
+class DeliveryAuditTests(unittest.TestCase):
+    def fixture(self,root):
+        root=Path(root)
+        trace=root/'trace.jsonl';trace.write_text(json.dumps({'frame':10,'time_s':0.5})+'\n')
+        mapping=root/'video_frames.jsonl';mapping.write_text(json.dumps({'video_frame':0,'carla_frame':10,'time_s':0.5})+'\n')
+        (root/'raw.mkv').write_bytes(b'test-video-placeholder')
+        (root/'result.json').write_text(json.dumps({'case_id':'case-1','setup_confirmed':True,
+            'behavior_attempted':True,'maneuver_completed':True}))
+        seal={'events':['capture_finished','encoders_closed','restoration_verified'],
+              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json')}}
+        (root/'capture-seal.json').write_text(json.dumps(seal))
+        (root/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(root/'capture-seal.json')}))
+        (root/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
+            'native_exit_sha256':delivery.sha(root/'native-exit.json')}))
+        (root/'processing.json').write_text(json.dumps({'format':'worker-saved-processing','passed':True,
+            'recorded_only':True,'analysis_directory':str(root),'result':str(root/'result.json'),
+            'result_sha256':delivery.sha(root/'result.json')}))
+        (root/'source-decode.json').write_text('{}')
+        return root
+    def verifier(self,*args,**kwargs):return {'passed':True}
+    def test_positive_source_lifecycle(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p=self.fixture(temp)
+            self.assertTrue(delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)['passed'])
+    def test_missing_sealed_source_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p=self.fixture(temp);(p/'trace.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError,'sealed original missing'):
+                delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)
+    def test_failed_physical_completion_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p=self.fixture(temp);result=json.loads((p/'result.json').read_text());result['maneuver_completed']=False
+            (p/'result.json').write_text(json.dumps(result));seal=json.loads((p/'capture-seal.json').read_text());seal['sources']['result.json']=delivery.sha(p/'result.json');(p/'capture-seal.json').write_text(json.dumps(seal));(p/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(p/'capture-seal.json')}));(p/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
+            with self.assertRaisesRegex(ValueError,'physical completion'):
+                delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)

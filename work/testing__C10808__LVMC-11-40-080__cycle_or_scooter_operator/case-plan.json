@@ -24,9 +24,56 @@
   "topic_inventory": {
     "exact-text": "Whenever authorized signs are erected indicating that no right turn, left turn or U-turn is permitted, it shall be unlawful for any person operating a bicycle, electric bicycle, or electric scooter to disobey the direction of any such sign, except where such person dismounts from the bicycle, electric bicycle, or electric scooter to make any such turn, in which event such person shall then obey the regulations applicable to pedestrians."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn",
+      "target_law_id": "LVMC-11-40-080",
+      "gap_ids": [],
+      "purpose": "Dismount before prohibited U-turn; pedestrian obligations remain unresolved"
+    },
+    {
+      "case_id": "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn",
+      "target_law_id": "LVMC-11-40-080",
+      "gap_ids": [],
+      "purpose": "Mounted prohibited U-turn comparison"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "uturn_dismount_exception",
+      "case_ids": [
+        "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn",
+        "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn"
+      ],
+      "fixed_conditions": [
+        "alley geometry",
+        "same operator and bicycle",
+        "governing no-U-turn sign",
+        "cameras and duration"
+      ],
+      "deliberate_differences": [
+        "observed dismount before turn versus mounted throughout reversal"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "operator_pose",
+      "mandatory": true
+    },
+    {
+      "name": "bicycle_pose",
+      "mandatory": true
+    },
+    {
+      "name": "sign_inventory",
+      "mandatory": true
+    },
+    {
+      "name": "phase_events",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/assignment.json",
@@ -83,5 +130,18 @@
       ],
       "reason": "An alley-connected turning area can support an intended reversal with a distinct dismounted phase."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Prohibited U-turn sign and operator dismount exception",
+      "source": "LVMC 11.40.080",
+      "status": "selected_required",
+      "evidence_or_gap": "Actual authorized sign and dismount body state need local source and Native verification",
+      "case_ids": [
+        "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn",
+        "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn"
+      ]
+    }
+  ],
+  "source_observation_mapping": {}
 }

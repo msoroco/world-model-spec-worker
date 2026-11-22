@@ -24,9 +24,58 @@
   "topic_inventory": {
     "exact-text": "Except as otherwise provided in subsections 3 and 4, a driver shall not drive on the left side of the highway within such zone or drive across or on the left side of any pavement striping designed to mark such zone throughout its length. A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic. Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
+      "target_law_id": "NRS-484B-217-2",
+      "purpose": "Signaled left turn across marked no-passing stripe"
+    },
+    {
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn",
+      "target_law_id": "NRS-484B-217-2",
+      "purpose": "Unsignaled left turn comparison"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "turn_signal_before_stripe",
+      "case_ids": [
+        "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
+        "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn"
+      ],
+      "fixed_conditions": [
+        "same map/zone striping",
+        "same connected left-turn route",
+        "same oncoming and following traffic policies",
+        "same cameras and duration"
+      ],
+      "deliberate_differences": [
+        "observed left-turn signal before stripe crossing"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "stripe_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "signal_history",
+      "mandatory": true
+    },
+    {
+      "name": "oncoming_history",
+      "mandatory": true
+    },
+    {
+      "name": "following_history",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/assignment.json",
@@ -82,6 +131,18 @@
         "Supply zone designation, boundaries, full striping extent, centerline and the marking's relationship to the turn route."
       ],
       "reason": "The fixed left turn can encounter designated zone-marking striping, permitting physical study of the conditional crossing branch."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Signaled left-turn crossing with no impediment; subsection 3/4 exceptions unresolved",
+      "source": "NRS 484B.217(2), with subsections (3) and (4)",
+      "status": "selected_required",
+      "evidence_or_gap": "Actual zone status, signal timing, safety and traffic impediment require Native/source proof",
+      "case_ids": [
+        "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
+        "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn"
+      ]
     }
   ]
 }
