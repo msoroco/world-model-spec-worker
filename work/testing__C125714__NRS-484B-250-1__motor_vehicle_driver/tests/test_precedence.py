@@ -11,6 +11,21 @@ route=load('route_control')
 site_packet=load('site_packet')
 def body(x,y):return [[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
 class Tests(unittest.TestCase):
+    def test_runner_recognizes_all_selected_comparison_cases(self):
+        plan=json.loads((ROOT/'case-plan.json').read_text())
+        planned={case['case_id'] for case in plan['cases']}
+        self.assertEqual(planned,set(runner.ENTRY_ORDER_CASES)|runner.OTHER_CASES)
+        for case_id in runner.OTHER_CASES:
+            for target in (True,False):
+                self.assertEqual(runner.validate_case_target({
+                    'selected_case_id':case_id,
+                    'expected_other_enters_before_ego':target}),case_id)
+            with self.assertRaisesRegex(ValueError,'Observed entry-order target'):
+                runner.validate_case_target({'selected_case_id':case_id})
+        with self.assertRaisesRegex(ValueError,'Exact median selected case'):
+            runner.validate_case_target({'selected_case_id':'unplanned',
+                                         'expected_other_enters_before_ego':True})
+
     def test_authored_route_steering_and_progress(self):
         points=[[0,0],[10,0],[10,10],[10,20]]
         self.assertIs(route.validate_route(points,[0,0,0,0],[10,0,0,0],'ego'),points)
@@ -347,6 +362,16 @@ class Tests(unittest.TestCase):
                 variant['expected_other_enters_before_ego']=not expected_other_first
                 with self.assertRaisesRegex(ValueError,'entry-order target'):
                     runner.validate_config(variant,root)
+            for case_id in runner.OTHER_CASES:
+                variant=json.loads(json.dumps(config))
+                variant['selected_case_id']=case_id
+                self.assertIs(runner.validate_config(variant,root),variant)
+                source.write_text(json.dumps(variant))
+                checked=json.loads(subprocess.run(
+                    [sys.executable,str(ROOT/'runner.py'),'--config',str(source),'--check'],
+                    check=True,capture_output=True,text=True).stdout)
+                self.assertEqual(checked['case_id'],case_id)
+                self.assertFalse(checked['carla_started'])
             (root/'polygon.txt').write_text('changed source\n')
             with self.assertRaisesRegex(ValueError,'Site source missing or changed: polygon_source'):
                 runner.validate_config(config,root)

@@ -20,6 +20,12 @@ ENTRY_ORDER_CASES = {
     "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_advance": True,
     "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_other_later": False,
 }
+OTHER_CASES = {
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_straight",
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left",
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_makes_left",
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_wide_same_crossing",
+}
 CAMERAS = tuple(SIZES)
 POSES = ("ego_approach", "ego_entry", "other_approach", "other_entry")
 
@@ -31,14 +37,25 @@ def _numbers(values, size, label):
     return values
 
 
-def validate_config(config, base_dir=Path.cwd()):
+def validate_case_target(config):
     case_id = config.get("selected_case_id")
-    if case_id not in ENTRY_ORDER_CASES or config.get("law_id") != "NRS-484B-250-1" or config.get("cell_id") != "C125714":
+    if case_id in ENTRY_ORDER_CASES:
+        if config.get("expected_other_enters_before_ego") is not ENTRY_ORDER_CASES[case_id]:
+            raise ValueError("Selected case entry-order target required")
+    elif case_id in OTHER_CASES:
+        if type(config.get("expected_other_enters_before_ego")) is not bool:
+            raise ValueError("Observed entry-order target required for comparison case")
+    else:
+        raise ValueError("Exact median selected case required")
+    return case_id
+
+
+def validate_config(config, base_dir=Path.cwd()):
+    case_id = validate_case_target(config)
+    if config.get("law_id") != "NRS-484B-250-1" or config.get("cell_id") != "C125714":
         raise ValueError("Exact median entry-order case required")
     if config.get("rate_hz") != 20 or config.get("duration_s") != 55:
         raise ValueError("Planned 20 Hz, 55-second capture required")
-    if config.get("expected_other_enters_before_ego") is not ENTRY_ORDER_CASES[case_id]:
-        raise ValueError("Selected case entry-order target required")
     if not isinstance(config.get("required_atoms"), list):
         raise ValueError("Pinned Core required_atoms list required")
     if not isinstance(config.get("recording_description"), dict):
