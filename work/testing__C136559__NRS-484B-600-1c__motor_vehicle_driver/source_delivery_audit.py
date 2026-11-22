@@ -25,6 +25,10 @@ def audit(attempt, case_id):
     config = json.loads((attempt / "config.json").read_text())
     result = json.loads((attempt / "result.json").read_text())
     context = json.loads((attempt / "sign_context.json").read_text())
+    provenance = json.loads((attempt / "fixture-provenance.json").read_text())
+    derived = provenance.get("derivation") == "constant-speed x(t), 20 Hz"
+    if derived and (not provenance.get("seed_sha256") or provenance.get("frames") != 9):
+        raise ValueError("Synthetic derivation provenance incomplete")
     if config.get("selected_case_id") != case_id or result.get("case_id") != case_id:
         raise ValueError("Case identity mismatch")
     completion = result.get("physical_checks", {}).get("maneuver", {})
@@ -56,7 +60,8 @@ def audit(attempt, case_id):
         if f.get("video_frame") != index or f.get("carla_frame") != frame or f.get("time_s") != time or t.get("frame") != frame or t.get("time_s") != time:
             raise ValueError("Original frame join mismatch")
         xyz = m.get("velocity_mps")
-        if m.get("speed_source") != "actor.get_velocity" or m.get("subject_actor_id") != context.get("subject_actor_id") or not isinstance(xyz, list) or len(xyz) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in xyz):
+        expected_source = "synthetic_kinematic_derivation" if derived else "actor.get_velocity"
+        if m.get("speed_source") != expected_source or m.get("subject_actor_id") != context.get("subject_actor_id") or not isinstance(xyz, list) or len(xyz) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in xyz):
             raise ValueError("Original Native velocity missing")
         speed = math.sqrt(sum(v * v for v in xyz))
         if abs(speed - m.get("speed_mps", float("nan"))) > 1e-6 or abs(speed - t.get("speed_mps", float("nan"))) > 1e-6:
@@ -64,6 +69,11 @@ def audit(attempt, case_id):
         road_s = m.get("road_s_m")
         if type(road_s) not in (int, float) or not math.isfinite(road_s):
             raise ValueError("Original road coordinate missing")
+        if derived:
+            x = trace[0]["position_m"][0] + speed * (time - motion[0]["time_s"])
+            if (abs(t["position_m"][0] - x) > 1e-6
+                    or abs(road_s - x) > 1e-6):
+                raise ValueError("Synthetic speed and displacement disagree")
         inside = m.get("road_id") == context.get("governed_road_id") and context["zone_start_s_m"] <= road_s <= context["zone_end_s_m"]
         observed.append({"frame": frame, "in_zone": inside, "speed_mph": speed / 0.44704})
     selected = [row for row in observed if row["in_zone"]]
@@ -85,6 +95,7 @@ def audit(attempt, case_id):
             "source_integrity_passed": True, "camera_decode_passed": True,
             "public_authority_verified": False, "sign_face_verified": False,
             "physical_delivery_ready": False, "legal_acceptance_claimed": False,
+            "measurement_provenance": ("synthetic_kinematic_derivation" if derived else "actor.get_velocity"),
             "diagnostic_limit": "Authored sign/zone and reused source graph do not establish posting authority or physical target attainment."}
 
 
@@ -135,7 +146,7 @@ def compare(comparison_id, attempts_index):
             "source_audits": {case: value["audit"] for case, value in selected.items()},
             "comparison_delivery_ready": False, "physical_acceptance_claimed": False,
             "unresolved": ["public-authority posting and signed highway portion",
-                           "source-observed requested speed boundary", "actual Native camera pixels"]}
+                           "actual Native requested-speed attainment", "actual Native camera pixels"]}
 
 
 def main():
