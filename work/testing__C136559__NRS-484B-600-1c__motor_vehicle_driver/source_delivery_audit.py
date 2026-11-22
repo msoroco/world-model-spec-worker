@@ -27,8 +27,6 @@ def audit(attempt, case_id):
     context = json.loads((attempt / "sign_context.json").read_text())
     provenance = json.loads((attempt / "fixture-provenance.json").read_text())
     derived = provenance.get("derivation") == "constant-speed x(t), 20 Hz"
-    if derived and (not provenance.get("seed_sha256") or provenance.get("frames") != 9):
-        raise ValueError("Synthetic derivation provenance incomplete")
     if config.get("selected_case_id") != case_id or result.get("case_id") != case_id:
         raise ValueError("Case identity mismatch")
     completion = result.get("physical_checks", {}).get("maneuver", {})
@@ -48,6 +46,8 @@ def audit(attempt, case_id):
     motion = _rows(attempt / "subject_motion.jsonl")
     frames = _rows(attempt / "video_frames.jsonl")
     trace = _rows(attempt / "trace.jsonl")
+    if derived and (not provenance.get("seed_sha256") or provenance.get("frames") != len(motion)):
+        raise ValueError("Synthetic derivation provenance incomplete")
     if len(motion) < 2 or len(motion) != len(frames) or len(trace) != len(frames):
         raise ValueError("Original frame streams incomplete")
     observed = []
