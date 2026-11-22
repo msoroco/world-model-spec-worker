@@ -76,7 +76,7 @@ def main():
         try:
             build_report(folder)
         except ValueError as exc:
-            assert "Missing required original Native source" in str(exc)
+            assert "Missing required source: other-body-history.jsonl" in str(exc)
         else:
             raise AssertionError("missing original other body was accepted")
         print(json.dumps({"saved_result_valid": True, "physical_fixture_motion": "met",

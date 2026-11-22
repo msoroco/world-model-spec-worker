@@ -24,9 +24,202 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "construction.json",
+      "proof": "diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "cases/advance/construction.json",
+      "proof": "cases/advance/diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "cases/other_later/construction.json",
+      "proof": "cases/other_later/diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_straight",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "exception_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "cases/opposite_straight/construction.json",
+      "proof": "cases/opposite_straight/diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "exception_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "cases/opposite_intends_left/construction.json",
+      "proof": "cases/opposite_intends_left/diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_makes_left",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "exception_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "cases/opposite_makes_left/construction.json",
+      "proof": "cases/opposite_makes_left/diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__wide_same_crossing",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "geometry_probe",
+      "preparation_status": "diagnostic_only_cpu_proven",
+      "construction": "cases/wide_same_crossing/construction.json",
+      "proof": "cases/wide_same_crossing/diagnostic-saved-proof.json",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "crossing_precedence",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__advance"
+      ],
+      "deliberate_differences": [
+        "ego_response_request"
+      ],
+      "fixed_conditions": [
+        "crossing identity",
+        "other-first setup"
+      ],
+      "status": "synthetic_saved_proof_only",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "crossing_entry_order",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later"
+      ],
+      "deliberate_differences": [
+        "entry_order"
+      ],
+      "fixed_conditions": [
+        "crossing identity",
+        "ego response request"
+      ],
+      "status": "synthetic_saved_proof_only",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "opposite_intention",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_straight",
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left"
+      ],
+      "deliberate_differences": [
+        "left_turn_intent"
+      ],
+      "fixed_conditions": [
+        "source map",
+        "opposing route",
+        "left-turn realization"
+      ],
+      "status": "source_bound_synthetic_pair_proven",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "opposite_actual_left",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left",
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_makes_left"
+      ],
+      "deliberate_differences": [
+        "left_turn_realized"
+      ],
+      "fixed_conditions": [
+        "source map",
+        "opposing approach",
+        "left-turn intention"
+      ],
+      "status": "source_bound_synthetic_pair_proven",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "separate_roadway_intersection",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__wide_same_crossing"
+      ],
+      "deliberate_differences": [
+        "crossing_id",
+        "roadway_id",
+        "ego_approach_direction"
+      ],
+      "fixed_conditions": [
+        "source map",
+        "different-highway crossing relation"
+      ],
+      "status": "source_bound_synthetic_pair_proven",
+      "legal_judgment": "unresolved",
+      "proof": "wide-pair-proof.json"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_entry_frame",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    },
+    {
+      "name": "other_entry_frame",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    },
+    {
+      "name": "other_exit_frame",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    },
+    {
+      "name": "observed_left_turn",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    },
+    {
+      "name": "official_device_exclusion",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    },
+    {
+      "name": "opposite_left_exclusion",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    },
+    {
+      "name": "ego_approach_direction",
+      "source": "original-body-history diagnostic fixture",
+      "status": "synthetic_cpu_proven_not_native"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
@@ -95,8 +288,8 @@
     "47237cded823eefa82c7e3eb5483b034dc73ed9d5f34cb4d075e350e9248bc35"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "Native capture code and a source-bound saved finalizer are implemented and CPU-tested, but no inspected OpenDRIVE scene or reviewed context packet exists in this export; exact materialized cases, delivery audit and complete comparison audit remain unfinished CPU work."
+    "Physical realization and actual camera coverage require later CARLA run or original recording review.",
+    "Seven exact diagnostic constructions and source-bound saved fixtures are CPU proven; public-highway, official-device and driver context, Native waypoint loading, full compatibility and independent delivery receipts remain unfinished worker-owned preparation."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -221,7 +414,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "seven_exact_diagnostic_cases_cpu_proven_delivery_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -256,7 +449,7 @@
   },
   "saved_trace_audit": {
     "module": "crossing_audit.py",
-    "status": "saved_finalizer_cpu_proven_capture_and_compatibility_unfinished",
+    "status": "seven_diagnostic_saved_finalizers_cpu_proven_native_delivery_unfinished",
     "required_sources": [
       "source-hashed OpenDRIVE crossing geometry",
       "public-access and highway identity inventory",
@@ -273,7 +466,9 @@
       "official_device_exclusion",
       "opposite_left_exclusion",
       "original_four_corner_body_polygon_overlap",
-      "joined_consecutive_original_frames"
+      "joined_consecutive_original_frames",
+      "observed_left_turn",
+      "ego_approach_direction"
     ],
     "legal_limit": "No legal right-of-way verdict; subsection 4 qualification unresolved.",
     "accepted_recording_targets": [
@@ -292,21 +487,24 @@
       "opposite_actual_left",
       "separate_roadway_intersection"
     ],
-    "comparison_limit": "Only crossing entry order, clearance, stated exclusions and fixed source context can be audited from original traces; frozen accepted summaries lack those traces.",
+    "comparison_limit": "Synthetic opposing intention, actual-turn and separate-roadway pairs are source-bound CPU proven; accepted original Native traces and sealed delivery comparisons remain unfinished.",
     "finalizer": "analysis.py",
     "proof": "prove_saved.py; saved-proof.log"
   },
   "semantic_draft": {
     "index": "proposals/semantic-index.json",
-    "status": "draft_source_review_and_exact_case_construction_pending",
+    "status": "draft_source_review_pending_seven_diagnostic_case_constructions_proven",
     "frozen_case_ids_included": 7,
-    "judgment_observables": ["yield the right-of-way", "intersection from a different highway"],
+    "judgment_observables": [
+      "yield the right-of-way",
+      "intersection from a different highway"
+    ],
     "stage_hashes_verified": true,
     "local_adoption_claimed": false
   },
   "construction_draft": {
     "module": "native_driver.py; native_capture.py; runner.py; case_builder.py; map_inventory.py; delivery_audit.py",
-    "status": "native_capture_construction_cpu_tested_source_bound_case_unfinished",
+    "status": "seven_exact_diagnostic_constructions_cpu_proven_delivery_unfinished",
     "implemented": [
       "live OpenDRIVE hash binding",
       "two distinct conventional vehicle spawns",
@@ -326,11 +524,21 @@
       "draft semantic stage proposals with checked source quote and stage hashes"
     ],
     "unresolved": [
-      "inspected actual median-opening OpenDRIVE source and route coordinates",
-      "separately inspected statutory crossing and official-device review packet",
-      "exact source-backed scene.json, construction manifest and offline proof",
-      "positive/negative full compatibility and independent delivery audits",
-      "remaining source-bound comparison constructions"
+      "public-roadway/device/driver source review and actual Native waypoint binding",
+      "source-backed seven-case delivery constructions and positive/negative full compatibility",
+      "physical outcome receipts and independent sealed-delivery comparison audits"
     ]
-  }
+  },
+  "selected_branch": "Other vehicle enters the same statutory roadway crossing at a median opening before ego.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Other vehicle enters the same statutory roadway crossing at a median opening before ego.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence"
+      ],
+      "evidence_or_gap": "Synthetic original-body histories measure entry order; reviewed Native public-highway identity, actual geometry and sealed capture remain pending."
+    }
+  ]
 }

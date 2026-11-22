@@ -20,7 +20,7 @@ def _sha(path):
 def _source(attempt, acquisition, name):
     path = attempt / name
     if not path.is_file():
-        raise ValueError("Missing required original Native source: " + name)
+        raise ValueError("Missing required source: " + name)
     item = acquisition.get(name, {})
     if item.get("kind") != "original_native" or item.get("sha256") != _sha(path):
         raise ValueError("Missing or stale original Native source: " + name)
@@ -32,6 +32,11 @@ def _rows(path):
     if not rows:
         raise ValueError("Empty original Native history: " + path.name)
     return rows
+
+
+def crossing_entry_measurement(trace):
+    """Measure body entry and clearance from joined source-bound frames."""
+    return measure(trace)
 
 
 def build_report(attempt):
@@ -77,7 +82,7 @@ def build_report(attempt):
         "other_samples": [{"frame": row["frame"], "body_vertices_xy_m": row["body_vertices_xy_m"]}
                           for row in other],
     }
-    observed = measure(trace)
+    observed = crossing_entry_measurement(trace)
     observed.update(ego_actor_id=context["ego_actor_id"],
                     other_actor_id=context["other_actor_id"],
                     first_time_s=ego[0]["time_s"], last_time_s=ego[-1]["time_s"])
@@ -85,7 +90,7 @@ def build_report(attempt):
         "format": "worker-analysis-report",
         "measurements": {"crossing_entry_measurement": {
             "value": observed,
-            "method": "four-corner body polygon overlap in joined original Native frames",
+            "method": "crossing_entry_measurement",
             "sources": {name: acquisition[name]["sha256"] for name in SOURCES},
         }},
         "limitations": ["Highway/public-access and device source labels require independent provenance review.",

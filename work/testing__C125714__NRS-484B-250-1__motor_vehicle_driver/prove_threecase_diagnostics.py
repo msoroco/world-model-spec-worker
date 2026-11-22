@@ -94,7 +94,7 @@ def prove(base):
                 result["measured_values"]["legal_judgment"] != "unresolved" or
                 result["physical_acceptance_claimed"] is not False):
             raise ValueError("diagnostic saved measurement differs: " + suffix)
-        missing = "Missing required original Native source: other-body-history.jsonl"
+        missing = "Missing required source: other-body-history.jsonl"
         if missing not in (attempt / "negative.log").read_text():
             raise ValueError("negative case did not reject missing original source")
         for source, name in ((offline / "offline.log", "diagnostic-offline.log"),

@@ -12,6 +12,19 @@ def sha(path):
 
 
 class ThreeCaseProofTests(unittest.TestCase):
+    def test_wide_second_carriageway_is_a_distinct_bounded_crossing(self):
+        first = json.loads((ROOT / "scene.json").read_text())
+        folder = ROOT / "cases" / "wide_same_crossing"
+        second = json.loads((folder / "scene.json").read_text())
+        config = json.loads((folder / "config.json").read_text())
+        self.assertNotEqual(first["crossing"]["crossing_id"], second["crossing"]["crossing_id"])
+        self.assertNotEqual(first["crossing"]["roadway_id"], second["crossing"]["roadway_id"])
+        self.assertEqual(second["crossing"]["bounds_xy_m"], [-3.5, 3, 3.5, 7])
+        self.assertEqual((second["ego_approach_road_id"], second["other_approach_road_id"]),
+                         (20, 31))
+        self.assertEqual((config["physical_completion"]["exit_axis"],
+                          config["physical_completion"]["exit_sign"]), (0, -1))
+
     def test_three_case_ids_and_source_bound_receipts(self):
         manifest = json.loads((ROOT / "diagnostic-execution-manifest.json").read_text())
         proposal = json.loads((ROOT / "proposals/cases.json").read_text())

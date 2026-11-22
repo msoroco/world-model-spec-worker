@@ -9,15 +9,20 @@ ASSIGNMENT = "testing__C125714__NRS-484B-250-1__motor_vehicle_driver"
 
 
 def recording_description():
-    return {"channels": [
-        {"name": "ego_body_history", "unit": "m"},
-        {"name": "other_body_history", "unit": "m"}],
-        "context_inputs": [
-            {"name": name, "unit": "structured record"} for name in
-            ("crossing_geometry", "highway_identity", "device_inventory", "driver_scope")],
-        "capture_views": ["overview", "approach", "reference_corner", "driver_reference"],
-        "physical_measurements": ["original body entry and clearance frames",
-                                  "actual ego crossing departure"]}
+    channels = []
+    for actor in ("ego", "other"):
+        channels.append({"name": actor + "_body_history", "unit": "structured record",
+                         "sampling_rate_hz": 20,
+                         "method": "Original Native actor body polygon and timestamp",
+                         "time_window": "approach through crossing clearance",
+                         "reference_frame": "CARLA world XY and original frame",
+                         "uncertainty": "20 Hz sampling and Native body geometry precision"})
+    contexts = [{"name": name, "unit": "structured record",
+                 "method": "Original Native map or reviewed scene context"} for name in
+                ("crossing_geometry", "highway_identity", "device_inventory", "driver_scope")]
+    return {"channels": channels, "context_inputs": contexts,
+            "limitations": ["Diagnostic source labels do not establish public-roadway legal scope.",
+                            "Actual Native map, vehicle motion and camera evidence need review."]}
 
 
 def config(scene):

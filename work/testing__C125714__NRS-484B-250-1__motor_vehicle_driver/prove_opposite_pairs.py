@@ -20,7 +20,7 @@ def sha(data):
 
 
 def load_case(proof_root, suffix):
-    folder = ROOT / "cases" / suffix
+    folder = ROOT if suffix == "precedence" else ROOT / "cases" / suffix
     fixture = proof_root / suffix / "fixture"
     recipe_path = folder / "diagnostic-recipe.json"
     recipe = json.loads(recipe_path.read_text())

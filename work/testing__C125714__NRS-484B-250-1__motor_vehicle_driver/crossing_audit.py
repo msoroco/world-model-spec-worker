@@ -92,6 +92,18 @@ def _observed_left_turn(samples):
     return cross/length > 0.8
 
 
+def _first_motion_direction(samples):
+    centers = [(sum(p[0] for p in sample["body_vertices_xy_m"])/4,
+                sum(p[1] for p in sample["body_vertices_xy_m"])/4)
+               for sample in samples]
+    for a, b in zip(centers, centers[1:]):
+        dx, dy = b[0]-a[0], b[1]-a[1]
+        if math.hypot(dx, dy) > 0.1:
+            return ("east" if dx > 0 else "west") if abs(dx) >= abs(dy) else (
+                "north" if dy > 0 else "south")
+    raise ValueError("original ego motion insufficient for approach direction")
+
+
 def measure(trace):
     context = trace["context"]
     for name in REQUIRED_CONTEXT:
@@ -136,6 +148,7 @@ def measure(trace):
         "ego_exit_frame": ego_exit, "other_exit_frame": other_exit,
         "other_entered_before_ego": other_entry < ego_entry,
         "other_cleared_before_ego_entry": other_exit is not None and other_exit < ego_entry,
+        "ego_approach_direction": _first_motion_direction(trace["ego_samples"]),
         "official_device_exclusion": device_exclusion,
         "opposite_left_exclusion": opposite_left_exclusion,
         "observed_left_turn": observed_left_turn,
@@ -156,12 +169,17 @@ def audit_comparison(left_trace, right_trace, varying_fields):
     for name in ("crossing_id", "roadway_id"):
         if name not in fields and left[name] != right[name]:
             raise ValueError(f"fixed crossing changed: {name}")
+    if "ego_approach_direction" not in fields and left["ego_approach_direction"] != right["ego_approach_direction"]:
+        raise ValueError("undeclared difference: ego_approach_direction")
     for name in ("devices", "approach_relation", "left_turn_intent", "left_turn_realized"):
         if name not in fields and left_trace["context"][name] != right_trace["context"][name]:
             raise ValueError(f"undeclared difference: {name}")
     observables = {
         "entry_order": (left["other_entered_before_ego"], right["other_entered_before_ego"]),
         "clearance": (left["other_cleared_before_ego_entry"], right["other_cleared_before_ego_entry"]),
+        "crossing_id": (left["crossing_id"], right["crossing_id"]),
+        "roadway_id": (left["roadway_id"], right["roadway_id"]),
+        "ego_approach_direction": (left["ego_approach_direction"], right["ego_approach_direction"]),
     }
     for name in ("devices", "approach_relation", "left_turn_intent", "left_turn_realized"):
         observables[name] = (left_trace["context"][name], right_trace["context"][name])

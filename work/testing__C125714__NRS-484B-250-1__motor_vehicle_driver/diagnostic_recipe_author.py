@@ -66,21 +66,65 @@ def build_variant(suffix, ego_entry, other_entry):
     files["acquisition.json"] = encoded(acquired)
     files["acquisition-provenance.json"] = encoded(
         {"provenance_kind": "synthetic_fixture", "diagnostic_fixture": True})
-    files["trace.jsonl"] = "".join(encoded({"frame": frame, "time_s": frame/20,
-                                             "position_m": ([10 if frame < ego_entry else (0 if frame < 6 else -10), 5.75]
-                                                            if suffix == "wide_same_crossing" else
-                                                            [-10 if frame < ego_entry else (0 if frame < 6 else 10), -5.75])})
-                                     for frame in range(9))
+    trace_rows = []
+    for frame in range(9):
+        x = -10 if frame < ego_entry else (0 if frame < 6 else 10)
+        y = -5.75
+        heading = 0
+        if suffix == "wide_same_crossing":
+            x, y, heading = -x, 5.75, 180
+        trace_rows.append(encoded({"frame": frame, "time_s": frame/20,
+                                   "position": {"x": x, "y": y, "z": 0},
+                                   "position_m": [x, y, 0], "heading_deg": heading,
+                                   "speed_mps": 0, "speed_mph": 0,
+                                   "velocity_mps": [0, 0, 0], "control": {}}))
+    files["trace.jsonl"] = "".join(trace_rows)
     files["video_frames.jsonl"] = "".join(encoded(
         {"video_frame": frame, "carla_frame": frame, "native_frame": frame,
          "time_s": frame/20}) for frame in range(9))
+    observations = [{"frame": frame, "time_s": frame/20, "participants": [],
+                     "map_context": {"declared_public_way_road_ids": []}}
+                    for frame in range(9)]
+    events = []
+    frames = []
+    graphs = []
+    for frame in range(9):
+        trace = json.loads(trace_rows[frame])
+        original_body = json.loads(files["ego-body-history.jsonl"].splitlines()[frame])
+        vertices = [[x, y, z] for x, y in original_body["body_vertices_xy_m"]
+                    for z in (0, 1.5)]
+        events.append({"original_frame": frame, "replay_frame": frame,
+                       "actor_id": 11, "recording_time_s": frame/20,
+                       "replay_simulation_time_s": frame/20,
+                       "world": {"weather": {}},
+                       "ego": {"position_m": trace["position_m"],
+                               "heading_deg": trace["heading_deg"],
+                               "speed_mps": 0, "body_vertices_m": vertices,
+                               "speed_provenance": "synthetic_native_sample"},
+                       "original_observations": observations[frame]})
+        frames.append({"frame": frame, "simulation_time": frame/20,
+                       "adapter_graph": f"graphs/base/{frame:08d}.adapter.json"})
+        graphs.append({"path": f"capture/native/graphs/base/{frame:08d}.adapter.json",
+                       "attributes": {"frame": frame, "time_s": frame/20,
+                                      "observed_evidence": observations[frame]},
+                       "nodes": [], "edges": []})
+    files["capture/evidence.jsonl"] = "".join(encoded(row) for row in events)
+    files["capture/native/frames.jsonl"] = "".join(encoded(row) for row in frames)
+    files["capture/recorder_info.txt"] = "Create 11: vehicle.tesla.model3 (diagnostic) at (0, 0, 0)\n"
+    map_bytes = (ROOT / "candidate-map.xodr").read_bytes()
+    files["capture/manifest.json"] = encoded({
+        "status": "draft", "acquisition": "original_live_run",
+        "case_id": scene["case_id"], "frames": 9,
+        "extraction_confirmed": True, "complete_driving_lanes": False,
+        "sources": {"road.xodr": hashlib.sha256(map_bytes).hexdigest(),
+                    "trace.jsonl": hashlib.sha256(files["trace.jsonl"].encode()).hexdigest()}})
     videos = [{"path": name+".mkv", "frames": 9, "width": width,
                "height": height, "fps": 20, "color": "black"}
               for name, width, height in (("overview", 1920, 1080),
                                           ("approach", 1280, 720),
                                           ("reference_corner", 1280, 720),
                                           ("driver_reference", 1280, 720))]
-    spec = {"files": files, "graphs": [], "videos": videos}
+    spec = {"files": files, "graphs": graphs, "videos": videos}
     path = folder / "diagnostic.json"
     path.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n")
     source = str(path.relative_to(ROOT.parent.parent))
