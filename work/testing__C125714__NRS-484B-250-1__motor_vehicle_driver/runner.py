@@ -24,6 +24,20 @@ def check_scene(scene):
     return scene
 
 
+def resolve_reviewed_source(scene, scene_path):
+    """Bind the inspected packet to the scene file, independent of process cwd."""
+    source = Path(scene["reviewed_context_source"])
+    if not source.is_absolute():
+        source = Path(scene_path).resolve().parent / source
+    source = source.resolve()
+    if hashlib.sha256(source.read_bytes()).hexdigest() != scene["reviewed_context_sha256"]:
+        raise ValueError("reviewed context source hash differs from scene")
+    reviewed = json.loads(source.read_text())
+    if reviewed.get("crossing") != scene["crossing"]:
+        raise ValueError("reviewed crossing differs from scene")
+    return source
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--scene", default=str(Path(__file__).with_name("scene.json")))
@@ -33,14 +47,7 @@ def main():
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     scene = check_scene(json.loads(Path(args.scene).read_text()))
-    source = Path(scene["reviewed_context_source"])
-    if not source.is_absolute():
-        source = Path(args.scene).resolve().parent / source
-    if hashlib.sha256(source.read_bytes()).hexdigest() != scene["reviewed_context_sha256"]:
-        raise ValueError("reviewed context source hash differs from scene")
-    reviewed = json.loads(source.read_text())
-    if reviewed.get("crossing") != scene["crossing"]:
-        raise ValueError("reviewed crossing differs from scene")
+    source = resolve_reviewed_source(scene, args.scene)
     from case_builder import config
     expected = config(scene)
     config_path = Path(args.scene).with_name("config.json")
@@ -51,7 +58,8 @@ def main():
                           "native_started": False}))
     elif args.output_dir:
         from native_capture import run_native
-        run_native(scene, args.output_dir, args.host, args.port)
+        run_native({**scene, "reviewed_context_source": str(source)},
+                   args.output_dir, args.host, args.port)
     else:
         parser.error("use --check or --output-dir")
 

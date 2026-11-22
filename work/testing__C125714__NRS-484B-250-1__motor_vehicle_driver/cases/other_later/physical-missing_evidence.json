@@ -1,0 +1,308 @@
+{
+  "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later",
+  "measured_values": {
+    "crossing_id": "candidate-central-crossing-diagnostic",
+    "roadway_id": "candidate-east-west-westward-segment",
+    "ego_entry_frame": 2,
+    "other_entry_frame": 4,
+    "ego_exit_frame": 6,
+    "other_exit_frame": 6,
+    "other_entered_before_ego": false,
+    "other_cleared_before_ego_entry": false,
+    "ego_approach_direction": "east",
+    "official_device_exclusion": false,
+    "opposite_left_exclusion": false,
+    "observed_left_turn": false,
+    "subsection_4_qualification": "unresolved_source_review",
+    "legal_judgment": "unresolved",
+    "ego_actor_id": 11,
+    "other_actor_id": 22,
+    "first_time_s": 0.0,
+    "last_time_s": 0.4
+  },
+  "target_checks": [
+    {
+      "target": "original crossing entry order",
+      "requested": false,
+      "measured": false,
+      "method": "joined original body-polygon entry frames",
+      "tolerance": 0,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": {
+        "intersection-context.json": "c4fc412effbb935184d99add7e699baf8fb4523677e90cf5ee2cb5a564d67971",
+        "ego-body-history.jsonl": "8a31cd55d0ccbb3072640992065c7b7a849f39ebc11f18a3629c3c602a504b2f",
+        "other-body-history.jsonl": "34051abe80859cc82fc00bfc3d1f5887218581647baaf6999d6818ff250d65b3"
+      }
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_body_history",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Original Native actor body polygon and timestamp",
+        "time_window": "approach through crossing clearance",
+        "reference_frame": "CARLA world XY and original frame",
+        "uncertainty": "20 Hz sampling and Native body geometry precision"
+      },
+      {
+        "name": "other_body_history",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Original Native actor body polygon and timestamp",
+        "time_window": "approach through crossing clearance",
+        "reference_frame": "CARLA world XY and original frame",
+        "uncertainty": "20 Hz sampling and Native body geometry precision"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "crossing_geometry",
+        "unit": "structured record",
+        "method": "Original Native map or reviewed scene context"
+      },
+      {
+        "name": "highway_identity",
+        "unit": "structured record",
+        "method": "Original Native map or reviewed scene context"
+      },
+      {
+        "name": "device_inventory",
+        "unit": "structured record",
+        "method": "Original Native map or reviewed scene context"
+      },
+      {
+        "name": "driver_scope",
+        "unit": "structured record",
+        "method": "Original Native map or reviewed scene context"
+      }
+    ],
+    "limitations": [
+      "Diagnostic source labels do not establish public-roadway legal scope.",
+      "Actual Native map, vehicle motion and camera evidence need review."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "ego_body_history",
+      "unit": "structured record",
+      "reference": "channels/ego_body_history.jsonl"
+    },
+    {
+      "name": "other_body_history",
+      "unit": "structured record",
+      "reference": "channels/other_body_history.jsonl"
+    },
+    {
+      "name": "crossing_geometry",
+      "unit": "structured record",
+      "reference": "channels/context.json"
+    },
+    {
+      "name": "highway_identity",
+      "unit": "structured record",
+      "reference": "channels/context.json"
+    },
+    {
+      "name": "device_inventory",
+      "unit": "structured record",
+      "reference": "channels/context.json"
+    },
+    {
+      "name": "driver_scope",
+      "unit": "structured record",
+      "reference": "channels/context.json"
+    }
+  ],
+  "realized_observables": {},
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "e11180aac38454176642887dd0d93d0edfcaa97c19131972f054e8deb40c0232",
+        "video_frames.jsonl": "194180c23e30311ebd646ef436bf619a4c3261a2f27fd8ddfcd62b9c4a13c32a",
+        "trace.jsonl": "6c8a415c21ccddfda4bc46a09eea44d75eda091843003302caf7307e95579ca4",
+        "intersection-context.json": "c4fc412effbb935184d99add7e699baf8fb4523677e90cf5ee2cb5a564d67971"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "intersection_clearance",
+          "motion_source": "ego-body-history.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 0.25,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [
+            "intersection-context.json"
+          ],
+          "body_key": "body_vertices_xy_m",
+          "exit_axis": 0,
+          "exit_sign": 1,
+          "intersection_polygon_xy_m": [
+            [
+              -3.5,
+              -7.0
+            ],
+            [
+              3.5,
+              -7.0
+            ],
+            [
+              3.5,
+              7.0
+            ],
+            [
+              -3.5,
+              7.0
+            ]
+          ]
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "ego-body-history.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "e11180aac38454176642887dd0d93d0edfcaa97c19131972f054e8deb40c0232",
+        "video_frames.jsonl": "194180c23e30311ebd646ef436bf619a4c3261a2f27fd8ddfcd62b9c4a13c32a",
+        "trace.jsonl": "6c8a415c21ccddfda4bc46a09eea44d75eda091843003302caf7307e95579ca4",
+        "intersection-context.json": "c4fc412effbb935184d99add7e699baf8fb4523677e90cf5ee2cb5a564d67971"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "intersection_clearance",
+          "motion_source": "ego-body-history.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 0.25,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [
+            "intersection-context.json"
+          ],
+          "body_key": "body_vertices_xy_m",
+          "exit_axis": 0,
+          "exit_sign": 1,
+          "intersection_polygon_xy_m": [
+            [
+              -3.5,
+              -7.0
+            ],
+            [
+              3.5,
+              -7.0
+            ],
+            [
+              3.5,
+              7.0
+            ],
+            [
+              -3.5,
+              7.0
+            ]
+          ]
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "ego-body-history.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "e11180aac38454176642887dd0d93d0edfcaa97c19131972f054e8deb40c0232",
+        "video_frames.jsonl": "194180c23e30311ebd646ef436bf619a4c3261a2f27fd8ddfcd62b9c4a13c32a",
+        "trace.jsonl": "6c8a415c21ccddfda4bc46a09eea44d75eda091843003302caf7307e95579ca4",
+        "intersection-context.json": "c4fc412effbb935184d99add7e699baf8fb4523677e90cf5ee2cb5a564d67971"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "intersection_clearance",
+          "motion_source": "ego-body-history.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 0.25,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [
+            "intersection-context.json"
+          ],
+          "body_key": "body_vertices_xy_m",
+          "exit_axis": 0,
+          "exit_sign": 1,
+          "intersection_polygon_xy_m": [
+            [
+              -3.5,
+              -7.0
+            ],
+            [
+              3.5,
+              -7.0
+            ],
+            [
+              3.5,
+              7.0
+            ],
+            [
+              -3.5,
+              7.0
+            ]
+          ]
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "ego-body-history.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "e11180aac38454176642887dd0d93d0edfcaa97c19131972f054e8deb40c0232",
+        "video_frames.jsonl": "194180c23e30311ebd646ef436bf619a4c3261a2f27fd8ddfcd62b9c4a13c32a",
+        "trace.jsonl": "6c8a415c21ccddfda4bc46a09eea44d75eda091843003302caf7307e95579ca4",
+        "intersection-context.json": "c4fc412effbb935184d99add7e699baf8fb4523677e90cf5ee2cb5a564d67971"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "provenance_kind": "synthetic_fixture",
+  "diagnostic_fixture": true,
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}
