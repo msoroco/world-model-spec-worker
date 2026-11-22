@@ -1,0 +1,122 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C10316__NRS-484B-293__pedestrian",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "status": "selected_cpu_partial",
+  "cases": [
+    {
+      "case_id": "training__C10316__NRS-484B-293__pedestrian__reference",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C10316__NRS-484B-293__pedestrian/update042-diagnostic-reference-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native walker path, crosswalk inventory, camera framing and practicability facts remain unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10316-saved-crosswalk-analysis-v1"
+      },
+      "measurement_contract": "draft-crosswalk/reference/measurement-contract.json",
+      "construction": "selected-candidates/reference/primary/construction.json",
+      "construction_sha256": "77e5bbaf9da98e3f6f7a8fbe9edad97409f4763d40da64ebbc03375d5ad94215",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "8d8d3315eb28f7f1d6fc91dab524c343396fc1a16059f939ae8c6a14da8ae972",
+          "trigger": {
+            "source": "original_native_actor_and_crosswalk_geometry",
+            "metric": "native_spawn_clearance_m_below",
+            "failure_condition": "native_spawn_clearance_m_below 1.0"
+          },
+          "changed_knobs": [
+            "spawn start -4 to -6 m and 3 s pre-roll"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "1c2ea609998aa671bb19a9d9a0fcded6f16b6ef19f03daada20f5a72e24d7313",
+          "trigger": {
+            "source": "original_native_pedestrian_pose_and_requested_path",
+            "metric": "native_path_tracking_error_m_above",
+            "failure_condition": "native_path_tracking_error_m_above 0.2"
+          },
+          "changed_knobs": [
+            "controller lookahead 0.5 to 0.25 s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "a5b4837c43263cec15b5d69cc3cffda56cd9d83ece26e1c32da12a496585b074",
+          "trigger": {
+            "source": "four_synchronized_original_camera_streams",
+            "metric": "independent_original_pixel_visibility_below",
+            "failure_condition": "independent_original_pixel_visibility_below 0.95"
+          },
+          "changed_knobs": [
+            "overhead camera 6 to 9 m"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-293__pedestrian__contrast",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C10316__NRS-484B-293__pedestrian/update042-diagnostic-contrast-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native walker path, crosswalk inventory, camera framing and practicability facts remain unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10316-saved-crosswalk-analysis-v1"
+      },
+      "measurement_contract": "draft-crosswalk/contrast/measurement-contract.json",
+      "construction": "selected-candidates/contrast/primary/construction.json",
+      "construction_sha256": "80c0da517ae7c4e4b2807ef4b0c72cc1bbaada05b93e7c154331a300da7b03a5",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "349bff4766c711e90ea4c490ae390ab72e016a42d0837ca22304ceff2b74701b",
+          "trigger": {
+            "source": "original_native_actor_and_crosswalk_geometry",
+            "metric": "native_spawn_clearance_m_below",
+            "failure_condition": "native_spawn_clearance_m_below 1.0"
+          },
+          "changed_knobs": [
+            "spawn start -4 to -6 m and 3 s pre-roll"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "eeef13fd9e62090afdc240d93c863085c89110351f684b4670cea03114c70e21",
+          "trigger": {
+            "source": "original_native_pedestrian_pose_and_requested_path",
+            "metric": "native_path_tracking_error_m_above",
+            "failure_condition": "native_path_tracking_error_m_above 0.2"
+          },
+          "changed_knobs": [
+            "controller lookahead 0.5 to 0.25 s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "40507a518fe99f0b8fb8ea292f8740ce7546c0442688a246feebf79487f6edcb",
+          "trigger": {
+            "source": "four_synchronized_original_camera_streams",
+            "metric": "independent_original_pixel_visibility_below",
+            "failure_condition": "independent_original_pixel_visibility_below 0.95"
+          },
+          "changed_knobs": [
+            "overhead camera 6 to 9 m"
+          ]
+        }
+      ]
+    }
+  ]
+}
