@@ -42,7 +42,16 @@
       ],
       "comparison_id": "yield_sign_body_entry_order",
       "audit_script": "comparison_audit.py",
-      "audit_script_sha256": "19ea1e16c36d592d20cac469267a850c428670a3a2dae46e9a8bdd90d93d5229"
+      "audit_script_sha256": "19ea1e16c36d592d20cac469267a850c428670a3a2dae46e9a8bdd90d93d5229",
+      "cpu_audit": {
+        "positive_command": ".venv-cpu/bin/python work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --ego-source .runtime-work/c125763-next/negative-comparison_audit.py.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "ValueError: ego_first: retained crossing source differs from compatibility proof",
+        "proof_log": "camera-saved-proof.log",
+        "proof_log_sha256": "1953264df083c6cd3cacbf458540fb5ad64d7082a53976a30b9e8f017106ffbc"
+      }
     },
     {
       "case_ids": [
@@ -58,7 +67,16 @@
       ],
       "comparison_id": "other_first_vs_other_inside",
       "audit_script": "other_occupancy_audit.py",
-      "audit_script_sha256": "693ccdaf5ad89554823168492dc4b08f8be90993ee45dfa618b5c04d7ac29f42"
+      "audit_script_sha256": "693ccdaf5ad89554823168492dc4b08f8be90993ee45dfa618b5c04d7ac29f42",
+      "cpu_audit": {
+        "positive_command": ".venv-cpu/bin/python work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/other_occupancy_audit.py",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/other_occupancy_audit.py --inside-source .runtime-work/c125763-next/negative-other_occupancy_audit.py.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "ValueError: other_inside: retained crossing source differs from proof",
+        "proof_log": "camera-saved-proof.log",
+        "proof_log_sha256": "1953264df083c6cd3cacbf458540fb5ad64d7082a53976a30b9e8f017106ffbc"
+      }
     },
     {
       "case_ids": [
@@ -75,16 +93,75 @@
       ],
       "comparison_id": "different_highway_vs_opposite_left_exception_context",
       "audit_script": "opposite_left_audit.py",
-      "audit_script_sha256": "c3fa70707373ad27a75b567ab52567149f41388555f881c9b3a594df64b7849d"
+      "audit_script_sha256": "ba922debd1beb30f10160f948bdce7325f7e15c3b8002937f31a1aef21e741dd",
+      "cpu_audit": {
+        "positive_command": ".venv-cpu/bin/python work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/opposite_left_audit.py",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/opposite_left_audit.py --crossing-source .runtime-work/c125763-next/negative-opposite_left_audit.py.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "ValueError: Retained crossing source differs from compatibility proof",
+        "proof_log": "camera-saved-proof.log",
+        "proof_log_sha256": "1953264df083c6cd3cacbf458540fb5ad64d7082a53976a30b9e8f017106ffbc"
+      }
     }
   ],
   "observations": [
-    "Native yield sign actor, trigger volume, face visibility and official status",
-    "ego lane/road governed by sign trigger and enters same identified median-opening crossing",
-    "distinct highway IDs, first complete body entries and ego approach",
-    "other intersection occupancy and ego speed/stop behavior",
-    "opposite-direction left-turn intention/action from route and motion",
-    "official-device exclusion determination separated from physical entry order"
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "unit": "m/s",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    },
+    {
+      "name": "other_speed",
+      "mandatory": true,
+      "unit": "m/s",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    },
+    {
+      "name": "ego_approach_distance",
+      "mandatory": true,
+      "unit": "m",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    },
+    {
+      "name": "other_approach_distance",
+      "mandatory": true,
+      "unit": "m",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    },
+    {
+      "name": "ego_body_inside",
+      "mandatory": true,
+      "unit": "boolean",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    },
+    {
+      "name": "other_body_inside",
+      "mandatory": true,
+      "unit": "boolean",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    },
+    {
+      "name": "yield_sign_id",
+      "mandatory": true,
+      "unit": "Native actor ID",
+      "method": "original Native body and frame-joined four-camera source measurements",
+      "time_window": "entire 45-second capture",
+      "reference_frame": "original Native frame"
+    }
   ],
   "sources": [
     {
@@ -336,5 +413,13 @@
         "view": "driver_reference"
       }
     ]
-  }
+  },
+  "observation_topics": [
+    "Native yield sign actor, trigger volume, face visibility and official status",
+    "ego lane/road governed by sign trigger and enters same identified median-opening crossing",
+    "distinct highway IDs, first complete body entries and ego approach",
+    "other intersection occupancy and ego speed/stop behavior",
+    "opposite-direction left-turn intention/action from route and motion",
+    "official-device exclusion determination separated from physical entry order"
+  ]
 }

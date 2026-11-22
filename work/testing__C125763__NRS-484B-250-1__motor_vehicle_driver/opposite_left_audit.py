@@ -128,8 +128,15 @@ def audit(root, crossing_source=None):
         raise ValueError('Retained control source differs from compatibility proof')
     rows=[json.loads(s) for s in crossing.decode().splitlines() if s.strip()]
     commands=[json.loads(s) for s in controls.decode().splitlines() if s.strip()]
-    if len(rows)!=60 or len(commands)!=60 or config['frames']!=60 or config['rate_hz']!=20:
-        raise ValueError('Original frame rate/duration changed')
+    if len(rows)!=60 or len(commands)!=60 or config['frames']!=900 or config['duration_s']!=45 or config['rate_hz']!=20:
+        raise ValueError('Original diagnostic frame rate or selected duration changed')
+    saved=read(root/'opposite-left-saved-receipt.json')
+    if (saved.get('passed') is not True or saved.get('recorded_only') is not True or
+        saved.get('case_id')!=construction['case_id'] or
+        saved.get('analysis_revision',{}).get('construction_sha256')!=sha_bytes(construction_path.read_bytes()) or
+        saved.get('timestamp_joins',{}).get('frames')!=900 or
+        saved.get('originals_preserved') is not True):
+        raise ValueError('Full-duration recorded-only source proof changed')
     polygon=Polygon(site['crossing_polygon_xy_m'])
     if not polygon.is_valid or polygon.area<=0:
         raise ValueError('Invalid crossing polygon')

@@ -1,0 +1,275 @@
+"""Independent prospective Native delivery audit for an exact C125763 case.
+
+Diagnostic CPU attempts exercise the checks but cannot pass Native delivery.
+The reviewer supplies original-frame actor boxes after examining the capture.
+"""
+import argparse
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1]
+sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
+from worker_exchange import media  # noqa: E402
+from worker_exchange.common import sha, within  # noqa: E402
+def camera_profile():
+    manifest = json.loads((ROOT / 'execution-manifest.json').read_text())
+    expected = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+    profiles = []
+    for entry in manifest['cases']:
+        construction = json.loads((ROOT / entry['construction']).read_text())
+        config = json.loads(next(f['content'] for f in construction['files'] if f['path'] == 'config.json'))
+        cameras = config['cameras']
+        if not isinstance(cameras, list) or any(not isinstance(camera, dict) for camera in cameras):
+            raise ValueError('Selected camera profile lacks exact dimensions')
+        profiles.append({camera['name']: (camera['width'], camera['height'])
+                         for camera in cameras})
+    if not profiles or any(profile != expected for profile in profiles):
+        raise ValueError('Selected camera profiles differ')
+    return expected
+
+
+CAMERAS = camera_profile()
+
+CASE_IDS = tuple(row['case_id'] for row in
+                 json.loads((ROOT / 'execution-manifest.json').read_text())['cases'])
+
+CHECKS = ('native_source', 'all_participants', 'time_join',
+          'full_video_decode', 'actual_pixels', 'physical_completion')
+
+
+def read(path):
+    path = Path(path)
+    if not path.is_file():
+        raise ValueError('Missing original source: ' + path.name)
+    return json.loads(path.read_text())
+
+
+def rows(path):
+    path = Path(path)
+    if not path.is_file():
+        raise ValueError('Missing original source: ' + path.name)
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def audit_sources(attempt, case_id):
+    """Check original participant/time joins before any independent pixel review."""
+    attempt = Path(attempt).resolve()
+    result = read(attempt / 'result.json')
+    if result.get('case_id') != case_id:
+        raise ValueError('Original result case differs')
+    frame_map = rows(attempt / 'video_frames.jsonl')
+    crossing = rows(attempt / 'crossing_history.jsonl')
+    control = rows(attempt / 'controller_history.jsonl')
+    trace = rows(attempt / 'trace.jsonl')
+    if len(frame_map) != 900 or not (len(frame_map) == len(crossing) == len(control) == len(trace)):
+        raise ValueError('Original participant/time source lengths differ')
+    for index, joined in enumerate(zip(frame_map, crossing, control, trace)):
+        frame = joined[0].get('carla_frame')
+        if (joined[0].get('video_frame') != index or
+                any(row.get('frame') != frame for row in joined[1:]) or
+                any(row.get('time_s') != joined[0].get('time_s') for row in joined)):
+            raise ValueError('Original participant/time join differs')
+        if not all(isinstance(joined[1].get(role), dict) for role in ('ego', 'other')):
+            raise ValueError('Original actor source omitted')
+    return {'original_frame_count': len(frame_map),
+            'time_join': True, 'all_participants': True}
+
+
+def verify_seal(attempt, *, diagnostic=False):
+    attempt = Path(attempt).resolve()
+    seal = read(attempt / 'capture-seal.json')
+    if (seal.get('format') != 'worker-sealed-capture' or
+            seal.get('provenance_kind') != 'native' or
+            seal.get('diagnostic_fixture') is not diagnostic or
+            seal.get('restoration', {}).get('restored') is not True or
+            not seal.get('encoder_exit_codes') or
+            any(code != 0 for code in seal['encoder_exit_codes'].values())):
+        raise ValueError('Native capture seal provenance or closure differs')
+    needed = {'config.json', 'junction_context.json', 'crossing_history.jsonl',
+              'controller_history.jsonl', 'video_frames.jsonl', 'trace.jsonl',
+              'capture/evidence.jsonl', *(name + '.mkv' for name in CAMERAS)}
+    sources = seal.get('sources')
+    if not isinstance(sources, dict) or not needed <= set(sources):
+        raise ValueError('Capture seal omits required original source')
+    for name, digest in sources.items():
+        source = (attempt / name).resolve()
+        if attempt not in source.parents or not source.is_file() or sha(source) != digest:
+            raise ValueError('Sealed original source changed: ' + name)
+    native_exit = read(attempt / 'native-exit.json')
+    if (native_exit.get('event') != 'native_exit' or
+            native_exit.get('capture_seal_sha256') != sha(attempt / 'capture-seal.json') or
+            native_exit.get('native_revision') != seal.get('native_revision')):
+        raise ValueError('Native exit does not bind capture seal')
+    owner = read(attempt / 'owner-release.json')
+    if (owner.get('event') != 'owner_released' or
+            owner.get('operator_attested') is not True or
+            owner.get('native_exit_sha256') != sha(attempt / 'native-exit.json')):
+        raise ValueError('Owner release does not bind Native exit')
+    return seal
+
+
+def verify_physical(result, attempt):
+    attempt = Path(attempt).resolve()
+    if result.get('physical_acceptance_claimed') is not False:
+        raise ValueError('Result asserts physical acceptance before independent audit')
+    for key in ('setup', 'target', 'maneuver'):
+        check = result.get('physical_checks', {}).get(key, {})
+        if check.get('status') != 'met' or not check.get('method'):
+            raise ValueError('Source-bound physical completion absent: ' + key)
+        sources = check.get('sources')
+        if not isinstance(sources, dict) or not sources:
+            raise ValueError('Physical completion source hashes absent: ' + key)
+        for name, digest in sources.items():
+            source = (attempt / name).resolve()
+            if attempt not in source.parents or not source.is_file() or sha(source) != digest:
+                raise ValueError('Physical completion source changed: ' + name)
+    if (result.get('maneuver_completed') is not True or
+            result.get('setup_confirmed') is not True or
+            result.get('behavior_attempted') is not True):
+        raise ValueError('Physical setup, selected target or maneuver not completed')
+
+
+def pixel_checker(samples, width, height):
+    pending = {}
+    for sample in samples:
+        pending.setdefault(sample['video_frame'], []).append(sample)
+    seen = set()
+
+    def check(frame):
+        if (frame.width, frame.height) != (width, height):
+            raise ValueError('Reviewed camera dimensions differ')
+        for sample in pending.get(frame.index, []):
+            box = sample.get('bbox_xyxy')
+            if not isinstance(box, list) or len(box) != 4 or any(type(v) is not int for v in box):
+                raise ValueError('Reviewed actor pixel box missing')
+            x0, y0, x1, y1 = box
+            if not (0 <= x0 < x1 <= width and 0 <= y0 < y1 <= height and
+                    (x1 - x0) * (y1 - y0) >= 16):
+                raise ValueError('Reviewed actor pixel box invalid')
+            colors = set()
+            for y in range(y0, y1):
+                for x in range(x0, x1):
+                    offset = 3 * (y * width + x)
+                    colors.add(frame.pixels[offset:offset + 3])
+                    if len(colors) >= 2:
+                        break
+                if len(colors) >= 2:
+                    break
+            if len(colors) < 2:
+                raise ValueError('Reviewed actor ROI has no visible pixel detail')
+            seen.add((frame.index, sample['actor_id']))
+
+    def finish():
+        if seen != {(s['video_frame'], s['actor_id']) for s in samples}:
+            raise ValueError('Reviewed actor pixel frame was not decoded')
+
+    return check, finish
+
+
+def verify_review(attempt, case_id, review_path, frames):
+    attempt = Path(attempt).resolve()
+    review = read(review_path)
+    source_hashes = {name: sha(attempt / (name + '.mkv')) for name in CAMERAS}
+    if (review.get('case_id') != case_id or not review.get('reviewer') or
+            not review.get('method') or
+            review.get('frame_map_sha256') != sha(attempt / 'video_frames.jsonl') or
+            review.get('source_sha256') != source_hashes):
+        raise ValueError('Independent pixel review missing or stale')
+    observations = review.get('observations', [])
+    if (not observations or {row.get('actor') for row in observations} != {'ego', 'other'} or
+            {row.get('camera') for row in observations} != set(CAMERAS)):
+        raise ValueError('Independent pixel review omits actor or camera')
+    history = rows(attempt / 'crossing_history.jsonl')
+    if len(history) != frames:
+        raise ValueError('Pixel review original history length differs')
+    for row in observations:
+        index = row.get('video_frame')
+        if (type(index) is not int or not 0 <= index < frames or
+                row.get('actor') not in ('ego', 'other') or
+                row.get('actor_id') != history[index][row['actor']]['actor_id']):
+            raise ValueError('Pixel review actor identity differs')
+    for name, dimensions in CAMERAS.items():
+        samples = [row for row in observations if row['camera'] == name]
+        check, finish = pixel_checker(samples, *dimensions)
+        media.audit(attempt / (name + '.mkv'), frames,
+                    checkers={'reviewed_actor_pixels': (sha(__file__), check)},
+                    mapping_sha256=sha(attempt / 'video_frames.jsonl'))
+        finish()
+    return sha(review_path)
+
+
+def audit(attempt, case_id, pixel_review, output, *, job_id, recording_id,
+          source_decode_receipt, diagnostic=False):
+    attempt = Path(attempt).resolve()
+    if case_id not in CASE_IDS:
+        raise ValueError('Unknown exact C125763 subsection (1) case')
+    if not job_id or not recording_id:
+        raise ValueError('Exact job and recording identities required')
+    seal = verify_seal(attempt, diagnostic=diagnostic)
+    result = read(attempt / 'result.json')
+    if (result.get('case_id') != case_id or
+            result.get('provenance_kind') != 'native' or
+            result.get('diagnostic_fixture') is not diagnostic):
+        raise ValueError('Native result provenance differs')
+    verify_physical(result, attempt)
+    software = audit_sources(attempt, case_id)
+    frames = software['original_frame_count']
+    if seal.get('frames') != frames:
+        raise ValueError('Sealed/original frame count differs')
+    review_hash = verify_review(attempt, case_id, pixel_review, frames)
+    decode_path = Path(source_decode_receipt).resolve()
+    if decode_path == attempt / 'result.json' or not decode_path.parent.is_dir():
+        raise ValueError('Source decode receipt path invalid')
+    decode = media.audit(attempt / 'raw.mkv', frames,
+                         mapping_sha256=sha(attempt / 'video_frames.jsonl'),
+                         receipt=decode_path)
+    if decode.get('passed') is not True or decode.get('video_sha256') != sha(attempt / 'raw.mkv'):
+        raise ValueError('Complete source decode receipt differs')
+    videos = result.get('video_references', [])
+    if not videos or any(not within(attempt, name).is_file() for name in videos):
+        raise ValueError('Original video reference missing')
+    trace = result.get('trace_reference')
+    if not trace or not within(attempt, trace).is_file():
+        raise ValueError('Original trace reference missing')
+    receipt = {'format': 'worker-delivery-audit', 'case_id': case_id,
+               'job_id': job_id, 'attempt_path': str(attempt),
+               'recording_id': recording_id,
+               'passed': not diagnostic, 'diagnostic_fixture': diagnostic,
+               'software_checks_passed': True, 'physical_acceptance_claimed': False,
+               'checks': {key: True for key in CHECKS}, 'frames': frames,
+               'result_sha256': sha(attempt / 'result.json'),
+               'trace_reference': trace, 'trace_sha256': sha(within(attempt, trace)),
+               'video_references': {name: sha(within(attempt, name)) for name in videos},
+               'source_decode_receipt_path': str(decode_path),
+               'source_decode_receipt_sha256': sha(decode_path),
+               'source_decode_auditor_sha256': decode['auditor_sha256'],
+               'source_audit': software, 'pixel_review_sha256': review_hash,
+               'capture_seal_sha256': sha(attempt / 'capture-seal.json'),
+               'owner_release_sha256': sha(attempt / 'owner-release.json'),
+               'auditor_sha256': sha(__file__)}
+    output = Path(output).resolve()
+    if output.name == 'result.json' or attempt not in output.parents or output.exists():
+        raise ValueError('Audit receipt must be a new separate file within attempt')
+    output.write_text(json.dumps(receipt, indent=2) + '\n')
+    return receipt
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', required=True, type=Path)
+    parser.add_argument('--case', required=True)
+    parser.add_argument('--pixel-review', required=True, type=Path)
+    parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--job-id', required=True)
+    parser.add_argument('--recording-id', required=True)
+    parser.add_argument('--source-decode-receipt', required=True, type=Path)
+    parser.add_argument('--diagnostic', action='store_true')
+    args = parser.parse_args()
+    print(json.dumps(audit(args.attempt, args.case, args.pixel_review,
+                           args.output, job_id=args.job_id,
+                           recording_id=args.recording_id,
+                           source_decode_receipt=args.source_decode_receipt,
+                           diagnostic=args.diagnostic), sort_keys=True))
