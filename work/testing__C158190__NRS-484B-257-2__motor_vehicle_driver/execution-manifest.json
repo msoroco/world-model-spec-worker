@@ -268,7 +268,128 @@
           "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/other_approach_history.jsonl"
         }
       },
-      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/cases/stop_no_other/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/cases/stop_no_other/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_other --output .runtime-work/c158190-stop-no-other-offline-a --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "c53420154de352495e13910e67981f41f6174506e2b46d4c999e57904ea13f0f",
+        "log": "third-primary-offline.log",
+        "log_sha256": "0b884bd99cb8a16719b0e030ef78d93ad5c6ef482b6185a2c6fe4079c3de5810"
+      },
+      "compatibility": {
+        "receipt": "third-primary-compatibility.json",
+        "sha256": "c81f5eaee986af57edeeb9de13ba2d2b5cf204aa491b5ff748e2e5e05edfb1a7",
+        "log": "third-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "third-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_other --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat $OUTPUT/feedback.json",
+        "test_log": "third-primary-saved.log",
+        "test_log_sha256": "e13f6b73efe4f30981280e490cd1a4331ce79dd7ced6f0a8115b56fd7194af92",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic source-shaped recorded-only processing; physical/legal acceptance unclaimed"
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_halt",
+      "kind": "delivery",
+      "construction": "cases/stop_no_halt/construction.json",
+      "construction_sha256": "fa96d64534ce79bf8cb0137c771e2fade31284dfa059f0065414cef6f0d96b08",
+      "measurement_procedure": {
+        "entrypoint": "stop_entry_measurements.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native rolling response may become a complete stop because of traffic or route geometry"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ego_speed_and_stop_reference": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor velocity and body vertices at every joined Native frame; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_speed_and_stop_reference.jsonl"
+        },
+        "ego_and_other_intersection_occupancy": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor bounding-box vertices against authored junction bounds; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_and_other_intersection_occupancy.jsonl"
+        },
+        "other_approach_history": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original non-obligated vehicle position and velocity where staged; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/other_approach_history.jsonl"
+        }
+      },
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/cases/stop_no_halt/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_halt --output .runtime-work/c158190-stop-no-halt-offline-b --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "fa96d64534ce79bf8cb0137c771e2fade31284dfa059f0065414cef6f0d96b08",
+        "log": "fourth-primary-offline.log",
+        "log_sha256": "5976b422375c6386c3c59afdc98721bf49b7f06a71b1931151c43ed60d68c632"
+      },
+      "compatibility": {
+        "receipt": "fourth-primary-compatibility.json",
+        "sha256": "033bbcf9c51e3d06a625889367c0c706d8dadf03aaa42d551101754044ecbc26",
+        "log": "fourth-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "fourth-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_halt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat $OUTPUT/feedback.json",
+        "test_log": "fourth-primary-saved.log",
+        "test_log_sha256": "efaa9013dca9885e0c21842621d304c35031c6f243523a293108670e2558c09a",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic source-shaped recorded-only processing; physical/legal acceptance unclaimed"
+      }
     }
   ]
 }
