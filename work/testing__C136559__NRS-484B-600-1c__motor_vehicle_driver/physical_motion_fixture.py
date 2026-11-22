@@ -82,7 +82,9 @@ def derive_speed_source(source, output, target_mph):
         ego = evidence['ego']
         ego['position_m'][0] = x
         ego['speed_mps'] = speed
-        ego['speed_provenance'] = 'synthetic_kinematic_derivation'
+        # The frozen adapter accepts this label only in diagnostic-fixture mode.
+        # fixture-provenance.json retains the more specific kinematic derivation.
+        ego['speed_provenance'] = 'synthetic_native_sample'
         ego['body_vertices_m'] = body_shift(ego['body_vertices_m'], dx)
         evidence['world']['road_projection']['s_m'] = x
         for participant in evidence['original_observations']['participants']:
@@ -113,6 +115,9 @@ def derive_speed_source(source, output, target_mph):
     manifest['acquisition'] = 'synthetic_diagnostic_derivation'
     manifest['source_run'] = 'synthetic:constant-speed-derived-from-retained-seed'
     manifest['speed_source'] = 'synthetic_kinematic_derivation'
+    for name in manifest['sources']:
+        if name in files:
+            manifest['sources'][name] = hashlib.sha256(files[name].encode()).hexdigest()
     files['capture/manifest.json'] = json.dumps(manifest, separators=(',', ':')) + '\n'
     verify_derived_source(data, target_mph)
     output = Path(output)
