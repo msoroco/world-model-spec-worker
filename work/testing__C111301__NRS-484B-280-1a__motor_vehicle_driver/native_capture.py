@@ -129,11 +129,19 @@ class Cameras:
             if image.frame!=frame:raise RuntimeError('camera frame differs from world frame: '+name)
             self.encoders[name].stdin.write(image.raw_data)
     def close(self):
-        for sensor in reversed(self.sensors):sensor.stop()
+        failures=[]
+        for sensor in reversed(self.sensors):
+            try:sensor.stop()
+            except BaseException as error:failures.append(repr(error))
         for name,process in self.encoders.items():
-            if process.stdin and not process.stdin.closed:process.stdin.close()
-            if process.wait(timeout=180)!=0:raise RuntimeError('camera encoder failed: '+name)
-        for sensor in reversed(self.sensors):sensor.destroy()
+            try:
+                if process.stdin and not process.stdin.closed:process.stdin.close()
+                if process.wait(timeout=180)!=0:failures.append('camera encoder failed: '+name)
+            except BaseException as error:failures.append(repr(error))
+        for sensor in reversed(self.sensors):
+            try:sensor.destroy()
+            except BaseException as error:failures.append(repr(error))
+        if failures:raise RuntimeError('; '.join(failures))
 
 
 def run_native(scene,output,host,port):

@@ -4,7 +4,7 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from native_capture import select_chair,connected_route,pedestrian_station,spawn_entities
+from native_capture import Cameras,select_chair,connected_route,pedestrian_station,spawn_entities
 from runner import load_scene
 
 
@@ -20,6 +20,26 @@ class Library:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_camera_cleanup_destroys_every_sensor_after_encoder_failure(self):
+        class Sensor:
+            stopped=False;destroyed=False
+            def stop(self):self.stopped=True
+            def destroy(self):self.destroyed=True
+        class Pipe:
+            closed=False
+            def close(self):self.closed=True
+        class Encoder:
+            def __init__(self,code):self.code=code;self.stdin=Pipe()
+            def wait(self,timeout):return self.code
+        sensors=[Sensor(),Sensor()]
+        bank=Cameras.__new__(Cameras)
+        bank.sensors=sensors
+        bank.encoders={'overview':Encoder(1),'approach':Encoder(0)}
+        with self.assertRaisesRegex(RuntimeError,'encoder failed'):
+            bank.close()
+        self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors))
+        self.assertTrue(all(process.stdin.closed for process in bank.encoders.values()))
+
     def test_wheelchair_asset_is_distinct_and_named(self):
         library=Library(['static.prop.wheelchair02','walker.pedestrian.0001'])
         self.assertEqual(select_chair(library,'static.prop.wheelchair*').id,
