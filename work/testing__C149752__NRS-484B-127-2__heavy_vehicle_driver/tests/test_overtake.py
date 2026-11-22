@@ -56,5 +56,66 @@ class PassingTests(unittest.TestCase):
                 module.analyze(root)
 
 
+class FollowingTests(unittest.TestCase):
+    def fixture(self, root, gap_ft, lanes=1):
+        context = {"native_map_id": "TownX", "highway_source": "diagnostic-highway",
+                   "lane_count_source": "diagnostic-map-and-visual", "road_id": 7,
+                   "same_direction_lane_count": lanes, "lane_forward_xy": [1, 0]}
+        (root / "road_context.json").write_text(json.dumps(context))
+        rows = []
+        for i in range(3):
+            ego = body(i, 0)
+            lead = body(i + 4 + gap_ft * .3048, 0)
+            ego["actor_id"], lead["actor_id"] = 11, 12
+            rows.append({"frame": 200 + i, "time_s": 10 + i * .05,
+                         "ego": ego, "lead": lead})
+        frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
+                  for i, row in enumerate(rows)]
+        (root / "following_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+        (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
+
+    def test_exact_gap_branches_and_lane_context(self):
+        for gap, expected in ((499, "below"), (500, "at_sampled_precision"), (501, "above")):
+            with self.subTest(gap=gap), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.fixture(root, gap, lanes=2 if gap == 501 else 1)
+                result = module.analyze_following(root)
+                self.assertTrue(all(row["sample_relation"] == expected for row in result["samples"]))
+                self.assertAlmostEqual(result["sampled_gap_min_m"], gap * .3048)
+                self.assertEqual(result["two_lane_nonapplication_context"], gap == 501)
+                self.assertEqual(result["all_samples_at_or_above_500_ft"], gap >= 500)
+                self.assertEqual(result["legal_conclusion"], "unresolved")
+
+    def test_changed_lane_and_stale_frame_join_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.fixture(root, 500)
+            rows = [json.loads(line) for line in (root / "following_history.jsonl").read_text().splitlines()]
+            rows[1]["lead"]["lane_id"] = 2
+            (root / "following_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "same sourced lane"):
+                module.analyze_following(root)
+            self.fixture(root, 500)
+            frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            frames[1]["carla_frame"] = 999
+            (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
+            with self.assertRaisesRegex(ValueError, "frame join"):
+                module.analyze_following(root)
+
+    def test_one_short_sample_breaks_continuous_gap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.fixture(root, 500)
+            rows = [json.loads(line) for line in (root / "following_history.jsonl").read_text().splitlines()]
+            for vertex in rows[1]["lead"]["body_vertices_xy_m"]:
+                vertex[0] -= .3048
+            (root / "following_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            result = module.analyze_following(root)
+            self.assertEqual([x["sample_relation"] for x in result["samples"]],
+                             ["at_sampled_precision", "below", "at_sampled_precision"])
+            self.assertFalse(result["all_samples_at_or_above_500_ft"])
+            self.assertEqual(result["between_sample_gap"], "unresolved")
+
+
 if __name__ == "__main__":
     unittest.main()
