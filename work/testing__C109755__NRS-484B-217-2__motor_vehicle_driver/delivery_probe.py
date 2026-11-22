@@ -30,14 +30,35 @@ def fixture(root,case):
          'oncoming_body_vertices_m':[[v[0]+5,v[1],v[2]] for v in body],
          'following_body_vertices_m':[[v[0]-6,v[1],v[2]] for v in body],
          'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
+    row['oncoming_velocity_xy_mps']=[-2.0,0.0]
+    row['following_velocity_xy_mps']=[2.0,0.0]
     (attempt/'turn-history.jsonl').write_text(json.dumps(row)+'\n')
-    write(attempt/'zone-context.json',{'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
-         'zone_extent_verified':True,'statutory_exceptions_verified':True})
+    authority=b'DIAGNOSTIC ONLY: synthetic designated-zone source, not an official record.\n'
+    (attempt/'zone-authority-source.txt').write_bytes(authority)
+    packet={'format':'worker-zone-review-source-v1','reviewer':'synthetic CPU probe',
+            'review_method':'fixture exercises provenance and map joins only',
+            'authority_citation':'diagnostic fixture','authority_source_path':str(attempt/'zone-authority-source.txt'),
+            'authority_source_sha256':sha(attempt/'zone-authority-source.txt'),
+            'designation':'official_no_passing_zone','destination_kind':'other_left_turn',
+            'subsections_3_and_4_reviewed':True,'road_id':1,'lane_id':-1,
+            'zone_x_limits_m':[-10,10]}
+    write(attempt/'zone-review-source.json',packet)
+    zone={'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
+          'approach_road_id':1,'approach_lane_id':-1,'crossing_x_m':0,
+          'sample_interval_max_m':5,
+          'approach_marking_samples':[{'requested_x_m':x,'mapped_x_m':x,
+                                       'road_id':1,'lane_id':-1,'marking_type':'Solid'}
+                                      for x in (-5,-1)]}
+    from zone_source import validate as validate_zone_source
+    zone.update(validate_zone_source(packet,authority,zone))
+    write(attempt/'zone-context.json',zone)
     write(attempt/'acquisition.json',{name:{'kind':'original_native','sha256':sha(attempt/name)}
-        for name in ('turn-history.jsonl','zone-context.json')})
+        for name in ('turn-history.jsonl','zone-context.json','zone-review-source.json',
+                     'zone-authority-source.txt')})
     result={'case_id':case,'setup_confirmed':True,'behavior_attempted':True,'maneuver_completed':True}
     write(attempt/'result.json',result);write(stage/'result.json',result)
     originals=('trace.jsonl','video_frames.jsonl','turn-history.jsonl','zone-context.json',
+               'zone-review-source.json','zone-authority-source.txt',
                'acquisition.json','result.json')
     write(attempt/'capture-seal.json',{'events':['capture_finished','encoders_closed','restoration_verified'],
          'sources':{name:sha(attempt/name) for name in originals}})

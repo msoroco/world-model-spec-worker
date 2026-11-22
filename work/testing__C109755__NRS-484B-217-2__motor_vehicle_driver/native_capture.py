@@ -6,6 +6,7 @@ An authored coordinate is accepted only when the operator's map supports it.
 import hashlib
 import json
 import math
+import os
 import queue
 import subprocess
 from pathlib import Path
@@ -35,6 +36,11 @@ def body_gap(first, second):
     dy = max(min(p[1] for p in b)-max(p[1] for p in a),
              min(p[1] for p in a)-max(p[1] for p in b), 0)
     return math.hypot(dx, dy)
+
+
+def velocity_xy(actor):
+    value=actor.get_velocity()
+    return [float(value.x),float(value.y)]
 
 
 def connected_turn(start, destination, stripe_y, *, limit=1200):
@@ -194,6 +200,10 @@ def run_native(scene, output, host, port):
     phase='initializing'; error=None; restored=False
     try:
         zone=check_map(world.get_map(),scene,carla)
+        zone_packet=os.environ.get('ZONE_REVIEW_PACKET')
+        if zone_packet:
+            from zone_source import copy_review
+            zone.update(copy_review(zone_packet,zone,output))
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
         world.apply_settings(settings)
         def transform(x,y,_,yaw):
@@ -230,7 +240,9 @@ def run_native(scene, output, host, port):
                      'oncoming_body_gap_m':body_gap(ego,actors['oncoming']),
                      'following_body_gap_m':body_gap(ego,actors['following']),
                      'oncoming_body_vertices_m':body_vertices(actors['oncoming']),
-                     'following_body_vertices_m':body_vertices(actors['following'])}
+                     'following_body_vertices_m':body_vertices(actors['following']),
+                     'oncoming_velocity_xy_mps':velocity_xy(actors['oncoming']),
+                     'following_velocity_xy_mps':velocity_xy(actors['following'])}
                 history.write(json.dumps(row,allow_nan=False)+'\n');rows.append(row)
         phase='closing'
         capture.close();capture=None
@@ -238,6 +250,8 @@ def run_native(scene, output, host, port):
         cameras.close();cameras=None
         source_names=['trace.jsonl','video_frames.jsonl','turn-history.jsonl','zone-context.json',
                       'road.xodr','carla_recorder.log',*[name+'.mkv' for name,*_ in CameraBank.SPECS]]
+        if zone_packet:
+            source_names.extend(('zone-review-source.json','zone-authority-source.txt'))
         write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in source_names})
         crossed=any(a['ego_center_y_m']<scene['stripe_y_m']<=b['ego_center_y_m'] for a,b in zip(rows,rows[1:]))
         completed=crossed and rows[-1]['ego_center_y_m']>=scene['exit_y_m']-2
@@ -245,16 +259,18 @@ def run_native(scene, output, host, port):
                  'method':'original turn-history body center samples','tolerance':0,
                  'matched':crossed,'physical_cause_confirmed':False,
                  'cause_evidence':'Native map marking and original body history; statutory extent pending'}]
+        reviewed=zone['zone_extent_verified'] and zone['statutory_exceptions_verified']
         write_result(output,{'case_id':scene['case_id'],'measured_values':{'crossed_stripe':crossed},
-            'target_checks':checks,'setup_confirmed':False,'behavior_attempted':crossed,
+            'target_checks':checks,'setup_confirmed':reviewed,'behavior_attempted':crossed,
             'maneuver_completed':completed,'termination_reason':'planned_duration',
             'physical_failure_flags':([] if completed else ['turn_not_observed_complete']),
             'trace_reference':'trace.jsonl','video_references':[name+'.mkv' for name,*_ in CameraBank.SPECS],
             'video_frame_map_reference':'video_frames.jsonl',
-            'recording_description':{'summary':'Original left-turn crossing attempt; zone extent and exceptions unverified'},
+            'recording_description':{'summary':'Original left-turn crossing attempt with source-bound zone review when supplied; safety and impediment unresolved'},
             'recording_evidence':{'acquisition':'acquisition.json'},
             'realized_observables':{'frame_count':len(rows),'crossed_stripe':crossed,
-                                    'zone_extent_verified':False}})
+                                    'zone_extent_verified':zone['zone_extent_verified'],
+                                    'destination_kind':zone.get('destination_kind')}})
         phase='sealed'
     except BaseException as exc:
         error=repr(exc)

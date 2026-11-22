@@ -48,6 +48,18 @@ def measure(attempt):
         raise ValueError('signal or traffic measurements missing')
     if any(row['oncoming_body_gap_m']<0 or row['following_body_gap_m']<0 for row in rows):
         raise ValueError('invalid traffic gap measurement')
+    traffic_speed={}
+    for role in ('oncoming','following'):
+        speeds=[]
+        for row in rows:
+            vector=row.get(role+'_velocity_xy_mps')
+            if not isinstance(vector,list) or len(vector)!=2 or any(
+                    type(value) not in (int,float) or not math.isfinite(value) for value in vector):
+                raise ValueError('missing original '+role+' velocity history')
+            speeds.append(math.hypot(*vector))
+        traffic_speed[role]={'minimum_mps':min(speeds),'maximum_mps':max(speeds),
+                             'observed_range_mps':max(speeds)-min(speeds),
+                             'samples_mps':speeds}
     activated=[r for r in rows if r['left_signal'] and r['time_s']<=first['time_s']]
     # Count a continuous signal run ending at the turn onset, using observed
     # center positions. No district or legal safety claim follows from this.
@@ -72,6 +84,7 @@ def measure(attempt):
             'crossing_method':'first sampled original ego body edge over stripe after wholly-below sample',
             'minimum_oncoming_body_gap_m':min(r['oncoming_body_gap_m'] for r in rows),
             'minimum_following_body_gap_m':min(r['following_body_gap_m'] for r in rows),
+            'traffic_speed_observations':traffic_speed,
             'zone_context_sha256':acquisition['zone-context.json']['sha256'],
             'turn_history_sha256':acquisition['turn-history.jsonl']['sha256'],
             'legal_safety_and_impediment':'unresolved'}

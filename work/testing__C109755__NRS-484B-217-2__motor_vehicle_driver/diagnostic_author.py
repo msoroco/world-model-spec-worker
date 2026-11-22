@@ -35,6 +35,8 @@ def main():
                      'ego_center_y_m':center_y,'ego_body_vertices_m':body,
                      'left_signal':index>=1,
                      'oncoming_body_gap_m':20.0,'following_body_gap_m':15.0,
+                     'oncoming_velocity_xy_mps':[-2.0+0.1*index,0.0],
+                     'following_velocity_xy_mps':[2.0-0.1*index,0.0],
                      'oncoming_body_vertices_m':[[v[0]+21,v[1],v[2]] for v in body],
                      'following_body_vertices_m':[[v[0]-16,v[1],v[2]] for v in body]})
     files['turn-history.jsonl'] = ''.join(json.dumps(row,sort_keys=True)+'\n' for row in rows)

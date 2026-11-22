@@ -38,7 +38,8 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
     if seal.get('events')!=['capture_finished','encoders_closed','restoration_verified']:
         raise ValueError('Native capture lifecycle incomplete')
     required_sources={'trace.jsonl','video_frames.jsonl','turn-history.jsonl',
-                      'zone-context.json','acquisition.json','result.json'}
+                      'zone-context.json','zone-review-source.json','zone-authority-source.txt',
+                      'acquisition.json','result.json'}
     if not required_sources<=set(seal.get('sources',{})):
         raise ValueError('Native seal omits required original source')
     for name,checksum in seal.get('sources',{}).items():
@@ -61,7 +62,8 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
         for i,(t,m) in enumerate(zip(trace,mapping))):
         raise ValueError('original frame/time join missing or changed')
     acquisition=read(attempt/'acquisition.json')
-    for name in ('turn-history.jsonl','zone-context.json'):
+    for name in ('turn-history.jsonl','zone-context.json','zone-review-source.json',
+                 'zone-authority-source.txt'):
         source=acquisition.get(name,{})
         if source.get('kind')!='original_native' or not (attempt/name).is_file() or source.get('sha256')!=sha(attempt/name):
             raise ValueError('original turn source missing or changed: '+name)
@@ -70,6 +72,10 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
         h.get('frame')!=m['carla_frame'] or abs(h.get('time_s',-1)-m['time_s'])>1e-6 or
         not all(body(h.get(key)) for key in ('ego_body_vertices_m','oncoming_body_vertices_m','following_body_vertices_m')) or
         type(h.get('left_signal')) is not bool or
+        any(not isinstance(h.get(role+'_velocity_xy_mps'),list) or
+            len(h[role+'_velocity_xy_mps'])!=2 or
+            any(type(v) not in (int,float) or not math.isfinite(v)
+                for v in h[role+'_velocity_xy_mps']) for role in ('oncoming','following')) or
         any(type(h.get(key)) not in (int,float) or not math.isfinite(h[key]) or h[key]<0
             for key in ('oncoming_body_gap_m','following_body_gap_m'))
         for h,m in zip(turns,mapping)):
@@ -80,6 +86,13 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
     zone=read(attempt/'zone-context.json')
     if zone.get('striping_source')!='native_map' or zone.get('zone_kind')!='marked_no_passing_zone':
         raise ValueError('Native zone marking source is missing')
+    from zone_source import validate as validate_zone_source
+    source_facts=validate_zone_source(read(attempt/'zone-review-source.json'),
+                                      (attempt/'zone-authority-source.txt').read_bytes(),zone)
+    for key in ('zone_extent_verified','statutory_exceptions_verified',
+                'destination_kind','authority_source_sha256','review_packet_sha256'):
+        if zone.get(key)!=source_facts.get(key):
+            raise ValueError('reviewed zone source differs from Native context: '+key)
     if zone.get('zone_extent_verified') is not True or zone.get('statutory_exceptions_verified') is not True:
         raise ValueError('statutory zone extent or exception context is unverified')
     processed=read(processing)

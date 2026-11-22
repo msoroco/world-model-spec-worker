@@ -1,8 +1,11 @@
 import importlib.util
+import hashlib
+import sys
 from pathlib import Path
 import unittest
 
 FOLDER=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(FOLDER))
 spec=importlib.util.spec_from_file_location('runner',FOLDER/'runner.py')
 runner=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -61,6 +64,8 @@ class SavedAnalysisTests(unittest.TestCase):
             rows.append({'frame':frame,'time_s':frame/20,'ego_center_y_m':y,
                          'ego_body_vertices_m':vertices,
                          'left_signal':bool(signaled and frame>=1),
+                         'oncoming_velocity_xy_mps':[-2.0+0.1*frame,0.0],
+                         'following_velocity_xy_mps':[2.0-0.1*frame,0.0],
                          'oncoming_body_gap_m':20-frame,'following_body_gap_m':15+frame})
         (root/'turn-history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
         (root/'zone-context.json').write_text(json.dumps({'zone_kind':'marked_no_passing_zone',
@@ -75,6 +80,7 @@ class SavedAnalysisTests(unittest.TestCase):
             self.assertEqual(m['crossing_frame'],2)
             self.assertTrue(m['signal_active_at_crossing'])
             self.assertLess(m['signal_started_s'],m['crossing_time_s'])
+            self.assertGreater(m['traffic_speed_observations']['oncoming']['observed_range_mps'],0)
     def test_unsignaled_crossing(self):
         with tempfile.TemporaryDirectory() as temp:
             self.assertIsNone(analysis.measure(self.fixture(temp,False))['signal_started_s'])
@@ -164,14 +170,32 @@ class DeliveryAuditTests(unittest.TestCase):
             'oncoming_body_vertices_m':[[v[0]+5,v[1],v[2]] for v in body],
             'following_body_vertices_m':[[v[0]-6,v[1],v[2]] for v in body],
             'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
+        history['oncoming_velocity_xy_mps']=[-2.0,0.0]
+        history['following_velocity_xy_mps']=[2.0,0.0]
         (root/'turn-history.jsonl').write_text(json.dumps(history)+'\n')
-        (root/'zone-context.json').write_text(json.dumps({'zone_kind':'marked_no_passing_zone',
-            'striping_source':'native_map','zone_extent_verified':True,
-            'statutory_exceptions_verified':True}))
+        authority=b'synthetic zone authority fixture\n'
+        (root/'zone-authority-source.txt').write_bytes(authority)
+        packet={'format':'worker-zone-review-source-v1','reviewer':'CPU fixture',
+                'review_method':'source/map join fixture','authority_citation':'fixture',
+                'authority_source_path':str(root/'zone-authority-source.txt'),
+                'authority_source_sha256':hashlib.sha256(authority).hexdigest(),
+                'designation':'official_no_passing_zone','destination_kind':'other_left_turn',
+                'subsections_3_and_4_reviewed':True,'road_id':1,'lane_id':-1,
+                'zone_x_limits_m':[-10,10]}
+        (root/'zone-review-source.json').write_text(json.dumps(packet))
+        zone={'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
+              'approach_road_id':1,'approach_lane_id':-1,'crossing_x_m':0,
+              'sample_interval_max_m':5,'approach_marking_samples':[
+                  {'requested_x_m':x,'mapped_x_m':x,'road_id':1,'lane_id':-1,'marking_type':'Solid'}
+                  for x in (-5,-1)]}
+        from zone_source import validate as validate_zone_source
+        zone.update(validate_zone_source(packet,authority,zone))
+        (root/'zone-context.json').write_text(json.dumps(zone))
         (root/'acquisition.json').write_text(json.dumps({name:{'kind':'original_native',
-            'sha256':delivery.sha(root/name)} for name in ('turn-history.jsonl','zone-context.json')}))
+            'sha256':delivery.sha(root/name)} for name in ('turn-history.jsonl','zone-context.json',
+                'zone-review-source.json','zone-authority-source.txt')}))
         seal={'events':['capture_finished','encoders_closed','restoration_verified'],
-              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json','turn-history.jsonl','zone-context.json','acquisition.json')}}
+              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json','turn-history.jsonl','zone-context.json','zone-review-source.json','zone-authority-source.txt','acquisition.json')}}
         (root/'capture-seal.json').write_text(json.dumps(seal))
         (root/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(root/'capture-seal.json')}))
         (root/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
@@ -229,5 +253,5 @@ class DeliveryAuditTests(unittest.TestCase):
             (p/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(p/'capture-seal.json')}))
             (p/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
                 'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
-            with self.assertRaisesRegex(ValueError,'statutory zone extent'):
+            with self.assertRaisesRegex(ValueError,'reviewed zone source differs'):
                 delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)

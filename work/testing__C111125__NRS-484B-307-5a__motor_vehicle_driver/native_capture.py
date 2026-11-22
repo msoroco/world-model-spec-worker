@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path
 
 from arrow_source import aspect as reviewed_aspect, bind_actor, load_binding
+from phase_source import entry_observation, load as load_phase_source
 
 
 def sha(path):
@@ -89,6 +90,58 @@ def retain_reviewed_sources(source_dir, output):
     if len({item['packet']['actor_id'] for item in bindings})!=len(bindings):
         raise ValueError('duplicate reviewed arrow actor ID')
     return bindings,names
+
+
+def retain_phase_sources(source_dir, output):
+    """Retain reviewed governing phase packets and their exact source bytes."""
+    if not source_dir:return {},[]
+    source_dir=Path(source_dir)
+    if not source_dir.is_dir():raise ValueError('participant phase source directory absent')
+    destination=Path(output)/'reviewed-phase-sources';destination.mkdir()
+    bindings={};names=[]
+    for index,path in enumerate(sorted(source_dir.glob('*.json'))):
+        packet=json.loads(path.read_text())
+        filename=packet.get('source_file')
+        if not isinstance(filename,str) or Path(filename).name!=filename or filename in ('','.','..'):
+            raise ValueError('participant phase source filename invalid')
+        binding=load_phase_source(path,source_dir/filename)
+        ident=packet['participant_actor_id']
+        if ident in bindings:raise ValueError('duplicate participant phase actor ID')
+        packet_copy=destination/f'participant-{index}.json'
+        source_copy=destination/f'participant-{index}.txt'
+        shutil.copy2(path,packet_copy);shutil.copy2(source_dir/filename,source_copy)
+        if sha(packet_copy)!=binding['packet_sha256'] or sha(source_copy)!=binding['source_sha256']:
+            raise ValueError('participant phase source changed during retention')
+        bindings[ident]=binding
+        names.extend([str(packet_copy.relative_to(output)),str(source_copy.relative_to(output))])
+    return bindings,names
+
+
+def apply_phase_sources(people, lights, scene, bindings, prior_inside, entry_status, frame):
+    """Preserve unknown initial presence; bind later entry to raw light state."""
+    from runner import overlaps
+    regions=[scene['intersection_bounds_m'],*scene['adjacent_crosswalk_bounds_m']]
+    current={}
+    for person in people:
+        ident=person['id']
+        inside=any(overlaps(person['body_vertices_m'],region) for region in regions)
+        current[ident]=inside
+        if not inside:
+            entry_status.pop(ident,None)
+            continue
+        binding=bindings.get(ident)
+        if binding is None:continue
+        observation=entry_observation(binding,person,lights,frame=frame,
+                                      previous_inside=prior_inside.get(ident),inside=inside)
+        person['phase_entry_observation']=observation
+        if observation['reason']=='reviewed_entry_phase':
+            entry_status[ident]=observation
+        established=entry_status.get(ident)
+        if established is not None and type(established['status']) is bool:
+            person['lawfully_present']=established['status']
+            person['lawful_presence_source']='reviewed-entry-phase:'+established['packet_sha256']
+    prior_inside.clear();prior_inside.update(current)
+    return people
 
 
 def map_context(mapping, scene, carla):
@@ -194,15 +247,17 @@ def run_native(scene,output,host,port):
     output=Path(output).resolve()
     if not output.is_dir():raise ValueError('Native attempt directory must already exist')
     bindings,reviewed_names=retain_reviewed_sources(os.environ.get('C111125_ARROW_SOURCE_DIR'),output)
+    phase_bindings,phase_names=retain_phase_sources(os.environ.get('C111125_PHASE_SOURCE_DIR'),output)
     write(output/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':False,
           'method':'original CARLA live capture; reviewed arrow source required for arrow inference',
-          'reviewed_arrow_sources':reviewed_names})
+          'reviewed_arrow_sources':reviewed_names,'reviewed_phase_sources':phase_names})
     client=carla.Client(host,port);client.set_timeout(30)
     world=client.get_world();original_settings=world.get_settings()
     actors={};cameras=None;capture=None;frame_map=None
     phase='initializing';error=None;restored=False;rows=[];verified_arrow_frames=[]
     move_commands=0;pending={'throttle':0.0,'brake':1.0,'steer':0.0}
     first_arrow_frame=None;exhibition_occupants=None
+    prior_inside={};entry_status={};verified_entry_frames=[]
     try:
         context=map_context(world.get_map(),scene,carla)
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
@@ -244,7 +299,10 @@ def run_native(scene,output,host,port):
                 signal.update(time_s=time_s)
                 ego_row={'frame':frame,'time_s':time_s,'body_vertices_m':vertices(ego),
                          'heading_deg':ego.get_transform().rotation.yaw}
-                people=participant_inventory(world,ego)
+                people=apply_phase_sources(participant_inventory(world,ego),
+                          signal['candidate_lights'],scene,phase_bindings,prior_inside,entry_status,frame)
+                if any(person.get('phase_entry_observation',{}).get('status') is True for person in people):
+                    verified_entry_frames.append(frame)
                 people_row={'frame':frame,'time_s':time_s,'participants':people}
                 decision=control_step(scene,signal,people,ego_row['body_vertices_m'],
                                       first_arrow_frame=first_arrow_frame,
@@ -266,13 +324,14 @@ def run_native(scene,output,host,port):
                       'ego-body-history.jsonl','participant-history.jsonl','controller-history.jsonl',
                       'intersection-context.json',
                       'road.xodr','carla_recorder.log',*[name+'.mkv' for name,*_ in CameraBank.SPECS],
-                      *reviewed_names]
+                      *reviewed_names,*phase_names]
         write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in source_names})
         planned=json.loads((output/'config.json').read_text())['case']['recording_description']
         result={'case_id':scene['case_id'],
           'measured_values':{'sole_arrow_verified':bool(verified_arrow_frames),
                              'verified_arrow_frames':verified_arrow_frames,
-                             'lawful_presence_verified':False,
+                             'lawful_presence_verified':bool(verified_entry_frames),
+                             'reviewed_entry_frames':verified_entry_frames,
                              'straight_move_commands':move_commands},
           'target_checks':[{'target':'original straight-arrow source acquisition','requested':True,
                             'measured':bool(verified_arrow_frames),
@@ -293,6 +352,8 @@ def run_native(scene,output,host,port):
           'recording_evidence':{'acquisition':'acquisition.json'},
           'realized_observables':{'frame_count':len(rows),'candidate_lights':len(lights),
                                   'reviewed_arrow_source_count':len(bindings),
+                                  'reviewed_phase_source_count':len(phase_bindings),
+                                  'reviewed_entry_frames':verified_entry_frames,
                                   'straight_move_commands':move_commands}}
         write_result(output,physical_result(output,result))
         phase='sealed'
@@ -317,7 +378,8 @@ def run_native(scene,output,host,port):
             seal_capture(output,frames=len(rows),restoration={'restored':True,
                 'settings_readback':'synchronous_mode and fixed_delta_seconds restored'},errors=[],
                 encoder_exit_codes={name:0 for name,*_ in CameraBank.SPECS},
-                context={'arrow':bool(verified_arrow_frames),'lawful_presence':False})
+                context={'arrow':bool(verified_arrow_frames),
+                         'lawful_presence':bool(verified_entry_frames)})
         else:
             write(output/'native-run-status.json',{'phase':phase,
                   'errors':[value for value in [error,*cleanup] if value],
