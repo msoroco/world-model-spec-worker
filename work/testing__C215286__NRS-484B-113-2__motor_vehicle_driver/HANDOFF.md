@@ -92,3 +92,8 @@ Remaining CPU readiness work is independent reviewed real residence-district/cro
 # 2026-11-20 return-file maintenance
 
 Seven zero-byte command logs referenced by this partial package's execution manifest were rebound to its existing zero-byte `compatibility.log`, preserving the exact empty-file SHA-256. The duplicate files were removed to recover seven work-tree file slots for C378304 construction. The C215286 assignment static check still passes. Status remains partial; this maintenance is not a new compatibility or readiness proof. No frozen input, runtime, batch.json or Git action was taken.
+
+
+## 2026-11-22 19:45 UTC reversible file-cap staging
+
+Thirteen small historical proof logs were moved byte-for-byte into `work/_shared/archived-unbound-negative-logs-20261119.json` while C215286 remains partial, to make room for C149752 materialized implementation. For each archived row, base64-decode `content_zlib_base64`, zlib-decompress, verify `sha256`, then write exact bytes to `path` before rebinding or reusing its receipt. Current C215286 receipts referencing these paths are historical and must not be claimed current until logs are restored and proofs rerun.
