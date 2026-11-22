@@ -6,34 +6,45 @@
       "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "3261a82f5d9a7be8499b82df8b3fedb2b14c53af3c74f7dce51327b40068d78c",
+      "construction_sha256": "902e0f11da7c9e0eec573a45047f7e06d6bfbfcd8706a1c27d42fa2f4a551b7d",
       "candidate_risk": {
         "status": "physical",
         "reason": "The Native traffic-light API may expose only a generic green state and no verified sole straight-arrow asset."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/clear_straight/fallback1-construction.json",
+          "construction_sha256": "a36f9c73eeab6ee368551433ee21fff843c250d523d224e2d66858fc2c0f62b1",
+          "trigger": {
+            "source": "original signal-head inventory and frame readback",
+            "metric": "count of independently source-verified sole straight-arrow heads facing the ego approach",
+            "failure_condition": "primary selected head has no verified sole straight-arrow readback at the exhibition frame, while an alternate facing head is independently verified"
+          },
+          "changed_knobs": [
+            "scene.json candidate_head_slot: 0 to 1; select second verified facing head in stable head-ID order"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-offline-clear_straight-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "a36f9c73eeab6ee368551433ee21fff843c250d523d224e2d66858fc2c0f62b1",
+            "log": "proof-clear_straight-fallback1.log",
+            "log_sha256": "e43311195a73993d81920e31ac5e5ff202cba227b1d416fe8c2d432bb4d0a729"
+          },
+          "compatibility": {
+            "receipt": "compat-clear_straight-fallback1-receipt.json",
+            "sha256": "8c8474a125f9abec4c2988f7b71c5ef66a50a55e612e9e00e3debe060da83de5",
+            "log": "compat-clear_straight-fallback1-analysis.log",
+            "negative_log": "compat-clear_straight-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-clear_straight-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "fixture_recipe": "work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/diagnostic-clear-recipe.json",
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output .runtime-work/c111125-clear_straight-offline-v3 --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "3261a82f5d9a7be8499b82df8b3fedb2b14c53af3c74f7dce51327b40068d78c",
-        "log": "proof-clear_straight.log",
-        "log_sha256": "e4ef5563c9b927be01d65d8df3ed80a4c81e75656b543dfa1b986252b88558f4"
-      },
-      "compatibility": {
-        "receipt": "compat-clear_straight-receipt.json",
-        "sha256": "2cbc167b77021eea24708afaaa656bd9cfcd6949a936edcacc72b2e4c57cb8e8",
-        "log": "compat-clear_straight-analysis.log",
-        "negative_log": "compat-clear_straight-negative.log",
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output .runtime-work/c111125-compat-clear_straight-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
-      },
-      "negative": {
-        "log": "compat-clear_straight-negative.log"
-      },
       "acquisition": {
         "signal_head_history": {
           "entrypoint": "analysis.py",
@@ -70,40 +81,110 @@
           "method": "Source-hashed original intersection and participant context projection",
           "evidence": "channels/context.json"
         }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-offline-clear_straight-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "exit_code": 0,
+        "construction_sha256": "902e0f11da7c9e0eec573a45047f7e06d6bfbfcd8706a1c27d42fa2f4a551b7d",
+        "log": "proof-clear_straight-primary.log",
+        "log_sha256": "df66c7a66b8387e673aa94807380d14d136e91c17123b3160eb53dd2dbf3900f"
+      },
+      "compatibility": {
+        "receipt": "compat-clear_straight-primary-receipt.json",
+        "sha256": "db20528b9ccf180649a5700bee5532981151b414c779bc7bbeff33b4c3025e7a",
+        "log": "compat-clear_straight-primary-analysis.log",
+        "negative_log": "compat-clear_straight-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-clear_straight-primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      },
+      "negative": {
+        "log": "compat-clear_straight-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-clear-proof.json",
+        "sha256": "d9eb2a1f97a377aabbb000622f465c247c9cd21a2bf7e924a49ce33438559a42"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-clear_straight-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-clear_straight-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-clear_straight-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-clear_straight-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-clear_straight-refresh.log",
+        "test_log_sha256": "06dd5c758bf79c0a0472ed2e4073834b6c19e10e760846632d79611234655c9a",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "913549118350180b92c1ed30717399574003ece27ce144b3f5a7b750658c10a0",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/audit_probe.py --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-audit-clear_straight/positive",
+        "test_exit_code": 0,
+        "test_log": "audit-clear_straight-positive.log",
+        "test_log_sha256": "7fa8571b77864dc9e83723545014b24c70749e9825755ab5359be9d67faf1d61",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/audit_probe.py --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-audit-clear_straight/negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-clear_straight-negative.log",
+        "negative_log_sha256": "2f11c838f14c474e5459932ddc8284b9800f3d7945360c2bef056c9ad0fa7be9"
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight",
       "kind": "delivery",
       "construction": "cases/yield/construction.json",
-      "construction_sha256": "29b2f00a9caf9edf1f26af08bac284ee26cefe891bbd126b17873370b724e096",
+      "construction_sha256": "5e90147fa65e2e7c333224f2a86581990dbcba99e16af2d5f783e4e5e723042b",
       "candidate_risk": {
         "status": "physical",
         "reason": "The Native traffic-light API may expose only a generic green state and no verified sole straight-arrow asset."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_straight/fallback1-construction.json",
+          "construction_sha256": "f26a920913f1fc91eed89102ef0edd65b5ab7a7f211a6fd773f41c53b030968e",
+          "trigger": {
+            "source": "original signal-head inventory and frame readback",
+            "metric": "count of independently source-verified sole straight-arrow heads facing the ego approach",
+            "failure_condition": "primary selected head has no verified sole straight-arrow readback at the exhibition frame, while an alternate facing head is independently verified"
+          },
+          "changed_knobs": [
+            "scene.json candidate_head_slot: 0 to 1; select second verified facing head in stable head-ID order"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-offline-yield_straight-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "f26a920913f1fc91eed89102ef0edd65b5ab7a7f211a6fd773f41c53b030968e",
+            "log": "proof-yield_straight-fallback1.log",
+            "log_sha256": "dbbb2bb08baab4367a5de98a6a43ce16bb2c8b6ef93b9c902c0f1794c325b99a"
+          },
+          "compatibility": {
+            "receipt": "compat-yield_straight-fallback1-receipt.json",
+            "sha256": "9c863a3e7eb593000f4460d678deadf2f1440ee0d75de00edf6a91bb303e5b43",
+            "log": "compat-yield_straight-fallback1-analysis.log",
+            "negative_log": "compat-yield_straight-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-yield_straight-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "fixture_recipe": "work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/diagnostic-yield-recipe.json",
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output .runtime-work/c111125-yield_straight-offline-v3 --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "29b2f00a9caf9edf1f26af08bac284ee26cefe891bbd126b17873370b724e096",
-        "log": "proof-yield_straight.log",
-        "log_sha256": "d983d5ac05c211a7fd61d744d51e88a2e0c135d1bcc4ed2dfe6df9d5c2deca66"
-      },
-      "compatibility": {
-        "receipt": "compat-yield_straight-receipt.json",
-        "sha256": "6eb378e37610ada7f6bd5ca9b98fbb5f3723cac5922a000a80e25de1f3d6690a",
-        "log": "compat-yield_straight-analysis.log",
-        "negative_log": "compat-yield_straight-negative.log",
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output .runtime-work/c111125-compat-yield_straight-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
-      },
-      "negative": {
-        "log": "compat-yield_straight-negative.log"
-      },
       "acquisition": {
         "signal_head_history": {
           "entrypoint": "analysis.py",
@@ -140,6 +221,65 @@
           "method": "Source-hashed original intersection and participant context projection",
           "evidence": "channels/context.json"
         }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-offline-yield_straight-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "exit_code": 0,
+        "construction_sha256": "5e90147fa65e2e7c333224f2a86581990dbcba99e16af2d5f783e4e5e723042b",
+        "log": "proof-yield_straight-primary.log",
+        "log_sha256": "873807c45400d5360f3bfe02ac5e9372853d931635b8830eb137ffcdb9f0d0ba"
+      },
+      "compatibility": {
+        "receipt": "compat-yield_straight-primary-receipt.json",
+        "sha256": "3beac0adeed8d4439800b81ee2f4f431e8aa692192a0d980355ba4130d157adb",
+        "log": "compat-yield_straight-primary-analysis.log",
+        "negative_log": "compat-yield_straight-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-yield_straight-primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      },
+      "negative": {
+        "log": "compat-yield_straight-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-yield-proof.json",
+        "sha256": "9ab27dcc5cce4a829ee1f173edbd6bbb9151aa43097fae72effa0054a28eb5be"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-yield_straight-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-yield_straight-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-yield_straight-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-saved-yield_straight-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-yield_straight-refresh.log",
+        "test_log_sha256": "68f7d25eac2ad17b8cf75ff7d19323717cf76ab78014869981fb3a15e4ea64bd",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "913549118350180b92c1ed30717399574003ece27ce144b3f5a7b750658c10a0",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/audit_probe.py --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-audit-yield_straight/positive",
+        "test_exit_code": 0,
+        "test_log": "audit-yield_straight-positive.log",
+        "test_log_sha256": "2c1155e03db517defdc0f0c69fa4f0a61de6f9d2cf30431500275e9de6ecf324",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/audit_probe.py --case testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-audit-yield_straight/negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-yield_straight-negative.log",
+        "negative_log_sha256": "2f11c838f14c474e5459932ddc8284b9800f3d7945360c2bef056c9ad0fa7be9"
       }
     }
   ],

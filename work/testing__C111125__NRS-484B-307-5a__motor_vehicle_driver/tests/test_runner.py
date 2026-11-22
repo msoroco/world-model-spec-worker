@@ -15,6 +15,39 @@ def participant(identifier,role,x,y,lawful=True):
 
 class ArrowControllerTests(unittest.TestCase):
     def setUp(self):self.scene=runner.load_scene()
+    def test_spawns_clear_and_occupied_actor_geometry(self):
+        class Actor:
+            def destroy(self):self.destroyed=True
+        class Library:
+            def filter(self,pattern):return [pattern]
+        class World:
+            def __init__(self):self.calls=[]
+            def get_blueprint_library(self):return Library()
+            def spawn_actor(self,blueprint,transform):
+                self.calls.append((blueprint,transform));return Actor()
+        for occupancy,positions in [('clear',(-30,35,35)),('lawfully_present',(-30,0,9))]:
+            world=World();scene=dict(self.scene,participant_occupancy_setup=occupancy)
+            actors=runner.spawn_scene(world,scene,lambda *values:values)
+            self.assertEqual(set(actors),{'ego','vehicle','pedestrian'})
+            self.assertEqual(tuple(call[1][0] for call in world.calls),positions)
+            self.assertEqual(world.calls[-1][0],'walker.pedestrian.*')
+    def test_predeclared_alternate_head_selection(self):
+        def head(ident,verified=True,facing=True):
+            return {'source_verified':verified,'source_ref':'original/head-stream',
+                    'head_id':ident,'observed_frame':18,'faces_ego_approach':facing,
+                    'illuminated_indications':[{'color':'green','shape':'arrow','direction':'straight'}]}
+        heads=[head(8),head(7)]
+        primary=dict(self.scene,candidate_head_slot=0)
+        self.assertEqual(runner.select_facing_head(primary,heads,frame=18)['head_id'],7)
+        alternate=dict(self.scene,candidate_head_slot=1)
+        self.assertEqual(runner.select_facing_head(alternate,heads,frame=18)['head_id'],8)
+        with self.assertRaises(ValueError):
+            runner.select_facing_head(alternate,[head(7),head(8,verified=False)],frame=18)
+        with self.assertRaises(ValueError):
+            runner.select_facing_head(alternate,[head(7),head(8,facing=False)],frame=18)
+        with self.assertRaises(ValueError):
+            runner.select_facing_head(primary,[head(7,verified=False),head(8)],frame=18)
+        self.assertEqual(runner.select_facing_head(alternate,[head(7,verified=False),head(8)],frame=18)['head_id'],8)
     def test_sole_arrow_requires_exact_facing_source(self):
         aspect={'source_verified':True,'source_ref':'native/head-readback.json',
                 'head_id':7,'observed_frame':18,

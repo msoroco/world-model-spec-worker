@@ -35,6 +35,27 @@ def require_sole_straight_arrow(signal, *, head_id, frame):
     return signal
 
 
+def select_facing_head(scene, heads, *, frame):
+    """Select a source-verified facing arrow head by a predeclared slot.
+
+    The alternate slot is engineering redundancy, never an outcome selector.
+    A Native adapter must populate heads from original per-frame signal sources.
+    """
+    slot=scene.get('candidate_head_slot',0)
+    if type(slot) is not int or slot<0:
+        raise ValueError('invalid predeclared head slot')
+    facing=[head for head in heads if head.get('faces_ego_approach') is True]
+    if any(type(head.get('head_id')) is not int for head in facing):
+        raise ValueError('facing signal head lacks stable integer ID')
+    facing.sort(key=lambda head:head['head_id'])
+    if len({head['head_id'] for head in facing})!=len(facing):
+        raise ValueError('duplicate facing signal head ID')
+    if slot>=len(facing):
+        raise ValueError('selected facing signal head slot absent')
+    chosen=facing[slot]
+    return require_sole_straight_arrow(chosen,head_id=chosen['head_id'],frame=frame)
+
+
 def body_bounds(vertices):
     if not isinstance(vertices,list) or len(vertices)<4 or any(
             not isinstance(v,list) or len(v)<2 or
@@ -88,10 +109,43 @@ def command(scene, ego_front_x_m, decision):
             'steer':0.0,'intended_maneuver':'straight'}
 
 
+def spawn_scene(world,scene,transform_factory):
+    """Create distinct ego, vehicle and pedestrian actors for the exact case.
+
+    The occupied case places both participant classes in governed regions.
+    Lawful presence still requires independent original phase/right-of-way source.
+    """
+    library=world.get_blueprint_library()
+    specs=[('ego','vehicle.*',scene['approach_x_m'],0),
+           ('vehicle','vehicle.*',0 if scene['participant_occupancy_setup']=='lawfully_present' else 35,0),
+           ('pedestrian','walker.pedestrian.*',9 if scene['participant_occupancy_setup']=='lawfully_present' else 35,0)]
+    if scene['participant_occupancy_setup'] not in ('clear','lawfully_present'):
+        raise ValueError('unsupported occupancy setup')
+    actors={}
+    try:
+        for name,pattern,x,y in specs:
+            matches=list(library.filter(pattern))
+            if not matches:raise ValueError('missing Native actor blueprint: '+pattern)
+            actors[name]=world.spawn_actor(matches[0],transform_factory(x,y,0,0))
+        if len({id(actor) for actor in actors.values()})!=len(actors):
+            raise ValueError('Native world reused an actor for distinct roles')
+    except BaseException:
+        for actor in reversed(list(actors.values())):
+            if hasattr(actor,'destroy'):actor.destroy()
+        raise
+    return actors
+
+
 def check():
     scene=load_scene()
     assert scene['approach_x_m']<scene['stop_line_x_m']<scene['intersection_x_max_m']<scene['exit_x_m']
-    print(json.dumps({'geometry_checked':True,'sole_arrow_source_verification_pending':True}))
+    heads=[{'source_verified':True,'source_ref':'synthetic/check-only',
+            'head_id':head_id,'observed_frame':0,'faces_ego_approach':True,
+            'illuminated_indications':[{'color':'green','shape':'arrow','direction':'straight'}]}
+           for head_id in (7,8)]
+    chosen=select_facing_head(scene,heads,frame=0)
+    print(json.dumps({'geometry_checked':True,'selected_synthetic_head_id':chosen['head_id'],
+                      'sole_arrow_source_verification_pending':True}))
 
 
 def main():

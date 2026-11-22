@@ -39,7 +39,12 @@ def build(case_id,occupancy):
 
 
 def main():
+    manifest_path=ROOT/'execution-manifest.json'
+    previous=json.loads(manifest_path.read_text()) if manifest_path.is_file() else {}
+    prior={entry['case_id']:entry for entry in previous.get('cases',[])}
     manifest={'format':'worker-execution-manifest','assignment_id':ROOT.name,'cases':[]}
+    if previous.get('runtime_manifest_sha256'):
+        manifest['runtime_manifest_sha256']=previous['runtime_manifest_sha256']
     for index,(case_id,occupancy) in enumerate(zip(CASE_IDS,('clear','lawfully_present'))):
         construction,scene,config=build(case_id,occupancy)
         path=ROOT/'construction.json' if index==0 else ROOT/'cases/yield/construction.json'
@@ -48,12 +53,19 @@ def main():
         if index==0:
             (ROOT/'scene.json').write_text(json.dumps(scene,indent=2)+'\n')
             (ROOT/'config.json').write_text(json.dumps(config,indent=2,ensure_ascii=False)+'\n')
-        manifest['cases'].append({'case_id':case_id,'kind':'delivery',
+        entry={'case_id':case_id,'kind':'delivery',
              'construction':str(path.relative_to(ROOT)),
              'construction_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
              'candidate_risk':{'status':'physical','reason':'The Native traffic-light API may expose only a generic green state and no verified sole straight-arrow asset.'},
-             'candidates':[]})
-    (ROOT/'execution-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+             'candidates':[]}
+        if prior.get(case_id,{}).get('construction_sha256')==entry['construction_sha256']:
+            entry=prior[case_id]
+        else:
+            for key in ('measurement_contract','measurement_procedure','fixture_recipe',
+                        'acquisition','native_handoff'):
+                if key in prior.get(case_id,{}):entry[key]=prior[case_id][key]
+        manifest['cases'].append(entry)
+    manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
 
 
 if __name__=='__main__':main()
