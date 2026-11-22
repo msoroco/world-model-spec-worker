@@ -65,7 +65,8 @@ def build():
     binding = read(PROPOSALS/'bindings.json')
     template = read(PROPOSALS/'template.json')
     draft = read(PROPOSALS/'cases.json')
-    old = {case['case_id'].rsplit('__', 1)[-1]: case for case in draft['cases']}
+    old = {case['case_id'].rsplit('__', 1)[-1]: case for case in draft['cases']
+           if case['case_id'].rsplit('__', 1)[-1] in CASES}
     if set(old) != set(CASES):
         raise ValueError('Four draft cases required')
     entries = []
@@ -241,6 +242,19 @@ def build():
             if read(PROPOSALS/('judgment_observables_'+slug+'.json'))['phrase'] == judgment['phrase'])
         judgment['observable_requirements'] = observable['observable_requirements']
     expand_sweeps(canonical, (enriched_template,), binding)
+    # Executable case IDs must be scoped to this assignment. Sweep IDs remain
+    # short simple names under the stage contract; selection_order binds the
+    # expanded qualified cases without changing the frozen sweep grid.
+    prefix = HERE.name+'__'
+    for case in canonical['cases']:
+        if case.get('sweep_id') and not case['case_id'].startswith(prefix):
+            case['case_id'] = prefix+case['case_id']
+    for spec in canonical['sweep_specs']:
+        spec['selection_order'] = [cid if cid.startswith(prefix) else prefix+cid
+                                   for cid in spec.get('selection_order', [])]
+    for item in canonical.get('case_contract_normalizations', []):
+        if item.get('case_id', '').startswith('c179480-'):
+            item['case_id'] = prefix+item['case_id']
     write(PROPOSALS/'canonical-cases.json', canonical)
     names = {'relevance_batch': 'relevance_batch.json',
              'relevance': 'relevance.json', 'template': 'template.json',

@@ -11,6 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSETS = ROOT / '.runtime-work/c179480-native-sweep'
 MANIFEST = HERE / 'sweep-candidate-manifest.json'
+TAG = 'sweep-qualified'
 LIBRARY = ROOT / 'runtime/pipeline/library'
 VALIDATOR = ROOT / '.runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck'
 
@@ -21,15 +22,15 @@ def sha(path):
 
 def proof(case_id, candidate, compatibility_only=False):
     name = f'{case_id}-{candidate}'
-    attempt = ASSETS / 'compatibility-fallback' / case_id / candidate
-    saved = ASSETS / 'saved-fallback' / case_id / candidate
+    attempt = ASSETS / ('compatibility-' + TAG) / case_id / candidate
+    saved = ASSETS / ('saved-' + TAG) / case_id / candidate
     env = os.environ.copy()
-    env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(ASSETS / 'adapter-fallback' / case_id / candidate)
+    env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(ASSETS / ('adapter-' + TAG) / case_id / candidate)
     env['MPLCONFIGDIR'] = str(ASSETS / 'mpl')
     args = [str(ROOT / '.venv-cpu/bin/python'), str(ROOT / 'runtime.py')]
     common = ['--manifest', str(MANIFEST), '--case', case_id,
               '--library', str(LIBRARY), '--validator', str(VALIDATOR)]
-    compat_log = HERE / f'sweep-final-{name}-compatibility.log'
+    compat_log = HERE / f'{TAG}-{name}-compatibility.log'
     if not compat_log.is_file():
         call = args + ['compatibility', *common, '--candidate', candidate,
                        '--output', str(attempt)]
@@ -41,7 +42,8 @@ def proof(case_id, candidate, compatibility_only=False):
     compat = json.loads(compat_log.read_text())
     entry = next(item for item in json.loads(MANIFEST.read_text())['cases']
                  if item['case_id'] == case_id)
-    selected = next(item for item in entry['candidates'] if item['id'] == candidate)
+    selected = (entry if candidate == 'primary' else
+                next(item for item in entry['candidates'] if item['id'] == candidate))
     if (not compat['passed'] or compat['case_id'] != case_id or
             compat['candidate_id'] != candidate or
             compat['construction_sha256'] != selected['construction_sha256'] or
@@ -51,7 +53,7 @@ def proof(case_id, candidate, compatibility_only=False):
     if compatibility_only:
         return {'case_id': case_id, 'candidate_id': candidate,
                 'compatibility_log_sha256': sha(compat_log)}
-    saved_log = HERE / f'sweep-final-{name}-saved.log'
+    saved_log = HERE / f'{TAG}-{name}-saved.log'
     if not saved_log.is_file():
         call = args + ['process-saved', *common, '--attempt', str(attempt),
                        '--output', str(saved)]
@@ -72,16 +74,30 @@ def proof(case_id, candidate, compatibility_only=False):
 
 
 def main():
+    global MANIFEST, TAG
     parser = argparse.ArgumentParser()
     parser.add_argument('--compatibility-only', action='store_true')
     parser.add_argument('--skip-first', action='store_true')
+    parser.add_argument('--include-primary', action='store_true')
+    parser.add_argument('--base', action='store_true',
+                        help='Use the current four base-case candidate manifest')
+    parser.add_argument('--only-ready', action='store_true',
+                        help='Process only candidates with completed compatibility logs')
     parser.add_argument('--workers', type=int, default=2)
     args = parser.parse_args()
+    if args.base:
+        MANIFEST = HERE / 'candidate-matrix-manifest.json'
+        TAG = 'base-current'
     manifest = json.loads(MANIFEST.read_text())
-    tasks = [(entry['case_id'], candidate['id'])
-             for entry in manifest['cases'] for candidate in entry['candidates']]
+    tasks = [(entry['case_id'], candidate)
+             for entry in manifest['cases']
+             for candidate in ((['primary'] if args.include_primary else []) +
+                               [item['id'] for item in entry['candidates']])]
     if args.skip_first:
         tasks = tasks[1:]
+    if args.only_ready:
+        tasks = [(case_id, candidate) for case_id, candidate in tasks
+                 if (HERE / f'{TAG}-{case_id}-{candidate}-compatibility.log').is_file()]
     rows = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures = {pool.submit(proof, case_id, candidate, args.compatibility_only):
@@ -102,8 +118,8 @@ def main():
                                                   (row['case_id'], row['candidate_id'])),
               'passed': True, 'selected_cases': 0,
               'physical_or_legal_acceptance_claimed': False}
-    target = HERE / ('sweep-fallback-compatibility-index.json' if args.compatibility_only
-                     else 'sweep-fallback-complete-index.json')
+    target = HERE / (f'{TAG}-compatibility-index.json' if args.compatibility_only
+                     else f'{TAG}-complete-index.json')
     target.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(f'INDEX {target} {sha(target)}', flush=True)
 

@@ -33,7 +33,7 @@ def build():
         sweep_id = semantic.get('sweep_id')
         if sweep_id not in SWEEPS:
             continue
-        cid = HERE.name+'__'+semantic['case_id']
+        cid = semantic['case_id'] if semantic['case_id'].startswith(HERE.name+'__') else HERE.name+'__'+semantic['case_id']
         base, axis, points = SWEEPS[sweep_id]
         point = semantic['sweep_point']
         if set(point) != {axis} or point[axis] not in points:

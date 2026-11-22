@@ -50,7 +50,9 @@ def source_for(sweep_id, value):
 def build():
     construction_manifest=json.loads((HERE/'sweep-primary-manifest.json').read_text())
     canonical=json.loads((HERE/'proposals/canonical-cases.json').read_text())
-    semantics={HERE.name+'__'+case['case_id']:case for case in canonical['cases'] if case.get('sweep_id')}
+    semantics={(case['case_id'] if case['case_id'].startswith(HERE.name+'__')
+                else HERE.name+'__'+case['case_id']):case
+               for case in canonical['cases'] if case.get('sweep_id')}
     entries=[]
     for item in construction_manifest['cases']:
         cid=item['case_id'];case=semantics[cid];sweep_id=case['sweep_id']
