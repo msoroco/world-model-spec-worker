@@ -196,6 +196,97 @@ def analyze_following(root: Path) -> dict:
             "safe_occupancy_judgment": "unresolved", "legal_conclusion": "unresolved"}
 
 
+def analyze_width_boundary(root: Path, varied_role: str, expected_relation: str) -> dict:
+    """Measure an 80-inch boundary case from retained original truck bodies.
+
+    A below-width truck is a valid nonapplication observation. The 1 mm equality
+    band describes source coordinate precision, not a new statutory tolerance.
+    """
+    if varied_role not in ("ego", "lead") or expected_relation not in ("below", "at", "above"):
+        raise ValueError("Invalid width boundary case")
+    root = Path(root)
+    names = ("truck_history.jsonl", "road_context.json", "video_frames.jsonl")
+    sources = {}
+    for name in names:
+        path = root / name
+        if not path.is_file():
+            raise ValueError("Missing original source: " + name)
+        sources[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    context = json.loads((root / "road_context.json").read_text())
+    tangent = context.get("lane_forward_xy")
+    if not isinstance(tangent, list) or len(tangent) != 2:
+        raise ValueError("Missing lane tangent")
+    tx, ty = (_finite(value, "lane tangent") for value in tangent)
+    length = math.hypot(tx, ty)
+    if length == 0:
+        raise ValueError("Zero lane tangent")
+    tx, ty = tx / length, ty / length
+    road_id, lane_id = context.get("road_id"), context.get("lane_id")
+    if road_id is None or lane_id is None or not context.get("highway_source"):
+        raise ValueError("Missing sourced road context")
+    rows = _rows(root / "truck_history.jsonl")
+    frames = _rows(root / "video_frames.jsonl")
+    if len(rows) < 3 or len(rows) != len(frames):
+        raise ValueError("Incomplete width history")
+    threshold = 80 * .0254
+    precision = .001
+    identities = None
+    previous = (-1, -math.inf)
+    samples = []
+    for index, (row, frame) in enumerate(zip(rows, frames)):
+        fid = row.get("frame")
+        time = _finite(row.get("time_s"), "time")
+        if type(fid) is not int or fid <= previous[0] or time <= previous[1]:
+            raise ValueError("Nonmonotone original width history")
+        if index and abs(time - previous[1] - .05) > .01:
+            raise ValueError("Missing 20 Hz width sample")
+        if (frame.get("video_frame") != index or frame.get("carla_frame") != fid
+                or frame.get("time_s") != time):
+            raise ValueError("Original video frame join failed")
+        previous = fid, time
+        widths = {}
+        ids = []
+        for role in ("ego", "lead"):
+            actor = row.get(role)
+            if (not isinstance(actor, dict) or actor.get("is_truck_or_combination") is not True
+                    or actor.get("road_id") != road_id or actor.get("lane_id") != lane_id):
+                raise ValueError("Lost sourced truck and lane relation: " + role)
+            actor_id = actor.get("actor_id")
+            if type(actor_id) is not int:
+                raise ValueError("Missing participant actor ID: " + role)
+            ids.append(actor_id)
+            width = _finite(actor.get("overall_width_m"), "overall width")
+            vertices = actor.get("body_vertices_xy_m")
+            if not isinstance(vertices, list) or len(vertices) < 4:
+                raise ValueError("Missing complete body: " + role)
+            lateral = []
+            for vertex in vertices:
+                if not isinstance(vertex, list) or len(vertex) != 2:
+                    raise ValueError("Invalid body vertex")
+                x, y = (_finite(value, "body vertex") for value in vertex)
+                lateral.append(-x * ty + y * tx)
+            if abs(max(lateral) - min(lateral) - width) > .05:
+                raise ValueError("Body width and declared width disagree: " + role)
+            widths[role] = width
+        if ids[0] == ids[1] or (identities is not None and tuple(ids) != identities):
+            raise ValueError("Participant actor identity changed")
+        identities = tuple(ids)
+        fixed_role = "lead" if varied_role == "ego" else "ego"
+        if widths[fixed_role] < threshold - precision:
+            raise ValueError("Fixed truck below 80-inch control")
+        delta = widths[varied_role] - threshold
+        relation = "at" if abs(delta) <= precision else ("below" if delta < 0 else "above")
+        if relation != expected_relation:
+            raise ValueError("Width boundary relation differs from exact case")
+        samples.append({"frame": fid, "time_s": time, "widths_m": widths,
+                        "delta_from_80in_m": delta, "sample_relation": relation})
+    return {"format": "worker-truck-width-boundary-observations", "sources": sources,
+            "actor_ids": {"ego": identities[0], "lead": identities[1]},
+            "varied_role": varied_role, "expected_relation": expected_relation,
+            "threshold_m": threshold, "sample_precision_m": precision, "samples": samples,
+            "legal_truck_class": "unresolved", "legal_conclusion": "unresolved"}
+
+
 def _inspect_saved_comparison(root: Path, suffix: str) -> dict:
     """Recompute comparison facts from retained originals, independent of the finalizer."""
     root = Path(root)

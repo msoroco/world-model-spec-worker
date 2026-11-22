@@ -3505,3 +3505,5 @@ C149752 root 20-file construction materialized, original hash preserved, manifes
 Full batch strict gate was rerun after this checkpoint with `PYTHONDONTWRITEBYTECODE=1`; it did not finish during this worker turn and was interrupted (exit 130). The C149752 scoped strict gate failed as expected with partial/missing packages; its scoped complete gate passed. C215286 scoped complete gate passed after reversible log archival. Generated `.pyc` files from unittest were removed from `work/`; file count is 8,599.
 
 Pinned CPU positive compatibility rerun passed (exit 0) for `following_under_500_ft` primary at `.runtime-work/c149752-root-compat-recheck`, including actual analysis, four source cameras, Lean decoder, render, final decode, and negative missing-source check; no Native run or physical acceptance.
+
+C149752 width checkpoint: six width case IDs and two comparisons added; source-bound 80-inch auditor and nine unit tests pass. Exact inline width bundles and receipts remain worker-owned; status stays partial. See C149752 HANDOFF for hashes and command.

@@ -117,5 +117,58 @@ class FollowingTests(unittest.TestCase):
             self.assertEqual(result["between_sample_gap"], "unresolved")
 
 
+class WidthBoundaryTests(unittest.TestCase):
+    def fixture(self, root, varied_role, width):
+        context = {"native_map_id": "TownX", "highway_source": "diagnostic-highway",
+                   "lane_count_source": "diagnostic-map-and-visual", "road_id": 7,
+                   "lane_id": 1, "same_direction_lane_count": 1,
+                   "lane_forward_xy": [1, 0]}
+        (root / "road_context.json").write_text(json.dumps(context))
+        rows = []
+        for i in range(3):
+            actors = {}
+            for role, actor_id, x in (("ego", 11, i), ("lead", 12, i + 160)):
+                measured = width if role == varied_role else 2.2
+                actors[role] = {"actor_id": actor_id, "is_truck_or_combination": True,
+                                "road_id": 7, "lane_id": 1, "overall_width_m": measured,
+                                "body_vertices_xy_m": [[x + dx, dy * measured / 2]
+                                                       for dx, dy in ((-2, -1), (-2, 1),
+                                                                      (2, -1), (2, 1))]}
+            rows.append({"frame": 300 + i, "time_s": 10 + .05 * i, **actors})
+        frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
+                  for i, row in enumerate(rows)]
+        (root / "truck_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+        (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
+
+    def test_both_roles_below_at_above(self):
+        for role in ("ego", "lead"):
+            for width, relation in ((2.0, "below"), (2.032, "at"), (2.1, "above")):
+                with self.subTest(role=role, relation=relation), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    self.fixture(root, role, width)
+                    result = module.analyze_width_boundary(root, role, relation)
+                    self.assertEqual(len(result["samples"]), 3)
+                    self.assertTrue(all(row["sample_relation"] == relation for row in result["samples"]))
+                    self.assertEqual(result["legal_conclusion"], "unresolved")
+
+    def test_mismatched_boundary_and_stale_sources_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.fixture(root, "ego", 2.0)
+            with self.assertRaisesRegex(ValueError, "Width boundary relation differs"):
+                module.analyze_width_boundary(root, "ego", "above")
+            rows = [json.loads(line) for line in (root / "truck_history.jsonl").read_text().splitlines()]
+            rows[1]["ego"]["overall_width_m"] = 2.2
+            (root / "truck_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Body width and declared width disagree"):
+                module.analyze_width_boundary(root, "ego", "below")
+            self.fixture(root, "ego", 2.0)
+            frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            frames[1]["carla_frame"] = 999
+            (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
+            with self.assertRaisesRegex(ValueError, "Original video frame join"):
+                module.analyze_width_boundary(root, "ego", "below")
+
+
 if __name__ == "__main__":
     unittest.main()
