@@ -23,6 +23,64 @@ def audit(root, crossing_source=None):
         raise ValueError('Reference other-first compatibility proof changed')
     first_files={f['path']:f['content'] for f in first['files']}
     first_site=json.loads(first_files['site.json'])
+    first_fallback_proofs=[]
+    for candidate in ('fallback1','fallback2','fallback3'):
+        path=root/'cases/yield_sign_other_first'/(candidate+'-construction.json')
+        variant=read(path)
+        proof=read(root/('other-first-'+candidate+'-compat-receipt.json'))
+        negative=root/('other-first-'+candidate+'-negative.log')
+        if (proof.get('passed') is not True or len(proof.get('checks',[]))!=11 or
+            proof.get('candidate_id')!=candidate or
+            proof.get('construction_sha256')!=sha_bytes(path.read_bytes()) or
+            proof.get('negative_log_sha256')!=sha_bytes(negative.read_bytes())):
+            raise ValueError(candidate+': other-first exact positive/negative proof changed')
+        files={f['path']:f['content'] for f in variant['files']}
+        site=json.loads(files['site.json'])
+        expected=json.loads(json.dumps(first_site))
+        if candidate=='fallback1':expected['approaches']['ego']['spawn_pose']=[-5,0,0,0]
+        elif candidate=='fallback2':
+            expected['approaches']['other']['spawn_pose']=[15,-20,0,90]
+            expected['approaches']['other']['route_xy_m'][0]=[15,-20]
+        else:expected['camera_poses']['overview']=[5,-5,11,0,-25,0]
+        if candidate in ('fallback1','fallback2'):
+            site['source_documents']=expected['source_documents']
+        if (site!=expected or variant['case_id']!=first['case_id'] or
+            any(variant[k]!=first[k] for k in ('law_id','cell_id','actor'))):
+            raise ValueError(candidate+': other-first fixed case/site or risk knob changed')
+        first_fallback_proofs.append({'candidate_id':candidate,'construction_sha256':proof['construction_sha256']})
+    additional_fallback_proofs={}
+    for case, stem in (('yield_sign_ego_first','ego-first'),('yield_sign_other_inside','other-inside')):
+        selected=read(root/'cases'/case/'construction.json')
+        selected_files={f['path']:f['content'] for f in selected['files']}
+        selected_site=json.loads(selected_files['site.json'])
+        proofs=[]
+        for candidate in ('fallback1','fallback2','fallback3'):
+            path=root/'cases'/case/(candidate+'-construction.json')
+            variant=read(path)
+            proof=read(root/(stem+'-'+candidate+'-compat-receipt.json'))
+            negative=root/(stem+'-'+candidate+'-negative.log')
+            if (proof.get('passed') is not True or len(proof.get('checks',[]))!=11 or
+                proof.get('candidate_id')!=candidate or
+                proof.get('construction_sha256')!=sha_bytes(path.read_bytes()) or
+                proof.get('negative_log_sha256')!=sha_bytes(negative.read_bytes())):
+                raise ValueError(case+'/'+candidate+': exact positive/negative proof changed')
+            files={f['path']:f['content'] for f in variant['files']}
+            site=json.loads(files['site.json'])
+            expected=json.loads(json.dumps(selected_site))
+            if candidate=='fallback1':
+                expected['approaches']['ego']['spawn_pose']=[-5,0,0,0]
+                expected['approaches']['ego']['route_xy_m'][0]=[-5,0]
+            elif candidate=='fallback2':
+                expected['approaches']['other']['spawn_pose']=[15,-20,0,90]
+                expected['approaches']['other']['route_xy_m'][0]=[15,-20]
+            else:expected['camera_poses']['overview']=[5,-5,11,0,-25,0]
+            if candidate in ('fallback1','fallback2'):
+                site['source_documents']=expected['source_documents']
+            if (site!=expected or variant['case_id']!=selected['case_id'] or
+                any(variant[k]!=selected[k] for k in ('law_id','cell_id','actor'))):
+                raise ValueError(case+'/'+candidate+': fixed case/site or risk knob changed')
+            proofs.append({'candidate_id':candidate,'construction_sha256':proof['construction_sha256']})
+        additional_fallback_proofs[case]=proofs
     directory=root/'cases/yield_sign_opposite_left'
     construction_path=directory/'construction.json'
     construction=read(construction_path)
@@ -125,6 +183,8 @@ def audit(root, crossing_source=None):
             'case_id':construction['case_id'],'first_body_entry':first_entry,
             'same_junction_and_yield_sign':True,'opposite_approach':True,
             'other_left_turn_route_and_controller_intent':True,
+            'other_first_fallback_proofs':first_fallback_proofs,
+            'additional_fallback_proofs':additional_fallback_proofs,
             'fallback_proofs':fallback_proofs,
             'physical_acceptance_claimed':False,'legal_conclusion':'unresolved'}
 
