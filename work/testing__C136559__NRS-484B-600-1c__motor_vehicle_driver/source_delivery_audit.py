@@ -133,8 +133,14 @@ def compare(comparison_id, attempts_index):
         observed_difference = (len({round(item["audit"]["sampled_peak_in_zone_mph"], 5)
                                     for item in values}) == 3)
     elif comparison_id == "governed_portion_extent":
-        observed_difference = (values[0]["audit"]["outside_frames"] == 0
-                               and values[1]["audit"]["outside_frames"] > 0)
+        # A full route eventually leaves both diagnostic intervals. Compare the
+        # sourced intervals and the number of frames governed by each, not an
+        # all-inside shortcut that only holds for the nine-frame seed.
+        intervals = [(item["context"]["zone_start_s_m"], item["context"]["zone_end_s_m"])
+                     for item in values]
+        observed_difference = (intervals[0] != intervals[1]
+                               and values[0]["audit"]["inside_frames"] > values[1]["audit"]["inside_frames"]
+                               and values[0]["audit"]["outside_frames"] < values[1]["audit"]["outside_frames"])
         if not observed_difference:
             raise ValueError("Diagnostic inside/outside extent did not differ")
     else:
