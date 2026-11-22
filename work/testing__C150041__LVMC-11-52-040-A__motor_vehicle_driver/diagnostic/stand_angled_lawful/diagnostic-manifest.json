@@ -1,0 +1,39 @@
+{
+  "assignment_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver",
+  "diagnostic_only": true,
+  "cases": [
+    {
+      "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__stand_angled_lawful",
+      "kind": "diagnostic_only",
+      "construction": "construction.json",
+      "construction_sha256": "9c55494e088fa8c4d0d169e1cdf8f1139ae4dbc3bb9b2fd25bfe9302a769cba2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "An 8 m straight approach may not fit a reviewed roadway segment while a shorter approach does."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1.json",
+          "construction_sha256": "d7945c91c6421237886f2a797c166a89609ba9514e83cdaaea78e144339cf757",
+          "trigger": {
+            "source": "reviewed roadway geometry and full vehicle footprint",
+            "metric": "primary spawn footprint inside roadway",
+            "failure_condition": "8 m approach footprint outside reviewed roadway; 6 m footprint inside"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 8.0 to 6.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/stand_angled_lawful/diagnostic-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__stand_angled_lawful --candidate fallback1 --output .runtime-work/c150041-six-fallback-stand_angled_lawful --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "cpu-fallback1-offline.log",
+            "log_sha256": "def840c740ccaf88ebcb61b86011fec954ca4736c6bb21b0c913132cdf55325d",
+            "construction_sha256": "d7945c91c6421237886f2a797c166a89609ba9514e83cdaaea78e144339cf757"
+          }
+        }
+      ],
+      "preparation_status": "synthetic_offline_only"
+    }
+  ]
+}

@@ -40,7 +40,8 @@ def check_native_map(world, packet_path, source_root):
             "native_opendrive_sha256": actual_hash}
 
 
-def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1", port=2000):
+def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1", port=2000,
+               approach_distance_m=8.0):
     repo = Path(__file__).resolve().parents[2]
     scratch = (repo / ".runtime-work").resolve()
     output = Path(output_dir).resolve()
@@ -58,7 +59,8 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
     from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import restore, snapshot
 
-    scene = build(packet_path, source_root, suffix)
+    scene = build(packet_path, source_root, suffix,
+                  approach_distance_m=approach_distance_m)
     client = carla.Client(host, port)
     client.set_timeout(30)
     saved_world = snapshot(client)
@@ -131,14 +133,17 @@ def main():
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
+    parser.add_argument("--approach-distance-m", type=float, default=8.0)
     args = parser.parse_args()
     if args.check:
-        print(json.dumps(build(args.packet, args.source_root, args.case)))
+        print(json.dumps(build(args.packet, args.source_root, args.case,
+                               approach_distance_m=args.approach_distance_m)))
         return
     if not args.output_dir:
         parser.error("use --check or --output-dir")
     run_native(args.packet, args.source_root, args.case, args.output_dir,
-               host=args.host, port=args.port)
+               host=args.host, port=args.port,
+               approach_distance_m=args.approach_distance_m)
 
 
 if __name__ == "__main__":

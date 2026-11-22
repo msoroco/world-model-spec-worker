@@ -1,0 +1,39 @@
+{
+  "assignment_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver",
+  "diagnostic_only": true,
+  "cases": [
+    {
+      "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__park_parallel_reverse",
+      "kind": "diagnostic_only",
+      "construction": "construction.json",
+      "construction_sha256": "c9e46908c909c56a01e0cc8cec4c4f885a30879f0fead9a2ef265ca78d18f86c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "An 8 m straight approach may not fit a reviewed roadway segment while a shorter approach does."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1.json",
+          "construction_sha256": "98de2160d6340f93e67d320a20becabb43a401e1ba6578499a28a5112dedec8a",
+          "trigger": {
+            "source": "reviewed roadway geometry and full vehicle footprint",
+            "metric": "primary spawn footprint inside roadway",
+            "failure_condition": "8 m approach footprint outside reviewed roadway; 6 m footprint inside"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 8.0 to 6.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/park_parallel_reverse/diagnostic-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__park_parallel_reverse --candidate fallback1 --output .runtime-work/c150041-six-fallback-park_parallel_reverse --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "cpu-fallback1-offline.log",
+            "log_sha256": "e4b208d0437787d8a69a2316806d624b569c67a152e45e703c8ddfea3807c429",
+            "construction_sha256": "98de2160d6340f93e67d320a20becabb43a401e1ba6578499a28a5112dedec8a"
+          }
+        }
+      ],
+      "preparation_status": "synthetic_offline_only"
+    }
+  ]
+}

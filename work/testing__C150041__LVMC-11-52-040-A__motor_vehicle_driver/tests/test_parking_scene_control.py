@@ -53,6 +53,20 @@ class ParkingSceneControlTests(unittest.TestCase):
                 build(path, tmp, "park_parallel_lawful")
             self.assertEqual(packet["review_status"], "reviewed")
 
+    def test_shorter_approach_fits_when_primary_footprint_does_not(self):
+        with TemporaryDirectory() as tmp:
+            path, packet = fixture(tmp)
+            packet["context"]["road_edge_xy_m"] = [[-10, 0], [10, 0]]
+            packet["context"]["roadway_polygon_xy_m"] = [[-10, 0], [10, 0],
+                                                              [10, 5], [-10, 5]]
+            path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "spawn body leaves"):
+                build(path, tmp, "park_parallel_lawful")
+            alternate = build(path, tmp, "park_parallel_lawful",
+                              approach_distance_m=6.0)
+            self.assertEqual(alternate["spawn_center_xy_m"], [-6.0, 2.5])
+            self.assertFalse(alternate["physical_realization_claimed"])
+
     def test_control_approach_brake_hold_and_lazy_native_call(self):
         with TemporaryDirectory() as tmp:
             path, _ = fixture(tmp)
