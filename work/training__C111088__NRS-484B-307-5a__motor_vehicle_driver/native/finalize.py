@@ -193,15 +193,20 @@ def finalize(attempt: Path, report_path: Path) -> dict:
     geometry = json.loads((attempt / 'road_geometry.json').read_text())
     recording_evidence = derive_channels(attempt, description, samples, mapping, geometry)
     context_path = attempt / 'surveyed-arrow-context.json'
-    with context_path.open('x') as stream:
-        json.dump({'surveyed_arrow_intersection': {
+    context_value = {'surveyed_arrow_intersection': {
             'intersection_bounds_xy_m': geometry['intersection_bounds_xy_m'],
             'adjacent_crosswalk_xy_m': geometry['adjacent_crosswalk_xy_m'],
             'native_map_sha256': geometry['native_map_sha256'],
             'authored_aspect': geometry['authored_aspect'],
             'original_pixel_reviewed': pixel_review.get('kind') == 'original_source_pixel_aspect',
-        }}, stream, allow_nan=False)
-        stream.write('\n')
+        }}
+    if context_path.exists():
+        if json.loads(context_path.read_text()) != context_value:
+            raise ValueError('Existing derived context differs from retained sources')
+    else:
+        with context_path.open('x') as stream:
+            json.dump(context_value, stream, allow_nan=False)
+            stream.write('\n')
     recording_evidence.append({'name': description['context_inputs'][0]['name'],
                                'unit': description['context_inputs'][0]['unit'],
                                'reference': 'surveyed-arrow-context.json'})
