@@ -23,6 +23,21 @@ def load_scene(path=None):
         raise ValueError('adjacent crosswalk does not intersect left-turn exit')
     if scene.get('crosswalk_setup') not in ('clear','occupied'):
         raise ValueError('unknown adjacent-crosswalk setup')
+    traffic_setup = scene.get('other_traffic_setup', 'absent')
+    if traffic_setup not in ('absent', 'lawful_entered'):
+        raise ValueError('unknown other-traffic setup')
+    if scene['case_id'].endswith('__lawful_traffic_yield') != (traffic_setup == 'lawful_entered'):
+        raise ValueError('traffic setup does not match exact case')
+    if traffic_setup == 'lawful_entered':
+        start = scene.get('other_vehicle_entry_start_xy_m')
+        conflict = scene.get('other_vehicle_conflict_xy_m')
+        end = scene.get('other_vehicle_end_xy_m')
+        if (not all(isinstance(p, list) and len(p) == 2 for p in (start, conflict, end)) or
+                not (start[0] == conflict[0] == end[0] and start[1] < conflict[1] < end[1]) or
+                scene.get('other_vehicle_signal_head_id') is None or
+                type(scene.get('other_vehicle_target_speed_mps')) not in (int, float) or
+                not 0 < scene['other_vehicle_target_speed_mps'] <= 3):
+            raise ValueError('lawful other-vehicle entry path or original signal missing')
     sx,sy=scene['pedestrian_start_xy_m'];ex,ey=scene['pedestrian_end_xy_m']
     px,py=scene['pedestrian_entry_start_xy_m']
     if not (left<=sx<=right and bottom<=sy<=top and ex>right and ey==sy and

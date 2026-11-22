@@ -11,7 +11,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from analysis import build_report, measure, saved_result
-from comparison_audit import audit
+from comparison_audit import audit, audit_traffic
 
 
 def body(x, y):
@@ -32,11 +32,18 @@ def row(frame, x, y, speed, brake, person=False):
             'other_traffic': []}
 
 
-def fixture(path, occupied):
+def fixture(path, occupied, traffic_case=False):
     scene = json.loads((ROOT / 'scene.json').read_text())
     rows = [row(1, -7, -1.75, 0, 1, occupied),
             row(2, -7, -1.75, 0, 1, occupied),
             row(3, -5, 0, 2, 0), row(4, 0, 4, 2, 0)]
+    if traffic_case:
+        for index in (0, 1):
+            rows[index]['other_traffic'] = [{'id': 'car-2', 'role': 'motor_vehicle',
+                'source_ref': 'Native other vehicle',
+                'lawful_presence_source': 'traffic-entry.jsonl and original green head',
+                'lawfully_using_intersection': True,
+                'body_vertices_m': body(0, index)}]
     context = {'map_source': 'Native map', 'adjacent_crosswalk_source': 'Native map marking',
                'ego_route_source': 'Native waypoints', 'facing_head_source': 'Native signal',
                'lawful_presence_method': 'Native phase and geometry', 'facing_head_id': 7,
@@ -46,6 +53,11 @@ def fixture(path, occupied):
                'crosswalk_vertices_m': [[-2, 4], [2, 4], [2, 8], [-2, 8]],
                'camera_profile': 'overview1080-capability', 'duration_s': .2}
     context['pedestrian_entry_source'] = 'pedestrian-entry.jsonl' if occupied else None
+    context['other_vehicle_entry_source'] = 'traffic-entry.jsonl' if traffic_case else None
+    if traffic_case:
+        context['other_vehicle_signal_head_id'] = 9
+        context['other_vehicle_route_waypoints'] = [
+            {'x_m': 0, 'y_m': y, 'road_id': 2, 'lane_id': 1} for y in (-12, 0, 10)]
     sources = {'turn-history.jsonl': ''.join(json.dumps(r) + '\n' for r in rows),
                'video_frames.jsonl': ''.join(json.dumps({'video_frame': index,
                    'carla_frame': r['frame'], 'time_s': r['time_s']}) + '\n'
@@ -57,13 +69,21 @@ def fixture(path, occupied):
                   'person_body_vertices_m': body(x, 5)}
                  for frame, x in [(-2, -2), (-1, -1), (0, 0)]]
         sources['pedestrian-entry.jsonl'] = ''.join(json.dumps(r) + '\n' for r in entry)
+    if traffic_case:
+        entry = [{'frame': frame, 'time_s': frame / 20,
+                  'other_vehicle_signal_head_id': 9, 'green_state': 'Green',
+                  'vehicle_body_vertices_m': body(0, y),
+                  'route_source': 'Native CARLA connected waypoints'}
+                 for frame, y in [(-2, -2), (-1, -1), (0, 0)]]
+        sources['traffic-entry.jsonl'] = ''.join(json.dumps(r) + '\n' for r in entry)
     acquisition = {}
     for name, content in sources.items():
         (path / name).write_text(content)
         acquisition[name] = {'kind': 'original_native',
                              'sha256': hashlib.sha256(content.encode()).hexdigest()}
     (path / 'acquisition.json').write_text(json.dumps(acquisition))
-    folder = ROOT / 'cases/crosswalk_occupied_yield' if occupied else ROOT
+    folder = (ROOT / 'cases/crosswalk_occupied_yield' if occupied else
+              ROOT / 'cases/lawful_traffic_yield' if traffic_case else ROOT)
     for name in ('scene.json', 'config.json', 'construction.json'):
         shutil.copyfile(folder / name, path / name)
     for name in ('scene.json', 'config.json'):
@@ -75,6 +95,40 @@ def fixture(path, occupied):
 
 
 class SavedArrowTests(unittest.TestCase):
+    def test_other_traffic_comparison_preserves_fixed_conditions(self):
+        with tempfile.TemporaryDirectory() as clear_dir, tempfile.TemporaryDirectory() as traffic_dir:
+            clear, traffic = Path(clear_dir), Path(traffic_dir)
+            fixture(clear, False)
+            fixture(traffic, False, traffic_case=True)
+            self.assertEqual(audit_traffic(clear, traffic)['status'], 'passed')
+            context_path = traffic / 'intersection-context.json'
+            context = json.loads(context_path.read_text())
+            context['camera_profile'] = 'changed'
+            context_path.write_text(json.dumps(context))
+            acquisition = json.loads((traffic / 'acquisition.json').read_text())
+            acquisition['intersection-context.json']['sha256'] = hashlib.sha256(context_path.read_bytes()).hexdigest()
+            (traffic / 'acquisition.json').write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'camera profile|fixed condition'):
+                audit_traffic(clear, traffic)
+
+    def test_lawful_other_traffic_yield_and_green_entry_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            fixture(path, False, traffic_case=True)
+            report = measure(path, 'lawful_traffic_yield')
+            self.assertEqual(report['traffic_frames'], [1, 2])
+            self.assertEqual(report['traffic_yield_hold_frames'], [1, 2])
+            self.assertEqual(report['legal_right_of_way_verdict'], 'unresolved')
+            entry_path = path / 'traffic-entry.jsonl'
+            entry = [json.loads(line) for line in entry_path.read_text().splitlines()]
+            entry[0]['green_state'] = 'Red'
+            entry_path.write_text(''.join(json.dumps(row) + '\n' for row in entry))
+            acquisition = json.loads((path / 'acquisition.json').read_text())
+            acquisition['traffic-entry.jsonl']['sha256'] = hashlib.sha256(entry_path.read_bytes()).hexdigest()
+            (path / 'acquisition.json').write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'lawful green entry'):
+                measure(path, 'lawful_traffic_yield')
+
     def test_clear_and_occupied_positive(self):
         for occupied in (False, True):
             with self.subTest(occupied=occupied), tempfile.TemporaryDirectory() as directory:

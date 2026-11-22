@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import native_capture
 from native_capture import (bind_map, bind_facing_arrow, observed_arrow,
-                            bind_pedestrian_walk, pedestrian_station, spawn_entities)
+                            bind_pedestrian_walk, pedestrian_station, spawn_entities,
+                            bind_other_vehicle_green, other_vehicle_station)
 from runner import load_scene
 
 
@@ -31,6 +32,25 @@ class Waypoint:
 
 
 class NativeBindingTests(unittest.TestCase):
+    def test_other_vehicle_green_entry_and_connected_route(self):
+        scene = load_scene(ROOT / 'cases/lawful_traffic_yield/scene.json')
+        start, end = Waypoint(0, -12), Waypoint(0, 10)
+        start.following = [self.points[2]]
+        self.points[2].following.append(end)
+        self.points.extend((start, end))
+        carla = N(Location=lambda x, y, z: point(x, y, z))
+        bound = bind_map(self.world(), carla, scene)
+        self.assertEqual(len(bound['other_vehicle_route_waypoints']), 3)
+        head = N(id=9, attributes={'official_traffic_signal': 'true'},
+                 get_state=lambda: 'Green')
+        world = N(get_actor=lambda identity: head if identity == 9 else None)
+        self.assertIs(bind_other_vehicle_green(world, scene), head)
+        self.assertEqual(other_vehicle_station(scene, 0, entry=True), (0, -11.95))
+        self.assertAlmostEqual(other_vehicle_station(scene, 200, entry=True)[1], -1.95)
+        head.get_state = lambda: 'Red'
+        with self.assertRaisesRegex(ValueError, 'green entry'):
+            bind_other_vehicle_green(world, scene)
+
     def setUp(self):
         self.scene = load_scene()
         points = [Waypoint(-20, -1.75), Waypoint(-4, -1.75),
@@ -117,6 +137,8 @@ class NativeBindingTests(unittest.TestCase):
                                      'sole_illuminated': 'true'}, get_state=lambda: 'Green')
         walk = N(id=8, attributes={'official_pedestrian_signal': 'true'},
                  get_state=lambda: 'Walk')
+        other_green = N(id=9, attributes={'official_traffic_signal': 'true'},
+                        get_state=lambda: 'Green')
         class Actor:
             def __init__(self, identity, transform):
                 self.id, self.transform, self.destroyed = identity, transform, False
@@ -149,7 +171,8 @@ class NativeBindingTests(unittest.TestCase):
                 actor = Actor(len(self.actors) + 1, transform)
                 self.actors.append(actor)
                 return actor
-            def get_actor(self, identity): return walk if identity == 8 else None
+            def get_actor(self, identity):
+                return walk if identity == 8 else other_green if identity == 9 else None
             def tick(self): self.frame += 1; return self.frame
             def get_snapshot(self):
                 return N(frame=self.frame,
@@ -205,3 +228,18 @@ class NativeBindingTests(unittest.TestCase):
             self.assertEqual(len((output / 'turn-history.jsonl').read_text().splitlines()), 3)
             self.assertTrue(all(actor.destroyed for actor in world.actors))
             self.assertFalse(world.settings.synchronous_mode)
+            traffic_scene = load_scene(ROOT / 'cases/lawful_traffic_yield/scene.json')
+            traffic_scene['duration_s'] = .15
+            other_start, other_end = Waypoint(0, -12), Waypoint(0, 10)
+            other_start.following = [self.points[2]]
+            self.points[2].following.append(other_end)
+            other_end.following = [self.points[3]]
+            world = World([*self.points, other_start, other_end])
+            with tempfile.TemporaryDirectory() as traffic_directory:
+                traffic_output = Path(traffic_directory)
+                native_capture.run_native(traffic_scene, traffic_output, 'localhost', 2000)
+                self.assertTrue((traffic_output / 'capture-seal.json').exists())
+                self.assertTrue((traffic_output / 'traffic-entry.jsonl').exists())
+                self.assertEqual(len((traffic_output / 'turn-history.jsonl').read_text().splitlines()), 3)
+                self.assertTrue(all(actor.destroyed for actor in world.actors))
+                self.assertFalse(world.settings.synchronous_mode)

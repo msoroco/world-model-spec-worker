@@ -42,12 +42,15 @@ def _rows(path, frame_key='frame'):
 def measure(attempt, expected_case, scene_path=None):
     attempt = Path(attempt)
     scene = load_scene(scene_path or attempt / 'scene.json')
-    if expected_case not in ('crosswalk_clear_turn', 'crosswalk_occupied_yield'):
+    if expected_case not in ('crosswalk_clear_turn', 'crosswalk_occupied_yield',
+                             'lawful_traffic_yield'):
         raise ValueError('unknown exact case')
     if not scene['case_id'].endswith('__' + expected_case):
         raise ValueError('scene identity does not match exact case')
-    if scene['crosswalk_setup'] != ('clear' if expected_case == 'crosswalk_clear_turn' else 'occupied'):
+    if scene['crosswalk_setup'] != ('occupied' if expected_case == 'crosswalk_occupied_yield' else 'clear'):
         raise ValueError('scene setup does not match exact case')
+    if (scene.get('other_traffic_setup', 'absent') == 'lawful_entered') != (expected_case == 'lawful_traffic_yield'):
+        raise ValueError('other-traffic setup does not match exact case')
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
     paths = {name: _verified(attempt, acquisition, name) for name in SOURCES}
     context = json.loads(paths['intersection-context.json'].read_text())
@@ -91,9 +94,31 @@ def measure(attempt, expected_case, scene_path=None):
         entry_sha = acquisition['pedestrian-entry.jsonl']['sha256']
     elif context.get('pedestrian_entry_source'):
         raise ValueError('clear case unexpectedly contains pedestrian entry source')
+    traffic_sha = None
+    if expected_case == 'lawful_traffic_yield':
+        if (context.get('other_vehicle_entry_source') != 'traffic-entry.jsonl' or
+                context.get('other_vehicle_signal_head_id') != scene['other_vehicle_signal_head_id'] or
+                not isinstance(context.get('other_vehicle_route_waypoints'), list) or
+                len(context['other_vehicle_route_waypoints']) != 3):
+            raise ValueError('original lawful other-vehicle route or entry source missing')
+        traffic_entry = _rows(_verified(attempt, acquisition, 'traffic-entry.jsonl'))
+        if traffic_entry[-1]['frame'] >= rows[0]['frame']:
+            raise ValueError('other vehicle did not enter before ego turn capture')
+        if any((r.get('other_vehicle_signal_head_id') != scene['other_vehicle_signal_head_id'] or
+                str(r.get('green_state', '')).split('.')[-1].lower() != 'green' or
+                r.get('route_source') != 'Native CARLA connected waypoints')
+               for r in traffic_entry):
+            raise ValueError('other vehicle lacks original lawful green entry history')
+        body = traffic_entry[-1].get('vehicle_body_vertices_m')
+        if not overlaps(body, [-2, -2, 2, 4]):
+            raise ValueError('other vehicle did not enter original conflict area')
+        traffic_sha = acquisition['traffic-entry.jsonl']['sha256']
+    elif context.get('other_vehicle_entry_source'):
+        raise ValueError('pedestrian pair unexpectedly contains other-vehicle entry')
     if len(rows) != len(frames):
         raise ValueError('video frame map differs from turn history')
     occupied_frames, held_frames, moving_frames, crossing_frames = [], [], [], []
+    traffic_frames, traffic_hold_frames = [], []
     headings = []
     for index, (row, video) in enumerate(zip(rows, frames)):
         frame = row['frame']
@@ -126,8 +151,20 @@ def measure(attempt, expected_case, scene_path=None):
         for vehicle in traffic:
             if not vehicle.get('source_ref') or not vehicle.get('lawful_presence_source'):
                 raise ValueError('other intersection traffic source missing')
-        if any(v.get('lawfully_using_intersection') is True for v in traffic):
+        lawful_traffic = [v for v in traffic if v.get('lawfully_using_intersection') is True]
+        if lawful_traffic and expected_case != 'lawful_traffic_yield':
             raise ValueError('other lawful traffic violates fixed pair condition')
+        if expected_case == 'lawful_traffic_yield' and traffic:
+            if any((v.get('lawful_presence_source') !=
+                    'traffic-entry.jsonl and original green head' or
+                    v.get('role') != 'motor_vehicle' or
+                    not overlaps(v.get('body_vertices_m'), [-2, -2, 2, 4]))
+                   for v in traffic):
+                raise ValueError('other traffic is not source-grounded inside conflict area')
+            traffic_frames.append(frame)
+            if right > scene['turn_entry_x_m'] or speed > .15 or brake < .5:
+                raise ValueError('ego did not yield before lawful intersection traffic cleared')
+            traffic_hold_frames.append(frame)
         if occupants:
             occupied_frames.append(frame)
             if right > scene['turn_entry_x_m'] or speed > .15 or brake < .5:
@@ -141,6 +178,9 @@ def measure(attempt, expected_case, scene_path=None):
         raise ValueError('clear case contains lawful adjacent-crosswalk occupant')
     if expected_case == 'crosswalk_occupied_yield' and not occupied_frames:
         raise ValueError('occupied case has no observed lawful occupant')
+    if expected_case == 'lawful_traffic_yield' and (not traffic_frames or occupied_frames or
+            max(traffic_frames) >= min(crossing_frames or [float('inf')])):
+        raise ValueError('lawful other-traffic encounter or clearance missing')
     if not moving_frames or not crossing_frames:
         raise ValueError('left-turn movement through adjacent crosswalk not observed')
     heading_change = (headings[-1] - headings[0] + 180) % 360 - 180
@@ -151,11 +191,14 @@ def measure(attempt, expected_case, scene_path=None):
     return {'format': 'worker-left-arrow-crosswalk-measurements',
             'case': expected_case, 'frame_count': len(rows),
             'lawful_occupancy_frames': occupied_frames,
-            'yield_hold_frames': held_frames, 'moving_frames': moving_frames,
+            'yield_hold_frames': held_frames, 'traffic_frames': traffic_frames,
+            'traffic_yield_hold_frames': traffic_hold_frames,
+            'moving_frames': moving_frames,
             'turn_crosswalk_frames': crossing_frames,
             'observed_heading_change_deg': heading_change,
             'sources': {**{name: acquisition[name]['sha256'] for name in SOURCES},
-                        **({'pedestrian-entry.jsonl': entry_sha} if entry_sha else {})},
+                        **({'pedestrian-entry.jsonl': entry_sha} if entry_sha else {}),
+                        **({'traffic-entry.jsonl': traffic_sha} if traffic_sha else {})},
             'legal_right_of_way_verdict': 'unresolved'}
 
 
@@ -177,6 +220,8 @@ def build_report(attempt):
                     'legal_direction_verdict': 'unresolved'},
                     'method': 'measure', 'sources': sources},
                 'adjacent_crosswalk_yield_measurement': {
+                    'value': value, 'method': 'measure', 'sources': sources},
+                'other_traffic_yield_measurement': {
                     'value': value, 'method': 'measure', 'sources': sources}},
             'limitations': ['Lawful entry and right-of-way require independent review.',
                             'Realized CARLA geometry and pixels require physical review.'],
@@ -234,7 +279,9 @@ def saved_result(attempt, report):
                          'reference': str(context_path.relative_to(attempt))})
     value = report['measurements']['adjacent_crosswalk_yield_measurement']['value']
     target = (bool(value['yield_hold_frames']) if value['case'] ==
-              'crosswalk_occupied_yield' else bool(value['turn_crosswalk_frames']))
+              'crosswalk_occupied_yield' else
+              bool(value['traffic_yield_hold_frames']) if value['case'] ==
+              'lawful_traffic_yield' else bool(value['turn_crosswalk_frames']))
     result = {'case_id': config['selected_case_id'], 'measured_values': value,
         'target_checks': [{'target': 'observed turn and source-grounded adjacent-crosswalk yield',
             'requested': True, 'measured': target, 'method': 'measure', 'tolerance': 0,

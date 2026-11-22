@@ -47,6 +47,16 @@
         "risk": "No supplied CARLA map or signal asset establishes an ego-facing official sole green left arrow or an adjacent marked crosswalk at the authored geometry. Native map and signal binding may reject the setup. The primary bounded steering gain may also leave the 30 s turn incomplete.",
         "fallback_policy": "A source-measured heading change below 45 degrees or travel below 5 m triggers exact fallback1 with bounded steering divisor 35 rather than 45; its construction and CPU proofs are retained. An alternate map still requires an original official sole-arrow asset and adjacent marked crosswalk; a circular green signal changes the law branch."
       }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "purpose": "Sole left arrow, clear adjacent crosswalk, and original-green-entered other vehicle already using the intersection; ego holds until that vehicle clears before the left turn",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Original official other-vehicle green signal, connected route and timing must coexist with a later ego-facing sole left arrow. Native binding rejects maps/phases that do not supply these sources; steering completion may also fail.",
+        "fallback_policy": "The source-measured steering fallback changes only bounded ego steering. It cannot substitute a different official signal, route, or lawful entry history."
+      }
     }
   ],
   "comparisons": [
@@ -66,19 +76,36 @@
       "deliberate_differences": [
         "lawfully present pedestrian occupies adjacent crosswalk during arrow phase versus crosswalk clear"
       ]
+    },
+    {
+      "comparison_id": "other_lawful_traffic_presence",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield"
+      ],
+      "fixed_conditions": [
+        "same ego-facing head and sole illuminated left arrow",
+        "same map and ego left-turn path",
+        "same actor and law",
+        "same camera and duration contract",
+        "adjacent marked crosswalk clear in both"
+      ],
+      "deliberate_differences": [
+        "original-green-entered lawful other vehicle occupies intersection during arrow phase versus other traffic absent"
+      ]
     }
   ],
   "observations": [
     {
-      "name": "facing_signal_head_history",
+      "name": "facing_arrow_history",
       "mandatory": true
     },
     {
-      "name": "ego_body_and_heading_history",
+      "name": "ego_body_heading_history",
       "mandatory": true
     },
     {
-      "name": "pedestrian_body_and_lawful_presence_history",
+      "name": "pedestrian_body_lawful_history",
       "mandatory": true
     },
     {
@@ -86,15 +113,15 @@
       "mandatory": true
     },
     {
-      "name": "adjacent_crosswalk_geometry",
+      "name": "crosswalk_geometry",
       "mandatory": true
     },
     {
-      "name": "ego_turn_path",
+      "name": "turn_route",
       "mandatory": true
     },
     {
-      "name": "video_frame_map",
+      "name": "camera_frame_map",
       "mandatory": true
     }
   ],
@@ -123,7 +150,8 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Original CARLA arrow asset, facing relationship, marked crosswalk, lawful pedestrian presence, actual motion and camera coverage require Native source verification.",
-    "The authored diagnostic fixtures and synthetic physical outcomes establish CPU contract behavior only; they are not Native observations or legal verdicts."
+    "The authored diagnostic fixtures and synthetic physical outcomes establish CPU contract behavior only; they are not Native observations or legal verdicts.",
+    "The authored other-traffic case needs original Native official green entry and subsequent ego sole-arrow timing; compatibility on a specific map remains unverified."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -174,11 +202,13 @@
       ]
     },
     {
-      "status": "alternative_pending",
+      "status": "selected_required",
       "requirement": "Yield to other traffic lawfully using the intersection",
       "source": "NRS 484B.307(4)(a) exact text",
-      "evidence_or_gap": "The frozen assignment.json remaining_requirement and sole selected witness index 402 specify turning interaction with an adjacent-crosswalk pedestrian. Other lawful intersection traffic is held absent in both exact cases; its yielding alternative is not claimed as covered by this pedestrian comparison. The controller retains a sourced hold path for later separately selected traffic coverage.",
-      "case_ids": []
+      "evidence_or_gap": "Original other-vehicle green-entry signal, connected lane route, pre-turn entry frames, body history, ego hold and clearance before turn are required in the exact lawful_traffic_yield case. The pedestrian pair still holds other traffic absent.",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield"
+      ]
     }
   ],
   "camera_plan": {
@@ -207,5 +237,6 @@
         "view": "driver_reference"
       }
     ]
-  }
+  },
+  "source_observation_mapping": {}
 }

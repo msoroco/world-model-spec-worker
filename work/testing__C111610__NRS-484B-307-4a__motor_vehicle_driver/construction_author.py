@@ -6,7 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 ASSIGNMENT = ROOT.name
-CASES = ('crosswalk_clear_turn', 'crosswalk_occupied_yield')
+CASES = ('crosswalk_clear_turn', 'crosswalk_occupied_yield',
+         'lawful_traffic_yield')
 
 
 def write(path, value):
@@ -60,6 +61,8 @@ def main():
         'rationale': 'Shared official sole-left-arrow intersection and adjacent-crosswalk geometry.',
         'variable_assignments': {'adjacent_crosswalk_occupancy': {'kind': 'world_setup',
             'value': 'clear', 'note': 'Reference world setup'},
+            'other_traffic_occupancy': {'kind': 'world_setup',
+            'value': 'absent', 'note': 'Reference world setup'},
             'arrow_direction': {'kind': 'world_setup',
             'value': 'left', 'note': 'Original official signal asset must prove arrow alone'},
             'ego_turn_controller': {'kind': 'controller', 'value': 'source_gated_left_turn',
@@ -77,21 +80,31 @@ def main():
             'target_law_id': scene['law_id'], 'target_type': 'boundary_probe',
             'rationale': ('Lawfully entered pedestrian occupies adjacent crosswalk during sole-arrow phase'
                           if suffix == 'crosswalk_occupied_yield' else
+                          'Lawfully entered other vehicle clears intersection before ego left turn'
+                          if suffix == 'lawful_traffic_yield' else
                           'Adjacent crosswalk remains clear during same sole-arrow left turn'),
             'variable_assignments': {
                 'adjacent_crosswalk_occupancy': {'kind': 'world_setup',
                     'value': scene['crosswalk_setup'],
                     'note': 'Only deliberate comparison difference'},
+                'other_traffic_occupancy': {'kind': 'world_setup',
+                    'value': scene.get('other_traffic_setup', 'absent'),
+                    'note': 'Sourced lawful other-vehicle entry in the traffic case'},
                 'arrow_direction': {'kind': 'world_setup', 'value': 'left',
                     'note': 'Same original official sole-arrow source'},
                 'ego_turn_controller': {'kind': 'controller',
                     'value': 'source_gated_left_turn', 'note': 'Same controller'}},
             'recording_description': description,
             'unresolved_judgment_calls': ['Lawful pedestrian entry and right-of-way review'],
-            'paired_probe_id': 'adjacent_crosswalk_lawful_occupancy',
-            'deliberate_differences': ['adjacent_crosswalk_occupancy'],
-            'probe': {'primary_variable': 'adjacent_crosswalk_occupancy',
-                'comparison_or_standard': 'Original pedestrian occupancy, ego brake/entry and arrow frames; no legal cutoff',
+            'paired_probe_id': ('other_lawful_traffic_presence' if suffix == 'lawful_traffic_yield'
+                                else 'adjacent_crosswalk_lawful_occupancy'),
+            'deliberate_differences': (['other_traffic_occupancy'] if suffix == 'lawful_traffic_yield'
+                                      else ['adjacent_crosswalk_occupancy']),
+            'probe': {'primary_variable': ('other_traffic_occupancy' if suffix == 'lawful_traffic_yield'
+                                          else 'adjacent_crosswalk_occupancy'),
+                'comparison_or_standard': ('Original other-vehicle green entry, route, body, ego brake/entry and arrow frames; no legal cutoff'
+                    if suffix == 'lawful_traffic_yield' else
+                    'Original pedestrian occupancy, ego brake/entry and arrow frames; no legal cutoff'),
                 'target_value_or_branch': scene['crosswalk_setup']}})
         config = {'assignment_id': ASSIGNMENT, 'selected_case_id': case_id,
                   'supported_case_ids': all_ids, 'law_id': scene['law_id'],
@@ -135,6 +148,8 @@ def main():
         inputs = ['turn-history.jsonl', 'intersection-context.json', 'video_frames.jsonl']
         if suffix == 'crosswalk_occupied_yield':
             inputs.append('pedestrian-entry.jsonl')
+        if suffix == 'lawful_traffic_yield':
+            inputs.append('traffic-entry.jsonl')
         requirements = []
         for index, disposition in enumerate(dispositions):
             if disposition['status'] != 'selected_required' or case_id not in disposition['case_ids']:
@@ -143,11 +158,13 @@ def main():
                 'requirement': disposition['requirement'],
                 'source': disposition['source'],
                 'output_key': ('arrow_direction_measurement' if index == 0 else
+                               'other_traffic_yield_measurement' if index == 2 else
                                'adjacent_crosswalk_yield_measurement'),
                 'method': 'measure', 'value_type': 'object', 'kind': 'measured',
                 'inputs': inputs})
         contract_path = folder / 'measurement-contract.json'
         removed = ('pedestrian-entry.jsonl' if suffix == 'crosswalk_occupied_yield'
+                   else 'traffic-entry.jsonl' if suffix == 'lawful_traffic_yield'
                    else 'turn-history.jsonl')
         write(contract_path, {'format': 'worker-measurement-contract',
             'requirements': requirements,
@@ -171,6 +188,18 @@ def main():
                 ('offline', 'physical_preparation', 'candidate_risk', 'candidates',
                  'compatibility', 'post_capture', 'delivery_acceptance')
                 if key in prior})
+        entry['acquisition'] = {
+            channel['name']: {'entrypoint': 'analysis.py',
+                'method': 'Saved projection of SHA256-verified original Native turn, context and frame-map sources',
+                'evidence': 'channels/' + channel['name'] + '.jsonl'}
+            for channel in description['channels']}
+        entry['acquisition'].update({
+            item['name']: {'entrypoint': 'analysis.py',
+                'method': 'Saved projection of SHA256-verified original Native intersection and pedestrian-entry context',
+                'evidence': 'channels/context.json'}
+            for item in description['context_inputs']})
+        if entry.get('compatibility'):
+            entry['negative'] = {'log': entry['compatibility']['negative_log']}
         entries.append(entry)
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT,

@@ -25,6 +25,7 @@ def write_case(suffix):
     if len(trace) != len(mapping) or len(trace) != 9:
         raise ValueError('pinned CPU diagnostic frame shape changed')
     occupied = suffix == 'crosswalk_occupied_yield'
+    traffic_case = suffix == 'lawful_traffic_yield'
     context = {'map_source': 'diagnostic/Native-shaped map',
         'adjacent_crosswalk_source': 'diagnostic/Native-shaped marked vertices',
         'ego_route_source': 'diagnostic/Native-shaped connected waypoints',
@@ -37,6 +38,11 @@ def write_case(suffix):
                                   [2, 8, 0], [-2, 8, 0]],
         'camera_profile': 'overview1080-capability', 'duration_s': 30,
         'pedestrian_entry_source': 'pedestrian-entry.jsonl' if occupied else None,
+        'other_vehicle_entry_source': 'traffic-entry.jsonl' if traffic_case else None,
+        'other_vehicle_signal_head_id': 9 if traffic_case else None,
+        'other_vehicle_route_waypoints': ([{'x_m': 0, 'y_m': y,
+            'road_id': 2, 'lane_id': 1} for y in (-12, 0, 10)] if traffic_case else None),
+        'other_vehicle_lawfulness_method': 'diagnostic green entry and connected route' if traffic_case else 'no other traffic',
         'diagnostic_only': True}
     files['intersection-context.json'] = json.dumps(context, sort_keys=True) + '\n'
     rows = []
@@ -53,6 +59,11 @@ def write_case(suffix):
                 'lawfully_present': True,
                 'body_vertices_m': body(0 if index < 3 else 5, 5)}]
         ego_y = 4 if index == 8 else (-1.75 if index < 7 else 0)
+        traffic = ([{'id': 3, 'role': 'motor_vehicle',
+            'source_ref': 'diagnostic/Native-shaped other vehicle',
+            'lawful_presence_source': 'traffic-entry.jsonl and original green head',
+            'lawfully_using_intersection': True,
+            'body_vertices_m': body(0, index)}] if traffic_case and index < 3 else [])
         rows.append({'frame': motion['frame'], 'time_s': motion['time_s'],
             'facing_signal': {'source_verified': True,
                 'source_ref': 'diagnostic/Native-shaped facing head 7',
@@ -62,9 +73,9 @@ def write_case(suffix):
             'ego': {'source_ref': 'diagnostic/Native-shaped ego',
                 'heading_source': 'diagnostic/Native-shaped transform',
                 'heading_deg': headings[index], 'body_vertices_m': body(xs[index], ego_y),
-                'speed_mps': 0 if occupied and index < 3 else 2,
-                'brake': 1 if occupied and index < 3 else 0},
-            'pedestrians': person, 'other_traffic': []})
+                'speed_mps': 0 if (occupied or traffic_case) and index < 3 else 2,
+                'brake': 1 if (occupied or traffic_case) and index < 3 else 0},
+            'pedestrians': person, 'other_traffic': traffic})
     files['turn-history.jsonl'] = ''.join(json.dumps(row, sort_keys=True) + '\n'
                                          for row in rows)
     names = ['turn-history.jsonl', 'intersection-context.json', 'video_frames.jsonl']
@@ -77,6 +88,16 @@ def write_case(suffix):
         files['pedestrian-entry.jsonl'] = ''.join(json.dumps(row) + '\n'
                                                   for row in entry)
         names.append('pedestrian-entry.jsonl')
+    if traffic_case:
+        entry = [{'frame': trace[0]['frame'] - 3 + index,
+                  'time_s': trace[0]['time_s'] - .15 + index / 20,
+                  'other_vehicle_signal_head_id': 9, 'green_state': 'Green',
+                  'vehicle_body_vertices_m': body(0, y),
+                  'route_source': 'Native CARLA connected waypoints'}
+                 for index, y in enumerate((-2, -1, 0))]
+        files['traffic-entry.jsonl'] = ''.join(json.dumps(row) + '\n'
+                                               for row in entry)
+        names.append('traffic-entry.jsonl')
     files['acquisition.json'] = json.dumps({name: {
         'kind': 'original_native', 'sha256': sha(files[name])} for name in names},
         sort_keys=True) + '\n'
@@ -100,5 +121,6 @@ def write_case(suffix):
 
 
 if __name__ == '__main__':
-    for case in ('crosswalk_clear_turn', 'crosswalk_occupied_yield'):
+    for case in ('crosswalk_clear_turn', 'crosswalk_occupied_yield',
+                 'lawful_traffic_yield'):
         write_case(case)

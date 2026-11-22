@@ -15,9 +15,10 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def setup(path, occupied=False):
-    rows = fixture(path, occupied)
-    case = 'crosswalk_occupied_yield' if occupied else 'crosswalk_clear_turn'
+def setup(path, occupied=False, traffic_case=False):
+    rows = fixture(path, occupied, traffic_case)
+    case = ('lawful_traffic_yield' if traffic_case else
+            'crosswalk_occupied_yield' if occupied else 'crosswalk_clear_turn')
     case_id = ROOT.name + '__' + case
     (path / 'trace.jsonl').write_text(''.join(json.dumps({
         'frame': r['frame'], 'time_s': r['time_s'], 'position_m': [r['ego']['body_vertices_m'][0][0], 0, 0]}) + '\n'
@@ -56,10 +57,10 @@ def setup(path, occupied=False):
 
 class DeliveryAuditTests(unittest.TestCase):
     def test_source_bound_clear_and_occupied(self):
-        for occupied in (False, True):
-            with self.subTest(occupied=occupied), tempfile.TemporaryDirectory() as directory:
+        for occupied, traffic_case in ((False, False), (True, False), (False, True)):
+            with self.subTest(occupied=occupied, traffic_case=traffic_case), tempfile.TemporaryDirectory() as directory:
                 path = Path(directory)
-                case_id = setup(path, occupied)
+                case_id = setup(path, occupied, traffic_case)
                 def media(video, receipt, count, mapping_sha256):
                     self.assertEqual(video, path / 'analysis/raw.mkv')
                     self.assertEqual(receipt, path / 'decode.json')

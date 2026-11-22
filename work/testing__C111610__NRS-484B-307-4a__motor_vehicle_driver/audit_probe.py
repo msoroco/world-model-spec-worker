@@ -38,7 +38,8 @@ def main():
         shutil.rmtree(output)
     output.mkdir(parents=True)
     occupied = args.case.endswith('__crosswalk_occupied_yield')
-    case_id = setup(output, occupied)
+    traffic_case = args.case.endswith('__lawful_traffic_yield')
+    case_id = setup(output, occupied, traffic_case)
     if case_id != args.case:
         raise ValueError('audit probe selected another case')
     video = output / 'analysis/raw.mkv'

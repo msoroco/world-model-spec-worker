@@ -12,6 +12,7 @@ VALIDATOR = REPO / '.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterChec
 SOURCES = {
     'crosswalk_clear_turn': 'c111610-compat-clear-v3',
     'crosswalk_occupied_yield': 'c111610-compat-occupied-primary-v1',
+    'lawful_traffic_yield': 'c111610-compat-traffic-primary-v1',
 }
 
 
@@ -60,7 +61,7 @@ def main():
             'command': ' '.join(command), 'feedback_command': ' '.join(command),
             'test_log': log.name, 'test_log_sha256': sha(log), 'test_exit_code': 0}
         MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
-    print('Saved-only processing passed for both exact diagnostic cases.')
+    print('Saved-only processing passed for all exact diagnostic cases.')
 
 
 if __name__ == '__main__':

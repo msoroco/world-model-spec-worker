@@ -58,6 +58,23 @@ def bind_map(world, carla, scene):
               if left - 2 <= point.x <= right + 2 and bottom - 2 <= point.y <= top + 2]
     if len(nearby) < 4:
         raise ValueError('original marked crosswalk does not match authored adjacent geometry')
+    other_route = None
+    if scene.get('other_traffic_setup') == 'lawful_entered':
+        other_points = []
+        for x, y in (scene['other_vehicle_entry_start_xy_m'],
+                     scene['other_vehicle_conflict_xy_m'],
+                     scene['other_vehicle_end_xy_m']):
+            target = carla.Location(x=x, y=y, z=0)
+            waypoint = mapping.get_waypoint(target)
+            if waypoint is None or _distance(waypoint.transform.location, target) > 2:
+                raise ValueError('original lawful other-vehicle lane absent')
+            other_points.append(waypoint)
+        if not (connected_turn(other_points[0], other_points[1]) and
+                connected_turn(other_points[1], other_points[2])):
+            raise ValueError('original lawful other-vehicle route is not connected')
+        other_route = [{'x_m': wp.transform.location.x, 'y_m': wp.transform.location.y,
+                        'road_id': wp.road_id, 'lane_id': wp.lane_id}
+                       for wp in other_points]
     return {'map_source': mapping.name,
             'ego_route_source': 'Native CARLA connected waypoints',
             'adjacent_crosswalk_source': 'Native CARLA map crosswalk vertices',
@@ -65,7 +82,8 @@ def bind_map(world, carla, scene):
             'route_waypoints': [{'x_m': wp.transform.location.x, 'y_m': wp.transform.location.y,
                                  'road_id': wp.road_id, 'lane_id': wp.lane_id}
                                 for wp in waypoints],
-            'crosswalk_vertices_m': [[point.x, point.y, point.z] for point in nearby]}
+            'crosswalk_vertices_m': [[point.x, point.y, point.z] for point in nearby],
+            'other_vehicle_route_waypoints': other_route}
 
 
 def bind_facing_arrow(ego, scene):
@@ -102,6 +120,27 @@ def bind_pedestrian_walk(world, scene):
     return head
 
 
+def bind_other_vehicle_green(world, scene):
+    """Require the original official green head governing the other vehicle's entry."""
+    head = world.get_actor(scene['other_vehicle_signal_head_id'])
+    if head is None or head.attributes.get('official_traffic_signal') != 'true':
+        raise ValueError('original official other-vehicle signal missing')
+    if str(head.get_state()).split('.')[-1].lower() != 'green':
+        raise ValueError('original other-vehicle green entry indication absent')
+    return head
+
+
+def other_vehicle_station(scene, index, entry=False):
+    if type(index) is not int or index < 0:
+        raise ValueError('invalid other-vehicle motion step')
+    start = (scene['other_vehicle_entry_start_xy_m'] if entry else
+             scene['other_vehicle_conflict_xy_m'])
+    end = scene['other_vehicle_conflict_xy_m'] if entry else scene['other_vehicle_end_xy_m']
+    y = min(end[1], start[1] + (index + 1) *
+            scene['other_vehicle_target_speed_mps'] / scene['rate_hz'])
+    return start[0], y
+
+
 def pedestrian_station(scene, index, entry=False):
     """Bounded authored position for staged entry or crosswalk clearance."""
     if type(index) is not int or index < 0:
@@ -123,6 +162,9 @@ def spawn_entities(world, scene, vehicle_bp, person_bp, transform):
         if scene['crosswalk_setup'] == 'occupied':
             person = world.spawn_actor(person_bp, transform(*scene['pedestrian_entry_start_xy_m'], 0))
             actors.append(person)
+        if scene.get('other_traffic_setup') == 'lawful_entered':
+            other = world.spawn_actor(vehicle_bp, transform(*scene['other_vehicle_entry_start_xy_m'], 90))
+            actors.append(other)
         if any(actor is None for actor in actors) or len({a.id for a in actors}) != len(actors):
             raise ValueError('Native ego and pedestrian identities are not distinct')
         return actors
@@ -250,13 +292,16 @@ def run_native(scene, output, host, port):
 
         actors = spawn_entities(world, scene, vehicles[0], people[0] if people else None,
                                 transform)
-        ego, person = actors[0], actors[1] if len(actors) > 1 else None
+        ego = actors[0]
+        person = actors[1] if scene['crosswalk_setup'] == 'occupied' else None
+        other = actors[-1] if scene.get('other_traffic_setup') == 'lawful_entered' else None
         arrow = bind_facing_arrow(ego, scene)
         context.update({'facing_head_id': arrow.id,
                         'facing_head_source': f'Native CARLA traffic light {arrow.id}',
                         'camera_profile': 'overview1080-capability',
                         'duration_s': scene['duration_s'],
-                        'lawful_presence_method': 'original pedestrian Walk entry and marked crosswalk' if person else 'no pedestrian'})
+                        'lawful_presence_method': 'original pedestrian Walk entry and marked crosswalk' if person else 'no pedestrian',
+                        'other_vehicle_lawfulness_method': 'original green entry and connected Native route' if other else 'no other traffic'})
         if person:
             head = bind_pedestrian_walk(world, scene)
             entry_steps = math.ceil((scene['pedestrian_start_xy_m'][0] -
@@ -281,6 +326,33 @@ def run_native(scene, output, host, port):
             context['pedestrian_entry_source'] = 'pedestrian-entry.jsonl'
         else:
             context['pedestrian_entry_source'] = None
+        if other:
+            head = bind_other_vehicle_green(world, scene)
+            entry_steps = math.ceil((scene['other_vehicle_conflict_xy_m'][1] -
+                                     scene['other_vehicle_entry_start_xy_m'][1]) *
+                                    scene['rate_hz'] / scene['other_vehicle_target_speed_mps'])
+            entry_rows = []
+            for index in range(entry_steps):
+                bind_other_vehicle_green(world, scene)
+                x, y = other_vehicle_station(scene, index, entry=True)
+                other.set_transform(transform(x, y, 90))
+                frame = world.tick()
+                snapshot = world.get_snapshot()
+                if frame != snapshot.frame:
+                    raise RuntimeError('other-vehicle entry frame mismatch')
+                entry_rows.append({'frame': frame,
+                    'time_s': snapshot.timestamp.elapsed_seconds,
+                    'other_vehicle_signal_head_id': head.id,
+                    'green_state': str(head.get_state()),
+                    'vehicle_body_vertices_m': _vertices(other),
+                    'route_source': 'Native CARLA connected waypoints'})
+            with (output / 'traffic-entry.jsonl').open('x') as stream:
+                for row in entry_rows:
+                    stream.write(json.dumps(row, allow_nan=False) + '\n')
+            context['other_vehicle_entry_source'] = 'traffic-entry.jsonl'
+            context['other_vehicle_signal_head_id'] = head.id
+        else:
+            context['other_vehicle_entry_source'] = None
         _write(output / 'intersection-context.json', context)
         _write(output / 'acquisition-provenance.json', {
             'provenance_kind': 'native', 'diagnostic_fixture': False,
@@ -301,12 +373,22 @@ def run_native(scene, output, host, port):
                         'lawful_presence_source': 'pedestrian-entry.jsonl and original Walk head',
                         'lawfully_present': True, 'body_vertices_m': _vertices(person)}]
                 heading = ego.get_transform().rotation.yaw
-                command = control(scene, signal, frame_before, ego_body, pedestrians, [], heading)
+                traffic = []
+                if other and other.get_transform().location.y < scene['adjacent_crosswalk_bounds_m'][1]:
+                    traffic = [{'id': other.id, 'role': 'motor_vehicle',
+                        'source_ref': f'Native CARLA vehicle {other.id}',
+                        'lawful_presence_source': 'traffic-entry.jsonl and original green head',
+                        'lawfully_using_intersection': True,
+                        'body_vertices_m': _vertices(other)}]
+                command = control(scene, signal, frame_before, ego_body, pedestrians, traffic, heading)
                 ego.apply_control(carla.VehicleControl(throttle=command['throttle'],
                                    brake=command['brake'], steer=command['steer']))
                 if person:
                     x, y = pedestrian_station(scene, index)
                     person.set_transform(transform(x, y, 0))
+                if other:
+                    x, y = other_vehicle_station(scene, index)
+                    other.set_transform(transform(x, y, 90))
                 frame = world.tick()
                 snapshot = world.get_snapshot()
                 if frame != snapshot.frame:
@@ -321,13 +403,20 @@ def run_native(scene, output, host, port):
                     'source_ref': f'Native CARLA walker {person.id}',
                     'lawful_presence_source': 'pedestrian-entry.jsonl and original Walk head',
                     'lawfully_present': True, 'body_vertices_m': _vertices(person)}]
+                traffic = []
+                if other and other.get_transform().location.y < scene['adjacent_crosswalk_bounds_m'][1]:
+                    traffic = [{'id': other.id, 'role': 'motor_vehicle',
+                        'source_ref': f'Native CARLA vehicle {other.id}',
+                        'lawful_presence_source': 'traffic-entry.jsonl and original green head',
+                        'lawfully_using_intersection': True,
+                        'body_vertices_m': _vertices(other)}]
                 row = {'frame': frame, 'time_s': time_s, 'facing_signal': signal,
                        'ego': {'source_ref': f'Native CARLA vehicle {ego.id}',
                                'heading_source': 'Native CARLA transform',
                                'heading_deg': ego.get_transform().rotation.yaw,
                                'body_vertices_m': _vertices(ego), 'speed_mps': _speed(ego),
                                'brake': command['brake']},
-                       'pedestrians': pedestrians, 'other_traffic': []}
+                       'pedestrians': pedestrians, 'other_traffic': traffic}
                 stream.write(json.dumps(row, allow_nan=False) + '\n')
                 rows.append(row)
         phase = 'closing'
@@ -339,6 +428,8 @@ def run_native(scene, output, host, port):
                  *[name + '.mkv' for name, *_ in Cameras.SPECS]]
         if person:
             names.append('pedestrian-entry.jsonl')
+        if other:
+            names.append('traffic-entry.jsonl')
         _write(output / 'acquisition.json', {name: {
             'kind': 'original_native',
             'sha256': hashlib.sha256((output / name).read_bytes()).hexdigest()}

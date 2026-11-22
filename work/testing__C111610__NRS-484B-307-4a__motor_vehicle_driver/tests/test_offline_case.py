@@ -24,6 +24,12 @@ class OfflineCase(unittest.TestCase):
                   Waypoint(0, 0), Waypoint(0, 20)]
         for first, following in zip(points, points[1:]):
             first.following = [following]
+        if scene.get('other_traffic_setup') == 'lawful_entered':
+            other_start, other_end = Waypoint(0, -12), Waypoint(0, 10)
+            other_start.following = [points[2]]
+            points[2].following.append(other_end)
+            other_end.following = [points[3]]
+            points.extend((other_start, other_end))
         crosswalk = [N(x=x, y=y, z=0) for x, y in
                      [(-2, 4), (2, 4), (2, 8), (-2, 8)]]
         mapping = N(name='CPU fixture map', get_crosswalks=lambda: crosswalk,
@@ -49,7 +55,12 @@ class OfflineCase(unittest.TestCase):
                   'lawfully_present': True,
                   'lawful_presence_source': 'pedestrian-entry.jsonl and original Walk head',
                   'body_vertices_m': [[0, 5, 0], [1, 5, 0], [1, 6, 0], [0, 6, 0]]}
-        if scene['crosswalk_setup'] == 'occupied':
+        if scene.get('other_traffic_setup') == 'lawful_entered':
+            traffic = [{'id': 3, 'source_ref': 'Native CARLA vehicle 3',
+                'lawful_presence_source': 'traffic-entry.jsonl and original green head',
+                'lawfully_using_intersection': True}]
+            self.assertEqual(control(scene, signal, 100, ego, [], traffic, 0)['brake'], 1)
+        elif scene['crosswalk_setup'] == 'occupied':
             self.assertEqual(control(scene, signal, 100, ego, [person], [], 0)['brake'], 1)
         else:
             self.assertEqual(control(scene, signal, 100, ego, [], [], 0)['throttle'], .2)

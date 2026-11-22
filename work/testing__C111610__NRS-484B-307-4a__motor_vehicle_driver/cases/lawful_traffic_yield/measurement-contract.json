@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Yield to other traffic lawfully using the intersection",
+      "source": "NRS 484B.307(4)(a) exact text",
+      "output_key": "other_traffic_yield_measurement",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "turn-history.jsonl",
+        "intersection-context.json",
+        "video_frames.jsonl",
+        "traffic-entry.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "traffic-entry.jsonl"
+    ],
+    "error_contains": "Missing required source: traffic-entry.jsonl"
+  }
+}

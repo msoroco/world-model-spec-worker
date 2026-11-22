@@ -43,6 +43,8 @@ def main():
     relevance_single = write('relevance.json', relevance)
     params = [parameter('adjacent_crosswalk_occupancy', 'world_setup',
                         'clear or lawfully entered pedestrian occupying marked adjacent crosswalk'),
+              parameter('other_traffic_occupancy', 'world_setup',
+                        'absent or original-green-entered vehicle lawfully using the intersection'),
               parameter('arrow_direction', 'world_setup',
                         'official sole green left arrow facing ego'),
               parameter('ego_turn_controller', 'controller',

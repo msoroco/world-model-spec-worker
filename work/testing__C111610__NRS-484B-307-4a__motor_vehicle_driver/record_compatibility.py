@@ -12,6 +12,8 @@ OUTPUTS = {
     ('crosswalk_clear_turn', 'fallback1'): 'c111610-compat-clear-fallback1-v1',
     ('crosswalk_occupied_yield', 'primary'): 'c111610-compat-occupied-primary-v1',
     ('crosswalk_occupied_yield', 'fallback1'): 'c111610-compat-occupied-fallback1-v1',
+    ('lawful_traffic_yield', 'primary'): 'c111610-compat-traffic-primary-v1',
+    ('lawful_traffic_yield', 'fallback1'): 'c111610-compat-traffic-fallback1-v1',
 }
 
 
@@ -51,7 +53,7 @@ def main():
             copied['command'] = ' '.join(command)
             holder['compatibility'] = copied
     MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
-    print('Recorded four passing pinned compatibility receipts.')
+    print('Recorded six passing pinned compatibility receipts.')
 
 
 if __name__ == '__main__':

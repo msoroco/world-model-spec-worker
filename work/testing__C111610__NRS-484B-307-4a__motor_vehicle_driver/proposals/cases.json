@@ -14,6 +14,11 @@
           "value": "clear",
           "note": "Reference world setup"
         },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Reference world setup"
+        },
         "arrow_direction": {
           "kind": "world_setup",
           "value": "left",
@@ -122,6 +127,11 @@
           "kind": "world_setup",
           "value": "clear",
           "note": "Only deliberate comparison difference"
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Sourced lawful other-vehicle entry in the traffic case"
         },
         "arrow_direction": {
           "kind": "world_setup",
@@ -241,6 +251,11 @@
           "value": "occupied",
           "note": "Only deliberate comparison difference"
         },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Sourced lawful other-vehicle entry in the traffic case"
+        },
         "arrow_direction": {
           "kind": "world_setup",
           "value": "left",
@@ -346,6 +361,129 @@
         "primary_variable": "adjacent_crosswalk_occupancy",
         "comparison_or_standard": "Original pedestrian occupancy, ego brake/entry and arrow frames; no legal cutoff",
         "target_value_or_branch": "occupied"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "boundary_probe",
+      "rationale": "Lawfully entered other vehicle clears intersection before ego left turn",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Only deliberate comparison difference"
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "lawful_entered",
+          "note": "Sourced lawful other-vehicle entry in the traffic case"
+        },
+        "arrow_direction": {
+          "kind": "world_setup",
+          "value": "left",
+          "note": "Same original official sole-arrow source"
+        },
+        "ego_turn_controller": {
+          "kind": "controller",
+          "value": "source_gated_left_turn",
+          "note": "Same controller"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_heading_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body, heading, speed and brake history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "facing_arrow_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing sole-arrow head and illumination frames.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "pedestrian_body_lawful_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian body and sourced lawful-entry history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "other_traffic_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-intersection-traffic inventory.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map adjacent-crosswalk vertices.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "turn_route",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native connected left-turn waypoints.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured record",
+            "method": "Original map, official signal and route context."
+          },
+          {
+            "name": "pedestrian_entry_context",
+            "unit": "structured record",
+            "method": "Original Walk-phase entry or explicit clear-case absence."
+          }
+        ],
+        "limitations": [
+          "Lawful entry and right-of-way require independent review.",
+          "Actual pixels and physical turn require Native review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Lawful pedestrian entry and right-of-way review"
+      ],
+      "paired_probe_id": "other_lawful_traffic_presence",
+      "deliberate_differences": [
+        "other_traffic_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_occupancy",
+        "comparison_or_standard": "Original other-vehicle green entry, route, body, ego brake/entry and arrow frames; no legal cutoff",
+        "target_value_or_branch": "clear"
       }
     }
   ],

@@ -29,7 +29,8 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
     attempt = Path(attempt)
     processing = Path(processing)
     suffix = case_id.rsplit('__', 1)[-1]
-    if suffix not in ('crosswalk_clear_turn', 'crosswalk_occupied_yield'):
+    if suffix not in ('crosswalk_clear_turn', 'crosswalk_occupied_yield',
+                      'lawful_traffic_yield'):
         raise ValueError('unknown exact left-arrow case')
     if (attempt / 'fixture-provenance.json').exists():
         provenance = read(attempt / 'fixture-provenance.json')
@@ -38,6 +39,8 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
     required = set(ORIGINAL) | set(VIDEOS)
     if suffix == 'crosswalk_occupied_yield':
         required.add('pedestrian-entry.jsonl')
+    if suffix == 'lawful_traffic_yield':
+        required.add('traffic-entry.jsonl')
     seal = read(attempt / 'capture-seal.json')
     if (seal.get('events') != ['capture_finished', 'encoders_closed',
                               'restoration_verified'] or
@@ -110,6 +113,12 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
             any(not all(k in point for k in ('x_m', 'y_m', 'road_id', 'lane_id'))
                 for point in route)):
         raise ValueError('original connected left-turn route geometry missing')
+    if suffix == 'lawful_traffic_yield':
+        other_route = context.get('other_vehicle_route_waypoints')
+        if (not isinstance(other_route, list) or len(other_route) != 3 or
+                any(not all(k in point for k in ('x_m', 'y_m', 'road_id', 'lane_id'))
+                    for point in other_route)):
+            raise ValueError('original lawful other-vehicle route geometry missing')
     config = read(attempt / 'config.json')
     if config.get('selected_case_id') != case_id:
         raise ValueError('original configuration selects another case')
