@@ -1,0 +1,68 @@
+{
+  "cell_id": "C125714",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-1", "target_type": "boundary_probe",
+      "rationale": "Other vehicle requested to enter the same crossing before ego; actual entry and clearance require original frames.",
+      "variable_assignments": {"crossing_entry_order": {"kind": "world_setup", "value": "other_first", "note": "request only"}},
+      "unresolved_judgment_calls": ["yield the right-of-way", "intersection from a different highway", "subsection 4 qualification"],
+      "paired_probe_id": "crossing_entry_order", "deliberate_differences": ["crossing_entry_order"]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-1", "target_type": "boundary_probe",
+      "rationale": "Same crossing approach with ego advance request; realized right-of-way behavior remains measured, not labeled.",
+      "variable_assignments": {"ego_response_request": {"kind": "controller", "value": "advance", "note": "request only"}},
+      "unresolved_judgment_calls": ["yield the right-of-way", "subsection 4 qualification"],
+      "paired_probe_id": "crossing_precedence", "deliberate_differences": ["ego_response_request"]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__other_later",
+      "target_law_id": "NRS-484B-250-1", "target_type": "boundary_probe",
+      "rationale": "Other vehicle requested to enter after ego at the same crossing.",
+      "variable_assignments": {"crossing_entry_order": {"kind": "world_setup", "value": "ego_first", "note": "request only"}},
+      "unresolved_judgment_calls": ["intersection from a different highway", "subsection 4 qualification"],
+      "paired_probe_id": "crossing_entry_order", "deliberate_differences": ["crossing_entry_order"]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_straight",
+      "target_law_id": "NRS-484B-250-1", "target_type": "exception_probe",
+      "rationale": "Opposite-direction straight approach for subsection-5 qualification comparison.",
+      "variable_assignments": {"approach_and_left_turn_context": {"kind": "world_setup", "value": "opposite_straight", "note": "actual route and intent require sources"}},
+      "unresolved_judgment_calls": ["opposite-direction qualification", "intention to turn left"],
+      "paired_probe_id": "opposite_intention", "deliberate_differences": ["left_turn_intent"]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_intends_left",
+      "target_law_id": "NRS-484B-250-1", "target_type": "exception_probe",
+      "rationale": "Separate requested left-turn intention from any actual left turn.",
+      "variable_assignments": {"approach_and_left_turn_context": {"kind": "world_setup", "value": "opposite_intends_left", "note": "intention source required"}},
+      "unresolved_judgment_calls": ["opposite-direction qualification", "intention to turn left"],
+      "paired_probe_id": "opposite_intention", "deliberate_differences": ["left_turn_intent"]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__opposite_makes_left",
+      "target_law_id": "NRS-484B-250-1", "target_type": "exception_probe",
+      "rationale": "Actual left-turn body trajectory requires original motion, separate from intent.",
+      "variable_assignments": {"approach_and_left_turn_context": {"kind": "world_setup", "value": "opposite_makes_left", "note": "realized turn must be measured"}},
+      "unresolved_judgment_calls": ["opposite-direction qualification", "intention to turn left"],
+      "paired_probe_id": "opposite_actual_left", "deliberate_differences": ["left_turn_realized"]
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__wide_same_crossing",
+      "target_law_id": "NRS-484B-250-1", "target_type": "geometry_probe",
+      "rationale": "Wide divided roadway requires source-backed first-versus-second physical intersection review.",
+      "variable_assignments": {"roadway_intersection_identity": {"kind": "world_setup", "value": "first_or_second", "note": "exact geometry pending"}},
+      "unresolved_judgment_calls": ["separate-roadway intersection qualification", "intersection from a different highway"],
+      "paired_probe_id": "separate_roadway_intersection", "deliberate_differences": ["roadway_intersection_identity"]
+    }
+  ],
+  "sweep_specs": [
+    {"sweep_id": "c125714-yield", "target_law_id": "NRS-484B-250-1", "status": "incomplete", "judgment_refs": [{"phrase": "yield the right-of-way"}], "rationale": "No numeric legal cutoff; source-backed physical response range and real crossing still required.", "missing_inputs": ["inspected crossing", "feasible original response range"]},
+    {"sweep_id": "c125714-intersection", "target_law_id": "NRS-484B-250-1", "status": "incomplete", "judgment_refs": [{"phrase": "intersection from a different highway"}], "rationale": "Public-highway and separated-roadway source review required.", "missing_inputs": ["reviewed map geometry", "public highway identity"]}
+  ],
+  "sweeps_expanded": false
+}
