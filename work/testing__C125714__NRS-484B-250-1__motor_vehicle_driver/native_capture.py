@@ -24,6 +24,37 @@ def write(path, value):
     Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
 
+REVIEW_SOURCES = {name: "context_sources/" + name + ".bin" for name in
+                  ("public_access_source", "device_inventory_source", "driver_scope_source")}
+
+
+def retain_review_sources(packet_path, law, output):
+    """Copy the exact reviewed source bytes into the original Native attempt."""
+    packet_path, output = Path(packet_path), Path(output)
+    retained = {}
+    for key, destination in REVIEW_SOURCES.items():
+        item = law.get(key)
+        if not isinstance(item, dict):
+            raise ValueError("reviewed " + key + " source descriptor missing")
+        relative = item.get("source_path")
+        if (not isinstance(relative, str) or not relative or
+                Path(relative).is_absolute() or ".." in Path(relative).parts):
+            raise ValueError("reviewed " + key + " source path invalid")
+        source = packet_path.parent / relative
+        if (not source.is_file() or sha(source) != item.get("source_sha256") or
+                not item.get("reviewer") or not item.get("source_citation")):
+            raise ValueError("reviewed " + key + " original bytes or provenance missing")
+        target = output / destination
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            raise ValueError("reviewed " + key + " source already retained")
+        shutil.copyfile(source, target)
+        if sha(target) != item["source_sha256"]:
+            raise ValueError("retained " + key + " source changed")
+        retained[key] = destination
+    return retained
+
+
 def reviewed_context(scene, output, world):
     """Retain a separately inspected packet; never infer legal scope from a route."""
     source = Path(scene["reviewed_context_source"])
@@ -56,6 +87,7 @@ def reviewed_context(scene, output, world):
         raise ValueError("reviewed approach relation is invalid")
     if law["devices"]:
         raise ValueError("official device exclusion applies to this primary case")
+    retain_review_sources(source, law, output)
     target = Path(output) / "reviewed-context.json"
     if target.exists():
         raise ValueError("reviewed source already retained")
@@ -240,7 +272,8 @@ def run_native(scene, output, host, port):
         names = ("trace.jsonl", "video_frames.jsonl", "road.xodr", "carla_recorder.log",
                  "reviewed-context.json", "intersection-context.json",
                  "ego-body-history.jsonl", "other-body-history.jsonl",
-                 "controller-history.jsonl", *(name + ".mkv" for name, *_ in CameraBank.SPECS))
+                 "controller-history.jsonl", *REVIEW_SOURCES.values(),
+                 *(name + ".mkv" for name, *_ in CameraBank.SPECS))
         write(output / "acquisition.json", {name: {"kind": "original_native", "sha256": sha(output/name)}
                                             for name in names})
         phase = "sealed"

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -27,10 +28,15 @@ class RunnerSourceBinding(unittest.TestCase):
     def test_launch_passes_resolved_packet_from_another_working_directory(self):
         scene_path = ROOT / "cases" / "opposite_makes_left" / "scene.json"
         with tempfile.TemporaryDirectory() as directory:
-            with mock.patch.object(sys, "argv", ["runner.py", "--scene", str(scene_path),
-                                                "--output-dir", directory]), \
-                 mock.patch("native_capture.run_native") as run:
-                main()
+            previous = Path.cwd()
+            try:
+                os.chdir(directory)
+                with mock.patch.object(sys, "argv", ["runner.py", "--scene", str(scene_path),
+                                                    "--output-dir", directory]), \
+                     mock.patch("native_capture.run_native") as run:
+                    main()
+            finally:
+                os.chdir(previous)
             passed = run.call_args.args[0]
             self.assertEqual(Path(passed["reviewed_context_source"]),
                              scene_path.with_name("diagnostic-context.json").resolve())

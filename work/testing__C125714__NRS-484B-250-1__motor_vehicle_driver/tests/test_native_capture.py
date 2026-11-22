@@ -22,9 +22,16 @@ class SourceAndCameraTests(unittest.TestCase):
             digest = hashlib.sha256(b"map bytes").hexdigest()
             crossing = {"crossing_id": "A-B", "map_source_sha256": digest,
                         "bounds_xy_m": [-1,-1,1,1]}
+            descriptions = {}
+            for key in ("public_access_source", "device_inventory_source",
+                        "driver_scope_source"):
+                path = root / (key + ".txt")
+                path.write_text("synthetic review source for " + key)
+                descriptions[key] = {"source_path": path.name,
+                                     "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                                     "reviewer": "fixture", "source_citation": "fixture only"}
             law = {"map_source": digest, "ego_highway": "A", "other_highway": "B",
-                   "public_access_source": "review packet", "device_inventory_source": "review packet",
-                   "driver_scope_source": "review packet", "public_access": True,
+                   **descriptions, "public_access": True,
                    "human_driver": True, "devices": [], "approach_relation": "crossing",
                    "left_turn_intent": False, "left_turn_realized": False}
             source.write_text(json.dumps({"crossing": crossing, "law_context": law}))
@@ -37,6 +44,15 @@ class SourceAndCameraTests(unittest.TestCase):
                 def get_map(self): return Map()
             self.assertEqual(reviewed_context(scene, output, World())["crossing"], crossing)
             self.assertEqual((output / "reviewed-context.json").read_bytes(), source.read_bytes())
+            for key, description in descriptions.items():
+                self.assertEqual(hashlib.sha256((output / "context_sources" /
+                                                (key + ".bin")).read_bytes()).hexdigest(),
+                                 description["source_sha256"])
+            (root / "public_access_source.txt").write_text("changed source bytes")
+            changed_output = root / "changed-attempt"
+            changed_output.mkdir()
+            with self.assertRaisesRegex(ValueError, "public_access_source original bytes"):
+                reviewed_context(scene, changed_output, World())
             output.joinpath("reviewed-context.json").unlink()
             law["devices"] = ["stop_sign"]
             source.write_text(json.dumps({"crossing": crossing, "law_context": law}))

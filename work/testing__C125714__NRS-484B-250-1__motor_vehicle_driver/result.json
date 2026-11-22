@@ -6,10 +6,10 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "3680ac6860fcc42079f1ff078f3a1ff0ccc6fbe4a5b98bb0f572b40b57bff56c"
+      "sha256": "b1f6c60844ce5739852c57ed3e32b859240387c37d7e50d1df8e8de413d1e133"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125714-measurement-runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_saved.py",
@@ -120,20 +120,110 @@
       "sha256": "798f11915833412de3bc4bbd1ef0000bd38f45bf8283ffb4ad246767d1886d53"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-physical-runtime-v2 PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/physical_outcome_probe.py --source .runtime-work/c125714-context-proof-1 --output .runtime-work/c125714-physical-outcomes-v1",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_threecase_diagnostics.py --output-root .runtime-work/c125714-source-binding-proof-v1",
+      "exit_code": 0,
+      "log": "sevencase-source-binding-proof.log",
+      "sha256": "ea3f2c4a2feee4d6de43a20ebfff01b611f49a1c9f9bd19f7da02d8c312811c5"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v2 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_all_compatibility.py --output-root .runtime-work/c125714-source-binding-compat-v1 --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "all-compatibility-source-binding-proof.log",
+      "sha256": "eada810df6383b9734bf6043dd921de0bf8fc13f73c7de130c3401de9a0e73ea"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v3 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_all_saved_processing.py --compat-root .runtime-work/c125714-source-binding-compat-v1 --output-root .runtime-work/c125714-source-binding-saved-v1 --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "all-saved-source-binding-proof.log",
+      "sha256": "4c181a1fff6d3a563a761acb25c30a8dcc07d3a29629a33f4567abb44beeec3b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v4 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_measurement_contract.py --proof-root .runtime-work/c125714-source-binding-proof-v1",
+      "exit_code": 0,
+      "log": "measurement-source-binding-proof.log",
+      "sha256": "6d0fbb890a01784ef4cf84a0f2251c1a5e696c0aa0f9e7bdcac81cabe00cdf4e"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v4 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_opposite_pairs.py --proof-root .runtime-work/c125714-source-binding-proof-v1",
+      "exit_code": 0,
+      "log": "opposite-pairs-source-binding-proof.log",
+      "sha256": "d315f07f67c3a49bf29f051072de8856dbd9cb4d8935038ee7f16b4aa33d75e1"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v4 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_wide_pair.py --proof-root .runtime-work/c125714-source-binding-proof-v1",
+      "exit_code": 0,
+      "log": "wide-pair-source-binding-proof.log",
+      "sha256": "d5ae7860db3d7eaec630cc4e1921d4e12620d424c839446978a887884e0ab8c1"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-source-binding-runtime-v4 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_crossing_pairs.py --proof-root .runtime-work/c125714-source-binding-proof-v1",
+      "exit_code": 0,
+      "log": "crossing-pairs-source-binding-proof.log",
+      "sha256": "798f11915833412de3bc4bbd1ef0000bd38f45bf8283ffb4ad246767d1886d53"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/native_binding_rehearsal.py --output work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/native-binding-rehearsal.json",
+      "exit_code": 0,
+      "log": "native-binding-source-proof.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v1 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_threecase_diagnostics.py --output-root .runtime-work/c125714-retained-sources-proof-v1",
+      "exit_code": 0,
+      "log": "sevencase-retained-sources-proof.log",
+      "sha256": "ea3f2c4a2feee4d6de43a20ebfff01b611f49a1c9f9bd19f7da02d8c312811c5"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v2 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_all_compatibility.py --output-root .runtime-work/c125714-retained-sources-compat-v1 --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "all-compatibility-retained-sources-proof.log",
+      "sha256": "eada810df6383b9734bf6043dd921de0bf8fc13f73c7de130c3401de9a0e73ea"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v4 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_all_saved_processing.py --compat-root .runtime-work/c125714-retained-sources-compat-v1 --output-root .runtime-work/c125714-retained-sources-saved-v1 --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "all-saved-retained-sources-proof.log",
+      "sha256": "4c181a1fff6d3a563a761acb25c30a8dcc07d3a29629a33f4567abb44beeec3b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_measurement_contract.py --proof-root .runtime-work/c125714-retained-sources-proof-v1",
+      "exit_code": 0,
+      "log": "measurement_contract-retained-sources-proof.log",
+      "sha256": "2612f7e2d1cd3e3ba97f6f7c7185947ffb86cbdd43e05a1a4bf2ba3a48bafa0b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_opposite_pairs.py --proof-root .runtime-work/c125714-retained-sources-proof-v1",
+      "exit_code": 0,
+      "log": "opposite_pairs-retained-sources-proof.log",
+      "sha256": "d315f07f67c3a49bf29f051072de8856dbd9cb4d8935038ee7f16b4aa33d75e1"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_wide_pair.py --proof-root .runtime-work/c125714-retained-sources-proof-v1",
+      "exit_code": 0,
+      "log": "wide_pair-retained-sources-proof.log",
+      "sha256": "d5ae7860db3d7eaec630cc4e1921d4e12620d424c839446978a887884e0ab8c1"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-runtime-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_crossing_pairs.py --proof-root .runtime-work/c125714-retained-sources-proof-v1",
+      "exit_code": 0,
+      "log": "crossing_pairs-retained-sources-proof.log",
+      "sha256": "798f11915833412de3bc4bbd1ef0000bd38f45bf8283ffb4ad246767d1886d53"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-physical-runtime-v1 PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/physical_outcome_probe.py --source .runtime-work/c125714-retained-sources-proof-v1 --output .runtime-work/c125714-retained-sources-physical-v1",
       "exit_code": 0,
       "log": "physical-outcome-proof.log",
       "sha256": "4d7073964caff266a3b1514dee61ca09a80153ec7fe5377349280ba8cac7940b"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-physical-validate-v2 PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c pinned-physical-preparation-validator-on-seven-receipts",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c125714-retained-sources-validator-runtime-v1 PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c pinned-physical-preparation-validator-on-seven-receipts",
       "exit_code": 0,
       "log": "physical-validator.log",
-      "sha256": "0f21c0d83318ba4fa4f7f6a639544374ee69c7437c5212cbfa2e73489dc7a2f2"
+      "sha256": "eb6c37759f1001681246778c5960cd89daeec6b1b0c334cc088090c7d67ab076"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Fifty-three CPU tests, seven diagnostic offline/compatibility/saved proofs and five comparison probes pass. Seven new original-body physical outcome/lifecycle diagnostic receipts pass the pinned physical-preparation validator with met, stalled not_met and missing-source unverified outcomes. The current seven cases remain diagnostic-only; genuine reviewed highway/device/driver context, delivery Native bundles and independent sealed acceptance are worker-owned CPU work. No synthetic fixture establishes physical or legal acceptance."
+  "reason": "Fifty-seven CPU tests pass. Native capture now requires reviewed public-access, device-inventory and driver-scope source descriptors, copies each SHA-verified original byte source into the sealed attempt, and the independent delivery audit verifies their retained hashes. Seven refreshed offline/saved positive and missing-source negative diagnostics, seven pinned compatibility receipts, seven saved-only receipts, four comparison proof paths and seven pinned physical outcome/lifecycle receipts pass. Current exact cases remain diagnostic-only; genuine reviewed crossing/highway/device/driver source bytes, seven delivery Native bundles and sealed delivery/comparison acceptance proofs are unfinished worker-owned CPU work. No synthetic fixture establishes physical or legal acceptance."
 }

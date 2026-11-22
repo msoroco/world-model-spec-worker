@@ -108,6 +108,13 @@ class NativeRunTests(unittest.TestCase):
                  "driver_scope_source":"review","public_access":True,"human_driver":True,
                  "devices":[],"approach_relation":"crossing","left_turn_intent":False,
                  "left_turn_realized":False}
+            for key, relative in native_capture.REVIEW_SOURCES.items():
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("synthetic source for " + key)
+                law[key] = {"source_path": key + ".txt",
+                            "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                            "reviewer": "fixture", "source_citation": "fixture only"}
             packet={"crossing":crossing,"law_context":law}
             def review(scene,output,world):
                 (Path(output)/"reviewed-context.json").write_text(json.dumps(packet))
