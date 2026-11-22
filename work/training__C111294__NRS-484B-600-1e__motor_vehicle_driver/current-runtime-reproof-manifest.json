@@ -1,0 +1,780 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "status": "selected_cpu_delivery_bound_current_runtime",
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-below_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/below_80_mph/fallback1/construction.json",
+          "construction_sha256": "12caff33579892d104b1e8474278abde3ae1aaca837674c84b527e9d8ba38566",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/below_80_mph/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "12caff33579892d104b1e8474278abde3ae1aaca837674c84b527e9d8ba38566",
+            "log": "update042f-below_80_mph-fallback1-offline.log",
+            "log_sha256": "f920663a689faaa50f9d1f6194d2967f722d6b69ecedefa7fc1dea4fff0b6ece"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/below_80_mph/fallback1/compatibility.json",
+            "sha256": "d3e1063795c8973c88a79b3c8089ddd02528d7f39b21c1e759aa42242dfbe3c4",
+            "log": "update042f-selected-proofs/below_80_mph/fallback1/analysis.log",
+            "negative_log": "update042f-selected-proofs/below_80_mph/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/below_80_mph/fallback2/construction.json",
+          "construction_sha256": "8b0d027cb4e2889e11be1d2a0393a0380c38200669663c979145784834a572be",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/below_80_mph/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "8b0d027cb4e2889e11be1d2a0393a0380c38200669663c979145784834a572be",
+            "log": "update042f-below_80_mph-fallback2-offline.log",
+            "log_sha256": "650464a88dd7aa7b17fdefe0de7fa9eb913038e21933116808b9526258aa1784"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/below_80_mph/fallback2/compatibility.json",
+            "sha256": "e14cea7b9f9a10813b8cc05be6f7abfbd63b6396a83daac417cefb56ea31d804",
+            "log": "update042f-selected-proofs/below_80_mph/fallback2/analysis.log",
+            "negative_log": "update042f-selected-proofs/below_80_mph/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/below_80_mph/fallback3/construction.json",
+          "construction_sha256": "136c114e6dc0122d14b0f7e0b006a545c61637a22f87f508d9b231eebd42696e",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/below_80_mph/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "136c114e6dc0122d14b0f7e0b006a545c61637a22f87f508d9b231eebd42696e",
+            "log": "update042f-below_80_mph-fallback3-offline.log",
+            "log_sha256": "17f2212c3be0672f04178251b857dfbb83f8de9c2e91d4aed84bd3d73c1eed83"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/below_80_mph/fallback3/compatibility.json",
+            "sha256": "b567170b6fd53e0e263311008707986c9f88120cf0001a10003b26912ebd4e28",
+            "log": "update042f-selected-proofs/below_80_mph/fallback3/analysis.log",
+            "negative_log": "update042f-selected-proofs/below_80_mph/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update300-below_80_mph-diagnostic-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/below_80_mph/primary/construction.json",
+      "construction_sha256": "be46aa8a950d3f2f34ff06a165fb4b5d0b3456e771fc03108d5a7d8a3c63220d",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/below_80_mph/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "be46aa8a950d3f2f34ff06a165fb4b5d0b3456e771fc03108d5a7d8a3c63220d",
+        "log": "update300-selected-proofs/below_80_mph/primary/offline.log",
+        "log_sha256": "b5c75cba390af0cf2ed90bbcd68c8995f23d620c43735a07495ed710a7070687"
+      },
+      "compatibility": {
+        "receipt": "update301-package-compatibility/below_80_mph/compatibility.json",
+        "sha256": "53201bdea6fb43d5ff691f1f0e2f3562188def6ddfce8d7fb95d5743b1f843e2",
+        "log": "update301-package-compatibility/below_80_mph/analysis.log",
+        "negative_log": "update301-package-compatibility/below_80_mph/negative.log"
+      },
+      "negative": {
+        "log": "update301-package-compatibility/below_80_mph/negative.log",
+        "log_sha256": "c1d517d443b54348763c5e0b85a1b13a235a5bf3ceee50cb36f71e7fb2df3765"
+      },
+      "physical_preparation": {
+        "receipt": "update301-selected-physical/below_80_mph/proof.json",
+        "sha256": "1306d7f242fc109ab6e813601020c71b32057fc101d5955a8e0780b9b9ac8cae"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/below_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/below_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-below_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update301-below_80_mph-delivery-positive.log",
+        "test_log_sha256": "7ff99d1845febe837e002d1a223035f46eca3f3f8f30d4c4530f387de033a702",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/below_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/below_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-below_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update301-below_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-below_80_mph-primary-process-saved.log",
+        "test_log_sha256": "bfaa2a89fe68ed1f49471abebe0a2dcdfbf3fb846120777929e3ada878516da2"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-inside_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/inside_80_mph/fallback1/construction.json",
+          "construction_sha256": "0b632a8ffdba25f6a7600256dfd04ecd73b6b22744ac7c9c8708933fb81f52a4",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/inside_80_mph/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0b632a8ffdba25f6a7600256dfd04ecd73b6b22744ac7c9c8708933fb81f52a4",
+            "log": "update042f-inside_80_mph-fallback1-offline.log",
+            "log_sha256": "81c63d9dc74540e7c7bf138440a247db7117ad9ad3dda54ff21d05475c07716e"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/inside_80_mph/fallback1/compatibility.json",
+            "sha256": "5c528a26cfaaa0b995066b22d863a8290b24c78a0be2cda6ef28d2c5f6c76a46",
+            "log": "update042f-selected-proofs/inside_80_mph/fallback1/analysis.log",
+            "negative_log": "update042f-selected-proofs/inside_80_mph/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/inside_80_mph/fallback2/construction.json",
+          "construction_sha256": "1d9b7cf4fee074aa4619885ac2c8ea63f4fac1f0f80686647d3e19c82a1f72cc",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/inside_80_mph/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "1d9b7cf4fee074aa4619885ac2c8ea63f4fac1f0f80686647d3e19c82a1f72cc",
+            "log": "update042f-inside_80_mph-fallback2-offline.log",
+            "log_sha256": "f6ff98c5b48827ba42db4576e57f0f818c666162e395a910d80eb4f2a44cbaa0"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/inside_80_mph/fallback2/compatibility.json",
+            "sha256": "9232829293b1d81809079b2ccd2427fac537423a4fd913faa45451fc66aa28d8",
+            "log": "update042f-selected-proofs/inside_80_mph/fallback2/analysis.log",
+            "negative_log": "update042f-selected-proofs/inside_80_mph/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/inside_80_mph/fallback3/construction.json",
+          "construction_sha256": "436d4de5a019066eb927a82ecc0daab673abb1f4252873014ac7884d475e8941",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/inside_80_mph/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "436d4de5a019066eb927a82ecc0daab673abb1f4252873014ac7884d475e8941",
+            "log": "update042f-inside_80_mph-fallback3-offline.log",
+            "log_sha256": "f52df9b7fbf61b318169825a6baa808c76b286ea16068ec94a336676a6146de1"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/inside_80_mph/fallback3/compatibility.json",
+            "sha256": "b90d019f9556171325ce37e8065cf9e4f23c0fb58ba87f8ebbb5fd9e2c94f4c8",
+            "log": "update042f-selected-proofs/inside_80_mph/fallback3/analysis.log",
+            "negative_log": "update042f-selected-proofs/inside_80_mph/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update300-inside_80_mph-diagnostic-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/inside_80_mph/primary/construction.json",
+      "construction_sha256": "91026526cf3c0a5e8658145c0807d01c0e87103aa6fada833402599436cba824",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/inside_80_mph/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "91026526cf3c0a5e8658145c0807d01c0e87103aa6fada833402599436cba824",
+        "log": "update300-selected-proofs/inside_80_mph/primary/offline.log",
+        "log_sha256": "60e319f44026b0e080f8d0df615dd104b47a026f3bad820a07bd9f572fc9afbf"
+      },
+      "compatibility": {
+        "receipt": "update301-package-compatibility/inside_80_mph/compatibility.json",
+        "sha256": "4709c6dba49fcf527c80bf7b1856422d84d9da0a06d81994b7cc714b9da3039a",
+        "log": "update301-package-compatibility/inside_80_mph/analysis.log",
+        "negative_log": "update301-package-compatibility/inside_80_mph/negative.log"
+      },
+      "negative": {
+        "log": "update301-package-compatibility/inside_80_mph/negative.log",
+        "log_sha256": "691363707e8dde920fc933f663cb3ebc861328def3bfad8af67c6c6e4dc3dec9"
+      },
+      "physical_preparation": {
+        "receipt": "update301-selected-physical/inside_80_mph/proof.json",
+        "sha256": "815b0f020f88e6441447816cce15d554d809af8c151b3960ad5a8112f56ad453"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/inside_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/inside_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-inside_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update301-inside_80_mph-delivery-positive.log",
+        "test_log_sha256": "93b648996a2570ff28c05b725ffead7437755ab5c856876eb37f0fb6ba711ce5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/inside_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/inside_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-inside_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update301-inside_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-inside_80_mph-primary-process-saved.log",
+        "test_log_sha256": "36a32d026ebcb2f73022e19b13a272e9a52034e11385071c1ee4ac3a623f2262"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-at_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/at_80_mph/fallback1/construction.json",
+          "construction_sha256": "e85f7136714dcf9db338bd4d21aa9e2147737bd934efde7520dcacbdf994462c",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/at_80_mph/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e85f7136714dcf9db338bd4d21aa9e2147737bd934efde7520dcacbdf994462c",
+            "log": "update042f-at_80_mph-fallback1-offline.log",
+            "log_sha256": "f3c3cabbfa233cb95bcc840925c47ac7250049243f10520439dd5477fe9a1953"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/at_80_mph/fallback1/compatibility.json",
+            "sha256": "caa89e806bdfcfec46707a9454b2f609e3fb780a9e416e8618d983fbf4a6c9c9",
+            "log": "update042f-selected-proofs/at_80_mph/fallback1/analysis.log",
+            "negative_log": "update042f-selected-proofs/at_80_mph/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/at_80_mph/fallback2/construction.json",
+          "construction_sha256": "e4de6262fbd51d883c2e16939207b028a42e112512248d3c6f33f352067e4cc6",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/at_80_mph/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e4de6262fbd51d883c2e16939207b028a42e112512248d3c6f33f352067e4cc6",
+            "log": "update042f-at_80_mph-fallback2-offline.log",
+            "log_sha256": "530f4a05a5e1b8c0ff9eaec87d1cb940096ef656cfa8e7e931475f9bac79660a"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/at_80_mph/fallback2/compatibility.json",
+            "sha256": "58cab1943fdd98c9a78fabb3d2552dbf9f737ad31dd68f7288ef4009b69d5b8b",
+            "log": "update042f-selected-proofs/at_80_mph/fallback2/analysis.log",
+            "negative_log": "update042f-selected-proofs/at_80_mph/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/at_80_mph/fallback3/construction.json",
+          "construction_sha256": "3f8ece9c1fa513d01a3e6b0cd39c13122653bc1ed5158b3b010fd8f3c96f59d3",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/at_80_mph/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3f8ece9c1fa513d01a3e6b0cd39c13122653bc1ed5158b3b010fd8f3c96f59d3",
+            "log": "update042f-at_80_mph-fallback3-offline.log",
+            "log_sha256": "4b0e56fa69a017ed1dc44e9f0ae38d6dd5a48a91808efce4dd912706057e99ae"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/at_80_mph/fallback3/compatibility.json",
+            "sha256": "b30f3a95fac54cd3ed084dbfee8b8a83d05e845f9d7eb9cf927f5b768adaf053",
+            "log": "update042f-selected-proofs/at_80_mph/fallback3/analysis.log",
+            "negative_log": "update042f-selected-proofs/at_80_mph/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update300-at_80_mph-diagnostic-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/at_80_mph/primary/construction.json",
+      "construction_sha256": "d2fb207656a1b430cb1a8f51999997f652cc562d7b5870111b244d3bbcb37564",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/at_80_mph/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d2fb207656a1b430cb1a8f51999997f652cc562d7b5870111b244d3bbcb37564",
+        "log": "update300-selected-proofs/at_80_mph/primary/offline.log",
+        "log_sha256": "c4ffa189175fe68aa260ece7cb9d6a1588b6d81c799e53bdb4f67019d7f84dd2"
+      },
+      "compatibility": {
+        "receipt": "update301-package-compatibility/at_80_mph/compatibility.json",
+        "sha256": "77ebd26c83b9f5dcd58848c7620ed254e8199338e77fa3b20a14e14cea5b55e0",
+        "log": "update301-package-compatibility/at_80_mph/analysis.log",
+        "negative_log": "update301-package-compatibility/at_80_mph/negative.log"
+      },
+      "negative": {
+        "log": "update301-package-compatibility/at_80_mph/negative.log",
+        "log_sha256": "79aa585573e7139f9d91fd3640456f56b36f8856f48f165b2fc6a684092dc182"
+      },
+      "physical_preparation": {
+        "receipt": "update301-selected-physical/at_80_mph/proof.json",
+        "sha256": "8f17219b3d137a1e8e17286b3b86de6dcc6948084578da8281eacf8c043292ca"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/at_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/at_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-at_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update301-at_80_mph-delivery-positive.log",
+        "test_log_sha256": "7e6d071e27fd24bea1012326eaa8ab3d65240a6b848a30de2c2e8e16d912c170",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/at_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/at_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-at_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update301-at_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-at_80_mph-primary-process-saved.log",
+        "test_log_sha256": "6f7e5ac0b63ac47dbc0b01bee79597c38d8829882495e15a89b6c53a99479df6"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-above_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/above_80_mph/fallback1/construction.json",
+          "construction_sha256": "2c01f70cdc15c1ad3e04ba9618d367ee0e00399f3e42f19360a421662bbde255",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/above_80_mph/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2c01f70cdc15c1ad3e04ba9618d367ee0e00399f3e42f19360a421662bbde255",
+            "log": "update042f-above_80_mph-fallback1-offline.log",
+            "log_sha256": "782d5ce3e214a9698df781ad9c83e5038651c86a175e12bc1d087b9570e37eef"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/above_80_mph/fallback1/compatibility.json",
+            "sha256": "476f5fbc8ab07f8ab9bf39b3e99ba98fef7cd30027d01ad81b1271ea25455d42",
+            "log": "update042f-selected-proofs/above_80_mph/fallback1/analysis.log",
+            "negative_log": "update042f-selected-proofs/above_80_mph/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/above_80_mph/fallback2/construction.json",
+          "construction_sha256": "b1e69454a12d3a072675264e7c0574f649cd647f919771dd61991de3e4c4fadb",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/above_80_mph/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b1e69454a12d3a072675264e7c0574f649cd647f919771dd61991de3e4c4fadb",
+            "log": "update042f-above_80_mph-fallback2-offline.log",
+            "log_sha256": "a7d1de91efbd76fab58396ff215e8ccbb6dcf6ac0ff4adab2e8f595b94546238"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/above_80_mph/fallback2/compatibility.json",
+            "sha256": "e7bcf2439c7baca88aa4b947aa85a8e9b7292d71c117dfdd45a8e179b41db444",
+            "log": "update042f-selected-proofs/above_80_mph/fallback2/analysis.log",
+            "negative_log": "update042f-selected-proofs/above_80_mph/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/above_80_mph/fallback3/construction.json",
+          "construction_sha256": "78e5ca91c6b1d1a6e4fe83d7aefcfdfa3bb67495a920a4ff309383c670248154",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/above_80_mph/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "78e5ca91c6b1d1a6e4fe83d7aefcfdfa3bb67495a920a4ff309383c670248154",
+            "log": "update042f-above_80_mph-fallback3-offline.log",
+            "log_sha256": "5e8a6425fe3c3d4f416d6455d51f4fc40e3e386595b060a7e7b0913a8fc73604"
+          },
+          "compatibility": {
+            "receipt": "update042f-selected-proofs/above_80_mph/fallback3/compatibility.json",
+            "sha256": "79aff385026085fc9b43f8ed674cc23896190c32d72d20b8f2332f1f38e49263",
+            "log": "update042f-selected-proofs/above_80_mph/fallback3/analysis.log",
+            "negative_log": "update042f-selected-proofs/above_80_mph/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update300-above_80_mph-diagnostic-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/above_80_mph/primary/construction.json",
+      "construction_sha256": "3dc55a8a6023162c34e6b33dda6aa6f72afd5e3bf04376b7ebaadc12885ce692",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042f-selected-proof/above_80_mph/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3dc55a8a6023162c34e6b33dda6aa6f72afd5e3bf04376b7ebaadc12885ce692",
+        "log": "update300-selected-proofs/above_80_mph/primary/offline.log",
+        "log_sha256": "854d3d927b700ca9d971b1656218703f87bc9cb3abbcadf5ac614f1273fea95a"
+      },
+      "compatibility": {
+        "receipt": "update301-package-compatibility/above_80_mph/compatibility.json",
+        "sha256": "5a54c17129e08d12b46cc1e5ee14d6d5caf521938aeb85456bf7237b86719b79",
+        "log": "update301-package-compatibility/above_80_mph/analysis.log",
+        "negative_log": "update301-package-compatibility/above_80_mph/negative.log"
+      },
+      "negative": {
+        "log": "update301-package-compatibility/above_80_mph/negative.log",
+        "log_sha256": "0b115052b267ae33539dc2c4e089d92c7bd7069e2646326af9e0f4366feaa446"
+      },
+      "physical_preparation": {
+        "receipt": "update301-selected-physical/above_80_mph/proof.json",
+        "sha256": "88083c6eff870221c6692da5ab2522ffe69aa6c46f307b441931ae11cc4ac963"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/above_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/above_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-above_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update301-above_80_mph-delivery-positive.log",
+        "test_log_sha256": "faa22345c87e8369d214eb1e76106044cb082df208524b6cdeddea79b0eed078",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/above_80_mph/primary/compatibility --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update300-selected-matrix/8e400603c3b5/above_80_mph/primary/saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update301-above_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update301-above_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-above_80_mph-primary-process-saved.log",
+        "test_log_sha256": "c99a008a76966902e4c62102e7c1e9fe33fe1ca614169b9b0b52af7b1b1256aa"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
+      }
+    }
+  ],
+  "selection_review": {
+    "law_input_sha256": "0b991f8419ac955302708cc269d17cacac51e57abc1bf860c806131906834d50",
+    "case_plan_sha256": "9a2cb381e76b3ce2819761cdbc821ecba69dd083e187b79874c14d50df663350",
+    "draft_proposal_sha256": "f1ea0798cfc6c40d93970279a9dfef826b869656950fd7311ec02d624ab66972",
+    "accepted_memberships": 0,
+    "unresolved": [
+      "original Native vehicle speed and road context",
+      "exact 80 mph measurement interval",
+      "original four-view pixel coverage"
+    ],
+    "scope": "Four exact 75/79.5/80/85 mph CPU delivery cases; source-derived physical and legal outcomes remain unverified."
+  }
+}
