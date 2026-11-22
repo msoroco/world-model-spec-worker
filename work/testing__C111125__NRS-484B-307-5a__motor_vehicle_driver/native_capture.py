@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path
 
 from arrow_source import aspect as reviewed_aspect, bind_actor, load_binding
+from map_review import validate as validate_map_review
 from phase_source import entry_observation, load as load_phase_source
 
 
@@ -119,6 +120,25 @@ def retain_phase_sources(source_dir, output):
         bindings[ident]=binding
         names.extend([str(packet_copy.relative_to(output)),str(source_copy.relative_to(output))])
     return bindings,names
+
+
+def retain_map_review(source_dir, output, scene, mapping, carla):
+    """Require reviewed geometry to match the live original OpenDRIVE bytes."""
+    if not source_dir:raise ValueError('reviewed Native map source directory missing')
+    source_dir=Path(source_dir)
+    packet_path=source_dir/'review.json'
+    packet=json.loads(packet_path.read_text())
+    filename=packet.get('source_file')
+    if not isinstance(filename,str) or Path(filename).name!=filename or filename in ('','.','..','review.json'):
+        raise ValueError('reviewed map source filename invalid')
+    source_path=source_dir/filename
+    receipt=validate_map_review(packet_path,source_path,scene,mapping,carla)
+    destination=Path(output)/'reviewed-map-source';destination.mkdir()
+    shutil.copy2(packet_path,destination/'review.json')
+    shutil.copy2(source_path,destination/filename)
+    copied=validate_map_review(destination/'review.json',destination/filename,scene,mapping,carla)
+    if copied!=receipt:raise ValueError('reviewed map changed during retention')
+    return receipt,['reviewed-map-source/review.json','reviewed-map-source/'+filename]
 
 
 def bind_phase_sources(bindings, actors):
@@ -281,9 +301,6 @@ def run_native(scene,output,host,port):
     if not output.is_dir():raise ValueError('Native attempt directory must already exist')
     bindings,reviewed_names=retain_reviewed_sources(os.environ.get('C111125_ARROW_SOURCE_DIR'),output)
     phase_bindings,phase_names=retain_phase_sources(os.environ.get('C111125_PHASE_SOURCE_DIR'),output)
-    write(output/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':False,
-          'method':'original CARLA live capture; reviewed arrow source required for arrow inference',
-          'reviewed_arrow_sources':reviewed_names,'reviewed_phase_sources':phase_names})
     client=carla.Client(host,port);client.set_timeout(30)
     world=client.get_world();original_settings=world.get_settings()
     actors={};cameras=None;capture=None;frame_map=None
@@ -294,6 +311,13 @@ def run_native(scene,output,host,port):
     prior_inside={};entry_status={};verified_entry_frames=[]
     try:
         context=map_context(world.get_map(),scene,carla)
+        map_receipt,map_names=retain_map_review(os.environ.get('C111125_MAP_SOURCE_DIR'),
+                                                output,scene,world.get_map(),carla)
+        context['reviewed_map_source']=map_receipt
+        write(output/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':False,
+              'method':'original CARLA live capture with reviewed map and signal sources',
+              'reviewed_arrow_sources':reviewed_names,'reviewed_phase_sources':phase_names,
+              'reviewed_map_sources':map_names})
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
         world.apply_settings(settings)
         def transform(x,y,_,yaw):
@@ -371,7 +395,7 @@ def run_native(scene,output,host,port):
                       'ego-body-history.jsonl','participant-history.jsonl','controller-history.jsonl',
                       'intersection-context.json',
                       'road.xodr','carla_recorder.log',*[name+'.mkv' for name,*_ in CameraBank.SPECS],
-                      *reviewed_names,*phase_names]
+                      *reviewed_names,*phase_names,*map_names]
         write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in source_names})
         planned=json.loads((output/'config.json').read_text())['case']['recording_description']
         result={'case_id':scene['case_id'],

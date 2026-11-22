@@ -35,6 +35,7 @@ class Waypoint:
 class Map:
     def __init__(self,missing=False):self.missing=missing
     def get_waypoint(self,point):return None if self.missing else Waypoint(point.x)
+    def to_opendrive(self):return '<OpenDRIVE><road id="1"/></OpenDRIVE>'
 
 
 class Carla:
@@ -152,6 +153,40 @@ class NativeSourceTests(unittest.TestCase):
             self.assertFalse(context['lawful_presence_source_verified'])
             with self.assertRaisesRegex(ValueError,'matching Native driving waypoint'):
                 native.map_context(Map(missing=True),scene,Carla)
+        finally:sys.path.remove(str(ROOT))
+
+    def test_reviewed_map_binds_live_opendrive_and_authored_regions(self):
+        sys.path.insert(0,str(ROOT))
+        try:
+            from runner import load_scene
+            scene=load_scene()
+            with tempfile.TemporaryDirectory() as source, tempfile.TemporaryDirectory() as output:
+                source=Path(source);original=source/'original.xodr'
+                original.write_text(Map().to_opendrive())
+                packet={'format':'c111125-reviewed-map-installation-v1',
+                        'reviewer':'CPU fixture reviewer',
+                        'review_method':'original-opendrive-and-installed-signal-review',
+                        'source_file':original.name,
+                        'map_sha256':hashlib.sha256(original.read_bytes()).hexdigest(),
+                        'route':{'road_id':1,'lane_id':-1},
+                        'intersection_bounds_m':scene['intersection_bounds_m'],
+                        'adjacent_crosswalk_bounds_m':scene['adjacent_crosswalk_bounds_m'],
+                        'stop_line_x_m':scene['stop_line_x_m'],
+                        'geometry_source_ref':'CPU fixture geometry',
+                        'signal_installation_source_ref':'CPU fixture signal'}
+                (source/'review.json').write_text(json.dumps(packet))
+                receipt,names=native.retain_map_review(source,output,scene,Map(),Carla)
+                self.assertEqual(receipt['road_id'],1)
+                self.assertEqual(len(names),2)
+                packet['stop_line_x_m']+=1
+                (source/'review.json').write_text(json.dumps(packet))
+                with self.assertRaisesRegex(ValueError,'geometry differs'):
+                    native.retain_map_review(source,tempfile.mkdtemp(),scene,Map(),Carla)
+                packet['stop_line_x_m']=scene['stop_line_x_m']
+                (source/'review.json').write_text(json.dumps(packet))
+                original.write_text('<OpenDRIVE><road id="2"/></OpenDRIVE>')
+                with self.assertRaisesRegex(ValueError,'source hash mismatch'):
+                    native.retain_map_review(source,tempfile.mkdtemp(),scene,Map(),Carla)
         finally:sys.path.remove(str(ROOT))
 
     def test_failed_map_preflight_restores_world_without_seal(self):

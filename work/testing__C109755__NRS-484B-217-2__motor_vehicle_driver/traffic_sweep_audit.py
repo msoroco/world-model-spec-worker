@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 
 from traffic_sweep import CHANGES,select
+from zone_source import validate as validate_zone_source
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -16,7 +17,8 @@ def rows(path):return [json.loads(line) for line in Path(path).read_text().split
 def one(record):
     attempt=Path(record['attempt']);saved_path=Path(record['saved_result'])
     seal=read(attempt/'capture-seal.json');acquisition=read(attempt/'acquisition.json')
-    for name in ('turn-history.jsonl','zone-context.json','traffic-policy.json'):
+    for name in ('turn-history.jsonl','zone-context.json','traffic-policy.json',
+                 'zone-review-source.json','zone-authority-source.txt'):
         path=attempt/name
         if seal.get('sources',{}).get(name)!=sha(path) or \
            acquisition.get(name,{}).get('kind')!='original_native' or \
@@ -27,9 +29,14 @@ def one(record):
     if policy!=expected:
         raise ValueError('sweep policy differs from declared one-factor plan')
     zone=read(attempt/'zone-context.json')
+    review=read(attempt/'zone-review-source.json')
+    authority=(attempt/'zone-authority-source.txt').read_bytes()
+    facts=validate_zone_source(review,authority,zone)
+    if any(zone.get(key)!=value for key,value in facts.items()):
+        raise ValueError('sweep zone review differs from retained source and map samples')
     if zone.get('traffic_sweep_variant_id')!=policy['variant_id'] or \
        zone.get('traffic_policy_sha256')!=sha(attempt/'traffic-policy.json') or \
-       not zone.get('authority_source_sha256'):
+       zone.get('authority_source_sha256')!=sha(attempt/'zone-authority-source.txt'):
         raise ValueError('sweep zone or policy source binding absent')
     saved=read(saved_path)
     if saved.get('case_id')!=scene['case_id'] or not all(saved.get(key) is True for key in
