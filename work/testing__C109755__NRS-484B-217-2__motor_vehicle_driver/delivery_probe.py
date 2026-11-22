@@ -51,10 +51,14 @@ def fixture(root,case):
             'authority_citation':'diagnostic fixture','authority_source_path':str(attempt/'zone-authority-source.txt'),
             'authority_source_sha256':sha(attempt/'zone-authority-source.txt'),
             'designation':'official_no_passing_zone','destination_kind':'other_left_turn',
+            'destination_road_id':2,'destination_lane_id':-1,
+            'destination_xy_m':[0.0,5.0],
             'subsections_3_and_4_reviewed':True,'road_id':1,'lane_id':-1,
             'zone_x_limits_m':[-10,10]}
     write(attempt/'zone-review-source.json',packet)
     zone={'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
+          'destination_road_id':2,'destination_lane_id':-1,
+          'destination_xy_m':[0.0,5.0],
           'approach_road_id':1,'approach_lane_id':-1,'crossing_x_m':0,
           'sample_interval_max_m':5,
           'approach_marking_samples':[{'requested_x_m':x,'mapped_x_m':x,

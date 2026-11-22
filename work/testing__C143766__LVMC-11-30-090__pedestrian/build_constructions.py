@@ -38,7 +38,15 @@ def description():
         {"name": "walker_route_progress", "unit": "m and s",
          "method": "original pose, body, velocity and frame timestamps",
          "time_window": "all captured frames", "sampling_rate_hz": 20,
-         "reference_frame": "authored OpenDRIVE world XY", "uncertainty": "sampled frame interval"}],
+         "reference_frame": "authored OpenDRIVE world XY", "uncertainty": "sampled frame interval"},
+        {"name": "sidewalk_and_roadway_boundaries", "unit": "m",
+         "method": "source-hashed authored OpenDRIVE band rectangles, joined to original frames",
+         "time_window": "all captured frames", "sampling_rate_hz": 20,
+         "reference_frame": "authored OpenDRIVE world XY", "uncertainty": "municipal classification unreviewed"},
+        {"name": "trail_access_and_purpose", "unit": "source status",
+         "method": "source-hashed authored trail band and explicit unreviewed access status, joined to original frames",
+         "time_window": "all captured frames", "sampling_rate_hz": 20,
+         "reference_frame": "authored OpenDRIVE world XY", "uncertainty": "trail access and purpose unreviewed"}],
         "context_inputs": [
          {"name": "sidewalk_roadway_shoulder_trail_context", "unit": "source and pixels",
           "method": "source-hashed authored OpenDRIVE plus four original camera views"}],
@@ -55,6 +63,7 @@ def config(scene):
             "actor": "pedestrian", "selected_case_id": scene["case_id"],
             "rate_hz": 20, "duration_s": 435/20,
             "required_atoms": [], "source_packets": [],
+            "supported_case_ids": [HERE.name+"__"+suffix for suffix in SUFFIXES],
             "cameras": [{"name": name, "width": width, "height": height,
                          "fov_deg": 75, "pose_strategy": strategies[name]}
                         for name, (width, height) in CAMERA_SPECS.items()],
@@ -91,6 +100,9 @@ def build():
                         "recording_description": description(),
                         "measurement_plan": {"pedestrian_corridor_occupancy":
                             "Source-bound original whole-body roadway, sidewalk or shoulder occupancy; no legal verdict"},
+                        "static_checks": ["exact source-hashed authored map and route bands",
+                                          "Native walker and four-camera frame joins",
+                                          "saved original full-body occupancy and context status"],
                         "termination_rules": {"duration_s": 435/20,
                             "early_termination": "retain unsealed failed original attempt"},
                         "mechanisms": ["source-hashed five-band candidate OpenDRIVE",
@@ -123,6 +135,9 @@ def build():
              "assignment_id": HERE.name, "cases": entries,
              "limitations": "Offline construction only; no delivery-ready claim or execution manifest."}
     write(HERE/"draft-offline-manifest.json", draft)
+    primary = HERE/"cases"/SUFFIXES[0]
+    write(HERE/"config.json", json.loads((primary/"config.json").read_text()))
+    write(HERE/"construction.json", json.loads((primary/"construction.json").read_text()))
     return draft
 
 

@@ -34,10 +34,14 @@ class SweepAuditTests(unittest.TestCase):
                         'authority_source_sha256':zone_source.sha_bytes(authority),
                         'designation':'official_no_passing_zone',
                         'destination_kind':'other_left_turn',
+                        'destination_road_id':2,'destination_lane_id':-1,
+                        'destination_xy_m':[0.0,5.0],
                         'subsections_3_and_4_reviewed':True,
                         'road_id':1,'lane_id':-1,'zone_x_limits_m':[-10,10]}
                 write(attempt/'zone-review-source.json',review)
                 zone={'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
+                      'destination_road_id':2,'destination_lane_id':-1,
+                      'destination_xy_m':[0.0,5.0],
                       'stripe_y_m':0,'traffic_sweep_variant_id':variant,
                       'traffic_policy_sha256':traffic_sweep_audit.sha(attempt/'traffic-policy.json'),
                       'crossing_x_m':0,'approach_road_id':1,'approach_lane_id':-1,

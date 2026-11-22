@@ -115,6 +115,15 @@ def saved_result(attempt, report, config, scene, bodies, trace):
     values = {
         "walker_body_xy_m": [(r["time_s"], r["body_xy_m"]) for r in bodies],
         "walker_route_progress": [(r["time_s"], r["position_m"]) for r in trace],
+        "sidewalk_and_roadway_boundaries": [
+            (r["time_s"], {name: scene["bounds_xy_m"][name]
+                             for name in ("sidewalk", "shoulder", "roadway")})
+            for r in bodies],
+        "trail_access_and_purpose": [
+            (r["time_s"], {"band_xy_m": scene["bounds_xy_m"]["nonmotorized_trail"],
+                            "access_status": scene["trail_access_status"],
+                            "sidewalk_provided_claim": scene["sidewalk_provided_claim"]})
+            for r in bodies],
     }
     folder = root/"channels"
     folder.mkdir(exist_ok=True)

@@ -90,7 +90,8 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
     source_facts=validate_zone_source(read(attempt/'zone-review-source.json'),
                                       (attempt/'zone-authority-source.txt').read_bytes(),zone)
     for key in ('zone_extent_verified','statutory_exceptions_verified',
-                'destination_kind','authority_source_sha256','review_packet_sha256'):
+                'destination_kind','destination_road_id','destination_lane_id',
+                'authority_source_sha256','review_packet_sha256'):
         if zone.get(key)!=source_facts.get(key):
             raise ValueError('reviewed zone source differs from Native context: '+key)
     if zone.get('zone_extent_verified') is not True or zone.get('statutory_exceptions_verified') is not True:

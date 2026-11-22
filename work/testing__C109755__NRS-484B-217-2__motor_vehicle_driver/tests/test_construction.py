@@ -220,10 +220,14 @@ class DeliveryAuditTests(unittest.TestCase):
                 'authority_source_path':str(root/'zone-authority-source.txt'),
                 'authority_source_sha256':hashlib.sha256(authority).hexdigest(),
                 'designation':'official_no_passing_zone','destination_kind':'other_left_turn',
+                'destination_road_id':2,'destination_lane_id':-1,
+                'destination_xy_m':[0.0,5.0],
                 'subsections_3_and_4_reviewed':True,'road_id':1,'lane_id':-1,
                 'zone_x_limits_m':[-10,10]}
         (root/'zone-review-source.json').write_text(json.dumps(packet))
         zone={'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
+              'destination_road_id':2,'destination_lane_id':-1,
+              'destination_xy_m':[0.0,5.0],
               'approach_road_id':1,'approach_lane_id':-1,'crossing_x_m':0,
               'sample_interval_max_m':5,'approach_marking_samples':[
                   {'requested_x_m':x,'mapped_x_m':x,'road_id':1,'lane_id':-1,'marking_type':'Solid'}

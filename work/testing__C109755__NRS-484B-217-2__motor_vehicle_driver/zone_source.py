@@ -24,6 +24,17 @@ def validate(packet, source_bytes, zone):
         raise ValueError('official zone designation has not been reviewed')
     if packet.get('destination_kind') not in ('adjoining_highway', 'other_left_turn'):
         raise ValueError('left-turn destination classification missing')
+    if (packet.get('destination_road_id') != zone.get('destination_road_id') or
+            packet.get('destination_lane_id') != zone.get('destination_lane_id')):
+        raise ValueError('reviewed left-turn destination differs from Native map')
+    destination = zone.get('destination_xy_m')
+    reviewed = packet.get('destination_xy_m')
+    if (not isinstance(destination, list) or not isinstance(reviewed, list) or
+            len(destination) != 2 or len(reviewed) != 2 or
+            any(type(v) not in (int, float) or not math.isfinite(v)
+                for v in (*destination, *reviewed)) or
+            math.hypot(destination[0]-reviewed[0], destination[1]-reviewed[1]) > 1.25):
+        raise ValueError('reviewed left-turn destination location differs from Native map')
     if packet.get('subsections_3_and_4_reviewed') is not True:
         raise ValueError('crossing exceptions have not been reviewed')
     if packet.get('road_id') != zone.get('approach_road_id') or packet.get('lane_id') != zone.get('approach_lane_id'):
@@ -53,6 +64,8 @@ def validate(packet, source_bytes, zone):
         previous = x
     return {'zone_extent_verified': True, 'statutory_exceptions_verified': True,
             'destination_kind': packet['destination_kind'],
+            'destination_road_id': packet['destination_road_id'],
+            'destination_lane_id': packet['destination_lane_id'],
             'authority_source_sha256': sha_bytes(source_bytes),
             'review_packet_sha256': sha_bytes(json.dumps(packet, sort_keys=True).encode()),
             'legal_safety_or_impediment_decided': False}

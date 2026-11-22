@@ -43,6 +43,7 @@ def main():
             construction=json.loads(path.read_text())
             included=('analysis.py','native_capture.py','delivery_audit.py',
                       'delivery_probe.py','traffic_sweep.py','traffic_sweep_audit.py',
+                      'zone_source.py','tests/test_zone_source.py',
                       'tests/test_construction.py','tests/test_native_capture.py',
                       'tests/test_traffic_sweep_audit.py')
             existing={file['path'] for file in construction['files']}
