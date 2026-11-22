@@ -24,9 +24,71 @@
   "topic_inventory": {
     "exact-text": "A driver of a motor vehicle shall: Exercise due care to avoid a collision with a pedestrian."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+      "target_law_id": "NRS-484B-280-1a",
+      "purpose": "Same driver and manual-wheelchair participant remain spatially separated at the intersection"
+    },
+    {
+      "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing",
+      "target_law_id": "NRS-484B-280-1a",
+      "purpose": "Person in manual wheelchair traverses the ego route; measure original approach, braking, surface gap and contact without assigning a legal due-care cutoff"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "manual_wheelchair_path_conflict",
+      "case_ids": [
+        "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+        "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing"
+      ],
+      "fixed_conditions": [
+        "same motor-vehicle driver and manually propelled wheelchair identity",
+        "same map and ego route",
+        "same vehicle and wheelchair geometry",
+        "same camera and duration plan",
+        "same engineering controller"
+      ],
+      "deliberate_differences": [
+        "wheelchair path intersects versus remains clear of ego travel corridor"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "wheelchair_person_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "manual_wheelchair_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_and_brake_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_path_and_speed_history",
+      "mandatory": true
+    },
+    {
+      "name": "intersection_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "contact_events",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/assignment.json",
@@ -61,7 +123,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,6 +142,18 @@
         "Specify accessible pedestrian geometry, ego's route and their actual spatial and temporal relationship."
       ],
       "reason": "An intersection supports constructing a motorist encounter with a separate pedestrian."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Driver exercises due care to avoid a collision with a pedestrian, including the selected person in a manual wheelchair branch",
+      "source": "NRS 484B.280(1)(a) exact text and frozen witness branch",
+      "evidence_or_gap": "Original person/chair identity, path, bodies, speed, deceleration, surface gap and contact are required; no numeric legal cutoff is inferred.",
+      "case_ids": [
+        "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+        "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing"
+      ]
     }
   ]
 }

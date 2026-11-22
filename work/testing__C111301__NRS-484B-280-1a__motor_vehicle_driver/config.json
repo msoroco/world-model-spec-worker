@@ -1,0 +1,92 @@
+{
+  "assignment_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver",
+  "selected_case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+  "supported_case_ids": [
+    "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+    "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing"
+  ],
+  "law_id": "NRS-484B-280-1a",
+  "cell_id": "C111301",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+    "wheelchair_path_setup": "clear_path",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original motor-vehicle body, route, speed and heading.",
+          "time_window": "ego approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "wheelchair_person_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original person body and identity as a manual-wheelchair occupant.",
+          "time_window": "ego approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "manual_wheelchair_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original chair body and asset identity.",
+          "time_window": "ego approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "ego_speed_and_brake_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original speed, braking and deceleration frames.",
+          "time_window": "ego approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "contact_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original contact events and body surface gap.",
+          "time_window": "ego approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "intersection_geometry",
+          "unit": "structured record",
+          "method": "Original ego corridor, pedestrian crossing and map context."
+        },
+        {
+          "name": "wheelchair_identity_context",
+          "unit": "structured record",
+          "method": "Source-confirmed person and distinct manual chair association."
+        }
+      ],
+      "limitations": [
+        "Actual person/chair geometry and camera pixels require Native verification.",
+        "Legal due care remains unresolved."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 5,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  }
+}
