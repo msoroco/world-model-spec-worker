@@ -329,8 +329,9 @@ def finalize(attempt: Path, output: Path):
         with (channels / (name + ".jsonl")).open("x") as stream:
             for sample in samples:
                 stream.write(json.dumps(sample, allow_nan=False) + "\n")
+    review = json.loads((attempt / "stop_context_review.json").read_text())
     (channels / "stop_control_and_entrance_review.json").write_text(
-        (attempt / "stop_context_review.json").read_text())
+        json.dumps({"stop_control_and_entrance_review": review}, allow_nan=False) + "\n")
     write_result(attempt, result)
     analysis = {"format": "worker-stop-sign-saved-analysis", "case_id": case_id,
                 "observations": report, "source_evidence_hashes": hashes,

@@ -1,7 +1,7 @@
 {
   "cell_id": "C158190",
   "actor": "motor_vehicle_driver",
-  "status": "draft_first_case_only",
+  "status": "draft_three_cases_only",
   "cases": [
     {
       "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside",
@@ -17,6 +17,168 @@
         "other_actor_start": {
           "kind": "world_setup",
           "value": "inside_intersection",
+          "unit": "categorical"
+        },
+        "requested_stop": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "observed_full_stop": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "immediate_hazard": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "qualitative judgment"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "properly erected sign and non-through-highway status",
+        "immediate hazard",
+        "proceed cautiously",
+        "yield throughout crossing"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_and_stop_reference",
+            "unit": "m/s and m",
+            "method": "original actor velocity and body vertices at every joined Native frame",
+            "time_window": "approach through intersection exit",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled body and speed; legal stop reference needs source review"
+          },
+          {
+            "name": "ego_and_other_intersection_occupancy",
+            "unit": "structured record",
+            "method": "original actor bounding-box vertices against authored junction bounds",
+            "time_window": "entire capture",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled overlap; between-frame occupancy unresolved"
+          },
+          {
+            "name": "other_approach_history",
+            "unit": "structured record",
+            "method": "original non-obligated vehicle position and velocity where staged",
+            "time_window": "entire capture",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "immediate-hazard judgment unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stop_control_and_entrance_review",
+            "unit": "structured record",
+            "method": "authored OpenDRIVE, Native stop trigger, per-frame controls and original camera review"
+          }
+        ],
+        "limitations": [
+          "Authored map and CPU fixture do not establish legal non-through-highway status or sign-face legibility.",
+          "Immediate hazard, caution and yielding remain qualitative source-review judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_approaching",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Same signed entrance and ego stop, with other vehicle staged outside the junction on the through route and sampled while approaching; immediate-hazard judgment remains unresolved.",
+      "variable_assignments": {
+        "entrance_device": {
+          "kind": "world_setup",
+          "value": "authored stop sign; Native sign face review pending",
+          "unit": "categorical"
+        },
+        "other_actor_start": {
+          "kind": "world_setup",
+          "value": "approaching_intersection",
+          "unit": "categorical"
+        },
+        "requested_stop": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "observed_full_stop": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "immediate_hazard": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "qualitative judgment"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "properly erected sign and non-through-highway status",
+        "immediate hazard",
+        "proceed cautiously",
+        "yield throughout crossing"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_and_stop_reference",
+            "unit": "m/s and m",
+            "method": "original actor velocity and body vertices at every joined Native frame",
+            "time_window": "approach through intersection exit",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled body and speed; legal stop reference needs source review"
+          },
+          {
+            "name": "ego_and_other_intersection_occupancy",
+            "unit": "structured record",
+            "method": "original actor bounding-box vertices against authored junction bounds",
+            "time_window": "entire capture",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled overlap; between-frame occupancy unresolved"
+          },
+          {
+            "name": "other_approach_history",
+            "unit": "structured record",
+            "method": "original non-obligated vehicle position and velocity where staged",
+            "time_window": "entire capture",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "immediate-hazard judgment unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stop_control_and_entrance_review",
+            "unit": "structured record",
+            "method": "authored OpenDRIVE, Native stop trigger, per-frame controls and original camera review"
+          }
+        ],
+        "limitations": [
+          "Authored map and CPU fixture do not establish legal non-through-highway status or sign-face legibility.",
+          "Immediate hazard, caution and yielding remain qualitative source-review judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_other",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Same signed entrance and ego stop, with no competing actor staged; the original participant inventory and four source cameras must confirm absence.",
+      "variable_assignments": {
+        "entrance_device": {
+          "kind": "world_setup",
+          "value": "authored stop sign; Native sign face review pending",
+          "unit": "categorical"
+        },
+        "other_actor_start": {
+          "kind": "world_setup",
+          "value": "none_staged",
           "unit": "categorical"
         },
         "requested_stop": {

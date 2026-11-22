@@ -7,7 +7,7 @@
       "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "95c42dd5758350ad8856148d983d91100064a67b5b4989927d44dd2fcc856652",
+      "construction_sha256": "ee44a42736ff3026f9cd19e6f6a977a860484fc18295acd70e4ec9dcb0d34bd6",
       "measurement_procedure": {
         "entrypoint": "stop_entry_measurements.py"
       },
@@ -17,14 +17,258 @@
       },
       "candidates": [],
       "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe.json",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside --output .runtime-work/c158190-stop-other-inside-offline-20261122-g --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside --output .runtime-work/c158190-stop-other-inside-offline-20261122-p --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "log": "cpu-tests.log",
-        "log_sha256": "4282af55c114518fc6fc69a9256c3b241787b15ee27fc7fcaae1693ec385cc0d",
-        "construction_sha256": "95c42dd5758350ad8856148d983d91100064a67b5b4989927d44dd2fcc856652"
+        "construction_sha256": "ee44a42736ff3026f9cd19e6f6a977a860484fc18295acd70e4ec9dcb0d34bd6",
+        "log": "first-primary-offline.log",
+        "log_sha256": "bdef280d8542757a5086e2660798626489087e27fc96f3d8ae9922d6f07f238b"
       },
-      "fixture_recipe": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe.json"
+      "compatibility": {
+        "receipt": "first-primary-compatibility.json",
+        "sha256": "c29f0e7b133b99347fe97b9958f726724d4c949f72716854ed03957b01e3155c",
+        "log": "first-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "first-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat $OUTPUT/feedback.json",
+        "test_log": "first-primary-saved.log",
+        "test_log_sha256": "502d0564966ba9f48549ddfebfdd8c62eab719facc9f514ad112d489660f7613",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic source-shaped recorded-only processing; physical/legal acceptance unclaimed"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ego_speed_and_stop_reference": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor velocity and body vertices at every joined Native frame; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_speed_and_stop_reference.jsonl"
+        },
+        "ego_and_other_intersection_occupancy": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor bounding-box vertices against authored junction bounds; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_and_other_intersection_occupancy.jsonl"
+        },
+        "other_approach_history": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original non-obligated vehicle position and velocity where staged; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/other_approach_history.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_approaching",
+      "kind": "delivery",
+      "construction": "cases/stop_other_approaching/construction.json",
+      "construction_sha256": "97862985ac837fce069cff4e4ee50ba0d750cbc15f9f295194e7ee1ef5244fd6",
+      "measurement_procedure": {
+        "entrypoint": "stop_entry_measurements.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach arrival timing and immediate-hazard review require original evidence"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_approaching --output .runtime-work/c158190-stop-other-approaching-offline-20261122-b --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "97862985ac837fce069cff4e4ee50ba0d750cbc15f9f295194e7ee1ef5244fd6",
+        "log": "second-primary-offline.log",
+        "log_sha256": "da1c3d58d537567f91525de9efa5c36134d680cd4877ff231682d8d6c13b1f03"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/cases/stop_other_approaching/diagnostic-recipe.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ego_speed_and_stop_reference": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor velocity and body vertices at every joined Native frame; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_speed_and_stop_reference.jsonl"
+        },
+        "ego_and_other_intersection_occupancy": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor bounding-box vertices against authored junction bounds; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_and_other_intersection_occupancy.jsonl"
+        },
+        "other_approach_history": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original non-obligated vehicle position and velocity where staged; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/other_approach_history.jsonl"
+        }
+      },
+      "compatibility": {
+        "receipt": "second-primary-compatibility.json",
+        "sha256": "d0e16385e8a8da5fb238a62410d2bd1f6453d6599285fe82bc4b7a7bd0c94155",
+        "log": "second-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "second-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_approaching --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat $OUTPUT/feedback.json",
+        "test_log": "second-primary-saved.log",
+        "test_log_sha256": "8e5a2abba6a75172fb9fe262a6c9e23973c8a69e78953f7c9e59ea885450930d",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic source-shaped recorded-only processing; physical/legal acceptance unclaimed"
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_other",
+      "kind": "delivery",
+      "construction": "cases/stop_no_other/construction.json",
+      "construction_sha256": "c53420154de352495e13910e67981f41f6174506e2b46d4c999e57904ea13f0f",
+      "measurement_procedure": {
+        "entrypoint": "stop_entry_measurements.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Unplanned traffic or camera visibility may change the no-other Native comparison"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native actor, lane, intersection and sign observations",
+          "evidence": "capture/evidence.jsonl; capture/native/frames.jsonl; capture/native_map_facts.json; trace.jsonl"
+        },
+        "ego_speed_and_stop_reference": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor velocity and body vertices at every joined Native frame; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_speed_and_stop_reference.jsonl"
+        },
+        "ego_and_other_intersection_occupancy": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original actor bounding-box vertices against authored junction bounds; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/ego_and_other_intersection_occupancy.jsonl"
+        },
+        "other_approach_history": {
+          "entrypoint": "stop_entry_measurements.py",
+          "method": "original non-obligated vehicle position and velocity where staged; saved-only projection from immutable joined original sources",
+          "evidence": "entry_history.jsonl; stop_control_inventory.jsonl; video_frames.jsonl; channels/other_approach_history.jsonl"
+        }
+      },
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/cases/stop_no_other/diagnostic-recipe.json"
     }
   ]
 }
