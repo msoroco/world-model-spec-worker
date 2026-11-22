@@ -1,11 +1,11 @@
 {
   "applied_update": 16,
   "assignment_id": "training__C135709__NRS-484B-517__motor_vehicle_driver",
-  "candidate_plans_proven": 0,
+  "candidate_plans_proven": 8,
   "carla_executed": false,
   "cases_planned": 2,
   "cases_selected": 2,
-  "comparison_audits_passed": 0,
+  "comparison_audits_passed": 4,
   "current_json_graph_cpu": {
     "candidate_chains_passed": 8,
     "exact_cases": 2,
@@ -16,7 +16,7 @@
   },
   "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C135709__NRS-484B-517__motor_vehicle_driver --case training__C135709__NRS-484B-517__motor_vehicle_driver__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "2bbe8070075891f80354cc60982822ad2479fd22a62beb3bcb301ffc0f4c8450",
-  "readiness_kind": "reproof_pending",
+  "readiness_kind": "delivery_prepared",
   "reason": "Selected execution manifest binds runtime 5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3 but batch pins ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90; prior CPU receipts and strict pass are historical. Reprove exact selected candidates and audits under the pinned runtime before restoring ready.",
   "recordings_accepted": 0,
   "remaining_gpu_checks": [
@@ -25,17 +25,13 @@
     "Run original-only delivery auditor, full video decode, source-bound pixel review and local legal review"
   ],
   "runtime_cutover_checkpoint": {
+    "status": "current_runtime_scoped_strict_passed",
     "current_runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
-    "execution_manifest_sha256": "84e6f10c0f4fbaa7f028ba7ca311c88fb37c241ec8f86c432ec42e894f99b707",
-    "next_cpu_action": "Rebind exact selected manifest and regenerate current-runtime offline, positive/negative compatibility, recorded-only saved, physical, delivery and comparison proofs; rerun assignment-scoped strict gate.",
-    "previous_candidate_plans_proven": 8,
-    "previous_comparison_audits_passed": 4,
-    "previous_ready_reason": "Current JSON graph CPU preparation, source-bound candidate matrix and scoped strict delivery gate passed; original Native remains unobserved.",
+    "execution_manifest_sha256": "00ea9d3b4bbc47fd61dc083d38bc1ac53d94de1d428e6fab2b135638476f3d9f",
     "previous_runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
-    "previous_strict_gate": null,
-    "status": "selected_proofs_historical_reproof_pending"
+    "next_cpu_action": "Original Native, official designation and legal validation at local handoff; proceed to the next incomplete batch assignment for CPU work."
   },
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -210,6 +206,33 @@
       "exit_code": 0,
       "log": "update706-final-matrix-audit.log",
       "sha256": "60e8678ccb446d5aca890fec0f9a1c28f1a0198d489d9f085eb7c033b482fb01"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C135709__NRS-484B-517__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "current-runtime-native-tests-final.log",
+      "sha256": "a71497890b739aa65a1dd76ed9c316faeb94a6fb540e8c440539a09fe9238db5"
     }
-  ]
+  ],
+  "current_cpu_proof": {
+    "status": "current_runtime_exact_chains_physical_delivery_comparison_passed",
+    "cases": 2,
+    "candidate_chains": 8,
+    "offline_index": "current-runtime-offline-reproof.json",
+    "offline_index_sha256": "924264f8b39342f0b9537596dab104187a414a8b3dfdca5895d82a3e7f6eee9a",
+    "matrix_index": "current-runtime-matrix-progress.json",
+    "matrix_sha256": "262c4372eea2e2414d24466be55a77d6a184dca809367fee8a23ac3cc601cc27",
+    "source_audit": "current-runtime-selected-source-audit.json",
+    "source_audit_sha256": "7046a11107eb970df8a3985a1814c32f987e53a29863e0c36a2062bc11b9480d",
+    "comparison_audit": "current-runtime-comparison-audit.json",
+    "comparison_audit_sha256": "1e20e58b38247d6ebc59ad24c3135a15cff1843e4ce921f0c668b9d952d6b4ff",
+    "physical_fixture_sets": 2,
+    "delivery_positive_negative_cases": 2,
+    "original_native_accepted": false,
+    "physical_or_legal_acceptance": false,
+    "strict_gate_log": "current-runtime-scoped-strict.log",
+    "strict_gate_log_sha256": "88a3eee6b3701b08ab825300941435130a6cc65c279e20982cdf226c7cd843c2",
+    "strict_gate_exit_code": 0
+  },
+  "ready_reason": "Two selected stand cases and eight current-runtime exact offline, positive/missing-review negative compatibility and recorded-only saved chains pass with eight independent source/camera audits, synthetic physical branches, delivery mechanics, four controlled comparisons and current semantic validation. Original Native, pixels, official designation and legal acceptance remain unverified."
 }
