@@ -6,7 +6,7 @@ import json
 import math
 from pathlib import Path
 
-from parking_measurement import unit, vector
+from parking_measurement import inside, unit, vector
 
 
 REQUIRED = ("roadway", "one_way_direction", "activity", "chapter_exceptions")
@@ -65,6 +65,12 @@ def validate(packet_path, *, source_root, require_reviewed=True):
         direction = unit(vector(start, end))
         if abs(sum(direction[i] * lawful[i] for i in (0, 1))) < .9:
             raise ValueError("road edge and reviewed lawful direction conflict")
+        middle = tuple((start[i] + end[i]) / 2 for i in (0, 1))
+        normal = (-direction[1], direction[0])
+        sided = [inside(tuple(middle[i] + sign * .1 * normal[i] for i in (0, 1)), polygon)
+                 for sign in (-1, 1)]
+        if sided.count(True) != 1:
+            raise ValueError("road edge does not bound one side of reviewed roadway")
     return {"road_edge_xy_m": edge, "roadway_polygon_xy_m": polygon,
             "lawful_travel_xy": lawful,
             "road_edge_source": hashes["roadway"],

@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from source_review import validate
 from parking_measurement import measure_frame
+from parking_pose import construct
 
 
 def fixture(root):
@@ -28,7 +29,7 @@ def fixture(root):
                           "responsible_person_role": "motor_vehicle_driver",
                           "activity": "park", "chapter_exception_review": "unresolved",
                           "road_edge_xy_m": [[-20, 0], [20, 0]],
-                          "roadway_polygon_xy_m": [[-20, -5], [20, -5], [20, 5], [-20, 5]],
+                          "roadway_polygon_xy_m": [[-20, 0], [20, 0], [20, 5], [-20, 5]],
                           "lawful_travel_xy": [1, 0]}}
     packet_path = root / "reviewed-context.json"
     packet_path.write_text(json.dumps(packet))
@@ -48,6 +49,8 @@ class SourceReviewTests(unittest.TestCase):
                                       "body_vertices_xy_m": [[-1, .6], [1, .6],
                                                               [1, 1.4], [-1, 1.4]]}, result)
             self.assertAlmostEqual(measured["center_edge_distance_m"], 1)
+            pose = construct(result, "park_parallel_lawful")
+            self.assertEqual(pose["source_packet_sha256"], result["reviewed_packet_sha256"])
             packet["review_status"] = "candidate"
             path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "not been reviewed"):
@@ -63,6 +66,12 @@ class SourceReviewTests(unittest.TestCase):
             packet["context"]["lawful_travel_xy"] = [0, 1]
             path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "conflict"):
+                validate(path, source_root=tmp)
+            packet["context"]["lawful_travel_xy"] = [1, 0]
+            packet["context"]["roadway_polygon_xy_m"] = [[-20, -5], [20, -5],
+                                                               [20, 5], [-20, 5]]
+            path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "does not bound one side"):
                 validate(path, source_root=tmp)
 
     def test_source_path_and_activity_guards(self):

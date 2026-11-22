@@ -13,7 +13,7 @@ from parking_measurement import load_original, measure_frame, measure_sequence
 
 
 CONTEXT = {"road_edge_xy_m": [[-20, 0], [20, 0]],
-           "roadway_polygon_xy_m": [[-20, -5], [20, -5], [20, 5], [-20, 5]],
+           "roadway_polygon_xy_m": [[-20, 0], [20, 0], [20, 5], [-20, 5]],
            "lawful_travel_xy": [1, 0],
            "lawful_direction_source": "reviewed one-way regulation pending",
            "road_edge_source": "source-reviewed roadway edge pending",
