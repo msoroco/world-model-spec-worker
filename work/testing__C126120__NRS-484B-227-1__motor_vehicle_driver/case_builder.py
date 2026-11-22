@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 from uturn_control import validate_scene
+from divider_construction import validate_divider
 
 ASSIGNMENT = "testing__C126120__NRS-484B-227-1__motor_vehicle_driver"
+CASE_SUFFIXES = ("opening_single", "opening_multiple", "closed_divider",
+                 "wrong_roadway", "crossover_candidate", "intersection_candidate",
+                 "right_roadway_no_turn")
 
 
 def recording_description():
@@ -28,12 +32,22 @@ def recording_description():
 
 def config(scene):
     validate_scene(scene)
+    validate_divider(scene)
     case_id = scene["case_id"]
-    if not case_id.startswith(ASSIGNMENT+"__"):
+    if case_id not in {ASSIGNMENT+"__"+suffix for suffix in CASE_SUFFIXES}:
         raise ValueError("case ID differs from exact assignment")
     return {"law_id":"NRS-484B-227-1", "cell_id":"C126120",
         "actor":"motor_vehicle_driver", "selected_case_id":case_id,
+        "supported_case_ids":[ASSIGNMENT+"__"+suffix for suffix in CASE_SUFFIXES],
         "rate_hz":20, "duration_s":scene["duration_s"],
+        "cameras":[
+            {"name":name,"width":width,"height":height,"fov_deg":90,
+             "pose_strategy":strategy}
+            for name,width,height,strategy in (
+                ("overview",1920,1080,"top_down_centered_on_reviewed_median_opening"),
+                ("approach",1280,720,"source_right_roadway_toward_opening"),
+                ("reference_corner",1280,720,"closed_divider_and_opening_corner"),
+                ("driver_reference",1280,720,"ego_attached_driver_reference"))],
         "case":{"opening_id":scene["context"]["opening_id"],
                 "multiple_movement_requested":"reverse" in scene["segment_directions"],
                 "recording_description":recording_description()},

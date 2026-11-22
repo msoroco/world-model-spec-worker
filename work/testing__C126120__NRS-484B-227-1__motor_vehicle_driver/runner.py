@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from uturn_control import validate_scene
+from divider_construction import validate_divider
 
 
 ASSIGNMENT = "testing__C126120__NRS-484B-227-1__motor_vehicle_driver"
@@ -14,10 +15,12 @@ ASSIGNMENT = "testing__C126120__NRS-484B-227-1__motor_vehicle_driver"
 
 def check_scene(scene):
     validate_scene(scene)
+    validate_divider(scene)
     if any(not scene["context"].get(key) for key in
            ("opening_id","source_right_roadway_id","destination_right_roadway_id")):
         raise ValueError("reviewed opening and right-hand roadway identities required")
-    if not scene.get("case_id", "").startswith(ASSIGNMENT + "__"):
+    from case_builder import CASE_SUFFIXES
+    if scene.get("case_id") not in {ASSIGNMENT+"__"+suffix for suffix in CASE_SUFFIXES}:
         raise ValueError("case ID differs from exact assignment")
     if scene.get("capture_rate_hz") != 20 or not isinstance(scene.get("duration_s"), (int,float)):
         raise ValueError("20 Hz Native duration required")
@@ -54,7 +57,7 @@ def main():
     if hashlib.sha256(source.read_bytes()).hexdigest() != scene["reviewed_context_sha256"]:
         raise ValueError("reviewed median source hash differs from scene")
     reviewed = json.loads(source.read_text())
-    if reviewed.get("context") != scene["context"]:
+    if reviewed.get("context") != scene["context"] or reviewed.get("divider_props") != scene["divider_props"]:
         raise ValueError("reviewed median geometry differs from scene")
     authority = Path(scene["authority_review_source"])
     if hashlib.sha256(authority.read_bytes()).hexdigest() != scene["context"]["authority_review_source_sha256"]:

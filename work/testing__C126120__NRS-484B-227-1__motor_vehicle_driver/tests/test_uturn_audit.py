@@ -67,6 +67,19 @@ class UTurnAuditTests(unittest.TestCase):
         claimed_reverse["samples"][2]["velocity_xy_mps"] = [0,-1]
         self.assertFalse(measure(claimed_reverse)["multiple_movement_observed"])
 
+    def test_opening_touch_without_crossing_through_it_is_not_completion(self):
+        bypass = trace()
+        positions = [(2,-2),(0,-.8),(-5,-1.5),(-5,1.5),(-2,2)]
+        for row,(x,y) in zip(bypass["samples"],positions):
+            row["body_vertices_xy_m"] = body(x,y)
+        observed = measure(bypass)
+        self.assertTrue(observed["opening_contact_frames"])
+        self.assertTrue(observed["opening_full_body_frames"])
+        self.assertTrue(observed["destination_right_roadway_departure_observed"])
+        self.assertFalse(observed["engineering_crossing_observed"])
+        self.assertFalse(any(item["through_opening"] for item in
+                             observed["roadway_centerline_crossings"]))
+
     def test_source_hash_and_fixed_map_comparison(self):
         baseline = trace()
         variant = multiple_variant()
@@ -80,6 +93,10 @@ class UTurnAuditTests(unittest.TestCase):
         self.assertTrue(compare(baseline,variant,["multiple_movement_observed"])["right"]["multiple_movement_observed"])
         variant["context"]["map_source_sha256"] = "different"
         with self.assertRaisesRegex(ValueError,"fixed OpenDRIVE"):
+            compare(baseline,variant,["multiple_movement_observed"])
+        variant = multiple_variant()
+        variant["context"]["authority_review_source_sha256"] = "other authority packet"
+        with self.assertRaisesRegex(ValueError,"fixed comparison context changed"):
             compare(baseline,variant,["multiple_movement_observed"])
 
 

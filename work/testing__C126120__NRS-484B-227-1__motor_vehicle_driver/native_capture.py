@@ -9,7 +9,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from native_driver import command_next_tick, original_sample, spawn_vehicle
+from native_driver import body_polygon, command_next_tick, original_sample, spawn_vehicle
+from divider_construction import spawn_divider, validate_divider
 from uturn_control import validate_scene
 
 
@@ -28,7 +29,7 @@ def reviewed_context(scene, output, world):
         raise ValueError("reviewed median source hash differs")
     packet = json.loads(source.read_text())
     context = packet["context"]
-    if context != scene["context"]:
+    if context != scene["context"] or packet.get("divider_props") != scene.get("divider_props"):
         raise ValueError("reviewed median geometry differs from authored scene")
     if sha(Path(scene["authority_review_source"])) != context["authority_review_source_sha256"]:
         raise ValueError("authority review source hash differs")
@@ -135,6 +136,7 @@ def run_native(scene, output, host, port):
     from worker_exchange.world_restore import equal, fields
 
     validate_scene(scene)
+    validate_divider(scene)
     output = Path(output).resolve()
     if not output.is_dir():
         raise ValueError("Native attempt directory must already exist")
@@ -148,6 +150,7 @@ def run_native(scene, output, host, port):
     world = client.get_world()
     original = world.get_settings()
     ego = cameras = capture = frame_map = None
+    divider_actors = []
     frames, phase, error, restored = [], "initializing", None, False
     try:
         packet = reviewed_context(scene, output, world)
@@ -159,10 +162,16 @@ def run_native(scene, output, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
+        divider_actors = spawn_divider(world, scene, carla)
         ego = spawn_vehicle(world, scene, carla)
         context = {**packet["context"], "ego_actor_id": int(ego.id),
+                   "divider_actor_ids": [int(actor.id) for actor in divider_actors],
                    "reviewed_context_sha256": sha(output/"reviewed-median-context.json")}
         write(output/"median-context.json", context)
+        write(output/"divider-geometry.json", {"actors":[
+            {"actor_id":int(actor.id),"blueprint_id":item["blueprint_id"],
+             "body_vertices_xy_m":body_polygon(actor)}
+            for actor,item in zip(divider_actors,scene["divider_props"])]})
         cameras = CameraBank(world, ego, output, carla, scene)
         capture = PipelineCapture(client, ego, output, scene["case_id"])
         frame_map = FrameMap(output/"video_frames.jsonl")
@@ -193,6 +202,7 @@ def run_native(scene, output, host, port):
         cameras.close(); cameras = None
         names = ("trace.jsonl", "video_frames.jsonl", "road.xodr", "carla_recorder.log",
                  "reviewed-median-context.json", "authority-review-source.json", "median-context.json",
+                 "divider-geometry.json",
                  "ego-body-history.jsonl", "controller-history.jsonl",
                  *(name+".mkv" for name, *_ in CameraBank.SPECS))
         write(output/"acquisition.json", {name: {"kind": "original_native", "sha256": sha(output/name)}
@@ -209,6 +219,9 @@ def run_native(scene, output, host, port):
                 except BaseException as exc: cleanup.append(repr(exc))
         if ego is not None:
             try: ego.destroy()
+            except BaseException as exc: cleanup.append(repr(exc))
+        for actor in reversed(divider_actors):
+            try: actor.destroy()
             except BaseException as exc: cleanup.append(repr(exc))
         try:
             world.apply_settings(original)

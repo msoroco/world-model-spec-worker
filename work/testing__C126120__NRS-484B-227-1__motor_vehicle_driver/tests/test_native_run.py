@@ -73,7 +73,8 @@ class NativeRunTests(unittest.TestCase):
                 def close(self): pass
             seals=[]
             def seal(path,**kw):
-                self.assertTrue(world.restored and actor.destroyed)
+                self.assertTrue(world.restored and actor.destroyed and
+                                all(item.destroyed for item in barrier_actors))
                 seals.append(kw)
             exchange=types.ModuleType("worker_exchange")
             native_output=types.ModuleType("worker_exchange.native_output")
@@ -92,16 +93,29 @@ class NativeRunTests(unittest.TestCase):
             scene["context"].update(opening_id="opening-1",
                 source_right_roadway_id="east-right",
                 destination_right_roadway_id="west-right")
+            scene["divider_props"]=[{"blueprint_id":"static.prop.barrier",
+                "bounds_xy_m":rect,"z_m":0}
+                for rect in scene["context"]["closed_divider_bounds_xy_m"]]
             scene.update(case_id="diagnostic",capture_rate_hz=20,duration_s=.3)
             def review(scene,output,world):
                 (Path(output)/"reviewed-median-context.json").write_text("review")
                 (Path(output)/"authority-review-source.json").write_text("authority")
-                return {"context":scene["context"]}
+                return {"context":scene["context"],"divider_props":scene["divider_props"]}
+            class Barrier(Actor):
+                def __init__(self,ident,rect):
+                    super().__init__();self.id=ident;self.rect=rect
+                def get_world_vertices(self,transform):
+                    x0,y0,x1,y1=self.rect
+                    return [types.SimpleNamespace(x=x,y=y) for _ in (0,1)
+                            for x,y in ((x0,y0),(x1,y0),(x1,y1),(x0,y1))]
+            barrier_actors=[Barrier(ident,rect) for ident,rect in zip((31,32),
+                scene["context"]["closed_divider_bounds_xy_m"])]
             modules={"carla":carla,"pipeline_capture":pipeline,"worker_exchange":exchange,
                      "worker_exchange.native_output":native_output,
                      "worker_exchange.world_restore":restore}
             with patch.dict(sys.modules,modules), \
                  patch.object(native_capture,"reviewed_context",side_effect=review), \
+                 patch.object(native_capture,"spawn_divider",return_value=barrier_actors), \
                  patch.object(native_capture,"spawn_vehicle",return_value=actor), \
                  patch.object(native_capture,"CameraBank",Cameras):
                 native_capture.run_native(scene,root,"localhost",2000)
@@ -114,6 +128,7 @@ class NativeRunTests(unittest.TestCase):
             acquisition=json.loads((root/"acquisition.json").read_text())
             self.assertEqual(acquisition["ego-body-history.jsonl"]["sha256"],
                              native_capture.sha(root/"ego-body-history.jsonl"))
+            self.assertEqual(len(json.loads((root/"divider-geometry.json").read_text())["actors"]),2)
 
 
 if __name__=="__main__": unittest.main()

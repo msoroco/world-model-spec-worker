@@ -31,8 +31,15 @@ class SavedAnalysisTests(unittest.TestCase):
         context["map_source_sha256"] = sha(root/"road.xodr")
         write(root/"authority-review-source.json",{"establishment":"unresolved"})
         context["authority_review_source_sha256"] = sha(root/"authority-review-source.json")
-        write(root/"reviewed-median-context.json",{"context":context})
-        context = {**context,"ego_actor_id":7,
+        props=[{"blueprint_id":"static.prop.barrier","bounds_xy_m":rect,"z_m":0}
+               for rect in context["closed_divider_bounds_xy_m"]]
+        write(root/"reviewed-median-context.json",{"context":context,"divider_props":props})
+        write(root/"divider-geometry.json",{"actors":[
+            {"actor_id":ident,"blueprint_id":"static.prop.barrier",
+             "body_vertices_xy_m":[[rect[0],rect[1]],[rect[2],rect[1]],
+                                    [rect[2],rect[3]],[rect[0],rect[3]]]}
+            for ident,rect in zip((31,32),context["closed_divider_bounds_xy_m"])]})
+        context = {**context,"ego_actor_id":7,"divider_actor_ids":[31,32],
                    "reviewed_context_sha256":sha(root/"reviewed-median-context.json")}
         write(root/"median-context.json",context)
         rows = [{**r,"actor_id":7} for r in sample["samples"]]

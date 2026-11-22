@@ -7,9 +7,10 @@ import json
 from pathlib import Path
 
 from uturn_audit import measure
+from divider_construction import verify_recorded_divider
 
 
-SOURCES = ("median-context.json", "ego-body-history.jsonl", "controller-history.jsonl",
+SOURCES = ("median-context.json", "divider-geometry.json", "ego-body-history.jsonl", "controller-history.jsonl",
            "video_frames.jsonl", "trace.jsonl", "road.xodr",
            "reviewed-median-context.json", "authority-review-source.json")
 
@@ -21,7 +22,7 @@ def sha(path):
 def source(attempt, acquisition, name):
     path = attempt/name
     if not path.is_file():
-        raise ValueError("Missing required original Native source: " + name)
+        raise ValueError("Missing required source: " + name)
     item = acquisition.get(name, {})
     if item.get("kind") != "original_native" or item.get("sha256") != sha(path):
         raise ValueError("Missing or stale original Native source: " + name)
@@ -33,6 +34,11 @@ def rows(path):
     if not values:
         raise ValueError("Empty original Native history: " + path.name)
     return values
+
+
+def measure_median_uturn(context, body):
+    """Measured original geometry only; administrative facts remain unresolved."""
+    return measure({"context":context,"samples":body})
 
 
 def build_report(attempt):
@@ -54,6 +60,8 @@ def build_report(attempt):
         raise ValueError("saved OpenDRIVE differs from reviewed map")
     if sha(paths["authority-review-source.json"]) != context["authority_review_source_sha256"]:
         raise ValueError("saved authority review source differs")
+    divider = verify_recorded_divider(context,reviewed["divider_props"],
+                                     json.loads(paths["divider-geometry.json"].read_text()))
     body = rows(paths["ego-body-history.jsonl"])
     controls = rows(paths["controller-history.jsonl"])
     mapping = rows(paths["video_frames.jsonl"])
@@ -69,13 +77,14 @@ def build_report(attempt):
                 sample.get("actor_id") != context.get("ego_actor_id") or
                 control.get("ego_actor_id") != context.get("ego_actor_id")):
             raise ValueError("original actor/frame/time identity join differs")
-    observed = measure({"context":context,"samples":body})
+    observed = measure_median_uturn(context,body)
     observed.update(ego_actor_id=context["ego_actor_id"],
+                    divider_geometry=divider,
                     first_time_s=body[0]["time_s"],last_time_s=body[-1]["time_s"])
     return {"format":"worker-analysis-report",
             "measurements":{"median_uturn_measurement":{
                 "value":observed,
-                "method":"original four-corner body overlap, heading and signed displacement",
+                "method":"measure_median_uturn",
                 "sources":{name:acquisition[name]["sha256"] for name in SOURCES}}},
             "limitations":["Public-authority establishment requires independent source review.",
                            "Physical opening contact does not establish a legal exception."],

@@ -22,8 +22,8 @@ class CaptureTests(unittest.TestCase):
                        "authority_review_source_sha256": hashlib.sha256(authority.read_bytes()).hexdigest(),
                        "opening_id": "opening-1"}
             source = root / "review.json"
-            source.write_text(json.dumps({"context": context}))
-            scene = {"context": context, "reviewed_context_source": str(source),
+            source.write_text(json.dumps({"context": context,"divider_props":[]}))
+            scene = {"context": context,"divider_props":[],"reviewed_context_source": str(source),
                      "reviewed_context_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
                      "authority_review_source": str(authority)}
             output = root / "attempt"

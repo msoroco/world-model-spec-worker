@@ -43,6 +43,14 @@ class UTurnControlTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"closed divider"):
             validate_scene(item)
 
+    def test_route_touching_opening_but_crossing_around_divider_end_is_rejected(self):
+        item=scene()
+        item["route_xy_m"]=[[-3,-2],[-1,-2],[0,-.5],[0,-2],
+                            [-5,-2],[-5,2],[5,2],[-3,2]]
+        item["segment_directions"]=["forward"]*(len(item["route_xy_m"])-1)
+        with self.assertRaisesRegex(ValueError,"bypasses median opening"):
+            validate_scene(item)
+
     def test_gear_transition_requires_observed_stop_and_applies_request(self):
         item=scene()
         item["segment_directions"]=["forward","forward","reverse","forward"]

@@ -30,6 +30,24 @@ def validate_scene(scene):
         raise ValueError("authored U-turn route misses the median opening")
     if any(corridor.intersects(barrier) for barrier in barriers):
         raise ValueError("authored full-width route contacts closed divider")
+    source_center, destination_center = source.centroid, destination.centroid
+    vector = (destination_center.x-source_center.x,
+              destination_center.y-source_center.y)
+    if math.hypot(*vector) <= 0:
+        raise ValueError("source and destination roadway centers coincide")
+    middle = ((source_center.x+destination_center.x)/2,
+              (source_center.y+destination_center.y)/2)
+    signed = [((point[0]-middle[0])*vector[0]+(point[1]-middle[1])*vector[1])
+              for point in route]
+    through_opening = False
+    for i,(before,after) in enumerate(zip(signed,signed[1:])):
+        if before <= 0 <= after and after > before:
+            fraction = -before/(after-before)
+            crossing = Point(route[i][0]+fraction*(route[i+1][0]-route[i][0]),
+                             route[i][1]+fraction*(route[i+1][1]-route[i][1]))
+            through_opening |= opening.covers(crossing)
+    if not through_opening:
+        raise ValueError("authored roadway transition bypasses median opening")
     if len({tuple(point) for point in route}) < 4:
         raise ValueError("authored route has insufficient distinct points")
     start = math.atan2(route[1][1]-route[0][1],route[1][0]-route[0][0])

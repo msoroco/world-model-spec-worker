@@ -10,7 +10,7 @@ import json
 import math
 from pathlib import Path
 
-from shapely.geometry import Polygon, box
+from shapely.geometry import Point, Polygon, box
 
 
 def _region(rect):
@@ -54,10 +54,12 @@ def measure(trace):
     bodies = []
     headings = []
     opening_frames = []
+    opening_full_body_frames = []
     closed_frames = []
     reverse_frames = []
     forward_frames = []
     previous_center = None
+    centers = []
     for row in rows:
         frame, time_s = row["frame"], row["time_s"]
         if (type(frame) is not int or not isinstance(time_s, (int,float)) or
@@ -72,6 +74,7 @@ def measure(trace):
                 not all(isinstance(v, (int,float)) and math.isfinite(v) for v in velocity)):
             raise ValueError("original heading or velocity missing")
         if body.intersects(opening): opening_frames.append(frame)
+        if opening.covers(body): opening_full_body_frames.append(frame)
         if any(body.intersects(barrier) for barrier in barriers): closed_frames.append(frame)
         signed = velocity[0]*math.cos(math.radians(heading)) + velocity[1]*math.sin(math.radians(heading))
         center = (body.centroid.x, body.centroid.y)
@@ -83,14 +86,37 @@ def measure(trace):
         if signed > .2 and observed_step is not None and observed_step > .01:
             forward_frames.append(frame)
         bodies.append(body); headings.append(heading)
+        centers.append(center)
         previous, previous_time = frame, time_s
         previous_center = center
     if not source.covers(bodies[0]):
         raise ValueError("original start body is not in source right-hand roadway")
     change = sum((b-a+180)%360-180 for a,b in zip(headings,headings[1:]))
     departure = destination.covers(bodies[-1])
+    source_center = source.centroid
+    destination_center = destination.centroid
+    direction = (destination_center.x-source_center.x,
+                 destination_center.y-source_center.y)
+    if math.hypot(*direction) <= 0:
+        raise ValueError("reviewed source and destination roadway centers coincide")
+    middle = ((source_center.x+destination_center.x)/2,
+              (source_center.y+destination_center.y)/2)
+    signed = [((center[0]-middle[0])*direction[0] +
+               (center[1]-middle[1])*direction[1]) for center in centers]
+    crossings = []
+    for i,(before,after) in enumerate(zip(signed,signed[1:])):
+        if before <= 0 <= after and after > before:
+            fraction = -before/(after-before)
+            point = (centers[i][0]+fraction*(centers[i+1][0]-centers[i][0]),
+                     centers[i][1]+fraction*(centers[i+1][1]-centers[i][1]))
+            crossings.append({"from_frame":rows[i]["frame"],
+                              "to_frame":rows[i+1]["frame"],
+                              "through_opening":opening.covers(Point(point))})
+    crossing_through_opening = any(item["through_opening"] for item in crossings)
     return {"opening_id": context["opening_id"],
             "opening_contact_frames": opening_frames,
+            "opening_full_body_frames": opening_full_body_frames,
+            "roadway_centerline_crossings": crossings,
             "closed_divider_contact_frames": closed_frames,
             "net_heading_change_deg": change,
             "u_turn_orientation_observed": 150 <= abs(change) <= 210,
@@ -99,7 +125,8 @@ def measure(trace):
             "multiple_movement_observed": bool(reverse_frames and
                                                any(f < reverse_frames[0] for f in forward_frames) and
                                                any(f > reverse_frames[-1] for f in forward_frames)),
-            "engineering_crossing_observed": bool(opening_frames) and not closed_frames and departure,
+            "engineering_crossing_observed": bool(opening_full_body_frames) and
+                                            crossing_through_opening and not closed_frames and departure,
             "authority_establishment_judgment": "unresolved_source_review",
             "legal_judgment": "unresolved"}
 
@@ -115,6 +142,12 @@ def compare(left, right, varying):
     a, b = measure(left), measure(right)
     if left["context"]["map_source_sha256"] != right["context"]["map_source_sha256"]:
         raise ValueError("fixed OpenDRIVE source changed")
+    fixed_context = set(left["context"]) | set(right["context"])
+    for key in fixed_context:
+        if key == "opening_id" and "opening_id" in varying:
+            continue
+        if left["context"].get(key) != right["context"].get(key):
+            raise ValueError("fixed comparison context changed: " + key)
     if left["context"]["opening_id"] != right["context"]["opening_id"] and "opening_id" not in varying:
         raise ValueError("fixed opening changed")
     allowed = {"multiple_movement_observed", "engineering_crossing_observed",
