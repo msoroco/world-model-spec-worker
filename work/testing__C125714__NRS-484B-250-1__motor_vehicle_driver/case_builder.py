@@ -38,6 +38,7 @@ def config(scene):
         "actor": "motor_vehicle_driver", "selected_case_id": case_id,
         "rate_hz": 20, "duration_s": scene["duration_s"],
         "case": {"other_entered_first": scene["other_entered_first"],
+                 "ego_response_request": scene.get("ego_response_request", "yield"),
                  "crossing_id": scene["crossing"]["crossing_id"],
                  "recording_description": description},
         "physical_completion": {

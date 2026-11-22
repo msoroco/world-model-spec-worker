@@ -69,3 +69,19 @@ Exact strict gate `.runtime-work/c125714-diagnostic-strict.log` and full-batch s
 The source inventory is now retained at `candidate-map-inventory.json` with the exact map SHA. An added CPU test asserts that no junction connection is declared, preventing accidental promotion of this candidate to a Native route. Rebuilt offline bundle `.runtime-work/c125714-precedence-diagnostic-offline-4` passes; assignment suite now passes 36 tests and `result.json` hashes the refreshed logs.
 
 Final checks for this continuation: exact static `.runtime-work/c125714-diagnostic-static-final.log` exits 0; exact strict `.runtime-work/c125714-diagnostic-strict-final.log` and full-batch strict `.runtime-work/full-strict-c125714-diagnostic-final.log` exit 1 at `Preparation acceptance failed: partial/missing packages remain`. All returned files under `work/` passed a UTF-8, size, trailing-whitespace and conflict-marker scan (zero issues). The next resume action remains source-backed connected map and public-highway/device review, then all seven exact case packages and CPU proof receipts. No Git command was run.
+
+## 2026-11-22 C125714 diagnostic saved proof
+
+Exact `precedence` diagnostic recipe and positive/negative saved-finalizer proofs are retained under its assignment work directory. Positive synthetic maneuver met, legal judgment unresolved, physical acceptance false; missing original other-body history rejected. Pinned offline and 36 assignment tests pass. Full compatibility and seven source-backed case packages remain CPU work; C125714 stays partial. See its HANDOFF.md and diagnostic-saved-proof.json. No Git command was run.
+
+Final gate results for this continuation: `.runtime-work/c125714-recipe-static.log` exit 0; `.runtime-work/c125714-recipe-strict.log` and `.runtime-work/full-strict-c125714-recipe.log` exit 1 with `Preparation acceptance failed: partial/missing packages remain`. Preflight and updates passed; assignment suite passed 36 tests. The returned-file scan found zero size, UTF-8, trailing-whitespace, or conflict-marker issues. AGENT_PROMPT.md remains absent from this checkout. No Git command was run.
+
+## 2026-11-22 C125714 connected map continuation
+
+C125714 now has worker-owned `connected-median-candidate.xodr`, a SHA-bound topology receipt, and CPU tests for all three forward lane paths and missing-connection rejection. The exact `precedence` diagnostic bundle and positive/negative saved finalizer were rebuilt against it; pinned offline passes and the assignment suite has 39 passing tests. This remains a diagnostic candidate with no Native map or legal-context claim. Resume seven source-backed exact delivery cases and full compatibility/physical proofs from its HANDOFF.md. No Git command was run.
+
+Final continuation checks: CPU preflight passes with pinned Lean 4.28.0, updates version 0 has no pause, assignment suite passes 39 tests. Exact static `.runtime-work/c125714-connected-static.log` exits 0. Exact strict `.runtime-work/c125714-connected-strict.log` and full strict `.runtime-work/full-strict-c125714-connected.log` exit 1 with `Preparation acceptance failed: partial/missing packages remain`; C125714 remains truthful partial. Returned-file scan found zero UTF-8, size, trailing-whitespace, or conflict-marker issues. AGENT_PROMPT.md is absent from this checkout. No Git command was run.
+
+## 2026-11-22 C125714 three-case continuation
+
+The frozen `precedence`, `advance`, and `other_later` IDs now have separate diagnostic scene/config/construction bundles and SHA-bound textual fixtures. Their pinned offline and positive/negative saved-finalizer proofs pass via `prove_threecase_diagnostics.py`; assignment suite passes 42 tests. The controller explicitly tests yield versus advance requests. C125714 remains partial: four exception/roadway cases, reviewed context and full compatibility/physical receipts remain worker-owned CPU work. See HANDOFF.md. No Git command was run.

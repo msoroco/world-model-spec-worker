@@ -17,6 +17,8 @@ def check_scene(scene):
         raise ValueError("Native capture needs at least two original frames")
     if type(scene.get("other_entered_first")) is not bool:
         raise ValueError("entry-order target must be explicit")
+    if scene.get("ego_response_request", "yield") not in ("yield", "advance"):
+        raise ValueError("ego response request must be yield or advance")
     if not scene.get("case_id") or not scene.get("reviewed_context_source") or not scene.get("reviewed_context_sha256"):
         raise ValueError("case identity and reviewed source binding required")
     return scene

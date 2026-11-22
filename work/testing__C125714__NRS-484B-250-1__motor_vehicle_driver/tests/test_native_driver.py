@@ -41,6 +41,15 @@ class NativeDriverTests(unittest.TestCase):
         self.assertFalse(state["other_cleared"])
         self.assertEqual(state["request"],"brake")
 
+    def test_advance_request_and_other_later_release_ego(self):
+        for first, response in ((True, "advance"), (False, "yield")):
+            s=scene();s["other_entered_first"]=first;s["ego_response_request"]=response
+            state=control_step(s,{},frame=0,ego_body=rectangle(-2),other_body=rectangle(-2))
+            self.assertEqual(state["request"],"proceed")
+        s=scene();s["ego_response_request"]="yield"
+        state=control_step(s,{},frame=0,ego_body=rectangle(-2),other_body=rectangle(-2))
+        self.assertEqual(state["request"],"brake")
+
     def test_body_projection_and_control_call(self):
         class Point:
             def __init__(self,x,y): self.x,self.y=x,y

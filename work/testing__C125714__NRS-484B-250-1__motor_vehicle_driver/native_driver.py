@@ -77,7 +77,8 @@ def control_step(scene, state, *, frame, ego_body, other_body):
     ego_entered = state.get("ego_entered", False) or ego_within
     request = ego_request(not ego_entered, other_entered, other_cleared,
                           freshness_ok=True,
-                          require_other_first=scene["other_entered_first"])
+                          require_other_first=(scene["other_entered_first"] and
+                                               scene.get("ego_response_request", "yield") == "yield"))
     return {"last_frame": frame, "other_entered": other_entered,
             "other_cleared": other_cleared, "ego_entered": ego_entered,
             "request": request, "source": "original same-frame body polygon overlap"}
