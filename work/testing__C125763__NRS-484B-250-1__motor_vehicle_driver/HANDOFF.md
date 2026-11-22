@@ -125,3 +125,21 @@ Current proof files and SHA-256:
 Exact offline, 11-check positive/missing-source compatibility and recorded-only saved processing exit 0; saved processing has 60 joined original frames and 60 decoded composed frames, with originals preserved and physical/legal acceptance false. `opposite_left_audit.py` verifies the same junction/sign/ego approach, the opposite-route geometry, original source/body entry, controller left-turn intention, and current receipt hashes. Its positive exits 0; tampered crossing source exits 1. `result.json` remains partial with 17 passing CPU command entries bound to the current log. Scoped complete check passes.
 
 Next: construct three distinct risk fallbacks for each of four selected cases, run their exact offline/compatibility checks, bind saved and independent delivery audits, then rerun scoped/full strict gates. The frozen runtime manifest path identified by the last full strict check remains untouched.
+
+## 2026-11-21 opposite-left three physical-risk fallbacks
+Status remains **partial**. The opposite-left selected case now has three distinct source-bound fallback constructions: ego spawn 5 m upstream, other spawn 5 m upstream, and overview camera shifted/raised. Each fallback passes exact CPU offline and 11-check positive/missing-controller compatibility; none establishes Native physical success. The current independent `opposite_left_audit.py` verifies the exact construction and negative-log hashes, the common junction/sign/ego route and each single risk knob. Positive and tampered-source negative pass their expected dispositions.
+
+Current SHA-256 bindings:
+- fallback1 construction: `cases/yield_sign_opposite_left/fallback1-construction.json` — `ac5cbef7ec38d919a7565c5b08b2e279dfe105e56fa0608c5a31008baedc96cb`
+- fallback1 compatibility: `opposite-left-fallback1-compat-receipt.json` — `a9991bade905cf3d0a19edd751069628e59571dd95091b51797320d0a945671a`
+- fallback1 negative: `opposite-left-fallback1-negative.log` — `4c737242d82dbd413506b6d08cab2a07ce028361353e43b6110fead0df51e8c9`
+- fallback2 construction: `cases/yield_sign_opposite_left/fallback2-construction.json` — `7614bbe3d9a81694c1afcb466ce63dc60bf0afdb654020fa576d1df427c9a210`
+- fallback2 compatibility: `opposite-left-fallback2-compat-receipt.json` — `27782a42cdf4d654c3fc973eef5bb0cc0d2bd97e04c6b843758630a9c467c8b4`
+- fallback2 negative: `opposite-left-fallback2-negative.log` — `fb38c6cd94446aa06bdc7a19d36df3f024a269ab42c9a29f9e644ed069b8fc9b`
+- fallback3 construction: `cases/yield_sign_opposite_left/fallback3-construction.json` — `a09a38e5a02b20c7e489c2cbf7bc746a68b39e73dd4cf65e8aa336a76403fd13`
+- fallback3 compatibility: `opposite-left-fallback3-compat-receipt.json` — `4e8ca2132f3c492bff1710a6e35610a58324475dd0f20a6dc3fcd712b9ce7499`
+- fallback3 negative: `opposite-left-fallback3-negative.log` — `cdb499ef7cd2bb8f65baede9a59e962affe31f4d985ac87601bf68fcd69d4328`
+- audit script: `opposite_left_audit.py` — `0d98d9785f50929f12f725c38bc951e52ea44373c065e3534208115b0cc230c3`
+- CPU log: `cpu-tests.log` — `db937403f697cf624e766a5960e938aee3a22a2a6ff1ecd1c2acf096b5ecefba`; 23 bound passing test-command entries.
+
+The assignment-scoped complete check passes after fallback binding. Historical handoff-only subsection (2) receipts and diagnostic negative logs were preserved byte-for-byte in the reversible shared archives to stay within 8,600 returned files; subsection (2) scoped complete check passes. Remaining worker-owned CPU work: nine distinct fallbacks for the other three selected cases, their exact proofs, saved/delivery audits, complete manifest bindings and the strict gate. No ready status is claimed.

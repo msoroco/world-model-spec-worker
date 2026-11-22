@@ -92,10 +92,40 @@ def audit(root, crossing_source=None):
     measured=receipt.get('measurement_examples',{}).get('entry_timing',{}).get('value',{}).get('first_body_entry')
     if first_entry!=measured:
         raise ValueError('Independent entry timing differs from proof')
+    expected_changes={
+        'fallback1': ('approaches','ego','spawn_pose',[-5,0,0,0]),
+        'fallback2': ('approaches','other','spawn_pose',[35,0,0,180]),
+        'fallback3': ('camera_poses','overview',None,[5,-5,11,0,-25,0]),
+    }
+    fallback_proofs=[]
+    for candidate, (_, role, key, wanted) in expected_changes.items():
+        path=directory/(candidate+'-construction.json')
+        variant=read(path)
+        variant_files={f['path']:f['content'] for f in variant['files']}
+        variant_site=json.loads(variant_files['site.json'])
+        proof=read(root/('opposite-left-'+candidate+'-compat-receipt.json'))
+        negative=root/('opposite-left-'+candidate+'-negative.log')
+        if (proof.get('passed') is not True or len(proof.get('checks',[]))!=11 or
+            proof.get('candidate_id')!=candidate or
+            proof.get('construction_sha256')!=sha_bytes(path.read_bytes()) or
+            proof.get('negative_log_sha256')!=sha_bytes(negative.read_bytes())):
+            raise ValueError(candidate+': exact positive/negative compatibility proof changed')
+        if variant['case_id']!=construction['case_id'] or variant_site['intersection_id']!=site['intersection_id'] or variant_site['crossing_polygon_xy_m']!=site['crossing_polygon_xy_m'] or variant_site['yield_sign']!=site['yield_sign']:
+            raise ValueError(candidate+': fixed case/site condition changed')
+        expected=json.loads(json.dumps(site))
+        if key is None:expected['camera_poses'][role]=wanted
+        else:expected['approaches'][role][key]=wanted
+        observed=json.loads(json.dumps(variant_site))
+        if candidate in ('fallback1','fallback2'):
+            observed['source_documents']=expected['source_documents']
+        if observed!=expected:
+            raise ValueError(candidate+': unplanned site change')
+        fallback_proofs.append({'candidate_id':candidate,'construction_sha256':proof['construction_sha256'],'risk_knob':candidate})
     return {'format':'worker-opposite-left-source-audit','passed':True,
             'case_id':construction['case_id'],'first_body_entry':first_entry,
             'same_junction_and_yield_sign':True,'opposite_approach':True,
             'other_left_turn_route_and_controller_intent':True,
+            'fallback_proofs':fallback_proofs,
             'physical_acceptance_claimed':False,'legal_conclusion':'unresolved'}
 
 if __name__=='__main__':
