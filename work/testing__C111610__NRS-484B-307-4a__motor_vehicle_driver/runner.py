@@ -23,6 +23,13 @@ def load_scene(path=None):
         raise ValueError('adjacent crosswalk does not intersect left-turn exit')
     if scene.get('crosswalk_setup') not in ('clear','occupied'):
         raise ValueError('unknown adjacent-crosswalk setup')
+    sx,sy=scene['pedestrian_start_xy_m'];ex,ey=scene['pedestrian_end_xy_m']
+    px,py=scene['pedestrian_entry_start_xy_m']
+    if not (left<=sx<=right and bottom<=sy<=top and ex>right and ey==sy and
+            px<left and py==sy and scene['pedestrian_signal_head_id'] is not None and
+            type(scene['pedestrian_target_speed_mps']) in (int,float) and
+            0<scene['pedestrian_target_speed_mps']<=2):
+        raise ValueError('pedestrian path must start inside adjacent crosswalk and leave it')
     return scene
 
 
@@ -108,19 +115,21 @@ def control(scene,signal,frame,ego_body_vertices,participants,other_traffic,
             'occupant_ids':[],'traffic_ids':[]}
 
 
-def check():
-    scene=load_scene()
+def check(scene_path=None):
+    scene=load_scene(scene_path)
     print(json.dumps({'left_turn_route':turn_route(scene),
           'adjacent_crosswalk_geometry_checked':True,'ego_facing_head_requires_native_source':True}))
 
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true')
+    parser.add_argument('--scene')
     parser.add_argument('--output-dir');parser.add_argument('--host',default='127.0.0.1')
     parser.add_argument('--port',type=int,default=2000);args=parser.parse_args()
-    if args.check:check();return
+    if args.check:check(args.scene);return
     if not args.output_dir:parser.error('--output-dir required for Native capture')
-    raise ValueError('Native ego-facing signal-head acquisition and camera capture remain worker implementation work')
+    from native_capture import run_native
+    run_native(load_scene(args.scene),Path(args.output_dir),args.host,args.port)
 
 
 if __name__=='__main__':main()

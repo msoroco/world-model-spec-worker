@@ -6,7 +6,6 @@ from pathlib import Path
 from analysis import measure
 
 ROOT = Path(__file__).resolve().parent
-OCCUPIED_SCENE = ROOT / 'cases/crosswalk_occupied_yield/scene.json'
 FIXED = ('map_source', 'adjacent_crosswalk_source', 'ego_route_source',
          'facing_head_source', 'lawful_presence_method', 'facing_head_id',
          'adjacent_crosswalk_bounds_m', 'route_waypoints', 'crosswalk_vertices_m',
@@ -17,8 +16,9 @@ def audit(clear_attempt, occupied_attempt):
     clear_attempt, occupied_attempt = Path(clear_attempt), Path(occupied_attempt)
     if clear_attempt.resolve() == occupied_attempt.resolve():
         raise ValueError('comparison requires two distinct exact-case attempts')
-    clear = measure(clear_attempt, 'crosswalk_clear_turn')
-    occupied = measure(occupied_attempt, 'crosswalk_occupied_yield', OCCUPIED_SCENE)
+    clear = measure(clear_attempt, 'crosswalk_clear_turn', clear_attempt / 'scene.json')
+    occupied = measure(occupied_attempt, 'crosswalk_occupied_yield',
+                       occupied_attempt / 'scene.json')
     contexts = [json.loads((path / 'intersection-context.json').read_text())
                 for path in (clear_attempt, occupied_attempt)]
     for key in FIXED:

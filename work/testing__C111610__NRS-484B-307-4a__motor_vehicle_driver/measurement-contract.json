@@ -1,0 +1,39 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Sole green turn arrow facing the driver and illuminated during movement permits only the indicated direction",
+      "source": "NRS 484B.307(4)(a) exact text",
+      "output_key": "arrow_direction_measurement",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "turn-history.jsonl",
+        "intersection-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Yield to pedestrians lawfully within the adjacent crosswalk",
+      "source": "NRS 484B.307(4)(a) exact text",
+      "output_key": "adjacent_crosswalk_yield_measurement",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "turn-history.jsonl",
+        "intersection-context.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "turn-history.jsonl"
+    ],
+    "error_contains": "Missing required source: turn-history.jsonl"
+  }
+}

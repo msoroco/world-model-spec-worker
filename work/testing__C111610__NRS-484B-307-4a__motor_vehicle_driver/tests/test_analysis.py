@@ -1,16 +1,17 @@
 import hashlib
 import json
 import sys
+import shutil
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from analysis import measure
+from analysis import build_report, measure, saved_result
 from comparison_audit import audit
-
-OCCUPIED = ROOT / 'cases/crosswalk_occupied_yield/scene.json'
 
 
 def body(x, y):
@@ -26,7 +27,7 @@ def row(frame, x, y, speed, brake, person=False):
                     'heading_deg': 90 if y > 0 else 0,
                     'body_vertices_m': body(x, y), 'speed_mps': speed, 'brake': brake},
             'pedestrians': ([{'id': 'p1', 'role': 'pedestrian', 'source_ref': 'Native walker',
-                'lawful_presence_source': 'Native crosswalk phase and geometry',
+                'lawful_presence_source': 'pedestrian-entry.jsonl and original Walk head',
                 'lawfully_present': True, 'body_vertices_m': body(0, 5)}] if person else []),
             'other_traffic': []}
 
@@ -40,18 +41,36 @@ def fixture(path, occupied):
                'ego_route_source': 'Native waypoints', 'facing_head_source': 'Native signal',
                'lawful_presence_method': 'Native phase and geometry', 'facing_head_id': 7,
                'adjacent_crosswalk_bounds_m': scene['adjacent_crosswalk_bounds_m'],
-               'route_waypoints': [[-20, -1.75], [-4, -1.75], [0, 0], [0, 20]],
+               'route_waypoints': [{'x_m': x, 'y_m': y, 'road_id': 1, 'lane_id': 1}
+                                   for x, y in [(-20, -1.75), (-4, -1.75), (0, 0), (0, 20)]],
                'crosswalk_vertices_m': [[-2, 4], [2, 4], [2, 8], [-2, 8]],
-               'camera_profile': 'four-view-20Hz', 'duration_s': 30}
+               'camera_profile': 'overview1080-capability', 'duration_s': .2}
+    context['pedestrian_entry_source'] = 'pedestrian-entry.jsonl' if occupied else None
     sources = {'turn-history.jsonl': ''.join(json.dumps(r) + '\n' for r in rows),
-               'video_frames.jsonl': ''.join(json.dumps({'frame': r['frame'], 'time_s': r['time_s']}) + '\n' for r in rows),
+               'video_frames.jsonl': ''.join(json.dumps({'video_frame': index,
+                   'carla_frame': r['frame'], 'time_s': r['time_s']}) + '\n'
+                   for index, r in enumerate(rows)),
                'intersection-context.json': json.dumps(context) + '\n'}
+    if occupied:
+        entry = [{'frame': frame, 'time_s': frame / 20,
+                  'pedestrian_signal_head_id': 8, 'walk_state': 'Walk',
+                  'person_body_vertices_m': body(x, 5)}
+                 for frame, x in [(-2, -2), (-1, -1), (0, 0)]]
+        sources['pedestrian-entry.jsonl'] = ''.join(json.dumps(r) + '\n' for r in entry)
     acquisition = {}
     for name, content in sources.items():
         (path / name).write_text(content)
         acquisition[name] = {'kind': 'original_native',
                              'sha256': hashlib.sha256(content.encode()).hexdigest()}
     (path / 'acquisition.json').write_text(json.dumps(acquisition))
+    folder = ROOT / 'cases/crosswalk_occupied_yield' if occupied else ROOT
+    for name in ('scene.json', 'config.json', 'construction.json'):
+        shutil.copyfile(folder / name, path / name)
+    for name in ('scene.json', 'config.json'):
+        item = path / name
+        value = json.loads(item.read_text())
+        value['duration_s'] = .2
+        item.write_text(json.dumps(value) + '\n')
     return rows
 
 
@@ -61,11 +80,34 @@ class SavedArrowTests(unittest.TestCase):
             with self.subTest(occupied=occupied), tempfile.TemporaryDirectory() as directory:
                 path = Path(directory)
                 fixture(path, occupied)
-                report = measure(path, 'crosswalk_occupied_yield' if occupied else 'crosswalk_clear_turn',
-                                 OCCUPIED if occupied else None)
+                report = measure(path, 'crosswalk_occupied_yield' if occupied else 'crosswalk_clear_turn')
                 self.assertEqual(report['frame_count'], 4)
                 self.assertEqual(bool(report['lawful_occupancy_frames']), occupied)
                 self.assertEqual(report['legal_right_of_way_verdict'], 'unresolved')
+                saved = build_report(path)
+                self.assertTrue(saved['analysis_complete'])
+                self.assertEqual(saved['measurements']['adjacent_crosswalk_yield_measurement']['value']['frame_count'], 4)
+
+    def test_saved_finalizer_projects_only_declared_original_channels(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            fixture(path, True)
+            report = build_report(path)
+            module = types.ModuleType('worker_exchange.native_output')
+            module.physical_result = lambda _attempt, result: dict(result,
+                physical_checks={'setup': {'status': 'unverified'}},
+                realized_observables={})
+            module.validate_result = lambda result: result
+            package = types.ModuleType('worker_exchange')
+            with patch.dict(sys.modules, {'worker_exchange': package,
+                                          'worker_exchange.native_output': module}):
+                result = saved_result(path, report)
+            self.assertEqual(result['case_id'],
+                'testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield')
+            channels = path / 'channels'
+            self.assertTrue((channels / 'facing_arrow_history.jsonl').is_file())
+            self.assertEqual(len((channels / 'camera_frame_map.jsonl').read_text().splitlines()), 4)
+            self.assertFalse(result['setup_confirmed'])
 
     def test_stale_original_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -76,6 +118,14 @@ class SavedArrowTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'stale original'):
                 measure(path, 'crosswalk_clear_turn')
 
+    def test_missing_walk_entry_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            fixture(path, True)
+            (path / 'pedestrian-entry.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
+                measure(path, 'crosswalk_occupied_yield')
+
     def test_arrow_and_yield_violation_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)
@@ -83,12 +133,12 @@ class SavedArrowTests(unittest.TestCase):
             rows[0]['facing_signal']['head_id'] = 8
             self._replace_rows(path, rows)
             with self.assertRaisesRegex(ValueError, 'ego-facing'):
-                measure(path, 'crosswalk_occupied_yield', OCCUPIED)
+                measure(path, 'crosswalk_occupied_yield')
             rows[0]['facing_signal']['head_id'] = 7
             rows[1]['ego']['speed_mps'] = 2
             self._replace_rows(path, rows)
             with self.assertRaisesRegex(ValueError, 'did not hold'):
-                measure(path, 'crosswalk_occupied_yield', OCCUPIED)
+                measure(path, 'crosswalk_occupied_yield')
 
     def test_comparison_rechecks_original_sources_and_fixed_conditions(self):
         with tempfile.TemporaryDirectory() as first, tempfile.TemporaryDirectory() as second:
@@ -105,7 +155,7 @@ class SavedArrowTests(unittest.TestCase):
             acquisition = json.loads((occupied / 'acquisition.json').read_text())
             acquisition['intersection-context.json']['sha256'] = hashlib.sha256(content.encode()).hexdigest()
             (occupied / 'acquisition.json').write_text(json.dumps(acquisition))
-            with self.assertRaisesRegex(ValueError, 'camera_profile'):
+            with self.assertRaisesRegex(ValueError, 'camera profile'):
                 audit(clear, occupied)
 
     @staticmethod

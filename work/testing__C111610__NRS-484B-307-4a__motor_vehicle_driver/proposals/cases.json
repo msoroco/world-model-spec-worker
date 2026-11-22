@@ -1,0 +1,371 @@
+{
+  "cell_id": "C111610",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared official sole-left-arrow intersection and adjacent-crosswalk geometry.",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Reference world setup"
+        },
+        "arrow_direction": {
+          "kind": "world_setup",
+          "value": "left",
+          "note": "Original official signal asset must prove arrow alone"
+        },
+        "ego_turn_controller": {
+          "kind": "controller",
+          "value": "source_gated_left_turn",
+          "note": "Same controller for linked cases"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_heading_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body, heading, speed and brake history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "facing_arrow_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing sole-arrow head and illumination frames.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "pedestrian_body_lawful_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian body and sourced lawful-entry history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "other_traffic_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-intersection-traffic inventory.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map adjacent-crosswalk vertices.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "turn_route",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native connected left-turn waypoints.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured record",
+            "method": "Original map, official signal and route context."
+          },
+          {
+            "name": "pedestrian_entry_context",
+            "unit": "structured record",
+            "method": "Original Walk-phase entry or explicit clear-case absence."
+          }
+        ],
+        "limitations": [
+          "Lawful entry and right-of-way require independent review.",
+          "Actual pixels and physical turn require Native review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Lawful pedestrian entry and right-of-way review"
+      ]
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "boundary_probe",
+      "rationale": "Adjacent crosswalk remains clear during same sole-arrow left turn",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Only deliberate comparison difference"
+        },
+        "arrow_direction": {
+          "kind": "world_setup",
+          "value": "left",
+          "note": "Same original official sole-arrow source"
+        },
+        "ego_turn_controller": {
+          "kind": "controller",
+          "value": "source_gated_left_turn",
+          "note": "Same controller"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_heading_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body, heading, speed and brake history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "facing_arrow_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing sole-arrow head and illumination frames.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "pedestrian_body_lawful_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian body and sourced lawful-entry history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "other_traffic_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-intersection-traffic inventory.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map adjacent-crosswalk vertices.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "turn_route",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native connected left-turn waypoints.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured record",
+            "method": "Original map, official signal and route context."
+          },
+          {
+            "name": "pedestrian_entry_context",
+            "unit": "structured record",
+            "method": "Original Walk-phase entry or explicit clear-case absence."
+          }
+        ],
+        "limitations": [
+          "Lawful entry and right-of-way require independent review.",
+          "Actual pixels and physical turn require Native review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Lawful pedestrian entry and right-of-way review"
+      ],
+      "paired_probe_id": "adjacent_crosswalk_lawful_occupancy",
+      "deliberate_differences": [
+        "adjacent_crosswalk_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "adjacent_crosswalk_occupancy",
+        "comparison_or_standard": "Original pedestrian occupancy, ego brake/entry and arrow frames; no legal cutoff",
+        "target_value_or_branch": "clear"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "boundary_probe",
+      "rationale": "Lawfully entered pedestrian occupies adjacent crosswalk during sole-arrow phase",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "occupied",
+          "note": "Only deliberate comparison difference"
+        },
+        "arrow_direction": {
+          "kind": "world_setup",
+          "value": "left",
+          "note": "Same original official sole-arrow source"
+        },
+        "ego_turn_controller": {
+          "kind": "controller",
+          "value": "source_gated_left_turn",
+          "note": "Same controller"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_heading_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body, heading, speed and brake history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "facing_arrow_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing sole-arrow head and illumination frames.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "pedestrian_body_lawful_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian body and sourced lawful-entry history.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "other_traffic_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-intersection-traffic inventory.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map adjacent-crosswalk vertices.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "turn_route",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native connected left-turn waypoints.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "arrow phase through turn clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured record",
+            "method": "Original map, official signal and route context."
+          },
+          {
+            "name": "pedestrian_entry_context",
+            "unit": "structured record",
+            "method": "Original Walk-phase entry or explicit clear-case absence."
+          }
+        ],
+        "limitations": [
+          "Lawful entry and right-of-way require independent review.",
+          "Actual pixels and physical turn require Native review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Lawful pedestrian entry and right-of-way review"
+      ],
+      "paired_probe_id": "adjacent_crosswalk_lawful_occupancy",
+      "deliberate_differences": [
+        "adjacent_crosswalk_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "adjacent_crosswalk_occupancy",
+        "comparison_or_standard": "Original pedestrian occupancy, ego brake/entry and arrow frames; no legal cutoff",
+        "target_value_or_branch": "occupied"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111610-lawful-adjacent-yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to pedestrians lawfully within the adjacent crosswalk",
+          "note": "The exact law supplies no numeric yielding or lawful-presence cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original signal/crosswalk asset and feasible nontransient pedestrian/ego timing range are not supplied.",
+      "missing_inputs": [
+        "Source-backed official sole-arrow and marked crosswalk asset",
+        "Feasible nontransient approach, entry and clearance range across turning encounter"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

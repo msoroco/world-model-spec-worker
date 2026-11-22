@@ -1,0 +1,46 @@
+{
+  "template_id": "NRS-484B-307-4a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-4a",
+  "actor": "motor_vehicle_driver",
+  "quote": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-307-4a",
+    "activation": {
+      "condition": "Driver faces an official green turn arrow alone at an intersection.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Proceed only in the arrow direction while illuminated and yield to pedestrians lawfully within the adjacent crosswalk and other traffic lawfully using the intersection.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Original arrow illumination, pedestrian lawful entry and turning movement are joined by CARLA frame.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "yield the right-of-way to pedestrians lawfully within the adjacent crosswalk",
+        "note": "The exact law supplies no numeric yielding or lawful-presence cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "adjacent_crosswalk_occupancy",
+      "kind": "world_setup",
+      "range_or_domain": "clear or lawfully entered pedestrian occupying marked adjacent crosswalk"
+    },
+    {
+      "name": "arrow_direction",
+      "kind": "world_setup",
+      "range_or_domain": "official sole green left arrow facing ego"
+    },
+    {
+      "name": "ego_turn_controller",
+      "kind": "controller",
+      "range_or_domain": "source-gated connected left turn with observed yielding"
+    }
+  ]
+}
