@@ -21,11 +21,11 @@
     "ready_assignments": 15,
     "verdict": "none; interrupted after more than 20 minutes of silent return-tree traversal"
   },
-  "candidate_plans_proven": 0,
+  "candidate_plans_proven": 12,
   "carla_executed": false,
   "cases_planned": 3,
   "cases_selected": 3,
-  "comparison_audits_passed": 0,
+  "comparison_audits_passed": 2,
   "counts": {
     "candidate_drafts": 12,
     "delivery_cases_prepared": 3,
@@ -125,8 +125,8 @@
     }
   ],
   "input_sha256": "95f4cef87e8f3bd9a995597f8ff113aaf556d7672186d5925105021f505c3ba8",
-  "readiness_kind": "reproof_pending",
-  "reason": "All 15 formerly ready packages, including this one, bound older runtime 5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3. C110812 now has 12 current-runtime exact offline passes and one control-primary positive/negative compatibility plus recorded-only saved pass under ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90. Eleven candidate full chains, current-runtime selected physical/delivery/comparison audits and formal manifest remain worker-owned; no ready claim.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Three selected 42-second cases and twelve exact candidate constructions passed current-runtime offline, positive/negative compatibility and recorded-only saved CPU proofs; three physical fixture suites, three delivery audits, two comparisons and frozen validators pass. Original Native motion, pixels and physical/legal acceptance remain unverified.",
   "recordings_accepted": 0,
   "runtime_cutover_checkpoint": {
     "current_runtime_control_primary_compatibility_passed": true,
@@ -147,16 +147,22 @@
       "log": "atom-fixed-scoped-ready-probe.log",
       "sha256": "d2ea1941ad051bdc58388d6b5595bb4537780da5e89e885fc4009935d9c917af"
     },
-    "remaining_cpu_work": "Reprove compatibility and recorded-only saved processing for the other 11 selected candidates, rebind physical/delivery/comparison audits and formal execution manifest, then rerun assignment strict gate.",
+    "remaining_cpu_work": "Assignment-scoped strict gate must pass before the ready label is accepted.",
     "reproof_artifacts": {
       "current-runtime-control-primary-analysis.log": "98881b58672c00f78b3b5804346ab75ef075373e3a9e5534f0febb6ede6a512b",
       "current-runtime-control-primary-compatibility.json": "c12df62d47ab993b68782f9cebc87f441fa50741b82944b52162a16ed1f27904",
       "current-runtime-control-primary-negative.log": "ab329d6a44ede57a372bf76e788c38126dc9570f1c59759d50c49553306d048e",
       "current-runtime-control-primary-saved-receipt.json": "c8d201c7e4ddd3a964320fe6f8d19ab6ebb70f4add73336e712beb4556682b57",
+      "current-runtime-independent-audits.json": "744a945260fb2a4e70f4d358e2133b7c5f2f1c3bd7252c29668719c9d8b179f4",
+      "current-runtime-manifest-build.log": "9ce7f7807cb510ccd9decdf86420680762a90151515d2545db737138102a86d0",
+      "current-runtime-matrix-progress.json": "8fc17fb2227ce643400b7abf4a02ac1cde2dbd9d547a50370c74f0dd0e9600eb",
       "current-runtime-offline-reproof.json": "c0b5ee4c2c4b504154e3d3bda2df0a0de03185000e324a638b2e19ad88f870d6",
-      "current-runtime-reproof-manifest.json": "b67e6dcd797000482e31241cef851b77dfd882d9bbea33de712707665e0b8ec8"
+      "current-runtime-physical-run.log": "d8d66471563fd9efe2a3064ec30329eea13d972925b8764ad147050a319505a2",
+      "current-runtime-reproof-manifest.json": "b67e6dcd797000482e31241cef851b77dfd882d9bbea33de712707665e0b8ec8",
+      "current-runtime-trigger-audit.log": "2d13af8edcbf966b193292375a041c633d50a327ad5ddd97fe6de9165f9f75fd",
+      "execution-manifest.json": "510441ef3334e04c9e834801a7595b9cb02d2a0e14854071ebe85d410374184f"
     },
-    "status": "selected_proofs_historical_reproof_pending"
+    "status": "current_runtime_cpu_reproven"
   },
   "selected_cpu_checkpoint": {
     "comparison_proof": "selected-comparison-proof.json",
@@ -172,12 +178,11 @@
     "physical_success_claimed": false,
     "status": "current_runtime_cpu_proven"
   },
-  "status": "partial",
+  "status": "ready",
   "strict_gate": {
     "command": ".venv-cpu/bin/python worker_check.py --assignment training__C110812__NRS-484B-113-2__motor_vehicle_driver --complete --require-delivery-ready",
-    "exact_error": "Current runtime reproof pending",
-    "exit_code": null,
-    "historical_strict_gate": true
+    "exact_error": "Pending current-runtime assignment strict gate",
+    "exit_code": null
   },
   "tests": [
     {
@@ -215,6 +220,36 @@
       "exit_code": 0,
       "log": "atom-fixed-scoped-static.log",
       "sha256": "d2ea1941ad051bdc58388d6b5595bb4537780da5e89e885fc4009935d9c917af"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "current-runtime-preflight-20261121.log",
+      "sha256": "570c09f9bbecda31b1579002379cb06eeddf16cf977600def6b0e12907d6b4de"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110812__NRS-484B-113-2__motor_vehicle_driver/reprove-current-runtime-physical.py",
+      "exit_code": 0,
+      "log": "current-runtime-physical-run.log",
+      "sha256": "d8d66471563fd9efe2a3064ec30329eea13d972925b8764ad147050a319505a2"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110812__NRS-484B-113-2__motor_vehicle_driver/reprove-current-runtime-audits.py",
+      "exit_code": 0,
+      "log": "current-runtime-independent-audits-run.log",
+      "sha256": "2ae8cf39b3b2c68e5af0e80c9abf5fbae2c8aa064e69940f4ef0a40f2cbe5f25"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110812__NRS-484B-113-2__motor_vehicle_driver/build-current-runtime-execution-manifest.py",
+      "exit_code": 0,
+      "log": "current-runtime-manifest-build.log",
+      "sha256": "9ce7f7807cb510ccd9decdf86420680762a90151515d2545db737138102a86d0"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110812__NRS-484B-113-2__motor_vehicle_driver/audit-fallback3.py",
+      "exit_code": 0,
+      "log": "current-runtime-trigger-audit.log",
+      "sha256": "2d13af8edcbf966b193292375a041c633d50a327ad5ddd97fe6de9165f9f75fd"
     }
   ]
 }
