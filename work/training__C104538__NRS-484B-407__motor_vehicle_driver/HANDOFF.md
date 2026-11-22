@@ -272,3 +272,7 @@ The selected below/at/above-500-foot sweep now has twelve regenerated exact prim
 ## Current runtime cutover reproof checkpoint
 
 The previously selected execution manifest binds `5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3`; frozen batch/runtime now pin `ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90`. Earlier ready/strict claims and runtime-dependent receipts are historical. `result.json` is `partial` until exact offline, positive/negative compatibility, recorded-only saved, physical, delivery and comparison proofs are rebound and the assignment-scoped strict gate passes. Selected case definitions and construction sources are preserved. This is worker-owned CPU reproof, not an external blocker.
+
+## Pinned-runtime reproof in progress
+
+The three preserved 450/500/550-foot selected cases and all 12 primary/fallback constructions pass fresh pinned-runtime offline checks (`current-runtime-offline-reproof.json`). CPU preflight passes with the installed pinned dependencies, and 20 assignment tests pass with the assignment and runtime package on `PYTHONPATH`. The candidate-specific positive/negative compatibility and recorded-only saved-processing matrix is running under `.runtime-work/`; `result.json` remains `partial` until all exact current-runtime proofs, audits, manifest binding and scoped strict gate pass.
