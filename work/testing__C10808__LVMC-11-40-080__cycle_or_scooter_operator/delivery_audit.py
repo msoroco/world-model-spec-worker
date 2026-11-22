@@ -126,7 +126,11 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
         raise ValueError('decoded primary video or receipt missing')
     if media_verify is None:
         from worker_exchange.media import verify_receipt
-        media_verify=verify_receipt
+        checker=sha(Path(__file__).with_name('pixel_checks.py'))
+        def media_verify(video,receipt,count,mapping_sha256):
+            return verify_receipt(video,receipt,count,
+                mapping_sha256=mapping_sha256,
+                required_checks={'c10808_four_view_pixels':checker})
     media_verify(video,decode_receipt,len(mapping),
                  mapping_sha256=sha(attempt/'video_frames.jsonl'))
     config=read(attempt/'config.json')

@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
+PREFIX='testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__'
 import sys
 sys.path.insert(0,str(ROOT))
 from test_delivery_audit import DeliveryAuditTests, write
@@ -14,8 +15,8 @@ import comparison_audit
 
 class SealedComparisonTests(unittest.TestCase):
     def pair(self,base):
-        left=DeliveryAuditTests().fixture(base/'left',ROOT.name+'__dismount_before_uturn')
-        right=DeliveryAuditTests().fixture(base/'right',ROOT.name+'__mounted_uturn')
+        left=DeliveryAuditTests().fixture(base/'left',PREFIX+'dismount_before_uturn')
+        right=DeliveryAuditTests().fixture(base/'right',PREFIX+'mounted_uturn')
         return left,right
 
     def run_pair(self,left,right):

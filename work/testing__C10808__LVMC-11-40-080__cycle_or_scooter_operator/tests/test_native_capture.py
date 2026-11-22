@@ -1,5 +1,6 @@
 """CPU checks of the Native route and pre-capture source boundary."""
 import importlib.util
+import copy
 import sys
 import tempfile
 import types
@@ -45,6 +46,78 @@ class Map:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_graph_capture_failure_releases_resources_and_restores_world(self):
+        events=[]
+        class World:
+            def __init__(self):
+                self.settings=types.SimpleNamespace(synchronous_mode=False,
+                    fixed_delta_seconds=None)
+                self.weather=object();self.frame=40
+            def get_map(self):return object()
+            def get_settings(self):return copy.deepcopy(self.settings)
+            def apply_settings(self,value):
+                self.settings=copy.deepcopy(value);events.append('apply_settings')
+            def get_weather(self):return self.weather
+            def set_weather(self,value):self.weather=value;events.append('set_weather')
+            def get_snapshot(self):return types.SimpleNamespace(
+                frame=self.frame,timestamp=types.SimpleNamespace(elapsed_seconds=0.))
+            def tick(self):self.frame+=1;return self.frame
+        world=World()
+        class Client:
+            def __init__(self,*args):pass
+            def set_timeout(self,value):pass
+            def get_world(self):return world
+        class Actor:
+            def __init__(self,name,index):
+                self.id=index;self.type_id=name;self.name=name
+            def set_transform(self,value):pass
+            def destroy(self):events.append('destroy_'+self.name)
+        actors={name:Actor(name,index) for index,name in
+                enumerate(('sign','bicycle','operator'),1)}
+        class Cameras:
+            def __init__(self,*args):pass
+            def close(self):events.append('cameras_closed')
+        class FrameMap:
+            def __init__(self,*args):pass
+            def close(self):events.append('frame_map_closed')
+        class PipelineCapture:
+            def __init__(self,*args):pass
+            def capture(self,*args,**kwargs):raise RuntimeError('graph collector failed')
+            def close(self,confirmed=True):events.append('pipeline_closed_'+str(confirmed))
+        def module(name,**attrs):
+            value=types.ModuleType(name);value.__dict__.update(attrs);return value
+        fake_modules={
+            'carla':module('carla',Client=Client),
+            'pipeline_capture':module('pipeline_capture',PipelineCapture=PipelineCapture),
+            'worker_exchange.native_output':module('worker_exchange.native_output',
+                FrameMap=FrameMap,seal_capture=lambda *a,**k:events.append('sealed')),
+            'worker_exchange.world_restore':module('worker_exchange.world_restore',
+                fields=lambda value:{'synchronous_mode':value.synchronous_mode,
+                                     'fixed_delta_seconds':value.fixed_delta_seconds},
+                equal=lambda left,right:left==right)}
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory);(output/'construction.json').write_text('{}')
+            (output/'runner.py').write_text('')
+            authorization=output/'authorization.txt';authorization.write_text('fixture')
+            with patch.dict(sys.modules,fake_modules),patch.object(
+                    native_capture,'discover_origin',return_value=(object(),{})),patch.object(
+                    native_capture,'spawn_scene',return_value=actors),patch.object(
+                    native_capture,'Cameras',Cameras),patch.object(
+                    native_capture,'trajectory',return_value={
+                        'operator':(0,0,0),'bicycle':(0,0,0),'phase':'mounted_approach'}),patch.object(
+                    native_capture,'local_transform',return_value=object()):
+                scene=load_scene();scene['duration_s']=.05
+                with self.assertRaisesRegex(RuntimeError,'graph collector failed'):
+                    native_capture.run_native(scene,output,'127.0.0.1',2000,
+                                              authorization)
+            self.assertIn('pipeline_closed_False',events)
+            self.assertIn('frame_map_closed',events)
+            self.assertIn('cameras_closed',events)
+            self.assertIn('destroy_operator',events)
+            self.assertFalse(world.settings.synchronous_mode)
+            self.assertNotIn('sealed',events)
+            self.assertTrue((output/'native-run-status.json').is_file())
+
     def test_walker_capture_proxy_exposes_neutral_control(self):
         actor=types.SimpleNamespace(id=12,type_id='walker.pedestrian.fixture',
                                     get_velocity=lambda: types.SimpleNamespace(

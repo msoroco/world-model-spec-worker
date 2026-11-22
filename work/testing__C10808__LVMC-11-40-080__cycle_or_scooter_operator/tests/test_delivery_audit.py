@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('c10808_delivery_audit',ROOT/'delivery_audit.py')
 audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
-CASE=ROOT.name+'__dismount_before_uturn'
+CASE='testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn'
 
 
 def write(path,value):path.write_text(json.dumps(value,indent=2)+'\n')

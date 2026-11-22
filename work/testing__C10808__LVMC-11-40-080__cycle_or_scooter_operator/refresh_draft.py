@@ -22,15 +22,21 @@ def main():
         path = ROOT/entry['construction']
         construction = json.loads(path.read_text())
         included = {item['path'] for item in construction['files']}
-        for name in ('native_samples.py', 'native_capture.py',
-                     'tests/test_native_samples.py', 'tests/test_native_capture.py'):
+        for name in ('native_samples.py', 'native_capture.py','delivery_audit.py',
+                     'comparison_audit.py','pixel_checks.py','pixel_receipt.py',
+                     'tests/test_native_samples.py', 'tests/test_native_capture.py',
+                     'tests/test_delivery_audit.py','tests/test_sealed_comparison.py',
+                     'tests/test_pixel_checks.py'):
             if name not in included:
                 construction['files'].append({'path': name, 'content': (ROOT/name).read_text()})
         for item in construction['files']:
             name = item['path']
             if name in ('runner.py','analysis.py','native_samples.py','native_capture.py',
+                        'comparison_audit.py','delivery_audit.py','pixel_checks.py',
+                        'pixel_receipt.py',
                         'tests/test_construction.py','tests/test_native_samples.py',
-                        'tests/test_native_capture.py'):
+                        'tests/test_native_capture.py','tests/test_delivery_audit.py',
+                        'tests/test_sealed_comparison.py','tests/test_pixel_checks.py'):
                 item['content'] = (ROOT/name).read_text()
         path.write_text(json.dumps(construction,indent=2)+'\n')
         entry['construction_sha256'] = sha(path)
