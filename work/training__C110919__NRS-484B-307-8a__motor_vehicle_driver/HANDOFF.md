@@ -375,3 +375,5 @@ All 20 selected cases and 80 primary/fallback chains pass current exact offline,
 ## 2026-11-22 pinned-runtime CPU closure
 
 Frozen direct validators pass all 20 selected cases, seven semantic stages, 20 delivery handoffs and 80 compatibility receipts (`current-runtime-direct-validation.log`). The assignment-scoped strict gate exits 0 (`current-runtime-scoped-strict-ready.log`, SHA-256 db9bfa383db2a21d71593151a91e3fdd21a6fcac6150f19af52223edae6d87cb). `result.json` is ready / delivery_prepared. All 80 exact offline, positive/negative compatibility and recorded-only saved chains, 20 physical fixture suites, 80 independent camera/source audits, seven diagnostic comparisons and 20 positive/negative delivery audits pass against the pinned runtime. Original Native Walk, camera pixels, physical/legal acceptance and canonical recording membership remain unclaimed. The batch still has 247 partial assignments.
+
+Final scoped strict recheck on the updated return state exited 0 (`current-runtime-scoped-strict-final.log`, SHA-256 db9bfa383db2a21d71593151a91e3fdd21a6fcac6150f19af52223edae6d87cb).
