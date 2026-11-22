@@ -217,3 +217,5 @@ Direct `delivery_handoff.validate_case(folder, entry, original.selection_targets
 The returned file count stayed 8,600: one historical failed strict-gate log in C378304 was preserved byte-for-byte as a member of its existing command-log archive, its historical result reference was rebound, and the standalone copy removed. C378304 scoped static gate still passes. No frozen input, runtime, batch or Git command was changed.
 
 The passing direct execution/semantic/compatibility command is now retained as `semantic-current.log` inside `command-log-archive.json` (archive SHA-256 `721374035cac8144f91b38160fa63fca85451f874c0e1522b239461169b35cd1`) and bound by an executable command entry in `result.json`. This proof leaves the two-set delivery contract and resulting 16 saved rebindings open.
+
+Final scoped strict retry exits 1 with `Preparation acceptance failed: partial/missing packages remain` (ignored diagnostic `.runtime-work/c125745-strict-current.log`); the source-bound two-set delivery repair and 16 saved rebindings are still required.
