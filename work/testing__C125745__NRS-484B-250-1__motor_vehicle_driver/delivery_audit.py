@@ -21,8 +21,12 @@ def camera_profile():
     for entry in manifest['cases']:
         construction = json.loads((ROOT / entry['construction']).read_text())
         config = json.loads(next(f['content'] for f in construction['files'] if f['path'] == 'config.json'))
-        profiles.append(set(config['cameras']))
-    if not profiles or any(profile != set(expected) for profile in profiles):
+        cameras = config['cameras']
+        if not isinstance(cameras, list) or any(not isinstance(camera, dict) for camera in cameras):
+            raise ValueError('Selected camera profile lacks exact dimensions')
+        profiles.append({camera['name']: (camera['width'], camera['height'])
+                         for camera in cameras})
+    if not profiles or any(profile != expected for profile in profiles):
         raise ValueError('Selected camera profiles differ')
     return expected
 
