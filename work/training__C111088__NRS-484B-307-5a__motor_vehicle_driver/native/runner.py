@@ -99,10 +99,15 @@ def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int)
     checked = check(case_id, candidate_id)
     config = checked['config']
     output = output.resolve()
-    if output.exists():
-        raise ValueError('Use a fresh output directory to preserve prior attempts')
-    output.mkdir(parents=True)
-    write_new(output / 'config.json', config)
+    materialized = output / 'config.json'
+    if not output.is_dir() or not materialized.is_file():
+        raise ValueError('Use a fresh materialized exact-case output directory')
+    selected = json.loads(materialized.read_text())
+    if any(selected.get(key) != config.get(key) for key in
+           ('case_id', 'candidate_id', 'rate_hz', 'duration_s', 'knobs')):
+        raise ValueError('Materialized exact construction differs from runner')
+    if (output / 'native-capture-report.json').exists():
+        raise ValueError('Retain prior Native attempt; use a fresh materialization')
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
@@ -319,19 +324,28 @@ def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case-id', required=True)
-    parser.add_argument('--candidate-id', required=True)
+    parser.add_argument('--case-id')
+    parser.add_argument('--candidate-id')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
+    config_path = Path(__file__).resolve().parent / 'config.json'
+    materialized = json.loads(config_path.read_text()) if config_path.is_file() else {}
+    case_id = args.case_id or materialized.get('case_id')
+    candidate_id = args.candidate_id or materialized.get('candidate_id')
+    if not case_id or not candidate_id:
+        parser.error('Provide exact case and candidate, or use a materialized config.json')
+    if materialized and (materialized.get('case_id') != case_id or
+                         materialized.get('candidate_id') != candidate_id):
+        parser.error('CLI case or candidate differs from materialized construction')
     if args.check:
-        print(json.dumps(check(args.case_id, args.candidate_id), allow_nan=False))
+        print(json.dumps(check(case_id, candidate_id), allow_nan=False))
     else:
         if not args.output_dir or not args.host or not args.port:
             parser.error('Provide a new output directory and owned Native endpoint')
-        execute(args.case_id, args.candidate_id, args.output_dir, args.host, args.port)
+        execute(case_id, candidate_id, args.output_dir, args.host, args.port)
 
 
 if __name__ == '__main__':

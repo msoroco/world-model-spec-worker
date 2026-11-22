@@ -5,6 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from geometry import body, ego_y, other_x
+from finalize import derive_channels
 from measure import joined_samples, measure_arrow_and_yield
 
 
@@ -80,6 +81,26 @@ class MeasureStraightArrow(unittest.TestCase):
                 json.dumps(row) + '\n' for row in sources['video_frames.jsonl']))
             with self.assertRaisesRegex(ValueError, 'video frame mapping'):
                 joined_samples(attempt, rate_hz=2, duration_s=1)
+
+    def test_channels_come_from_retained_samples_and_cannot_be_fixture_supplied(self):
+        with TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            source = samples(True)[:2]
+            for index, row in enumerate(source):
+                row['time_s'] = (index + 1) / 20
+                row['native_center_xy_m'] = [1.75, -25]
+                row['controller_request'] = {'brake': 1.0}
+            description = {'channels': [{'name': 'kin.position', 'unit': 'structured'},
+                                        {'name': 'drv.yields_to', 'unit': 'structured'}]}
+            mapping = [{'video_frame': index} for index in range(2)]
+            geometry = {'intersection_bounds_xy_m': [-7, -7, 7, 7],
+                        'adjacent_crosswalk_xy_m': [[-3.5, -12], [3.5, -10]]}
+            evidence = derive_channels(attempt, description, source, mapping, geometry)
+            self.assertEqual(len(evidence), 2)
+            row = json.loads((attempt / 'channels/kin.position.jsonl').read_text().splitlines()[0])
+            self.assertEqual(row['value']['native_center_xy_m'], [1.75, -25])
+            with self.assertRaises(FileExistsError):
+                derive_channels(attempt, description, source, mapping, geometry)
 
 
 if __name__ == '__main__':

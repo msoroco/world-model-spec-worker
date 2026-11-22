@@ -58,13 +58,57 @@ def verified_arrow_frames(attempt: Path, count: int) -> tuple[set[int], dict]:
                                        'last_video_frame': end}
 
 
+def derive_channels(attempt: Path, description: dict, samples: list[dict],
+                    mapping: list[dict], geometry: dict) -> list[dict]:
+    """Create mandatory channels from retained raw sources, never fixture channels."""
+    channel_dir = attempt / 'channels'
+    channel_dir.mkdir(exist_ok=True)
+    evidence = []
+    if len(samples) != len(mapping):
+        raise ValueError('Saved source/channel frame count differs')
+    for channel in description['channels']:
+        name = channel['name']
+        path = channel_dir / (name + '.jsonl')
+        with path.open('x') as stream:
+            for sample, frame_map in zip(samples, mapping):
+                signal = sample['governing_signal']
+                other = sample['other_vehicle']
+                source_values = {
+                    'dev.traffic_signal': signal,
+                    'dev.governs': {'native_actor_id': signal['native_actor_id'],
+                                    'facing_ego_native_survey': signal['facing_ego_native_survey']},
+                    'drv.turning': {'heading_deg': sample['native_yaw_deg']},
+                    'kin.heading': {'heading_deg': sample['native_yaw_deg']},
+                    'drv.entering_intersection': {
+                        'ego_body_xy_m': sample['native_body_xy_m'],
+                        'intersection_bounds_xy_m': geometry['intersection_bounds_xy_m']},
+                    'st.crosswalk': {'crosswalk_points_xy_m': geometry['adjacent_crosswalk_xy_m']},
+                    'drv.in_intersection': other,
+                    'drv.yields_to': {'other_actor_id': other['native_actor_id'],
+                                      'controller_request': sample['controller_request'],
+                                      'other_occupied': other['within_intersection_or_adjacent_crosswalk']},
+                    'st.intersection': {'intersection_bounds_xy_m': geometry['intersection_bounds_xy_m']},
+                    'kin.position': {'native_center_xy_m': sample['native_center_xy_m']},
+                    'native_body_pose_control': sample,
+                    'camera_frame_join': frame_map,
+                }
+                if name not in source_values:
+                    raise ValueError('Unsupported source-derived channel: ' + name)
+                stream.write(json.dumps({'time_s': sample['time_s'],
+                                         'value': source_values[name]}, allow_nan=False) + '\n')
+        evidence.append({'name': name, 'unit': channel['unit'],
+                         'reference': 'channels/' + name + '.jsonl'})
+    return evidence
+
+
 def finalize(attempt: Path, report_path: Path) -> dict:
     attempt = attempt.resolve()
     report_path = report_path.resolve()
     if (attempt / 'result.json').exists() or report_path.exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
     config = json.loads((attempt / 'config.json').read_text())
-    if config != parameters(config['case_id'], config['candidate_id']):
+    expected = parameters(config['case_id'], config['candidate_id'])
+    if any(config.get(key) != value for key, value in expected.items()):
         raise ValueError('Exact construction config differs')
     count = config['rate_hz'] * config['duration_s']
     samples, joins = joined_samples(attempt, rate_hz=config['rate_hz'],
@@ -81,6 +125,13 @@ def finalize(attempt: Path, report_path: Path) -> dict:
     target_matched = present == requested and (not requested or prior_entry)
     straight = measured['straight_heading_no_turn_observed']
     body_exit = min(vertex[1] for vertex in samples[-1]['native_body_xy_m']) > 7
+    description = config['recording_description']
+    mapping = [json.loads(line) for line in (attempt / 'video_frames.jsonl').read_text().splitlines()]
+    geometry = json.loads((attempt / 'road_geometry.json').read_text())
+    recording_evidence = derive_channels(attempt, description, samples, mapping, geometry)
+    recording_evidence.append({'name': description['context_inputs'][0]['name'],
+                               'unit': description['context_inputs'][0]['unit'],
+                               'reference': 'road_geometry.json'})
     result = {
         'case_id': config['case_id'],
         'measured_values': {'straight_arrow_and_yield': measured,
@@ -109,8 +160,8 @@ def finalize(attempt: Path, report_path: Path) -> dict:
         'trace_reference': 'trace.jsonl',
         'video_references': list(video_hashes),
         'video_frame_map_reference': 'video_frames.jsonl',
-        'recording_description': {'channels': []},
-        'recording_evidence': [],
+        'recording_description': description,
+        'recording_evidence': recording_evidence,
         'realized_observables': {
             'first_front_stop_line_crossing_frame': {
                 'value': measured['first_front_stop_line_crossing_frame'], 'unit': 'frame',
@@ -137,7 +188,7 @@ def finalize(attempt: Path, report_path: Path) -> dict:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', type=Path, required=True)
-    parser.add_argument('--report', type=Path, required=True)
+    parser.add_argument('--output', '--report', dest='report', type=Path, required=True)
     args = parser.parse_args()
     print(json.dumps(finalize(args.attempt, args.report), allow_nan=False))
 
