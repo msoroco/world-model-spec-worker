@@ -12,7 +12,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 NATIVE = Path(__file__).resolve().parent
 SOURCES = ('runner.py', 'controller.py', 'geometry.py', 'engineering.py',
            'cameras.py', 'measure.py', 'finalize.py', 'road.xodr')
-TESTS = ('test_controller.py', 'test_measure.py')
+TESTS = ('test_controller.py', 'test_measure.py', 'test_finalizer.py')
 TERMS = ('dev.traffic_signal', 'dev.governs', 'drv.turning', 'kin.heading',
          'drv.entering_intersection', 'st.crosswalk', 'drv.in_intersection',
          'drv.yields_to', 'st.intersection', 'kin.position',
