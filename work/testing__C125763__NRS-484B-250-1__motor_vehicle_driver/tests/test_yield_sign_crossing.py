@@ -171,6 +171,15 @@ class CrossingTests(unittest.TestCase):
             self.assertEqual(set(verify_report(contract,
                 json.loads(runtime_output.read_text()), root)), set(measured))
             runtime_result = json.loads((root / "result.json").read_text())
+            from batch_pipeline.validation import recording_evidence
+            recording_evidence(runtime_result, config["recording_description"],
+                               lambda reference: root / reference)
+            missing_channel = dict(runtime_result)
+            missing_channel["recording_evidence"] = [item for item in
+                runtime_result["recording_evidence"] if item["name"] != "ego_speed"]
+            with self.assertRaisesRegex(ValueError, "Missing recording evidence: ego_speed"):
+                recording_evidence(missing_channel, config["recording_description"],
+                                   lambda reference: root / reference)
             self.assertEqual(len(measured), 4)
             self.assertEqual(runtime_result["case_id"], config["selected_case_id"])
             self.assertTrue(runtime_result["measured_values"]["other_entered_before_ego_observed"])

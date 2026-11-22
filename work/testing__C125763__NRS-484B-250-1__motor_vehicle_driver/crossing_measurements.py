@@ -223,6 +223,19 @@ def runtime_finalize(attempt: Path, output: Path) -> dict:
          "ego_body_in_crossing": row["ego"]["body_in_intersection"],
          "other_body_in_crossing": row["other"]["body_in_intersection"]}},
         allow_nan=False) + "\n" for row in report["samples"]))
+    stream_values = {
+        "ego_speed": lambda row: row["ego"]["speed_mps"],
+        "other_speed": lambda row: row["other"]["speed_mps"],
+        "ego_approach_distance": lambda row: row["ego"]["distance_to_intersection_m"],
+        "other_approach_distance": lambda row: row["other"]["distance_to_intersection_m"],
+        "ego_body_inside": lambda row: row["ego"]["body_in_intersection"],
+        "other_body_inside": lambda row: row["other"]["body_in_intersection"],
+        "yield_sign_id": lambda row: context["native_yield_sign_id"],
+    }
+    for name, selector in stream_values.items():
+        (channels / (name + ".jsonl")).write_text("".join(
+            json.dumps({"time_s": row["time_s"], "value": selector(row)},
+                       allow_nan=False) + "\n" for row in report["samples"]))
     result = {"case_id": case,
         "measured_values": {"other_entered_before_ego_observed": True,
                             "conflict_brake_frame_count": len(conflict_frames)},
@@ -242,10 +255,11 @@ def runtime_finalize(attempt: Path, output: Path) -> dict:
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": config["recording_description"],
         "recording_evidence": [
+            {"name": item["name"], "unit": item["unit"],
+             "reference": "channels/" + item["name"] + ".jsonl"}
+            for item in config["recording_description"]["channels"]] + [
             {"name": "entry_context", "unit": "structured record",
-             "reference": "channels/entry_context.json"},
-            {"name": "entry_timing", "unit": "structured record",
-             "reference": "channels/entry_timing.jsonl"}],
+             "reference": "channels/entry_context.json"}],
         "source_evidence_hashes": sources,
         "capture_evidence_sha256": sources["capture/evidence.jsonl"],
         "realized_observables": {}}
