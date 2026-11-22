@@ -75,7 +75,7 @@ def audit_attempt(attempt, *, diagnostic=False, decoder=None):
         name = descriptor["path"]
         if source_hashes.get(name) != _sha(root / name):
             raise ValueError("reviewed source absent from sealed capture: " + name)
-    scene = _read(root / "construction.json")
+    scene = _read(root / "scene.json") if (root / "scene.json").is_file() else _read(root / "construction.json")
     case_id = scene.get("case_id", "")
     if not case_id.startswith(ASSIGNMENT + "__"):
         raise ValueError("sealed construction case identity differs")

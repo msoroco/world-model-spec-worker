@@ -40,15 +40,30 @@ def check_native_map(world, packet_path, source_root):
             "native_opendrive_sha256": actual_hash}
 
 
+def check_materialized_package(output, scene):
+    """Reject a missing, mismatched, or already-used attempt before Native capture."""
+    output = Path(output)
+    for name in ("construction.json", "config.json", "scene.json", "runner.py"):
+        if not (output / name).is_file():
+            raise ValueError("Native attempt lacks materialized package: " + name)
+    if any((output / name).exists() for name in
+           ("capture", "trace.jsonl", "parking-history.jsonl", "capture-seal.json")):
+        raise ValueError("Native acquisition already started in this attempt")
+    package = json.loads((output / "construction.json").read_text())
+    config = json.loads((output / "config.json").read_text())
+    if (package.get("case_id") != scene["case_id"] or
+            config.get("selected_case_id") != scene["case_id"] or
+            json.loads((output / "scene.json").read_text()) != scene):
+        raise ValueError("Native source-bound scene differs from selected package")
+
+
 def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1", port=2000,
                approach_distance_m=8.0):
     repo = Path(__file__).resolve().parents[2]
     scratch = (repo / ".runtime-work").resolve()
     output = Path(output_dir).resolve()
     if not output.is_dir() or not output.is_relative_to(scratch):
-        raise ValueError("fresh attempt under .runtime-work required")
-    if any(output.iterdir()):
-        raise ValueError("Native attempt directory must be empty")
+        raise ValueError("materialized attempt under .runtime-work required")
     runtime_root = (scratch / "c150041-native-runtime").resolve()
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(runtime_root)
     # Set the pipeline output root before any direct pinned-runtime import.
@@ -61,6 +76,7 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
 
     scene = build(packet_path, source_root, suffix,
                   approach_distance_m=approach_distance_m)
+    check_materialized_package(output, scene)
     client = carla.Client(host, port)
     client.set_timeout(30)
     saved_world = snapshot(client)
@@ -80,15 +96,16 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
             if relative.parts[0] != "reviewed_sources":
                 raise ValueError("live reviewed source must reside under reviewed_sources/: " + name)
             target = output / relative
-            if target.exists():
-                raise ValueError("reviewed source collides with original attempt file: " + name)
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, target)
+            if not target.exists():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, target)
             if _sha(source) != _sha(target):
                 raise ValueError("retained source copy differs: " + name)
-        shutil.copy2(packet_path, output / "reviewed-context.json")
-        (output / "construction.json").write_text(json.dumps(scene, indent=2) + "\n")
-        shutil.copy2(__file__, output / "runner.py")
+        packet_target = output / "reviewed-context.json"
+        if not packet_target.exists():
+            shutil.copy2(packet_path, packet_target)
+        if _sha(packet_path) != _sha(packet_target):
+            raise ValueError("retained reviewed packet differs")
         settings = world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 1 / 20

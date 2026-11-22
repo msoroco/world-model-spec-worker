@@ -55,12 +55,58 @@ def build(kind):
                            "z": 0.0},
               "heading_deg": math.degrees(math.atan2(row["vehicle_forward_xy"][1],
                                                     row["vehicle_forward_xy"][0])),
-              "speed_mps": row["speed_m_s"]} for row in history]
+              "speed_mps": row["speed_m_s"],
+              "speed_mph": row["speed_m_s"] / 0.44704,
+              "position_m": [sum(point[0] for point in row["body_vertices_xy_m"]) / 4,
+                             sum(point[1] for point in row["body_vertices_xy_m"]) / 4, 0.0],
+              "velocity_mps": [row["vehicle_forward_xy"][0] * row["speed_m_s"],
+                               row["vehicle_forward_xy"][1] * row["speed_m_s"], 0.0],
+              "control": row["control"]} for row in history]
+    road = (ROOT / "diagnostic-road.xodr").read_text()
+    trace_text = lines(trace)
+    evidence = []
+    graph_index = []
+    graphs = []
+    for row, point in zip(history, trace):
+        frame, time_s = row["frame"], row["time_s"]
+        observations = {"frame": frame, "time_s": time_s, "participants": [],
+                        "map_context": {"declared_public_way_road_ids": []}}
+        body3 = [[x, y, z] for x, y in row["body_vertices_xy_m"] for z in (0.0, 1.5)]
+        evidence.append({"actor_id": 7,
+                         "ego": {"body_vertices_m": body3,
+                                 "heading_deg": point["heading_deg"],
+                                 "position_m": [point["position"]["x"],
+                                                point["position"]["y"], 0.0],
+                                 "speed_mps": point["speed_mps"],
+                                 "speed_provenance": "synthetic_native_sample"},
+                         "original_frame": frame, "original_observations": observations,
+                         "recording_time_s": time_s, "replay_frame": frame,
+                         "replay_simulation_time_s": time_s, "world": {"weather": {}}})
+        graph_path = f"capture/native/graphs/base/{frame:08d}.adapter.json"
+        graph_index.append({"adapter_graph": graph_path.removeprefix("capture/native/"),
+                            "frame": frame, "simulation_time": time_s})
+        graphs.append({"path": graph_path,
+                       "attributes": {"frame": frame, "time_s": time_s,
+                                      "observed_evidence": observations},
+                       "nodes": [], "edges": []})
     spec = {"files": {"parking-history.jsonl": lines(history),
                        "video_frames.jsonl": lines(mapping),
                        "camera-frame-map.jsonl": lines(camera_map),
-                       "trace.jsonl": lines(trace)},
-            "graphs": [],
+                       "trace.jsonl": trace_text,
+                       "road.xodr": road,
+                       "capture/evidence.jsonl": lines(evidence),
+                       "capture/native/frames.jsonl": lines(graph_index),
+                       "capture/recorder_info.txt": "Create 7: vehicle.tesla.model3 (parking diagnostic) at (0, 2.5, 0)\n",
+                       "capture/manifest.json": json.dumps({
+                           "acquisition": "original_live_run", "case_id": scene["case_id"],
+                           "complete_driving_lanes": False, "extraction_confirmed": True,
+                           "frames": len(history), "status": "draft",
+                           "sources": {"road.xodr": hashlib.sha256(road.encode()).hexdigest(),
+                                       "trace.jsonl": hashlib.sha256(trace_text.encode()).hexdigest()}}) + "\n",
+                       "acquisition-provenance.json": json.dumps({
+                           "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True,
+                           "scope": "software only; no physical or legal acceptance"}) + "\n"},
+            "graphs": graphs,
             "videos": [{"path": name + ".mkv", "frames": len(history),
                         "width": 1920 if name == "overview" else 1280,
                         "height": 1080 if name == "overview" else 720,

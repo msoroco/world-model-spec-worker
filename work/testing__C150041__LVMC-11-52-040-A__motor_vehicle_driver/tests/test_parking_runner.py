@@ -45,7 +45,7 @@ class RunnerTests(unittest.TestCase):
                 main()
             self.assertEqual(json.loads(shown.call_args.args[0])["case_id"],
                              ROOT.name + "__park_parallel_lawful")
-            with self.assertRaisesRegex(ValueError, "fresh attempt under"):
+            with self.assertRaisesRegex(ValueError, "materialized attempt under"):
                 run_native(packet, tmp, "park_parallel_lawful", tmp)
 
 
