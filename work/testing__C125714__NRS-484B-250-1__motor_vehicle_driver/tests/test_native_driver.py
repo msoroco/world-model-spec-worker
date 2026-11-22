@@ -62,13 +62,22 @@ class NativeDriverTests(unittest.TestCase):
 
     def test_spawn_checks_map_and_cleans_failed_second_actor(self):
         class Waypoint:
-            def __init__(self,road,junction):
-                self.road_id=road;self.is_junction=junction;self.transform=(road,junction)
+            def __init__(self,road,junction,x,y):
+                self.road_id=road;self.lane_id=-1;self.is_junction=junction
+                self.transform=type("Transform",(),{"location":type("Location",(),{"x":x,"y":y})()})()
+                self.following=[]
+            def next(self,distance): return self.following
         class Map:
+            def __init__(self,disconnect=False):
+                self.nodes={(x,y):Waypoint(10 if abs(x)>=abs(y) else 20,x==0 and y==0,x,y)
+                            for x,y in ((-3,0),(0,0),(3,0),(0,-3),(0,3))}
+                for route in (((-3,0),(0,0),(3,0)),((0,-3),(0,0),(0,3))):
+                    for start,end in zip(route,route[1:]):
+                        if disconnect and start==(0,-3):continue
+                        self.nodes[start].following.append(self.nodes[end])
             def to_opendrive(self): return "inspected map"
             def get_waypoint(self,point,project_to_road=False):
-                x,y=point
-                return Waypoint(10 if abs(x)>=abs(y) else 20,x==0 and y==0)
+                return self.nodes.get(point)
         class Blueprint:
             def set_attribute(self,key,value): pass
         class Library:
@@ -77,8 +86,8 @@ class NativeDriverTests(unittest.TestCase):
             def __init__(self,ident): self.id=ident;self.destroyed=False
             def destroy(self): self.destroyed=True
         class World:
-            def __init__(self): self.actors=[];self.fail=False
-            def get_map(self): return Map()
+            def __init__(self): self.actors=[];self.fail=False;self.mapping=Map()
+            def get_map(self): return self.mapping
             def get_blueprint_library(self): return Library()
             def spawn_actor(self,blueprint,pose):
                 if self.fail and self.actors: raise RuntimeError("second spawn failed")
@@ -92,6 +101,10 @@ class NativeDriverTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,"second spawn"):
             spawn_vehicles(world,scene(),Carla)
         self.assertTrue(world.actors[0].destroyed)
+        world=World();world.mapping=Map(disconnect=True)
+        with self.assertRaisesRegex(ValueError,"forward Native waypoint connectivity"):
+            spawn_vehicles(world,scene(),Carla)
+        self.assertEqual(world.actors,[])
 
 
 if __name__ == "__main__": unittest.main()

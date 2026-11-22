@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 
 from crossing_audit import _inside
 
@@ -58,13 +59,42 @@ def bind_map(world_map, scene, location_factory):
             waypoint = world_map.get_waypoint(location_factory(x, y), project_to_road=False)
             if waypoint is None:
                 raise ValueError(f"{party} route point is not on a drivable lane")
+            location = waypoint.transform.location
+            if math.hypot(location.x-x, location.y-y) > 2:
+                raise ValueError(f"{party} route point is too far from its drivable lane")
             waypoints.append(waypoint)
         declared_road = scene[f"{party}_approach_road_id"]
         if waypoints[0].road_id != declared_road:
             raise ValueError(f"{party} approach road ID differs from source plan")
         if not any(w.is_junction for w in waypoints[1:-1]):
             raise ValueError(f"{party} route has no mapped junction waypoint")
+        for first, second in zip(waypoints, waypoints[1:]):
+            if not _forward_connected(first, second):
+                raise ValueError(f"{party} route lacks forward Native waypoint connectivity")
         bound[party] = waypoints
     if scene["ego_approach_road_id"] == scene["other_approach_road_id"]:
         raise ValueError("approach road IDs are not distinct")
     return bound
+
+
+def _forward_connected(first, second, limit=1200):
+    """Follow Native waypoint successors, including legal junction branches."""
+    target = second.transform.location
+    pending = [first]
+    seen = set()
+    index = 0
+    while index < len(pending) and index < limit:
+        waypoint = pending[index]
+        index += 1
+        location = waypoint.transform.location
+        key = (waypoint.road_id, getattr(waypoint, "lane_id", None),
+               round(location.x, 1), round(location.y, 1))
+        if key in seen:
+            continue
+        seen.add(key)
+        if (index > 1 and waypoint.road_id == second.road_id
+                and getattr(waypoint, "lane_id", None) == getattr(second, "lane_id", None)
+                and math.hypot(location.x-target.x, location.y-target.y) <= 2):
+            return True
+        pending.extend(waypoint.next(2.0))
+    return False

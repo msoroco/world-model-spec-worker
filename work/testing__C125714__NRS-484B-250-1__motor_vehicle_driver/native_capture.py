@@ -157,6 +157,8 @@ class CameraBank:
 
 
 def run_native(scene, output, host, port):
+    if scene.get("diagnostic_only"):
+        raise ValueError("diagnostic scene cannot start Native capture")
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture

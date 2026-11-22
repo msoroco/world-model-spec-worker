@@ -43,16 +43,28 @@ def trace(other_frames=(1, 2, 3, 4), ego_frames=(3, 4, 5, 6)):
 class CrossingAuditTests(unittest.TestCase):
     def test_map_binding_rejects_hash_and_road_mismatch(self):
         class Waypoint:
-            def __init__(self, road_id, is_junction):
+            def __init__(self, road_id, is_junction, x, y):
                 self.road_id, self.is_junction = road_id, is_junction
+                self.lane_id = -1
+                self.transform = type("Transform", (), {"location": type("Location", (), {"x": x, "y": y})()})()
+                self.following = []
+
+            def next(self, distance):
+                return self.following
 
         class Map:
+            def __init__(self):
+                self.nodes = {(x,y): Waypoint(10 if abs(x) >= abs(y) else 20,
+                                              x == 0 and y == 0, x, y)
+                              for x,y in ((-3,0),(0,0),(3,0),(0,-3),(0,3))}
+                for route in (((-3,0),(0,0),(3,0)),((0,-3),(0,0),(0,3))):
+                    for start,end in zip(route,route[1:]):
+                        self.nodes[start].following.append(self.nodes[end])
             def to_opendrive(self):
                 return "inspected OpenDRIVE"
 
             def get_waypoint(self, point, project_to_road=False):
-                x, y = point
-                return Waypoint(10 if abs(x) >= abs(y) else 20, x == 0 and y == 0)
+                return self.nodes.get(point)
 
         scene = {
             "crossing": {"crossing_id": "A-B-west",
