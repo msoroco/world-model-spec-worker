@@ -1,0 +1,419 @@
+{
+  "cell_id": "C147332",
+  "actor": "bus_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared red-X bus lane and source-review target.",
+      "variable_assignments": {
+        "overhead_red_x_setup": {
+          "kind": "world_setup",
+          "value": "reviewed_overhead_red_x_target",
+          "note": "Original device and pixels must establish realization"
+        },
+        "bus_start_lane": {
+          "kind": "world_setup",
+          "value": "adjacent",
+          "note": "Original bus footprint and imported map must establish lane"
+        },
+        "bus_route_request": {
+          "kind": "controller",
+          "value": "adjacent_travel",
+          "note": "Control request; original motion measured independently"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus bounding-box XY corners on every world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "governed_lane_bounds",
+            "unit": "structured source record",
+            "method": "Original imported map lane identity and lateral bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "overhead_red_x_state",
+            "unit": "structured source record",
+            "method": "Original facing overhead signal symbol and lane association",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera synchronized frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained original source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering map and sign placement do not establish public highway or official device status.",
+          "Requested route does not establish actual entry or driving."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "compliant_attempt",
+      "rationale": "Requested bus route under a reviewed red X; realized behavior and legal judgment remain unconfirmed.",
+      "variable_assignments": {
+        "overhead_red_x_setup": {
+          "kind": "world_setup",
+          "value": "reviewed_overhead_red_x_target",
+          "note": "Original device and pixels must establish realization"
+        },
+        "bus_start_lane": {
+          "kind": "world_setup",
+          "value": "adjacent",
+          "note": "Original bus footprint and imported map must establish lane"
+        },
+        "bus_route_request": {
+          "kind": "controller",
+          "value": "adjacent_travel",
+          "note": "Control request; original motion measured independently"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus bounding-box XY corners on every world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "governed_lane_bounds",
+            "unit": "structured source record",
+            "method": "Original imported map lane identity and lateral bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "overhead_red_x_state",
+            "unit": "structured source record",
+            "method": "Original facing overhead signal symbol and lane association",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera synchronized frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained original source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering map and sign placement do not establish public highway or official device status.",
+          "Requested route does not establish actual entry or driving."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "red_x_lateral_entry",
+      "deliberate_differences": [
+        "bus_route_request"
+      ],
+      "probe": {
+        "primary_variable": "bus_route_request",
+        "comparison_or_standard": "Original bus footprint and longitudinal motion while facing the same red X",
+        "target_value_or_branch": "adjacent_travel"
+      }
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "violating_attempt",
+      "rationale": "Requested bus route under a reviewed red X; realized behavior and legal judgment remain unconfirmed.",
+      "variable_assignments": {
+        "overhead_red_x_setup": {
+          "kind": "world_setup",
+          "value": "reviewed_overhead_red_x_target",
+          "note": "Original device and pixels must establish realization"
+        },
+        "bus_start_lane": {
+          "kind": "world_setup",
+          "value": "adjacent",
+          "note": "Original bus footprint and imported map must establish lane"
+        },
+        "bus_route_request": {
+          "kind": "controller",
+          "value": "lateral_entry",
+          "note": "Control request; original motion measured independently"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus bounding-box XY corners on every world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "governed_lane_bounds",
+            "unit": "structured source record",
+            "method": "Original imported map lane identity and lateral bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "overhead_red_x_state",
+            "unit": "structured source record",
+            "method": "Original facing overhead signal symbol and lane association",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera synchronized frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained original source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering map and sign placement do not establish public highway or official device status.",
+          "Requested route does not establish actual entry or driving."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "red_x_lateral_entry",
+      "deliberate_differences": [
+        "bus_route_request"
+      ],
+      "probe": {
+        "primary_variable": "bus_route_request",
+        "comparison_or_standard": "Original bus footprint and longitudinal motion while facing the same red X",
+        "target_value_or_branch": "lateral_entry"
+      }
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "compliant_attempt",
+      "rationale": "Requested bus route under a reviewed red X; realized behavior and legal judgment remain unconfirmed.",
+      "variable_assignments": {
+        "overhead_red_x_setup": {
+          "kind": "world_setup",
+          "value": "reviewed_overhead_red_x_target",
+          "note": "Original device and pixels must establish realization"
+        },
+        "bus_start_lane": {
+          "kind": "world_setup",
+          "value": "governed",
+          "note": "Original bus footprint and imported map must establish lane"
+        },
+        "bus_route_request": {
+          "kind": "controller",
+          "value": "red_lane_stand",
+          "note": "Control request; original motion measured independently"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus bounding-box XY corners on every world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "governed_lane_bounds",
+            "unit": "structured source record",
+            "method": "Original imported map lane identity and lateral bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "overhead_red_x_state",
+            "unit": "structured source record",
+            "method": "Original facing overhead signal symbol and lane association",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera synchronized frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained original source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering map and sign placement do not establish public highway or official device status.",
+          "Requested route does not establish actual entry or driving."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "red_x_in_lane_driving",
+      "deliberate_differences": [
+        "bus_route_request"
+      ],
+      "probe": {
+        "primary_variable": "bus_route_request",
+        "comparison_or_standard": "Original bus footprint and longitudinal motion while facing the same red X",
+        "target_value_or_branch": "red_lane_stand"
+      }
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
+      "target_law_id": "NRS-484B-307-12b",
+      "target_type": "violating_attempt",
+      "rationale": "Requested bus route under a reviewed red X; realized behavior and legal judgment remain unconfirmed.",
+      "variable_assignments": {
+        "overhead_red_x_setup": {
+          "kind": "world_setup",
+          "value": "reviewed_overhead_red_x_target",
+          "note": "Original device and pixels must establish realization"
+        },
+        "bus_start_lane": {
+          "kind": "world_setup",
+          "value": "governed",
+          "note": "Original bus footprint and imported map must establish lane"
+        },
+        "bus_route_request": {
+          "kind": "controller",
+          "value": "red_lane_drive",
+          "note": "Control request; original motion measured independently"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus bounding-box XY corners on every world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "governed_lane_bounds",
+            "unit": "structured source record",
+            "method": "Original imported map lane identity and lateral bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "overhead_red_x_state",
+            "unit": "structured source record",
+            "method": "Original facing overhead signal symbol and lane association",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera synchronized frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, device pixels and full-body motion require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained original source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering map and sign placement do not establish public highway or official device status.",
+          "Requested route does not establish actual entry or driving."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "red_x_in_lane_driving",
+      "deliberate_differences": [
+        "bus_route_request"
+      ],
+      "probe": {
+        "primary_variable": "bus_route_request",
+        "comparison_or_standard": "Original bus footprint and longitudinal motion while facing the same red X",
+        "target_value_or_branch": "red_lane_drive"
+      }
+    }
+  ],
+  "sweep_specs": []
+}

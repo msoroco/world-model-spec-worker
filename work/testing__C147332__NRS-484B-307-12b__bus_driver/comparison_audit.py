@@ -17,11 +17,15 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def audit_pair(comparison_id, baseline, changed):
+def audit_pair(comparison_id, baseline, changed, *, diagnostic=False):
     if comparison_id not in PAIRS:
         raise ValueError("unknown exact red-X comparison")
     expected_left, expected_right, metric = PAIRS[comparison_id]
     baseline, changed = Path(baseline), Path(changed)
+    if not diagnostic:
+        from delivery_audit import audit_attempt
+        audit_attempt(baseline)
+        audit_attempt(changed)
     scenes = [json.loads((folder / "scene.json").read_text()) for folder in (baseline, changed)]
     for scene, suffix in zip(scenes, (expected_left, expected_right)):
         if scene.get("case_id") != ASSIGNMENT + "__" + suffix:
@@ -51,4 +55,5 @@ def audit_pair(comparison_id, baseline, changed):
             "fixed_original_road_sha256": _sha(baseline / "road.xodr"),
             "reviewed_site": reports[0]["site_review"],
             "realized_baseline_frames": first[metric], "realized_changed_frames": second[metric],
+            "diagnostic_fixture": diagnostic,
             "legal_judgment": "unresolved", "physical_acceptance_claimed": False}

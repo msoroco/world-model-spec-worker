@@ -13,7 +13,7 @@ from pathlib import Path
 from native_driver import apply_request, spawn_scene
 
 
-CAMERAS = ("overview", "approach", "overhead_signal", "driver_reference")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 RATE_HZ = 20
 
 
@@ -37,12 +37,13 @@ class CameraCapture:
 
     def _start(self, world, bus, scene, output, carla):
         poses = {"overview": (35, -3.6, 18), "approach": (34, -5.4, 5),
-                 "overhead_signal": (50, -1.8, 8), "driver_reference": (0, 0, 3)}
+                 "reference_corner": (50, -1.8, 8), "driver_reference": (0, 0, 3)}
         for name in CAMERAS:
             bp = world.get_blueprint_library().find("sensor.camera.rgb")
             if bp is None:
                 raise ValueError("original RGB camera blueprint missing")
-            for attr, value in (("image_size_x", 1280), ("image_size_y", 720), ("fov", 90)):
+            width, height = (1920, 1080) if name == "overview" else (1280, 720)
+            for attr, value in (("image_size_x", width), ("image_size_y", height), ("fov", 90)):
                 bp.set_attribute(attr, str(value))
             x, y, z = poses[name]
             attached = bus if name == "driver_reference" else None
@@ -56,7 +57,7 @@ class CameraCapture:
             self.queues[name] = frames
             sensor.listen(lambda image, q=frames: q.put_nowait(image))
             process = subprocess.Popen(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
-                "-f", "rawvideo", "-pixel_format", "bgra", "-video_size", "1280x720",
+                "-f", "rawvideo", "-pixel_format", "bgra", "-video_size", f"{width}x{height}",
                 "-framerate", str(RATE_HZ), "-i", "pipe:0", "-an", "-c:v", "ffv1",
                 "-pix_fmt", "bgra", str(Path(output) / (name + ".mkv"))],
                 stdin=subprocess.PIPE, stderr=subprocess.DEVNULL)
@@ -107,7 +108,7 @@ def _retain_review(packet_path, output):
             raise ValueError("review source missing or collides with attempt file")
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
-    shutil.copy2(packet_path, output / "source-review.json")
+    shutil.copy2(packet_path, output / "reviewed-context.json")
 
 
 def run_native(scene, road, site, output, host, port, packet_path):
@@ -192,12 +193,12 @@ def run_native(scene, road, site, output, host, port, packet_path):
         capture.close(); capture = None
         frame_map.close(); frame_map = None
         cameras.close(); cameras = None
-        names = ["source-review.json", "authored-road.xodr", "road.xodr", "trace.jsonl",
+        names = ["reviewed-context.json", "authored-road.xodr", "road.xodr", "trace.jsonl",
                  "video_frames.jsonl", "carla_recorder.log", "bus-body-history.jsonl",
                  "lane-signal-history.jsonl", "sign-state-original.jsonl",
                  "camera-frame-map.jsonl", "controller-history.jsonl",
                  *(name + ".mkv" for name in CAMERAS)]
-        packet = json.loads((output / "source-review.json").read_text())
+        packet = json.loads((output / "reviewed-context.json").read_text())
         names.extend(packet[key]["source_path"] for key in ("highway", "official_device"))
         _write(output / "acquisition.json", {name: {"kind": "original_native", "sha256": _sha(output / name)}
                                              for name in names})

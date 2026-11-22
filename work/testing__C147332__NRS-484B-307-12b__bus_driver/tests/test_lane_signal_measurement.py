@@ -214,13 +214,13 @@ class RedXLaneMeasurement(unittest.TestCase):
                           "device_kind": "official_overhead_lane_signal", "symbol": "red_x",
                           "faces_bus": True, "governed_lane_id": "red_lane",
                           "native_asset_blueprint_id": "fixture.red_x_asset"}}
-            (root / "source-review.json").write_text(json.dumps(packet))
+            (root / "reviewed-context.json").write_text(json.dumps(packet))
             frames = [sample(1, -5.4, 0), sample(2, -3.9, 0)]
             channels = {"bus-body-history.jsonl": [f["body"] for f in frames],
                         "lane-signal-history.jsonl": [f["lane_signal"] for f in frames],
                         "camera-frame-map.jsonl": [f["camera_frame"] for f in frames]}
             acquisition = {name: sha(name) for name in originals}
-            acquisition["source-review.json"] = sha("source-review.json")
+            acquisition["reviewed-context.json"] = sha("reviewed-context.json")
             for name, rows in channels.items():
                 for row in rows:
                     row["source_path"] = "original-capture.bin"

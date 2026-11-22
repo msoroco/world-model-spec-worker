@@ -1,0 +1,101 @@
+{
+  "assignment_id": "testing__C147332__NRS-484B-307-12b__bus_driver",
+  "selected_case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+  "supported_case_ids": [
+    "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+    "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
+    "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+    "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive"
+  ],
+  "law_id": "NRS-484B-307-12b",
+  "cell_id": "C147332",
+  "actor": "bus_driver",
+  "rate_hz": 20,
+  "duration_s": 18,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "recording_description": {
+      "channels": [
+        {
+          "name": "bus_full_body_footprint",
+          "unit": "structured source record",
+          "method": "Original bus bounding-box XY corners on every world tick",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "reference_frame": "original CARLA world and frame/time",
+          "uncertainty": "Native import, device pixels and full-body motion require later review"
+        },
+        {
+          "name": "governed_lane_bounds",
+          "unit": "structured source record",
+          "method": "Original imported map lane identity and lateral bounds",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "reference_frame": "original CARLA world and frame/time",
+          "uncertainty": "Native import, device pixels and full-body motion require later review"
+        },
+        {
+          "name": "overhead_red_x_state",
+          "unit": "structured source record",
+          "method": "Original facing overhead signal symbol and lane association",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "reference_frame": "original CARLA world and frame/time",
+          "uncertainty": "Native import, device pixels and full-body motion require later review"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured source record",
+          "method": "Original four-camera synchronized frame identities",
+          "sampling_rate_hz": 20,
+          "time_window": "every original captured frame",
+          "reference_frame": "original CARLA world and frame/time",
+          "uncertainty": "Native import, device pixels and full-body motion require later review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_highway_and_official_device",
+          "unit": "retained original source packet",
+          "method": "source_review.validate before Native dispatch"
+        }
+      ],
+      "limitations": [
+        "Engineering map and sign placement do not establish public highway or official device status.",
+        "Requested route does not establish actual entry or driving."
+      ]
+    },
+    "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel"
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed close road view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed close road view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed close road view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "bus mounted"
+    }
+  ]
+}

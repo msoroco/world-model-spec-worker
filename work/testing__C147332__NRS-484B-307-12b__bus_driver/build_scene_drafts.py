@@ -30,7 +30,7 @@ def build():
                  "source_requirements": ["original highway source", "original official device record",
                                          "original signal-lane alignment", "original bus blueprint and footprint"],
                  "capture_plan": {"rate_hz": 20, "duration_s": 18,
-                                  "cameras": ["overview", "approach", "overhead_signal", "driver_reference"]},
+                                  "cameras": ["overview", "approach", "reference_corner", "driver_reference"]},
                  "preparation_status": "draft_requires_native_and_source_binding",
                  "legal_judgment": "unresolved"}
         path = ROOT / "cases" / kind / "scene.json"

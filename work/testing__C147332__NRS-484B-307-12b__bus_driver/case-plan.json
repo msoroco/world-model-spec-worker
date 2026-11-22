@@ -19,18 +19,18 @@
       "scenario_partition": "testing"
     }
   ],
-  "law_text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A red “X” symbol means a driver facing the signal must not enter or drive in any lane over which the red signal is shown.",
+  "law_text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A red \u201cX\u201d symbol means a driver facing the signal must not enter or drive in any lane over which the red signal is shown.",
   "law_source": "NRS 484B.307(12)(b)",
   "topic_inventory": {
-    "exact-text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A red “X” symbol means a driver facing the signal must not enter or drive in any lane over which the red signal is shown."
+    "exact-text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A red \u201cX\u201d symbol means a driver facing the signal must not enter or drive in any lane over which the red signal is shown."
   },
   "cases": [
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
       "target_law_id": "NRS-484B-307-12b",
-      "target_type": "baseline_probe",
+      "target_type": "compliant_attempt",
       "scenario": "Bus continues in adjacent lane without entering red-X lane",
-      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
+      "preparation_status": "primary_and_fallback_offline_saved_semantic_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -44,14 +44,16 @@
       ],
       "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
       "construction": "cases/adjacent_travel/construction.json",
-      "offline_proof": "cases/adjacent_travel/cpu-offline.log"
+      "offline_proof": "cases/adjacent_travel/primary-cpu-proof.log",
+      "measurement_contract": "cases/adjacent_travel/measurement-contract.json",
+      "fallback1_construction": "cases/adjacent_travel/fallback1-construction.json"
     },
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
       "target_law_id": "NRS-484B-307-12b",
-      "target_type": "entry_probe",
+      "target_type": "violating_attempt",
       "scenario": "Bus crosses laterally into governed red-X lane",
-      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
+      "preparation_status": "primary_and_fallback_offline_saved_semantic_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -65,14 +67,16 @@
       ],
       "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
       "construction": "cases/lateral_entry/construction.json",
-      "offline_proof": "cases/lateral_entry/cpu-offline.log"
+      "offline_proof": "cases/lateral_entry/primary-cpu-proof.log",
+      "measurement_contract": "cases/lateral_entry/measurement-contract.json",
+      "fallback1_construction": "cases/lateral_entry/fallback1-construction.json"
     },
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
       "target_law_id": "NRS-484B-307-12b",
-      "target_type": "motion_baseline",
+      "target_type": "compliant_attempt",
       "scenario": "Bus already inside governed lane and remains stationary during red X",
-      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
+      "preparation_status": "primary_and_fallback_offline_saved_semantic_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -86,14 +90,16 @@
       ],
       "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
       "construction": "cases/red_lane_stand/construction.json",
-      "offline_proof": "cases/red_lane_stand/cpu-offline.log"
+      "offline_proof": "cases/red_lane_stand/primary-cpu-proof.log",
+      "measurement_contract": "cases/red_lane_stand/measurement-contract.json",
+      "fallback1_construction": "cases/red_lane_stand/fallback1-construction.json"
     },
     {
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
       "target_law_id": "NRS-484B-307-12b",
-      "target_type": "driving_probe",
+      "target_type": "violating_attempt",
       "scenario": "Bus already inside governed lane and travels longitudinally during red X",
-      "preparation_status": "primary_offline_cpu_proven_delivery_partial",
+      "preparation_status": "primary_and_fallback_offline_saved_semantic_cpu_proven_delivery_partial",
       "legal_judgment": "unresolved",
       "physical_acceptance_claimed": false,
       "source_requirements": [
@@ -107,7 +113,9 @@
       ],
       "physical_risk": "Large bus body may obscure its own lane association and may not clear a lateral merge; verify rendered sign and full footprint with a close approach camera.",
       "construction": "cases/red_lane_drive/construction.json",
-      "offline_proof": "cases/red_lane_drive/cpu-offline.log"
+      "offline_proof": "cases/red_lane_drive/primary-cpu-proof.log",
+      "measurement_contract": "cases/red_lane_drive/measurement-contract.json",
+      "fallback1_construction": "cases/red_lane_drive/fallback1-construction.json"
     }
   ],
   "comparisons": [
@@ -193,7 +201,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "exact_primary_offline_cpu_proven_delivery_partial",
+  "planning_status": "exact_offline_saved_semantic_cpu_proven_delivery_partial",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -251,5 +259,33 @@
     }
   ],
   "source_observation_mapping": {},
-  "selected_branch": "Bus approach or lateral entry into a red-X lane."
+  "selected_branch": "Bus approach or lateral entry into a red-X lane.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 18,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "full bus and governed red-X lane",
+        "view": "overview",
+        "interval": "entire 18 s attempt"
+      },
+      {
+        "subject": "bus approach and lane entry",
+        "view": "approach",
+        "interval": "approach through red-X lane encounter"
+      },
+      {
+        "subject": "overhead red-X head and full bus",
+        "view": "reference_corner",
+        "interval": "approach through red-X lane encounter"
+      },
+      {
+        "subject": "bus control and facing signal context",
+        "view": "driver_reference",
+        "interval": "entire 18 s attempt"
+      }
+    ],
+    "limitation": "Original pixels and actual device legibility require later review"
+  }
 }

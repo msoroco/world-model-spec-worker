@@ -1,0 +1,39 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Official signals placed over individual highway lanes; bus faces governed red-X head",
+      "source": "inputs/testing__C147332__NRS-484B-307-12b__bus_driver/assignment.json",
+      "output_key": "red_x_activation_measurement",
+      "method": "measure_activation",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "reviewed-context.json",
+        "lane-signal-history.jsonl",
+        "camera-frame-map.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "A facing driver must not enter the red-X-governed lane",
+      "source": "inputs/testing__C147332__NRS-484B-307-12b__bus_driver/assignment.json",
+      "output_key": "red_x_entry_measurement",
+      "method": "measure_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "bus-body-history.jsonl",
+        "lane-signal-history.jsonl",
+        "camera-frame-map.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane-signal-history.jsonl"
+    ],
+    "error_contains": "Missing required source: lane-signal-history.jsonl"
+  }
+}

@@ -6,18 +6,45 @@
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
       "kind": "delivery",
       "construction": "cases/adjacent_travel/construction.json",
-      "construction_sha256": "04cb30092796e20c40cff699c354fdebd3998aff24f6cbab1431cab200656eca",
+      "construction_sha256": "31cfc462e00dd7a71afd6361e51e176a50ed0f1f8d53c08e1320a6a4c01ba35f",
+      "measurement_contract": "cases/adjacent_travel/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Live bus footprint, lane import and overhead sign visibility may differ from authored geometry"
+        "reason": "Overhead red-X face may be hidden behind the full bus body in original approach pixels"
       },
-      "preparation_status": "primary_offline_and_negative_cpu_proven",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/adjacent_travel/fallback1-construction.json",
+          "construction_sha256": "aa7400bef6f2636d557e1aac121284fd6e1f04f44a80bab617e5413c8100aa55",
+          "changed_knobs": [
+            "overhead head height from 6.0 m to 7.0 m"
+          ],
+          "trigger": {
+            "source": "reference_corner.mkv and approach.mkv",
+            "metric": "original full-frame red-X head and bus co-visibility",
+            "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/adjacent_travel/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "aa7400bef6f2636d557e1aac121284fd6e1f04f44a80bab617e5413c8100aa55",
+            "log": "cases/adjacent_travel/fallback1-cpu-proof.log",
+            "log_sha256": "6449a93709e108ec158e92795d7ffaf0d9d4d30bf76cd686d1bf7e9e43165728",
+            "runtime_offline_log_sha256": "0f342c083d139b59093114df3a2fb34789d3f34e22d493549ec148173b9c69b5"
+          }
+        }
+      ],
+      "preparation_status": "primary_and_fallback_offline_cpu_proven_delivery_partial",
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel --output \"$PWD/.runtime-work/c147332-offline-v3/adjacent_travel\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/adjacent_travel/primary",
         "exit_code": 0,
-        "construction_sha256": "04cb30092796e20c40cff699c354fdebd3998aff24f6cbab1431cab200656eca",
-        "log": "cases/adjacent_travel/cpu-offline.log",
-        "log_sha256": "4f1cbf58f59532a0f53c0f9183a21f34d50d9376dc4a174aaecec88ce2e8670a",
+        "construction_sha256": "31cfc462e00dd7a71afd6361e51e176a50ed0f1f8d53c08e1320a6a4c01ba35f",
+        "log": "cases/adjacent_travel/primary-cpu-proof.log",
+        "log_sha256": "bf794df24ef27131eb135f21faefcac4a227073282a3e308bd1ffd1f4b281888",
         "runtime_offline_log_sha256": "0f342c083d139b59093114df3a2fb34789d3f34e22d493549ec148173b9c69b5"
       }
     },
@@ -25,18 +52,45 @@
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
       "kind": "delivery",
       "construction": "cases/lateral_entry/construction.json",
-      "construction_sha256": "2eaf66abddcb9c31dd7a1867db0ce8bf5bafaa160d2e75823d51495168892574",
+      "construction_sha256": "7285249f904fecdc32dc799171b69ef73176ca4ebd2bfeea7053fc7ed6b51cc3",
+      "measurement_contract": "cases/lateral_entry/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Live bus footprint, lane import and overhead sign visibility may differ from authored geometry"
+        "reason": "Overhead red-X face may be hidden behind the full bus body in original approach pixels"
       },
-      "preparation_status": "primary_offline_and_negative_cpu_proven",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/lateral_entry/fallback1-construction.json",
+          "construction_sha256": "3db3b8d976a0d65edc0aa0fdadff188b82a743b3e892a8bf27b61ee32107ecaa",
+          "changed_knobs": [
+            "overhead head height from 6.0 m to 7.0 m"
+          ],
+          "trigger": {
+            "source": "reference_corner.mkv and approach.mkv",
+            "metric": "original full-frame red-X head and bus co-visibility",
+            "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/lateral_entry/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "3db3b8d976a0d65edc0aa0fdadff188b82a743b3e892a8bf27b61ee32107ecaa",
+            "log": "cases/lateral_entry/fallback1-cpu-proof.log",
+            "log_sha256": "7c50357e803571a24b9a0076e530964bd528d1c2217567e6da3156451973aa6d",
+            "runtime_offline_log_sha256": "5b402591ed0293fe2e2fd65f968f07e146525d26b71800c0fafdea6cbe4a7ba7"
+          }
+        }
+      ],
+      "preparation_status": "primary_and_fallback_offline_cpu_proven_delivery_partial",
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry --output \"$PWD/.runtime-work/c147332-offline-v3/lateral_entry\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/lateral_entry/primary",
         "exit_code": 0,
-        "construction_sha256": "2eaf66abddcb9c31dd7a1867db0ce8bf5bafaa160d2e75823d51495168892574",
-        "log": "cases/lateral_entry/cpu-offline.log",
-        "log_sha256": "97250b752ee6ed9da42553a977a121c3f4618f92df202008a2d1d69fc5ab3866",
+        "construction_sha256": "7285249f904fecdc32dc799171b69ef73176ca4ebd2bfeea7053fc7ed6b51cc3",
+        "log": "cases/lateral_entry/primary-cpu-proof.log",
+        "log_sha256": "8b9bb035a87d5a0135de73de570d6c037ee866783a73731ac12d404f586998d9",
         "runtime_offline_log_sha256": "5b402591ed0293fe2e2fd65f968f07e146525d26b71800c0fafdea6cbe4a7ba7"
       }
     },
@@ -44,18 +98,45 @@
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
       "kind": "delivery",
       "construction": "cases/red_lane_stand/construction.json",
-      "construction_sha256": "8840f29b3a8196969e987513280cc450d58302d2f2b76d293ed8853524c14a50",
+      "construction_sha256": "f74e88ac1e0b5667b9609a4a8a92b7d40dcc22206b090a5cbc37e3e74f549f38",
+      "measurement_contract": "cases/red_lane_stand/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Live bus footprint, lane import and overhead sign visibility may differ from authored geometry"
+        "reason": "Overhead red-X face may be hidden behind the full bus body in original approach pixels"
       },
-      "preparation_status": "primary_offline_and_negative_cpu_proven",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_lane_stand/fallback1-construction.json",
+          "construction_sha256": "d73b5df60d8fe18d6c8b29c8c8df343895c50269a3258f6b5c6c407d666497ff",
+          "changed_knobs": [
+            "overhead head height from 6.0 m to 7.0 m"
+          ],
+          "trigger": {
+            "source": "reference_corner.mkv and approach.mkv",
+            "metric": "original full-frame red-X head and bus co-visibility",
+            "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/red_lane_stand/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "d73b5df60d8fe18d6c8b29c8c8df343895c50269a3258f6b5c6c407d666497ff",
+            "log": "cases/red_lane_stand/fallback1-cpu-proof.log",
+            "log_sha256": "2fc25bc0ca03372c10264d0c3c2b0f0d047eb006d1d72d16ecece80ae73f81e9",
+            "runtime_offline_log_sha256": "70e7b07099ca94cec09e7c48c8b47198b552b208046e68651499e6f0d8674547"
+          }
+        }
+      ],
+      "preparation_status": "primary_and_fallback_offline_cpu_proven_delivery_partial",
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand --output \"$PWD/.runtime-work/c147332-offline-v3/red_lane_stand\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/red_lane_stand/primary",
         "exit_code": 0,
-        "construction_sha256": "8840f29b3a8196969e987513280cc450d58302d2f2b76d293ed8853524c14a50",
-        "log": "cases/red_lane_stand/cpu-offline.log",
-        "log_sha256": "2cde6cebf4f0f8d2e0ea5a2548bf27eaa4263c926a4efd459176ba6adfa13ef5",
+        "construction_sha256": "f74e88ac1e0b5667b9609a4a8a92b7d40dcc22206b090a5cbc37e3e74f549f38",
+        "log": "cases/red_lane_stand/primary-cpu-proof.log",
+        "log_sha256": "9d65c0664e1f78eca75636a83a588375d8cb46e48d50328d193b0f9f6b7b3c45",
         "runtime_offline_log_sha256": "70e7b07099ca94cec09e7c48c8b47198b552b208046e68651499e6f0d8674547"
       }
     },
@@ -63,21 +144,48 @@
       "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
       "kind": "delivery",
       "construction": "cases/red_lane_drive/construction.json",
-      "construction_sha256": "a45ed8ff67a2d467b1f9ba17639ed97de3c90a1104df97a4273fe9082a65e74c",
+      "construction_sha256": "6cb091c9396b7ceeb00fe0aabe78298afa06007e58c8b0bec203c7b42697ca2d",
+      "measurement_contract": "cases/red_lane_drive/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Live bus footprint, lane import and overhead sign visibility may differ from authored geometry"
+        "reason": "Overhead red-X face may be hidden behind the full bus body in original approach pixels"
       },
-      "preparation_status": "primary_offline_and_negative_cpu_proven",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_lane_drive/fallback1-construction.json",
+          "construction_sha256": "bacd370f2ca720249535132dda42674287be6a3e1ee749940375a2ec3b00ac47",
+          "changed_knobs": [
+            "overhead head height from 6.0 m to 7.0 m"
+          ],
+          "trigger": {
+            "source": "reference_corner.mkv and approach.mkv",
+            "metric": "original full-frame red-X head and bus co-visibility",
+            "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/red_lane_drive/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "bacd370f2ca720249535132dda42674287be6a3e1ee749940375a2ec3b00ac47",
+            "log": "cases/red_lane_drive/fallback1-cpu-proof.log",
+            "log_sha256": "0a12009fba6f8963febe7ed9c1eb7ba6194611f78c0730d58dd6a54a5701fa7c",
+            "runtime_offline_log_sha256": "73bf35c8baacf946c50d0b4f1e26b27d98523f5b5b0b1574dff2aace78dbccee"
+          }
+        }
+      ],
+      "preparation_status": "primary_and_fallback_offline_cpu_proven_delivery_partial",
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive --output \"$PWD/.runtime-work/c147332-offline-v3/red_lane_drive\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-offline-v7/red_lane_drive/primary",
         "exit_code": 0,
-        "construction_sha256": "a45ed8ff67a2d467b1f9ba17639ed97de3c90a1104df97a4273fe9082a65e74c",
-        "log": "cases/red_lane_drive/cpu-offline.log",
-        "log_sha256": "7eb72621d73e8bab2f33733195fa1ab6e2ec37539be008d690a76f6a038a9441",
+        "construction_sha256": "6cb091c9396b7ceeb00fe0aabe78298afa06007e58c8b0bec203c7b42697ca2d",
+        "log": "cases/red_lane_drive/primary-cpu-proof.log",
+        "log_sha256": "c04810ead1ad220c008831331a80e7438bf99e01c2a241c41d996ff01cf6273e",
         "runtime_offline_log_sha256": "73bf35c8baacf946c50d0b4f1e26b27d98523f5b5b0b1574dff2aace78dbccee"
       }
     }
   ],
-  "preparation_status": "primary_offline_and_negative_cpu_proven"
+  "preparation_status": "offline_cpu_proven_delivery_partial"
 }
