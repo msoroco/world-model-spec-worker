@@ -9,15 +9,18 @@ from runner import control_step,load_scene
 
 
 class JudgmentSweepTests(unittest.TestCase):
-    def test_three_nominal_exhibition_regimes_and_clearance(self):
+    def test_exhibition_timing_and_each_occupant_role(self):
         proof=run()
         profiles=proof['profiles']
         self.assertEqual([row['profile'] for row in profiles],
-                         ['before_entry','during_occupancy','after_clearance'])
+                         ['before_entry','during_occupancy','vehicle_only',
+                          'pedestrian_only','after_clearance'])
         self.assertEqual([row['hold_at_stop_line'] for row in profiles],
-                         [False,True,False])
+                         [False,True,True,True,False])
         self.assertGreater(profiles[1]['nominal_clearance_frame'],
                            profiles[1]['exhibition_frame'])
+        self.assertEqual([row['nominal_participants'][0]['role'] for row in profiles[2:4]],
+                         ['vehicle','pedestrian'])
         self.assertTrue(all(row['legal_verdict'] is None for row in profiles))
         self.assertIsNone(proof['physical_result'])
         self.assertEqual(len({row['case_id'] for row in profiles}),1)

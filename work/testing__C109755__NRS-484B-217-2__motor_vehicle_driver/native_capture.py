@@ -16,6 +16,14 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def required_zone_review_packet(environment):
+    """Require an operator-reviewed authority packet before Native acquisition."""
+    packet = environment.get('ZONE_REVIEW_PACKET')
+    if not packet or not Path(packet).is_file():
+        raise ValueError('ZONE_REVIEW_PACKET must name an existing reviewed authority packet')
+    return packet
+
+
 def write(path, value):
     Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + '\n')
 
@@ -196,6 +204,7 @@ class CameraBank:
 
 
 def run_native(scene, output, host, port):
+    zone_packet=required_zone_review_packet(os.environ)
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, write_result, seal_capture
@@ -220,10 +229,8 @@ def run_native(scene, output, host, port):
         zone=check_map(world.get_map(),scene,carla)
         zone['traffic_sweep_variant_id']=traffic_policy['variant_id']
         zone['traffic_policy_sha256']=sha(output/'traffic-policy.json')
-        zone_packet=os.environ.get('ZONE_REVIEW_PACKET')
-        if zone_packet:
-            from zone_source import copy_review
-            zone.update(copy_review(zone_packet,zone,output))
+        from zone_source import copy_review
+        zone.update(copy_review(zone_packet,zone,output))
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
         world.apply_settings(settings)
         def transform(x,y,_,yaw):

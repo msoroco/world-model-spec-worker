@@ -175,6 +175,29 @@ class DeliveryAuditTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'sealed original'):
                     delivery.audit(attempt,processing,decode,case,audit)
 
+    def test_resealed_turn_and_return_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt,processing,decode,case=self.make(Path(temp),occupied=True)
+            source=attempt/'ego-body-history.jsonl'
+            bodies=delivery.rows(source)
+            bodies[2]['heading_deg']=30
+            source.write_text(''.join(json.dumps(row)+'\n' for row in bodies))
+            acquisition=delivery.read(attempt/'acquisition.json')
+            acquisition[source.name]['sha256']=sha(source)
+            write(attempt/'acquisition.json',acquisition)
+            seal=delivery.read(attempt/'capture-seal.json')
+            seal['sources'][source.name]=sha(source)
+            seal['sources']['acquisition.json']=sha(attempt/'acquisition.json')
+            write(attempt/'capture-seal.json',seal)
+            exit_record=delivery.read(attempt/'native-exit.json')
+            exit_record['capture_seal_sha256']=sha(attempt/'capture-seal.json')
+            write(attempt/'native-exit.json',exit_record)
+            owner=delivery.read(attempt/'owner-release.json')
+            owner['native_exit_sha256']=sha(attempt/'native-exit.json')
+            write(attempt/'owner-release.json',owner)
+            with self.assertRaisesRegex(ValueError,'heading is not straight'):
+                delivery.audit(attempt,processing,decode,case,lambda *a,**k:None)
+
     def test_pixel_review_rejects_stale_camera_and_wrong_claim_frame(self):
         with tempfile.TemporaryDirectory() as temp:
             attempt,processing,decode,case=self.make(Path(temp),occupied=True)

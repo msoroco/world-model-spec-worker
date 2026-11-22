@@ -24,7 +24,8 @@ def main():
     _,policy,_=select_traffic(scene,'baseline')
     files['traffic-policy.json']=json.dumps(policy,sort_keys=True)+'\n'
     zone = {'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
-            'stripe_y_m':0.0,'zone_extent_verified':False,
+            'stripe_y_m':0.0,'crossing_x_m':scene['crossing_x_m'],
+            'zone_extent_verified':False,
             'statutory_exceptions_verified':False,
             'traffic_sweep_variant_id':'baseline',
             'traffic_policy_sha256':digest(files['traffic-policy.json']),

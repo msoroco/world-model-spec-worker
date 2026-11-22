@@ -7,8 +7,9 @@ from pathlib import Path
 from runner import authored_arrow_state, control_step, load_scene, participant_motion
 
 ROOT=Path(__file__).resolve().parent
-PROFILES=(('before_entry',1.0,False),('during_occupancy',5.0,True),
-          ('after_clearance',12.0,False))
+PROFILES=(('before_entry',1.0,()),('during_occupancy',5.0,(17,18)),
+          ('vehicle_only',5.0,(17,)),('pedestrian_only',5.0,(18,)),
+          ('after_clearance',12.0,()))
 
 
 def rectangle(left,bottom,right,top):
@@ -44,7 +45,7 @@ def run():
     source_hashes={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
                    for name in ('scene.json','runner.py')}
     results=[]
-    for label,exhibition,expected_hold in PROFILES:
+    for label,exhibition,expected_occupants in PROFILES:
         scene={**base,'participant_occupancy_setup':'lawfully_present',
                'arrow_exhibition_after_s':exhibition}
         frame=round(exhibition*scene['capture_rate_hz'])
@@ -52,10 +53,12 @@ def run():
            authored_arrow_state(scene,exhibition)!='Green':
             raise ValueError('arrow schedule does not exhibit at selected sweep frame')
         observed=participants(scene,exhibition)
+        if label in ('vehicle_only','pedestrian_only'):
+            observed=[item for item in observed if item['id'] in expected_occupants]
         ego=rectangle(-12,-.5,-11,.5)
         decision=control_step(scene,signal(frame),observed,ego)
         hold=decision['reason']=='yield_hold'
-        if hold!=expected_hold or (hold and set(decision['occupied_by'])!={17,18}):
+        if hold!=bool(expected_occupants) or set(decision['occupied_by'])!=set(expected_occupants):
             raise ValueError('nominal exhibition occupancy differs from sweep plan: '+label)
         row={'profile':label,'case_id':base['case_id'].rsplit('__',1)[0]+'__yield_straight',
              'exhibition_time_s':exhibition,'exhibition_frame':frame,
@@ -63,7 +66,9 @@ def run():
              'hold_at_stop_line':hold,'legal_verdict':None}
         if hold:
             clear_frame=round(12*scene['capture_rate_hz'])
-            cleared=control_step(scene,signal(clear_frame),participants(scene,12),ego,
+            cleared=control_step(scene,signal(clear_frame),
+                                 [item for item in participants(scene,12)
+                                  if item['id'] in expected_occupants],ego,
                                  first_arrow_frame=frame,
                                  exhibition_occupants=decision['exhibition_occupants'])
             if cleared['reason']!='straight_clear':

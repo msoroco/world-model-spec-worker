@@ -18,6 +18,12 @@ def build(case_id,occupancy):
             'rate_hz':20,'duration_s':30,'required_atoms':[],'source_packets':[],
             'case':{'case_id':case_id,'participant_occupancy_setup':occupancy,
                     'recording_description':proposed['recording_description']},
+            'cameras':[{'name':name,'width':width,'height':height,'fov_deg':90,
+                        'pose_strategy':pose} for name,width,height,pose in (
+                            ('overview',1920,1080,'fixed elevated intersection overview'),
+                            ('approach',1280,720,'fixed approach and stop-line view'),
+                            ('reference_corner',1280,720,'fixed adjacent crosswalk and participants view'),
+                            ('driver_reference',1280,720,'ego-attached forward reference'))],
             'physical_completion':{'criterion':'intersection_clearance',
                                    'motion_source':'ego-body-history.jsonl',
                                    'body_key':'body_vertices_m','exit_axis':0,'exit_sign':1,

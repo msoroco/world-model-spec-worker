@@ -1,15 +1,15 @@
 {
   "assignment_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver",
   "input_sha256": "22cfa75681ad2a5cc2842edfeb0501590e834d37ba907a4feec3910110df435f",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/tests",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "d7df4cec0d5156a1564e82de0bfccb72e938ba80f44550b8102b53305023e317"
+      "sha256": "e29c38ff436b9d878c53e2e9980c0974ae2f335f2fcb2110ea1356b52bdad0ad"
     },
     {
       "command": "runtime.py process-saved --manifest work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --attempt .runtime-work/c109755-authority-signaled-saved-attempt --output .runtime-work/c109755-authority-signaled-saved-output --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
@@ -30,12 +30,6 @@
       "sha256": "50a95a1ee701a466939d74c1927ec11ccf004e32b3f726ab711fe5d241c0e545"
     },
     {
-      "command": "sweep_probe.py --output .runtime-work/c109755-sweep-authority-proof-negative --negative",
-      "exit_code": 1,
-      "log": "sweep-authority-negative.log",
-      "sha256": "0370ecd4a12e879ac4b0dbde55f8181707c4cfca84eba892f435227e7dccc60e"
-    },
-    {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/saved_refresh_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --output .runtime-work/c109755-destination-saved-signaled",
       "exit_code": 0,
       "log": "saved-signaled-destination.log",
@@ -46,10 +40,37 @@
       "exit_code": 0,
       "log": "saved-unsignaled-destination.log",
       "sha256": "669769e36c9e1df726ab34cd9bf77c8169279a5a4043676ab40d37a8c4aa5156"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/saved_refresh_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --output .runtime-work/c109755-native-saved-signaled",
+      "exit_code": 0,
+      "log": "saved-signaled-native.log",
+      "sha256": "fdfc1c5b08a41e3ddabe79136f3c45c49b3270c334dbac9e239c6bb68fdc916e"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/saved_refresh_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --output .runtime-work/c109755-native-saved-unsignaled",
+      "exit_code": 0,
+      "log": "saved-unsignaled-native.log",
+      "sha256": "669769e36c9e1df726ab34cd9bf77c8169279a5a4043676ab40d37a8c4aa5156"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/saved_refresh_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --output .runtime-work/c109755-channel-saved-signaled",
+      "exit_code": 0,
+      "log": "saved-signaled-channel.log",
+      "sha256": "fdfc1c5b08a41e3ddabe79136f3c45c49b3270c334dbac9e239c6bb68fdc916e"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/saved_refresh_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --output .runtime-work/c109755-channel-saved-unsignaled",
+      "exit_code": 0,
+      "log": "saved-unsignaled-channel.log",
+      "sha256": "669769e36c9e1df726ab34cd9bf77c8169279a5a4043676ab40d37a8c4aa5156"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Reviewed authority designation, zone endpoints and destination applicability packet for the selected Native site",
+    "Actual CARLA route, signal and traffic response across the nine paired sweep policies",
+    "Original four-camera pixels, physical completion, source and comparison audits"
   ],
-  "reason": "Thirty-three CPU tests pass. The zone review protocol now joins its stated left-turn destination road, lane and XY location to the original Native exit waypoint; mismatches are rejected. Four primary/fallback offline and compatibility proofs, physical fixtures, independent delivery positive/missing-body negatives and the 18-attempt synthetic paired sweep were refreshed. Execution manifest, compatibility and delivery handoff validators pass. Genuine authority-zone designation/endpoints, destination source review, physically observed variant sweeps and Native pixels remain unresolved; both refreshed saved-only probes pass with preserved original bytes and full final-video decode; genuine source and branch preparation remain. No legal cutoff is inferred."
+  "reason": null,
+  "first_gpu_delivery_command": "ZONE_REVIEW_PACKET=\"$ZONE_REVIEW_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C109755__NRS-484B-217-2__motor_vehicle_driver --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -44,7 +44,7 @@ def measure(attempt):
     first_arrow=None;first_entry=None;occupied_frames=[];unresolved=[];violated_hold=[]
     exhibition_lawful_ids=None
     unverified_presence=[]
-    headings=[];previous=None
+    headings=[];lateral_centers=[];previous=None
     for signal,body,participants in zip(signals,ego,traffic):
         identity=(signal.get('frame'),signal.get('time_s'))
         if identity!=(body.get('frame'),body.get('time_s')) or identity!=(participants.get('frame'),participants.get('time_s')):
@@ -67,6 +67,7 @@ def measure(attempt):
         if type(heading) not in (int,float) or not math.isfinite(heading):
             raise ValueError('missing original ego heading')
         headings.append(heading)
+        lateral_centers.append((bottom+top)/2)
         entering=right>=context['intersection_bounds_m'][0] and first_entry is None
         if entering:
             first_entry=identity
@@ -110,6 +111,10 @@ def measure(attempt):
             'ego_past_stop_line_during_occupancy_frames':violated_hold,
             'entry_without_verified_arrow_frames':unresolved,
             'observed_heading_change_deg':(headings[-1]-headings[0]+180)%360-180,
+            'maximum_heading_deviation_deg':max(abs((heading-headings[0]+180)%360-180)
+                                                for heading in headings),
+            'maximum_lateral_center_shift_m':max(abs(y-lateral_centers[0])
+                                                  for y in lateral_centers),
             'sources':{name:acquisition[name]['sha256'] for name in SOURCES},
             'legal_yield_and_turn_interpretation':'unresolved'}
 
@@ -126,6 +131,12 @@ def measure_yield(attempt):
               'ego_past_stop_line_during_occupancy_frames','observed_heading_change_deg')}
 
 
+def measure_turn(attempt):
+    value=measure(attempt)
+    return {key:value[key] for key in ('observed_heading_change_deg',
+              'maximum_heading_deviation_deg','maximum_lateral_center_shift_m')}
+
+
 def build_report(attempt):
     value=measure(attempt)
     return {'format':'worker-analysis-report',
@@ -135,7 +146,11 @@ def build_report(attempt):
                     'sources':{name:value['sources'][name] for name in
                                ('signal-head-history.jsonl','ego-body-history.jsonl','intersection-context.json')}},
                 'yield_measurement':{'value':measure_yield(attempt),'method':'measure_yield',
-                    'sources':value['sources']}},
+                    'sources':value['sources']},
+                'straight_trajectory_measurement':{'value':measure_turn(attempt),
+                    'method':'measure_turn',
+                    'sources':{name:value['sources'][name] for name in
+                               ('ego-body-history.jsonl','intersection-context.json')}}},
             'limitations':['Arrow asset, lawful presence and legal yielding require independent source review.'],
             'analysis_complete':True,'legal_verdict_claimed':False}
 

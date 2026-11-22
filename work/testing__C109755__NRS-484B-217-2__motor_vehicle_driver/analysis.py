@@ -158,6 +158,8 @@ def saved_result(attempt, report):
     recording=[]
     for channel in planned['channels']:
         name=channel['name']
+        if name=='stripe_geometry':
+            continue  # The source-bound static geometry is emitted below.
         if name not in channel_fields:
             raise ValueError('Unsupported declared recording channel: '+name)
         field=channel_fields[name]
@@ -170,9 +172,16 @@ def saved_result(attempt, report):
         recording.append({'name':name,'unit':channel['unit'],'reference':str(path.relative_to(attempt))})
     zone=source(Path(attempt),acquisition,'zone-context.json')
     context=json.loads(zone.read_text())
-    context_file=channels/'stripe_geometry.json'
+    context_file=channels/'stripe_geometry.jsonl'
+    stripe_value={'zone_context_sha256':sha(zone),
+                  'stripe_y_m':context['stripe_y_m'],
+                  'crossing_x_m':context['crossing_x_m'],
+                  'authority_source_sha256':context.get('authority_source_sha256'),
+                  'zone_extent_verified':context.get('zone_extent_verified')}
     with context_file.open('x') as stream:
-        stream.write(json.dumps({'stripe_geometry':context},allow_nan=False)+'\n')
+        for row in rows:
+            stream.write(json.dumps({'time_s':row['time_s'],'value':stripe_value},
+                                    allow_nan=False)+'\n')
     recording.append({'name':'stripe_geometry','unit':'structured record',
                       'reference':str(context_file.relative_to(attempt))})
     measured=report['measurements']['left_turn_crossing_measurement']['value']

@@ -228,7 +228,7 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
         raise ValueError('sole arrow or straight entry unobserved')
     if measured['entry_without_verified_arrow_frames']:
         raise ValueError('intersection entry without verified sole arrow')
-    if abs(measured['observed_heading_change_deg'])>15:
+    if measured['maximum_heading_deviation_deg']>15:
         raise ValueError('observed heading is not straight')
     occupied=bool(measured['lawfully_occupied_frames'])
     if case_id.endswith('__clear_straight') and occupied:

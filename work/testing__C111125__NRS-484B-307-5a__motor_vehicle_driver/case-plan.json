@@ -162,16 +162,48 @@
       ]
     },
     {
-      "status": "alternative_pending",
+      "status": "selected_required",
       "requirement": "Must not turn right or left under sole straight arrow",
       "source": "NRS 484B.307(5)(a) exact exported text",
-      "evidence_or_gap": "Frozen cell maneuver is straight; turning comparison needs scope review before any case is added."
+      "evidence_or_gap": "The assigned straight-approach cases retain original heading trajectory and lateral body center; the straight-only controller and independent delivery audit reject a turn-and-return. Turning alternatives require a different cell and are not inferred as covered by this straight cell.",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight"
+      ]
     }
   ],
   "judgment_sweep_preparation": {
     "proof": "judgment-sweep-proof.json",
-    "proof_sha256": "4e518c0da1155c9d816f19df1ffc9b33ce3f7b1bcef250b378eaf78270bc9d22",
-    "description": "Nominal exhibition before entry, during occupancy and after clearance; synthetic source-shaped geometry only, with no legal or physical verdict.",
+    "proof_sha256": "be54e64d6dd46f9f18a284ac4dcf76fa302f384135a17a92f6322b39f4905d3a",
+    "description": "Nominal arrow exhibition before entry, during joint occupancy, during vehicle-only and pedestrian-only occupancy, and after clearance; source-shaped synthetic geometry only, with no legal or physical verdict.",
     "physical_verified": false
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego, facing head and complete intersection approach",
+        "view": "overview",
+        "interval": "startup through 30 s clearance"
+      },
+      {
+        "subject": "ego body, sole-arrow head and stop line",
+        "view": "approach",
+        "interval": "signal exhibition through intersection entry"
+      },
+      {
+        "subject": "lawfully present vehicle and pedestrian at intersection and adjacent crosswalk",
+        "view": "reference_corner",
+        "interval": "participant entry through clearance"
+      },
+      {
+        "subject": "ego forward heading and original signal context",
+        "view": "driver_reference",
+        "interval": "approach through intersection clearance"
+      }
+    ],
+    "limitation": "Actual arrow and participant visibility require reviewed original pixels after Native capture."
   }
 }

@@ -48,6 +48,12 @@ class Carla:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_native_acquisition_requires_reviewed_zone_packet(self):
+        with self.assertRaisesRegex(ValueError,'ZONE_REVIEW_PACKET'):
+            native.required_zone_review_packet({})
+        with self.assertRaisesRegex(ValueError,'ZONE_REVIEW_PACKET'):
+            native.required_zone_review_packet({'ZONE_REVIEW_PACKET':'/no/such/packet.json'})
+
     def test_one_factor_traffic_sweep_issues_both_velocity_commands(self):
         import sys
         sys.path.insert(0,str(ROOT))
