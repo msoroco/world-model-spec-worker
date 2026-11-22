@@ -56,7 +56,13 @@
       "deliberate_differences": [
         "source-observed speed below, at and above posted rate"
       ],
-      "comparison_id": "posted_rate_boundary"
+      "comparison_id": "posted_rate_boundary",
+      "cpu_audit": {
+        "proof_log": "provenance-delivery.log",
+        "proof_log_sha256": "cb6d7cc461c852454719e2f050e192283067a43350b657b60da6fb3f45b0da0c",
+        "diagnostic_difference_observed": true,
+        "comparison_delivery_ready": false
+      }
     },
     {
       "case_ids": [
@@ -69,7 +75,13 @@
       "deliberate_differences": [
         "source-observed location inside versus outside posted portion"
       ],
-      "comparison_id": "governed_portion_extent"
+      "comparison_id": "governed_portion_extent",
+      "cpu_audit": {
+        "proof_log": "provenance-delivery.log",
+        "proof_log_sha256": "cb6d7cc461c852454719e2f050e192283067a43350b657b60da6fb3f45b0da0c",
+        "diagnostic_difference_observed": true,
+        "comparison_delivery_ready": false
+      }
     }
   ],
   "evidence_review": {
@@ -93,11 +105,14 @@
     ]
   },
   "observations": [
-    "posted sign face, rate and unit from original camera",
-    "public-authority jurisdiction, highway dedication/access and governed portion and direction from retained source",
-    "Native sign actor and landmark plus trigger governance, road/lane/s coordinates",
-    "narrow-road geometry and vehicle clearance",
-    "original-frame 3D actor.get_velocity and frame/video joins"
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "unit": "mph",
+      "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+      "time_window": "full 30 second 20 Hz capture",
+      "reference_frame": "Native subject actor"
+    }
   ],
   "sources": [
     {
@@ -207,5 +222,39 @@
       "source_file": "sign_context.json",
       "status": "planned_unverified"
     }
+  },
+  "observation_topics": [
+    "posted sign face, rate and unit from original camera",
+    "public-authority jurisdiction, highway dedication/access and governed portion and direction from retained source",
+    "Native sign actor and landmark plus trigger governance, road/lane/s coordinates",
+    "narrow-road geometry and vehicle clearance",
+    "original-frame 3D actor.get_velocity and frame/video joins"
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "subject vehicle, posted-sign position, and governed road portion",
+        "interval": "entire 30-second capture",
+        "view": "overview"
+      },
+      {
+        "subject": "approach to posted limit sign and original sign face",
+        "interval": "entire 30-second capture",
+        "view": "approach"
+      },
+      {
+        "subject": "vehicle position inside and outside posted portion",
+        "interval": "entire 30-second capture",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "forward roadway and posted sign from driver reference",
+        "interval": "entire 30-second capture",
+        "view": "driver_reference"
+      }
+    ]
   }
 }
