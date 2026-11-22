@@ -27,6 +27,13 @@ def audit(attempt, case_id):
     context = json.loads((attempt / "sign_context.json").read_text())
     if config.get("selected_case_id") != case_id or result.get("case_id") != case_id:
         raise ValueError("Case identity mismatch")
+    completion = result.get("physical_checks", {}).get("maneuver", {})
+    if (result.get("provenance_kind") != "synthetic_fixture"
+            or result.get("diagnostic_fixture") is not True
+            or result.get("physical_acceptance_claimed") is not False
+            or completion.get("status") not in ("not_met", "unverified")
+            or result.get("maneuver_completed") is not False):
+        raise ValueError("Diagnostic physical boundary changed")
     if sorted(result.get("video_references", [])) != sorted(CAMERAS):
         raise ValueError("Four original cameras not bound")
     for name in ("subject_motion.jsonl", "video_frames.jsonl", "sign_context.json"):
@@ -74,19 +81,79 @@ def audit(attempt, case_id):
             "posted_limit_mph": context["posted_limit_value"],
             "requested_speed_mph": config["requested_speed_mph"],
             "target_matched": abs(peak - config["requested_speed_mph"]) <= config.get("engineering_target_tolerance_mph", 0.5),
+            "physical_completion_status": completion["status"],
             "source_integrity_passed": True, "camera_decode_passed": True,
             "public_authority_verified": False, "sign_face_verified": False,
             "physical_delivery_ready": False, "legal_acceptance_claimed": False,
             "diagnostic_limit": "Authored sign/zone and reused source graph do not establish posting authority or physical target attainment."}
 
 
+def compare(comparison_id, attempts_index):
+    plan = json.loads((Path(__file__).resolve().parent / "case-plan.json").read_text())
+    comparison = next((item for item in plan["comparisons"]
+                       if item["comparison_id"] == comparison_id), None)
+    if comparison is None:
+        raise ValueError("Unknown exact comparison")
+    rows = json.loads(Path(attempts_index).read_text())
+    selected = {}
+    for case in comparison["case_ids"]:
+        matches = [row for row in rows if row["case"] == case
+                   and row["candidate"] == "primary" and row["exit_code"] == 0]
+        if len(matches) != 1:
+            raise ValueError("Comparison lacks one current primary source: " + case)
+        path = Path(matches[0]["output"])
+        selected[case] = {"attempt": str(path), "config": json.loads((path / "config.json").read_text()),
+                          "context": json.loads((path / "sign_context.json").read_text()),
+                          "audit": audit(path, case)}
+    values = list(selected.values())
+    if any(item["config"]["actor"] != values[0]["config"]["actor"]
+           or item["context"]["posted_limit_value"] != values[0]["context"]["posted_limit_value"]
+           or item["context"]["governed_road_id"] != values[0]["context"]["governed_road_id"]
+           for item in values):
+        raise ValueError("Comparison fixed vehicle, road or posting differs")
+    if comparison_id == "posted_rate_boundary":
+        requested = [item["config"]["requested_speed_mph"] for item in values]
+        if requested != sorted(requested) or len(set(requested)) != 3:
+            raise ValueError("Boundary targets are not distinct and ordered")
+        if any((item["context"]["zone_start_s_m"], item["context"]["zone_end_s_m"])
+               != (values[0]["context"]["zone_start_s_m"], values[0]["context"]["zone_end_s_m"])
+               for item in values):
+            raise ValueError("Boundary zone was not fixed")
+        observed_difference = (len({round(item["audit"]["sampled_peak_in_zone_mph"], 5)
+                                    for item in values}) == 3)
+    elif comparison_id == "governed_portion_extent":
+        observed_difference = (values[0]["audit"]["outside_frames"] == 0
+                               and values[1]["audit"]["outside_frames"] > 0)
+        if not observed_difference:
+            raise ValueError("Diagnostic inside/outside extent did not differ")
+    else:
+        raise ValueError("Comparison has no independent implementation")
+    return {"format": "worker-c136559-comparison-audit", "comparison_id": comparison_id,
+            "case_ids": comparison["case_ids"], "passed": True,
+            "fixed_conditions_checked": ["vehicle class", "candidate posted value", "governed road"],
+            "diagnostic_difference_observed": observed_difference,
+            "source_audits": {case: value["audit"] for case, value in selected.items()},
+            "comparison_delivery_ready": False, "physical_acceptance_claimed": False,
+            "unresolved": ["public-authority posting and signed highway portion",
+                           "source-observed requested speed boundary", "actual Native camera pixels"]}
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--attempt", required=True)
-    parser.add_argument("--case", required=True)
+    parser.add_argument("--attempt")
+    parser.add_argument("--case")
+    parser.add_argument("--comparison")
+    parser.add_argument("--attempts-index")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
-    report = audit(args.attempt, args.case)
+    if args.comparison:
+        if not args.attempts_index or args.attempt or args.case:
+            raise ValueError("Comparison requires only an attempts index")
+        report = compare(args.comparison, args.attempts_index)
+    else:
+        if not args.attempt or not args.case or args.attempts_index:
+            raise ValueError("Exact source audit requires attempt and case")
+        report = audit(args.attempt, args.case)
     Path(args.output).write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
 
 

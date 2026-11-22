@@ -317,3 +317,5 @@ Return cap checkpoint: 7 unbound historical top-level logs and former test rows 
 ## 2026-11-20 empty-log consolidation
 
 Thirty-five zero-byte midpoint-promotion analysis logs, referenced only by this assignment's execution manifest, now share the zero-byte `shared-empty-analysis.log`. Their SHA-256 remains the empty-file hash. The one analysis log referenced by other historical proof documents remains at its original path. Assignment-scoped `worker_check.py --complete` passes after rebinding. No construction, source content, frozen input, runtime, batch.json or Git action changed.
+
+2026-11-21 file-cap consolidation: preserved six unbound draft/diagnostic JSONs and twelve unbound historical fallback compatibility JSONs byte-exact, with SHA-256 and compressed content, in `work/_shared/archived-historical-sources-20261121.json`. Current C101303 scoped `worker_check.py --complete` passed after consolidation; its ready status was not changed.
