@@ -319,3 +319,9 @@ Return cap checkpoint: 7 unbound historical top-level logs and former test rows 
 Thirty-five zero-byte midpoint-promotion analysis logs, referenced only by this assignment's execution manifest, now share the zero-byte `shared-empty-analysis.log`. Their SHA-256 remains the empty-file hash. The one analysis log referenced by other historical proof documents remains at its original path. Assignment-scoped `worker_check.py --complete` passes after rebinding. No construction, source content, frozen input, runtime, batch.json or Git action changed.
 
 2026-11-21 file-cap consolidation: preserved six unbound draft/diagnostic JSONs and twelve unbound historical fallback compatibility JSONs byte-exact, with SHA-256 and compressed content, in `work/_shared/archived-historical-sources-20261121.json`. Current C101303 scoped `worker_check.py --complete` passed after consolidation; its ready status was not changed.
+
+## 2026-11-22 active physical-log restoration
+
+The full strict gate exposed a missing current physical fixture log that had been byte-exact archived with older diagnostics. Restored all 16 currently referenced base/closer/faster-ego/following-ends physical outcome and lifecycle logs from `work/_shared/archived-historical-sources-20261121.json`, verifying each against its active receipt SHA-256. Sixteen inactive historical physical receipts were archived in exchange, keeping the return at 8,600 files. Direct current execution-manifest validation passes; `worker_check.py --assignment testing__C101303__NRS-484B-127-1__motor_vehicle_driver --complete --require-delivery-ready` exits 0. The package remains ready on CPU evidence only; this does not claim Native or legal acceptance.
+
+After the later 46-file exchange, the same C101303 scoped strict readiness gate was rerun and again exited 0.

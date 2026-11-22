@@ -110,3 +110,9 @@ The three `imaginary-far-fallback{1,2,3}-analysis.log` files were byte-identical
 ## Return file consolidation
 
 Two historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c109705-archive/`. These are prior diagnostic proofs.
+
+## 2026-11-22 synthetic physical provenance reproof
+
+`prove_physical_preparation.py` now marks its source-shaped CPU acquisition as `synthetic_fixture`, matching its diagnostic source. Re-ran `--all`: all four exact cases passed complete/incomplete/missing outcome and lifecycle checks. Rebound 12 result hashes, shared `physical-proof.log` SHA-256 `fbb47845f901df6450d04c12d1762ad4877e00fdb837737f2e7d04bf4294df27`, four physical receipts and manifest hashes. Scoped `worker_check.py --complete` and pinned preflight pass. Direct execution-manifest validation advances past physical preparation and now rejects old `.pkl` diagnostic graph paths: `Diagnostic graphs require the live adapter JSON format`. Exact current-adapter fixture conversion and affected offline/compatibility/saved proofs remain worker-owned. Status remains partial; no Native provenance is claimed.
+
+Recorded physical receipt commands now explicitly set `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work/` before importing pipeline code.
