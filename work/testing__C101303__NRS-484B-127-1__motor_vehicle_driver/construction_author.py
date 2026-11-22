@@ -69,8 +69,7 @@ def build():
                   'rate_hz': scene['rate_hz'], 'duration_s': scene['duration_s'],
                   'required_atoms': [], 'source_packets': [],
                   'cameras': [{'name': name, 'width': width, 'height': height,
-                      'pose_strategy': 'ego mounted' if name == 'driver_reference'
-                                       else 'fixed hill-following overview',
+                      'pose_strategy': 'ego mounted following view',
                       'fov_deg': 90} for name, width, height in CAMERAS],
                   'case': {'case_id': case_id,
                            'recording_description': description},
@@ -128,7 +127,9 @@ def build():
                  'construction': str(construction_path.relative_to(ROOT)),
                  'construction_sha256': sha(construction_path),
                  'candidate_risk': {'status': 'physical',
-                     'reason': 'A 476 m connected same-road hill route with a forward adjacent lane may be absent on the selected Native map.'},
+                     'reason': 'A connected same-road hill route long enough for the requested 45 s motion, with a forward adjacent lane, may be absent on the selected Native map.'},
+                 'judgment_refs': case.get('judgment_refs', []),
+                 'sweep_measurements': case.get('sweep_measurements', []),
                  'candidates': [{'id': 'fallback1',
                      'construction': str(fallback_path.relative_to(ROOT)),
                      'construction_sha256': sha(fallback_path),
@@ -141,11 +142,18 @@ def build():
                  'measurement_procedure': {'entrypoint': 'analysis.py'},
                  'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                     'host_env_var': 'CARLA_HOST',
-                                    'port_env_var': 'CARLA_PORT'}}
+                                    'port_env_var': 'CARLA_PORT'},
+                 'acquisition': {name: {
+                     'entrypoint': 'analysis.py',
+                     'method': 'Saved projection of SHA256-verified original Native following, route, weather and frame-map sources',
+                     'evidence': 'channels/'+('context.json' if name in
+                         ('hill_route_context', 'highway_context') else name+'.jsonl')}
+                     for name in [item['name'] for item in
+                                  description['channels']+description['context_inputs']]}}
         prior = old_entries.get(case_id, {})
         if prior.get('construction_sha256') == entry['construction_sha256']:
             entry.update({key: prior[key] for key in
-                ('offline', 'compatibility', 'physical_preparation',
+                ('offline', 'compatibility', 'negative', 'physical_preparation',
                  'post_capture', 'delivery_acceptance') if key in prior})
             old_candidates = {item['id']: item for item in prior.get('candidates', [])}
             for candidate in entry['candidates']:

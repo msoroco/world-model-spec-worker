@@ -4,11 +4,12 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as S
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from runner import load_scene
-from native_capture import _lane_target, _spawn, _steer
+from native_capture import CameraCapture, _lane_target, _set_tire_friction, _spawn, _steer
 
 
 class Waypoint:
@@ -65,6 +66,65 @@ class RunnerCaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'spawn failed'):
             _spawn(world, object(), [Waypoint(-1), Waypoint(-1)])
         self.assertEqual(destroyed, [1])
+
+    def test_camera_close_releases_all_sensors_after_encoder_failure(self):
+        events = []
+        camera = CameraCapture.__new__(CameraCapture)
+        camera.closed = False
+        camera.sensors = [S(stop=lambda: events.append('stop1'),
+                            destroy=lambda: events.append('destroy1')),
+                          S(stop=lambda: events.append('stop2'),
+                            destroy=lambda: events.append('destroy2'))]
+        camera.encoders = {'first': S(stdin=S(closed=False,
+            close=lambda: events.append('close1')),
+            wait=lambda timeout: 1),
+            'second': S(stdin=S(closed=False,
+            close=lambda: events.append('close2')),
+            wait=lambda timeout: 0)}
+        with self.assertRaisesRegex(RuntimeError, 'camera encoder failed: first'):
+            camera.close()
+        self.assertEqual(events, ['stop2', 'stop1', 'close1', 'close2',
+                                  'destroy2', 'destroy1'])
+
+    def test_fog_and_wheel_friction_targets_are_validated_and_applied(self):
+        scene = load_scene()
+        scene['fog_density_percent'] = 38
+        scene['tire_friction'] = 2.1
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp)/'scene.json'
+            path.write_text(json.dumps(scene))
+            self.assertEqual(load_scene(path)['fog_density_percent'], 38)
+            wheels = [S(tire_friction=1.0), S(tire_friction=1.0)]
+            applied = []
+            actor = S(get_physics_control=lambda: S(wheels=wheels),
+                      apply_physics_control=lambda physics: applied.append(physics))
+            _set_tire_friction([actor], 2.1)
+            self.assertEqual([w.tire_friction for w in applied[0].wheels], [2.1, 2.1])
+            scene['fog_density_percent'] = 101
+            path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'fog target'):
+                load_scene(path)
+
+    def test_all_camera_views_follow_the_selected_ego_route(self):
+        mounted = []
+        ego = object()
+        blueprint = S(set_attribute=lambda *args: None)
+        library = S(find=lambda name: blueprint)
+        def spawn(_blueprint, _transform, attach_to):
+            mounted.append(attach_to)
+            return S(listen=lambda callback: None, stop=lambda: None,
+                     destroy=lambda: None)
+        world = S(get_blueprint_library=lambda: library, spawn_actor=spawn)
+        carla = S(Location=lambda **value: value,
+                 Rotation=lambda **value: value,
+                 Transform=lambda location, rotation: (location, rotation))
+        process = S(stdin=S(closed=False, close=lambda: None),
+                    wait=lambda timeout: 0)
+        with tempfile.TemporaryDirectory() as temp, patch(
+                'native_capture.subprocess.Popen', return_value=process):
+            camera = CameraCapture(world, ego, Path(temp), carla)
+            camera.close()
+        self.assertEqual(mounted, [ego]*4)
 
 
 if __name__ == '__main__':

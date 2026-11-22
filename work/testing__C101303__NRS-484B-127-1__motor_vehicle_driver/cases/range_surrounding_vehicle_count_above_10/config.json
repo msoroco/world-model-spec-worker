@@ -1,0 +1,126 @@
+{
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "selected_case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_surrounding_vehicle_count_above_10",
+  "supported_case_ids": [
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_base_probe",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer_gap_probe",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego_probe",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__traffic_probe",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_probe",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_along_route_body_gap_above_0",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_below_1",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_above_1",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_inside_2",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_above_3",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_native_fog_density_inside_4",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_native_fog_density_above_4",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_observed_tire_friction_below_6",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_observed_tire_friction_above_6",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_relative_speed_above_7",
+    "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_surrounding_vehicle_count_above_10"
+  ],
+  "law_id": "NRS-484B-127-1",
+  "cell_id": "C101303",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "ego mounted following view",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted following view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted following view",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted following view",
+      "fov_deg": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_surrounding_vehicle_count_above_10",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_leader_body_speed_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original distinct actor bodies and speeds.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "traffic_condition_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original surrounding actor inventory, weather and wheel friction.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "following_lane_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original ego and leader lane/road identity by frame.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Synchronized original CARLA camera frame identities.",
+          "time_window": "45 s with steady following at 14..20 s and later lane change",
+          "reference_frame": "original CARLA world frame and elapsed time",
+          "uncertainty": "20 Hz sample interval and Native body/map precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "hill_route_context",
+          "unit": "structured record",
+          "method": "Original connected Native waypoints and hill crest elevation."
+        },
+        {
+          "name": "highway_context",
+          "unit": "structured record",
+          "method": "Original weather/road context; public-highway status awaits independent review."
+        }
+      ],
+      "limitations": [
+        "No legal reasonable-and-prudent distance cutoff.",
+        "Public-highway status and actual pixels need independent review."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 5,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  }
+}

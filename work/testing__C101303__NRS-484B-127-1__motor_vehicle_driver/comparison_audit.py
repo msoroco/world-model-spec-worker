@@ -9,8 +9,11 @@ from following import measure
 OBSERVED = {
     'target_body_gap_m': 'mean_along_route_body_gap_m',
     'ego_target_speed_mps': 'mean_ego_speed_mps',
+    'leader_target_speed_mps': 'mean_leader_speed_mps',
     'surrounding_vehicle_count': 'mean_surrounding_vehicle_count',
     'precipitation_percent': 'mean_native_precipitation_strength',
+    'fog_density_percent': 'mean_native_fog_density',
+    'tire_friction': 'mean_observed_tire_friction',
 }
 
 

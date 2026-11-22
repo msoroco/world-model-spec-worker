@@ -28,8 +28,11 @@ def reports(plan, comparison_id):
                        'raw_history': [{'frame': 280}], 'lane_change_first_frame': 420,
                        'mean_along_route_body_gap_m': setup['target_body_gap_m'],
                        'mean_ego_speed_mps': setup['ego_target_speed_mps'],
+                       'mean_leader_speed_mps': setup['leader_target_speed_mps'],
                        'mean_surrounding_vehicle_count': setup['surrounding_vehicle_count'],
-                       'mean_native_precipitation_strength': setup['precipitation_percent']}
+                       'mean_native_precipitation_strength': setup['precipitation_percent'],
+                       'mean_native_fog_density': setup['fog_density_percent'],
+                       'mean_observed_tire_friction': setup['tire_friction']}
     return result
 
 

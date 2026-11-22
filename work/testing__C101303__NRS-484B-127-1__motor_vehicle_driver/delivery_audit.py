@@ -113,6 +113,7 @@ def audit(attempt, processing, decode_receipt, case_id,
     context = read(attempt/'following-context.json')
     route = context.get('common_following_route_xy_m')
     if (not isinstance(route, list) or len(route) < 2 or
+            context.get('case_id') != case_id or
             context.get('route_source') != 'Native CARLA connected waypoints' or
             context.get('hill_crest', {}).get('source_ref') !=
             'Native CARLA map waypoint elevation'):

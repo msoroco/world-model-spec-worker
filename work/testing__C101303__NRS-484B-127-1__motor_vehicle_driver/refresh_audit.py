@@ -52,7 +52,7 @@ def main():
             'negative_log': logs['negative'].name,
             'negative_log_sha256': sha(logs['negative'])}
         MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n')
-    print('Five synthetic CPU audit positive/negative paths passed.')
+    print(f"{len(manifest['cases'])} synthetic CPU audit positive/negative paths passed.")
 
 
 if __name__ == '__main__':

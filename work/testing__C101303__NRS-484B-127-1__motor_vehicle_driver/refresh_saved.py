@@ -20,7 +20,7 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name+'__')
-        source = REPO/'.runtime-work'/('c101303-compat3-'+suffix+'-primary')
+        source = REPO/'.runtime-work'/('c101303-compat4-'+suffix+'-primary')
         attempt = REPO/'.runtime-work'/('c101303-saved-'+suffix+'-attempt')
         if attempt.exists():
             shutil.rmtree(attempt)
@@ -57,7 +57,7 @@ def main():
             'command': ' '.join(command), 'feedback_command': ' '.join(command),
             'test_log': log.name, 'test_log_sha256': sha(log), 'test_exit_code': 0}
         MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n')
-    print('Saved-only processing passed for all five primary diagnostic cases.')
+    print(f"Saved-only processing passed for all {len(manifest['cases'])} primary diagnostic cases.")
 
 
 if __name__ == '__main__':

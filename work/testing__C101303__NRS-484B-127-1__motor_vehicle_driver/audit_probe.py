@@ -36,6 +36,9 @@ def main():
     output.mkdir(parents=True)
     case_id = setup(output)
     # The fixture's case name is rebound for each exact case; no physical claim.
+    context = json.loads((output/'following-context.json').read_text())
+    context['case_id'] = args.case
+    (output/'following-context.json').write_text(json.dumps(context))
     config = json.loads((output/'config.json').read_text())
     config['selected_case_id'] = args.case
     (output/'config.json').write_text(json.dumps(config))
@@ -54,6 +57,7 @@ def main():
     for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
         shutil.copyfile(video, output/(name+'.mkv'))
     acquisition = json.loads((output/'acquisition.json').read_text())
+    acquisition['following-context.json']['sha256'] = sha(output/'following-context.json')
     for name in ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
                  'driver_reference.mkv'):
         acquisition[name]['sha256'] = sha(output/name)

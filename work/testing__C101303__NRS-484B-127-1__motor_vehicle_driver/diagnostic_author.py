@@ -44,9 +44,9 @@ def write_case(case):
         leader_x = ego_x+setup['target_body_gap_m']+2
         change = diagnostic_time > 20
         condition = {'source_ref': 'original weather and road context',
-                     'native_fog_density': 0,
+                     'native_fog_density': setup.get('fog_density_percent', 0),
                      'native_precipitation_strength': setup['precipitation_percent'],
-                     'observed_tire_friction': 2.0}
+                     'observed_tire_friction': setup.get('tire_friction', 2.0)}
         history.append({'frame': frame['carla_frame'], 'time_s': frame['time_s'],
             'diagnostic_time_s': diagnostic_time,
             'ego': {'actor_id': 1, 'source_ref': 'Native CARLA actor transform and bounding box',

@@ -51,3 +51,24 @@ class JudgmentPlanTests(unittest.TestCase):
             if values['above'] is not None:
                 self.assertGreater(values['above'], high)
             self.assertTrue(row['endpoint_limits'] or all(v is not None for v in values.values()))
+
+    def test_every_feasible_bracket_maps_to_a_requested_exact_case(self):
+        import sys
+        sys.path.insert(0, str(HERE))
+        from range_case_author import observed_target, in_zone
+        plan = json.loads((HERE/'judgment-probe-plan.json').read_text())
+        cases = {case['case_id']: case for case in
+                 json.loads((HERE/'case-plan.json').read_text())['cases']}
+        for row in plan['ranges']:
+            for zone, target in row['planning_targets'].items():
+                ids = row['planned_case_ids'].get(zone, [])
+                if target is None:
+                    self.assertEqual(ids, [])
+                    continue
+                self.assertEqual(len(ids), 1)
+                case = cases[ids[0]]
+                self.assertTrue(in_zone(observed_target(case['world_setup'],
+                    row['variable']), row, zone))
+                self.assertIn(row['judgment_key'], case['judgment_refs'])
+                self.assertTrue(any(item['range_index'] == row['range_index']
+                    and item['zone'] == zone for item in case['sweep_measurements']))

@@ -72,8 +72,9 @@ class CameraCapture:
                 x, y, z, pitch = pose
                 transform = carla.Transform(carla.Location(x=x, y=y, z=z),
                                             carla.Rotation(pitch=pitch))
-                sensor = world.spawn_actor(blueprint, transform,
-                    attach_to=ego if name == 'driver_reference' else None)
+                # Relative mounting keeps all four cameras on the selected
+                # Native route rather than leaving world-fixed cameras at (0, 0).
+                sensor = world.spawn_actor(blueprint, transform, attach_to=ego)
                 self.sensors.append(sensor)
                 frames = queue.Queue(maxsize=4)
                 self.queues[name] = frames
@@ -107,15 +108,27 @@ class CameraCapture:
         if self.closed:
             return
         self.closed = True
+        errors = []
         for sensor in reversed(self.sensors):
-            sensor.stop()
+            try:
+                sensor.stop()
+            except BaseException as error:
+                errors.append('camera stop: '+repr(error))
         for name, process in self.encoders.items():
-            if process.stdin and not process.stdin.closed:
-                process.stdin.close()
-            if process.wait(timeout=180) != 0:
-                raise RuntimeError('camera encoder failed: '+name)
+            try:
+                if process.stdin and not process.stdin.closed:
+                    process.stdin.close()
+                if process.wait(timeout=180) != 0:
+                    errors.append('camera encoder failed: '+name)
+            except BaseException as error:
+                errors.append('camera encoder '+name+': '+repr(error))
         for sensor in reversed(self.sensors):
-            sensor.destroy()
+            try:
+                sensor.destroy()
+            except BaseException as error:
+                errors.append('camera destroy: '+repr(error))
+        if errors:
+            raise RuntimeError('; '.join(errors))
 
 
 def _spawn(world, blueprint, waypoints):
@@ -133,6 +146,16 @@ def _spawn(world, blueprint, waypoints):
         raise
 
 
+def _set_tire_friction(actors, value):
+    for actor in actors:
+        physics = actor.get_physics_control()
+        if not physics.wheels:
+            raise ValueError('Native wheel friction control unavailable')
+        for wheel in physics.wheels:
+            wheel.tire_friction = value
+        actor.apply_physics_control(physics)
+
+
 def run_native(scene, output, host, port):
     """Record only original CARLA frames on a dedicated supplied server."""
     import carla
@@ -148,7 +171,11 @@ def run_native(scene, output, host, port):
     world = client.get_world()
     native_map = world.get_map()
     speed = scene['ego_target_speed_mps']
+    route_points = max(120, math.ceil(
+        (max(speed, scene['leader_target_speed_mps'])*scene['duration_s']+
+         scene['target_body_gap_m']+20)/4)+1)
     route = discover_hill_route(native_map,
+        points=route_points,
         crest_station_range_m=(max(12, 14*speed-40), 20*speed+40),
         change_station_m=scene['lane_change_start_s']*speed,
         seed_strategy=scene.get('route_seed_strategy', 'spawn'))
@@ -176,6 +203,8 @@ def run_native(scene, output, host, port):
         world.apply_settings(settings)
         weather = world.get_weather()
         weather.precipitation = scene['precipitation_percent']
+        if 'fog_density_percent' in scene:
+            weather.fog_density = scene['fog_density_percent']
         world.set_weather(weather)
         lead_index = max(3, min(len(waypoints)-4,
                                  round((scene['target_body_gap_m']+5)/4)))
@@ -186,6 +215,8 @@ def run_native(scene, output, host, port):
         spawn_points = [waypoints[0], waypoints[lead_index]]+extra_waypoints[:extras]
         actors = _spawn(world, vehicles[0], spawn_points)
         ego, leader = actors[:2]
+        if 'tire_friction' in scene:
+            _set_tire_friction((ego, leader), scene['tire_friction'])
         route_xy = [[p.transform.location.x, p.transform.location.y] for p in waypoints]
         context = {'case_id': scene['case_id'], 'rate_hz': scene['rate_hz'],
                    'duration_s': scene['duration_s'], 'map_source': native_map.name,
@@ -198,6 +229,8 @@ def run_native(scene, output, host, port):
                    'hill_crest': {**geometry,
                        'source_ref': 'Native CARLA map waypoint elevation'},
                    'weather_request_percent': scene['precipitation_percent'],
+                   'fog_request_percent': scene.get('fog_density_percent'),
+                   'tire_friction_request': scene.get('tire_friction'),
                    'camera_profile': 'overview1080-capability'}
         _write(output/'following-context.json', context)
         _write(output/'acquisition-provenance.json', {
@@ -276,7 +309,8 @@ def run_native(scene, output, host, port):
             world.set_weather(original_weather)
             restored = (all(equal(fields(world.get_settings()).get(key), value)
                             for key, value in fields(original_settings).items()) and
-                        abs(world.get_weather().precipitation-original_weather.precipitation) < 1e-6)
+                        abs(world.get_weather().precipitation-original_weather.precipitation) < 1e-6 and
+                        abs(world.get_weather().fog_density-original_weather.fog_density) < 1e-6)
         except BaseException as error:
             errors.append(repr(error))
         if phase == 'sealed' and not errors and restored:

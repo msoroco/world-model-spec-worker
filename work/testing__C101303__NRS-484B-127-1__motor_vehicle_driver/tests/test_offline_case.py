@@ -18,7 +18,8 @@ class OfflineCase(unittest.TestCase):
                  for i,h in enumerate(heights)]
         self.assertEqual(validate_hill_route(route)['target_lane_id'], -2)
         self.assertGreater(speed_command(6, scene['ego_target_speed_mps'],
-                                         40, scene['target_body_gap_m'], 0)['throttle'], 0)
+                                         scene['target_body_gap_m']+10,
+                                         scene['target_body_gap_m'], 0)['throttle'], 0)
         route[-2]['adjacent_lane']['forward_dot'] = -1
         with self.assertRaisesRegex(ValueError, 'not a forward'):
             validate_hill_route(route)

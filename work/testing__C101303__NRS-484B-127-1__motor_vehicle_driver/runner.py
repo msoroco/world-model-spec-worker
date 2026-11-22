@@ -24,11 +24,19 @@ def load_scene(path=None):
         value = scene.get(name)
         if type(value) not in (int, float) or not 0 <= value <= 100:
             raise ValueError('invalid finite engineering target: '+name)
+    if 'fog_density_percent' in scene:
+        value = scene['fog_density_percent']
+        if type(value) not in (int, float) or not 0 <= value <= 100:
+            raise ValueError('invalid Native fog target')
+    if 'tire_friction' in scene:
+        value = scene['tire_friction']
+        if type(value) not in (int, float) or not 0 < value <= 10:
+            raise ValueError('invalid Native tire friction target')
     if (scene['target_body_gap_m'] < 4 or
             scene['ego_target_speed_mps'] <= 0 or
             scene['leader_target_speed_mps'] <= 0):
         raise ValueError('invalid moving-leader following setup')
-    if type(scene.get('surrounding_vehicle_count')) is not int or not 1 <= scene['surrounding_vehicle_count'] <= 10:
+    if type(scene.get('surrounding_vehicle_count')) is not int or not 1 <= scene['surrounding_vehicle_count'] <= 12:
         raise ValueError('surrounding vehicle target outside supported capture domain')
     if scene.get('lane_change_start_s') != 21:
         raise ValueError('lane change must follow 14..20 s judgment window')

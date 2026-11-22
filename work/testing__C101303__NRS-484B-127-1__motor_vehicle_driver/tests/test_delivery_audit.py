@@ -109,3 +109,26 @@ class DeliveryAuditTests(unittest.TestCase):
                 'diagnostic_fixture': True, 'physical_acceptance_claimed': False}))
             with self.assertRaisesRegex(ValueError, 'diagnostic fixture'):
                 self.checked(path, case_id)
+
+    def test_rejects_sealed_context_for_another_exact_case(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp)
+            case_id = setup(path)
+            context = json.loads((path/'following-context.json').read_text())
+            context['case_id'] = ROOT.name+'__wet_probe'
+            (path/'following-context.json').write_text(json.dumps(context))
+            acquisition = json.loads((path/'acquisition.json').read_text())
+            acquisition['following-context.json']['sha256'] = sha(path/'following-context.json')
+            (path/'acquisition.json').write_text(json.dumps(acquisition))
+            seal = json.loads((path/'capture-seal.json').read_text())
+            seal['sources']['following-context.json'] = sha(path/'following-context.json')
+            seal['sources']['acquisition.json'] = sha(path/'acquisition.json')
+            (path/'capture-seal.json').write_text(json.dumps(seal))
+            native = json.loads((path/'native-exit.json').read_text())
+            native['capture_seal_sha256'] = sha(path/'capture-seal.json')
+            (path/'native-exit.json').write_text(json.dumps(native))
+            owner = json.loads((path/'owner-release.json').read_text())
+            owner['native_exit_sha256'] = sha(path/'native-exit.json')
+            (path/'owner-release.json').write_text(json.dumps(owner))
+            with self.assertRaisesRegex(ValueError, 'hill route geometry missing'):
+                self.checked(path, case_id)

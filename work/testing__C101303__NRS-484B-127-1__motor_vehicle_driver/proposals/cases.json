@@ -8,7 +8,75 @@
       "target_law_id": null,
       "target_type": "baseline",
       "rationale": "Shared connected hill and forward adjacent lane, with no selected recording.",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -133,6 +201,14 @@
         "precipitation_percent": {
           "kind": "world_setup",
           "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
         }
       },
       "recording_description": {
@@ -202,7 +278,311 @@
         "primary_variable": "target_body_gap_m",
         "comparison_or_standard": "Source-measured physical variation; no legal cutoff",
         "target_value_or_branch": 30
-      }
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 0,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+          "variable": "along_route_body_gap",
+          "unit": "m",
+          "zone": "inside",
+          "requested_target": 30,
+          "planning_target": 30.25304603748411,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 1,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 9,
+          "planning_target": 9.229449225125194,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 2,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 9,
+          "planning_target": 8.906415595554463,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 3,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 9,
+          "planning_target": 6.803399565084767,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 4,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_fog_density",
+          "unit": "CARLA percent",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": 21.2,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 5,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_precipitation_strength",
+          "unit": "CARLA percent",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": 40.0,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 6,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "observed_tire_friction",
+          "unit": "native wheel tire_friction",
+          "zone": "inside",
+          "requested_target": 2.0,
+          "planning_target": 2.0999999940395355,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 7,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": -0.6319912152419733,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 8,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": 1.721089442187441,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 10,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]",
+          "variable": "surrounding_vehicle_count",
+          "unit": "count",
+          "zone": "below",
+          "requested_target": 1,
+          "planning_target": 9,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 11,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+          "variable": "along_route_body_gap",
+          "unit": "m",
+          "zone": "inside",
+          "requested_target": 30,
+          "planning_target": 30.25304603748411,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 12,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 9,
+          "planning_target": 9.229449225125194,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 13,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 9,
+          "planning_target": 8.906415595554463,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 14,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 9,
+          "planning_target": 6.803399565084767,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 15,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_fog_density",
+          "unit": "CARLA percent",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": 21.2,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 16,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_precipitation_strength",
+          "unit": "CARLA percent",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": 40.0,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 17,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "observed_tire_friction",
+          "unit": "native wheel tire_friction",
+          "zone": "inside",
+          "requested_target": 2.0,
+          "planning_target": 2.0999999940395355,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 18,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": -0.6319912152419733,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 19,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 0,
+          "planning_target": 1.721089442187441,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 21,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]",
+          "variable": "surrounding_vehicle_count",
+          "unit": "count",
+          "zone": "below",
+          "requested_target": 1,
+          "planning_target": 9,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
     },
     {
       "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer_gap_probe",
@@ -268,6 +648,14 @@
         "precipitation_percent": {
           "kind": "world_setup",
           "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
         }
       },
       "recording_description": {
@@ -337,7 +725,41 @@
         "primary_variable": "target_body_gap_m",
         "comparison_or_standard": "Source-measured physical variation; no legal cutoff",
         "target_value_or_branch": 9
-      }
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 0,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+          "variable": "along_route_body_gap",
+          "unit": "m",
+          "zone": "below",
+          "requested_target": 9,
+          "planning_target": 9.236055531405004,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 11,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+          "variable": "along_route_body_gap",
+          "unit": "m",
+          "zone": "below",
+          "requested_target": 9,
+          "planning_target": 9.236055531405004,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
     },
     {
       "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego_probe",
@@ -403,6 +825,14 @@
         "precipitation_percent": {
           "kind": "world_setup",
           "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
         }
       },
       "recording_description": {
@@ -472,7 +902,71 @@
         "primary_variable": "ego_target_speed_mps",
         "comparison_or_standard": "Source-measured physical variation; no legal cutoff",
         "target_value_or_branch": 12
-      }
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 7,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 3,
+          "planning_target": 1.7832987432618994,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 8,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 3,
+          "planning_target": 1.9210894421874412,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 18,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 3,
+          "planning_target": 1.7832987432618994,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 19,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; max over 20..23s\", \"statistic\": \"max\", \"time_window\": \"20..23s\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 3,
+          "planning_target": 1.9210894421874412,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
     },
     {
       "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__traffic_probe",
@@ -538,6 +1032,14 @@
         "precipitation_percent": {
           "kind": "world_setup",
           "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
         }
       },
       "recording_description": {
@@ -607,7 +1109,41 @@
         "primary_variable": "surrounding_vehicle_count",
         "comparison_or_standard": "Source-measured physical variation; no legal cutoff",
         "target_value_or_branch": 3
-      }
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Actual source-bound surrounding_vehicle_count samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Actual source-bound surrounding_vehicle_count samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 9,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Actual source-bound surrounding_vehicle_count samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "surrounding_vehicle_count",
+          "unit": "count",
+          "zone": "above",
+          "requested_target": 3,
+          "planning_target": 3,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 20,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Actual source-bound surrounding_vehicle_count samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "surrounding_vehicle_count",
+          "unit": "count",
+          "zone": "above",
+          "requested_target": 3,
+          "planning_target": 3,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
     },
     {
       "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_probe",
@@ -673,6 +1209,14 @@
         "precipitation_percent": {
           "kind": "world_setup",
           "value": 75
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
         }
       },
       "recording_description": {
@@ -742,9 +1286,2071 @@
         "primary_variable": "precipitation_percent",
         "comparison_or_standard": "Source-measured physical variation; no legal cutoff",
         "target_value_or_branch": 75
-      }
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 5,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_precipitation_strength",
+          "unit": "CARLA percent",
+          "zone": "inside",
+          "requested_target": 75,
+          "planning_target": 75.0,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 16,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_precipitation_strength\", \"CARLA percent\", {\"method\": \"Actual source-bound native_precipitation_strength samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_precipitation_strength",
+          "unit": "CARLA percent",
+          "zone": "inside",
+          "requested_target": 75,
+          "planning_target": 75.0,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_along_route_body_gap_above_0",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 0 along_route_body_gap above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 51.27003654356322
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "target_body_gap_m",
+      "deliberate_differences": [
+        "target_body_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "target_body_gap_m",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 51.27003654356322
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 0,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+          "variable": "along_route_body_gap",
+          "unit": "m",
+          "zone": "above",
+          "requested_target": 51.27003654356322,
+          "planning_target": 51.27003654356322,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 11,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"along_route_body_gap\", \"m\", {\"method\": \"Actual source-bound along_route_body_gap samples; retain fullrawhistory and compute mean over Original14..20s actual steady following\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following\"}]",
+          "variable": "along_route_body_gap",
+          "unit": "m",
+          "zone": "above",
+          "requested_target": 51.27003654356322,
+          "planning_target": 51.27003654356322,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_below_1",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 1 leader_speed below physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 6.456661040294036
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "leader_target_speed_mps",
+      "deliberate_differences": [
+        "leader_target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "leader_target_speed_mps",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 6.456661040294036
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 1,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 6.456661040294036,
+          "planning_target": 6.456661040294036,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 12,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "below",
+          "requested_target": 6.456661040294036,
+          "planning_target": 6.456661040294036,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_above_1",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 1 leader_speed above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 12.002237409956352
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "leader_target_speed_mps",
+      "deliberate_differences": [
+        "leader_target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "leader_target_speed_mps",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 12.002237409956352
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 1,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 12.002237409956352,
+          "planning_target": 12.002237409956352,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 2,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 12.002237409956352,
+          "planning_target": 9.304108618094725,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 3,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 12.002237409956352,
+          "planning_target": 14.532048676650032,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 12,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Actual source-bound leader_speed samples; retain fullrawhistory and compute mean over Original14..20s actual steady following; both actual speeds retained\", \"statistic\": \"mean\", \"time_window\": \"Original14..20s actual steady following; both actual speeds retained\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 12.002237409956352,
+          "planning_target": 12.002237409956352,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 13,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 12.002237409956352,
+          "planning_target": 9.304108618094725,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 14,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 12.002237409956352,
+          "planning_target": 14.532048676650032,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_inside_2",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 2 leader_speed inside physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9.105262106824593
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "leader_target_speed_mps",
+      "deliberate_differences": [
+        "leader_target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "leader_target_speed_mps",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 9.105262106824593
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 2,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 9.105262106824593,
+          "planning_target": 9.105262106824593,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 13,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 14..18s\", \"statistic\": \"mean\", \"time_window\": \"14..18s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "inside",
+          "requested_target": 9.105262106824593,
+          "planning_target": 9.105262106824593,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_leader_speed_above_3",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 3 leader_speed above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 22.260697788215296
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "leader_target_speed_mps",
+      "deliberate_differences": [
+        "leader_target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "leader_target_speed_mps",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 22.260697788215296
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 3,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 22.260697788215296,
+          "planning_target": 22.260697788215296,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 14,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"leader_speed\", \"m/s\", {\"method\": \"Original actual native samples, full history retained; mean over 15..19s\", \"statistic\": \"mean\", \"time_window\": \"15..19s\"}]",
+          "variable": "leader_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 22.260697788215296,
+          "planning_target": 22.260697788215296,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_native_fog_density_inside_4",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 4 native_fog_density inside physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 38.0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "fog_density_percent",
+      "deliberate_differences": [
+        "fog_density_percent"
+      ],
+      "probe": {
+        "primary_variable": "fog_density_percent",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 38.0
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 4,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_fog_density",
+          "unit": "CARLA percent",
+          "zone": "inside",
+          "requested_target": 38.0,
+          "planning_target": 38.0,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 15,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_fog_density",
+          "unit": "CARLA percent",
+          "zone": "inside",
+          "requested_target": 38.0,
+          "planning_target": 38.0,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_native_fog_density_above_4",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 4 native_fog_density above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 54.8
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "fog_density_percent",
+      "deliberate_differences": [
+        "fog_density_percent"
+      ],
+      "probe": {
+        "primary_variable": "fog_density_percent",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 54.8
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 4,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_fog_density",
+          "unit": "CARLA percent",
+          "zone": "above",
+          "requested_target": 54.8,
+          "planning_target": 54.8,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 15,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"native_fog_density\", \"CARLA percent\", {\"method\": \"Actual source-bound native_fog_density samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "native_fog_density",
+          "unit": "CARLA percent",
+          "zone": "above",
+          "requested_target": 54.8,
+          "planning_target": 54.8,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_observed_tire_friction_below_6",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 6 observed_tire_friction below physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 0.13999998569488525
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "tire_friction",
+      "deliberate_differences": [
+        "tire_friction"
+      ],
+      "probe": {
+        "primary_variable": "tire_friction",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 0.13999998569488525
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 6,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "observed_tire_friction",
+          "unit": "native wheel tire_friction",
+          "zone": "below",
+          "requested_target": 0.13999998569488525,
+          "planning_target": 0.13999998569488525,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 17,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "observed_tire_friction",
+          "unit": "native wheel tire_friction",
+          "zone": "below",
+          "requested_target": 0.13999998569488525,
+          "planning_target": 0.13999998569488525,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_observed_tire_friction_above_6",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 6 observed_tire_friction above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 4.060000002384186
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "tire_friction",
+      "deliberate_differences": [
+        "tire_friction"
+      ],
+      "probe": {
+        "primary_variable": "tire_friction",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 4.060000002384186
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 6,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "observed_tire_friction",
+          "unit": "native wheel tire_friction",
+          "zone": "above",
+          "requested_target": 4.060000002384186,
+          "planning_target": 4.060000002384186,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 17,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"observed_tire_friction\", \"native wheel tire_friction\", {\"method\": \"Actual source-bound observed_tire_friction samples; retain fullrawhistory and compute first over Entire original45s episode\", \"statistic\": \"first\", \"time_window\": \"Entire original45s episode\"}]",
+          "variable": "observed_tire_friction",
+          "unit": "native wheel tire_friction",
+          "zone": "above",
+          "requested_target": 4.060000002384186,
+          "planning_target": 4.060000002384186,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_relative_speed_above_7",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 7 relative_speed above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 13.198588701765772
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "ego_target_speed_mps",
+      "deliberate_differences": [
+        "ego_target_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "ego_target_speed_mps",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 4.198588701765772
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 7,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 4.198588701765772,
+          "planning_target": 4.198588701765772,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 18,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"relative_speed\", \"m/s\", {\"method\": \"Actual source-bound relative_speed samples; retain fullrawhistory and compute max over Original22..28s leader-speed-change/follower-response interval\", \"statistic\": \"max\", \"time_window\": \"Original22..28s leader-speed-change/follower-response interval\"}]",
+          "variable": "relative_speed",
+          "unit": "m/s",
+          "zone": "above",
+          "requested_target": 4.198588701765772,
+          "planning_target": 4.198588701765772,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__range_surrounding_vehicle_count_above_10",
+      "target_law_id": "NRS-484B-127-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Source range 10 surrounding_vehicle_count above physical target; no legal cutoff",
+      "variable_assignments": {
+        "layout": {
+          "kind": "world_setup",
+          "value": "hill_crest"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "change_lane"
+        },
+        "control": {
+          "kind": "world_setup",
+          "value": "other_vehicle"
+        },
+        "actor": {
+          "kind": "world_setup",
+          "value": "motor_vehicle_driver"
+        },
+        "steady_window_s": {
+          "kind": "world_setup",
+          "value": [
+            14,
+            20
+          ]
+        },
+        "first_lane_change_s": {
+          "kind": "world_setup",
+          "value": 21
+        },
+        "rate_hz": {
+          "kind": "world_setup",
+          "value": 20
+        },
+        "duration_s": {
+          "kind": "world_setup",
+          "value": 45
+        },
+        "cameras": {
+          "kind": "world_setup",
+          "value": "overview1080-capability"
+        },
+        "target_body_gap_m": {
+          "kind": "controller",
+          "value": 30
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "leader_target_speed_mps": {
+          "kind": "controller",
+          "value": 9
+        },
+        "surrounding_vehicle_count": {
+          "kind": "world_setup",
+          "value": 11
+        },
+        "precipitation_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "fog_density_percent": {
+          "kind": "world_setup",
+          "value": 0
+        },
+        "tire_friction": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_leader_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original distinct actor bodies and speeds.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "traffic_condition_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original surrounding actor inventory, weather and wheel friction.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "following_lane_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and leader lane/road identity by frame.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Synchronized original CARLA camera frame identities.",
+            "time_window": "45 s with steady following at 14..20 s and later lane change",
+            "reference_frame": "original CARLA world frame and elapsed time",
+            "uncertainty": "20 Hz sample interval and Native body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hill_route_context",
+            "unit": "structured record",
+            "method": "Original connected Native waypoints and hill crest elevation."
+          },
+          {
+            "name": "highway_context",
+            "unit": "structured record",
+            "method": "Original weather/road context; public-highway status awaits independent review."
+          }
+        ],
+        "limitations": [
+          "No legal reasonable-and-prudent distance cutoff.",
+          "Public-highway status and actual pixels need independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "reasonable and prudent"
+      ],
+      "paired_probe_id": "surrounding_vehicle_count",
+      "deliberate_differences": [
+        "surrounding_vehicle_count"
+      ],
+      "probe": {
+        "primary_variable": "surrounding_vehicle_count",
+        "comparison_or_standard": "Source-measured physical bracket; no legal cutoff",
+        "target_value_or_branch": 11
+      },
+      "judgment_refs": [
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]",
+        "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]"
+      ],
+      "planned_sweep_measurements": [
+        {
+          "range_index": 10,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"having due regard\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]",
+          "variable": "surrounding_vehicle_count",
+          "unit": "count",
+          "zone": "above",
+          "requested_target": 11,
+          "planning_target": 11,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        },
+        {
+          "range_index": 21,
+          "judgment_key": "[\"NRS-484B-127-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"reasonable and prudent\"}, \"surrounding_vehicle_count\", \"count\", {\"method\": \"Original actual native samples, full history retained; first over entire30s\", \"statistic\": \"first\", \"time_window\": \"entire30s\"}]",
+          "variable": "surrounding_vehicle_count",
+          "unit": "count",
+          "zone": "above",
+          "requested_target": 11,
+          "planning_target": 11,
+          "source_ref": {
+            "path": "inputs/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/judgment_ranges.json",
+            "sha256": "c8c4b7bc734d8bd45f61f0292c3e742094ec0f50c3afb2ddf097b18556b91613"
+          },
+          "status": "unmeasured"
+        }
+      ]
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": false
+  "sweep_specs": [
+    {
+      "sweep_id": "c101303-source-following-judgment",
+      "target_law_id": "NRS-484B-127-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable and prudent",
+          "note": "The statute supplies no numeric following-distance cutoff."
+        },
+        {
+          "phrase": "having due regard",
+          "note": "Both speeds, traffic and highway condition must inform the unresolved judgment."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The 22 source-hashed physical training ranges have planning targets but lack selected exact construction and accepted Native measurements.",
+      "missing_inputs": [
+        "Expanded exact case construction for each feasible below/inside/above target",
+        "Accepted source-bound steady-window measurements for physical coverage"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }
