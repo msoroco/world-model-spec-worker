@@ -6292,3 +6292,9 @@ C111662 continuation: an isolated reference-primary road-403 topology variant pa
 C111662 isolated proof was regenerated after compacting its diagnostic JSON below the 2 MiB return limit; reference-primary compatibility, saved processing and assignment-scoped static check exit 0. Current isolated receipt: `work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/centerline-gap-experiment/proof.json` (SHA-256 `3c273048861bc93b30ed4fa3bc34e2d2584efe996300eb4ebcd32ede5c48c77e`). Selected status remains partial.
 
 Batch gate checkpoint: exact result inventory is 14 `ready`, 239 `partial`, 0 `blocked` across 253 assignments. A fresh full strict run was started after C179480 passed, but was interrupted during expensive ready-package receipt validation; it did not return an acceptance result. The last completed full strict result remains `Preparation acceptance failed: partial/missing packages remain`, consistent with the current 239 partial results. Do not report batch delivery ready.
+
+C183370 cutover continuation: isolated current-runtime probe 48/48 offline and reference-primary positive/negative compatibility plus 600-frame recorded-only saved pass; proof `work/C183370` full assignment directory `current-runtime-reference-primary-proof.json` SHA-256 `e47e0235614ad112f2d77618a7cfa129886a7c51f719957569c14f3ee5df851f`. Selected manifest remains old-runtime; package stays partial, 47 chains and final audits/strict pending. CPU preflight passed; no original Native or frozen edits.
+
+C183370 fallback1 cutover diagnostic also passes positive/negative compatibility and recorded-only saved; proof SHA-256 `e6e36dd32e76b12003246a29fb9b2cd6ae8d2c5592bbab34bb028b10a3af4629`. Count 2/48 full chains, 48/48 offline; selected manifest remains old-runtime and partial.
+
+C183370 scoped strict still exits 1 on partial status, log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`; full batch delivery gate remains unpassed.

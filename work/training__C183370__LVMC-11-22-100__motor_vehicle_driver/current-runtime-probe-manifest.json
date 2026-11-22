@@ -1,0 +1,1330 @@
+{
+  "assignment_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed, joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and warning/pavement camera visibility remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-reference/fallback1/construction.json",
+          "construction_sha256": "e2e3c60fe04cd5b60f7376b8e593ff618a950b661ff7c9d42b5598c030b260bc",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed route while slowing for the protected region",
+            "metric": "observed speed/route tracking at surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-reference/fallback2/construction.json",
+          "construction_sha256": "3e5189d3ac5b87c4d2797448e11f77f9cb7d7643d241181842cc8536a628914c",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the person or a protected pavement edge",
+            "metric": "visibility of warning person and complete surveyed pavement area",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-reference/fallback3/construction.json",
+          "construction_sha256": "3470694d02236d88f2170b91f8bcbc7b4f39c8af0e1207f52c2b489bf5a4270e",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed intended route corridor",
+            "metric": "measured lateral route error at pavement approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+      "construction": "draft-integrated-reference/primary/construction.json",
+      "construction_sha256": "04ee044b04af97c5b4749ceb86e602274b0d22902898fa75081c036cd3cf4cc2",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/selected-diagnostics/reference/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "selected-measurement-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "native/finalize.py",
+        "output_schema": "c183370-native-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update156-integrated-reference-primary-saved.log",
+        "test_log_sha256": "ae8f95857c90668d2f2f24f791681ab855c958ecd684635cba0f93bbd2c96a08"
+      }
+    },
+    {
+      "acquisition": {
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and warning/pavement camera visibility remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-contrast/fallback1/construction.json",
+          "construction_sha256": "6287cd28a8cff655948da82dc34e7bbf9090556d0360931954ec5c79c25c0093",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed route while slowing for the protected region",
+            "metric": "observed speed/route tracking at surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-contrast/fallback2/construction.json",
+          "construction_sha256": "03156ed923b86d302f285bd6c07301ae5ffa730a3b41f52beef7da13b7cc14a7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the person or a protected pavement edge",
+            "metric": "visibility of warning person and complete surveyed pavement area",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-contrast/fallback3/construction.json",
+          "construction_sha256": "a00cf2d287164bd6fa5e811974ba7a1570970407b9769c1677e4bca3c4833bab",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed intended route corridor",
+            "metric": "measured lateral route error at pavement approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+      "construction": "draft-integrated-contrast/primary/construction.json",
+      "construction_sha256": "af33fb70c4398dfd28829386f22adc4458b0716450d05fc28f5e3baaf6c5493d",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/selected-diagnostics/contrast/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "selected-measurement-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "native/finalize.py",
+        "output_schema": "c183370-native-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-integrated-contrast-primary-saved.log",
+        "test_log_sha256": "3882c06bf4b6dd121e77ac7ea129a59a9966ae373ed69fd7ef506c18c210d8ea"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Barrier content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/barrier_crossing/fallback1/construction.json",
+          "construction_sha256": "19569c00101a0fd2a6e41e28acde9d30fa3cfbb4ef3b1f869a45cf3510d5eb86",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/barrier_crossing/fallback2/construction.json",
+          "construction_sha256": "6153623c67e9a69ba640c8f015e2b45226ab0fe8a28160b71950bb93176e24b1",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/barrier_crossing/fallback3/construction.json",
+          "construction_sha256": "987338faeb55a076eba0ed9dbfdd0b72bafe8a720384dd49be98fb1be8b0e214",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing",
+      "construction": "draft-integrated-selected/barrier_crossing/primary/construction.json",
+      "construction_sha256": "9bfd79524489d022b4d4f346cb55b3b089022a5f9cd6e7d50c4207de2c1c3d01",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/barrier/crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/barrier-crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-barrier-barrier_crossing-primary-saved.log",
+        "test_log_sha256": "c6f9ec82ebb3c3ce00da2785432f05a19257f238f1bc35011e81e21fcce61f42"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Barrier content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/barrier_avoidance/fallback1/construction.json",
+          "construction_sha256": "12806e8bcacd2fcf2273ea26ba8c1c43a1c6322f2e582d3babe9373259c6e6a6",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/barrier_avoidance/fallback2/construction.json",
+          "construction_sha256": "058275116fb369eed0ff7d2e5041b9635598a3e457b8a194bd29e50bd959da62",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/barrier_avoidance/fallback3/construction.json",
+          "construction_sha256": "0c9a596d538bd14a23b6c2b5fd448faddc0554fcfd04f28703c7b6d9ddd26b59",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance",
+      "construction": "draft-integrated-selected/barrier_avoidance/primary/construction.json",
+      "construction_sha256": "99a4b7ba9d6d3b02c472e2823c2b37e59f4f27fa38effe80f323ce6873f63365",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/barrier/avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/barrier-avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-barrier-barrier_avoidance-primary-saved.log",
+        "test_log_sha256": "4a24af4e09a4bc4aa0d02c9cbf3b5ee1ac4b534069f981687bfe01eb538258ad"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/warning_sign_crossing/fallback1/construction.json",
+          "construction_sha256": "83069f1615744de65ef40fd225acb80617eb960644b47feb6d139efcb297e23a",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/warning_sign_crossing/fallback2/construction.json",
+          "construction_sha256": "8fa4547061e563c5dfb78654790b0ad2676cf07c596272b131b0fc65fcdd6c1d",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/warning_sign_crossing/fallback3/construction.json",
+          "construction_sha256": "0124df4bd19cf7a316242618e84f08510c9023620daa52115f054ec499176852",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
+      "construction": "draft-integrated-selected/warning_sign_crossing/primary/construction.json",
+      "construction_sha256": "b6ce2a94bb45e83c812467f2373f1f5d8c2c72c51270da5c765af41671641ee6",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/warning_sign/crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/warning_sign-crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-warning-warning_sign_crossing-primary-saved.log",
+        "test_log_sha256": "6a57b1cb295032d992ff7c2957f3d42f658b22675efe35d0c563f32bc2d7c0d3"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/warning_sign_avoidance/fallback1/construction.json",
+          "construction_sha256": "f2f4aacfa4bf8ac61b0041473ebeba69bba39dbbe2772139d317489895befb0f",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/warning_sign_avoidance/fallback2/construction.json",
+          "construction_sha256": "dc5a90a8b7ba55208ef5ef2397bcfdd96255c2ef21657ed85f96cc0f92ab62c8",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/warning_sign_avoidance/fallback3/construction.json",
+          "construction_sha256": "717e21902638151f28fe69e01aa7f3554603dcc61465e8bf7fa59bc18f94c6ab",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
+      "construction": "draft-integrated-selected/warning_sign_avoidance/primary/construction.json",
+      "construction_sha256": "9d89ebd4e5a4a7a52843bd6a72b99fa61cf271cdb12a72fc882efa833453449d",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/warning_sign/avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/warning_sign-avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-warning-warning_sign_avoidance-primary-saved.log",
+        "test_log_sha256": "df4f24aca428a859a6e5dd76a2228ffbee7c7ce12f643073741e10445f9ba78d"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/highway_closed_sign_crossing/fallback1/construction.json",
+          "construction_sha256": "19d3aacc9f256a5344400b90a5752c7e830f5188ae12949300e27246dd08ea4d",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/highway_closed_sign_crossing/fallback2/construction.json",
+          "construction_sha256": "55890303cf66a7e78330bbcbf95be1c5d80333b2897d7c9cabf76c96faff40a9",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/highway_closed_sign_crossing/fallback3/construction.json",
+          "construction_sha256": "c78469d29e7bf7c999a839d2808fb6ec23e07a021dc6f6ea2f9e81c09eaebdc0",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
+      "construction": "draft-integrated-selected/highway_closed_sign_crossing/primary/construction.json",
+      "construction_sha256": "9bf345bef467c4933ccc4ee4a90cc262304bfaa55a0917531b2892ba96e07a89",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/highway_closed_sign/crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/highway_closed_sign-crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-highway-highway_closed_sign_crossing-primary-saved.log",
+        "test_log_sha256": "85757c25ba618d1cd539ee4ba0b0c6be03f8461a7819fda3457c2468d3be2d6b"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/highway_closed_sign_avoidance/fallback1/construction.json",
+          "construction_sha256": "951c147430acfbaffacc4d633915c0d17552d65a4f22cd3be3adb815af3e93aa",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/highway_closed_sign_avoidance/fallback2/construction.json",
+          "construction_sha256": "5e53ecd6c05ccce123a79a65ce00c8232c396a5fdf845e10ec00175e61db1a11",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/highway_closed_sign_avoidance/fallback3/construction.json",
+          "construction_sha256": "32e303d8a1e3e92a99dfa6d6ecbc2d60fa0010e0a224ba2517b7f3b0dfadb94f",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+      "construction": "draft-integrated-selected/highway_closed_sign_avoidance/primary/construction.json",
+      "construction_sha256": "83db1031a2ecd55d9b625f59b09fa4c8699c83e14f4345e19684d3dcb8153d80",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/highway_closed_sign/avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/highway_closed_sign-avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-highway-highway_closed_sign_avoidance-primary-saved.log",
+        "test_log_sha256": "4a39445de5c1541ad4b79c0778886a5bd3cfd8cce260db41930f48c25a0bb9fe"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Employee activity, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/employee_exception_employee_crossing/fallback1/construction.json",
+          "construction_sha256": "90dd292005f9069e286676bedbb3afc891e0d286950499413557967ba1b0b743",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/employee_exception_employee_crossing/fallback2/construction.json",
+          "construction_sha256": "458db6e5b466a1d4da18d5f0fbfb20029732a5137cc4b2992046ace6a83985e0",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/employee_exception_employee_crossing/fallback3/construction.json",
+          "construction_sha256": "88b08aa9f89199d3f533e5695ee743d8aff7d486c43453dfcf8737d762ef087c",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+      "construction": "draft-integrated-selected/employee_exception_employee_crossing/primary/construction.json",
+      "construction_sha256": "1dd06aa603237e215e8f1ee605e12fbe58fc2602f3950f52497dc4e6144b5932",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/employee_exception/employee_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-integrated-selected/employee-measurement-contracts/employee_exception-employee_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update156-integrated-employee_exception_employee_crossing-primary-saved.log",
+        "test_log_sha256": "102bed1ba0d1959914c6bad74de55356eff30897d1b75700be612aef5605ddee"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Employee activity, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/employee_exception_nonemployee_crossing/fallback1/construction.json",
+          "construction_sha256": "9e16fdd548eee23870f57b5487023720540857079e8b67f111d4ce011d005eef",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/employee_exception_nonemployee_crossing/fallback2/construction.json",
+          "construction_sha256": "713ff185ed6a06b1155bde92f04fd6d4207efdacaefee55b6440c91ece9c7039",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/employee_exception_nonemployee_crossing/fallback3/construction.json",
+          "construction_sha256": "3e4b2d1f2cde99ad080be4c7edbd20fb437ed9bc9e80c9ab57a30a4e7a6a0690",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+      "construction": "draft-integrated-selected/employee_exception_nonemployee_crossing/primary/construction.json",
+      "construction_sha256": "5457bd0ad2d043d6da8b22de5e38ea2a729b6db7a4d7b673b1c3da77bd155d94",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/employee_exception/nonemployee_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-integrated-selected/employee-measurement-contracts/employee_exception-nonemployee_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update156-integrated-employee_exception_nonemployee_crossing-primary-saved.log",
+        "test_log_sha256": "8a21405a256921970e7e787d487cf618da72e452bdc4f831d38c0a80648ef00c"
+      }
+    },
+    {
+      "acquisition": {
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/newly_laid_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and original warning/surface pixels remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/newly_laid_crossing/fallback1/construction.json",
+          "construction_sha256": "e3da6d979033f49992ff723d4ad9e7c19bf7a6f1ef458f28fecc22be3d31d8fc",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed crossing or avoidance route",
+            "metric": "sampled body/route tracking near laid-surface polygon",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/newly_laid_crossing/fallback2/construction.json",
+          "construction_sha256": "32eccc5ea0de5ee1c5e2b08cd4f7ac050d3edc6f7d94f38c0852557983c46688",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the warning person or laid-surface edge",
+            "metric": "warning-person and full laid-surface polygon visibility",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/newly_laid_crossing/fallback3/construction.json",
+          "construction_sha256": "87d7dc78635327d52746e7076ae9f576adce745db7d574d4f6ee449e753120fe",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed route corridor",
+            "metric": "sampled lateral route error on surface approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+      "construction": "draft-integrated-selected/newly_laid_crossing/primary/construction.json",
+      "construction_sha256": "07ff153b83f1af9e6fadb6ec2c64834c1369fe0330d22e39981a6b401b1e2f3c",
+      "finalizer_status": "source_derived_cpu_test_pending",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/newly-laid-diagnostics/newly_laid_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "newly-laid-measurement-contracts/newly_laid_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/newly_laid_finalize.py",
+        "output_schema": "c183370-newly-laid-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-newlylaid-newly_laid_crossing-primary-saved.log",
+        "test_log_sha256": "fa61de0ca42bfc24b5fbde86f3a85f64abd8f77b5efd4097d13131315bc5b7b3"
+      }
+    },
+    {
+      "acquisition": {
+        "drive_over_warned_new_pavement": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and live-readback.json with source hashes",
+          "method": "derive structured body-contact and warning-person source evidence while leaving warning act, surface age and legal condition unverified"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "ego_speed": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl velocity and speed joined to video_frames.jsonl and live-readback.json",
+          "method": "derive per-frame ego speed from retained Native velocity and verify reported speed consistency"
+        },
+        "newly_laid_footprint_contact": {
+          "entrypoint": "native/mandatory_channels.py",
+          "evidence": "native-actors.jsonl body vertices and live-readback.json surveyed polygon joined to video_frames.jsonl",
+          "method": "intersect retained eight-vertex ego body hull with surveyed pavement polygon; retain surface status as unverified"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/newly_laid_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "cutover_reproof_pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and original warning/surface pixels remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-integrated-selected/newly_laid_avoidance/fallback1/construction.json",
+          "construction_sha256": "f221e72f5b6c972796726b742d547583c3554bd08361318573ef715f7d143383",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed crossing or avoidance route",
+            "metric": "sampled body/route tracking near laid-surface polygon",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-integrated-selected/newly_laid_avoidance/fallback2/construction.json",
+          "construction_sha256": "c062ed98b4406e314796effbb7fc0681cb82d836f3ede6dcd5e20b4cf0c46f78",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the warning person or laid-surface edge",
+            "metric": "warning-person and full laid-surface polygon visibility",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-integrated-selected/newly_laid_avoidance/fallback3/construction.json",
+          "construction_sha256": "c4d286755bf9de04c65b27995362f7cb8fff7e1a564227a0d757ad65bd0e79b2",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed route corridor",
+            "metric": "sampled lateral route error on surface approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance",
+      "construction": "draft-integrated-selected/newly_laid_avoidance/primary/construction.json",
+      "construction_sha256": "e3d00c0e8641c40e0b6d067d6add265b01f4f4f2516f0ee322d15c19bd051971",
+      "finalizer_status": "source_derived_cpu_test_pending",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/newly-laid-diagnostics/newly_laid_avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "newly-laid-measurement-contracts/newly_laid_avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/newly_laid_finalize.py",
+        "output_schema": "c183370-newly-laid-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update157-newlylaid-newly_laid_avoidance-primary-saved.log",
+        "test_log_sha256": "5fea9d236f31c238593a391f8f83b5c6387191d9f3e9256458bebe18c7810351"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "92f1095f25729c909553f2a04e0ca725a3c4f605eef1f66c3c7a41448a64dedd"
+  },
+  "status": "cutover_reproof_in_progress"
+}
