@@ -1,3 +1,7 @@
+## 2026-11-22 relevance-stage file consolidation
+
+The `proposals/relevance-batch.json` bytes were exactly identical to retained `proposals/relevance.json`, and this partial package has no semantic index or active JSON/Python reference to the redundant path. The duplicate path was removed to keep the return at the 8,600-file cap; its content can be reproduced byte-for-byte from `relevance.json`. The scoped partial checker still passes. The canonical semantic index and remaining preparation work are unfinished, so status stays **partial**.
+
 # C125763 CPU handoff — NRS 484B.250(2)
 
 Status: **partial**. This frozen median-opening branch has a fixed yield sign. The witness relocates the device comparison from C125714. The exact law excludes official traffic-control-device intersections except as provided in subsection 4, so measured near-time entry at an official yield sign is not a violation finding. The frozen evidence inventory has zero accepted recordings; no reuse is claimed.

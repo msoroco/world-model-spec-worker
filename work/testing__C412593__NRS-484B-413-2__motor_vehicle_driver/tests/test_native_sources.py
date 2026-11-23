@@ -274,7 +274,9 @@ class NativeSourcesTests(unittest.TestCase):
                 with native.ffv1_writer(root / (name + ".mkv"), (2, 2)) as write:
                     for _ in range(3):
                         write(bytes([0, 0, 255, 255] * 4))
-            output = finalize(root)
+            with self.assertRaisesRegex(ValueError, "Full 900-frame"):
+                finalize(root)
+            output = finalize(root, diagnostic_fixture=True)
             self.assertEqual(output["frames"], 3)
             self.assertEqual(set(output["original_cameras"]), set(native.CAMERAS))
             self.assertEqual(output["original_course"]["turn_onset_frame"], 3)
@@ -282,11 +284,11 @@ class NativeSourcesTests(unittest.TestCase):
             changed[-1]["ego_heading_deg"] = 45
             (root / "drive_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in changed))
             with self.assertRaisesRegex(ValueError, "No fully observed|Turn onset differs"):
-                finalize(root)
+                finalize(root, diagnostic_fixture=True)
             (root / "drive_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
             (root / "approach.mkv").unlink()
             with self.assertRaisesRegex(ValueError, "Missing original camera"):
-                finalize(root)
+                finalize(root, diagnostic_fixture=True)
 
     def test_saved_finalizer_measures_exact_business_boundary(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -320,7 +322,7 @@ class NativeSourcesTests(unittest.TestCase):
                 rows[2]["ego_position_xy_m"] = [onset_x, 0.0]
                 (root / "drive_history.jsonl").write_text(
                     "".join(json.dumps(row) + "\n" for row in rows))
-                result = finalize(root)
+                result = finalize(root, diagnostic_fixture=True)
                 self.assertEqual(result["measurement"]["observed_continuous_distance_meets_boundary"],
                                  meets)
                 self.assertAlmostEqual(
@@ -330,7 +332,7 @@ class NativeSourcesTests(unittest.TestCase):
             rows[1]["right_indicator"] = False
             (root / "drive_history.jsonl").write_text(
                 "".join(json.dumps(row) + "\n" for row in rows))
-            interrupted = finalize(root)
+            interrupted = finalize(root, diagnostic_fixture=True)
             self.assertFalse(interrupted["measurement"]["observed_continuous_distance_meets_boundary"])
             self.assertEqual(interrupted["measurement"]["turn_onset"][
                 "continuous_right_signal_distance_m"], 0.0)
@@ -372,8 +374,11 @@ class NativeSourcesTests(unittest.TestCase):
                         write(bytes([(index // 9) % 256, 0, 255, 255] * 4))
             source_hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                              for p in root.iterdir()}
-            result = finalize(root)
+            with self.assertRaisesRegex(ValueError, "Full original camera dimensions"):
+                finalize(root)
+            result = finalize(root, diagnostic_fixture=True)
             self.assertEqual(result["frames"], 900)
+            self.assertTrue(result["diagnostic_fixture_only"])
             self.assertEqual(set(result["original_cameras"]), set(native.CAMERAS))
             self.assertAlmostEqual(result["measurement"]["turn_onset"][
                 "continuous_right_signal_distance_m"], 30.48)
@@ -384,9 +389,23 @@ class NativeSourcesTests(unittest.TestCase):
             missing.rename(held)
             try:
                 with self.assertRaisesRegex(ValueError, "Missing original camera source: approach"):
-                    finalize(root)
+                    finalize(root, diagnostic_fixture=True)
             finally:
                 held.rename(missing)
+            rows[500]["time_s"] += 0.01
+            frames[500]["time_s"] += 0.01
+            (root / "drive_history.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in frames))
+            with self.assertRaisesRegex(ValueError, "frame timing differs from 20 Hz"):
+                finalize(root, diagnostic_fixture=True)
+            rows[500]["time_s"] -= 0.01
+            frames[500]["time_s"] -= 0.01
+            (root / "drive_history.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in frames))
             self.assertEqual(source_hashes,
                              {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                               for p in root.iterdir()})
