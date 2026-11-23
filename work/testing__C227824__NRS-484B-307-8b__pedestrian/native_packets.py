@@ -122,10 +122,16 @@ def source_hashes(attempt):
     """Hash completed source bytes after encoder exit; no seal claim is made."""
     root = Path(attempt).resolve()
     names = ("scene.json", *PACKETS, *(camera + ".mkv" for camera in CAMERAS))
+    if (root / "trace.jsonl").exists():
+        names += ("trace.jsonl",)
     hashes = {}
     for name in names:
         path = root / name
         if not path.is_file() or not path.stat().st_size:
             raise ValueError("missing completed original source: " + name)
-        hashes[name] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        digest = hashlib.sha256()
+        with path.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+        hashes[name] = {"sha256": digest.hexdigest()}
     return hashes

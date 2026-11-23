@@ -20,7 +20,11 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _required(root, name):
@@ -54,8 +58,11 @@ def build_report(attempt):
     fixture = provenance.get("diagnostic_fixture")
     if (kind, fixture) not in (("native", False), ("synthetic_fixture", True)):
         raise ValueError("contradictory acquisition provenance")
-    if kind == "native" and provenance.get("native_capture_sealed") is not True:
-        raise ValueError("Native capture seal not confirmed")
+    if kind == "native":
+        # Verify the immutable seal itself. A mutable provenance marker cannot
+        # establish sealing and would invalidate its own sealed source hash.
+        from delivery_audit import verify_seal
+        verify_seal(root)
     source_hashes = {name: _sha(_required(root, name)) for name in ("scene.json", *PACKETS)}
     manifest = json.loads(_required(root, "acquisition.json").read_text())
     for name, digest in source_hashes.items():

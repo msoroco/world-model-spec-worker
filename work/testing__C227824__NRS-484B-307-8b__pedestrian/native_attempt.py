@@ -12,7 +12,7 @@ from pathlib import Path
 
 from native_packets import PacketWriter, sample_tick
 from native_signal import bind, configure
-from saved_entry import CAMERAS
+from saved_entry import CAMERAS, PACKETS
 from walker_control import request
 
 
@@ -38,17 +38,27 @@ def run(world, carla, scene, walker, recorder, attempt, *, ticks):
     """
     _validate(scene, ticks)
     root = Path(attempt).resolve()
-    if not root.is_dir() or any(root.iterdir()):
-        raise ValueError("fresh empty Native attempt directory required")
+    if not root.is_dir():
+        raise ValueError("existing Native attempt directory required")
+    original_names = {*PACKETS, "trace.jsonl", "capture-seal.json",
+                      *(name + ".mkv" for name in CAMERAS)}
+    if any((root / name).exists() for name in original_names):
+        raise ValueError("original acquisition already exists in Native attempt")
+    scene_path = root / "scene.json"
+    if scene_path.exists() and json.loads(scene_path.read_text()) != scene:
+        raise ValueError("materialized Native scene differs from runner scene")
     writer = None
+    trace = None
     failure = None
     try:
         head, devices = bind(world, scene)
         configuration = configure(head, devices, scene, carla)
         command = request(walker, carla, entry_request=scene["entry_request"],
                           target_xy_m=scene["target_xy_m"], speed_mps=scene["speed_mps"])
-        (root / "scene.json").write_text(json.dumps(scene, sort_keys=True, allow_nan=False) + "\n")
+        if not scene_path.exists():
+            scene_path.write_text(json.dumps(scene, sort_keys=True, allow_nan=False) + "\n")
         writer = PacketWriter(root)
+        trace = (root / "trace.jsonl").open("x", buffering=1)
         previous_frame = None
         previous_time = None
         for _ in range(ticks):
@@ -66,6 +76,16 @@ def run(world, carla, scene, walker, recorder, attempt, *, ticks):
             packets = sample_tick(scene, walker, head, devices, snapshot, images)
             recorder.append(images)
             writer.append(packets)
+            body = packets["walker-body-history.jsonl"]
+            outline = body["body_polygon_xy_m"]
+            position = [(outline[0][0] + outline[1][0]) / 2,
+                        (outline[0][1] + outline[2][1]) / 2,
+                        body["body_z_min_m"]]
+            trace.write(json.dumps({"case_id": scene["case_id"], "frame": frame,
+                                    "time_s": time_s, "actor_id": body["actor_id"],
+                                    "position_m": position,
+                                    "source_kind": "original_native_world_vertices_envelope"},
+                                   allow_nan=False) + "\n")
             previous_frame, previous_time = frame, time_s
     except BaseException as exc:
         failure = exc
@@ -73,6 +93,8 @@ def run(world, carla, scene, walker, recorder, attempt, *, ticks):
     finally:
         if writer is not None:
             writer.close()
+        if trace is not None:
+            trace.close()
         try:
             recorder.close()
         except BaseException:

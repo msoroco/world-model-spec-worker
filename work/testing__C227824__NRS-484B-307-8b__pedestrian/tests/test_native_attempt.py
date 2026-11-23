@@ -109,6 +109,9 @@ class NativeAttemptTests(unittest.TestCase):
         rows = [json.loads(line) for line in (self.attempt / "camera-frame-joins.jsonl").read_text().splitlines()]
         self.assertEqual([r["frame"] for r in rows], [1, 2, 3])
         self.assertEqual(set(rows[0]["cameras"]), set(CAMERAS))
+        trace = [json.loads(line) for line in (self.attempt / "trace.jsonl").read_text().splitlines()]
+        self.assertEqual([row["frame"] for row in trace], [1, 2, 3])
+        self.assertEqual(trace[0]["position_m"][0], -.8)
         self.assertFalse((self.attempt / "acquisition-provenance.json").exists())
 
     def test_stale_frame_fails_before_encoding_and_closes(self):
@@ -117,6 +120,22 @@ class NativeAttemptTests(unittest.TestCase):
             run(self.world, self.carla, self.exact, self.walker, recorder, self.attempt, ticks=3)
         self.assertEqual(recorder.appended, [])
         self.assertTrue(recorder.closed)
+
+    def test_materialized_scene_is_preserved_and_mismatch_rejected(self):
+        source = self.attempt / "scene.json"
+        source.write_text(json.dumps(self.exact) + "\n")
+        (self.attempt / "construction.json").write_text("{}\n")
+        before = source.read_bytes()
+        other = self.exact.copy()
+        other["case_id"] += "_other"
+        with self.assertRaisesRegex(ValueError, "materialized Native scene differs"):
+            run(self.world, self.carla, other, self.walker, Recorder(), self.attempt, ticks=3)
+        result = run(self.world, self.carla, self.exact, self.walker,
+                     Recorder(), self.attempt, ticks=3)
+        self.assertEqual(result["frame_count"], 3)
+        self.assertEqual(source.read_bytes(), before)
+        with self.assertRaisesRegex(ValueError, "original acquisition already exists"):
+            run(self.world, self.carla, other, self.walker, Recorder(), self.attempt, ticks=3)
 
     def test_review_rejected_before_attempt_mutation(self):
         self.exact["device_inventory_review"]["complete"] = False
