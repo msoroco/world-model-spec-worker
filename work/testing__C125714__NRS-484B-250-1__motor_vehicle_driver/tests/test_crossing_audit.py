@@ -158,6 +158,18 @@ class CrossingAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "realization differs"):
             audit.measure(t)
 
+    def test_short_final_sideways_jitter_is_not_an_actual_left_turn(self):
+        def samples(centers):
+            return [{"body_vertices_xy_m": [[x-.2, y-.2], [x+.2, y-.2],
+                                             [x+.2, y+.2], [x-.2, y+.2]]}
+                    for x, y in centers]
+        straight_with_jitter = samples([(5, 0), (3, 0), (1, 0), (-1, 0),
+                                        (-3, 0), (-5, 0), (-5, -.5)])
+        self.assertFalse(audit._observed_left_turn(straight_with_jitter))
+        sustained_left = samples([(5, 0), (3, 0), (1, 0), (-1, 0),
+                                  (-3, 0), (-3, -2), (-3, -4)])
+        self.assertTrue(audit._observed_left_turn(sustained_left))
+
     def test_missing_source_and_unobserved_entry_rejected(self):
         t = trace()
         del t["context"]["map_source"]

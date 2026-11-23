@@ -82,13 +82,25 @@ def _observed_left_turn(samples):
     centers = [(sum(p[0] for p in sample["body_vertices_xy_m"])/4,
                 sum(p[1] for p in sample["body_vertices_xy_m"])/4)
                for sample in samples]
-    moves = [(b[0]-a[0], b[1]-a[1]) for a, b in zip(centers, centers[1:])
-             if math.dist(a, b) > 0.1]
-    if len(moves) < 2:
+    moves = [math.dist(a, b) for a, b in zip(centers, centers[1:])]
+    if sum(length > 0.1 for length in moves) < 2:
         raise ValueError("original other-body motion insufficient for turn measurement")
-    first, last = moves[0], moves[-1]
+    def sustained_direction(reverse=False):
+        points = list(reversed(centers)) if reverse else centers
+        travel = 0.0
+        for index, (start, end) in enumerate(zip(points, points[1:]), 1):
+            travel += math.dist(start, end)
+            if travel >= 2.0:
+                return (points[index][0]-points[0][0],
+                        points[index][1]-points[0][1])
+        raise ValueError("original other-body approach or departure travel insufficient")
+    first = sustained_direction()
+    backward_last = sustained_direction(reverse=True)
+    last = (-backward_last[0], -backward_last[1])
     cross = first[0]*last[1] - first[1]*last[0]
     length = math.hypot(*first)*math.hypot(*last)
+    if length == 0:
+        raise ValueError("original other-body travel lacks a direction")
     return cross/length > 0.8
 
 

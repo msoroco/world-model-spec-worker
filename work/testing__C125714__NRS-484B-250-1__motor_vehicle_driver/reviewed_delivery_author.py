@@ -92,7 +92,7 @@ def source_files(scene_path):
     return scene, files
 
 
-def check_comparison_isolation(by_name):
+def check_comparison_isolation(by_name, packets=None):
     common = ("crossing", "ego_highway", "other_highway", "ego_route_xy_m",
               "other_route_xy_m", "capture_rate_hz", "duration_s",
               "ego_approach_road_id", "other_approach_road_id",
@@ -125,6 +125,28 @@ def check_comparison_isolation(by_name):
     right_dx = b["ego_route_xy_m"][-1][0] - b["ego_route_xy_m"][0][0]
     if left_dx * right_dx >= 0:
         raise ValueError("separate-roadway comparison lacks opposite ego approach directions")
+    if packets is not None:
+        source_fields = ("map_source", "public_access", "human_driver", "devices",
+                         "ego_highway", "other_highway", "approach_relation",
+                         "public_access_source", "device_inventory_source",
+                         "driver_scope_source")
+        for left, right, changed in (
+                ("precedence", "advance", ()),
+                ("advance", "other_later", ()),
+                ("opposite_straight", "opposite_intends_left", ("left_turn_intent",)),
+                ("opposite_intends_left", "opposite_makes_left", ("left_turn_realized",)),
+                ("precedence", "wide_same_crossing", ())):
+            a = packets[left]["law_context"]
+            b = packets[right]["law_context"]
+            for key in (*source_fields, "left_turn_intent", "left_turn_realized"):
+                if key in changed:
+                    continue
+                a_value, b_value = a.get(key), b.get(key)
+                if key in SOURCE_KEYS:
+                    a_value = a_value.get("source_sha256") if isinstance(a_value, dict) else None
+                    b_value = b_value.get("source_sha256") if isinstance(b_value, dict) else None
+                if a_value != b_value:
+                    raise ValueError("fixed reviewed law context changed: " + left + "/" + right + "/" + key)
 
 
 def author(source_root, map_path, output_root, proof_root):
@@ -152,7 +174,10 @@ def author(source_root, map_path, output_root, proof_root):
         if scene["crossing"]["map_source_sha256"] != digest(map_path):
             raise ValueError("reviewed map differs from scene: " + suffix)
         staged.append((suffix, scene_path, scene, files))
-    check_comparison_isolation({suffix: scene for suffix, _, scene, _ in staged})
+    check_comparison_isolation(
+        {suffix: scene for suffix, _, scene, _ in staged},
+        {suffix: json.loads(files[Path(scene["reviewed_context_source"]).as_posix()])
+         for suffix, _, scene, files in staged})
     for suffix, scene_path, _, _ in staged:
         preflight(scene_path, map_path, proof_root / suffix)
     output_root.mkdir(parents=True)

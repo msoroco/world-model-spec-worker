@@ -139,6 +139,25 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "distinct roadway_id"):
                 check_comparison_isolation(scenes)
 
+    def test_rejects_changed_fixed_review_source_across_pair(self):
+        with TemporaryDirectory() as source, TemporaryDirectory(dir=ROOT) as destination, \
+             TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
+            fixture(source)
+            folder = Path(source) / "advance"
+            source_path = folder / "device_inventory_source.txt"
+            source_path.write_text("different synthetic official-device inventory\n")
+            packet_path = folder / "reviewed-context.json"
+            packet = json.loads(packet_path.read_text())
+            packet["law_context"]["device_inventory_source"]["source_sha256"] = sha(source_path)
+            packet_path.write_text(json.dumps(packet))
+            scene_path = folder / "scene.json"
+            scene = json.loads(scene_path.read_text())
+            scene["reviewed_context_sha256"] = sha(packet_path)
+            scene_path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, "fixed reviewed law context changed"):
+                author(source, ROOT / "candidate-map.xodr", Path(destination) / "candidate",
+                       Path(proof) / "preflight")
+
     def test_rejects_packet_and_source_aliases_before_bundling(self):
         with TemporaryDirectory() as source:
             fixture(source)
