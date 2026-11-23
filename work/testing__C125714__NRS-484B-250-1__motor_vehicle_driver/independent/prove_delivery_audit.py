@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 import tempfile
 
-from delivery_audit import CHECKS, OBSERVATIONS, ROOT, SOURCE, sha, verify_inputs
+from delivery_audit import (CHECKS, OBSERVATIONS, ROOT, SOURCE, sha,
+                            verify_case_binding, verify_inputs)
 
 
 def fixture(attempt: Path, case_id: str):
@@ -21,6 +22,10 @@ def fixture(attempt: Path, case_id: str):
         json.dumps({"video_frame": 1, "time_s": 0.05}) + "\n")
     core = {"scenes": [{"t": 0}, {"t": 50}]}
     (attempt / "traffic_spec" / "trace.json").write_text(json.dumps(core))
+    (attempt / "construction.json").write_text(json.dumps({"case_id": case_id}))
+    (attempt / "config.json").write_text(json.dumps({"selected_case_id": case_id}))
+    (attempt / "capture-seal.json").write_text(json.dumps({"sources": {
+        name: sha(attempt / name) for name in ("construction.json", "config.json")}}))
     names = ("ego-body-history.jsonl", "other-body-history.jsonl",
              "road.xodr", "video_frames.jsonl", *SOURCE.CAMERAS)
     source = {"diagnostic_fixture": False,
@@ -56,6 +61,26 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="c125714-audit-proof-") as temp:
         attempt = Path(temp)
         source, physical, pixels, decode, core = fixture(attempt, args.case_id)
+        binding = verify_case_binding(args.case_id, attempt)
+        if set(binding) != {"construction_sha256", "config_sha256"}:
+            raise AssertionError("selected-case binding omitted")
+        wrong = ROOT.name + "__" + ("advance" if args.case_id.endswith("__precedence") else "precedence")
+        try:
+            verify_case_binding(wrong, attempt)
+        except ValueError as error:
+            if str(error) != "sealed construction/config selected another exact case":
+                raise
+        else:
+            raise AssertionError("wrong selected case accepted")
+        (attempt / "config.json").write_text(json.dumps({"selected_case_id": wrong}))
+        try:
+            verify_case_binding(args.case_id, attempt)
+        except ValueError as error:
+            if str(error) != "sealed selected-case source missing or changed: config.json":
+                raise
+        else:
+            raise AssertionError("changed selected config accepted")
+        (attempt / "config.json").write_text(json.dumps({"selected_case_id": args.case_id}))
         if args.negative:
             pixels["video_sha256"] = "0" * 64
             try:

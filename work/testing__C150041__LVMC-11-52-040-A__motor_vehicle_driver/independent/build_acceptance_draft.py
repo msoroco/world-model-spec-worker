@@ -84,7 +84,14 @@ def main() -> None:
     (ROOT / "delivery-acceptance.partial.json").write_text(json.dumps(draft, indent=2) + "\n")
     result_path = ROOT / "result.json"
     result = json.loads(result_path.read_text())
-    prior = [item for item in result["tests"] if "/independent/" not in item["log"]]
+    prior = [item for item in result["tests"] if not item["log"].startswith("independent/")]
+    validation = root / "validate-acceptance-draft.log"
+    if validation.is_file() and "six exact pinned delivery contracts" in validation.read_text():
+        tests.append({"command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c150041-acceptance-draft-validation\"; "
+                      "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/" + ROOT.name +
+                      "/independent/validate_acceptance_draft.py",
+                      "exit_code": 0, "log": "independent/" + validation.name,
+                      "sha256": sha(validation)})
     result["tests"] = prior + tests
     result["status"] = "partial"
     result["readiness_kind"] = "diagnostic_delivery_and_comparison_cpu_protocols_built"

@@ -31,6 +31,24 @@ def read(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+def verify_case_binding(case_id: str, attempt: Path) -> dict:
+    """Require the selected case in both sealed construction and config bytes."""
+    attempt = Path(attempt).resolve()
+    seal = read(attempt / "capture-seal.json")
+    sources = seal.get("sources", {})
+    for name in ("construction.json", "config.json"):
+        path = attempt / name
+        if not path.is_file() or sources.get(name) != sha(path):
+            raise ValueError("sealed selected-case source missing or changed: " + name)
+    construction = read(attempt / "construction.json")
+    config = read(attempt / "config.json")
+    if (construction.get("case_id") != case_id or
+            config.get("selected_case_id") != case_id):
+        raise ValueError("sealed construction/config selected another exact case")
+    return {"construction_sha256": sources["construction.json"],
+            "config_sha256": sources["config.json"]}
+
+
 def verify_inputs(case_id: str, source: dict, physical: dict, pixels: dict,
                   decode: dict, core: dict, attempt: Path) -> dict:
     """Rejoin physical and human observations to original captured bytes."""
@@ -115,6 +133,7 @@ def main() -> None:
         raise ValueError("unknown exact case")
     if args.physical_receipt.resolve() != (args.attempt / "result.json").resolve():
         raise ValueError("physical receipt must be the sealed Native result")
+    case_binding = verify_case_binding(args.case_id, args.attempt)
     source = SOURCE.audit_attempt(args.attempt)
     decode = read(args.decode_receipt)
     if decode.get("auditor_sha256") != sha(args.media_auditor):
@@ -125,6 +144,7 @@ def main() -> None:
     auditor = Path(__file__).resolve()
     audit.update(job_id=args.job_id, attempt=args.attempt_number,
                  recording_id=args.recording_id,
+                 selected_case_source_hashes=case_binding,
                  source_result_sha256=sha(args.physical_receipt),
                  auditor_path=str(auditor), auditor_sha256=sha(auditor),
                  source_decode_receipt_path=str(args.decode_receipt.resolve()),
