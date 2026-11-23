@@ -46,7 +46,7 @@ def check(config):
     cameras = config.get('cameras')
     if (not isinstance(cameras, list) or [x.get('name') for x in cameras] != list(VIEWS)
             or [(x.get('width'), x.get('height')) for x in cameras]
-            != [(1280, 720)] * 4):
+            != [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)]):
         raise ValueError('Four source cameras required')
     if (config.get('vehicle_blueprint') != 'vehicle.tesla.model3'
             or config.get('load_filter') != 'static.prop.*'
@@ -90,7 +90,7 @@ def execute(config, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
-    from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.world_restore import snapshot, restore
 
     check(config)
     output = Path(output).resolve()

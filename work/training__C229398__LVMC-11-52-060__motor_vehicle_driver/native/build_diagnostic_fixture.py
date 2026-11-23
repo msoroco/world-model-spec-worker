@@ -1,4 +1,5 @@
-"""Build the source-inventoried 15-foot diagnostic fixture and recipe."""
+"""Build a source-inventoried projection-boundary diagnostic fixture and recipe."""
+import argparse
 import hashlib
 import json
 import shutil
@@ -10,7 +11,7 @@ from prove_finalize_saved import fixture
 HERE = Path(__file__).resolve().parent
 PACKAGE = HERE.parent
 ROOT = PACKAGE.parents[1]
-SUFFIX = 'at_15_ft'
+TARGETS = {'below_15_ft': 14, 'at_15_ft': 15, 'above_15_ft': 16}
 
 
 def sha(path):
@@ -22,16 +23,18 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
 
 
-def build():
+def build(suffix):
+    if suffix not in TARGETS:
+        raise ValueError('Unknown projection boundary')
     manifest_path = PACKAGE / 'draft-primary-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    entry = next(item for item in manifest['cases'] if item['case_id'].endswith('__' + SUFFIX))
+    entry = next(item for item in manifest['cases'] if item['case_id'].endswith('__' + suffix))
     construction = json.loads((PACKAGE / entry['construction']).read_text())
-    source_dir = PACKAGE / 'diagnostic-fixture' / SUFFIX / 'sources'
+    source_dir = PACKAGE / 'diagnostic-fixture' / suffix / 'sources'
     source_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as temporary:
         attempt = Path(temporary) / 'attempt'
-        fixture(attempt, construction, 15)
+        fixture(attempt, construction, TARGETS[suffix])
         names = ('acquisition-provenance.json', 'native-curb-proposal.json',
                  'reviewed-curb.json', 'native-raw-actors.jsonl', 'trace.jsonl',
                  'video_frames.jsonl')
@@ -123,4 +126,6 @@ def build():
 
 
 if __name__ == '__main__':
-    build()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--suffix', choices=sorted(TARGETS), default='at_15_ft')
+    build(parser.parse_args().suffix)
