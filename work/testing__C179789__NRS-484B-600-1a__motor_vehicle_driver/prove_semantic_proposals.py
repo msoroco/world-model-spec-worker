@@ -1,6 +1,7 @@
 """Check all draft proposals against the pinned semantic stage validators."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -24,7 +25,7 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def prove():
+def prove(bound_cases: Path | None = None):
     assignment = json.loads((ROOT / "inputs" / HERE.name / "assignment.json").read_text())
     plan = json.loads((HERE / "case-plan.json").read_text())
     index = read("semantic-index.json")
@@ -60,6 +61,14 @@ def prove():
     validate("cases", cases,
              {"request": {"cell": cell, "actor": actor}, "dependencies": [binding],
               "templates": [template]})
+    if bound_cases is not None:
+        candidate = json.loads(bound_cases.read_text(encoding="utf-8"))
+        validate("cases", candidate,
+                 {"request": {"cell": cell, "actor": actor}, "dependencies": [binding],
+                  "templates": [template]})
+        assert {item["case_id"] for item in candidate["cases"]} == {
+            item["case_id"] for item in cases["cases"]}
+        assert candidate["frozen_comparisons"] == cases["frozen_comparisons"]
     selected = {item["case_id"] for item in plan["cases"]}
     drafted = {item["case_id"] for item in cases["cases"] if item["target_type"] != "baseline"}
     assert drafted == selected
@@ -71,8 +80,11 @@ def prove():
                for item in cases["cases"])
     print(json.dumps({"stage_validations": 6, "selected_case_ids": len(selected),
                       "frozen_comparisons": len(plan["comparisons"]),
+                      "bound_candidate_stage_validated": bound_cases is not None,
                       "status": "draft_numeric_source_and_physical_review_pending"}, sort_keys=True))
 
 
 if __name__ == "__main__":
-    prove()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--bound-cases", type=Path)
+    prove(parser.parse_args().bound_cases)
