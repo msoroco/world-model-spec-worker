@@ -78,8 +78,13 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str,
                             abs(_finite(image.get("time_s"), name + " time") - time_s) > .05 or
                             not image.get("sha256") or not image.get("raw_bgra")):
                         raise ValueError("original camera/Native frame join differs")
+                ego = _motion(scene.ego)
+                velocity = ego["velocity_mps"]
                 row = {"case_id": case_id, "frame": frame, "source_frame": frame,
-                       "time_s": time_s, "ego": _motion(scene.ego),
+                       "time_s": time_s, "ego": ego,
+                       "position": dict(zip(("x", "y", "z"), ego["position_m"])),
+                       "heading_deg": ego["heading_deg"],
+                       "speed_mps": math.dist(velocity, (0., 0., 0.)),
                        "companion": _motion(scene.companion) if scene.companion else None,
                        "controls": controls,
                        "authored_marked_lane_count": len(scene.packet["marked_lanes"]),

@@ -16,7 +16,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE / "tests"))
 
 from saved_measurement import analyze, sha
-from test_saved_measurement import SavedMeasurementTests
+from test_saved_measurement import SavedMeasurementTests, write_trace
 
 
 def prove(case_index: int, kind: str) -> dict:
@@ -32,7 +32,7 @@ def prove(case_index: int, kind: str) -> dict:
                 row["ego"]["position_m"][0] = -10. + index * .07
                 row["ego"]["velocity_mps"] = [1.4, 0., 0.]
                 row["controls"]["ego"] = {"throttle": .3, "brake": 0.}
-            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            write_trace(path, rows)
             media_path = attempt / "media-receipt.json"
             media = json.loads(media_path.read_text())
             media["trace_sha256"] = sha(path)

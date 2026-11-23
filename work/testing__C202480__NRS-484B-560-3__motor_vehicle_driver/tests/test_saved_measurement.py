@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import sys
@@ -16,6 +17,15 @@ from owner_release import release
 from runner import retain_site_sources
 from saved_measurement import analyze, finalize_attempt, sha
 import test_native_scene as scene_fixture
+
+
+def write_trace(path, rows):
+    for row in rows:
+        ego = row["ego"]
+        row["position"] = dict(zip(("x", "y", "z"), ego["position_m"]))
+        row["heading_deg"] = ego["heading_deg"]
+        row["speed_mps"] = math.dist(ego["velocity_mps"], (0., 0., 0.))
+    path.write_text("".join(json.dumps(row) + "\n" for row in rows))
 
 
 class SavedMeasurementTests(unittest.TestCase):
@@ -66,6 +76,8 @@ class SavedMeasurementTests(unittest.TestCase):
             camera = {name: {"sha256": hashes[name]} for name in hashes}
             trace.append({"case_id": self.case_id, "frame": frame,
                           "source_frame": frame, "time_s": time_s,
+                          "position": {"x": -3., "y": ego_y, "z": 0.},
+                          "heading_deg": 0., "speed_mps": 0.,
                           "source_packet_sha256": source_hash,
                           "physical_acceptance_claimed": False,
                           "camera_sources": camera,
@@ -84,8 +96,7 @@ class SavedMeasurementTests(unittest.TestCase):
             mapping.append({"video_frame": index, "carla_frame": frame,
                             "native_frame": frame, "time_s": time_s,
                             "camera_source_sha256": hashes})
-        (self.attempt / "trace.jsonl").write_text(
-            "".join(json.dumps(row) + "\n" for row in trace))
+        write_trace(self.attempt / "trace.jsonl", trace)
         (self.attempt / "video_frames.jsonl").write_text(
             "".join(json.dumps(row) + "\n" for row in mapping))
         receipt = {"format": "c202480-original-four-camera-media-v1",
@@ -111,7 +122,7 @@ class SavedMeasurementTests(unittest.TestCase):
         rows = [json.loads(line) for line in path.read_text().splitlines()]
         for row in rows:
             row["ego"]["velocity_mps"] = [1., 0., 0.]
-        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(path, rows)
         receipt_path = self.attempt / "media-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         receipt["trace_sha256"] = sha(path)
@@ -125,6 +136,18 @@ class SavedMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "media/source receipt differs"):
             analyze(self.attempt)
 
+    def test_hash_matched_canonical_trace_summary_cannot_disagree_with_ego(self):
+        path = self.attempt / "trace.jsonl"
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        rows[0]["position"]["x"] = 123.
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        receipt_path = self.attempt / "media-receipt.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["trace_sha256"] = sha(path)
+        receipt_path.write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, "canonical trace summary differs"):
+            analyze(self.attempt)
+
     def test_approach_then_front_bumper_stop_can_complete_engineering_maneuver(self):
         path = self.attempt / "trace.jsonl"
         rows = [json.loads(line) for line in path.read_text().splitlines()]
@@ -132,7 +155,7 @@ class SavedMeasurementTests(unittest.TestCase):
             row["ego"]["position_m"][0] = -10. + index * .07
             row["ego"]["velocity_mps"] = [1.4, 0., 0.]
             row["controls"]["ego"] = {"throttle": .3, "brake": 0.}
-        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(path, rows)
         receipt_path = self.attempt / "media-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         receipt["trace_sha256"] = sha(path)
@@ -149,7 +172,7 @@ class SavedMeasurementTests(unittest.TestCase):
             row["ego"]["position_m"][0] = -3. + index * .07
             row["ego"]["velocity_mps"] = [1.4, 0., 0.]
             row["controls"]["ego"] = {"throttle": .3, "brake": 0.}
-        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(path, rows)
         receipt_path = self.attempt / "media-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         receipt["trace_sha256"] = sha(path)
@@ -163,7 +186,7 @@ class SavedMeasurementTests(unittest.TestCase):
         path = self.attempt / "trace.jsonl"
         rows = [json.loads(line) for line in path.read_text().splitlines()]
         rows[100]["ego"]["position_m"][0] = -10.
-        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(path, rows)
         receipt_path = self.attempt / "media-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         receipt["trace_sha256"] = sha(path)
@@ -175,7 +198,7 @@ class SavedMeasurementTests(unittest.TestCase):
         path = self.attempt / "trace.jsonl"
         rows = [json.loads(line) for line in path.read_text().splitlines()]
         rows[0]["ego"]["position_m"][1] = -5.5
-        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(path, rows)
         receipt_path = self.attempt / "media-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         receipt["trace_sha256"] = sha(path)
@@ -216,7 +239,7 @@ class SavedMeasurementTests(unittest.TestCase):
                                 "heading_deg": 0.,
                                 "bbox_half_extent_m": [2., .9, .7],
                                 "actor_id": 2}
-        trace_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(trace_path, rows)
         receipt_path = self.attempt / "media-receipt.json"
         receipt = json.loads(receipt_path.read_text())
         receipt.update(trace_sha256=sha(trace_path), source_packet_sha256=source_hash)
@@ -227,7 +250,7 @@ class SavedMeasurementTests(unittest.TestCase):
         self.assertEqual(observed["first_two_queue_alignment"]["lateral_center_separation_m"], 3.)
         for row in rows:
             row["companion"]["position_m"][0] = -9.
-        trace_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        write_trace(trace_path, rows)
         receipt["trace_sha256"] = sha(trace_path)
         receipt_path.write_text(json.dumps(receipt))
         _, result = analyze(self.attempt)

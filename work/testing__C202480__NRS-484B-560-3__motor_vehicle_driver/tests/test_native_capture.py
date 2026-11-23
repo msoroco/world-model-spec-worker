@@ -107,6 +107,11 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertEqual(len(self.companion.controls), 900)
         self.assertFalse(rows[-1]["physical_acceptance_claimed"])
         self.assertEqual(rows[-1]["ego"]["bbox_half_extent_m"], [2., .9, .7])
+        for row in rows:
+            self.assertEqual(row["position"], dict(zip(("x", "y", "z"),
+                                                        row["ego"]["position_m"])))
+            self.assertEqual(row["heading_deg"], row["ego"]["heading_deg"])
+            self.assertEqual(row["speed_mps"], 1.)
 
     def test_missing_fourth_camera_rejected(self):
         with self.assertRaisesRegex(ValueError, "four camera frame sources missing"):

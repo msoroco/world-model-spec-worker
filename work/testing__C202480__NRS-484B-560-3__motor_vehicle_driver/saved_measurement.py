@@ -138,6 +138,13 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
             raise ValueError("original four-camera frame map join differs")
         x, y, speed, length, width, yaw, ego_id = _motion(row, "ego")
         velocity = row["ego"]["velocity_mps"]
+        if (row.get("position") != {"x": row["ego"]["position_m"][0],
+                                    "y": row["ego"]["position_m"][1],
+                                    "z": row["ego"]["position_m"][2]} or
+                row.get("heading_deg") != row["ego"]["heading_deg"] or
+                type(row.get("speed_mps")) not in (int, float) or
+                not math.isclose(row["speed_mps"], speed, rel_tol=0, abs_tol=1e-8)):
+            raise ValueError("original canonical trace summary differs from ego motion")
         if previous_motion is not None:
             px, py, pvx, pvy = previous_motion
             dt = time_s - trace[index - 1]["time_s"]
