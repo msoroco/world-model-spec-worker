@@ -878,7 +878,7 @@
             "exit_code": 0,
             "construction_sha256": "c763ebae730ea7f0c6c56d3bc106ddc6113d54d7de7519ecfeeca834952c7f9a",
             "log": "cpu-proof-continuation-2.log",
-            "log_sha256": "cf8279412cf1c054c83dc57ed458871b6e2ad9e672c45315ff95aab03ba62324"
+            "log_sha256": "dcb117e88e014c4bea20e64a5c3aa7f8d6bf295b484a6c08827d815b8f3a0d00"
           },
           "compatibility": {
             "receipt": "cases/right_other_over_300_ft-fallback2-compatibility.json",
@@ -909,7 +909,7 @@
             "exit_code": 0,
             "construction_sha256": "5c916a2ad7c3169b5cd0f3ef600c9bbc3925564d474ca8b4b56754da3d2e6afc",
             "log": "cpu-proof-continuation-2.log",
-            "log_sha256": "cf8279412cf1c054c83dc57ed458871b6e2ad9e672c45315ff95aab03ba62324"
+            "log_sha256": "dcb117e88e014c4bea20e64a5c3aa7f8d6bf295b484a6c08827d815b8f3a0d00"
           },
           "compatibility": {
             "receipt": "cases/right_other_over_300_ft-fallback3-compatibility.json",
@@ -1005,7 +1005,7 @@
             "exit_code": 0,
             "construction_sha256": "4a410b4982827f9b7a9d4c0d512f072bf12ab9451fae05041595324e02f11b8b",
             "log": "cpu-proof-continuation-2.log",
-            "log_sha256": "cf8279412cf1c054c83dc57ed458871b6e2ad9e672c45315ff95aab03ba62324"
+            "log_sha256": "dcb117e88e014c4bea20e64a5c3aa7f8d6bf295b484a6c08827d815b8f3a0d00"
           },
           "compatibility": {
             "receipt": "cases/right_business_under_100_ft-fallback1-compatibility.json",
@@ -1030,7 +1030,55 @@
           "changed_knobs": [
             "blueprint_selection_index: default 0 to 1"
           ],
-          "remedy": "Select the alternate vehicle blueprint while retaining the same 99-foot business-area route, district and signal target"
+          "remedy": "Select the alternate vehicle blueprint while retaining the same 99-foot business-area route, district and signal target",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-businessunder-fallback2/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_under_100_ft --candidate fallback2 --output .runtime-work/c412593-businessunder-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "5dd2c92de11c1392511a5b6cbd38d90e49077addf5d41d128564cb1793d50f17",
+            "log": "cpu-proof-continuation-2.log",
+            "log_sha256": "dcb117e88e014c4bea20e64a5c3aa7f8d6bf295b484a6c08827d815b8f3a0d00"
+          },
+          "compatibility": {
+            "receipt": "cases/right_business_under_100_ft-fallback2-compatibility.json",
+            "sha256": "3545fc744acbbf19f20f191ca4c255081457d8f0c97e0295b28edf15b8644e8a",
+            "log": "cases/right_business_under_100_ft-fallback2-positive.log",
+            "negative_log": "cases/right_business_under_100_ft-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_business_under_100_ft-fallback2-saved-processing.json",
+            "sha256": "99cb6fcf877d387ec157d2a9a6db78a26fdc8d9990dcd4754f8e3fbafe268c59"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/right_business_under_100_ft-fallback3-construction.json",
+          "construction_sha256": "2aa64346a18604a0cd611ab3300843f460d4c3985c0885e8488bc00d5ee48bb9",
+          "trigger": {
+            "source": "Original Native drive history and right-indicator readback",
+            "metric": "source-measured route history and camera coverage before the fixed 99-foot indicator onset",
+            "failure_condition": "Primary approach gives insufficient source history or camera coverage for the 99-foot business boundary measurement"
+          },
+          "changed_knobs": [
+            "approach_start_m: default 0.0 to 5.0"
+          ],
+          "remedy": "Start the same authored route five metres earlier while retaining the fixed 99-foot signal onset and remeasure original distance",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-businessunder-fallback3/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_under_100_ft --candidate fallback3 --output .runtime-work/c412593-businessunder-fallback3/offline",
+            "exit_code": 0,
+            "construction_sha256": "2aa64346a18604a0cd611ab3300843f460d4c3985c0885e8488bc00d5ee48bb9",
+            "log": "cpu-proof-continuation-2.log",
+            "log_sha256": "dcb117e88e014c4bea20e64a5c3aa7f8d6bf295b484a6c08827d815b8f3a0d00"
+          },
+          "compatibility": {
+            "receipt": "cases/right_business_under_100_ft-fallback3-compatibility.json",
+            "sha256": "216cdebcaf62e8aaf8639832e41660b0b16fc540de80baba07f0c82f33988923",
+            "log": "cases/right_business_under_100_ft-fallback3-positive.log",
+            "negative_log": "cases/right_business_under_100_ft-fallback3-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_business_under_100_ft-fallback3-saved-processing.json",
+            "sha256": "2c38244ba223cd52f70bb31e83b87ffaec10b2155f07ebb2019c6b8e0fd1c407"
+          }
         }
       ],
       "offline": {
@@ -1096,7 +1144,22 @@
         "status": "physical",
         "reason": "Exact 300-foot onset may drift against Native route progress or four-camera visibility"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/right_business_over_100_ft-fallback1-construction.json",
+          "construction_sha256": "365a81849f0f06023f94a882d7c51e075ad834da510d7c5f46b186c84338c92d",
+          "trigger": {
+            "source": "Original Native drive history and four source-camera frame joins",
+            "metric": "continuous right-indicator path length before measured course change and complete turn",
+            "failure_condition": "Primary speed yields a short signal distance or an incomplete source-measured turn"
+          },
+          "changed_knobs": [
+            "requested_speed_mps: 4.0 to 3.0"
+          ],
+          "remedy": "Run a slower authored approach and remeasure the same 101-foot business-area selected case"
+        }
+      ],
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_over_100_ft --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/contract3-right_business_over_100_ft-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
         "exit_code": 0,
