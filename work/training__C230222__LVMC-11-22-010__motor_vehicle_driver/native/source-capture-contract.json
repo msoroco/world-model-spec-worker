@@ -1,0 +1,36 @@
+{
+  "format": "c230222-native-source-capture-contract-v1",
+  "proposed_runner": "work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/native/native_runner.py",
+  "proposed_config": "work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/native/config.json",
+  "case_ids": [
+    "training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference",
+    "training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast"
+  ],
+  "source_kind_required": "original_native",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "frames": 600,
+  "same_tick_sources": [
+    "native-ego-frames.jsonl",
+    "video_frames.jsonl",
+    "native-driving-context.json",
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "native_frame_join": "Each trace row's native_frame must match the pinned FrameMap row's carla_frame. Both must use the same consecutive CARLA frame identity; video_frame must run from 0 through 599 and time_s must equal video_frame / 20. A duplicate native_frame key in the map must agree.",
+  "camera_decode": "All four camera streams must fully decode as 600 frames at 20 Hz with positive dimensions.",
+  "driver_reference_scope": "Retain the raw driver-reference pixels and camera pose metadata for independent review. A simulator camera without a visible, behaviorally modeled driver cannot establish actual driver attention.",
+  "episode_context": [
+    "CARLA map identity and road OpenDRIVE source",
+    "vehicle and controller identity",
+    "original trace and per-frame capture evidence",
+    "signal and roadway context if present",
+    "all camera extrinsics and active field of view",
+    "source hashes and Native process exit"
+  ],
+  "attention_observation": null,
+  "legal_verdict": null,
+  "status": "capture_interface_authored_unexecuted"
+}

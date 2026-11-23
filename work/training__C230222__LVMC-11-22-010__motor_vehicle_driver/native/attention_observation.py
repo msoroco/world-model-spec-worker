@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import subprocess
 
 FRAMES = 600
 RATE = 20
@@ -35,6 +36,25 @@ def angle_delta(now, prior):
     return (now - prior + 180) % 360 - 180
 
 
+def camera_metadata(source, view):
+    probe = subprocess.run(
+        ['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
+         '-show_entries', 'stream=nb_read_frames,width,height,r_frame_rate',
+         '-of', 'json', str(source)], capture_output=True, text=True, check=True)
+    streams = json.loads(probe.stdout).get('streams', [])
+    require(len(streams) == 1, 'Missing video stream: ' + view)
+    stream = streams[0]
+    require(stream.get('nb_read_frames') == str(FRAMES), 'Incomplete camera stream: ' + view)
+    require(stream.get('r_frame_rate') == f'{RATE}/1', 'Camera rate differs: ' + view)
+    require(stream.get('width', 0) > 0 and stream.get('height', 0) > 0,
+            'Invalid camera dimensions: ' + view)
+    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-xerror', '-i', str(source),
+                    '-map', '0:v:0', '-f', 'null', '-'],
+                   capture_output=True, text=True, check=True)
+    return {'decoded_frames': FRAMES, 'frame_rate_hz': RATE,
+            'width': stream['width'], 'height': stream['height']}
+
+
 def measure(attempt):
     attempt = Path(attempt)
     trace_path = attempt / 'native-ego-frames.jsonl'
@@ -49,10 +69,12 @@ def measure(attempt):
             'Source provenance required')
     require(set(context.get('camera_sources', {})) == set(VIEWS),
             'Four source-camera references required')
+    cameras = {}
     for view, relative in context['camera_sources'].items():
         source = attempt / relative
         require(source.is_file() and source.suffix == '.mkv',
                 'Missing camera source: ' + view)
+        cameras[view] = camera_metadata(source, view)
     samples = []
     first_native = trace[0]['native_frame']
     prior = None
@@ -60,8 +82,10 @@ def measure(attempt):
         require(motion.get('source_kind') == context['source_kind'],
                 'Mixed motion provenance')
         native = first_native + index
+        mapped_native = mapping.get('carla_frame', mapping.get('native_frame'))
         require(motion.get('native_frame') == native and
-                mapping.get('native_frame') == native and
+                mapped_native == native and
+                mapping.get('native_frame', mapped_native) == mapped_native and
                 mapping.get('video_frame') == index,
                 'Native/camera frame join differs')
         expected_time = index / RATE
@@ -84,13 +108,14 @@ def measure(attempt):
                         'yaw_rate_degps': yaw_rate,
                         'acceleration_mps2': acceleration})
         prior = yaw
-    return {'format': 'c230222-attention-observation-v1',
+    return {'format': 'c230222-attention-observation-v3',
             'source_kind': context['source_kind'], 'source_hashes': {
                 trace_path.name: digest(trace_path), map_path.name: digest(map_path),
                 context_path.name: digest(context_path),
                 **{view: digest(attempt / relative)
                    for view, relative in context['camera_sources'].items()}},
             'sample_count': len(samples), 'sampling_rate_hz': RATE,
+            'camera_decode': cameras,
             'measurements': {'ego_pose': samples, 'ego_speed': [s['speed_mps'] for s in samples],
                              'ego_yaw_rate': [s['yaw_rate_degps'] for s in samples],
                              'ego_acceleration': [s['acceleration_mps2'] for s in samples]},
