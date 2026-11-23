@@ -26,6 +26,15 @@ def construction_bytes(item):
     return item['construction_payload'].encode()
 
 
+def historical_bytes(item):
+    archive = read(item['historical_construction_archive'])
+    member = archive['files'][item['historical_construction_member']]
+    raw = zlib.decompress(base64.b64decode(member['zlib_base64'], validate=True))
+    assert len(raw) == member['bytes']
+    assert hashlib.sha256(raw).hexdigest() == member['sha256']
+    return raw
+
+
 def proof_text(item, field):
     key = field + '_payload'
     if key in item:
@@ -59,6 +68,114 @@ def indexed_file_json(spec):
 
 
 class SweepConstructionTests(unittest.TestCase):
+    def test_returned_manifest_materializes_all_qualified_sweep_bundles(self):
+        index = read('sweep-constructions/index.json')
+        manifest = read('execution-manifest.json')
+        selected = {item['case_id']: item for item in manifest['cases']}
+        for row in index['constructions']:
+            primary = row['qualified_primary']
+            entry = selected[primary['case_id']]
+            self.assertEqual(entry['construction'], primary['construction'])
+            self.assertEqual(entry['construction_sha256'], primary['construction_sha256'])
+            cases = [('primary', primary, entry)]
+            candidates = {item['id']: item for item in entry['candidates']}
+            for item in row['qualified_fallbacks']['candidates']:
+                cases.append((item['id'], item, candidates[item['id']]))
+            for name, qualified, bound in cases:
+                with self.subTest(case=row['case_id'], candidate=name):
+                    raw = (HERE / qualified['construction']).read_bytes()
+                    self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                                     qualified['construction_sha256'])
+                    self.assertEqual(bound['construction'], qualified['construction'])
+                    self.assertEqual(bound['construction_sha256'],
+                                     qualified['construction_sha256'])
+                    old = row if name == 'primary' else row[name]
+                    historical = historical_bytes(old)
+                    self.assertEqual(hashlib.sha256(historical).hexdigest(),
+                                     old.get('construction_sha256', old.get('sha256')))
+
+    def test_qualified_hold_fallback_matrices(self):
+        index = read('sweep-constructions/index.json')
+        expected = {'c125745-2-0000': 0, 'c125745-2-0002': 8,
+                    'c125745-2-0001': 16}
+        for short, hold in expected.items():
+            row = next(item for item in index['constructions']
+                       if item['case_id'] == short)
+            items = row['qualified_fallbacks']['candidates']
+            self.assertEqual([item['id'] for item in items],
+                             ['fallback1', 'fallback2', 'fallback3'])
+            self.assertEqual([item['changed_knobs'] for item in items],
+                             [['ego_hold_after_clear_frames'],
+                              ['site.camera_poses.overview'],
+                              ['site.approaches.other.route_xy_m']])
+            self.assertEqual(len({item['construction_sha256'] for item in items}), 3)
+            for item in items:
+                with self.subTest(case=short, candidate=item['id']):
+                    raw = construction_bytes(item)
+                    self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                                     item['construction_sha256'])
+                    bundle = json.loads(raw)
+                    config = json.loads(next(f['content'] for f in bundle['files']
+                                             if f['path'] == 'config.json'))
+                    self.assertEqual(bundle['case_id'], item['case_id'])
+                    self.assertEqual(bundle['candidate_id'], item['id'])
+                    self.assertEqual(config['selected_case_id'], item['case_id'])
+                    self.assertEqual(config['ego_hold_after_clear_frames'],
+                                     hold + 4 if item['id'] == 'fallback1' else hold)
+                    offline = item['offline']
+                    self.assertEqual(offline['exit_code'], 0)
+                    self.assertFalse(offline['simulation_started'])
+                    for field in ('log', 'command_log'):
+                        payload = offline[field + '_payload'].encode()
+                        self.assertEqual(hashlib.sha256(payload).hexdigest(),
+                                         offline[field + '_sha256'])
+                    self.assertTrue(json.loads(offline['command_log_payload'])
+                                    ['offline_passed'])
+                    proof = item['current_runtime_proof']
+                    positive = proof['positive_compatibility']
+                    negative = proof['negative_compatibility']
+                    saved = proof['recorded_only_saved']
+                    for binding in (positive, saved):
+                        self.assertEqual(binding['exit_code'], 0)
+                        for field in ('receipt', 'analysis_log'):
+                            payload = proof_text(binding, field).encode()
+                            self.assertEqual(hashlib.sha256(payload).hexdigest(),
+                                             binding[field + '_sha256'])
+                    self.assertEqual(hashlib.sha256(negative['log_payload'].encode()).hexdigest(),
+                                     negative['log_sha256'])
+                    compat = json.loads(proof_text(positive, 'receipt'))
+                    processed = json.loads(proof_text(saved, 'receipt'))
+                    self.assertTrue(compat['passed'])
+                    self.assertEqual(compat['candidate_id'], item['id'])
+                    self.assertEqual(compat['construction_sha256'],
+                                     item['construction_sha256'])
+                    self.assertEqual(compat['negative_log_sha256'],
+                                     negative['log_sha256'])
+                    self.assertTrue(processed['passed'])
+                    self.assertTrue(processed['recorded_only'])
+                    self.assertTrue(processed['originals_preserved'])
+                    self.assertEqual(processed['candidate_id'], item['id'])
+                    self.assertEqual(processed['native_revision']['construction_sha256'],
+                                     item['construction_sha256'])
+                    self.assertFalse(processed['physical_acceptance_claimed'])
+                    self.assertFalse(processed['legal_acceptance_claimed'])
+                    physical = item['physical_cpu_proof']
+                    self.assertEqual(physical['saved_processing_receipt_sha256'],
+                                     saved['receipt_sha256'])
+                    for name, binding in physical['fixtures'].items():
+                        data = zlib.decompress(base64.b64decode(
+                            binding['payload_zlib_base64'], validate=True))
+                        self.assertEqual(len(data), binding['uncompressed_bytes'])
+                        self.assertEqual(hashlib.sha256(data).hexdigest(), binding['sha256'])
+                        if name == 'lifecycle_json':
+                            life = json.loads(data)
+                            self.assertEqual(life['saved_processing_receipt_sha256'],
+                                             saved['receipt_sha256'])
+                            self.assertTrue(life['failed_encoder_rejected'])
+                            self.assertTrue(life['premature_release_rejected'])
+                    self.assertTrue(all(code == 0 for code in
+                                        physical['exit_codes'].values()))
+
     def test_frame_48_qualified_fallback_matrix(self):
         index = read('sweep-constructions/index.json')
         row = next(item for item in index['constructions']
@@ -628,8 +745,9 @@ class SweepConstructionTests(unittest.TestCase):
         self.assertEqual(len(index['constructions']), 6)
         for row in index['constructions']:
             with self.subTest(case=row['case_id']):
-                primary = read(row['construction'])
-                self.assertEqual(digest(row['construction']), row['sha256'])
+                primary_bytes = historical_bytes(row)
+                primary = json.loads(primary_bytes)
+                self.assertEqual(hashlib.sha256(primary_bytes).hexdigest(), row['sha256'])
                 axis = row['sweep_point']['axis']
                 value = row['sweep_point']['commanded_value']
                 config = json.loads(next(f['content'] for f in primary['files']
@@ -642,10 +760,11 @@ class SweepConstructionTests(unittest.TestCase):
                 for candidate_id in ('fallback1', 'fallback2', 'fallback3'):
                     fallback = row[candidate_id]
                     self.assertEqual(fallback['status'], 'offline_proven')
-                    self.assertEqual(digest(fallback['construction']),
+                    fallback_bytes = historical_bytes(fallback)
+                    self.assertEqual(hashlib.sha256(fallback_bytes).hexdigest(),
                                      fallback['construction_sha256'])
                     constructions.add(fallback['construction_sha256'])
-                    alternate = read(fallback['construction'])
+                    alternate = json.loads(fallback_bytes)
                     self.assertEqual(alternate['case_id'], row['case_id'])
                     self.assertEqual(alternate['recording_description'],
                                      primary['recording_description'])
