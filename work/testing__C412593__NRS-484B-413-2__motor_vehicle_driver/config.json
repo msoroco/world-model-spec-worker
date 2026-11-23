@@ -1,0 +1,147 @@
+{
+  "selected_case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
+  "supported_case_ids": [
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_under_100_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_over_100_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_residential_at_100_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_under_300_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_at_300_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_over_300_ft",
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted"
+  ],
+  "law_id": "NRS-484B-413-2",
+  "cell_id": "C412593",
+  "actor": "motor_vehicle_driver",
+  "course": "right_turn",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "requested_speed_mps": 4.0,
+  "required_atoms": [
+    "sig.turn_indicator"
+  ],
+  "source_packets": [],
+  "case": {
+    "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
+    "district_type": "business",
+    "signal_target_ft": 100,
+    "physical_acceptance_claimed": false
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose": {
+        "x": -50,
+        "y": -10,
+        "z": 42,
+        "yaw": 0,
+        "pitch": -80
+      }
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose": {
+        "x": -85,
+        "y": -14,
+        "z": 8,
+        "yaw": 0,
+        "pitch": -15
+      }
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose": {
+        "x": 11,
+        "y": -9,
+        "z": 12,
+        "yaw": 150,
+        "pitch": -30
+      }
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose": {
+        "x": 1,
+        "y": 0,
+        "z": 1.65,
+        "yaw": 0,
+        "pitch": -6
+      }
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "right_indicator",
+        "unit": "Native device state",
+        "method": "original light-mask readback at every 20 Hz frame",
+        "time_window": "entire 45-second original-frame capture",
+        "reference_frame": "original Native frame",
+        "uncertainty": "diagnostic source, physical and legal review pending",
+        "sampling_rate_hz": 20
+      },
+      {
+        "name": "ego_position_xy_m",
+        "unit": "m",
+        "method": "original Native location at every 20 Hz frame",
+        "time_window": "entire 45-second original-frame capture",
+        "reference_frame": "original Native frame",
+        "uncertainty": "diagnostic source, physical and legal review pending",
+        "sampling_rate_hz": 20
+      },
+      {
+        "name": "ego_heading_deg",
+        "unit": "degrees",
+        "method": "original Native transform at every 20 Hz frame",
+        "time_window": "entire 45-second original-frame capture",
+        "reference_frame": "original Native frame",
+        "uncertainty": "diagnostic source, physical and legal review pending",
+        "sampling_rate_hz": 20
+      },
+      {
+        "name": "ego_road_id",
+        "unit": "Native road ID",
+        "method": "original waypoint readback at every 20 Hz frame",
+        "time_window": "entire 45-second original-frame capture",
+        "reference_frame": "original Native frame",
+        "uncertainty": "diagnostic source, physical and legal review pending",
+        "sampling_rate_hz": 20
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "authored_map_context",
+        "unit": "structured record",
+        "method": "saved route_context native map and route source, with source hash"
+      },
+      {
+        "name": "district_zone_context",
+        "unit": "structured record",
+        "method": "saved route_context district source and unresolved freight-zone review"
+      }
+    ],
+    "limitations": [
+      "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+    ]
+  },
+  "physical_completion": {
+    "criterion": "road_transition",
+    "motion_source": "drive_history.jsonl",
+    "body_key": "body_vertices_m",
+    "road_key": "ego_road_id",
+    "destination_road": 412595,
+    "minimum_progress_m": 0.25
+  }
+}

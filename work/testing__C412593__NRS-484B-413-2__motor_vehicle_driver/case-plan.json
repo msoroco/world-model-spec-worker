@@ -166,5 +166,135 @@
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted"
       ]
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "sig.turn_indicator": {
+      "evidence": "Original per-frame right-indicator readback is retained; actual lamp pixels require review.",
+      "channels": [
+        "right_indicator"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "sig.hand_signal": {
+      "evidence": "Hand signaling is not controlled by this motor-vehicle diagnostic; camera evidence remains for review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.distance_while": {
+      "evidence": "Join original position and indicator samples to measure uninterrupted approach distance.",
+      "channels": [
+        "ego_position_xy_m",
+        "right_indicator"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.path_length": {
+      "evidence": "Integrate original joined ego positions along the approach.",
+      "channels": [
+        "ego_position_xy_m"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.turning": {
+      "evidence": "Original heading and road-ID transition record the authored right turn.",
+      "channels": [
+        "ego_heading_deg",
+        "ego_road_id"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.lane_change": {
+      "evidence": "Lane-change term is not the selected maneuver; right-turn route and original road source are retained.",
+      "channels": [
+        "ego_road_id"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "env.precipitation": {
+      "evidence": "Weather source is retained in the diagnostic context; legal duty remains regardless of weather.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.speed": {
+      "evidence": "Original drive history and trace carry per-frame speed for source-bound measurement.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "46d2fa34da04932f09a32cb1fce36c567f08bee723e099fa8372121dbb26a4df"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "120 m approach, freight sign/bay and right-turn course",
+        "interval": "0-45 s planned; Native pixels unverified"
+      },
+      {
+        "view": "approach",
+        "subject": "right indicator onset and 100/300-foot approach",
+        "interval": "0-45 s planned; Native pixels unverified"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "freight zone, turn onset and outgoing road",
+        "interval": "0-45 s planned; Native pixels unverified"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego right-indicator and turn reference",
+        "interval": "0-45 s planned; Native pixels unverified"
+      }
+    ]
+  },
+  "first_primary_case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft"
 }
