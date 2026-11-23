@@ -83,6 +83,8 @@ def camera_transform(carla, name):
 def execute(config, output, host, port):
     import carla
     from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
+    from worker_exchange.world_restore import restore, snapshot
 
     check(config)
     output = Path(output)
@@ -90,10 +92,15 @@ def execute(config, output, host, port):
     client = carla.Client(host, port)
     client.set_timeout(15.0)
     world = client.get_world()
-    old_settings = world.get_settings()
+    original_world = snapshot(client)
     actors = []
     sensors = {}
     packets = queue.Queue()
+    errors = []
+    encoder_exit_codes = {}
+    frames = 0
+    restoration = {'restored': False}
+    failure = None
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -126,7 +133,7 @@ def execute(config, output, host, port):
             'exhibition_accepted': False}, indent=2) + '\n')
         with PipelineCapture(client, ego, output, config['case_id'],
                              required_observations=config['required_atoms']) as capture, \
-                (output / 'video_frames.jsonl').open('x') as frame_map:
+                FrameMap(output / 'video_frames.jsonl') as frame_map:
             for index in range(FRAMES):
                 phase = phase_at(config, index)
                 ego.apply_control(carla.VehicleControl(throttle=phase['throttle'],
@@ -141,25 +148,64 @@ def execute(config, output, host, port):
                     image.save_to_disk(str(output / view / f'{index:06d}.png'))
                     seen.add(view)
                 timestamp = world.get_snapshot().timestamp.elapsed_seconds
-                mapping = {'video_frame': index, 'carla_frame': frame_id,
-                           'native_frame': frame_id, 'time_s': index / HZ,
-                           'native_elapsed_s': timestamp}
-                frame_map.write(json.dumps(mapping, allow_nan=False) + '\n')
                 capture.capture(frame_id, index / HZ,
                                 extra={'video_frame': index,
                                        'native_frame': frame_id,
                                        'phase': phase['name']})
+                frame_map.append(frame_id, index / HZ,
+                                 native_elapsed_s=timestamp)
+                frames += 1
         for view in VIEWS:
-            subprocess.run(('ffmpeg', '-v', 'error', '-framerate', str(HZ),
-                            '-i', str(output / view / '%06d.png'),
-                            '-c:v', 'ffv1', str(output / (view + '.mkv'))),
-                           check=True, timeout=300)
+            encoded = subprocess.run(('ffmpeg', '-v', 'error', '-framerate', str(HZ),
+                                      '-i', str(output / view / '%06d.png'),
+                                      '-c:v', 'ffv1', str(output / (view + '.mkv'))),
+                                     timeout=300)
+            encoder_exit_codes[view] = encoded.returncode
+            if encoded.returncode:
+                raise RuntimeError(f'{view} encoder exited {encoded.returncode}')
+        if frames != FRAMES:
+            raise RuntimeError(f'Incomplete original capture: {frames} frames')
+    except BaseException as error:
+        failure = error
+        errors.append(f'{type(error).__name__}: {error}')
     finally:
         for sensor in sensors.values():
-            sensor.stop()
+            try:
+                sensor.stop()
+            except BaseException as error:
+                errors.append(f'sensor stop: {type(error).__name__}: {error}')
         for actor in reversed(actors):
-            actor.destroy()
-        world.apply_settings(old_settings)
+            try:
+                actor.destroy()
+            except BaseException as error:
+                errors.append(f'actor destroy: {type(error).__name__}: {error}')
+        try:
+            restoration = restore(client, original_world)
+        except BaseException as error:
+            errors.append(f'world restore: {type(error).__name__}: {error}')
+        (output / 'native-run-status.json').write_text(json.dumps({
+            'case_id': config['case_id'], 'frames': frames, 'errors': errors,
+            'restoration': restoration, 'encoder_exit_codes': encoder_exit_codes,
+            'capture_finished': frames == FRAMES and failure is None,
+            'acceptance_claimed': False}, indent=2) + '\n')
+    if failure is not None:
+        raise failure
+    if errors:
+        raise RuntimeError('; '.join(errors))
+    try:
+        seal_capture(output, frames=frames, restoration=restoration,
+                     errors=errors, encoder_exit_codes=encoder_exit_codes,
+                     context={'case_id': config['case_id'],
+                              'source': 'original Native CARLA capture',
+                              'highway_status_verified': False,
+                              'exhibition_accepted': False})
+    except BaseException as error:
+        errors.append(f'capture seal: {type(error).__name__}: {error}')
+        (output / 'native-run-status.json').write_text(json.dumps({
+            'case_id': config['case_id'], 'frames': frames, 'errors': errors,
+            'restoration': restoration, 'encoder_exit_codes': encoder_exit_codes,
+            'capture_finished': True, 'acceptance_claimed': False}, indent=2) + '\n')
+        raise
 
 
 if __name__ == '__main__':

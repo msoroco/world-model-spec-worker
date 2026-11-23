@@ -22,14 +22,14 @@ def main():
         suffix = entry['case_id'].rsplit('__', 1)[-1]
         for candidate in [entry, *entry['candidates']]:
             ident = candidate.get('id', 'primary')
-            output = ROOT / '.runtime-work' / f'c229597-coherent-v2-{suffix}-{ident}'
+            output = ROOT / '.runtime-work' / f'c229597-coherent-v3-{suffix}-{ident}'
             command = [sys.executable, str(ROOT / 'runtime.py'), 'compatibility',
                        '--manifest', str(MANIFEST), '--case', entry['case_id'],
                        '--candidate', ident, '--output', str(output),
                        '--library', str(ROOT / 'runtime/pipeline/library'),
                        '--validator', str(ROOT / '.runtime-work/decoder-update16/.lake/build/bin/adapterCheck')]
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
-            log = ROOT / '.runtime-work' / f'c229597-coherent-v2-{suffix}-{ident}-command.log'
+            log = ROOT / '.runtime-work' / f'c229597-coherent-v3-{suffix}-{ident}-command.log'
             log.write_text(result.stdout + result.stderr)
             if result.returncode:
                 raise RuntimeError(f'{suffix}/{ident} exit {result.returncode}: {result.stderr[-1500:]}')
