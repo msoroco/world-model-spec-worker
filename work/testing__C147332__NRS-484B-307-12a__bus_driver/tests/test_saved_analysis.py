@@ -1,7 +1,9 @@
 """Synthetic source custody tests; fixture sources are never official evidence."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -11,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from analysis import build_report
 from comparison_audit import audit
+from delivery_audit import audit_attempt
 from scene_construction import scene
 
 
@@ -58,7 +61,8 @@ def fixture(root, *, bus_lane="east", green=("east",), moving=True, case_id=None
                             {"lane_id": "west", "direction": "bus_direction",
                              "lateral_bounds_m": [2, 6],
                              "symbol": "down_green_arrow" if "west" in green else "dark"}]}
-        camera = {**payload, "camera_names": ["overview"]}
+        camera = {**payload, "camera_names": ["overview", "approach",
+                                             "reference_corner", "driver_reference"]}
         for name, data, prefix in (("bus-body-history.jsonl", body, "body"),
                                    ("lane-signal-history.jsonl", signal, "signal"),
                                    ("camera-frame-map.jsonl", camera, "camera")):
@@ -74,7 +78,114 @@ def fixture(root, *, bus_lane="east", green=("east",), moving=True, case_id=None
     return acquisition
 
 
+def sealed_fixture(root):
+    acquisition = fixture(root, case_id="green_selected_drive")
+    put(root / "road.xodr", (ROOT / "candidate-green-road.xodr").read_text())
+    put(root / "carla_recorder.log", "synthetic unit-test recorder placeholder\n")
+    frames = [{"video_frame": i, "carla_frame": i, "native_frame": i, "time_s": i / 20}
+              for i in range(3)]
+    put(root / "video_frames.jsonl", "".join(json.dumps(row) + "\n" for row in frames))
+    put(root / "trace.jsonl", "".join(json.dumps({"frame": i, "time_s": i / 20,
+                                                   "position_m": [i, 0]}) + "\n"
+                                      for i in range(3)))
+    put(root / "sign-state-original.jsonl", "".join(json.dumps({"frame": i,
+        "elapsed_seconds": i / 20, "heads": []}) + "\n" for i in range(3)))
+    put(root / "controller-history.jsonl", "".join(json.dumps({"frame": i,
+        "elapsed_seconds": i / 20, "requested_control": {"brake": 0, "throttle": 0.5}}) + "\n"
+        for i in range(3)))
+    for name in ("overview", "approach", "reference_corner", "driver_reference"):
+        subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-f", "lavfi",
+                        "-i", "color=c=green:s=64x64:r=20", "-frames:v", "3", "-c:v", "ffv1",
+                        str(root / (name + ".mkv"))], check=True, capture_output=True)
+    original_names = ("road.xodr", "trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
+                      "bus-body-history.jsonl", "lane-signal-history.jsonl",
+                      "sign-state-original.jsonl", "camera-frame-map.jsonl",
+                      "controller-history.jsonl", "reviewed-context.json",
+                      "overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
+    for name in original_names:
+        acquisition[name] = sha(root / name)
+    put(root / "acquisition.json", json.dumps(acquisition))
+    seal = {"format": "worker-sealed-capture", "provenance_kind": "synthetic_fixture",
+            "diagnostic_fixture": True, "frames": 3,
+            "events": ["capture_finished", "encoders_closed", "restoration_verified"],
+            "restoration": {"restored": True},
+            "encoder_exit_codes": {name: 0 for name in
+                                   ("overview", "approach", "reference_corner", "driver_reference")},
+            "sources": {name: sha(root / name) for name in acquisition}}
+    put(root / "capture-seal.json", json.dumps(seal))
+
+
 class SavedAnalysisTests(unittest.TestCase):
+    def test_delivery_audit_diagnostic_positive_and_native_guard(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sealed_fixture(root)
+            report = audit_attempt(root, diagnostic=True)
+            self.assertEqual(report["decoded_frames"], {name: 3 for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")})
+            self.assertFalse(report["physical_acceptance_claimed"])
+            with self.assertRaisesRegex(ValueError, "original Native acquisition required"):
+                audit_attempt(root)
+            (root / "lane-signal-history.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "source missing or changed"):
+                audit_attempt(root, diagnostic=True)
+
+    def test_pinned_saved_result_and_converter_channels_from_staged_fixture(self):
+        repo = ROOT.parents[1]
+        for kind in ("green_selected_drive", "adjacent_dark_drive",
+                     "second_green_drive", "green_selected_stand"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                lane = "west" if kind in ("adjacent_dark_drive", "second_green_drive") else "east"
+                green = ("east", "west") if kind == "second_green_drive" else ("east",)
+                fixture(root, bus_lane=lane, green=green,
+                        moving=kind != "green_selected_stand", case_id=kind)
+                construction = json.loads((ROOT / "cases" / kind / "construction.json").read_text())
+                put(root / "construction.json", json.dumps(construction))
+                config = next(item["content"] for item in construction["files"]
+                              if item["path"] == "config.json")
+                put(root / "config.json", config)
+                env = os.environ.copy()
+                env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(repo / ".runtime-work/c147332-12a-runtime")
+                env["PYTHONPATH"] = str(repo / "runtime/scenario_pipeline")
+                env["PYTHONDONTWRITEBYTECODE"] = "1"
+                completed = subprocess.run([sys.executable, str(ROOT / "analysis.py"),
+                                            "--attempt", str(root), "--output",
+                                            str(root / "analysis-report.json")],
+                                           env=env, capture_output=True, text=True)
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+                result = json.loads((root / "result.json").read_text())
+                self.assertEqual([check["matched"] for check in result["target_checks"]], [True, True])
+                self.assertFalse(result["physical_acceptance_claimed"])
+                self.assertFalse(result["maneuver_completed"])
+                self.assertEqual(len(result["recording_evidence"]), 4)
+                for item in result["recording_evidence"]:
+                    self.assertTrue((root / item["reference"]).is_file())
+
+    def test_pinned_saved_result_rejects_missing_original_channel(self):
+        repo = ROOT.parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixture(root, case_id="green_selected_drive")
+            construction = json.loads((ROOT / "cases/green_selected_drive/construction.json").read_text())
+            put(root / "construction.json", json.dumps(construction))
+            config = next(item["content"] for item in construction["files"]
+                          if item["path"] == "config.json")
+            put(root / "config.json", config)
+            (root / "lane-signal-history.jsonl").unlink()
+            env = os.environ.copy()
+            env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(repo / ".runtime-work/c147332-12a-runtime")
+            env["PYTHONPATH"] = str(repo / "runtime/scenario_pipeline")
+            env["PYTHONDONTWRITEBYTECODE"] = "1"
+            completed = subprocess.run([sys.executable, str(ROOT / "analysis.py"),
+                                        "--attempt", str(root), "--output",
+                                        str(root / "analysis-report.json")],
+                                       env=env, capture_output=True, text=True)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("Missing required source: lane-signal-history.jsonl",
+                          completed.stderr)
+            self.assertFalse((root / "result.json").exists())
+
     def test_source_bound_green_observation(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -12,7 +12,8 @@ from native_construction import check_scene as check_bundle_scene
 
 REPO = ROOT.parents[1]
 FILES = ("runner.py", "native_construction.py", "native_driver.py", "native_capture.py",
-         "source_review.py", "green_lane_measurement.py", "analysis.py", "comparison_audit.py")
+         "source_review.py", "green_lane_measurement.py", "analysis.py", "comparison_audit.py",
+         "delivery_audit.py")
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
@@ -54,13 +55,39 @@ def config(scene, description):
                         for name in CAMERAS]}
 
 
-def construction(scene, description):
+def measurement_contract(scene):
+    dispositions = json.loads((ROOT / "case-plan.json").read_text())["requirement_dispositions"]
+    specs = (
+        ("green_site_measurement", "measure_site", "sourced_context",
+         ["reviewed-context.json", "lane-signal-history.jsonl"]),
+        ("green_lane_coverage_measurement", "measure_lane_coverage", "measured",
+         ["bus-body-history.jsonl", "lane-signal-history.jsonl", "camera-frame-map.jsonl"]),
+        ("green_motion_measurement", "measure_bus_motion", "measured",
+         ["bus-body-history.jsonl", "lane-signal-history.jsonl", "camera-frame-map.jsonl"]),
+    )
+    rows = []
+    for disposition, (key, method, kind, sources) in zip(dispositions, specs):
+        if scene["case_id"] not in disposition["case_ids"]:
+            continue
+        rows.append({"disposition_index": disposition["disposition_index"],
+                     "requirement": disposition["requirement"],
+                     "source": disposition["source"], "output_key": key,
+                     "method": method, "value_type": "object",
+                     "kind": kind, "inputs": sources})
+    return {"format": "worker-measurement-contract", "requirements": rows,
+            "negative": {"remove": ["lane-signal-history.jsonl"],
+                         "error_contains": "Missing required source: lane-signal-history.jsonl"}}
+
+
+def construction(scene, description, contract_path):
     files = [{"path": name, "source": str((ROOT / name).relative_to(REPO)),
               "content": (ROOT / name).read_text()} for name in FILES]
     files.extend([{"path": "scene.json", "content": json.dumps(scene, indent=2) + "\n"},
                   {"path": "road.xodr", "source": str(MAP.relative_to(REPO)),
                    "content": MAP.read_text()},
                   {"path": "config.json", "content": json.dumps(config(scene, description), indent=2) + "\n"},
+                  {"path": "measurement-contract.json", "source": str(contract_path.relative_to(REPO)),
+                   "content": contract_path.read_text()},
                   {"path": "tests/test_offline.py", "source": str((ROOT / "offline_test.py").relative_to(REPO)),
                    "content": (ROOT / "offline_test.py").read_text()}])
     return {"law_id": scene["law_id"], "cell_id": scene["cell_id"],
@@ -86,19 +113,22 @@ def build():
         check_scene(scene, MAP)
         scene["map_source"] = "road.xodr"
         check_bundle_scene(scene, MAP)
-        primary = construction(scene, description)
+        contract_path = folder / "measurement-contract.json"
+        write(contract_path, measurement_contract(scene))
+        primary = construction(scene, description, contract_path)
         primary_path = folder / "construction.json"
         write(primary_path, primary)
         fallback_scene = copy.deepcopy(scene)
         for signal in fallback_scene["signals"]:
             signal["height_m"] = 7.0
         check_bundle_scene(fallback_scene, MAP)
-        fallback = construction(fallback_scene, description)
+        fallback = construction(fallback_scene, description, contract_path)
         fallback_path = folder / "fallback1-construction.json"
         write(fallback_path, fallback)
         entry = {"case_id": scene["case_id"], "kind": "delivery",
                  "construction": str(primary_path.relative_to(ROOT)),
                  "construction_sha256": sha(primary_path),
+                 "measurement_contract": str(contract_path.relative_to(ROOT)),
                  "measurement_procedure": {"entrypoint": "analysis.py"},
                  "candidate_risk": {"status": "physical",
                                     "reason": "Bus and lane-specific arrow may not be co-visible in original approach/reference pixels"},

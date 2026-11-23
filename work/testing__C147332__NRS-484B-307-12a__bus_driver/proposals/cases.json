@@ -1,0 +1,300 @@
+{
+  "cell_id": "C147332",
+  "actor": "bus_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "status": "draft",
+      "rationale": "Bus fully in a lane with its own downward green arrow, driving; physical outcome and legal judgment remain unconfirmed.",
+      "paired_probe_id": "green_permission_without_motion",
+      "variable_assignments": {
+        "bus_lane_request": {
+          "kind": "world_setup",
+          "value": "selected"
+        },
+        "second_lane_green_request": {
+          "kind": "world_setup",
+          "value": "dark"
+        },
+        "bus_motion_request": {
+          "kind": "controller",
+          "value": "drive"
+        }
+      },
+      "deliberate_differences": [
+        "bus longitudinal motion versus stationary body under the green arrow"
+      ],
+      "probe": {
+        "primary_variable": "bus_motion_request",
+        "comparison_or_standard": "Paired original-frame comparison under source-reviewed lane signal",
+        "target_value_or_branch": "drive"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus XY bounding-box corners and lane identity on each world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "mapped_lane_signals",
+            "unit": "structured source record",
+            "method": "Original per-head arrow symbol, facing direction and governed lane",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera frame identities joined to world tick/time",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering placement does not prove highway or official device status.",
+          "Requested bus motion does not prove measured motion or legal entitlement."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "status": "draft",
+      "rationale": "Same bus travel in an adjacent lane without a green arrow over it; physical outcome and legal judgment remain unconfirmed.",
+      "paired_probe_id": "second_lane_green_indication",
+      "variable_assignments": {
+        "bus_lane_request": {
+          "kind": "world_setup",
+          "value": "adjacent"
+        },
+        "second_lane_green_request": {
+          "kind": "world_setup",
+          "value": "dark"
+        },
+        "bus_motion_request": {
+          "kind": "controller",
+          "value": "drive"
+        }
+      },
+      "deliberate_differences": [
+        "second-lane indication changes from dark to downward green arrow"
+      ],
+      "probe": {
+        "primary_variable": "second_lane_green_request",
+        "comparison_or_standard": "Paired original-frame comparison under source-reviewed lane signal",
+        "target_value_or_branch": "dark"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus XY bounding-box corners and lane identity on each world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "mapped_lane_signals",
+            "unit": "structured source record",
+            "method": "Original per-head arrow symbol, facing direction and governed lane",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera frame identities joined to world tick/time",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering placement does not prove highway or official device status.",
+          "Requested bus motion does not prove measured motion or legal entitlement."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "status": "draft",
+      "rationale": "Same adjacent-lane bus travel with an additional downward green arrow over that lane; physical outcome and legal judgment remain unconfirmed.",
+      "paired_probe_id": "second_lane_green_indication",
+      "variable_assignments": {
+        "bus_lane_request": {
+          "kind": "world_setup",
+          "value": "adjacent"
+        },
+        "second_lane_green_request": {
+          "kind": "world_setup",
+          "value": "green"
+        },
+        "bus_motion_request": {
+          "kind": "controller",
+          "value": "drive"
+        }
+      },
+      "deliberate_differences": [
+        "second-lane indication changes from dark to downward green arrow"
+      ],
+      "probe": {
+        "primary_variable": "second_lane_green_request",
+        "comparison_or_standard": "Paired original-frame comparison under source-reviewed lane signal",
+        "target_value_or_branch": "green"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus XY bounding-box corners and lane identity on each world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "mapped_lane_signals",
+            "unit": "structured source record",
+            "method": "Original per-head arrow symbol, facing direction and governed lane",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera frame identities joined to world tick/time",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering placement does not prove highway or official device status.",
+          "Requested bus motion does not prove measured motion or legal entitlement."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "status": "draft",
+      "rationale": "Bus fully in green-arrow lane, stationary to test permission without a duty; physical outcome and legal judgment remain unconfirmed.",
+      "paired_probe_id": "green_permission_without_motion",
+      "variable_assignments": {
+        "bus_lane_request": {
+          "kind": "world_setup",
+          "value": "selected"
+        },
+        "second_lane_green_request": {
+          "kind": "world_setup",
+          "value": "dark"
+        },
+        "bus_motion_request": {
+          "kind": "controller",
+          "value": "stand"
+        }
+      },
+      "deliberate_differences": [
+        "bus longitudinal motion versus stationary body under the green arrow"
+      ],
+      "probe": {
+        "primary_variable": "bus_motion_request",
+        "comparison_or_standard": "Paired original-frame comparison under source-reviewed lane signal",
+        "target_value_or_branch": "stand"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured source record",
+            "method": "Original bus XY bounding-box corners and lane identity on each world tick",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "mapped_lane_signals",
+            "unit": "structured source record",
+            "method": "Original per-head arrow symbol, facing direction and governed lane",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured source record",
+            "method": "Original four-camera frame identities joined to world tick/time",
+            "sampling_rate_hz": 20,
+            "time_window": "every captured frame",
+            "reference_frame": "original CARLA frame and time",
+            "uncertainty": "Native physical realization requires independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering placement does not prove highway or official device status.",
+          "Requested bus motion does not prove measured motion or legal entitlement."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    }
+  ],
+  "sweep_specs": []
+}

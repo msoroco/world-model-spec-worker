@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Official signals placed over individual lanes of a highway and facing the bus driver",
+      "source": "inputs/testing__C147332__NRS-484B-307-12a__bus_driver/assignment.json",
+      "output_key": "green_site_measurement",
+      "method": "measure_site",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "reviewed-context.json",
+        "lane-signal-history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "A downward-pointing green arrow indicates permission in each lane over which it is shown",
+      "source": "inputs/testing__C147332__NRS-484B-307-12a__bus_driver/assignment.json",
+      "output_key": "green_lane_coverage_measurement",
+      "method": "measure_lane_coverage",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "bus-body-history.jsonl",
+        "lane-signal-history.jsonl",
+        "camera-frame-map.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Permission to drive under the green arrow does not establish an obligation to move",
+      "source": "inputs/testing__C147332__NRS-484B-307-12a__bus_driver/assignment.json",
+      "output_key": "green_motion_measurement",
+      "method": "measure_bus_motion",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "bus-body-history.jsonl",
+        "lane-signal-history.jsonl",
+        "camera-frame-map.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane-signal-history.jsonl"
+    ],
+    "error_contains": "Missing required source: lane-signal-history.jsonl"
+  }
+}
