@@ -64,6 +64,80 @@ def _heading_difference(yaw: float, direction: int) -> float:
     return abs((yaw - intended + 180.) % 360. - 180.)
 
 
+def _recording_plan(case_id: str) -> dict:
+    proposals = _document(Path(__file__).resolve().parent / "proposals/cases.json")
+    matches = [item["recording_description"] for item in proposals["cases"]
+               if item["case_id"] == case_id]
+    if len(matches) != 1:
+        raise ValueError("exact recording plan missing")
+    return matches[0]
+
+
+def _recording_values(row: dict, packet: dict) -> dict:
+    ego = row["ego"]
+    direction = packet["approach_direction"]
+    x, y, speed, length, width, _, _ = _motion(row, "ego")
+    right_y = packet["slots"][packet["rightmost_feasible_slot"]]["y_m"]
+    before_rail = direction * (packet["rail_line_x_m"] - x) > 0
+    front_distance = direction * (packet["stop_line_x_m"] - x) - length
+    views = {name: camera["sha256"] for name, camera in row["camera_sources"].items()}
+    return {
+        "crossing_stop_episode": {"speed_mps": speed, "before_rail": before_rail,
+                                  "front_bumper_distance_m": front_distance,
+                                  "stop_line_x_m": packet["stop_line_x_m"]},
+        "subject_body_footprint": {"position_m": ego["position_m"],
+                                   "heading_deg": ego["heading_deg"],
+                                   "bbox_half_extent_m": ego["bbox_half_extent_m"]},
+        "lateral_offset_from_feasible_right": direction * (y - right_y),
+        "traffic_body_arrangement": {"ego": ego, "companion": row["companion"]},
+        "marked_highway_lane_count": len(packet["marked_lanes"]),
+        "crossing_sign_or_signal_views": views,
+        "road_edge_and_subject_views": views,
+        "queue_and_marking_views": views,
+    }
+
+
+def _recording_context(packet: dict, source_hash: str) -> dict:
+    identity = {"source_packet_sha256": source_hash, "source_sha256": packet["sources"]}
+    return {
+        "crossing_authority": {**identity, "instruction": packet["stopping_required_context"],
+                               "sign_landmark_id": packet["sign_landmark_id"],
+                               "rail_crossing_map_ref": packet["rail_crossing_map_ref"],
+                               "stop_line_x_m": packet["stop_line_x_m"]},
+        "highway_boundary": {**identity, "right_y_m": packet["highway_right_y_m"],
+                             "left_y_m": packet["highway_left_y_m"]},
+        "rightmost_feasible_position": {**identity,
+                                        "slot": packet["rightmost_feasible_slot"],
+                                        "position": packet["slots"][packet["rightmost_feasible_slot"]]},
+        "lane_marking_inventory": {**identity, "marked_lanes": packet["marked_lanes"]},
+    }
+
+
+def _write_recording_evidence(attempt: Path, result: dict) -> None:
+    packet = _document(attempt / "site/packet.json")
+    trace = _rows(attempt / "trace.jsonl")
+    channels = result["recording_description"]["channels"]
+    contexts = result["recording_description"]["context_inputs"]
+    channel_names = {channel["name"] for channel in channels}
+    context_values = _recording_context(packet, sha(attempt / "site/packet.json"))
+    if channel_names != set(_recording_values(trace[0], packet)) or set(context_values) != {
+            context["name"] for context in contexts}:
+        raise ValueError("recording implementation differs from exact plan")
+    evidence_dir = attempt / "recording_evidence"
+    evidence_dir.mkdir(exist_ok=False)
+    streams = {name: [] for name in channel_names}
+    for row in trace:
+        values = _recording_values(row, packet)
+        for name in streams:
+            streams[name].append(json.dumps({"time_s": row["time_s"], "frame": row["frame"],
+                                             "value": values[name]}, allow_nan=False) + "\n")
+    for name, rows in streams.items():
+        (evidence_dir / (name + ".jsonl")).write_text("".join(rows), encoding="utf-8")
+    for name, value in context_values.items():
+        (evidence_dir / (name + ".json")).write_text(
+            json.dumps({name: value}, allow_nan=False) + "\n", encoding="utf-8")
+
+
 def analyze(attempt: Path) -> tuple[dict, dict]:
     attempt = Path(attempt).resolve()
     verify_release(attempt)
@@ -141,9 +215,12 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
         if (row.get("position") != {"x": row["ego"]["position_m"][0],
                                     "y": row["ego"]["position_m"][1],
                                     "z": row["ego"]["position_m"][2]} or
+                row.get("position_m") != row["ego"]["position_m"] or
                 row.get("heading_deg") != row["ego"]["heading_deg"] or
                 type(row.get("speed_mps")) not in (int, float) or
-                not math.isclose(row["speed_mps"], speed, rel_tol=0, abs_tol=1e-8)):
+                not math.isclose(row["speed_mps"], speed, rel_tol=0, abs_tol=1e-8) or
+                type(row.get("speed_mph")) not in (int, float) or
+                not math.isclose(row["speed_mph"] * .44704, speed, rel_tol=0, abs_tol=1e-8)):
             raise ValueError("original canonical trace summary differs from ego motion")
         if previous_motion is not None:
             px, py, pvx, pvy = previous_motion
@@ -234,10 +311,27 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                  first_stop["approach_displacement_before_stop_m"] >= 2. and
                  (case["traffic_arrangement"] != "two_queues" or
                   aligned_queue_frames >= 20))
+    recording_plan = _recording_plan(case_id)
+    recording_evidence = [
+        {"name": item["name"], "unit": item["unit"],
+         "reference": "recording_evidence/" + item["name"] +
+                      (".jsonl" if item in recording_plan["channels"] else ".json")}
+        for item in recording_plan["channels"] + recording_plan["context_inputs"]]
     result = {"case_id": case_id, "setup_confirmed": True,
               "behavior_attempted": control_requested,
               "maneuver_completed": completed,
-              "realized_observables": observations,
+              "measured_values": observations,
+              "crossing_observables": observations,
+              "realized_observables": {},
+              "target_checks": [{"target": "original_capture_frames", "requested": 900,
+                                 "measured": len(trace), "method": "source-bound original trace and frame-map count",
+                                 "tolerance": 0, "matched": len(trace) == 900,
+                                 "physical_cause_confirmed": False,
+                                 "cause_evidence": "Original frame count alone does not establish physical crossing causation"}],
+              "termination_reason": "planned_45_second_capture_completed",
+              "physical_failure_flags": {"physical_acceptance_unverified": True},
+              "recording_description": recording_plan,
+              "recording_evidence": recording_evidence,
               "physical_checks": {"one_second_pre_rail_stationary_observation": {
                   "status": "met" if measured else "not_met",
                   "method": "at least 20 contiguous original 20 Hz frames at <=0.1 m/s with front bumper 0 to 3 m before authored stop line",
@@ -288,6 +382,7 @@ def finalize_attempt(attempt: Path, output: Path) -> dict:
     if output.exists() or (attempt / "result.json").exists():
         raise ValueError("retain previous saved analysis")
     report, result = analyze(attempt)
+    _write_recording_evidence(attempt, result)
     (attempt / "result.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return report

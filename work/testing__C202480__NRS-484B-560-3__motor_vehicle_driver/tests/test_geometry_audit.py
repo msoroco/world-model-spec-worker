@@ -28,7 +28,7 @@ class GeometryAuditTests(unittest.TestCase):
     def test_resealed_inflated_queue_measurement_rejected(self):
         path = self.attempt / "result.json"
         result = json.loads(path.read_text())
-        result["realized_observables"]["two_queue_aligned_frame_count"] = 900
+        result["crossing_observables"]["two_queue_aligned_frame_count"] = 900
         path.write_text(json.dumps(result))
         with self.assertRaisesRegex(ValueError, "measurement differs"):
             audit(self.attempt)

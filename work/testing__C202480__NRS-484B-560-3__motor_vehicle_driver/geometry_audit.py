@@ -94,7 +94,7 @@ def audit(attempt: Path) -> dict:
                              "longitudinal_center_separation_m": abs(x - cx)}
         elif row.get("companion") is not None:
             raise ValueError("unexpected companion in one-queue geometry")
-    expected = result.get("realized_observables", {})
+    expected = result.get("crossing_observables", {})
     actual_offset = min(stopped_offsets) if stopped_offsets else None
     if (expected.get("two_queue_aligned_frame_count") != aligned or
             expected.get("first_two_queue_alignment") != first or

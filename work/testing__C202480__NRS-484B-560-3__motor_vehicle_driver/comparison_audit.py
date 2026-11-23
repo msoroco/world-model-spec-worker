@@ -54,8 +54,8 @@ def audit(comparison_id: str, left_attempt: Path, right_attempt: Path) -> dict:
                 "approach_direction", "highway_right_y_m", "highway_left_y_m"):
         _same(a[key], b[key], key)
     _same(a["cameras"], b["cameras"], "camera plan")
-    _same(results[0]["realized_observables"]["source_frame_count"],
-          results[1]["realized_observables"]["source_frame_count"], "duration")
+    _same(results[0]["crossing_observables"]["source_frame_count"],
+          results[1]["crossing_observables"]["source_frame_count"], "duration")
     if comparison_id == "two_marked_queue_arrangement":
         _same(a["sources"]["lane_markings"]["sha256"],
               b["sources"]["lane_markings"]["sha256"], "lane markings source")
@@ -65,10 +65,10 @@ def audit(comparison_id: str, left_attempt: Path, right_attempt: Path) -> dict:
         _same(a["ego_slot"], b["ego_slot"], "subject placement")
         if ([c["traffic_arrangement"] for c in cases] !=
                 ["one_queue", "two_queues"] or
-                results[0]["realized_observables"]["two_queue_aligned_frame_count"] != 0 or
-                results[1]["realized_observables"]["two_queue_aligned_frame_count"] < 20):
+                results[0]["crossing_observables"]["two_queue_aligned_frame_count"] != 0 or
+                results[1]["crossing_observables"]["two_queue_aligned_frame_count"] < 20):
             raise ValueError("queue contrast lacks original stopped arrangement")
-        measured = {"aligned_frames": [r["realized_observables"]["two_queue_aligned_frame_count"]
+        measured = {"aligned_frames": [r["crossing_observables"]["two_queue_aligned_frame_count"]
                                        for r in results]}
     elif comparison_id in ("marked_lane_qualification", "marked_lane_above_boundary"):
         _same(a["rightmost_feasible_slot"], b["rightmost_feasible_slot"],
@@ -79,7 +79,7 @@ def audit(comparison_id: str, left_attempt: Path, right_attempt: Path) -> dict:
         expected = ([2, 4] if comparison_id == "marked_lane_qualification" else [4, 5])
         actual = [len(p["marked_lanes"]) for p in packets]
         if actual != expected or any(
-                r["realized_observables"]["two_queue_aligned_frame_count"] < 20
+                r["crossing_observables"]["two_queue_aligned_frame_count"] < 20
                 for r in results):
             raise ValueError("marked-lane contrast lacks measured source difference")
         measured = {"marked_highway_lane_counts": actual}
@@ -91,7 +91,7 @@ def audit(comparison_id: str, left_attempt: Path, right_attempt: Path) -> dict:
               "right-side feasibility")
         _same(cases[0]["traffic_arrangement"], cases[1]["traffic_arrangement"],
               "traffic arrangement")
-        offsets = [r["realized_observables"][
+        offsets = [r["crossing_observables"][
             "minimum_stopped_lateral_offset_from_reviewed_rightmost_m"] for r in results]
         if (a["ego_slot"] == b["ego_slot"] or offsets[0] is None or
                 offsets[1] is None or offsets[1] <= offsets[0]):

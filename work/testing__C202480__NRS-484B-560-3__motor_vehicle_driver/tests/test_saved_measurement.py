@@ -23,8 +23,10 @@ def write_trace(path, rows):
     for row in rows:
         ego = row["ego"]
         row["position"] = dict(zip(("x", "y", "z"), ego["position_m"]))
+        row["position_m"] = ego["position_m"]
         row["heading_deg"] = ego["heading_deg"]
         row["speed_mps"] = math.dist(ego["velocity_mps"], (0., 0., 0.))
+        row["speed_mph"] = row["speed_mps"] / .44704
     path.write_text("".join(json.dumps(row) + "\n" for row in rows))
 
 
@@ -109,11 +111,16 @@ class SavedMeasurementTests(unittest.TestCase):
     def test_closed_source_bound_stop_measurement(self):
         report = finalize_attempt(self.attempt, self.attempt / "analysis-report.json")
         result = json.loads((self.attempt / "result.json").read_text())
+        self.assertEqual(len(result["recording_evidence"]), 12)
+        self.assertEqual(result["realized_observables"], {})
+        self.assertEqual(result["target_checks"][0]["measured"], 900)
+        for item in result["recording_evidence"]:
+            self.assertTrue((self.attempt / item["reference"]).is_file())
         self.assertEqual(report["legal_judgment"], "unresolved")
         self.assertEqual(result["physical_checks"]["one_second_pre_rail_stationary_observation"]["status"], "met")
         self.assertFalse(result["maneuver_completed"])
         self.assertFalse(result["physical_acceptance_claimed"])
-        self.assertEqual(result["realized_observables"]["minimum_stopped_lateral_offset_from_reviewed_rightmost_m"], 0.)
+        self.assertEqual(result["crossing_observables"]["minimum_stopped_lateral_offset_from_reviewed_rightmost_m"], 0.)
         with self.assertRaisesRegex(ValueError, "retain previous saved analysis"):
             finalize_attempt(self.attempt, self.attempt / "analysis-report.json")
 
@@ -178,8 +185,8 @@ class SavedMeasurementTests(unittest.TestCase):
         receipt["trace_sha256"] = sha(path)
         receipt_path.write_text(json.dumps(receipt))
         _, result = analyze(self.attempt)
-        self.assertGreater(result["realized_observables"]["maximum_approach_displacement_m"], 2.)
-        self.assertEqual(result["realized_observables"]["first_one_second_stop"]["approach_displacement_before_stop_m"], 0.)
+        self.assertGreater(result["crossing_observables"]["maximum_approach_displacement_m"], 2.)
+        self.assertEqual(result["crossing_observables"]["first_one_second_stop"]["approach_displacement_before_stop_m"], 0.)
         self.assertFalse(result["maneuver_completed"])
 
     def test_hash_matched_teleport_cannot_complete_maneuver(self):
@@ -245,7 +252,7 @@ class SavedMeasurementTests(unittest.TestCase):
         receipt.update(trace_sha256=sha(trace_path), source_packet_sha256=source_hash)
         receipt_path.write_text(json.dumps(receipt))
         _, result = analyze(self.attempt)
-        observed = result["realized_observables"]
+        observed = result["crossing_observables"]
         self.assertEqual(observed["two_queue_aligned_frame_count"], 900)
         self.assertEqual(observed["first_two_queue_alignment"]["lateral_center_separation_m"], 3.)
         for row in rows:
@@ -254,7 +261,7 @@ class SavedMeasurementTests(unittest.TestCase):
         receipt["trace_sha256"] = sha(trace_path)
         receipt_path.write_text(json.dumps(receipt))
         _, result = analyze(self.attempt)
-        self.assertEqual(result["realized_observables"]["two_queue_aligned_frame_count"], 0)
+        self.assertEqual(result["crossing_observables"]["two_queue_aligned_frame_count"], 0)
 
 
 if __name__ == "__main__":

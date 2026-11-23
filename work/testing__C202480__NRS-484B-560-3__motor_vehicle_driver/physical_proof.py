@@ -70,7 +70,7 @@ def prove(case_index: int, kind: str) -> dict:
                     "status": "met" if expected else "not_met",
                     "method": "source-bound 900-frame approach, stop, queue and motion continuity measurement",
                     "sources": sources}},
-                "realized_observables": result["realized_observables"],
+                "realized_observables": result["crossing_observables"],
                 "analysis_format": report["format"],
                 "physical_acceptance_claimed": False, "legal_judgment": "unresolved"}
     finally:

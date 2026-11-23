@@ -25,8 +25,7 @@ def same_process_alive(identity: dict) -> bool:
 
 def release(attempt: Path, *, liveness_probe=same_process_alive) -> dict:
     attempt = Path(attempt).resolve()
-    root = Path(__file__).resolve().parents[2] / ".runtime-work"
-    if root not in attempt.parents:
+    if not any(parent.name == ".runtime-work" for parent in attempt.parents):
         raise ValueError("owner release requires private Native attempt")
     release_path = attempt / "owner-release.json"
     if release_path.exists():
@@ -60,8 +59,7 @@ def release(attempt: Path, *, liveness_probe=same_process_alive) -> dict:
 
 def verify_release(attempt: Path, *, liveness_probe=same_process_alive) -> dict:
     attempt = Path(attempt).resolve()
-    root = Path(__file__).resolve().parents[2] / ".runtime-work"
-    if root not in attempt.parents:
+    if not any(parent.name == ".runtime-work" for parent in attempt.parents):
         raise ValueError("saved work requires private Native attempt")
     status_path, exit_path, release_path = (attempt / "native-run-status.json",
                                            attempt / "native-exit.json",
