@@ -99,11 +99,26 @@
     "uncovered": "All exact cases; evidence.json has zero accepted recordings."
   },
   "observations": [
-    "source-supported business/residential/other district class and highway status",
-    "Native route direction and course-change onset",
-    "original-frame vehicle positions, indicator command/readback and displayed lamp",
-    "continuous signal distance over last 100 or 300 feet",
-    "weather retained but never used as exception"
+    {
+      "name": "ego_turn_indicator",
+      "mandatory": true,
+      "purpose": "original Native light-mask state over approach and turn"
+    },
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "purpose": "source-joined speed during indicator interval"
+    },
+    {
+      "name": "ego_heading",
+      "mandatory": true,
+      "purpose": "source-joined heading and course change"
+    },
+    {
+      "name": "ego_road_id",
+      "mandatory": true,
+      "purpose": "source-joined approach, connector and departure road"
+    }
   ],
   "sources": [
     {
@@ -173,5 +188,145 @@
       ],
       "evidence_or_gap": "Original Native source readback and retained exact-map district packet; site classification and pixels await independent physical review"
     }
-  ]
+  ],
+  "observation_questions": [
+    "source-supported business/residential/other district class and highway status",
+    "Native route direction and course-change onset",
+    "original-frame vehicle positions, indicator command/readback and displayed lamp",
+    "continuous signal distance over last 100 or 300 feet",
+    "weather retained but never used as exception"
+  ],
+  "source_observation_mapping": {
+    "sig.turn_indicator": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [
+        "ego_turn_indicator"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "sig.hand_signal": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.distance_while": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [
+        "ego_speed",
+        "ego_road_id"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.path_length": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [
+        "ego_speed",
+        "ego_road_id"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.turning": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [
+        "ego_heading",
+        "ego_road_id"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.lane_change": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [
+        "ego_heading",
+        "ego_road_id"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "env.precipitation": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "kin.speed": {
+      "evidence": "Original Native history or independent original-site review as applicable; actual legal classification remains unverified",
+      "channels": [
+        "ego_speed"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "012032846f6200306dff267caf4c28ee45a20248a15824d63bd90b521ae4a684"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 40,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "left-turn approach, indicator, district context and outgoing road",
+        "interval": "full 40 s planned Native capture"
+      },
+      {
+        "view": "approach",
+        "subject": "left indicator onset and 100/300-foot source reference",
+        "interval": "approach to course change"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "turn onset, connector and departure road",
+        "interval": "course change to exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego view of approach and turn path",
+        "interval": "full 40 s planned Native capture"
+      }
+    ]
+  }
 }

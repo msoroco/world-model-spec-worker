@@ -909,3 +909,7 @@ C158208 is partial. Five selected cases have primary plus three distinct fallbac
 ## 2026-11-22 C158208 scoped strict gate passed
 
 C158208 NRS 484B.257(1) is CPU delivery ready: all five primaries, fifteen fallbacks, physical/lifecycle diagnostic fixtures, source audits and comparison audits passed, and the assignment-scoped strict gate returned `static_checks_passed: true`. Inline case-specific configs no longer claim the first case's source file. The stopped trace resumes after yielding. The source-observation mapping names only captured channels; original-site review stays planned and unverified. Batch count is 22 ready, 21 partial. Next in batch order is C178244 NRS 484B.413(2). No Native, physical or legal acceptance claimed.
+
+## 2026-11-22 C178244 scoped strict gate passed
+
+C178244 NRS 484B.413(2) is CPU delivery ready. Seven selected primaries and 21 fallbacks, seven physical/lifecycle synthetic fixture sets, seven positive and seven negative independent source audits, and the five-stage semantic chain pass. The interrupted-case absolute source paths were corrected and reproofed. The root construction carries separate planning metadata while the first selected case binds an unchanged source copy. The scoped strict gate returns `static_checks_passed: true`. Batch count is 23 ready, 20 partial. Next in batch order is C24811 NRS 484B.250(4). Reversible duplicate archives preserve file-cap headroom. No Native, physical, district or legal acceptance claimed.

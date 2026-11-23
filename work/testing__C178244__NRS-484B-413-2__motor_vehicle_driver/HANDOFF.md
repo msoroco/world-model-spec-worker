@@ -92,3 +92,7 @@ Full strict `.venv-cpu/bin/python worker_check.py --complete --require-delivery-
 ## Return file consolidation
 
 Two historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-testing__C178244__NRS-484B-413-2__motor_vehicle_driver-archive/`. These are prior diagnostic proofs.
+
+## 2026-11-22 scoped strict ready result
+
+The exact assignment strict gate passes: `.venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready`. All seven selected cases and 21 fallbacks have exact CPU proof receipts. Seven physical outcome/lifecycle classifier fixture sets and seven independent positive/negative source audits pass. The complete classifier branch uses an explicitly synthetic map-derived departure-road continuation; it is not a claim that the 33-frame diagnostic captured actual completion. The interrupted case's four constructions now cite portable relative sources and were reproofed. The first selected case binds `cases/left_business_at_100_ft/selected-construction.json`; root construction metadata covers the full seven-case plan. Original-site district, Native, physical and legal acceptance remain unverified.
