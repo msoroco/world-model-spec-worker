@@ -24,7 +24,8 @@ def build() -> dict:
     code = {name: {"path": name, "sha256": _sha(ROOT / name)} for name in
             ("reviewed_context.py", "native_trace_capture.py",
              "turn_trace_finalizer.py", "taxi_native_motion.py", "taxi_cameras.py",
-             "taxi_capture_ticks.py", "taxi_runner.py", "delivery_audit.py")}
+             "taxi_capture_ticks.py", "taxi_runner.py", "delivery_audit.py",
+             "measured_comparison_audit.py", "four_view_composition.py")}
     return {
         "format": "c150530-partial-measurement-contract-v1",
         "assignment_id": ASSIGNMENT,
@@ -35,7 +36,7 @@ def build() -> dict:
         "source_files_per_attempt": ["original-trace.jsonl", "original-trace-seal.json",
                                      "reviewed-context.json", "reviewed_sources/",
                                      "video_frames.jsonl", "taxi-controller-history.jsonl",
-                                     "capture-seal.json", "raw.mkv",
+                                     "capture-seal.json", "raw.mkv", "four-view-composition.json",
                                      "overview.mkv", "approach.mkv",
                                      "reference_corner.mkv", "driver_reference.mkv"],
         "code": code,
