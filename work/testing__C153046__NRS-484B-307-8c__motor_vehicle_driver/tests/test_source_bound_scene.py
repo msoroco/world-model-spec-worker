@@ -28,7 +28,8 @@ def fixture(root: Path) -> dict:
                          "extreme_left_lane_id": "west"},
             "receiving": {"one_way_to_left": True, "direction_xy": [-1, 0]},
             "signal": {"native_actor_id": "protocol-signal",
-                       "phase_source": "original_frame_history"},
+                       "phase_source": "original_frame_history",
+                       "head_configuration": "red_alone"},
             "stop_boundary": {"hierarchy_reviewed": True, "point_xy": [0, -2]}}
 
 
@@ -70,6 +71,11 @@ class SourceBoundSceneTests(unittest.TestCase):
             packet["receiving"]["direction_xy"] = [1, 0]
             path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "do not form a left turn"):
+                build(path, "stopped_leftmost_clear")
+            packet["receiving"]["direction_xy"] = [-1, 0]
+            packet["signal"]["head_configuration"] = "unknown"
+            path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "official signal"):
                 build(path, "stopped_leftmost_clear")
 
 

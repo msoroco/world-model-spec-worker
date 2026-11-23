@@ -10,7 +10,7 @@ import json
 import math
 from pathlib import Path
 
-from build_case_plan import KINDS
+from build_case_plan import AID, KINDS
 
 
 def sha(path: Path) -> str:
@@ -59,6 +59,7 @@ def build(packet_path: Path, suffix: str) -> dict:
     if (approach.get("one_way") is not True or
             receiving.get("one_way_to_left") is not (receiving_request == "one_way_left") or
             signal.get("phase_source") != "original_frame_history" or
+            signal.get("head_configuration") != "red_alone" or
             not signal.get("native_actor_id") or
             stop.get("hierarchy_reviewed") is not True):
         raise ValueError("one-way, official signal or stop hierarchy unverified")
@@ -85,8 +86,11 @@ def build(packet_path: Path, suffix: str) -> dict:
         raise ValueError("invalid stop boundary position")
     selected = extreme if lane_request == "extreme_left" else min(lateral, key=lateral.get)
     return {"format": "c153046-source-bound-scene-draft",
-            "case_id": Path(__file__).resolve().parent.name + "__" + suffix,
+            "case_id": AID + "__" + suffix,
             "selected_approach_lane_id": selected,
+            "approach_reference_xy": center,
+            "approach_lane_centers_xy": {name: vector(value, "lane " + name)
+                                          for name, value in lanes.items()},
             "approach_direction_xy": incoming,
             "receiving_direction_xy": outgoing,
             "stop_boundary_progress_m": stop_position,

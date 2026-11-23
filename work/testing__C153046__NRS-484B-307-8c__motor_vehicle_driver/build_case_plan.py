@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-AID = ROOT.name
+AID = "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver"
 SOURCE = "inputs/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/assignment.json"
 
 KINDS = {
