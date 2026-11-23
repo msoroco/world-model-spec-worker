@@ -79,10 +79,21 @@
     "supported_reuses": []
   },
   "observations": [
-    "source-backed designation and visible signpost",
-    "two same-direction Native driving lanes",
-    "original-frame ego complete body and source frame join",
-    "positive/negative displacement along designated direction and heading alignment"
+    {
+      "name": "designated_motion",
+      "mandatory": true,
+      "source": "original Native trace joined to sourced designation, signs and roadway polygon; synthetic CPU fixture does not verify authority or pixels"
+    },
+    {
+      "name": "heading_alignment",
+      "mandatory": true,
+      "source": "original Native trace joined to sourced designation, signs and roadway polygon; synthetic CPU fixture does not verify authority or pixels"
+    },
+    {
+      "name": "roadway_occupancy",
+      "mandatory": true,
+      "source": "original Native trace joined to sourced designation, signs and roadway polygon; synthetic CPU fixture does not verify authority or pixels"
+    }
   ],
   "sources": [
     {
@@ -102,9 +113,9 @@
   "runtime_uncertainties": [
     "Native signed lane IDs do not by themselves prove legal one-way designation or signposting.",
     "No numeric legal threshold was introduced for direction; projected displacement is diagnostic.",
-    "Both selected primaries and six distinct fallback constructions pass exact diagnostic CPU paths; source designation/sign packet, semantic chain, physical-preparation proof and full-duration source-decoded delivery audit remain unresolved."
+    "Both selected primaries and six distinct fallback constructions pass exact offline, compatibility, saved-processing and short diagnostic source-decoded audit CPU paths. The default 900-frame independent audit must run against captured original Native media; source designation authority and installed-sign pixels remain local checks."
   ],
-  "planning_status": "partial; two selected primary plus six fallback exact synthetic CPU paths and fixed-source comparison pass; readiness gaps remain",
+  "planning_status": "delivery_prepared; exact selected and fallback software paths pass CPU proofs; Native physical and pixel verification pending",
   "requirement_dispositions": [
     {
       "requirement": "Vehicle driven only in designated direction on designated and signposted one-way highway",
@@ -144,5 +155,68 @@
       }
     ],
     "physical_validation": "Native sign pixels, sight lines and complete-body coverage await local capture and independent review."
-  }
+  },
+  "source_observation_mapping": {
+    "st.one_way_roadway": {
+      "evidence": "Sourced designation and roadway polygon joined to Native road and lanes; present packet is synthetic and needs authority review.",
+      "channels": [
+        "roadway_occupancy"
+      ],
+      "source_refs": [
+        "site_packet.json",
+        "designation.txt"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Sign record and source must be checked against installed Native sign pixels; present record is synthetic.",
+      "channels": [],
+      "source_refs": [
+        "site_packet.json",
+        "sign.txt"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Designated forward vector and same-direction lane IDs joined to Native map; designation authority remains unresolved.",
+      "channels": [
+        "designated_motion"
+      ],
+      "source_refs": [
+        "site_packet.json",
+        "designation.txt"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original heading and complete-body displacement at 20 Hz.",
+      "channels": [
+        "heading_alignment",
+        "designated_motion"
+      ],
+      "source_refs": []
+    },
+    "drv.wrong_way": {
+      "evidence": "Negative projected displacement and opposing heading relative to sourced designated direction.",
+      "channels": [
+        "designated_motion",
+        "heading_alignment"
+      ],
+      "source_refs": [
+        "designation.txt"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Complete original ego body polygon inside sourced roadway polygon throughout capture.",
+      "channels": [
+        "roadway_occupancy"
+      ],
+      "source_refs": [
+        "site_packet.json"
+      ]
+    }
+  },
+  "observation_requirements": [
+    "source-backed designation and visible signpost",
+    "two same-direction Native driving lanes",
+    "original-frame ego complete body and source frame join",
+    "positive/negative displacement along designated direction and heading alignment"
+  ]
 }

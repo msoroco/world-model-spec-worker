@@ -1136,3 +1136,13 @@ C412593 bound two additional selected cases this turn: interrupted business righ
 
 
 Checkpoint verification: runtime CPU preflight passed with Lean 4.28.0; scoped C125714(250-1) and C412593 partial checks and C177008 strict ready check passed. Work has 8,595 files, no oversized or bytecode files, and zero trailing-whitespace/conflict-marker text issues. Continue the 19 partial packages; global strict has not passed.
+
+## 2026-11-23 C147311 scoped readiness
+
+C147311(220-1) restored four exact inline construction artifacts, added the 45-second synchronized camera plan, and mapped all six frozen source observation terms. Nine package tests passed; pinned branch, execution-manifest, semantic, delivery and compatibility validators passed. After a nonmutating simulated ready audit, the actual assignment-scoped strict delivery gate passed (`static_checks_passed: true`). Its status is now `ready` for CPU preparation, with Native designation/sign review, 900-frame original capture, physical completion and independent pixel review explicitly pending. No physical acceptance is claimed. Batch snapshot: 25 ready, 18 partial of 43; global strict remains unpassed while partial packages remain. Returned file count is 8,599, below the 8,600 cap.
+
+Pinned `.venv-cpu/bin/python runtime.py preflight` was rerun with `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work`; exit 0, `cpu_preflight_passed: true`, Lean 4.28.0, `simulation_started: false`.
+
+## 2026-11-23 C125714 advance full-duration proof
+
+C125714(250-1) now returns a reproducible 1,100-frame synthetic advance-case proof. Source joins place the other complete body inside the crossing when ego enters (other frame 1238, ego frame 1298). Five source-hashed measurements, four original camera decodes, independent delivery audit, and missing-controller/camera negatives pass. Its exact stdout is member `advance-full-duration-current.log` in the package log archive, SHA-256 `34bad22f3404b50037a26fd38a96b77a3a47dac0683503825190418edf824c38`. All archive refs were rebound, and the assignment-scoped partial checker passed. The assignment remains partial because its exact advance compatibility and recorded-only path, other selected cases, and fallbacks still need return bindings. This fixture claims no Native or legal acceptance.
