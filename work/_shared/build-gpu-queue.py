@@ -57,7 +57,8 @@ def build(root=ROOT):
                     + "${ATTEMPT_DIR} --receipt ${OWNER_RELEASE_RECEIPT}"
                     + " --acknowledge-owner-released",
                 "additional_source_audit_command": "CASE_ID=" + case_id
-                    + " python3.11 worker_check.py --complete --require-delivery-ready",
+                    + " python3.11 worker_check.py --assignment " + aid
+                    + " --complete --require-delivery-ready",
                 "prepare_command": case_binding + prefix + " prepare-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} " + identity,
                 "execute_command": case_binding + prefix + " execute-delivery --repo . --batch full-train-delivery"
@@ -66,7 +67,8 @@ def build(root=ROOT):
                     + " --port ${CARLA_PORT}",
                 "accept_command": case_binding + prefix + " accept-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} --run ${RUN_ID} " + identity
-                    + " --job ${JOB_ID} --attempt ${ATTEMPT_ID} --audit ${ACCEPTANCE_AUDIT}",
+                    + " --job ${JOB_ID} --attempt ${ATTEMPT_ID} --audit ${ACCEPTANCE_AUDIT}"
+                    + " --review-archive ${REVIEW_ARCHIVE}",
                 "candidate_commands": {
                     candidate: "python3.11 work/_shared/prepare-delivery-candidate.py "
                         + case_id + " " + candidate
