@@ -21,6 +21,22 @@ CHANGES = {
 FIXED = ["same paved roadway and travel direction", "same motor vehicle actor",
          "same observation window and four-view camera profile",
          "all authored setup variables except the declared comparison variable"]
+RISK = {
+    "reference": ("The reviewed lane and leader spawn may not sustain a 900-frame, four-view travel window.",
+                  "A Native spawn fails, the controller stops progress, or a required view misses either participant."),
+    "faster": ("The requested higher ego speed may close the fixed leader gap and trigger safety braking before the steady window.",
+               "The original steady ego-speed mean misses its request or emergency braking dominates frames 180-899."),
+    "nearer_traffic": ("The smaller authored leader gap may prevent a safe same-lane spawn or trigger sustained emergency braking.",
+                      "Native spawn fails, measured leader clearance is absent, or the brake remains active in the steady window."),
+    "wet_surface": ("Native wetness and optional wheel friction may not produce a distinct measured paved-surface condition.",
+                    "Original wetness or friction readback does not differ from the reference, or the road material cannot be verified."),
+    "narrower": ("A narrower OpenDRIVE driving section may lack the requested width or enough forward same-lane route for both vehicles.",
+                 "OpenDRIVE width readback differs, the leader route changes lane, or either spawn fails."),
+    "rain": ("Native precipitation may impair required four-view participant visibility without a distinct retained weather readback.",
+             "The original precipitation readback matches the reference or a required view loses the vehicle bodies."),
+    "fog": ("Native fog may obscure the leader or roadway in the required views before the planned observation ends.",
+            "The original fog readback matches the reference or a required view loses the leader or road context."),
+}
 
 
 def build() -> dict:
@@ -50,6 +66,11 @@ def build() -> dict:
                           "review_description": case["description"],
                           "source_ref": source_ref,
                           "preparation_status": "source_measurement_pending",
+                          "physical_risk_assessment": {
+                              "risk": RISK[cid.rsplit("__", 1)[-1]][0],
+                              "failure_trigger": RISK[cid.rsplit("__", 1)[-1]][1],
+                              "fallback_candidates": [],
+                              "fallback_decision": "No alternate construction selected before a reviewed roadway and camera source packet identifies a feasible alternate."},
                           "legal_judgment": "unresolved",
                           "physical_acceptance_claimed": False}
         comparisons.append({"comparison_id": comparison["id"], "case_ids": case_ids,

@@ -7,7 +7,7 @@ import unittest
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
-from build_branch_plan import CHANGES, REVIEW
+from build_branch_plan import CHANGES, REVIEW, RISK
 
 
 class BranchPlanTests(unittest.TestCase):
@@ -24,6 +24,13 @@ class BranchPlanTests(unittest.TestCase):
             self.assertTrue(planned["fixed_conditions"])
             self.assertEqual(planned["source_ref"]["sha256"], hashlib.sha256(REVIEW.read_bytes()).hexdigest())
         self.assertTrue(all(case["legal_judgment"] == "unresolved" for case in by_id.values()))
+        self.assertEqual({case_id.rsplit("__", 1)[-1] for case_id in by_id}, set(RISK))
+        for case in by_id.values():
+            assessment = case["physical_risk_assessment"]
+            self.assertEqual((assessment["risk"], assessment["failure_trigger"]),
+                             RISK[case["case_id"].rsplit("__", 1)[-1]])
+            self.assertEqual(assessment["fallback_candidates"], [])
+            self.assertFalse(case["physical_acceptance_claimed"])
 
 
 if __name__ == "__main__":
