@@ -7,8 +7,25 @@ sys.path.insert(0,str(ROOT.parents[1]/'runtime'/'scenario_pipeline'))
 def load(name):
  s=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 measure=load('crosswalk_reverse');control=load('reverse_control');comparison=load('comparison_audit');route=load('reverse_route');runner=load('runner');finalizer=load('finalizer')
+delivery=load('delivery_audit')
 def body(x):return [[x-1,-1],[x+1,-1],[x+1,1],[x-1,1]]
 class Tests(unittest.TestCase):
+ def test_native_preflight_rejects_synthetic_and_diagnostic_provenance(self):
+  case='testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk'
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root)
+   with self.assertRaisesRegex(ValueError,'Native non-diagnostic provenance required'):
+    delivery.audit_native_preflight(root,case,root/'owner-release.json')
+   (root/'acquisition-provenance.json').write_text(json.dumps({'provenance_kind':'native','diagnostic_fixture':True}))
+   with self.assertRaisesRegex(ValueError,'Native non-diagnostic provenance required'):
+    delivery.audit_native_preflight(root,case,root/'owner-release.json')
+   (root/'acquisition-provenance.json').write_text(json.dumps({'provenance_kind':'native','diagnostic_fixture':False}))
+   seal={'format':'worker-sealed-capture','provenance_kind':'native','diagnostic_fixture':False,
+         'frames':900,'events':['capture_finished','encoders_closed','restoration_verified'],
+         'sources':{},'source_digest':delivery.digest({})}
+   (root/'capture-seal.json').write_text(json.dumps(seal))
+   with self.assertRaisesRegex(ValueError,'omits required original source'):
+    delivery.audit_native_preflight(root,case,root/'owner-release.json')
  def fixture(self,root,on_crosswalk=True):
   for name in ('district.txt','geometry.txt','marking.txt'):
    (root/name).write_text('Synthetic '+name+' source')

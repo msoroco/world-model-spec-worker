@@ -1,3 +1,7 @@
+## 2026-11-23 C125745 bound sweep physical CPU matrix
+
+Sixteen exact bound sweep case/candidate selections passed 64 source-backed synthetic CPU classifier and lifecycle diagnostics. The returned byte-hashed receipts are consolidated in `case-plan.json.bound_sweep_physical_cpu_diagnostics`; three previously recorded groups matched byte-for-byte. The 63-test suite, CPU preflight, and assignment-scoped nonready check passed. C125745 remains partial. These fixtures do not establish Native motion, real pixels, physical acceptance, or a legal conclusion. Fifteen of 43 assignments remain partial, so the full strict delivery gate has not passed.
+
 ## 2026-11-23 C125745 staged fallback physical CPU diagnostics
 
 C125745 hold0 fallback2/3 and frame32 fallback1 passed 12 source-backed synthetic CPU physical-classifier and lifecycle checks. Exact receipts and hashes are embedded in `case-plan.json.bound_sweep_physical_cpu_diagnostics`; all three attempt selections match their bound constructions and compatibility receipts. The 63-test package suite, CPU preflight, and assignment-scoped nonready check passed. This is diagnostic software evidence only: C125745 remains partial, and no Native motion, original-pixel, physical, or legal acceptance is claimed. Fifteen of 43 assignments remain partial, so the full strict gate has not passed.
@@ -501,3 +505,13 @@ C125745 exact hold-16 sweep case `c125745-2-0001` now has all three fallback can
 Seven unbound historical C129731 proof files were preserved byte-exactly with original paths and hashes in `c129731-unbound-proof-files-20261123.json` (SHA256 `3fd7e4e3375bdeaf6c37306484d71b124540a49258b3d90cbc3d5472b5dc0692`). Six unbound historical C109749 proof files were likewise preserved in `c109749-unbound-proof-files-20261123.json` (SHA256 `f80fc2b29458055706ff927ec7eab5cb55a3e87173fe18450803bc15f3cf3e14`). Both packages passed assignment-scoped strict delivery-ready gates after archival and remain ready.
 
 Returned-tree hygiene after this checkpoint: 8,597 files, no file over its cap, no trailing whitespace or conflict markers in scanned text, and no bytecode files. Current result statuses are 28 ready and 15 partial; the full strict delivery gate still fails on partial packages. No new assignment was marked ready.
+
+## 2026-11-23 C215286 decoded-frame audit checkpoint
+
+C215286 now independently decodes and fingerprints all 900 frames in each of four source cameras for both reverse cases. Both positive exact-case audits passed; both changed-original-frame-map negatives were rejected. Per-camera hashes are in `case-plan.json.decoded_frame_cpu_audit`, and the current script/log hashes are bound in `execution-manifest.json`. The 38-test suite, both pinned delivery contract checks, the pinned execution-manifest validator and the assignment-scoped `--complete` check pass. C215286 stays partial; real-site source review, local Native auditor integration and shared ordered GPU queue work remain. Synthetic decoded frames do not establish actual camera pixels, Native motion, physical or legal acceptance. Batch status remains 28 ready and 15 partial; the full strict gate has not passed.
+
+Pinned `.venv-cpu/bin/python runtime.py preflight` passed with `cpu_preflight_passed=true` and `simulation_started=false`.
+
+## 2026-11-23 C215286 Native source preflight checkpoint
+
+C215286 now has an exact-case/fallback Native source preflight command bound in each manifest handoff. It validates the pinned capture seal and original-source inventory, Native exit, owner release, reverse-body outcome and four decoded cameras. Both selected synthetic attempts were rejected by its provenance guard; both existing 900-frame synthetic delivery positives and tamper negatives passed again. The 15-test suite, pinned manifest and delivery-contract validators, CPU preflight and assignment-scoped `--complete` check passed. The command has not run on Native acquisition. C215286 remains partial while reviewed real site sources, a full Native delivery audit contract and shared ordered GPU queue integration remain worker-owned. No actual-pixel, Native-motion, physical or legal acceptance is claimed. Batch status remains 28 ready and 15 partial; full strict delivery has not passed.

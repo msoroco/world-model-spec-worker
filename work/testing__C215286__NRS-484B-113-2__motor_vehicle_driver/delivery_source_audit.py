@@ -87,8 +87,14 @@ def audit(attempt, case_id, diagnostic=True):
         if ((stream['width'], stream['height']) != (cameras[name]['width'], cameras[name]['height'])
                 or int(stream['nb_read_frames']) != count):
             raise ValueError('Camera decode dimensions or frame count differ: ' + name)
+        decoded = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(path), '-map', '0:v:0',
+                                  '-f', 'framemd5', '-'], capture_output=True, check=True)
+        frame_lines = [line for line in decoded.stdout.splitlines() if line and not line.startswith(b'#')]
+        if len(frame_lines) != count:
+            raise ValueError('Camera decoded frame count differs: ' + name)
         decodes[name] = {'sha256': sha(path), 'frames': count,
-                         'width': stream['width'], 'height': stream['height']}
+                         'width': stream['width'], 'height': stream['height'],
+                         'decoded_frames_sha256': hashlib.sha256(b'\n'.join(frame_lines)).hexdigest()}
     if result.get('capture_evidence_sha256') != sha(attempt / 'capture/evidence.jsonl'):
         raise ValueError('Capture evidence source changed')
     physical = result.get('physical_checks', {})
