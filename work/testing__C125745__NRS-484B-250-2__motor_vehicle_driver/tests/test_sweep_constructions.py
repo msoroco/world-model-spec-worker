@@ -39,6 +39,81 @@ def indexed_file_json(spec):
 
 
 class SweepConstructionTests(unittest.TestCase):
+    def test_qualified_fallback_physical_classifier_payloads(self):
+        index = read('sweep-constructions/index.json')
+        row = next(item for item in index['constructions']
+                   if item['case_id'] == 'c125745-1-0000')
+        expected = {'complete_motion': 'met',
+                    'incomplete_motion': 'not_met',
+                    'missing_evidence': 'unverified'}
+        for item in row['qualified_fallbacks']['candidates']:
+            proof = item['physical_cpu_proof']
+            self.assertEqual(proof['candidate_id'], item['id'])
+            self.assertEqual(proof['case_id'], item['case_id'])
+            self.assertEqual(proof['construction_sha256'], item['construction_sha256'])
+            lifecycle = proof['lifecycle']
+            self.assertEqual(lifecycle['exit_code'], 0)
+            for binding in lifecycle['files'].values():
+                self.assertEqual(hashlib.sha256(binding['payload'].encode()).hexdigest(),
+                                 binding['sha256'])
+            life = json.loads(lifecycle['files']['json']['payload'])
+            self.assertEqual(life['candidate_id'], item['id'])
+            self.assertEqual(life['saved_processing_receipt_sha256'],
+                             item['current_runtime_proof']['recorded_only_saved']['receipt_sha256'])
+            self.assertEqual(life['events'], ['capture_finished', 'encoders_closed',
+                                              'restoration_verified', 'native_exit',
+                                              'owner_released', 'saved_processing_started'])
+            self.assertTrue(life['failed_encoder_rejected'])
+            self.assertTrue(life['premature_release_rejected'])
+            for kind, status in expected.items():
+                with self.subTest(candidate=item['id'], kind=kind):
+                    self.assertEqual(proof['exit_codes'][kind], 0)
+                    for suffix in ('json', 'log'):
+                        binding = proof['fixtures'][kind + '_' + suffix]
+                        self.assertEqual(hashlib.sha256(binding['payload'].encode()).hexdigest(),
+                                         binding['sha256'])
+                    result = json.loads(proof['fixtures'][kind + '_json']['payload'])
+                    self.assertEqual(result['physical_checks']['maneuver']['status'], status)
+                    self.assertEqual(result['maneuver_completed'], status == 'met')
+                    self.assertFalse(result['physical_acceptance_claimed'])
+
+    def test_qualified_primary_physical_classifier_payloads(self):
+        index = read('sweep-constructions/index.json')
+        row = next(item for item in index['constructions']
+                   if item['case_id'] == 'c125745-1-0000')
+        qualified = row['qualified_primary']
+        proof = qualified['physical_cpu_proof']
+        self.assertEqual(proof['case_id'], qualified['case_id'])
+        self.assertEqual(proof['construction_sha256'], qualified['construction_sha256'])
+        lifecycle = proof['lifecycle']
+        self.assertEqual(lifecycle['exit_code'], 0)
+        for binding in lifecycle['files'].values():
+            self.assertEqual(hashlib.sha256(binding['payload'].encode()).hexdigest(),
+                             binding['sha256'])
+        life = json.loads(lifecycle['files']['json']['payload'])
+        self.assertEqual(life['candidate_id'], 'primary')
+        self.assertEqual(life['saved_processing_receipt_sha256'],
+                         qualified['current_runtime_proof']['recorded_only_saved']['receipt_sha256'])
+        self.assertEqual(life['events'], ['capture_finished', 'encoders_closed',
+                                          'restoration_verified', 'native_exit',
+                                          'owner_released', 'saved_processing_started'])
+        self.assertTrue(life['failed_encoder_rejected'])
+        self.assertTrue(life['premature_release_rejected'])
+        expected = {'complete_motion': 'met',
+                    'incomplete_motion': 'not_met',
+                    'missing_evidence': 'unverified'}
+        for kind, status in expected.items():
+            with self.subTest(kind=kind):
+                self.assertEqual(proof['exit_codes'][kind], 0)
+                for suffix in ('json', 'log'):
+                    binding = proof['fixtures'][kind + '_' + suffix]
+                    self.assertEqual(hashlib.sha256(binding['payload'].encode()).hexdigest(),
+                                     binding['sha256'])
+                result = json.loads(proof['fixtures'][kind + '_json']['payload'])
+                self.assertEqual(result['physical_checks']['maneuver']['status'], status)
+                self.assertEqual(result['maneuver_completed'], status == 'met')
+                self.assertFalse(result['physical_acceptance_claimed'])
+
     def test_first_timing_point_qualified_fallback_payloads(self):
         index = read('sweep-constructions/index.json')
         row = next(item for item in index['constructions']
@@ -64,8 +139,65 @@ class SweepConstructionTests(unittest.TestCase):
                                  item['offline_log_sha256'])
                 self.assertEqual(item['offline_exit_code'], 0)
                 self.assertFalse(item['offline_simulation_started'])
+                proof = item['current_runtime_proof']
+                positive = proof['positive_compatibility']
+                negative = proof['negative_compatibility']
+                saved = proof['recorded_only_saved']
+                for binding in (positive, saved):
+                    self.assertEqual(hashlib.sha256(binding['receipt_payload'].encode()).hexdigest(),
+                                     binding['receipt_sha256'])
+                    self.assertEqual(hashlib.sha256(binding['analysis_log_payload'].encode()).hexdigest(),
+                                     binding['analysis_log_sha256'])
+                    self.assertEqual(binding['exit_code'], 0)
+                self.assertEqual(hashlib.sha256(negative['log_payload'].encode()).hexdigest(),
+                                 negative['log_sha256'])
+                receipt = json.loads(positive['receipt_payload'])
+                processed = json.loads(saved['receipt_payload'])
+                self.assertEqual(receipt['case_id'], full_id)
+                self.assertEqual(receipt['candidate_id'], item['id'])
+                self.assertEqual(receipt['construction_sha256'], item['construction_sha256'])
+                self.assertEqual(receipt['negative_log_sha256'], negative['log_sha256'])
+                self.assertTrue(receipt['passed'])
+                self.assertEqual(processed['candidate_id'], item['id'])
+                self.assertEqual(processed['native_revision']['construction_sha256'],
+                                 item['construction_sha256'])
+                self.assertTrue(processed['recorded_only'])
+                self.assertTrue(processed['passed'])
+                self.assertFalse(processed['physical_acceptance_claimed'])
                 hashes.add(item['construction_sha256'])
         self.assertEqual(len(hashes), 3)
+
+    def test_first_qualified_primary_current_runtime_receipts(self):
+        index = read('sweep-constructions/index.json')
+        row = next(item for item in index['constructions']
+                   if item['case_id'] == 'c125745-1-0000')
+        qualified = row['qualified_primary']
+        proof = qualified['current_runtime_proof']
+        check = lambda payload, expected: self.assertEqual(
+            hashlib.sha256(payload.encode()).hexdigest(), expected)
+        positive = proof['positive_compatibility']
+        negative = proof['negative_compatibility']
+        saved = proof['recorded_only_saved']
+        check(positive['receipt_payload'], positive['receipt_sha256'])
+        check(positive['analysis_log_payload'], positive['analysis_log_sha256'])
+        check(negative['log_payload'], negative['log_sha256'])
+        check(saved['receipt_payload'], saved['receipt_sha256'])
+        check(saved['analysis_log_payload'], saved['analysis_log_sha256'])
+        compatibility = json.loads(positive['receipt_payload'])
+        processed = json.loads(saved['receipt_payload'])
+        for receipt in (compatibility, processed):
+            self.assertEqual(receipt['case_id'], qualified['case_id'])
+        self.assertEqual(compatibility['construction_sha256'],
+                         qualified['construction_sha256'])
+        self.assertEqual(compatibility['negative_log_sha256'],
+                         negative['log_sha256'])
+        self.assertTrue(compatibility['passed'])
+        self.assertTrue(processed['passed'])
+        self.assertTrue(processed['recorded_only'])
+        self.assertFalse(processed['physical_acceptance_claimed'])
+        self.assertFalse(processed['legal_acceptance_claimed'])
+        self.assertEqual(processed['native_revision']['construction_sha256'],
+                         qualified['construction_sha256'])
 
     def test_staged_physical_classifier_archive(self):
         index = read('sweep-constructions/index.json')
