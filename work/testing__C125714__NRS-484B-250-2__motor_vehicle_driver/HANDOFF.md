@@ -258,3 +258,7 @@ The scoped strict recheck found 32 missing physical fixture/lifecycle logs refer
 ## 2026-11-23 eight-case physical log recovery and strict acceptance
 
 All 32 current physical fixture and lifecycle commands were rerun for eight cases with outputs isolated under `.runtime-work/c125714-physical-rebuild/`. Every command exited zero and reproduced the original stdout SHA-256 and physical result JSON SHA-256 recorded in its receipt. Their exact stdout bytes are retained as independently hash-checked members of `command-log-archive.json` (archive SHA-256 `002d4162cb152f5e472bf639093d8698f51d1b7123fcd10559716cff3e8a60da`). The eight physical receipts and execution manifest were rebound to that archive. The pinned physical validator passed all eight cases, direct execution-manifest validation passed, and `worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` passed. The package is now ready for the CPU preparation gate; remaining Native/GPU observations remain explicit in `result.json`.
+
+## 2026-11-23 archive consolidation with physical receipt rebind
+
+Preserved the first selected case's four original offline stdout files as byte-exact archive members, backed up under ignored `.runtime-work/`, and refreshed every offline, result-test and eight physical-receipt reference to `command-log-archive.json` SHA-256 `19662f023bf4418956828764ff3ec485a8b9de89db022717cc4961ff33663584`. The assignment-scoped strict delivery gate passed after rebind; ready status remains valid.

@@ -132,3 +132,17 @@ Pinned `.venv-cpu/bin/python runtime.py preflight` was rerun with `SCENARIO_PIPE
 ## 2026-11-23 C125714 advance full-duration proof
 
 C125714(250-1) now returns a reproducible 1,100-frame synthetic advance-case proof. Source joins place the other complete body inside the crossing when ego enters (other frame 1238, ego frame 1298). Five source-hashed measurements, four original camera decodes, independent delivery audit, and missing-controller/camera negatives pass. Its exact stdout is member `advance-full-duration-current.log` in the package log archive, SHA-256 `34bad22f3404b50037a26fd38a96b77a3a47dac0683503825190418edf824c38`. All archive refs were rebound, and the assignment-scoped partial checker passed. The assignment remains partial because its exact advance compatibility and recorded-only path, other selected cases, and fallbacks still need return bindings. This fixture claims no Native or legal acceptance.
+
+## 2026-11-23 C125714 advance exact saved path
+
+C125714(250-1) now has distinct returned advance-case 60-frame source specification and recipe, exact current-runtime primary compatibility receipt (`2dda3d685bdf5ea027c2b49b9c35547144f4969a695b7c580f8d1880a178887d`), missing-crossing-source negative, and recorded-only saved processing (`passed=true`, `originals_preserved=true`). The independent 1,100-frame source proof also passes with the other body inside at ego entry. The package archive SHA-256 is `f544ca24f092889a0a1599621b3b76871474fe825f827caede79143969c2cdfb`; the scoped partial checker passes. Status remains partial because five selected cases and further fallback/physical/semantic/comparison proofs remain.
+
+C177008 preserved eight more exact original offline stdout files in its archive; its scoped strict gate passed after each batch. Batch remains 25 ready and 18 partial. Returned work file count is 8,597, with three available slots under the 8,600 cap.
+
+The pinned CPU preflight was rerun this turn with output rooted under `.runtime-work/`; it passed with Lean 4.28.0 and `simulation_started=false`.
+
+## 2026-11-23 C125714 other-later exact and full-duration proof
+
+C125714(250-1) now has a distinct `source_verified_other_later` fixture, exact current-runtime positive/negative compatibility, recorded-only saved processing with originals preserved, and an independent 1,100-frame synthetic source audit. The short diagnostic measures ego/other original body entry at frames 1034/1039; the full-duration proof measures 1298/1438. All four cameras decode 1,100 frames and five source-hashed measurements verify. Compatibility receipt SHA-256 is `7b8ed133e4970c7d60ff84b05df0f7ab6910bdeb2a3d385324441cbc115dceff`; full-duration proof log SHA-256 is `690ddf0d988616b79e98deb4954c6f02f761752f58a5efeed1e7b9c4963802eb`, in package archive SHA-256 `caa40ad99ceebf7d05c0e2b2f49d55cc62fc71345c57d38db11d2921c38fd3e6`. Scoped partial check passes. Four selected exact saved paths, further fallbacks, physical and comparison proofs remain.
+
+C125714(250-2) archived four byte-exact offline logs, refreshed all eight embedded physical-receipt archive references, and passed its assignment-scoped strict gate. Pinned CPU preflight passed with Lean 4.28.0 and no simulation. Batch remains 25 ready/18 partial; global strict gate has not passed.

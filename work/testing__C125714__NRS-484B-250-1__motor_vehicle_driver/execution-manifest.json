@@ -32,7 +32,7 @@
             "exit_code": 0,
             "construction_sha256": "2087c3e33445e0d94cc9e5b970abc7d5ac522a6f4065991d3012c4ff9653034d",
             "log": "command-log-archive.json",
-            "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+            "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
             "log_member": "precedence-fallback1-current-offline.log",
             "original_log_sha256": "1648363066466d1bfb86d15f05297694f06f034a375f8f421c4bbd471cfb39e4"
           },
@@ -127,7 +127,7 @@
         "exit_code": 0,
         "construction_sha256": "5c5bc8a30d9dd8d353e19935f72b33efd956fa44441f33141feb488dc1cb776f",
         "log": "command-log-archive.json",
-        "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+        "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
         "log_member": "advance-current-offline.log",
         "original_log_sha256": "abd068f3cb19d6797a16869ab457fca286de907ccef2edc00f669a5903005d6b"
       },
@@ -182,7 +182,15 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-advance-recipe.json"
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-advance-recipe.json",
+      "compatibility": {
+        "receipt": "cases/source_verified_advance/compatibility.json",
+        "sha256": "2dda3d685bdf5ea027c2b49b9c35547144f4969a695b7c580f8d1880a178887d",
+        "log": "cases/source_verified_advance/positive.log"
+      },
+      "negative": {
+        "log": "cases/source_verified_advance/negative.log"
+      }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_other_later",
@@ -199,9 +207,69 @@
         "exit_code": 0,
         "construction_sha256": "982d943d81fcba6fbeaab6b3bc0700dc933e9aa27272b4d366a5f06352c70f69",
         "log": "command-log-archive.json",
-        "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+        "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
         "log_member": "other-later-current-offline.log",
         "original_log_sha256": "befddb20589b9a0adcf5f39b528ac7362afbb26ef874548652954103393eec21"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "st.intersection": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "rel.bearing": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "yield_control": {
+          "entrypoint": "route_control.py",
+          "method": "Original controller frame joined to crossing body history",
+          "evidence": "controller_history.jsonl and crossing_history.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-other-later-recipe.json",
+      "compatibility": {
+        "receipt": "cases/source_verified_other_later/compatibility.json",
+        "sha256": "7b8ed133e4970c7d60ff84b05df0f7ab6910bdeb2a3d385324441cbc115dceff",
+        "log": "cases/source_verified_other_later/positive.log"
+      },
+      "negative": {
+        "log": "cases/source_verified_other_later/negative.log"
       }
     },
     {
@@ -219,9 +287,69 @@
         "exit_code": 0,
         "construction_sha256": "286d84a5310481b2eab9d62d736da563984775d65f46a44d16840da0c37f15f3",
         "log": "command-log-archive.json",
-        "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+        "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
         "log_member": "opposite-straight-current-offline.log",
         "original_log_sha256": "ffc7de515d9de7d09124aa8531f20272ea8a3d3a906d05809e3627f148668897"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "st.intersection": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "rel.bearing": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "yield_control": {
+          "entrypoint": "route_control.py",
+          "method": "Original controller frame joined to crossing body history",
+          "evidence": "controller_history.jsonl and crossing_history.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-opposite-straight-recipe.json",
+      "compatibility": {
+        "receipt": "cases/source_verified_opposite_straight/compatibility.json",
+        "sha256": "55da5e2148683c4799ceeb82d6d3861adbd54177bb0207d671e35160a74043a6",
+        "log": "cases/source_verified_opposite_straight/positive.log"
+      },
+      "negative": {
+        "log": "cases/source_verified_opposite_straight/negative.log"
       }
     },
     {
@@ -239,7 +367,7 @@
         "exit_code": 0,
         "construction_sha256": "9e2d7f94628d34a22f7259717709a8c556b2fb341538d36106933d8925b02c27",
         "log": "command-log-archive.json",
-        "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+        "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
         "log_member": "opposite-intends-left-current-offline.log",
         "original_log_sha256": "6b39f2277392459ded64cbf3b41720bb25cc54d9fd8e228810ee13a017894df2"
       }
@@ -259,7 +387,7 @@
         "exit_code": 0,
         "construction_sha256": "732fc20c41ce0aece118b45d1ea1bb0d96f0ecdc11cc992b2e4d24985fdccf2f",
         "log": "command-log-archive.json",
-        "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+        "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
         "log_member": "opposite-makes-left-current-offline.log",
         "original_log_sha256": "6f4e0a1d114beaad5b6674d5ee6e63ad447a960137c39cec39b9b30c4260ec0a"
       }
@@ -279,7 +407,7 @@
         "exit_code": 0,
         "construction_sha256": "0ee402da337133185cde2ba46e54b982b4d479f127e48118ddec23323a292a14",
         "log": "command-log-archive.json",
-        "log_sha256": "c0ff72251da5eac0722e26f25ecd38c64bd9d29d47fa09112e74a85ea1d21b7c",
+        "log_sha256": "98dc976472d27b3de93f67eaf7b060b661929df69b08fab0e2ed71fc767cdf50",
         "log_member": "wide-same-current-offline.log",
         "original_log_sha256": "d5b6d7b4b93fcd9fc751033e5e338e33b61ddf8cc08ab4bc3ab4e408413ab7bf"
       }

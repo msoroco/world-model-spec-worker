@@ -214,3 +214,7 @@ Moved byte-exact, unbound historical logs into the existing `command-log-archive
 Four original first-case offline stdout logs were preserved as hash-checked members of the C177008 archive, their manifest/result bindings were updated, and its assignment-scoped strict delivery gate passed. This freed four slots for the C412593 301-foot canonical return while keeping C177008 ready.
 
 Four more C177008 case offline logs were preserved byte-exact in its existing archive and rebound in manifest/result. Its scoped strict delivery check passed, and its ready status remains valid.
+
+## 2026-11-23 byte-exact offline log consolidation
+
+Preserved all four residential-right-at-100ft and all four business-lane-change-above-100ft original offline stdout files as exact SHA-256-verified members of `command-log-archive.json`, refreshed all manifest/result references, and removed only those eight plain returned log copies after backup under ignored `.runtime-work/`. Archive SHA-256 is `9a9ae806c8f30cb62f3f1dd8670c7a10426411df602838c8748bafd7f7260249`. The assignment-scoped strict delivery gate passed after each archival batch; the ready proof remains valid.
