@@ -14,6 +14,7 @@ CASE = ROOT.name + "__red_no_device_entry"
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
            ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 MODULES = ("runner.py", "materialize_cases.py", "native_case_bundles.py",
+           "crossing_map.py",
            "native_world.py", "native_attempt.py",
            "native_packets.py", "native_signal.py", "native_cameras.py",
            "native_recorder.py", "walker_control.py", "saved_entry.py",

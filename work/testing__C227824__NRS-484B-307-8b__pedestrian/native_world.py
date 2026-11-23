@@ -9,6 +9,7 @@ import hashlib
 import json
 import math
 import os
+import sys
 from pathlib import Path
 
 from native_attempt import run as run_ticks
@@ -139,6 +140,10 @@ def run_native(scene, attempt, host="127.0.0.1", port=2000):
     output_root = (_private_root() / "c227824-runtime").resolve()
     output_root.mkdir(parents=True, exist_ok=True)
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(output_root)
+    sys.dont_write_bytecode = True
+    runtime = str(_private_root().parent / "runtime" / "scenario_pipeline")
+    if runtime not in sys.path:
+        sys.path.insert(0, runtime)
     import carla
     from worker_exchange.native_output import seal_capture
     from worker_exchange.world_restore import snapshot, restore

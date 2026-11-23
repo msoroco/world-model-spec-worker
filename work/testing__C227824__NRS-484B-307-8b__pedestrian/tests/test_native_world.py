@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -9,7 +10,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_world import run_with_client
+from native_world import run_with_client, run_native
 
 
 class World:
@@ -126,6 +127,21 @@ class NativeWorldTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "OpenDRIVE map differs"):
             self._run()
         self.assertIsNone(self.client.loaded)
+
+    def test_native_entrypoint_sets_private_runtime_before_pipeline_import(self):
+        class FakeClient(Client):
+            def set_timeout(self, seconds):
+                self.timeout = seconds
+
+        fake_carla = NS(Client=lambda host, port: FakeClient())
+        with patch.dict(sys.modules, {"carla": fake_carla}), \
+             patch("native_world.run_with_client", return_value={"prepared": True}) as run:
+            result = run_native(self.scene, self.root)
+        self.assertTrue(result["prepared"])
+        self.assertEqual(Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).parent,
+                         (Path(__file__).resolve().parents[3] / ".runtime-work").resolve())
+        self.assertTrue(any("runtime/scenario_pipeline" in path for path in sys.path))
+        self.assertTrue(run.called)
 
 
 if __name__ == "__main__":

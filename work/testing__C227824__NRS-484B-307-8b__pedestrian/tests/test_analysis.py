@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -59,6 +60,19 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(len(result["recording_evidence"]), 5)
         self.assertEqual(result["provenance_kind"], "synthetic_fixture")
         self.assertFalse(report["legal_verdict_claimed"])
+
+    def test_standalone_finalizer_sets_runtime_path_before_import(self):
+        environment = os.environ.copy()
+        environment.pop("PYTHONPATH", None)
+        environment.pop("SCENARIO_PIPELINE_OUTPUT_ROOT", None)
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "analysis.py"), "--attempt", str(self.root),
+             "--output", str(self.root / "analysis-report.json")],
+            env=environment, capture_output=True, text=True, check=False)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        result = json.loads((self.root / "result.json").read_text())
+        self.assertFalse(result["physical_acceptance_claimed"])
 
     def test_selected_case_mismatch_rejected(self):
         path = self.root / "config.json"

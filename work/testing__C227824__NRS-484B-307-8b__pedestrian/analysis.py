@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 
 from saved_entry import CAMERAS, build_report
@@ -20,6 +21,10 @@ def _pipeline_output_root():
     output = workspace / ".runtime-work" / "c227824-analysis-runtime"
     output.mkdir(parents=True, exist_ok=True)
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(output.resolve())
+    sys.dont_write_bytecode = True
+    runtime = str(workspace / "runtime" / "scenario_pipeline")
+    if runtime not in sys.path:
+        sys.path.insert(0, runtime)
 
 
 def _jsonl(path):
