@@ -16,6 +16,28 @@ def digest(path):
     return hashlib.sha256((HERE / path).read_bytes()).hexdigest()
 
 
+def indexed_log(proof):
+    if 'log_member' not in proof:
+        return (HERE / proof['log']).read_text()
+    archive = json.loads((HERE / proof['log']).read_text())
+    member = archive['files'][proof['log_member']]
+    data = base64.b64decode(member['base64'], validate=True)
+    assert hashlib.sha256(data).hexdigest() == member['sha256']
+    assert member['sha256'] == proof['original_log_sha256']
+    return data.decode()
+
+
+def indexed_file_json(spec):
+    if 'archive_member' not in spec:
+        return read(spec['file'])
+    archive = read(spec['file'])
+    member = archive['files'][spec['archive_member']]
+    data = base64.b64decode(member['base64'], validate=True)
+    assert hashlib.sha256(data).hexdigest() == member['sha256']
+    assert member['sha256'] == spec['original_sha256']
+    return json.loads(data)
+
+
 class SweepConstructionTests(unittest.TestCase):
     def test_exact_commanded_axes_and_distinct_offline_fallbacks(self):
         index = read('sweep-constructions/index.json')
@@ -49,17 +71,17 @@ class SweepConstructionTests(unittest.TestCase):
                     proof = fallback['offline']
                     self.assertEqual(proof['exit_code'], 0)
                     self.assertEqual(digest(proof['log']), proof['log_sha256'])
-                    log = (HERE / proof['log']).read_text()
+                    log = indexed_log(proof)
                     self.assertIn(f"CASE {row['case_id']}", log)
                     self.assertIn('COMMAND ' + proof['command'], log)
                     self.assertIn('EXIT 0', log)
                 self.assertEqual(len(constructions), 4)
                 receipt = row['current_runtime_proof']['positive_compatibility_receipt']
                 self.assertEqual(digest(receipt['file']), receipt['sha256'])
-                self.assertEqual(read(receipt['file'])['construction_sha256'], row['sha256'])
+                self.assertEqual(indexed_file_json(receipt)['construction_sha256'], row['sha256'])
                 saved = row['current_runtime_proof']['recorded_only_saved_receipt']
                 self.assertEqual(digest(saved['file']), saved['sha256'])
-                self.assertTrue(read(saved['file'])['recorded_only'])
+                self.assertTrue(indexed_file_json(saved)['recorded_only'])
 
     def test_archived_candidate_receipts_bind_exact_constructions(self):
         index = read('sweep-constructions/index.json')
