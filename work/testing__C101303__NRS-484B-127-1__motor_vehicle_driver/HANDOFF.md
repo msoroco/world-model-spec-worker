@@ -331,3 +331,11 @@ After the later 46-file exchange, the same C101303 scoped strict readiness gate 
 ## 2026-11-23 return-file preservation
 
 Moved byte-exact, unbound historical logs into the existing `command-log-archive.json` and rebound result log hashes. The assignment-scoped strict delivery check passed after archival; no ready claim changed.
+
+## 2026-11-23 returned offline-log compaction
+
+Archived the four original offline logs for each of `source_verified_base`, `source_verified_closer`, and `source_verified_faster_ego` into the package command-log archive with exact bytes and SHA-256 members, rebound manifest/result and physical receipt references, and retained ignored byte-for-byte backups. The assignment-scoped complete delivery-ready check passed after each compaction. No construction or physical conclusion changed.
+
+## 2026-11-23 further offline-log compaction
+
+Archived and rebound the four original offline logs for `source_verified_slower_lead` into the package command-log archive with ignored byte-for-byte backup. The assignment-scoped complete delivery-ready check passed after compaction.

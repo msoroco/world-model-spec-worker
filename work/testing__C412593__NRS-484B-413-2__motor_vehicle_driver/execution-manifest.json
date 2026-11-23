@@ -60,7 +60,7 @@
         "exit_code": 0,
         "construction_sha256": "fbef05f4688ce1d0ebfd8ccbabf32058c49313014529cb2ac78e962c31cb348a",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "candidate_risk": {
         "status": "physical",
@@ -85,7 +85,7 @@
             "exit_code": 0,
             "construction_sha256": "4b5fea04941acb9f575a98cecb3671e5ab6ddd540dd347a61844fa513fcf05f0",
             "log": "cpu-tests.log",
-            "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
           },
           "compatibility": {
             "receipt": "fallback1-compatibility-receipt.json",
@@ -112,7 +112,7 @@
             "exit_code": 0,
             "construction_sha256": "591f7f8da2c26ab2895389581d1fde217cad25e0258a5c9336954e2d139bbbe4",
             "log": "cpu-tests.log",
-            "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
           },
           "compatibility": {
             "receipt": "fallback2-compatibility-receipt.json",
@@ -139,7 +139,7 @@
             "exit_code": 0,
             "construction_sha256": "5a0292caf28481b433b3d63b9e1be9433322482cfb901237d5fd3ca3aae00468",
             "log": "cpu-tests.log",
-            "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
           },
           "compatibility": {
             "receipt": "fallback3-compatibility-receipt.json",
@@ -197,7 +197,7 @@
         "exit_code": 0,
         "construction_sha256": "9a579d64d40a0b789fab18d363ed1fff5a766745386e89d447f0449b9d0e2893",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "candidate_risk": {
         "status": "physical",
@@ -216,7 +216,86 @@
           "changed_knobs": [
             "requested_speed_mps: 4.0 to 3.0"
           ],
-          "remedy": "Run a slower authored approach and remeasure the same 300-foot other-area selected case"
+          "remedy": "Run a slower authored approach and remeasure the same 300-foot other-area selected case",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-other300-fallback1/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_at_300_ft --candidate fallback1 --output .runtime-work/c412593-other300-fallback1/offline",
+            "exit_code": 0,
+            "construction_sha256": "0d86a9375ebdbf1244254f5853a784f7b58930a79a65c69cbca41dde98563fc9",
+            "log": "cpu-tests.log",
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
+          },
+          "compatibility": {
+            "receipt": "cases/right_other_at_300_ft-fallback1-compatibility.json",
+            "sha256": "3b0559201f1e90aab9e0a680a3c39c3f5663bebd5a3d272b29c4bcca9b8090a4",
+            "log": "cases/right_other_at_300_ft-fallback1-positive.log",
+            "negative_log": "cases/right_other_at_300_ft-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_other_at_300_ft-fallback1-saved-processing.json",
+            "sha256": "ca7f230e9636736f627620093802cc182ba3c39ba19ebe9ecfbd98f7791cd4b7"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/right_other_at_300_ft-fallback2-construction.json",
+          "construction_sha256": "132eeb1dceed9f8cb50cea3aba86875addf3542d21121073fd97b9d459e05595",
+          "trigger": {
+            "source": "Native actor spawn result and original body/indicator readback",
+            "metric": "ego blueprint spawn success and complete original body geometry",
+            "failure_condition": "Primary subject blueprint fails to spawn or yields incomplete measured body/indicator source"
+          },
+          "changed_knobs": [
+            "blueprint_selection_index: default 0 to 1"
+          ],
+          "remedy": "Select the alternate vehicle blueprint while retaining the same 300-foot route, district and signal target",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-other300-fallback2/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_at_300_ft --candidate fallback2 --output .runtime-work/c412593-other300-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "132eeb1dceed9f8cb50cea3aba86875addf3542d21121073fd97b9d459e05595",
+            "log": "cpu-tests.log",
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
+          },
+          "compatibility": {
+            "receipt": "cases/right_other_at_300_ft-fallback2-compatibility.json",
+            "sha256": "3727a6685d3e28eb03424d6bf3c22388a0f143bc9aeae644e735f20300af6184",
+            "log": "cases/right_other_at_300_ft-fallback2-positive.log",
+            "negative_log": "cases/right_other_at_300_ft-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_other_at_300_ft-fallback2-saved-processing.json",
+            "sha256": "7ae5c8f3f9a48dd016821cf4f96864a16f4223c87dbfb82c3934d092e34a60f6"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/right_other_at_300_ft-fallback3-construction.json",
+          "construction_sha256": "7359d4812c5c16c5bf0add58ca9858607fbf78ec8a637999b416b44e87c2e9ee",
+          "trigger": {
+            "source": "Original Native drive history and right-indicator readback",
+            "metric": "continuous available approach distance before right-turn onset",
+            "failure_condition": "Primary approach starts too near the sourced course-change point to measure 300 feet of uninterrupted right indication"
+          },
+          "changed_knobs": [
+            "approach_start_m: default 0.0 to 5.0"
+          ],
+          "remedy": "Start the same authored route five metres earlier and remeasure original signal distance",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-other300-fallback3/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_at_300_ft --candidate fallback3 --output .runtime-work/c412593-other300-fallback3/offline",
+            "exit_code": 0,
+            "construction_sha256": "7359d4812c5c16c5bf0add58ca9858607fbf78ec8a637999b416b44e87c2e9ee",
+            "log": "cpu-tests.log",
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
+          },
+          "compatibility": {
+            "receipt": "cases/right_other_at_300_ft-fallback3-compatibility.json",
+            "sha256": "a93e8525571c44fc95742547682eb7194d45702bfbe6412804128a3c1903cec1",
+            "log": "cases/right_other_at_300_ft-fallback3-positive.log",
+            "negative_log": "cases/right_other_at_300_ft-fallback3-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_other_at_300_ft-fallback3-saved-processing.json",
+            "sha256": "0c2539a03f68727a0f9f93b363367817a929682ad8710336963a7a4b975e8704"
+          }
         }
       ],
       "compatibility": {
@@ -276,13 +355,76 @@
         "exit_code": 0,
         "construction_sha256": "9850241007f8e0d7ff40af303a2f88b269561c93e79f32ad6d07aabd162000b7",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "candidate_risk": {
         "status": "physical",
         "reason": "299-foot boundary onset may drift against Native route progress or four-camera visibility"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/right_other_under_300_ft-fallback1-construction.json",
+          "construction_sha256": "178c5031006131630357b353e46a3d17f7ee014ae9ff2255887fc6a71da11fee",
+          "trigger": {
+            "source": "Original Native drive history and four source-camera frame joins",
+            "metric": "continuous right-indicator path length before measured course change and complete turn",
+            "failure_condition": "Primary speed yields a short signal distance or an incomplete source-measured turn"
+          },
+          "changed_knobs": [
+            "requested_speed_mps: 4.0 to 3.0"
+          ],
+          "remedy": "Run a slower authored approach and remeasure the same 299-foot other-area selected case",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-other299-fallback1/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_under_300_ft --candidate fallback1 --output .runtime-work/c412593-other299-fallback1/offline",
+            "exit_code": 0,
+            "construction_sha256": "178c5031006131630357b353e46a3d17f7ee014ae9ff2255887fc6a71da11fee",
+            "log": "cpu-tests.log",
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
+          },
+          "compatibility": {
+            "receipt": "cases/right_other_under_300_ft-fallback1-compatibility.json",
+            "sha256": "dd16b058583ec14b32ddde39de03f21b66faddfa4584b68fa022ed35f63562bd",
+            "log": "cases/right_other_under_300_ft-fallback1-positive.log",
+            "negative_log": "cases/right_other_under_300_ft-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_other_under_300_ft-fallback1-saved-processing.json",
+            "sha256": "5275b505f21049e402043620a471584e7a45e36e96178b1456352ec6274ba5fb"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/right_other_under_300_ft-fallback2-construction.json",
+          "construction_sha256": "d0d11f074898acc65a323769d521e839f947c2167d8a8e2e644f046bcfde526a",
+          "trigger": {
+            "source": "Native actor spawn result and original body/indicator readback",
+            "metric": "ego blueprint spawn success and complete original body geometry",
+            "failure_condition": "Primary subject blueprint fails to spawn or yields incomplete measured body/indicator source"
+          },
+          "changed_knobs": [
+            "blueprint_selection_index: default 0 to 1"
+          ],
+          "remedy": "Select the alternate vehicle blueprint while retaining the same 299-foot route, district and signal target",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-other299-fallback2/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_under_300_ft --candidate fallback2 --output .runtime-work/c412593-other299-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "d0d11f074898acc65a323769d521e839f947c2167d8a8e2e644f046bcfde526a",
+            "log": "cpu-tests.log",
+            "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
+          },
+          "compatibility": {
+            "receipt": "cases/right_other_under_300_ft-fallback2-compatibility.json",
+            "sha256": "bbd65542cd1e33dd34dbe6c96d418a0ca7798e10f8436cc5d325f98ff198fb61",
+            "log": "cases/right_other_under_300_ft-fallback2-positive.log",
+            "negative_log": "cases/right_other_under_300_ft-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_other_under_300_ft-fallback2-saved-processing.json",
+            "sha256": "69c31e1dd5168d0972dc1d38eba94a0387f4eea7fcdfb5f8152aa87496b1ba6b"
+          }
+        }
+      ],
       "compatibility": {
         "receipt": "cases/right_other_under_300_ft-compatibility-receipt.json",
         "sha256": "e4c2997216f6ab3d89394d22944655ef0712dd1cab7baddac08ac85859ecf209",
@@ -345,7 +487,7 @@
         "exit_code": 0,
         "construction_sha256": "dfb17df030a158af995fd0a4ccb8726f6ba8c14e4f0dffa93066c44d13e6099b",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "compatibility": {
         "receipt": "cases/right_residential_at_100_ft-compatibility-receipt.json",
@@ -409,7 +551,7 @@
         "exit_code": 0,
         "construction_sha256": "8712816b26ab40dd128b70e35caa5bf9f04d5b8003448467f22fff2f483d4083",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "compatibility": {
         "receipt": "cases/right_interrupted-compatibility-receipt.json",
@@ -473,7 +615,7 @@
         "exit_code": 0,
         "construction_sha256": "66483dbb9cd4ff6706e1b3dcc4f822f16047a48fc6348f692c7bed6373cb6dfa",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "compatibility": {
         "receipt": "cases/right_other_over_300_ft-compatibility-receipt.json",
@@ -537,7 +679,7 @@
         "exit_code": 0,
         "construction_sha256": "eea87374fc17e88dba30e0b1370dffd930de5e281d30ccea69683a0265a2a7ca",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "compatibility": {
         "receipt": "cases/right_business_under_100_ft-compatibility-receipt.json",
@@ -601,7 +743,7 @@
         "exit_code": 0,
         "construction_sha256": "4d32a351ff377f4af734ac173bb6b6546a11a5a8685a85846c4c16e60c2c74eb",
         "log": "cpu-tests.log",
-        "log_sha256": "80517711d9de95145c562b0086731136c2b9940ef17ab49846e0384ee3b3b249"
+        "log_sha256": "22b089b2c2a82d17b0180448f54f71cebd9d45f885343b753cbd0f89731c7e97"
       },
       "compatibility": {
         "receipt": "cases/right_business_over_100_ft-compatibility-receipt.json",
