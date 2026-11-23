@@ -17,9 +17,15 @@ from source_footprints import vertices
 
 FRAMES = 600
 RATE_HZ = 20
-VIEWS = ('overview', 'curb', 'load', 'trailer')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 ASSIGNMENT = 'training__C229398__LVMC-11-52-060__motor_vehicle_driver'
 TARGETS = {'below_15_ft': 14, 'at_15_ft': 15, 'above_15_ft': 16}
+CANDIDATES = {
+    'primary': (2.4, -5, 12),
+    'fallback1': (1.8, -5, 12),
+    'fallback2': (2.4, -7, 12),
+    'fallback3': (2.4, -5, 16),
+}
 
 
 def check(config):
@@ -31,8 +37,12 @@ def check(config):
             or config.get('actor') != 'motor_vehicle_driver'
             or config.get('target_projection_ft') != TARGETS[suffix]
             or config.get('duration_s') != 30 or config.get('rate_hz') != RATE_HZ
-            or config.get('candidate_id') != 'primary'):
+            or config.get('candidate_id') not in CANDIDATES):
         raise ValueError('Exact C229398 case or full capture contract differs')
+    actual = (config.get('load_height_m'), config.get('trailer_rear_m'),
+              config.get('camera_distance_m'))
+    if actual != CANDIDATES[config['candidate_id']]:
+        raise ValueError('Candidate physical knobs differ')
     cameras = config.get('cameras')
     if (not isinstance(cameras, list) or [x.get('name') for x in cameras] != list(VIEWS)
             or [(x.get('width'), x.get('height')) for x in cameras]
@@ -40,12 +50,12 @@ def check(config):
         raise ValueError('Four source cameras required')
     if (config.get('vehicle_blueprint') != 'vehicle.tesla.model3'
             or config.get('load_filter') != 'static.prop.*'
-            or config.get('trailer_filter') != 'vehicle.*'
-            or not 2 <= config.get('camera_distance_m', 0) <= 40):
+            or config.get('trailer_filter') != 'vehicle.*'):
         raise ValueError('Native participant or camera configuration differs')
     return {'case_id': config['case_id'], 'frames': FRAMES,
             'rate_hz': RATE_HZ, 'camera_views': list(VIEWS),
             'target_projection_ft': TARGETS[suffix],
+            'candidate_id': config['candidate_id'],
             'source_kind': 'native', 'carla_imported': False,
             'curb_reviewed': False, 'physical_acceptance_claimed': False}
 
@@ -124,10 +134,10 @@ def execute(config, output, host, port):
         if not props or not trailers:
             raise RuntimeError('Native load or trailer blueprint unavailable')
         load = world.try_spawn_actor(props[0], carla.Transform(
-            carla.Location(x=0, y=0, z=2.4)), ego,
+            carla.Location(x=0, y=0, z=config['load_height_m'])), ego,
             carla.AttachmentType.Rigid)
         trailer = world.try_spawn_actor(trailers[0], carla.Transform(
-            carla.Location(x=-5, y=0, z=0)), ego,
+            carla.Location(x=config['trailer_rear_m'], y=0, z=0)), ego,
             carla.AttachmentType.Rigid)
         if load is None or trailer is None:
             raise RuntimeError('Native rigid load/trailer attachment failed')
@@ -168,8 +178,10 @@ def execute(config, output, host, port):
             for key, value in (('image_size_x', width), ('image_size_y', height),
                                ('fov', 90), ('sensor_tick', 0)):
                 bp.set_attribute(key, str(value))
-            offsets = {'overview': (-12, 0, 9), 'curb': (-2, 7, 3),
-                       'load': (1, 4, 3), 'trailer': (-8, 4, 3)}
+            offsets = {'overview': (-config['camera_distance_m'], 0, 9),
+                       'approach': (-6, 5, 4),
+                       'reference_corner': (-2, 7, 3),
+                       'driver_reference': (1, 4, 3)}
             x, y, z = offsets[name]
             sensor = world.spawn_actor(bp, carla.Transform(
                 carla.Location(x=x, y=y, z=z),
@@ -217,6 +229,7 @@ def execute(config, output, host, port):
                     encoders[name].stdin.write(rgb)
                     camera_hashes[name] = hashlib.sha256(rgb).hexdigest()
                 frame_map.write(json.dumps({'video_frame': index,
+                                            'carla_frame': native_frame,
                                             'native_frame': native_frame,
                                             'time_s': time_s,
                                             'camera_rgb_sha256': camera_hashes},

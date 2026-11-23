@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
-from runner import check, projection_ft, FRAMES, RATE_HZ, TARGETS, VIEWS
+from runner import check, projection_ft, CANDIDATES, FRAMES, RATE_HZ, TARGETS, VIEWS
 
 
 HERE = Path(__file__).resolve().parent.parent
@@ -42,6 +42,17 @@ class Offline(unittest.TestCase):
         config['cameras'][2]['name'] = 'duplicate'
         with self.assertRaisesRegex(ValueError, 'Four source cameras'):
             check(config)
+
+    def test_three_distinct_fallback_knobs(self):
+        self.assertEqual(len(set(CANDIDATES.values())), 4)
+        for candidate, knobs in CANDIDATES.items():
+            config = copy.deepcopy(self.config)
+            config['candidate_id'] = candidate
+            config['load_height_m'], config['trailer_rear_m'], config['camera_distance_m'] = knobs
+            self.assertEqual(check(config)['candidate_id'], candidate)
+            config['load_height_m'] += 0.1
+            with self.assertRaisesRegex(ValueError, 'physical knobs'):
+                check(config)
 
     def test_measurement_uses_load_and_trailer_vertices(self):
         def actor(center):
