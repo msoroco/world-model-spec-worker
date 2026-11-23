@@ -278,3 +278,7 @@ Archived the four exact offline logs for `source_verified_opposite_straight` and
 ## 2026-11-23 opposite-intends-left offline log compaction
 
 Archived four exact offline logs for `source_verified_opposite_intends_left` and rebound execution manifest, result tests, and physical receipt hashes. New `command-log-archive.json` SHA256: `41667ba2a92fa26e370a42989481a84d5e19c9f8aa1a29ff610a48f9baa688c1`. The assignment-scoped complete delivery-ready check passed after compaction.
+
+## 2026-11-23 unbound processing receipt archive
+
+Eight unbound saved-processing receipt copies were preserved byte-exactly in `work/_shared/c125714-unbound-processing-receipts-20261123.json` with original paths and SHA256 hashes (archive SHA256 `05cbe21cbe377f47209ececbb0ac69dc315761394883c337aca484147629854e`). The assignment-scoped complete strict delivery-ready check passed after archival. The package remains **ready** on its current CPU proof.

@@ -429,3 +429,19 @@ C412593 passed its assignment-scoped strict delivery-ready check after the histo
 ### 2026-11-23 C125745 frame-32 canonical source and saved proof
 
 The qualified frame-32 sweep primary now has a standalone exact-case measurement contract, source diagnostic recipe, current-runtime positive/negative compatibility receipt and recorded-only saved-processing receipt. Saved processing preserved originals and joined 135 frames with no missing evidence. After binding, all 40 canonical offline case/candidate commands passed against manifest SHA256 `5c093409df4593f201c43281d4cb99689faf7863fd5e08ba437be7f43640f3fc`; the 63-test suite, preflight and scoped nonready check pass. See C125745 `HANDOFF.md` and `case-plan.json.frame32_primary_current_cpu_proof`. C125745 remains partial pending the remaining exact-case and judgment-sweep proofs. No Native physical, original-pixel or legal acceptance is claimed.
+
+### 2026-11-23 C125745 40-frame timing point primary proof
+
+The `c125745-1-0002` 40-frame primary now has standalone case-specific measurement and diagnostic sources, passing current-runtime positive/negative compatibility, and passing recorded-only saved processing with original inputs preserved. All six sweep IDs are mapped to applicable requirement dispositions; 40/40 exact offline case/candidate checks passed against canonical manifest SHA256 `90e74f79e24568d7d742150562657a2455f312d7f6fc6908720e84f9624b1031`. The 63-test suite, pinned preflight and scoped nonready check pass. C125745 remains partial; see its `HANDOFF.md` and `case-plan.json.latest_canonical_offline_recheck`. Synthetic CPU proof only, with no Native physical, original-pixel or legal acceptance.
+
+### 2026-11-23 C125745 48-frame timing point and file-cap preservation
+
+The qualified 48-frame timing primary `c125745-1-0001` now has exact returned case-specific measurement/diagnostic sources, passing current-runtime positive/negative compatibility and recorded-only saved processing with original inputs preserved. All 40 canonical offline case/candidate checks passed against manifest SHA256 `2eccc4eeed3f58d3160f394b695850218dc716f0aa456c16b74f056583f71fa6`; the 63-test suite, pinned preflight and scoped nonready check pass. C125745 remains partial; see its `HANDOFF.md` and `case-plan.json.latest_canonical_offline_recheck`.
+
+Twelve C125751 decoded-video audit sidecars were preserved byte-exactly with original paths and hashes in `c125751-decoded-video-sidecars-20261123.json` (SHA256 `a797841d089d036c7d7353a48c10ad399da25a0cf76a46e7cea370fad1bf46f5`). C125751 passed its assignment-scoped strict delivery-ready check after archival and remains ready. No Native physical, original-pixel or legal acceptance is claimed by the new C125745 proofs.
+
+### 2026-11-23 C125745 zero-frame hold primary and file-cap preservation
+
+The qualified zero-frame hold primary `c125745-2-0000` now has exact returned case-specific measurement/diagnostic sources, passing current-runtime positive/negative compatibility and recorded-only saved processing with original inputs preserved. All 40 canonical offline case/candidate checks passed against manifest SHA256 `18e8bc2f4b3379294aa76f3abe2801c1ec3e699c94e39254f17b1a704926bf34`; the 63-test suite, pinned preflight and scoped nonready check pass. C125745 remains partial; see its `HANDOFF.md` and `case-plan.json.latest_canonical_offline_recheck`.
+
+Eight unbound C125714 processing receipt copies were preserved byte-exactly with original paths and hashes in `c125714-unbound-processing-receipts-20261123.json` (SHA256 `05cbe21cbe377f47209ececbb0ac69dc315761394883c337aca484147629854e`). C125714 passed its assignment-scoped strict delivery-ready check after archival and remains ready. No Native physical, original-pixel or legal acceptance is claimed by the new C125745 proofs.

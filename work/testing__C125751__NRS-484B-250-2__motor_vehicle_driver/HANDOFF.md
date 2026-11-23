@@ -803,3 +803,7 @@ The frozen assignment targets both `demo-test` and `full-test`; all four selecte
 Return cap checkpoint: 7 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
 
 2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
+
+## 2026-11-23 decoded-video sidecar archive
+
+To preserve the 8,600-file return limit, twelve generated decoded-video audit sidecars were moved byte-exactly into `work/_shared/c125751-decoded-video-sidecars-20261123.json` with original paths and SHA256 hashes (archive SHA256 `a797841d089d036c7d7353a48c10ad399da25a0cf76a46e7cea370fad1bf46f5`). The assignment-scoped complete strict delivery-ready check passed after archival. The package remains **ready** on its current CPU proof.
