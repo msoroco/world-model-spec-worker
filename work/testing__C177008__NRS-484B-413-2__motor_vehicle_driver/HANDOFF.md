@@ -206,3 +206,9 @@ Final strict attempt: `timeout 45s env PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/p
 ## 2026-11-20 strict ready checkpoint
 
 Added four camera pose strategies, full construction metadata, ten selected `supported_case_ids`, and structured observation records. Refreshed primary and three fallback offline/compatibility/recorded-only saved proofs on the final construction; reran all ten physical fixture and delivery provenance audits plus four primary-dependent positive and negative comparisons. A read-only ready-state dry run passed, then the real `.venv-cpu/bin/python worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` passed with `static_checks_passed: true`. `result.json` is ready/delivery_prepared. Actual Native GPU capture and legal review remain first-delivery work.
+
+## 2026-11-23 return-file preservation
+
+Moved byte-exact, unbound historical logs into the existing `command-log-archive.json` and rebound result log hashes. The assignment-scoped strict delivery check passed after archival; no ready claim changed.
+
+Four original first-case offline stdout logs were preserved as hash-checked members of the C177008 archive, their manifest/result bindings were updated, and its assignment-scoped strict delivery gate passed. This freed four slots for the C412593 301-foot canonical return while keeping C177008 ready.

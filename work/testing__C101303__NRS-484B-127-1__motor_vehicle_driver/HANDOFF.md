@@ -327,3 +327,7 @@ The full strict gate exposed a missing current physical fixture log that had bee
 After the later 46-file exchange, the same C101303 scoped strict readiness gate was rerun and again exited 0.
 
 2026-11-22 return-cap maintenance: 24 result-only compatibility command logs were preserved byte-exact in `command-log-archive.json` under `return-cap-20261122/`, with every result test rebound to the archive SHA. Their direct copies were removed to free return slots for the next assignment. The C101303 scoped strict ready gate still exits 0; construction, manifest and proofs were not changed.
+
+## 2026-11-23 return-file preservation
+
+Moved byte-exact, unbound historical logs into the existing `command-log-archive.json` and rebound result log hashes. The assignment-scoped strict delivery check passed after archival; no ready claim changed.
