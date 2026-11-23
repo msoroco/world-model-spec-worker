@@ -75,10 +75,11 @@ def seal_authored_setup(attempt: Path, packet_path: Path, plan_path: Path, case_
 def capture_original(attempt: Path, packet_path: Path, plan_path: Path, case_id: str,
                      *, host: str = "127.0.0.1", port: int = 2000):
     """Connect only in the local Native runtime; retain failures and restore world."""
-    root = Path(__file__).resolve().parents[2] / ".runtime-work"
     attempt = Path(attempt).resolve()
-    if root not in attempt.parents:
+    roots = [parent for parent in attempt.parents if parent.name == ".runtime-work"]
+    if len(roots) != 1:
         raise ValueError("original Native output must be under .runtime-work")
+    root = roots[0]
     output_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
     if not output_root:
         raise ValueError("export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work first")
@@ -158,7 +159,8 @@ if __name__ == "__main__":
     else:
         here = Path(__file__).resolve().parent
         attempt = args.output_dir or args.attempt
-        site_packet = args.site_packet or here / "native-site-packet.json"
+        site_packet = args.site_packet or Path(os.environ.get(
+            "SCENARIO_NATIVE_SITE_PACKET", str(here / "native-site-packet.json")))
         plan = args.plan or here / "case-plan.json"
         config = json.loads((here / "config.json").read_text(encoding="utf-8"))
         case_id = args.case_id or config.get("selected_case_id")

@@ -963,3 +963,7 @@ The C179789 reference diagnostic now passes the pinned end-to-end CPU compatibil
 ## 2026-11-23 C179789 seven-case compatibility proof
 
 All seven C179789 exact constructions have positive pinned offline checks (47 tests each) and positive pinned compatibility receipts with negative missing-source rejection. The assignment manifest binds seven retained receipt, analysis, and negative-log hashes. The reference and six comparison cases each use 900-frame synthetic capture streams and four diagnostic video sources. Assignment static `--complete` passes; status remains partial pending worker-owned capture-runner, reviewed Native packet, physical preparation, acquisition mapping, and other ready-gate work. CPU preflight passes.
+
+## 2026-11-23 C179789 rebuilt-entrypoint proof
+
+The pinned capture invocation mismatch was fixed in C179789 `runner.py`. A focused proof verifies `--output-dir` parsing and rejection of a missing reviewed Native packet before CARLA import. All seven construction bundles were rebuilt and pass 47 pinned offline tests each. All seven case-specific compatibility commands passed again against the new construction hashes, including negative missing-source rejection; manifest receipts and logs were rebound. Status remains partial for reviewed Native inputs, physical preparation, acquisition mappings, and other ready-gate work.

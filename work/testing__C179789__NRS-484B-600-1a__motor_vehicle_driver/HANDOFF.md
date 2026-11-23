@@ -172,3 +172,17 @@ All seven exact cases passed `.venv-cpu/bin/python runtime.py compatibility` usi
 - `fog`: `b45187fbe1b4e3fddef8b588a0b5e221ae2e9a5c6c86e6d91d27b792e65fc2bd`
 
 `bind_compatibility_receipts.py --run-number 8` verified the source and construction bindings. `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__NRS-484B-600-1a__motor_vehicle_driver --complete` passes the static checkpoint. `runtime.py preflight` passes with the pinned CPU environment and Lean 4.28.0. The remaining worker-owned CPU work is the `--output-dir` capture-runner interface, reviewed seven-case Native site packet binding, physical outcome/lifecycle fixtures, acquisition mappings, and full ready-gate requirements. These diagnostics do not establish actual CARLA motion, visibility, or legal judgment.
+
+## 2026-11-23 rebuilt capture entrypoint and proof
+
+`runner.py` now accepts the pinned `--output-dir --host --port` invocation, derives the exact selected case and case plan from the materialized bundle, and requires a reviewed `native-site-packet.json` before CARLA import. `prove_runner_interface.py` proves the supported CLI rejects the absent packet before capture. This interface change changed all seven construction hashes. `build_execution_manifest.py`, `prove_execution_manifest.py`, and the seven pinned `runtime.py compatibility` commands were rerun. Each case passed 47 offline tests plus positive and negative compatibility. Run 9 receipts and logs are bound in `execution-manifest.json`; current receipt SHA256 values:
+
+- `reference`: `839b1361599f8bc8e7c31fd00ac6afc6928edd566f5313eb07fe932e0f86b879`
+- `faster`: `6a7712b6909f12ac4d9a2d826d92896e24ca8a990b2a8e8c5d0474c41c0fb977`
+- `nearer_traffic`: `cf0a24977290ad1ce47a4466065e55d183584281cda4d88b63a69b2076166d6c`
+- `wet_surface`: `4ba2fb6cd7cabd4603080efe57d19901f3b7eccbd7a777a8f2592577d4e37e5e`
+- `narrower`: `4b5f1ead4e2f6e525eeecd51b2515a9008979e26f944ecda660d549cdcf4b165`
+- `rain`: `307c5135a2edfc5d07d65b7d09f25e67de114c7e750f3db56dd0c9c600814b7c`
+- `fog`: `4098ed6a3190d0a92b0a71d8e53e6af22c583373cd9eb16d76e73b3bc37c76fb`
+
+The reviewed Native packet is not yet authored or source-bound. Physical outcome and lifecycle fixtures, canonical acquisition mappings, and ready-gate requirements remain worker-owned CPU preparation. Do not use these synthetic fixtures to assert actual motion, visibility, or legal judgment.
