@@ -37,7 +37,7 @@ def preflight(scene_path, map_path, output):
 
     class Map:
         def to_opendrive(self):
-            return map_path.read_text()
+            return map_path.read_bytes().decode("utf-8")
 
     class World:
         def get_map(self):

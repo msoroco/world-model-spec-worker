@@ -73,6 +73,25 @@ class ReviewedPacketPreflightTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "nondiagnostic packet"):
                 preflight(scene_path, ROOT / "candidate-map.xodr", Path(directory) / "wrong-packet")
 
+    def test_crlf_map_bytes_match_live_map_identity(self):
+        with TemporaryDirectory() as directory:
+            scene_path, packet_path, _ = self.fixture(directory)
+            map_path = Path(directory) / "reviewed-crlf.xodr"
+            original = (ROOT / "candidate-map.xodr").read_bytes()
+            map_path.write_bytes(original.replace(b"\n", b"\r\n"))
+            map_sha = hashlib.sha256(map_path.read_bytes()).hexdigest()
+            scene = json.loads(scene_path.read_text())
+            packet = json.loads(packet_path.read_text())
+            for item in (scene, packet):
+                item["crossing"]["map_source_sha256"] = map_sha
+            packet["law_context"]["map_source"] = map_sha
+            packet_path.write_text(json.dumps(packet))
+            scene["reviewed_context_sha256"] = hashlib.sha256(packet_path.read_bytes()).hexdigest()
+            scene_path.write_text(json.dumps(scene))
+            receipt = preflight(scene_path, map_path, Path(directory) / "preflight-crlf")
+            self.assertTrue(receipt["passed"])
+            self.assertEqual(receipt["map_sha256"], map_sha)
+
 
 if __name__ == "__main__":
     unittest.main()

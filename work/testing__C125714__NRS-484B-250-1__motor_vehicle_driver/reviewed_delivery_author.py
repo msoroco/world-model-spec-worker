@@ -31,6 +31,11 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def utf8_exact(path):
+    """Decode reviewed bytes without universal-newline conversion."""
+    return Path(path).read_bytes().decode("utf-8")
+
+
 def write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
@@ -62,12 +67,12 @@ def source_files(scene_path):
         raise ValueError("reviewed delivery author rejects diagnostic sources")
     if not packet_path.is_relative_to(scene_path.parent.resolve()):
         raise ValueError("reviewed packet must be in the case source directory")
-    files = {"scene.json": scene_path.read_text(),
+    files = {"scene.json": utf8_exact(scene_path),
              "config.json": json.dumps(config(scene), indent=2, ensure_ascii=False) + "\n"}
     packet_rel = packet_path.relative_to(scene_path.parent.resolve()).as_posix()
     if packet_rel in files or packet_rel in CODE or packet_rel == "reviewed-map.xodr":
         raise ValueError("reviewed packet path collides with construction file")
-    files[packet_rel] = packet_path.read_text()
+    files[packet_rel] = utf8_exact(packet_path)
     for key in SOURCE_KEYS:
         descriptor = packet["law_context"].get(key)
         if not isinstance(descriptor, dict):
@@ -79,7 +84,7 @@ def source_files(scene_path):
         if rel in files or rel in CODE or rel == "reviewed-map.xodr":
             raise ValueError("reviewed source path collides with construction file: " + rel)
         try:
-            files[rel] = path.read_text(encoding="utf-8")
+            files[rel] = utf8_exact(path)
         except UnicodeDecodeError as error:
             raise ValueError("inline construction source is not UTF-8: " + key) from error
     for name in CODE:
@@ -134,7 +139,7 @@ def author(source_root, map_path, output_root, proof_root):
     if not map_path.is_file():
         raise ValueError("reviewed OpenDRIVE file is missing")
     try:
-        map_text = map_path.read_text(encoding="utf-8")
+        map_text = utf8_exact(map_path)
     except UnicodeDecodeError as error:
         raise ValueError("reviewed OpenDRIVE must be UTF-8 for inline construction") from error
     staged = []

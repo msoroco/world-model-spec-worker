@@ -181,6 +181,25 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "source path must be packet relative"):
                 source_files(scene_path)
 
+    def test_preserves_reviewed_crlf_bytes_in_construction(self):
+        with TemporaryDirectory() as source:
+            fixture(source)
+            folder = Path(source) / "precedence"
+            scene_path = folder / "scene.json"
+            packet_path = folder / "reviewed-context.json"
+            packet = json.loads(packet_path.read_text())
+            descriptor = packet["law_context"]["device_inventory_source"]
+            original = folder / descriptor["source_path"]
+            original.write_bytes(b"reviewed line one\r\nreviewed line two\r\n")
+            descriptor["source_sha256"] = sha(original)
+            packet_path.write_bytes(json.dumps(packet, indent=2).replace("\n", "\r\n").encode())
+            scene = json.loads(scene_path.read_text())
+            scene["reviewed_context_sha256"] = sha(packet_path)
+            scene_path.write_text(json.dumps(scene))
+            _, files = source_files(scene_path)
+            self.assertEqual(files["reviewed-context.json"].encode(), packet_path.read_bytes())
+            self.assertEqual(files[original.name].encode(), original.read_bytes())
+
 
 if __name__ == "__main__":
     unittest.main()

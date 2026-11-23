@@ -25,9 +25,15 @@ def inspect_straight_lane(path):
         raise ValueError("one authored road required")
     road = roads[0]
     geometry = road.findall("./planView/geometry")
+    sections = road.findall("./lanes/laneSection")
+    offsets = road.findall("./lanes/laneOffset")
     lanes = road.findall("./lanes/laneSection/left/lane")
     if (len(geometry) != 1 or geometry[0].find("line") is None or
-            len(lanes) != 1 or lanes[0].get("type") != "driving"):
+            len(sections) != 1 or sections[0].get("s") != "0" or
+            len(offsets) != 1 or
+            any(float(offsets[0].get(k, "nan")) != 0 for k in ("s", "a", "b", "c", "d")) or
+            len(lanes) != 1 or lanes[0].get("type") != "driving" or
+            road.findall("./lanes/laneSection/right/lane")):
         raise ValueError("one straight authored driving lane required")
     widths = lanes[0].findall("width")
     if len(widths) != 1 or any(float(widths[0].get(k, "nan")) != 0
@@ -38,8 +44,12 @@ def inspect_straight_lane(path):
     y = float(geometry[0].get("y", "nan"))
     heading = float(geometry[0].get("hdg", "nan"))
     length = float(geometry[0].get("length", "nan"))
+    road_length = float(road.get("length", "nan"))
+    start_s = float(geometry[0].get("s", "nan"))
     if not all(map(math.isfinite, (width, x, y, heading, length))) or width <= 0 or length <= 0:
         raise ValueError("positive finite authored dimensions required")
+    if not math.isfinite(road_length) or start_s != 0 or road_length != length:
+        raise ValueError("authored road and straight geometry extent must agree")
     return {"lane_width_m": width, "road_length_m": length,
             "reference_xy_m": [x, y], "reference_heading_rad": heading,
             "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
@@ -53,14 +63,28 @@ def candidate_angles(path, *, length_m=4.5, width_m=2.0, spacing_deg=10):
     if lane["road_length_m"] < length_m + 2:
         raise ValueError("authored road too short for full vehicle footprint")
     width = lane["lane_width_m"]
+    heading = lane["reference_heading_rad"]
+    tangent = (math.cos(heading), math.sin(heading))
+    normal = (-tangent[1], tangent[0])
+    center = tuple(lane["reference_xy_m"][i] +
+                   lane["road_length_m"] / 2 * tangent[i] + width / 2 * normal[i]
+                   for i in (0, 1))
     samples = []
     for index in range(round(90 / spacing_deg) + 1):
         angle = round(index * spacing_deg, 8)
         rad = math.radians(angle)
-        corners = body((0, width / 2), (math.cos(rad), math.sin(rad)),
+        forward = tuple(math.cos(rad) * tangent[i] + math.sin(rad) * normal[i]
+                        for i in (0, 1))
+        corners = body(center, forward,
                        length_m=length_m, width_m=width_m)
         transverse = length_m * abs(math.sin(rad)) + width_m * abs(math.cos(rad))
-        inside = all(-1e-9 <= corner[1] <= width + 1e-9 for corner in corners)
+        inside = True
+        for corner in corners:
+            relative = tuple(corner[i] - lane["reference_xy_m"][i] for i in (0, 1))
+            along = sum(relative[i] * tangent[i] for i in (0, 1))
+            across = sum(relative[i] * normal[i] for i in (0, 1))
+            inside &= (-1e-9 <= along <= lane["road_length_m"] + 1e-9 and
+                       -1e-9 <= across <= width + 1e-9)
         samples.append({"angle_deg": angle, "transverse_footprint_m": transverse,
                         "full_footprint_inside_authored_lane": inside})
     return {"format": "parking-provisional-orientation-feasibility-v1",

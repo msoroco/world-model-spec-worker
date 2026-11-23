@@ -7,7 +7,13 @@ from native_construction import LANE_WIDTH_M, ROAD_LENGTH_M, check_road
 
 def check_fixed_map(path):
     basic = check_road(path)
-    road = ET.parse(Path(path)).getroot().find('road')
+    root = ET.parse(Path(path)).getroot()
+    roads = root.findall('road')
+    if len(roads) != 1:
+        raise ValueError('fixed route requires exactly one road')
+    road = roads[0]
+    if len(road.findall('./lanes/laneSection')) != 1:
+        raise ValueError('fixed route requires exactly one lane section')
     geometries = road.findall('./planView/geometry')
     if (len(geometries) != 1 or geometries[0].find('line') is None or
             any(float(geometries[0].attrib.get(key, 'nan')) != expected for key, expected in

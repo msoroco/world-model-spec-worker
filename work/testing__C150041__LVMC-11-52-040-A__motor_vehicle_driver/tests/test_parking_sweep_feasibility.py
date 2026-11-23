@@ -35,6 +35,32 @@ class SweepFeasibilityTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "constant authored lane"):
                 candidate_angles(path)
 
+    def test_rotated_translated_road_has_same_footprint_result(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "rotated.xodr"
+            path.write_text((ROOT / "diagnostic-road.xodr").read_text().replace(
+                'x="-80" y="0" hdg="0"', 'x="30" y="-14" hdg="1.5707963267948966"'))
+            result = candidate_angles(path)
+            self.assertTrue(result["all_footprints_fit"])
+            self.assertEqual(result["samples"],
+                             candidate_angles(ROOT / "diagnostic-road.xodr")["samples"])
+
+    def test_discontinuous_geometry_extent_is_rejected(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "extent.xodr"
+            path.write_text((ROOT / "diagnostic-road.xodr").read_text().replace(
+                'hdg="0" length="160"', 'hdg="0" length="150"'))
+            with self.assertRaisesRegex(ValueError, "extent must agree"):
+                candidate_angles(path)
+
+    def test_shifted_lane_offset_is_rejected(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "offset.xodr"
+            path.write_text((ROOT / "diagnostic-road.xodr").read_text().replace(
+                '<laneOffset s="0" a="0"', '<laneOffset s="0" a="2"'))
+            with self.assertRaisesRegex(ValueError, "one straight authored driving lane"):
+                candidate_angles(path)
+
 
 if __name__ == "__main__":
     unittest.main()
