@@ -15,7 +15,7 @@ def audit():
     proof=read(HERE/'offline/saved-proof.json')
     compatibility=read(HERE/'offline/saved-compatibility.json')
     if proof['copied_manifest_sha256']!=sha(HERE/'offline/manifest.json') or \
-       compatibility['positive']!=8 or compatibility['tamper_negative']!=72 or \
+       compatibility['positive']!=8 or compatibility['tamper_negative']!=80 or \
        len(copied['entries'])!=len(proof['entries'])!=8:
         raise ValueError('saved proof binding')
     total=0;pairs={}
@@ -34,7 +34,8 @@ def audit():
            receipt['config_sha256']!=sha(bundle/'config.json') or \
            mapping['road_sha256']!=sha(bundle/'alley-zone.xodr') or \
            len(mapping['native_zone_delimiters'])!=4 or \
-           len(actors)!=len(videos)!=len(reviews)!=len(obs)!=len(cams)!=len(prepared_reviews)!=240:
+           len({len(part) for part in (actors,videos,reviews,obs,cams,prepared_reviews)})!=1 or \
+           len(actors)!=600:
             raise ValueError('raw source binding')
         xmin,xmax,ymin,ymax=cfg['zone_rectangle_xy_m']
         overlap=reviewed=visible=0
@@ -55,7 +56,7 @@ def audit():
            m['reviewed_boundary_frames']!=reviewed or \
            m['reviewed_visible_boundary_frames']!=visible or \
            t['fallback1']['eligible']!=expected_mismatch or \
-           t['fallback2']['eligible']!=(reviewed<240 or visible<1) or \
+           t['fallback2']['eligible']!=(reviewed<600 or visible<1) or \
            t['fallback3']['eligible'] is not True or m['delivery_ready']:
             raise ValueError('independent overlap or trigger')
         pairs.setdefault(candidate,{})[suffix]=(cfg['requested_ego_speed_mps'],

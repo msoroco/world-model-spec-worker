@@ -16,7 +16,7 @@ def route(bundle,saved):
             'fallback1':{'eligible':mismatch,
                 'moving_body_rectangle_overlap_frames':overlap,
                 'reason':'observed moving body/rectangle relation differs from target'},
-            'fallback2':{'eligible':m['reviewed_boundary_frames']<240 or
+            'fallback2':{'eligible':m['reviewed_boundary_frames']<600 or
                          m['reviewed_visible_boundary_frames']<1,
                 'reviewed_boundary_frames':m['reviewed_boundary_frames'],
                 'reason':'incomplete reviewed safety-zone boundary visibility'},

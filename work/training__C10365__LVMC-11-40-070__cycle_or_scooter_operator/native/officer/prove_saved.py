@@ -21,7 +21,7 @@ def fixture(bundle, target):
         speed = request["requested_speed_mps"]
         raw.append({
             "frame": i, "native_frame": i + 1000, "time_s": (i + 1) / 20,
-            "source_kind": "synthetic_fixture", "officer_cue_requested": cfg["officer_cue_requested"],
+            "source_kind": "synthetic_native_sample", "officer_cue_requested": cfg["officer_cue_requested"],
             "requested_rider_x_m": request["requested_rider_x_m"],
             "requested_speed_mps": request["requested_speed_mps"],
             "observed_road_id": 365, "observed_lane_id": -1,
@@ -42,7 +42,7 @@ def fixture(bundle, target):
         })
         video.append({"video_frame": i, "native_frame": i + 1000, "time_s": (i + 1) / 20})
     review = {
-        "source_kind": "synthetic_fixture", "case_id": cfg["case_id"],
+        "source_kind": "synthetic_native_sample", "case_id": cfg["case_id"],
         "candidate_id": cfg["candidate_id"], "reviewed_frames": [100, 150],
         "device_id": "3651", "device_applicable": True, "rider_class": "bicycle",
         "officer_actor_id": 23,
@@ -94,9 +94,9 @@ def prove():
                     else:
                         raise AssertionError(f"{suffix}/{candidate}/{name} accepted")
                     path.write_text({raw: base_raw, video: base_video, review: base_review}[path])
-                raw.write_text(base_raw.replace('"source_kind": "synthetic_fixture"',
+                raw.write_text(base_raw.replace('"source_kind": "synthetic_native_sample"',
                                                 '"source_kind": "original_native"'))
-                review.write_text(base_review.replace('"source_kind": "synthetic_fixture"',
+                review.write_text(base_review.replace('"source_kind": "synthetic_native_sample"',
                                                       '"source_kind": "original_native_review"'))
                 try:
                     process(bundle, raw, video, review, synthetic=False)

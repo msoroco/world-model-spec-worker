@@ -1,5 +1,13 @@
 # LVMC-11-40-070 at C10365
 
+## Current source media and diagnostic provenance checkpoint
+
+The original saved processor now checks 20 Hz and fully decodes every retained 600-frame FFV1 source camera and the composed video before accepting the source-hashed review join. The short synthetic media proof decodes all five 8-frame streams and rejects missing and damaged source-camera controls. Invented rider speed in the diagnostic raw rows is labeled `synthetic_native_sample`; it is never labeled original Native velocity. The proof command is `.venv-cpu/bin/python work/training__C10365__LVMC-11-40-070__cycle_or_scooter_operator/native/officer/prove_media_profile.py`; receipt `native/officer/media-profile-proof.json` SHA-256 `c1aad37d0b01419595face32674146d9987ca809e42373b7b08f90ce3f374bab`, log `native/officer/prove_media_profile-current.log` SHA-256 `64ab9096ff91b0e9b34edeb6d802a0dd1aaac3d31828aa03c9bf62875b49f719`.
+
+The changed saved processor and diagnostic labels were rebound through all eight copied source checks, eight saved positives and 96 saved negatives, independent package audit, eight pinned offline constructions with 24 tests, and the pinned materialized-file audit. Updated `native/officer/saved-proof.json` SHA-256 `a41cb0c67624754981741cb7f0d1ab3da93c5b842db03ba53e76e4cd85733698`; `native/officer/pinned-runtime-proof.json` SHA-256 `f9c282080551d5a4ee0f775ae1d130d77dc297890a6ae39931a2551549d94d0b`. These receipts remain diagnostics for unselected cases. Selected exact construction, current-runtime compatibility and actual `process-saved`, comparison, delivery audit and semantic proposals remain worker-owned CPU work. This checkpoint makes no Police Officer authority, original visual, physical or legal claim.
+
+Scoped `.venv-cpu/bin/python worker_check.py --assignment training__C10365__LVMC-11-40-070__cycle_or_scooter_operator --complete` exited 0. Adding `--require-delivery-ready` exited 1 with `Preparation acceptance failed: partial/missing packages remain`, as expected for the truthful partial result.
+
 ## 2026-11-23 current runtime continuation
 
 The frozen assignment now uses `law.text`; its SHA-256 is `902c6d14cde74e91231c542cf932e4f9081d381ba4e64da060f5a778c80dc882`. The eight unselected source-pinned candidates were rebuilt against that exact input. Each requests 600 frames at 20 Hz (30 seconds), four FFV1 cameras (1920x1080 overview and three 1280x720 detail views), and a 3840x1800 composed `raw.mkv`. The generated road extends to 180 m so the 30-second requested crossing stays on the authored lane. Native capture still has not run; role names and requested hand pose do not prove Police Officer authority or a visible instruction.

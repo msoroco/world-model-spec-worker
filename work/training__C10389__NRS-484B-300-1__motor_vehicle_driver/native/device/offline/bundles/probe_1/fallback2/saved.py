@@ -5,6 +5,7 @@ import json
 import math
 from pathlib import Path
 import subprocess
+from verify_media import verify
 
 from check import check
 from build import FRAMES
@@ -38,24 +39,7 @@ def finite(value):
 def media(raw, synthetic):
     if synthetic:
         return {}
-    result = {}
-    expected = {'overview.mkv': (1920, 1080), 'approach.mkv': (1280, 720),
-                'reference_corner.mkv': (1280, 720),
-                'driver_reference.mkv': (1280, 720), 'raw.mkv': (3840, 1800)}
-    for name, dimensions in expected.items():
-        result[name] = sha(raw / name)
-        probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames',
-            '-select_streams', 'v:0', '-show_entries',
-            'stream=codec_name,nb_read_frames,width,height,r_frame_rate',
-            '-of', 'json', str(raw / name)], capture_output=True, text=True,
-            check=True, timeout=120)
-        streams = json.loads(probe.stdout).get('streams', [])
-        require(len(streams) == 1 and streams[0].get('codec_name') == 'ffv1' and
-                streams[0].get('nb_read_frames') == str(FRAMES) and
-                (streams[0].get('width'), streams[0].get('height')) == dimensions and
-                streams[0].get('r_frame_rate') == '20/1',
-                'original 600-frame 20 Hz FFV1 media')
-    return result
+    return verify(raw, FRAMES)
 
 
 def validate_ego(ego, actor_id):

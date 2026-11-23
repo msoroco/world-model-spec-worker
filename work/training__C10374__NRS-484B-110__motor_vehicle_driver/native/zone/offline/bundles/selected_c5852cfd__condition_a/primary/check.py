@@ -25,7 +25,7 @@ def check(bundle):
     candidate = cfg['candidate_id']
     if (suffix not in CASES or candidate not in POLICIES or
             cfg['case_id'] != cfg['assignment_id']+'__'+suffix or
-            source['law_record']['text'] != LAW or
+            source['law']['text'] != LAW or
             plan['source_law']['text'] != LAW):
         raise ValueError('exact law/case source')
     if (cfg['assignment_sha256'] != sha(bundle/'assignment-source.json') or
@@ -52,8 +52,8 @@ def check(bundle):
             cfg['actual_zone_overlap_observed'] is not False):
         raise ValueError('candidate policy or unverified zone status')
     tracks = rows(bundle/'requested-tracks.jsonl')
-    if len(tracks) != 240:
-        raise ValueError('240-frame request')
+    if len(tracks) != 600:
+        raise ValueError('600-frame request')
     encounter = 0
     for i,row in enumerate(tracks):
         t=(i+1)/20

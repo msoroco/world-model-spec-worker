@@ -127,9 +127,11 @@ def capture(bundle, output, host, port):
         west_x, west_y = curve_point(47.6, 1.75)
         east_x, east_y = curve_point(352.4, -1.75)
         center_x, center_y = curve_point(200, -25)
+        driver_x, driver_y = curve_point(185, -10)
         specs = (("west_view", 1280, 720, (west_x, west_y, elevation(47.6, cfg["grade_height_m"])+1.4), math.degrees(47.6/RADIUS), 0),
                  ("east_view", 1280, 720, (east_x, east_y, elevation(352.4, cfg["grade_height_m"])+1.4), math.degrees(352.4/RADIUS)+180, 0),
-                 ("overview", 1280, 720, (center_x, center_y, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), math.degrees(200/RADIUS)+90, -65))
+                 ("overview", 1920, 1080, (center_x, center_y, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), math.degrees(200/RADIUS)+90, -65),
+                 ("driver_reference", 1280, 720, (driver_x, driver_y, elevation(185, cfg["grade_height_m"])+3), math.degrees(185/RADIUS)+45, -10))
         for name, width, height, location, yaw, pitch in specs:
             bp = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),

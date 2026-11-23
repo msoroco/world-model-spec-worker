@@ -1,17 +1,17 @@
-# training__C10374__NRS-484B-110__motor_vehicle_driver
+# C10374 NRS 484B.110 CPU handoff
 
-Status: blocked. This is a source-grounded planning return only, not a deployable delivery package.
+Status: **partial**. The current frozen input is `inputs/training__C10374__NRS-484B-110__motor_vehicle_driver/assignment.json`, SHA-256 `ddc212161f9ff295bb8cedad4c7d103082120cfc0ed5c152e0b340d6272cce52`. The law says, “No vehicle shall at any time be driven through or within a safety zone.” No accepted membership is supplied. The two authored comparison routes target vehicle movement through the zone footprint and outside it. A painted or authored rectangle alone does not establish an official safety zone.
 
-Exact law: No vehicle shall at any time be driven through or within a safety zone.
+`native/zone/build.py` constructs eight unselected candidates across the controlled route pair. The OpenDRIVE road has a pedestrian-only lane segment from x=40 to 60 m, a parallel driving lane, and lane readback requests at x=20, 50 and 80 m. Primary, slower, elevated-overview and stop-before-zone requests retain the same law and footprint. Each request now has **600 frames at 20 Hz = 30 seconds**. `native/zone/capture.py` specifies synchronized overview 1920×1080 and three 1280×720 detail streams: forward, reference corner and driver reference. It requests physical delimiter actors, lane readback, measured vehicle body and speed, synchronized lossless camera frames, and world restoration; it has not been run in CARLA. `native/zone/saved.py` requires all four original FFV1 streams and source-hashed frame reviews before processing an original capture. Synthetic fixtures remain labeled `synthetic_cpu` and do not establish original motion, official zone designation or legal outcome.
 
-Selected witness scope: through or within a safety zone. The case plan inventories 2 source topics and drafts one controlled comparison on `vehicle_safety_zone_overlap`. Neither case has a Native realization or legal outcome.
+Current proof bindings after the canonical `law` migration:
 
-The local snapshot lists 0 accepted membership rows. No source-hashed equivalence receipt was available, so no historical recording is claimed reusable.
+- `native/zone/manifest.json` SHA-256 `fe0fc8ade96bd6357e807deac77c53a8e83df2f627fdf2dcd5d88b18600f7e16` binds the eight draft candidates, current input, capture, measurement and saved code.
+- `native/zone/offline/proof-compatibility.json` SHA-256 `51271ca6dc6de297446692d56d8cb49db09ef0b42cd5966bb3ed2ec343f8c27e`: 8 positive, 56 changed-source negatives.
+- `native/zone/offline/saved-compatibility.json` SHA-256 `e902e38bacf32fe7eca8a41dcfd56b728a185d2464e5cf609e2ddaebff04ebc0`: 8 positive, 80 changed-source negatives, including changed fourth-camera review binding.
+- `native/zone/offline/pinned-runtime-proof.json` SHA-256 `2a3508b43187e04043614cebd4e4a5d46eb1f4836ac47237347287619ef7709e`: 8 current-runtime offline candidates and 24 tests passed.
+- `native/zone/offline/pinned-runtime-audit.json` SHA-256 `ac1b12e1380a6776db88be1bbdca27aff9c45afda929a799061a242de683776f`: 8 materialized candidates, 104 source files and changed-construction rejection checked.
 
-Blocker: Native physical mechanism, four distinct candidate constructions, exact offline/compatibility recipes, measured saved fixtures and independent audit are not yet produced for the selected law branch and source alternatives.
+The independent copied-package and saved audits also passed and recomputed 4,800 frames each. Commands, each exited 0, were `.venv-cpu/bin/python work/training__C10374__NRS-484B-110__motor_vehicle_driver/native/zone/build.py`, then `build_offline.py`, `prove_compatibility.py`, `audit_package.py`, `build_saved.py`, `prove_saved.py`, `audit_saved.py`, `build_runtime_offline.py`, `prove_runtime_offline.py` and `audit_runtime_offline.py` in the same directory. `.venv-cpu/bin/python runtime.py preflight` and `.venv-cpu/bin/python worker_check.py --assignment training__C10374__NRS-484B-110__motor_vehicle_driver --complete` exited 0. The same assignment-scoped command with `--require-delivery-ready` exited 1 with `Preparation acceptance failed: partial/missing packages remain`, consistent with this partial result. Python syntax and assignment file-size, whitespace and conflict-marker checks passed.
 
-Resume: validate source alternatives and exceptions against the exact law; implement the selected comparison and each additional runnable source branch with semantic proposals, four distinct candidate plans, native and camera configuration, offline and compatibility proofs, saved positive/negative audit, and comparison audit. Reuse a historical original only with an exact source-hashed equivalence receipt. Set ready only after all CPU proofs pass.
-
-Physical prerequisites: Establish a physical, marked safety zone and measured moving vehicle footprint overlap; compare otherwise identical paths through/within versus outside the zone.
-
-Legal limit: Do not treat a graph label or painted overlay as a physical safety zone.
+Remaining CPU work: review the supplied branch evidence and finalize selected exact cases; add selected execution manifest and semantic proposals; make primary and three fallback constructions pass selected offline compatibility and actual source-only saved conversion/rendering; write independent delivery and controlled-comparison acceptance audits. The copied synthetic raw fixtures test software joins only. The local operator must later verify the physical zone designation, signs and boundary pixels, Native lane readback and moving body overlap from original capture. Keep this result partial until its assignment-scoped strict delivery gate passes.

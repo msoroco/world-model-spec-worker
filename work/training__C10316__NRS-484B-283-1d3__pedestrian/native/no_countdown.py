@@ -35,6 +35,51 @@ def point(value, label):
     return tuple(float(x) for x in value)
 
 
+def validate_original_signal_review(folder, context, samples):
+    """Bind independent display review to retained pixels and Native frame IDs."""
+    folder = Path(folder)
+    review_path = folder / 'signal-observation-audit.json'
+    video_path = folder / 'driver_reference.mkv'
+    map_path = folder / 'video_frames.jsonl'
+    for path in (review_path, video_path, map_path):
+        if not path.is_file():
+            raise ValueError('Native signal review missing source: ' + path.name)
+    review = json.loads(review_path.read_text())
+    if review.get('source_kind') != 'independent_original_pixel_review':
+        raise ValueError('Native signal review provenance invalid')
+    if (review.get('device_id'), review.get('crosswalk_id')) != (
+        context.get('device_id'), context.get('crosswalk_id')
+    ) or review.get('reviewer') in (None, '', 'capture_program'):
+        raise ValueError('Native signal review identity or independence invalid')
+    if review.get('source_sha256') != {
+        'driver_reference.mkv': sha(video_path),
+        'video_frames.jsonl': sha(map_path),
+        'no-countdown-samples.jsonl': sha(folder / 'no-countdown-samples.jsonl'),
+    }:
+        raise ValueError('Native signal review source hashes differ')
+    if review.get('governs_crosswalk') is not True or review.get('faces_pedestrian') is not True or review.get('countdown_absent') is not True:
+        raise ValueError('Native signal review does not establish governing no-countdown display')
+    mapping = [json.loads(line) for line in map_path.read_text().splitlines() if line.strip()]
+    observations = review.get('frame_observations')
+    if len(mapping) != len(samples) or not isinstance(observations, list) or len(observations) != len(samples):
+        raise ValueError('Native signal review frame coverage incomplete')
+    for index, (row, source, observed) in enumerate(zip(samples, mapping, observations)):
+        if (source.get('video_frame'), source.get('native_frame')) != (index, row.get('native_frame')):
+            raise ValueError('Native signal review frame map differs')
+        pixel_hash = source.get('source_rgb_sha256', {}).get('driver_reference')
+        if not isinstance(pixel_hash, str) or len(pixel_hash) != 64 or pixel_hash != row.get('original_display_frame_sha256'):
+            raise ValueError('Native signal review original pixel join differs')
+        if (observed.get('native_frame'), observed.get('original_display_frame_sha256')) != (row['native_frame'], pixel_hash):
+            raise ValueError('Native signal review observation source differs')
+        if (observed.get('indication'), observed.get('illuminated'), observed.get('countdown_visible')) != (
+            row.get('indication'), row.get('display_illuminated'), False
+        ):
+            raise ValueError('Native signal review disagrees with capture program')
+    if context.get('display_pixel_audit_sha256') != sha(review_path):
+        raise ValueError('Native signal review receipt hash differs')
+    return review
+
+
 def measure(samples_path, context_path):
     samples_path, context_path = Path(samples_path), Path(context_path)
     for path in (samples_path, context_path):
@@ -67,6 +112,8 @@ def measure(samples_path, context_path):
     rows = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
     if len(rows) != FRAMES:
         raise ValueError('Full 240-frame no-countdown source required')
+    if kind == 'native_observation':
+        validate_original_signal_review(samples_path.parent, context, rows)
     previous = None
     entry = clearance = flash = steady = None
     seen = set()

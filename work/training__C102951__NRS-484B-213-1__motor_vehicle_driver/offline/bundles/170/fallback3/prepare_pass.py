@@ -14,6 +14,23 @@ REQUIRED = ('native-raw-actors.jsonl', 'native-map-readback.json',
 ORIGINAL_CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
+def check_capture_report(path, config_path, config):
+    """Bind a reviewed original to this completed, restored Native attempt."""
+    report = json.loads(Path(path).read_text())
+    if (report.get('case_id') != config.get('case_id') or
+            report.get('candidate_id') != config.get('candidate_id') or
+            report.get('bundle_config_sha256') != sha(config_path) or
+            report.get('requested_frames') != 600 or
+            report.get('observed_frames') != 600 or
+            report.get('error') is not None or
+            not isinstance(report.get('restoration'), dict) or
+            report['restoration'].get('restored') is not True or
+            report.get('accepted') is not False or
+            report.get('legal_outcome_claimed') is not False):
+        raise ValueError('Completed Native capture report or restoration differs')
+    return report
+
+
 def sha(path):
     h = hashlib.sha256()
     with Path(path).open('rb') as source:
@@ -76,6 +93,7 @@ def prepare(raw_folder, review_path, output, config_path):
     if source_kind == 'original_native':
         paths.update({name+'_video': raw_folder/(name+'.mkv') for name in ORIGINAL_CAMERAS})
         paths['primary_video'] = raw_folder/'raw.mkv'
+        paths['native_capture_report'] = raw_folder/'native-capture-report.json'
     elif source_kind == 'synthetic_cpu':
         paths['forward_video'] = raw_folder/'forward-video-stub.txt'
     else:
@@ -123,6 +141,7 @@ def prepare(raw_folder, review_path, output, config_path):
                     raise ValueError('Original source camera codec, size or 600-frame coverage differs: '+name)
             except (OSError, subprocess.CalledProcessError, KeyError, TypeError, json.JSONDecodeError) as error:
                 raise ValueError('Original FFV1 camera could not be verified: '+name) from error
+        check_capture_report(paths['native_capture_report'], config_path, config)
     elif review.get('review_provenance') != 'synthetic_cpu':
         raise ValueError('Synthetic review provenance differs')
     if config['distance_m'] not in (70, 120, 170):

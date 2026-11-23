@@ -8,7 +8,7 @@ import subprocess
 from build import FRAMES, RATE
 from check import check
 
-CAMERAS = ("west_view", "east_view", "overview")
+CAMERAS = ("west_view", "east_view", "overview", "driver_reference")
 TURN_PHASES = ("forward_left", "reverse_right", "forward_left_finish")
 
 

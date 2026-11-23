@@ -69,7 +69,8 @@ def main():
         assert len(channels) == len(evidence['recording_description']['channels'])
         assert all(len(channel.read_text().splitlines()) == 480 for channel in channels)
         sys.path.insert(0, str(ROOT/'runtime/pipeline/scenario_pipeline'))
-        from worker_exchange.runtime_cli import process
+        from worker_exchange.runtime_cli import process, render
+        from worker_exchange.media import audit
         converted_root = scratch/'converted'
         decoder_error = None
         try:
@@ -90,6 +91,16 @@ def main():
         }
         (HERE/'rider-core-coverage-diagnostic.json').write_text(
             json.dumps(decoder_diagnostic, sort_keys=True, indent=2)+'\n')
+        render_frames = None
+        final_decode_passed = False
+        if decoder_error is None:
+            video = render(positive, converted_root, {'case_id': CASE})
+            render_frames = video['frames']
+            decoded = audit(video['video'], 480,
+                            mapping_sha256=video['frame_map_sha256'],
+                            receipt=positive/'final-decode.json')
+            final_decode_passed = decoded['passed']
+            assert render_frames == 480 and final_decode_passed
         negative = scratch/'negative'
         materialize(negative, env)
         (negative/'rider-source-manifest.json').unlink()
@@ -109,6 +120,8 @@ def main():
                    'core_conversion_wrote_trace': (converted_root/'trace.json').is_file(),
                    'lean_decoder_passed': decoder_error is None,
                    'lean_decoder_sha256': sha(ROOT/'.runtime-work/c10052-decoder/.lake/build/bin/adapterCheck'),
+                   'render_frames': render_frames,
+                   'final_decode_passed': final_decode_passed,
                    'core_coverage_diagnostic_sha256': sha(HERE/'rider-core-coverage-diagnostic.json'),
                    'simultaneous_conflict_frames': report['measurements'][
                        'rider_conflict_observation']['value'][

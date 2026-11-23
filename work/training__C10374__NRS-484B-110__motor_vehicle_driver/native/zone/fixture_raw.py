@@ -49,6 +49,8 @@ def build(bundle,output):
         reviews.append({'frame':i,'native_frame':native,'time_s':t,
             'source_kind':'synthetic_cpu','review_provenance':'synthetic_cpu',
             'forward_video_sha256':'synthetic_cpu','overview_video_sha256':'synthetic_cpu',
+            'reference_corner_video_sha256':'synthetic_cpu',
+            'driver_reference_video_sha256':'synthetic_cpu',
             'zone_boundary_pixel_reviewed':False,
             'zone_boundary_visible':None})
     put_rows(output/'native-raw-actors.jsonl',actors)
@@ -57,12 +59,12 @@ def build(bundle,output):
     put(output/'native-capture-report.json',{
         'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
         'config_sha256':sha(bundle/'config.json'),
-        'requested_frames':240,'observed_frames':240,
+        'requested_frames':600,'observed_frames':600,
         'restoration':{'synthetic_cpu':True},'error':None,'accepted':False,
         'generated_alley_lanes_verified':True,
         'physical_zone_designation_verified':False,
         'legal_verdict':None,'delivery_ready':False})
-    return {'source_kind':'synthetic_cpu','frames':240}
+    return {'source_kind':'synthetic_cpu','frames':600}
 
 
 if __name__=='__main__':

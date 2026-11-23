@@ -25,14 +25,14 @@ def finite(value):return type(value) in (int,float) and math.isfinite(value)
 def media_hashes(raw,synthetic):
     if synthetic:return {}
     result={}
-    for name in ('forward.mkv','overview.mkv'):
+    for name in ('forward.mkv','overview.mkv','reference_corner.mkv','driver_reference.mkv'):
         result[name]=sha(raw/name)
         process=subprocess.run(['ffprobe','-v','error','-count_frames',
             '-select_streams','v:0','-show_entries','stream=codec_name,nb_read_frames',
             '-of','json',str(raw/name)],capture_output=True,text=True,check=True,timeout=120)
         streams=json.loads(process.stdout).get('streams',[])
         require(len(streams)==1 and streams[0].get('codec_name')=='ffv1' and
-                streams[0].get('nb_read_frames')=='240','original FFV1 frames')
+                streams[0].get('nb_read_frames')=='600','original FFV1 frames')
     return result
 
 
@@ -64,8 +64,8 @@ def prepare(bundle,raw,output,synthetic=False):
     actors=rows(raw/RAW[1]);videos=rows(raw/RAW[2]);reviews=rows(raw/RAW[3])
     requested=rows(bundle/'requested-tracks.jsonl')
     kind='synthetic_cpu' if synthetic else 'original_native'
-    require(len(actors)==len(videos)==len(reviews)==len(requested)==240,
-            '240 raw joins')
+    require(len(actors)==len(videos)==len(reviews)==len(requested)==600,
+            '600 raw joins')
     markers=mapping.get('native_zone_delimiters')
     require(mapping.get('source_kind')==kind and
             mapping.get('road_sha256')==sha(bundle/'alley-zone.xodr') and
@@ -93,7 +93,7 @@ def prepare(bundle,raw,output,synthetic=False):
     require(report.get('case_id')==checked['case_id'] and
             report.get('candidate_id')==checked['candidate_id'] and
             report.get('config_sha256')==sha(bundle/'config.json') and
-            report.get('requested_frames')==report.get('observed_frames')==240 and
+            report.get('requested_frames')==report.get('observed_frames')==600 and
             report.get('error') is None and report.get('accepted') is False and
             report.get('delivery_ready') is False and
             report.get('generated_alley_lanes_verified') is True and
@@ -125,6 +125,8 @@ def prepare(bundle,raw,output,synthetic=False):
                     'synthetic_cpu' if synthetic else 'human_frame_review') and
                 review.get('forward_video_sha256')==media.get('forward.mkv','synthetic_cpu') and
                 review.get('overview_video_sha256')==media.get('overview.mkv','synthetic_cpu') and
+                review.get('reference_corner_video_sha256')==media.get('reference_corner.mkv','synthetic_cpu') and
+                review.get('driver_reference_video_sha256')==media.get('driver_reference.mkv','synthetic_cpu') and
                 type(review.get('zone_boundary_pixel_reviewed')) is bool and
                 (type(review.get('zone_boundary_visible')) is bool
                  if review['zone_boundary_pixel_reviewed'] else
@@ -159,7 +161,7 @@ def measure(bundle,saved):
             receipt.get('physical_zone_designation_verified') is False and
             receipt.get('legal_verdict') is None and receipt.get('delivery_ready') is False and
             all(receipt['saved_hashes'][name]==sha(saved/name) for name in SAVED) and
-            len(observations)==len(cameras)==len(reviews)==240,'prepared source and joins')
+            len(observations)==len(cameras)==len(reviews)==600,'prepared source and joins')
     xmin,xmax,ymin,ymax=cfg['zone_rectangle_xy_m']
     moving_overlap=reviewed=visible=0
     first_overlap=None;last_overlap=None

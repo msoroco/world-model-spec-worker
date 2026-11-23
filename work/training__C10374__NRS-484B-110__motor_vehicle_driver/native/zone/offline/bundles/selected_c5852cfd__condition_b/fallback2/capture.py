@@ -94,9 +94,11 @@ def capture(bundle, output, host, port):
             zone_markers.append({'actor_id':marker.id,'blueprint':marker.type_id,
                                  'xyz_m':[pose.x,pose.y,pose.z]})
         elevated=cfg['camera_policy']=='elevated_overview'
-        specs=(('overview',1280,720,100 if elevated else 85,
+        specs=(('overview',1920,1080,100 if elevated else 85,
                 (50,-12,45 if elevated else 30),-70 if elevated else -60),
-               ('forward',1280,720,90,(1,0,1.5),0))
+               ('forward',1280,720,90,(1,0,1.5),0),
+               ('reference_corner',1280,720,80,(40,-10,6),-25),
+               ('driver_reference',1280,720,90,(2,0,1.5),0))
         for name,width,height,fov,location,pitch in specs:
             camera_bp=world.get_blueprint_library().find('sensor.camera.rgb')
             for key,value in (('image_size_x',width),('image_size_y',height),
@@ -104,7 +106,7 @@ def capture(bundle, output, host, port):
                 camera_bp.set_attribute(key,str(value))
             camera=world.spawn_actor(camera_bp,carla.Transform(
                 carla.Location(*location),carla.Rotation(pitch=pitch)),
-                attach_to=ego if name=='forward' else None)
+                attach_to=ego if name in ('forward','driver_reference') else None)
             owned.append(camera);queues[name]=queue.Queue();camera.listen(queues[name].put)
             logs[name]=(output/(name+'.encoder.log')).open('x')
             encoders[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner',
@@ -175,7 +177,7 @@ def capture(bundle, output, host, port):
         put_new(output/'native-capture-report.json',{
             'case_id':checked['case_id'],'candidate_id':checked['candidate_id'],
             'config_sha256':sha(bundle/'config.json'),
-            'requested_frames':240,'observed_frames':frames,
+            'requested_frames':600,'observed_frames':frames,
             'restoration':restored,'error':error,'accepted':False,
             'generated_alley_lanes_verified':lanes_verified,
             'physical_zone_designation_verified':False,

@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import subprocess
 import uuid
+import shutil
+from verify_media import verify
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
@@ -48,12 +50,36 @@ def prove():
                 row.get('r_frame_rate') != '20/1' or
                 (row.get('width'), row.get('height')) != dimensions):
             raise ValueError('four-view synthetic video profile: ' + name)
-    run(['ffmpeg', '-nostdin', '-v', 'error', '-i', str(output / 'raw.mkv'),
-         '-f', 'null', '-'])
-    receipt = {'format': 'c10389-synthetic-four-view-proof-v1',
+    media_hashes = verify(output, 2)
+    missing = output / 'missing-source'
+    missing.mkdir()
+    for name in expected:
+        if name != 'driver_reference.mkv':
+            shutil.copyfile(output / name, missing / name)
+    try:
+        verify(missing, 2)
+    except FileNotFoundError:
+        missing_rejected = True
+    else:
+        raise ValueError('missing source camera accepted')
+    damaged = output / 'damaged-source'
+    damaged.mkdir()
+    for name in expected:
+        shutil.copyfile(output / name, damaged / name)
+    (damaged / 'approach.mkv').write_bytes(b'not-an-FFV1-stream')
+    try:
+        verify(damaged, 2)
+    except (ValueError, subprocess.CalledProcessError):
+        damaged_rejected = True
+    else:
+        raise ValueError('damaged source camera accepted')
+    receipt = {'format': 'c10389-synthetic-four-view-proof-v2',
         'source_kind': 'synthetic_cpu', 'source_views': list(expected)[:-1],
         'composed_view': 'raw.mkv', 'frame_count': 2, 'fps': 20,
         'composed_dimensions': [3840, 1800], 'full_decode_passed': True,
+        'all_five_media_hashes': media_hashes,
+        'missing_source_rejected': missing_rejected,
+        'damaged_source_rejected': damaged_rejected,
         'capture_sha256': hashlib.sha256((HERE / 'capture.py').read_bytes()).hexdigest(),
         'saved_sha256': hashlib.sha256((HERE / 'saved.py').read_bytes()).hexdigest(),
         'original_native_observed': False, 'delivery_ready': False}

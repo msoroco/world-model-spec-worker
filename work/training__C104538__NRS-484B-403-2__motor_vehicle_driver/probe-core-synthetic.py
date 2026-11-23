@@ -4,7 +4,6 @@ import hashlib
 import json
 import math
 from pathlib import Path
-import pickle
 import shutil
 import subprocess
 import sys
@@ -15,7 +14,6 @@ ROOT=FOLDER.parents[1]
 sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.runtime_cli import materialize,execution_env,process,render
 from worker_exchange.media import audit
-from traffic_spec_adapter.adapter import load_graph
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -35,7 +33,6 @@ def make_attempt(destination,suffix,candidate='primary'):
     mapping=rows(destination/'video_frames.jsonl')
     if len(samples)!=600 or len(mapping)!=600:raise ValueError('Synthetic original sources incomplete')
     trace=[];evidence=[];history=[];frames=[]
-    graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
     graph_dir=destination/'capture/native/graphs/base';graph_dir.mkdir(parents=True)
     for index,(n,m) in enumerate(zip(samples,mapping)):
         frame=n['native_frame'];time=n['time_s'];x,y=n['native_center_xy_m']
@@ -48,16 +45,22 @@ def make_attempt(destination,suffix,candidate='primary'):
             'replay_frame':frame,'replay_simulation_time_s':time,'actor_id':107,
             'ego':{'body_vertices_m':body,'position_m':[x,y,.5],
                    'heading_deg':heading,'speed_mps':5,
-                   'speed_provenance':'original_trace_actor_get_velocity'},
+                   'speed_provenance':'synthetic_native_sample'},
             'world':{'weather':{'cloudiness':0,'precipitation':0,'wetness':0,'fog_density':0},
                      'road_projection':{'road_id':n['native_road_id'],'section_id':0,
                                         'lane_id':n['native_lane_id'],'s_m':x+80}}})
         history.append({'frame':frame,'time_s':time,'body_vertices_m':body})
-        graph.graph['frame']=frame
-        (graph_dir/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))
+        graph={'format':'native-adapter-graph-v1','multigraph':False,
+            'metadata':{'frame':frame,'simulation_time_s':time},
+            'nodes':[{'id':'ego','attributes':{'vertex':[x,y,.5],
+                'sem_class':'ego','forward':[math.cos(math.radians(heading)),
+                math.sin(math.radians(heading)),0.0],
+                'entity_id':107,'carla_speed':5.0,'special_class':'ego'}}],
+            'edges':[]}
+        (graph_dir/f'{frame:08d}.adapter.json').write_text(json.dumps(graph,separators=(',',':'))+'\n')
         frames.append({'frame':frame,'simulation_time':time,'time_s':time,
-            'base':f'graphs/base/{frame:08d}.pkl',
-            'abstract':f'graphs/abstract/{frame:08d}.pkl','synthetic_diagnostic':True})
+            'adapter_graph':f'graphs/base/{frame:08d}.adapter.json',
+            'synthetic_diagnostic':True})
     write_rows(destination/'trace.jsonl',trace)
     write_rows(destination/'capture/evidence.jsonl',evidence)
     write_rows(destination/'body_history.jsonl',history)
@@ -111,7 +114,8 @@ def main():
     subprocess.run([sys.executable,str(attempt/'finalize.py'),'--attempt',str(attempt),
         '--output',str(attempt/'analysis-report.json')],cwd=attempt,env=execution_env(),check=True,timeout=300)
     core=process(attempt,attempt/'converted',ROOT/'runtime/pipeline/library',
-        ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck')
+        ROOT/'.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck',
+        diagnostic_fixture=True)
     config=json.loads((attempt/'config.json').read_text())
     video=render(attempt,attempt/'converted',config['case'])
     decoded=audit(video['video'],600,mapping_sha256=video['frame_map_sha256'],

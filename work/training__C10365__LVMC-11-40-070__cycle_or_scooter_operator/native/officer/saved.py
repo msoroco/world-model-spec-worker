@@ -23,20 +23,26 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def verify_media(path, dimensions):
+def verify_media(path, dimensions, frames=FRAMES):
     if not path.is_file():
         raise ValueError("Original FFV1 camera missing: " + path.name)
     probe = subprocess.run(
         ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-         "-show_entries", "stream=codec_name,nb_read_frames,width,height",
+         "-show_entries", "stream=codec_name,nb_read_frames,width,height,r_frame_rate",
          "-of", "json", str(path)], capture_output=True, text=True, timeout=120)
     if probe.returncode:
         raise ValueError("Original FFV1 camera unreadable: " + path.name)
     streams = json.loads(probe.stdout).get("streams", [])
     if len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or \
-            streams[0].get("nb_read_frames") != str(FRAMES) or \
+            streams[0].get("nb_read_frames") != str(frames) or \
+            streams[0].get("r_frame_rate") != "20/1" or \
             [streams[0].get("width"), streams[0].get("height")] != dimensions:
         raise ValueError("Original FFV1 camera frame contract: " + path.name)
+    decode = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-xerror",
+                             "-i", str(path), "-f", "null", "-"],
+                            capture_output=True, text=True, timeout=180)
+    if decode.returncode:
+        raise ValueError("Original FFV1 camera failed full decode: " + path.name)
     return sha(path)
 
 
@@ -49,7 +55,7 @@ def process(bundle, raw, video, review, *, synthetic=False):
     visual = json.loads(Path(review).read_text())
     if len(raw_rows) != FRAMES or len(video_rows) != FRAMES or len(requests) != FRAMES:
         raise ValueError("600 source frames required")
-    if visual.get("source_kind") != ("synthetic_fixture" if synthetic else "original_native_review"):
+    if visual.get("source_kind") != ("synthetic_native_sample" if synthetic else "original_native_review"):
         raise ValueError("Review source kind mismatch")
     if visual.get("case_id") != cfg["case_id"] or visual.get("candidate_id") != cfg["candidate_id"]:
         raise ValueError("Review identity mismatch")
@@ -111,7 +117,7 @@ def process(bundle, raw, video, review, *, synthetic=False):
                 not finite_number(v.get("time_s")) or
                 abs(row["time_s"] - v["time_s"]) > 1e-6):
             raise ValueError("Native/video time join changed")
-        if row.get("source_kind") != ("synthetic_fixture" if synthetic else "original_native"):
+        if row.get("source_kind") != ("synthetic_native_sample" if synthetic else "original_native"):
             raise ValueError("Raw source kind mismatch")
         rider, officer = row.get("rider", {}), row.get("officer_actor", {})
         if rider.get("blueprint") != cfg["rider_blueprint"] or \
@@ -220,7 +226,7 @@ def process(bundle, raw, video, review, *, synthetic=False):
     }
     return {
         "case_id": checked["case_id"], "candidate_id": checked["candidate_id"],
-        "source_kind": "synthetic_fixture" if synthetic else "original_native",
+        "source_kind": "synthetic_native_sample" if synthetic else "original_native",
         "frames": FRAMES, "stopped": stopped, "crossing_frame": crossing_frame,
         "stop_margin_m": margin, "crossing_latency_s": latency,
         "min_officer_rider_separation_m": separation,

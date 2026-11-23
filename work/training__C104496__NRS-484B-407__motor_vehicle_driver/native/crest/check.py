@@ -23,7 +23,7 @@ def check(bundle):
         raise ValueError("Copied frozen source or plan changed")
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    law = source["law_record"]["text"]
+    law = source["law"]["text"]
     speed, camera, stop = POLICIES[candidate]
     if (cfg["format"] != "c104496-crest-request-v1" or
             cfg["assignment_id"] != source["assignment_id"] or

@@ -9,7 +9,7 @@ CASE = HERE.parent.parent
 ROOT = CASE.parents[1]
 NAMES = ('assignment-source.json', 'case-plan.json', 'alley-stop.xodr',
          'config.json', 'requested-tracks.jsonl', 'build.py', 'check.py',
-         'capture.py', 'measurement-contract.json', 'saved.py',
+         'capture.py', 'measurement-contract.json', 'saved.py', 'verify_media.py',
          'fixture_raw.py', 'route_fallbacks.py')
 
 
@@ -36,6 +36,7 @@ def build():
             'capture.py': HERE / 'capture.py',
             'measurement-contract.json': HERE / 'measurement-contract.json',
             'saved.py': HERE / 'saved.py',
+            'verify_media.py': HERE / 'verify_media.py',
             'fixture_raw.py': HERE / 'fixture_raw.py',
             'route_fallbacks.py': HERE / 'route_fallbacks.py'}
         for name, source in sources.items():

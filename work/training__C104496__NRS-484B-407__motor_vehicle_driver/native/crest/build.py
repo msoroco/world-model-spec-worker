@@ -9,7 +9,7 @@ CASE = HERE.parents[1]
 ROOT = CASE.parents[1]
 SOURCE = HERE / "assignment-source.json" if (HERE / "assignment-source.json").is_file() else ROOT / "inputs" / CASE.name / "assignment.json"
 PLAN = HERE / "case-plan.json" if (HERE / "case-plan.json").is_file() else CASE / "case-plan.json"
-SOURCE_SHA = "d1490ce9bff6b98b001e5e12eb8498bfb028d66a236c814f81cb9e8e222b0285"
+SOURCE_SHA = "969fe6087ce77e1a1cda87e8c332f54bca8772d25d4499d13b32c5c8e2a5aac2"
 RATE = 20
 FRAMES = 700
 CASES = {"probe_01": 0.8, "probe_02": 12.0}
@@ -97,7 +97,7 @@ def build():
         raise ValueError("Frozen assignment changed")
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    law = source["law_record"]["text"]
+    law = source["law"]["text"]
     if (plan["source_law_text"] != law or source["actor"] != "motor_vehicle_driver" or
             {k: source["cell"][k] for k in ("layout", "maneuver", "control")} !=
             {"layout": "hill_crest", "maneuver": "u_turn", "control": "other_vehicle"}):

@@ -119,7 +119,8 @@ def capture(bundle, output, host, port):
         elevated = cfg["camera_policy"] == "elevated_overview"
         specs = (("west_view", 1280, 720, (47.6, 1.75, elevation(47.6, cfg["grade_height_m"])+1.4), 0, 0),
                  ("east_view", 1280, 720, (352.4, -1.75, elevation(352.4, cfg["grade_height_m"])+1.4), 180, 0),
-                 ("overview", 1280, 720, (200, -25, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), 90, -65))
+                 ("overview", 1920, 1080, (200, -25, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), 90, -65),
+                 ("driver_reference", 1280, 720, (185, -10, elevation(185, cfg["grade_height_m"])+3), 45, -10))
         for name, width, height, location, yaw, pitch in specs:
             bp = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),

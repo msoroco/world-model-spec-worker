@@ -72,7 +72,7 @@ def build():
         raise ValueError("Frozen assignment changed")
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    law = source["law_record"]["text"]
+    law = source["law"]["text"]
     if (plan["source_law_text"] != law or source["actor"] != "motor_vehicle_driver" or
             {k: source["cell"][k] for k in ("layout", "maneuver", "control")} !=
             {"layout": "hill_crest", "maneuver": "u_turn", "control": "other_vehicle"}):
@@ -119,7 +119,7 @@ def check(bundle):
     if abs(float(geometry.find("arc").attrib["curvature"]) - CURVATURE) > 1e-12:
         raise ValueError("Curvature mismatch")
     if (cfg["assignment_sha256"] != SOURCE_SHA or cfg["case_plan_sha256"] != sha(PLAN) or
-            cfg["source_text"] != json.loads(SOURCE.read_text())["law_record"]["text"] or
+            cfg["source_text"] != json.loads(SOURCE.read_text())["law"]["text"] or
             cfg["status"] != "unselected_native_request" or cfg["original_native_observed"] is not False or
             cfg["legal_verdict"] is not None or cfg["curve_radius_m"] != RADIUS or
             cfg["grade_height_m"] != 0.8 or cfg["camera_policy"] != POLICIES[candidate][1] or

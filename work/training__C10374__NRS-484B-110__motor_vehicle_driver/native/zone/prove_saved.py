@@ -59,6 +59,7 @@ def prove():
             lambda d:edit_row(d/'native-raw-actors.jsonl','observed_lane_id',0),
             lambda d:edit_row(d/'video_frames.jsonl','native_frame',-1),
             lambda d:edit_row(d/'frame-review.jsonl','review_provenance','claimed_human'),
+            lambda d:edit_row(d/'frame-review.jsonl','driver_reference_video_sha256','missing-fourth-camera'),
             lambda d:edit_row(d/'frame-review.jsonl','zone_boundary_pixel_reviewed','yes'),
         )
         for change in changes:

@@ -21,7 +21,7 @@ def audit():
     proof=read(HERE/'offline/proof-compatibility.json')
     assignment=ROOT/'inputs'/CASE.name/'assignment.json'
     plan=CASE/'case-plan.json'
-    if (read(assignment)['law_record']['text']!=LAW or
+    if (read(assignment)['law']['text']!=LAW or
         read(plan)['source_law']['text']!=LAW or
         construction['assignment_sha256']!=sha(assignment) or
         construction['case_plan_sha256']!=sha(plan) or
@@ -52,7 +52,7 @@ def audit():
             if sha(bundle/name)!=sha(source) or entry['file_sha256'][name]!=sha(source):
                 raise ValueError('copied file '+name)
         cfg=read(bundle/'config.json');track=rows(bundle/'requested-tracks.jsonl')
-        if suffix not in CASES or candidate not in POLICIES or len(track)!=240:
+        if suffix not in CASES or candidate not in POLICIES or len(track)!=600:
             raise ValueError('case and track count')
         root=ET.parse(bundle/'alley-zone.xodr').getroot()
         sections=root.findall('./road/lanes/laneSection')

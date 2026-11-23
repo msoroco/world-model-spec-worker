@@ -55,7 +55,7 @@ def build():
     assignment = ROOT/'inputs'/CASE.name/'assignment.json'
     frozen = json.loads(assignment.read_text())
     plan = json.loads((CASE/'case-plan.json').read_text())
-    if (frozen['law_record']['text'] != LAW or plan['source_law']['text'] != LAW or
+    if (frozen['law']['text'] != LAW or plan['source_law']['text'] != LAW or
             frozen['cell']['layout'] != 'alley' or
             frozen['cell']['control'] != 'safety_zone' or
             frozen['actor'] != 'motor_vehicle_driver'):
@@ -68,7 +68,7 @@ def build():
             target = HERE/'drafts'/suffix/candidate
             case_id = CASE.name+'__'+suffix
             values = []
-            for frame in range(240):
+            for frame in range(600):
                 t = (frame+1)/20
                 x = min(stop if stop is not None else 150, 5+speed*t)
                 y = -1.75 if through else -5.25
@@ -92,7 +92,7 @@ def build():
                 'assignment_sha256': sha(assignment),
                 'case_plan_sha256': sha(CASE/'case-plan.json'),
                 'road_sha256': sha(road_path), 'tracks_sha256': sha(tracks),
-                'rate_hz': 20, 'frames': 240,
+                'rate_hz': 20, 'frames': 600,
                 'requested_ego_speed_mps': speed, 'camera_policy': camera,
                 'stop_x_m': stop, 'zone_rectangle_xy_m': list(ZONE),
                 'requested_zone_route': through,

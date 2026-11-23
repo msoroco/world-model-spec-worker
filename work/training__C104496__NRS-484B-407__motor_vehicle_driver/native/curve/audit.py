@@ -48,10 +48,10 @@ def digest(path):
 def audit():
     plan = json.loads(PLAN.read_text())
     source = json.loads(SOURCE.read_text())
-    assert plan["source_law_text"] == source["law_record"]["text"]
+    assert plan["source_law_text"] == source["law"]["text"]
     assert len([c for c in plan["cases"] if c["case_id"].endswith("__probe_03")]) == 1
     result = json.loads((CASE / "result.json").read_text())
-    assert result["status"] == "blocked" and result["candidate_count"] == 12
+    assert result["status"] == "partial" and result["candidate_count"] == 12
     entries = json.loads((HERE / "manifest.json").read_text())["entries"]
     assert len(entries) == 4
     checked = saved_checked = 0
@@ -66,7 +66,7 @@ def audit():
         assert digest(bundle / "config.json") == entry["config_sha256"]
         assert (bundle / "assignment-source.json").read_bytes() == SOURCE.read_bytes()
         assert (bundle / "case-plan.json").read_bytes() == PLAN.read_bytes()
-        assert cfg["source_text"] == source["law_record"]["text"]
+        assert cfg["source_text"] == source["law"]["text"]
         assert cfg["grade_height_m"] == straight_cfg["grade_height_m"] == 0.8
         for key in ("requested_speed_mps", "camera_policy", "stop_before_crest", "rate_hz", "frames"):
             assert cfg[key] == straight_cfg[key]
