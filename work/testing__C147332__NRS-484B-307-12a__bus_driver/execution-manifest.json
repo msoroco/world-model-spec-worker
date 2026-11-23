@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C147332__NRS-484B-307-12a__bus_driver",
   "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
-  "preparation_status": "partial_offline_pending",
+  "preparation_status": "offline_and_compatibility_cpu_proven_delivery_partial",
   "cases": [
     {
       "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive",
@@ -36,16 +36,89 @@
             "construction_sha256": "8698978ed5b876d0d1f8a9959f6099e9dcb2a13543cc6626f13ec0aeaec0e2e6",
             "log": "cases/green_selected_drive/cpu-offline-fallback1.log",
             "log_sha256": "f0caf41aaeb6b5efee23cfebcdc5d07768a03f75a40ac9f576f3a50886dcb4b0"
+          },
+          "compatibility": {
+            "receipt": "compat-green_selected_drive-fallback1-receipt.json",
+            "sha256": "811271e9fe49619336a720e86b33658a0405deb8a61c2532573971ed4358a494",
+            "log": "compat-green_selected_drive-fallback1-analysis.log",
+            "negative_log": "compat-green_selected_drive-fallback1-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "offline_and_compatibility_cpu_proven_delivery_partial",
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12a__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-12a-offline-green_selected_drive-primary-measurement-contract",
         "exit_code": 0,
         "construction_sha256": "b531ff9c325b8b1ca9552f2b7466e55ab03c67e97a0d93ffb0d1b80d7cef8d80",
         "log": "cases/green_selected_drive/cpu-offline.log",
         "log_sha256": "61e442cb1c80326e0f2fdfb2e92a47f89f3b8e84ad856afe162d77ea61da9bbb"
+      },
+      "fixture_recipe": "work/testing__C147332__NRS-484B-307-12a__bus_driver/cases/green_selected_drive/fixture-recipe.json",
+      "acquisition": {
+        "bus_full_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/bus_full_body_footprint.jsonl"
+        },
+        "mapped_lane_signals": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/mapped_lane_signals.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "reviewed_highway_and_official_device": {
+          "entrypoint": "source_review.py",
+          "method": "Reviewed original highway and official device bytes with SHA-256 and lane/facing association",
+          "evidence": "reviewed-context.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-green_selected_drive-primary-receipt.json",
+        "sha256": "56bac54fc74876d6433fa37a1fad5470ad19f4cefbb0149e7d369e59b909b03c",
+        "log": "compat-green_selected_drive-primary-analysis.log"
+      },
+      "negative": {
+        "log": "compat-green_selected_drive-primary-negative.log",
+        "sha256": "40198c3f9432f62652f37c23feb890d6b4d73e97dd5fd6bc32c6d71b3b2bc41d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-green_selected_drive-receipt.json",
+        "sha256": "53885ac51c28d0cc34f26918964d75788bac0a91ebbe1c0b91c25fa39b76adcb"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "90596155ab80202a35add78bd2c2b103970210083702ff75fe0a9189fec892b3",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-green_selected_drive PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive --mode positive --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/green_selected_drive/positive\"",
+        "test_exit_code": 0,
+        "test_log": "delivery-green_selected_drive-positive.log",
+        "test_log_sha256": "310f2b3cb07adbe02f8ed80af16a8969621928983b136a666ab5c971bf29337b",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-green_selected_drive PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive --mode negative --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/green_selected_drive/negative\"",
+        "negative_exit_code": 1,
+        "negative_expected_error": "acquisition original source missing or changed: lane-signal-history.jsonl",
+        "negative_log": "delivery-green_selected_drive-negative.log",
+        "negative_log_sha256": "4641b70d46ac5c6b314f1841931d26842f1aeb17bf8727efe705f281441cff1d",
+        "scope": "Synthetic source audit only; Native physical acceptance requires later original capture"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -80,16 +153,89 @@
             "construction_sha256": "856ce867481e64bb31164de7f3a0c89bc59af6918e3435ff8ab112d6fa9ad399",
             "log": "cases/adjacent_dark_drive/cpu-offline-fallback1.log",
             "log_sha256": "50f181b117b001ef5a99ef30a5046971bdaf69254421d12c09ce0d7f06fde096"
+          },
+          "compatibility": {
+            "receipt": "compat-adjacent_dark_drive-fallback1-receipt.json",
+            "sha256": "1b0fad3642b6437c2f1f72a759bfb130ec7ebe6d020e000bf9dccbc724228075",
+            "log": "compat-adjacent_dark_drive-fallback1-analysis.log",
+            "negative_log": "compat-adjacent_dark_drive-fallback1-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "offline_and_compatibility_cpu_proven_delivery_partial",
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12a__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-12a-offline-adjacent_dark_drive-primary-measurement-contract",
         "exit_code": 0,
         "construction_sha256": "28432cc1ea6591f50675c917f35403eb0957fb7416c3f9fdc651af070de9f007",
         "log": "cases/adjacent_dark_drive/cpu-offline.log",
         "log_sha256": "c2a0e687ab9c27607b968779e7e8d32c481f4a0e824266543707db906f698dbe"
+      },
+      "fixture_recipe": "work/testing__C147332__NRS-484B-307-12a__bus_driver/cases/adjacent_dark_drive/fixture-recipe.json",
+      "acquisition": {
+        "bus_full_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/bus_full_body_footprint.jsonl"
+        },
+        "mapped_lane_signals": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/mapped_lane_signals.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "reviewed_highway_and_official_device": {
+          "entrypoint": "source_review.py",
+          "method": "Reviewed original highway and official device bytes with SHA-256 and lane/facing association",
+          "evidence": "reviewed-context.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-adjacent_dark_drive-primary-receipt.json",
+        "sha256": "6a4cffb59b84b017858acbd2640b639c2fbdd97696e899b6fb2ecf10cd18342c",
+        "log": "compat-adjacent_dark_drive-primary-analysis.log"
+      },
+      "negative": {
+        "log": "compat-adjacent_dark_drive-primary-negative.log",
+        "sha256": "25eeba9537dfe68612b6e40f04d7279f5b47d37e3b27a6554639ae7d44c6e96d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-adjacent_dark_drive-receipt.json",
+        "sha256": "c976e542050e777011d6ded47c41fdabe2426d8c13dd46fb4b389158d6b9fc7c"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "90596155ab80202a35add78bd2c2b103970210083702ff75fe0a9189fec892b3",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-adjacent_dark_drive PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive --mode positive --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/adjacent_dark_drive/positive\"",
+        "test_exit_code": 0,
+        "test_log": "delivery-adjacent_dark_drive-positive.log",
+        "test_log_sha256": "8aba39cc83db6504bc746ed43b78eefc9e924bf2691f9b7b0ff68ae7d344bf2f",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-adjacent_dark_drive PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive --mode negative --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/adjacent_dark_drive/negative\"",
+        "negative_exit_code": 1,
+        "negative_expected_error": "acquisition original source missing or changed: lane-signal-history.jsonl",
+        "negative_log": "delivery-adjacent_dark_drive-negative.log",
+        "negative_log_sha256": "4641b70d46ac5c6b314f1841931d26842f1aeb17bf8727efe705f281441cff1d",
+        "scope": "Synthetic source audit only; Native physical acceptance requires later original capture"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -124,16 +270,89 @@
             "construction_sha256": "603ae5aea3c94325e532e0bdb1be7fba40053a33706da5b365839a2a96ede46e",
             "log": "cases/second_green_drive/cpu-offline-fallback1.log",
             "log_sha256": "c016a7629497732ebe55bcfaf066e53b926cfb182975be5b3f925ba03031862e"
+          },
+          "compatibility": {
+            "receipt": "compat-second_green_drive-fallback1-receipt.json",
+            "sha256": "8047a5103b8ef7627b591cdad8571ae276b38f93a54dd8250896e082fb9e6935",
+            "log": "compat-second_green_drive-fallback1-analysis.log",
+            "negative_log": "compat-second_green_drive-fallback1-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "offline_and_compatibility_cpu_proven_delivery_partial",
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12a__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-12a-offline-second_green_drive-primary-measurement-contract",
         "exit_code": 0,
         "construction_sha256": "73997897fc7f96c461bfb46298950b6a388f22205f31715d60c47b13693f008a",
         "log": "cases/second_green_drive/cpu-offline.log",
         "log_sha256": "589765d968f9fdcd975313aff7ce39e0804956539d4a9f065815bdc3cdb588cd"
+      },
+      "fixture_recipe": "work/testing__C147332__NRS-484B-307-12a__bus_driver/cases/second_green_drive/fixture-recipe.json",
+      "acquisition": {
+        "bus_full_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/bus_full_body_footprint.jsonl"
+        },
+        "mapped_lane_signals": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/mapped_lane_signals.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "reviewed_highway_and_official_device": {
+          "entrypoint": "source_review.py",
+          "method": "Reviewed original highway and official device bytes with SHA-256 and lane/facing association",
+          "evidence": "reviewed-context.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-second_green_drive-primary-receipt.json",
+        "sha256": "0c07802609ce3fdea354ba2bb7eb964bfcfd1caed2f03ab486d5047a98dad5d3",
+        "log": "compat-second_green_drive-primary-analysis.log"
+      },
+      "negative": {
+        "log": "compat-second_green_drive-primary-negative.log",
+        "sha256": "e447bbfbb83973020e6d7eb1e7a735ff33a73af97ab7f41cfb369e8161a24dff"
+      },
+      "physical_preparation": {
+        "receipt": "physical-second_green_drive-receipt.json",
+        "sha256": "13644945b2777a262d8a4cb043aa22eb786ca11eb15933c707c5861d4e39066f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "90596155ab80202a35add78bd2c2b103970210083702ff75fe0a9189fec892b3",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-second_green_drive PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive --mode positive --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/second_green_drive/positive\"",
+        "test_exit_code": 0,
+        "test_log": "delivery-second_green_drive-positive.log",
+        "test_log_sha256": "47126e7021a77f42aea829cd387bc2c523e1244c4e7016ae05a6c2eacd8dc017",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-second_green_drive PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive --mode negative --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/second_green_drive/negative\"",
+        "negative_exit_code": 1,
+        "negative_expected_error": "acquisition original source missing or changed: lane-signal-history.jsonl",
+        "negative_log": "delivery-second_green_drive-negative.log",
+        "negative_log_sha256": "4641b70d46ac5c6b314f1841931d26842f1aeb17bf8727efe705f281441cff1d",
+        "scope": "Synthetic source audit only; Native physical acceptance requires later original capture"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -168,16 +387,89 @@
             "construction_sha256": "1acef3011598058cf120789503bc67712be892abc2833a6d9c32386879174645",
             "log": "cases/green_selected_stand/cpu-offline-fallback1.log",
             "log_sha256": "876c60c647a8f22d9e91713b782b7248f2d242c03e91e7a524a934b274b672b3"
+          },
+          "compatibility": {
+            "receipt": "compat-green_selected_stand-fallback1-receipt.json",
+            "sha256": "0addba82e2a98f9147d3a5b3fdec51bf36f952659c43711910844abf935f75ae",
+            "log": "compat-green_selected_stand-fallback1-analysis.log",
+            "negative_log": "compat-green_selected_stand-fallback1-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "offline_and_compatibility_cpu_proven_delivery_partial",
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12a__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-12a-offline-green_selected_stand-primary-measurement-contract",
         "exit_code": 0,
         "construction_sha256": "c95e3dc0712386414566c4a7a118b2a26e9d061af1d92c099f4fb24ba0d0bad8",
         "log": "cases/green_selected_stand/cpu-offline.log",
         "log_sha256": "f739550761dc1659f492c6d1f1b0d58f5c102f74fbe4da7cafc3bd1d4c0bb06c"
+      },
+      "fixture_recipe": "work/testing__C147332__NRS-484B-307-12a__bus_driver/cases/green_selected_stand/fixture-recipe.json",
+      "acquisition": {
+        "bus_full_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/bus_full_body_footprint.jsonl"
+        },
+        "mapped_lane_signals": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/mapped_lane_signals.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original bus, lane signal and camera histories projected by saved finalizer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "reviewed_highway_and_official_device": {
+          "entrypoint": "source_review.py",
+          "method": "Reviewed original highway and official device bytes with SHA-256 and lane/facing association",
+          "evidence": "reviewed-context.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-green_selected_stand-primary-receipt.json",
+        "sha256": "7c978dcd7bbdcdb94cb75daea134584b26e314a11cae348590d67c6265074ae4",
+        "log": "compat-green_selected_stand-primary-analysis.log"
+      },
+      "negative": {
+        "log": "compat-green_selected_stand-primary-negative.log",
+        "sha256": "080f5e3743cabc0bd707051ef7ccffba8595db76a79ecbabff20b62d8c16f900"
+      },
+      "physical_preparation": {
+        "receipt": "physical-green_selected_stand-receipt.json",
+        "sha256": "82831927eb1ede64f3d750b655b60cf9e735e79a30b44e1701c1a3994f60058d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "90596155ab80202a35add78bd2c2b103970210083702ff75fe0a9189fec892b3",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-green_selected_stand PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand --mode positive --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/green_selected_stand/positive\"",
+        "test_exit_code": 0,
+        "test_log": "delivery-green_selected_stand-positive.log",
+        "test_log_sha256": "df559db582552d6bf98fcb2fc1bbc3492fa78adbf0a43bbfbfc4ab55dbedeb49",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c147332-12a-delivery-runtime-v2-green_selected_stand PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py --case testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand --mode negative --output \"$PWD/.runtime-work/c147332-12a-delivery-v2/green_selected_stand/negative\"",
+        "negative_exit_code": 1,
+        "negative_expected_error": "acquisition original source missing or changed: lane-signal-history.jsonl",
+        "negative_log": "delivery-green_selected_stand-negative.log",
+        "negative_log_sha256": "4641b70d46ac5c6b314f1841931d26842f1aeb17bf8727efe705f281441cff1d",
+        "scope": "Synthetic source audit only; Native physical acceptance requires later original capture"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]

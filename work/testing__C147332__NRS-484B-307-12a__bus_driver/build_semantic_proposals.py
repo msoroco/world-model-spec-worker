@@ -56,19 +56,6 @@ def main() -> None:
              'second_green_drive': 'second_lane_green_indication',
              'green_selected_drive': 'green_permission_without_motion',
              'green_selected_stand': 'green_permission_without_motion'}
-    channels = [
-        ('bus_full_body_footprint', 'Original bus XY bounding-box corners and lane identity on each world tick'),
-        ('mapped_lane_signals', 'Original per-head arrow symbol, facing direction and governed lane'),
-        ('camera_frame_map', 'Original four-camera frame identities joined to world tick/time')]
-    recording = {'channels': [{'name': n, 'unit': 'structured source record', 'method': m,
-                               'sampling_rate_hz': 20, 'time_window': 'every captured frame',
-                               'reference_frame': 'original CARLA frame and time',
-                               'uncertainty': 'Native physical realization requires independent review'} for n, m in channels],
-                 'context_inputs': [{'name': 'reviewed_highway_and_official_device',
-                                     'unit': 'retained source packet',
-                                     'method': 'source_review.validate before Native dispatch'}],
-                 'limitations': ['Engineering placement does not prove highway or official device status.',
-                                 'Requested bus motion does not prove measured motion or legal entitlement.']}
     cases = []
     for planned in PLAN['cases']:
         suffix = planned['case_id'].removeprefix(AID + '__')
@@ -77,6 +64,9 @@ def main() -> None:
             'bus_lane_request': {'kind': 'world_setup', 'value': lane},
             'second_lane_green_request': {'kind': 'world_setup', 'value': arrow if lane == 'adjacent' else 'dark'},
             'bus_motion_request': {'kind': 'controller', 'value': motion}}
+        construction = json.loads((ROOT / 'cases' / suffix / 'construction.json').read_text())
+        if construction['case_id'] != planned['case_id']:
+            raise ValueError('Semantic case selects another construction')
         cases.append({'case_id': planned['case_id'], 'target_law_id': LAW_ID,
                       'target_type': 'permission_probe', 'status': 'draft',
                       'rationale': planned['scenario'] + '; physical outcome and legal judgment remain unconfirmed.',
@@ -85,7 +75,8 @@ def main() -> None:
                       'probe': {'primary_variable': 'second_lane_green_request' if 'indication' in pairs[suffix] else 'bus_motion_request',
                                 'comparison_or_standard': 'Paired original-frame comparison under source-reviewed lane signal',
                                 'target_value_or_branch': arrow if 'indication' in pairs[suffix] else motion},
-                      'recording_description': recording, 'unresolved_judgment_calls': []})
+                      'recording_description': construction['recording_description'],
+                      'unresolved_judgment_calls': []})
     case_stage = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
                   'cases': cases, 'sweep_specs': []}
     refs = {'relevance_batch': write('relevance_batch.json', relevance),
