@@ -30,9 +30,9 @@ class SavedMeasurementTests(unittest.TestCase):
         fixture.setUp()
         self.fixture = fixture
         self.addCleanup(fixture.doCleanups)
-        case = fixture.cases[0]
+        case = fixture.cases[getattr(self, "case_index", 0)]
         self.case_id = case["case_id"]
-        packet_path, _ = fixture.packet(case)
+        packet_path, packet = fixture.packet(case)
         retained = retain_site_sources(self.attempt, packet_path, fixture.plan,
                                        self.case_id)
         source_hash = sha(retained)
@@ -55,6 +55,10 @@ class SavedMeasurementTests(unittest.TestCase):
             video.write_bytes((name + " diagnostic video bytes").encode())
             videos[name] = sha(video)
         trace, mapping = [], []
+        ego_y = packet["slots"][packet["ego_slot"]]["y_m"]
+        companion_slot = packet["companion_slot"]
+        companion_y = (packet["slots"][companion_slot]["y_m"]
+                       if companion_slot is not None else None)
         for index in range(900):
             frame, time_s = 1000 + index, index * .05
             hashes = {name: hashlib.sha256(f"{name}:{frame}".encode()).hexdigest()
@@ -66,12 +70,17 @@ class SavedMeasurementTests(unittest.TestCase):
                           "physical_acceptance_claimed": False,
                           "camera_sources": camera,
                           "controls": {"ego": {"throttle": 0., "brake": 1.}},
-                          "ego": {"position_m": [-3., -4., 0.],
+                          "ego": {"position_m": [-3., ego_y, 0.],
                                   "velocity_mps": [0., 0., 0.],
                                   "heading_deg": 0.,
                                   "bbox_half_extent_m": [2., .9, .7],
                                   "actor_id": 1},
-                          "companion": None})
+                          "companion": ({"position_m": [-3., companion_y, 0.],
+                                         "velocity_mps": [0., 0., 0.],
+                                         "heading_deg": 0.,
+                                         "bbox_half_extent_m": [2., .9, .7],
+                                         "actor_id": 2}
+                                        if companion_slot is not None else None)})
             mapping.append({"video_frame": index, "carla_frame": frame,
                             "native_frame": frame, "time_s": time_s,
                             "camera_source_sha256": hashes})

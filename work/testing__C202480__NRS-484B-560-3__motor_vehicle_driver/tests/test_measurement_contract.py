@@ -23,9 +23,9 @@ class MeasurementContractTests(unittest.TestCase):
 
         plan = json.loads((HERE / "case-plan.json").read_text())
         contract = json.loads((HERE / "measurement-contract.json").read_text())
-        case_id = plan["cases"][0]["case_id"]
-        validate(contract, plan["requirement_dispositions"],
-                 (HERE / "saved_measurement.py").read_text(), case_id)
+        for case in plan["cases"]:
+            validate(contract, plan["requirement_dispositions"],
+                     (HERE / "saved_measurement.py").read_text(), case["case_id"])
         fixture = saved_fixture.SavedMeasurementTests()
         fixture.setUp()
         self.addCleanup(fixture.doCleanups)
