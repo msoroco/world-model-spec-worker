@@ -12,6 +12,10 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
 INPUT = ROOT / "inputs" / ASSIGNMENT / "review-context" / "review.json"
 KINDS = ("nearest_view_response", "nearest_view_uninterrupted")
+DIAGNOSTIC_GEOMETRY = {"ego_route_origin_xy_m": [-10, 5], "ego_route_axis_xy": [1, 0],
+                       "through_route_origin_xy_m": [5, -10], "through_route_axis_xy": [0, 1],
+                       "ego_entry_station_m": 10,
+                       "intersection_polygon_xy_m": [[0, 0], [10, 0], [10, 10], [0, 10]]}
 
 RUNNER = '''"""Exact nearest-view diagnostic Native entrypoint."""
 import argparse
@@ -19,6 +23,7 @@ import hashlib
 import json
 from pathlib import Path
 from yield_control import control
+from source_tick_capture import validate_geometry
 
 
 def check():
@@ -36,6 +41,7 @@ def check():
         raise ValueError("selected case and scene differ")
     if scene["source_kind"] != "diagnostic_review_context":
         raise ValueError("unexpected source kind in diagnostic bundle")
+    validate_geometry(scene["capture_geometry"])
     control(scene["kind"], {"ego_speed_mps": 3.0, "distance_to_view_point_m": 5.0,
                            "through_vehicle_in_conflict_interval": True,
                            "yield_sign_governs_approach": True,
@@ -108,13 +114,16 @@ def build():
             raise ValueError("exact case missing from frozen branch plan")
         scene = {"case_id": case_id, "kind": kind,
                  "source_kind": "diagnostic_review_context", "review_source": "review-context.json",
-                 "review_sha256": source_hash, "site_source_status": "missing_genuine_native_site_packet"}
+                 "review_sha256": source_hash, "site_source_status": "missing_genuine_native_site_packet",
+                 "capture_geometry": DIAGNOSTIC_GEOMETRY}
         config = {"law_id": "NRS-484B-257-1", "cell_id": "C158208",
                   "actor": "motor_vehicle_driver", "selected_case_id": case_id,
                   "rate_hz": 20, "duration_s": 20,
                   "case": {"kind": kind, "comparison_variable": "observed_conflict_response"},
                   "required_atoms": [], "source_packets": [], "cameras": ["front", "rear", "left", "right"]}
         files = {"runner.py": RUNNER, "yield_control.py": (HERE / "yield_control.py").read_text(),
+                 "source_tick_capture.py": (HERE / "source_tick_capture.py").read_text(),
+                 "physical_completion.py": (HERE / "physical_completion.py").read_text(),
                  "scene.json": json.dumps(scene, indent=2) + "\n",
                  "config.json": json.dumps(config, indent=2) + "\n",
                  "review-context.json": frozen,

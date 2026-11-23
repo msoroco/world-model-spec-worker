@@ -874,3 +874,11 @@ The next incomplete batch assignment, `testing__C158208__NRS-484B-257-1__motor_v
 Final strict batch check exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c158208-current.log`). A non-Git scan checked 3,840 returned UTF-8 files under `work/`: largest 1,628,889 bytes, zero size, whitespace or conflict-marker issues. C158208 remains partial. No Git command was run.
 
 C158208 construction update: paired CARLA-lazy nearest-view response/uninterrupted controller added with an isolated observed-conflict response variable. Eleven CPU tests pass (`cpu-tests.log` SHA-256 59da31a5c235428306260dedf0279e5017b3d0ad21f23ffa379e16dec7efb18b); exact static check passes. The strict full-batch rerun still fails because partial packages remain. Source-bound Native bundles and original delivery proofs remain worker-owned. No Git command was run.
+
+## C158208 pinned offline construction checkpoint, 2026-11-22
+
+Two exact nearest-view response/uninterrupted diagnostic bundles now embed the controller, selected config, source-hashed frozen review context and tests. Pinned `runtime.py offline` passes for both, each with three embedded tests; the eleven assignment tests, CPU preflight and exact static check pass. `result.json` records five hashed proofs. Native capture is refused until a genuine site packet replaces diagnostic context. The strict full-batch gate still fails on partial/missing packages; C158208 remains partial. No Git command was run.
+
+## C158208 original-tick CPU continuation, 2026-11-22
+
+Added `source_tick_capture.py` to the exact response/uninterrupted diagnostic constructions. It derives and seals frame-contiguous 20-Hz body, speed, visibility and through-vehicle observations, and rederives saved samples from the original ticks. Eighteen assignment tests, two fresh pinned offline bundles, CPU preflight and exact static gate pass; current hashes are in C158208 `result.json`. The strict full-batch gate still fails on partial/missing packages, so C158208 remains partial pending genuine site bindings, Native capture, compatibility and delivery proofs. No Git command was run.
