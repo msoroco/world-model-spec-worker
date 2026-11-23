@@ -23,7 +23,7 @@ from worker_exchange.runtime_cli import execution_env  # noqa: E402
 
 FRAMES = 900
 CASE = 'testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before'
-SOURCE = REPO / '.runtime-work/c331230-primary-compat-v2'
+SOURCE = REPO / '.runtime-work/c331230-camera-proof/marked_crosswalk_stop_before-primary-compat-v2'
 
 
 def write(path, value):

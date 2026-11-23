@@ -7,7 +7,7 @@
       "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "3718c766d71d32290c6db296f9b96aec519ff07279c0615565191c6c9f020740",
+      "construction_sha256": "6197f72cdc626ee6d1984faefaba9c0acc0d7a2f650a3b454f0d7581af67f03e",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native stop position can overshoot the crosswalk"
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "cases/marked_crosswalk_stop_before_fallback1.json",
-          "construction_sha256": "4398912670153a6223b7f26a08beca1f05065f40dc5ec4dd5dc413773d583011",
+          "construction_sha256": "b42fed53e3cc189ba95102aead820cc6faec860d4f687cc418697083f86a2fd2",
           "trigger": {
             "source": "stop_history.jsonl",
             "metric": "pre-crosswalk zero-speed samples during commanded hold",
@@ -26,31 +26,32 @@
             "brake_hold_frames"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback1 --output .runtime-work/c331230-marked-fallback1-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback1 --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback1-offline",
             "exit_code": 0,
             "log": "marked-fallback1-offline.log",
-            "log_sha256": "6065da70451459b7f5dcd935b8cfb35d93623e2edb356c7969e961023ece6960",
-            "construction_sha256": "4398912670153a6223b7f26a08beca1f05065f40dc5ec4dd5dc413773d583011"
+            "log_sha256": "8f2979637dceec15951737a26d8bd509e596d402648e191452220051467e75d2",
+            "construction_sha256": "b42fed53e3cc189ba95102aead820cc6faec860d4f687cc418697083f86a2fd2"
           },
           "compatibility": {
             "receipt": "marked-fallback1-compatibility.json",
-            "sha256": "925c1695d51ed8c9d9b581a0e878607d9f61d0a0b9669826cd8c1177afe97bdd",
+            "sha256": "8112544d7c13178cf83bee93f31d15e1fd7c6f130abb610cee77798333b79491",
             "log": "marked-fallback1-analysis.log",
             "negative_log": "marked-fallback1-negative.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback1 --output .runtime-work/c331230-compat-current-sweep/marked_crosswalk_stop_before-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback1 --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback1-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           },
           "post_capture": {
             "recorded_only": true,
-            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_before-fallback1 --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_before-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback1-compat --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback1-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "marked-fallback1-saved.json",
-            "test_log_sha256": "f2b48f66e9fb5e2c3d1492aa28170b93a10bd5934371e499765ffefa74431f67",
-            "test_exit_code": 0
+            "test_log_sha256": "1057a1feb4d2ad23b30fab4a2fdb6546899e4c7c910caa99ae34da61e3a8f57b",
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback1-saved/v0001/feedback.json"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/marked_crosswalk_stop_before_fallback2.json",
-          "construction_sha256": "5dfc4498060dd148a85d0ba188decd768ad669c7a92af43ea8652af487a6e137",
+          "construction_sha256": "d6258f7dfd3dce0ddc31b179c42ea7fa4a55722ab49b4d4c01daae6ffeec6032",
           "trigger": {
             "source": "reference_corner.mkv and original frame map",
             "metric": "reviewed sign/crosswalk visibility at full halt",
@@ -60,31 +61,32 @@
             "reference_corner_camera_pose"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback2 --output .runtime-work/c331230-marked-fallback2-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback2 --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback2-offline",
             "exit_code": 0,
             "log": "marked-fallback1-offline.log",
-            "log_sha256": "6065da70451459b7f5dcd935b8cfb35d93623e2edb356c7969e961023ece6960",
-            "construction_sha256": "5dfc4498060dd148a85d0ba188decd768ad669c7a92af43ea8652af487a6e137"
+            "log_sha256": "8f2979637dceec15951737a26d8bd509e596d402648e191452220051467e75d2",
+            "construction_sha256": "d6258f7dfd3dce0ddc31b179c42ea7fa4a55722ab49b4d4c01daae6ffeec6032"
           },
           "compatibility": {
             "receipt": "marked-fallback2-compatibility.json",
-            "sha256": "878e275bcca3aa46122c21a09c1ccbb9a26f98bfda5753990a39f3d43cdb177d",
+            "sha256": "f8795ca1798c9aca0b3e8704dccd59d817d2cb93d23f8e4c319e6d1c51c2b3ad",
             "log": "marked-fallback1-analysis.log",
             "negative_log": "marked-fallback2-negative.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback2 --output .runtime-work/c331230-compat-current-sweep/marked_crosswalk_stop_before-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback2 --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback2-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           },
           "post_capture": {
             "recorded_only": true,
-            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_before-fallback2 --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_before-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback2-compat --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback2-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "marked-fallback2-saved.json",
-            "test_log_sha256": "cd3e894c76abc62a70a1bab459870def2724cd936a9caba58e824bbb65de6e90",
-            "test_exit_code": 0
+            "test_log_sha256": "38fda09224076f472be8f965a42f24e8dd9ca8e755a97a1ed7fd7700ee6dc3ec",
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback2-saved/v0001/feedback.json"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/marked_crosswalk_stop_before_fallback3.json",
-          "construction_sha256": "a7aead8a799dac5453238a4e03f19124f9b9d2619a5df74c262b964c7281d3f9",
+          "construction_sha256": "3a623c4bc850ad9ac1d73eb21e0860b7badb7d42a52ea8d1302a7839b34f2719",
           "trigger": {
             "source": "stop_history.jsonl",
             "metric": "first complete-body crosswalk entry frame versus first full halt frame",
@@ -94,25 +96,26 @@
             "ego_spawn_pose_x_m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback3 --output .runtime-work/c331230-marked-fallback3-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback3 --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback3-offline",
             "exit_code": 0,
             "log": "marked-fallback1-offline.log",
-            "log_sha256": "6065da70451459b7f5dcd935b8cfb35d93623e2edb356c7969e961023ece6960",
-            "construction_sha256": "a7aead8a799dac5453238a4e03f19124f9b9d2619a5df74c262b964c7281d3f9"
+            "log_sha256": "8f2979637dceec15951737a26d8bd509e596d402648e191452220051467e75d2",
+            "construction_sha256": "3a623c4bc850ad9ac1d73eb21e0860b7badb7d42a52ea8d1302a7839b34f2719"
           },
           "compatibility": {
             "receipt": "marked-fallback3-compatibility.json",
-            "sha256": "3961a5abf53b5f588c3ce7c587a6a97b600b3fe5d3e3c78c3bc5a7446f3dda7c",
+            "sha256": "7c3f4420aecca9e054303a532d0195025df6dc2e2fd19362d95d2d0726acf2f0",
             "log": "marked-fallback1-analysis.log",
             "negative_log": "marked-fallback3-negative.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback3 --output .runtime-work/c331230-compat-current-sweep/marked_crosswalk_stop_before-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --candidate fallback3 --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
           },
           "post_capture": {
             "recorded_only": true,
-            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_before-fallback3 --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_before-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback3-compat --output .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "marked-fallback3-saved.json",
-            "test_log_sha256": "a72ceb2b8f09b08c13fbdb0c7b01922b428b9e6bb630d1b6a10f45e575bb15ea",
-            "test_exit_code": 0
+            "test_log_sha256": "3604eaf3fbc2a84a2d6b780e4fcac3fc12637bf0d95270ae8314c262b8a25a08",
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-camera-fallback-proof/marked_crosswalk_stop_before-fallback3-saved/v0001/feedback.json"
           }
         }
       ],
@@ -125,11 +128,11 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --output .runtime-work/c331230-offline-current/final-marked_crosswalk_stop_before",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --output .runtime-work/c331230-camera-proof/marked_crosswalk_stop_before-primary-offline",
         "exit_code": 0,
-        "construction_sha256": "3718c766d71d32290c6db296f9b96aec519ff07279c0615565191c6c9f020740",
+        "construction_sha256": "6197f72cdc626ee6d1984faefaba9c0acc0d7a2f650a3b454f0d7581af67f03e",
         "log": "primary-offline-v1.log",
-        "log_sha256": "65f762260c6168b65379de081339577c5c41e40ab567366fc171b3f939689814"
+        "log_sha256": "63cbb2f43c4485988646a7350807f872aa4d063f7d00c7fdb314a8ed07366707"
       },
       "negative": {
         "log": "primary-negative-v1.log"
@@ -149,13 +152,13 @@
       "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/diagnostic-recipe.json",
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-primary-compat-v2 --output .runtime-work/c331230-primary-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c331230-primary-saved-v2/v0001/feedback.json",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --attempt .runtime-work/c331230-camera-proof/marked_crosswalk_stop_before-primary-compat-v2 --output .runtime-work/c331230-camera-proof/marked_crosswalk_stop_before-primary-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c331230-camera-proof/marked_crosswalk_stop_before-primary-saved-v2/v0001/feedback.json",
         "test_log": "primary-process-saved-v2.json",
-        "test_log_sha256": "b959b499a3fb632acf666bd8b001980bad2d8542c267231a97196d98242cc841",
+        "test_log_sha256": "3d19dfab4362098f7c3f06be7ed074caa95b27695f7e5ce700cb83f55339c0a8",
         "test_exit_code": 0,
         "processing_receipt": "primary-process-saved-v2.json",
-        "processing_sha256": "b959b499a3fb632acf666bd8b001980bad2d8542c267231a97196d98242cc841"
+        "processing_sha256": "3d19dfab4362098f7c3f06be7ed074caa95b27695f7e5ce700cb83f55339c0a8"
       },
       "delivery_acceptance": {
         "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
@@ -173,11 +176,11 @@
         ],
         "script": "delivery_audit.py",
         "script_sha256": "4bdbbffedf0699edcef39a6bf625e83a493f60519e0898aa6dc06d31a18e1cd0",
-        "command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --diagnostic --attempt .runtime-work/c331230-full-duration-all-v5/marked_crosswalk_stop_before",
+        "command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --diagnostic --attempt .runtime-work/c331230-camera-full/marked_crosswalk_stop_before",
         "test_exit_code": 0,
         "test_log": "marked-before-delivery-positive.log",
-        "test_log_sha256": "d092bd8bc58aa7f1e068f5f98f805cf8ff4204dbe492450bea7673fd9d7604ae",
-        "negative_command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --diagnostic --attempt .runtime-work/c331230-full-duration-all-v5/marked_crosswalk_stop_before/negative-motion",
+        "test_log_sha256": "17e10a2ef6d3294372972a001da70bf9dcc29b40f1f7fff79c1d196a4d181570",
+        "negative_command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --diagnostic --attempt .runtime-work/c331230-camera-full/marked_crosswalk_stop_before/negative-motion",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing or changed original source: stop_history.jsonl",
         "negative_log": "marked-before-delivery-negative.log",
@@ -186,7 +189,77 @@
       },
       "physical_preparation": {
         "receipt": "physical-proofs/marked_crosswalk_stop_before/physical-receipt.json",
-        "sha256": "18926c9a2d2f16630760792f0c60ab58f4b108b26acd4825baee2f5d0749432e"
+        "sha256": "7096328bdd854b2d16408c50d67c44b6429f0f7d9e13d485ac2e58e9d51243a4"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility-v2.json",
+        "sha256": "704cc1b2437da6da6ae6a082218b64c5a944b9f525252dc0219e3687ac05e08f",
+        "log": "marked-fallback1-analysis.log",
+        "negative_log": "primary-negative-v1.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --output .runtime-work/c331230-camera-proof/marked_crosswalk_stop_before-primary-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "acquisition": {
+        "halt_timing": {
+          "entrypoint": "runner.py",
+          "method": "Record original tick, speed, and complete body vertices; derive timing from retained stop history",
+          "evidence": [
+            "stop_history.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego transform and complete body vertices on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego velocity magnitude on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native Tesla Model 3 blueprint and spawned ego actor identity; capture synchronized actor evidence",
+          "evidence": [
+            "capture/evidence.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "Native ego actor identity and approach lane tied to governing stop sign; capture synchronized actor evidence",
+          "evidence": [
+            "approach_context.json",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Check Native map crosswalk against site polygon, then record source geometry and body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Check Native approach waypoint and record sourced junction polygon plus body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        }
       }
     },
     {
@@ -230,7 +303,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-current-replay/no_crosswalk_marked_stop_line-fallback1 --output .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "stopline-fallback1-saved.json",
             "test_log_sha256": "469a6c06d8a310e846be6f9bfee4eb4efcc7f477cfcf1e881591c8a4f6c38be2",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-fallback1/v0001/feedback.json"
           }
         },
         {
@@ -264,7 +338,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-current-replay/no_crosswalk_marked_stop_line-fallback2 --output .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "stopline-fallback2-saved.json",
             "test_log_sha256": "33b901e7d84068506777747c3878a0e61014a3db8d7fa270f9bd085070060d69",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-fallback2/v0001/feedback.json"
           }
         },
         {
@@ -298,7 +373,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-current-replay/no_crosswalk_marked_stop_line-fallback3 --output .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "stopline-fallback3-saved.json",
             "test_log_sha256": "7c7ba02bac9aac79db70f69b49720515573e0435443f32764657580561391154",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-fallback3/v0001/feedback.json"
           }
         }
       ],
@@ -314,13 +390,13 @@
       "measurement_contract": "cases/no_crosswalk_marked_stop_line/measurement-contract.json",
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-stop-line-compat-v5 --output .runtime-work/c331230-stop-line-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c331230-stop-line-saved-v1/v0001/feedback.json",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-current-replay/no_crosswalk_marked_stop_line-primary --output .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_marked_stop_line-primary/v0001/feedback.json",
         "test_log": "stop-line-process-saved.json",
-        "test_log_sha256": "3812242f74e049181c90e2234522640872939b238d9cc4ffed8ab8d427aca4d6",
+        "test_log_sha256": "06f960fbebd66a2758ee898510d6e51b1537de8a2d5ad93f20dc74cd39be16dc",
         "test_exit_code": 0,
         "processing_receipt": "stop-line-process-saved.json",
-        "processing_sha256": "3812242f74e049181c90e2234522640872939b238d9cc4ffed8ab8d427aca4d6"
+        "processing_sha256": "06f960fbebd66a2758ee898510d6e51b1537de8a2d5ad93f20dc74cd39be16dc"
       },
       "delivery_acceptance": {
         "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line",
@@ -354,11 +430,84 @@
         "exit_code": 0,
         "construction_sha256": "60a9e671903e0387eed5564ea9fa6cff1475a8b5a41bdaf90d505fd0663f1fcf",
         "log": "primary-offline-v1.log",
-        "log_sha256": "65f762260c6168b65379de081339577c5c41e40ab567366fc171b3f939689814"
+        "log_sha256": "63cbb2f43c4485988646a7350807f872aa4d063f7d00c7fdb314a8ed07366707"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/no_crosswalk_marked_stop_line/physical-receipt.json",
-        "sha256": "11da350bdefc354da27fe584340324aa4e641841074e29676e36c8bf2a848600"
+        "sha256": "4171c13c034f624fb00c20676dac49caacee622ba24782d5b69b3ac26172e639"
+      },
+      "compatibility": {
+        "receipt": "stopline-primary-compatibility.json",
+        "sha256": "0267845f9051305f6a35d3ecb801863f475dfe5f102f3f53c1672df243cce0dd",
+        "log": "stopline-fallback1-analysis.log",
+        "negative_log": "primary-negative-no_crosswalk_marked_stop_line.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --output .runtime-work/c331230-current-replay/no_crosswalk_marked_stop_line-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative-no_crosswalk_marked_stop_line.log"
+      },
+      "acquisition": {
+        "halt_timing": {
+          "entrypoint": "runner.py",
+          "method": "Record original tick, speed, and complete body vertices; derive timing from retained stop history",
+          "evidence": [
+            "stop_history.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego transform and complete body vertices on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego velocity magnitude on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native Tesla Model 3 blueprint and spawned ego actor identity; capture synchronized actor evidence",
+          "evidence": [
+            "capture/evidence.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "Native ego actor identity and approach lane tied to governing stop sign; capture synchronized actor evidence",
+          "evidence": [
+            "approach_context.json",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Check Native approach waypoint and record sourced junction polygon plus body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        },
+        "st.stop_line": {
+          "entrypoint": "runner.py",
+          "method": "Validate authored site marked stop line and record its source geometry with approach position",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        }
       }
     },
     {
@@ -402,7 +551,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --attempt .runtime-work/c331230-current-replay/no_crosswalk_no_line_first_view-fallback1 --output .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "firstview-fallback1-saved.json",
             "test_log_sha256": "f3bfb44e6ae3b72548e704ca461c09cbc7ff31747448bfd811e57c75f0b7dcca",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-fallback1/v0001/feedback.json"
           }
         },
         {
@@ -436,7 +586,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --attempt .runtime-work/c331230-current-replay/no_crosswalk_no_line_first_view-fallback2 --output .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "firstview-fallback2-saved.json",
             "test_log_sha256": "065506d28f32fde58b1596f551bb3bb177ea107d4b1c90565784a5c8c801d06a",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-fallback2/v0001/feedback.json"
           }
         },
         {
@@ -470,7 +621,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --attempt .runtime-work/c331230-current-replay/no_crosswalk_no_line_first_view-fallback3 --output .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "firstview-fallback3-saved.json",
             "test_log_sha256": "3044b9452316fb0ca589889181acb289b5adb1721ef2a866b091b38592607ca4",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-fallback3/v0001/feedback.json"
           }
         }
       ],
@@ -486,13 +638,13 @@
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --attempt .runtime-work/c331230-first-view-compat-v4 --output .runtime-work/c331230-first-view-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c331230-first-view-saved-v1/v0001/feedback.json",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --attempt .runtime-work/c331230-current-replay/no_crosswalk_no_line_first_view-primary --output .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c331230-current-saved/no_crosswalk_no_line_first_view-primary/v0001/feedback.json",
         "test_log": "first-view-saved-only.log",
-        "test_log_sha256": "3c420f0e34d236d4e577699ed23af2d5a69a8835d02a8bcba0620ca82a313ab4",
+        "test_log_sha256": "73370178b98717d7457ce46fcc37851b3c2623033aba5272d7bb9543347aafa5",
         "test_exit_code": 0,
         "processing_receipt": "first-view-saved-only.log",
-        "processing_sha256": "3c420f0e34d236d4e577699ed23af2d5a69a8835d02a8bcba0620ca82a313ab4"
+        "processing_sha256": "73370178b98717d7457ce46fcc37851b3c2623033aba5272d7bb9543347aafa5"
       },
       "delivery_acceptance": {
         "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view",
@@ -526,11 +678,75 @@
         "exit_code": 0,
         "construction_sha256": "ca1c572417b5fb3dabfbd6c864c4351d730ce8fb1d1da4ea1bfe9cf96a74ea5e",
         "log": "primary-offline-v1.log",
-        "log_sha256": "65f762260c6168b65379de081339577c5c41e40ab567366fc171b3f939689814"
+        "log_sha256": "63cbb2f43c4485988646a7350807f872aa4d063f7d00c7fdb314a8ed07366707"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/no_crosswalk_no_line_first_view/physical-receipt.json",
-        "sha256": "599d8ceb8a42283c414982d2e505bcc500fcfceba029c9eca92525d51b6100e5"
+        "sha256": "d3522450c83dd07d5ea67f2c9a8dfd3f7b08bca69ad1be0972ff4bd805ce01e5"
+      },
+      "compatibility": {
+        "receipt": "firstview-primary-compatibility.json",
+        "sha256": "b5e6c25209410449803ad8649e897d3c794676e6b4cf84c8a4b09bd42a0a7457",
+        "log": "firstview-fallback1-analysis.log",
+        "negative_log": "primary-negative-no_crosswalk_no_line_first_view.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --output .runtime-work/c331230-current-replay/no_crosswalk_no_line_first_view-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative-no_crosswalk_no_line_first_view.log"
+      },
+      "acquisition": {
+        "halt_timing": {
+          "entrypoint": "runner.py",
+          "method": "Record original tick, speed, and complete body vertices; derive timing from retained stop history",
+          "evidence": [
+            "stop_history.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego transform and complete body vertices on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego velocity magnitude on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native Tesla Model 3 blueprint and spawned ego actor identity; capture synchronized actor evidence",
+          "evidence": [
+            "capture/evidence.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "Native ego actor identity and approach lane tied to governing stop sign; capture synchronized actor evidence",
+          "evidence": [
+            "approach_context.json",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Check Native approach waypoint and record sourced junction polygon plus body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        }
       }
     },
     {
@@ -574,7 +790,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_inside-fallback1 --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "inside-fallback1-saved.json",
             "test_log_sha256": "d5ac13a885a93cbf317596b44117c9831e6c837d59f0236e4da4b201f20eada5",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-fallback1/v0001/feedback.json"
           }
         },
         {
@@ -608,7 +825,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_inside-fallback2 --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "inside-fallback2-saved.json",
             "test_log_sha256": "01fcdd12bb617ee5beff382d2224b9063c72d56396432fdfb777549dfa46a051",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-fallback2/v0001/feedback.json"
           }
         },
         {
@@ -642,7 +860,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_inside-fallback3 --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "inside-fallback3-saved.json",
             "test_log_sha256": "da949e1899c154c81f4e8efa4c2676c2322b6581cbdf52dbd78d9ecde617bd2e",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-fallback3/v0001/feedback.json"
           }
         }
       ],
@@ -658,13 +877,13 @@
       "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/cases/marked_crosswalk_stop_inside/diagnostic-recipe.json",
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside --attempt .runtime-work/c331230-inside-compat-v1 --output .runtime-work/c331230-inside-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c331230-inside-saved-v1/v0001/feedback.json",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside --attempt .runtime-work/c331230-current-replay/marked_crosswalk_stop_inside-primary --output .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c331230-current-saved/marked_crosswalk_stop_inside-primary/v0001/feedback.json",
         "test_log": "inside-process-saved.json",
-        "test_log_sha256": "f508391353df2b60bbcdce279132be2f784b0d56df65cb88cb760aeeb46e8a49",
+        "test_log_sha256": "67ad61a2abe4422717c43a6a821393b3c5f2bfc05eb0346627675474b8c81e59",
         "test_exit_code": 0,
         "processing_receipt": "inside-process-saved.json",
-        "processing_sha256": "f508391353df2b60bbcdce279132be2f784b0d56df65cb88cb760aeeb46e8a49"
+        "processing_sha256": "67ad61a2abe4422717c43a6a821393b3c5f2bfc05eb0346627675474b8c81e59"
       },
       "delivery_acceptance": {
         "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside",
@@ -698,11 +917,84 @@
         "exit_code": 0,
         "construction_sha256": "ced6f6ba5fe35a7b4e86365f4c064152a7f32f8895b419cbd4d86663125f2704",
         "log": "primary-offline-v1.log",
-        "log_sha256": "65f762260c6168b65379de081339577c5c41e40ab567366fc171b3f939689814"
+        "log_sha256": "63cbb2f43c4485988646a7350807f872aa4d063f7d00c7fdb314a8ed07366707"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/marked_crosswalk_stop_inside/physical-receipt.json",
-        "sha256": "1bbf45acb5a81a5bcb70eaeab941cb8b80320a8b7b47cace7afef6ec08d481c1"
+        "sha256": "0b3bf47ea5d9af294cd4b666df597b4cce7d147508e75bac366a733bd4c8e71c"
+      },
+      "compatibility": {
+        "receipt": "inside-compatibility.json",
+        "sha256": "e991d80c7df928e500a1e262df33469702e43d2a7c47f8e529357ec130bb7106",
+        "log": "marked-fallback1-analysis.log",
+        "negative_log": "primary-negative-marked_crosswalk_stop_inside.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside --output .runtime-work/c331230-current-replay/marked_crosswalk_stop_inside-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative-marked_crosswalk_stop_inside.log"
+      },
+      "acquisition": {
+        "halt_timing": {
+          "entrypoint": "runner.py",
+          "method": "Record original tick, speed, and complete body vertices; derive timing from retained stop history",
+          "evidence": [
+            "stop_history.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego transform and complete body vertices on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego velocity magnitude on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native Tesla Model 3 blueprint and spawned ego actor identity; capture synchronized actor evidence",
+          "evidence": [
+            "capture/evidence.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "Native ego actor identity and approach lane tied to governing stop sign; capture synchronized actor evidence",
+          "evidence": [
+            "approach_context.json",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Check Native map crosswalk against site polygon, then record source geometry and body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Check Native approach waypoint and record sourced junction polygon plus body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        }
       }
     },
     {
@@ -746,7 +1038,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line --attempt .runtime-work/c331230-current-replay/crosswalk_and_stop_line-fallback1 --output .runtime-work/c331230-current-saved/crosswalk_and_stop_line-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "crossline-fallback1-saved.json",
             "test_log_sha256": "b3038e1822b4d7e1caf77ded94c2b39946578780f2b04aa66be933b0bcf5ac18",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/crosswalk_and_stop_line-fallback1/v0001/feedback.json"
           }
         },
         {
@@ -780,7 +1073,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line --attempt .runtime-work/c331230-current-replay/crosswalk_and_stop_line-fallback2 --output .runtime-work/c331230-current-saved/crosswalk_and_stop_line-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "crossline-fallback2-saved.json",
             "test_log_sha256": "806ec4d84253bbfcc01dea8717badb2e9a64a3df62776c991e049e8b8b603784",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/crosswalk_and_stop_line-fallback2/v0001/feedback.json"
           }
         },
         {
@@ -814,7 +1108,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line --attempt .runtime-work/c331230-current-replay/crosswalk_and_stop_line-fallback3 --output .runtime-work/c331230-current-saved/crosswalk_and_stop_line-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "crossline-fallback3-saved.json",
             "test_log_sha256": "7f85f3353962372413387a3e04bca1ee379aeacbd3844c1400dd97312270320f",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/crosswalk_and_stop_line-fallback3/v0001/feedback.json"
           }
         }
       ],
@@ -830,13 +1125,13 @@
       "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/cases/crosswalk_and_stop_line/diagnostic-recipe.json",
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line --attempt .runtime-work/c331230-precedence-compat-v1 --output .runtime-work/c331230-precedence-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c331230-precedence-saved-v1/v0001/feedback.json",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line --attempt .runtime-work/c331230-current-replay/crosswalk_and_stop_line-primary --output .runtime-work/c331230-current-saved/crosswalk_and_stop_line-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c331230-current-saved/crosswalk_and_stop_line-primary/v0001/feedback.json",
         "test_log": "precedence-process-saved.json",
-        "test_log_sha256": "c9161720846246b916407be0f7edbb74f794658cb9616cbafef799e588d60139",
+        "test_log_sha256": "c36820656d5375e175a5cb3d2e3fe5f3244080e675dfba3056599ce93936193e",
         "test_exit_code": 0,
         "processing_receipt": "precedence-process-saved.json",
-        "processing_sha256": "c9161720846246b916407be0f7edbb74f794658cb9616cbafef799e588d60139"
+        "processing_sha256": "c36820656d5375e175a5cb3d2e3fe5f3244080e675dfba3056599ce93936193e"
       },
       "delivery_acceptance": {
         "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line",
@@ -870,11 +1165,93 @@
         "exit_code": 0,
         "construction_sha256": "36aad863b7274009efe201eeccd20e98d44c8c75dabb43e4418a79dc5f16bb2a",
         "log": "primary-offline-v1.log",
-        "log_sha256": "65f762260c6168b65379de081339577c5c41e40ab567366fc171b3f939689814"
+        "log_sha256": "63cbb2f43c4485988646a7350807f872aa4d063f7d00c7fdb314a8ed07366707"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/crosswalk_and_stop_line/physical-receipt.json",
-        "sha256": "2bb2268d4650224904c13ee4c97ed78c3b27cfcc527ec62f5f0603b7b5b5d05b"
+        "sha256": "1fe089fbcc68f5c40f7c9e0bc543610a4958b39733a23dee68eefd11de7d882b"
+      },
+      "compatibility": {
+        "receipt": "precedence-compatibility.json",
+        "sha256": "956f2128601a78799c86b03375492b16fa697959fb03e40c5677eef3c63362c7",
+        "log": "marked-fallback1-analysis.log",
+        "negative_log": "primary-negative-crosswalk_and_stop_line.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line --output .runtime-work/c331230-current-replay/crosswalk_and_stop_line-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative-crosswalk_and_stop_line.log"
+      },
+      "acquisition": {
+        "halt_timing": {
+          "entrypoint": "runner.py",
+          "method": "Record original tick, speed, and complete body vertices; derive timing from retained stop history",
+          "evidence": [
+            "stop_history.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego transform and complete body vertices on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego velocity magnitude on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native Tesla Model 3 blueprint and spawned ego actor identity; capture synchronized actor evidence",
+          "evidence": [
+            "capture/evidence.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "Native ego actor identity and approach lane tied to governing stop sign; capture synchronized actor evidence",
+          "evidence": [
+            "approach_context.json",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Check Native map crosswalk against site polygon, then record source geometry and body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Check Native approach waypoint and record sourced junction polygon plus body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        },
+        "st.stop_line": {
+          "entrypoint": "runner.py",
+          "method": "Validate authored site marked stop line and record its source geometry with approach position",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        }
       }
     },
     {
@@ -918,7 +1295,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/unmarked_crosswalk_stop_before-fallback1 --output .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "unmarked-fallback1-saved.json",
             "test_log_sha256": "e0466ffd92a3d2d2b9b73e17b55b3dde46f4f36e887259dc93e726dec74bd727",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-fallback1/v0001/feedback.json"
           }
         },
         {
@@ -952,7 +1330,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/unmarked_crosswalk_stop_before-fallback2 --output .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "unmarked-fallback2-saved.json",
             "test_log_sha256": "35cd3a5400f4959114997ffa621748922d05b6b83d2b8a47b086e0216416231c",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-fallback2/v0001/feedback.json"
           }
         },
         {
@@ -986,7 +1365,8 @@
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/unmarked_crosswalk_stop_before-fallback3 --output .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "unmarked-fallback3-saved.json",
             "test_log_sha256": "9256a1fda147a29e417f37bdc83cd497dee9af76619e903940c6a69415735560",
-            "test_exit_code": 0
+            "test_exit_code": 0,
+            "feedback_command": "cat .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-fallback3/v0001/feedback.json"
           }
         }
       ],
@@ -1002,13 +1382,13 @@
       "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/cases/unmarked_crosswalk_stop_before/diagnostic-recipe.json",
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before --attempt .runtime-work/c331230-unmarked-compat-v4 --output .runtime-work/c331230-unmarked-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c331230-unmarked-saved-v2/v0001/feedback.json",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before --attempt .runtime-work/c331230-current-replay/unmarked_crosswalk_stop_before-primary --output .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c331230-current-saved/unmarked_crosswalk_stop_before-primary/v0001/feedback.json",
         "test_log": "unmarked-process-saved.json",
-        "test_log_sha256": "4ca81c50d5c3f27facc094903eb125aafb477a8f46d84d50e1559188e0445642",
+        "test_log_sha256": "11e1b03be16821003876f4fbf3a0da5880dad9857b6f43bcd81a9e3028df308c",
         "test_exit_code": 0,
         "processing_receipt": "unmarked-process-saved.json",
-        "processing_sha256": "4ca81c50d5c3f27facc094903eb125aafb477a8f46d84d50e1559188e0445642"
+        "processing_sha256": "11e1b03be16821003876f4fbf3a0da5880dad9857b6f43bcd81a9e3028df308c"
       },
       "delivery_acceptance": {
         "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before",
@@ -1042,11 +1422,84 @@
         "exit_code": 0,
         "construction_sha256": "6c10ac321e017815c1fbe404b5b9e3bf71b4432f5d74b49ad484845db5b533f5",
         "log": "primary-offline-v1.log",
-        "log_sha256": "65f762260c6168b65379de081339577c5c41e40ab567366fc171b3f939689814"
+        "log_sha256": "63cbb2f43c4485988646a7350807f872aa4d063f7d00c7fdb314a8ed07366707"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/unmarked_crosswalk_stop_before/physical-receipt.json",
-        "sha256": "e176b655c3eff8b9222279f12d33cc41757181866e540b7cbeaed37b7179ec02"
+        "sha256": "84b306b913a548010f5b1c9c6b35a0064882ac89ea287448f865023e93a416f3"
+      },
+      "compatibility": {
+        "receipt": "unmarked-compatibility.json",
+        "sha256": "b052f44e686f40ea0eef7d76c75c0948ab3659dbde6f3613bd1439b2c35316a0",
+        "log": "marked-fallback1-analysis.log",
+        "negative_log": "primary-negative-unmarked_crosswalk_stop_before.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before --output .runtime-work/c331230-current-replay/unmarked_crosswalk_stop_before-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative-unmarked_crosswalk_stop_before.log"
+      },
+      "acquisition": {
+        "halt_timing": {
+          "entrypoint": "runner.py",
+          "method": "Record original tick, speed, and complete body vertices; derive timing from retained stop history",
+          "evidence": [
+            "stop_history.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego transform and complete body vertices on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Sample Native ego velocity magnitude on each tick",
+          "evidence": [
+            "trace.jsonl",
+            "stop_history.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native Tesla Model 3 blueprint and spawned ego actor identity; capture synchronized actor evidence",
+          "evidence": [
+            "capture/evidence.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "Native ego actor identity and approach lane tied to governing stop sign; capture synchronized actor evidence",
+          "evidence": [
+            "approach_context.json",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Check Native map crosswalk against site polygon, then record source geometry and body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Check Native approach waypoint and record sourced junction polygon plus body crossings",
+          "evidence": [
+            "site.json",
+            "approach_context.json",
+            "stop_history.jsonl"
+          ]
+        }
       }
     }
   ],
