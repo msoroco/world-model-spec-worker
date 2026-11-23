@@ -102,101 +102,193 @@
       "name": "ego_pose",
       "unit": "m,deg",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Native position and heading"
     },
     {
-      "name": "ego_speed",
+      "name": "speed_mps",
       "unit": "m/s",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Native movement"
     },
     {
-      "name": "headlamp_front_visibility",
+      "name": "headlamp_lit",
+      "unit": "boolean",
+      "mandatory": true,
+      "purpose": "Source lamp activation"
+    },
+    {
+      "name": "headlamp_white",
+      "unit": "boolean",
+      "mandatory": true,
+      "purpose": "Source lamp colour"
+    },
+    {
+      "name": "front_visible_ft",
       "unit": "ft",
       "mandatory": true,
-      "purpose": "white headlamp reach around 300 ft plus rear lamp 500 ft and timing"
+      "purpose": "Calibrated white headlamp forward reach"
+    },
+    {
+      "name": "tail_lamp_lit",
+      "unit": "boolean",
+      "mandatory": true,
+      "purpose": "Source rear lamp activation"
+    },
+    {
+      "name": "tail_lamp_red",
+      "unit": "boolean",
+      "mandatory": true,
+      "purpose": "Source rear lamp colour"
+    },
+    {
+      "name": "rear_visible_ft",
+      "unit": "ft",
+      "mandatory": true,
+      "purpose": "Calibrated rear lamp reach"
+    },
+    {
+      "name": "tail_lamp_rear_mounted",
+      "unit": "boolean",
+      "mandatory": true,
+      "purpose": "Source equipment placement"
+    },
+    {
+      "name": "headlamp_count",
+      "unit": "count",
+      "mandatory": true,
+      "purpose": "At least one headlamp"
+    },
+    {
+      "name": "utc_s",
+      "unit": "s",
+      "mandatory": true,
+      "purpose": "Joined clock"
+    },
+    {
+      "name": "sunset_utc_s",
+      "unit": "s",
+      "mandatory": true,
+      "purpose": "Source sunset clock"
+    },
+    {
+      "name": "next_sunrise_utc_s",
+      "unit": "s",
+      "mandatory": true,
+      "purpose": "Source next sunrise clock"
+    },
+    {
+      "name": "discernible_500ft",
+      "unit": "boolean",
+      "mandatory": true,
+      "purpose": "Visibility review at 500 feet"
     }
   ],
   "source_observation_mapping": {
     "ru.motorcycle": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "vehicle_covered",
+        "headlamp_count",
+        "tail_lamp_rear_mounted"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "sig.headlamp": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "headlamp_lit",
+        "headlamp_white",
+        "front_visible_ft"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "sig.position_lamp": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "tail_lamp_lit",
+        "tail_lamp_red",
+        "rear_visible_ft",
+        "tail_lamp_rear_mounted"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "kin.velocity": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "speed_mps"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "drv.civil_night": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "utc_s",
+        "sunset_utc_s",
+        "next_sunrise_utc_s"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "env.civil_time": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "utc_s",
+        "sunset_utc_s",
+        "next_sunrise_utc_s"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "env.visibility": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "discernible_500ft",
+        "front_visible_ft",
+        "rear_visible_ft"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "env.darkness": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "utc_s",
+        "sunset_utc_s",
+        "next_sunrise_utc_s",
+        "discernible_500ft"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     },
     "env.precipitation": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Source contract in native/measure_lighting.py; physical source, calibration and coverage remain unverified",
       "channels": [
-        "headlamp_front_visibility"
+        "discernible_500ft",
+        "visibility_review_source"
       ],
       "source_refs": [
-        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json"
+        "inputs/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",
+        "work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/measure_lighting.py"
       ]
     }
   },

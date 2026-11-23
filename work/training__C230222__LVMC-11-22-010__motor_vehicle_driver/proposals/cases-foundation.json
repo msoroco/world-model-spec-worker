@@ -1,0 +1,91 @@
+{
+  "cell_id": "C230222",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C230222__LVMC-11-22-010__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared operation context anchor only; direct attention evidence is pending.",
+      "variable_assignments": {
+        "driver_attention_to_operation": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "vehicle_operation_context": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined Native motion",
+            "time_window": "full 30 s",
+            "reference_frame": "world",
+            "uncertainty": "source frame and pose fidelity"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined Native motion",
+            "time_window": "full 30 s",
+            "reference_frame": "ego",
+            "uncertainty": "source velocity fidelity"
+          },
+          {
+            "name": "driver_reference_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "synchronized original source camera",
+            "time_window": "full 30 s",
+            "reference_frame": "camera",
+            "uncertainty": "driver visibility and sufficiency need review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "driver_attention_source_review",
+            "unit": "structured",
+            "method": "independent review of original operator and scene evidence; pending"
+          },
+          {
+            "name": "native_driving_context",
+            "unit": "structured",
+            "method": "source-hashed vehicle, route, camera pose and timing; pending"
+          }
+        ],
+        "limitations": [
+          "A scripted simulator vehicle and synthetic camera pixels cannot establish a person's attention.",
+          "The driver and scene review is unperformed; no legal finding is made."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "full time and attention to the operation of the vehicle"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "attention-source-review",
+      "target_law_id": "LVMC-11-22-010",
+      "judgment_refs": [
+        {
+          "phrase": "full time and attention to the operation of the vehicle",
+          "note": "Vehicle kinematics and an unreviewed simulator camera do not establish a human driver's attention; direct original operator and scene evidence is required."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A driver-attention axis cannot be chosen from vehicle motion or an unreviewed camera.",
+      "missing_inputs": [
+        "Original operator-facing evidence tied to the Native vehicle-operation interval",
+        "Independent visibility and attention review before choosing physical coverage axes"
+      ]
+    }
+  ]
+}
