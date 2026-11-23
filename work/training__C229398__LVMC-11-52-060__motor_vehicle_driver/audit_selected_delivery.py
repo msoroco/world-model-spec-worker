@@ -24,27 +24,31 @@ def lines(path):
     return [json.loads(row) for row in path.read_text().splitlines()]
 
 
-def audit(case, corrupt_final_join=False):
+def audit(case, candidate='primary', corrupt_final_join=False):
     group = case['case_id'].rsplit('__', 1)[-1]
-    prefix = 'selected-chain-' + group + '-primary-'
-    attempt = ROOT / '.runtime-work' / ('c229398-selected-chain-' + group + '-primary-compatibility')
+    prefix = 'selected-chain-' + group + '-' + candidate + '-'
+    attempt = ROOT / '.runtime-work' / ('c229398-selected-chain-' + group + '-' + candidate + '-compatibility')
     selected_manifest = PACKAGE / 'execution-manifest.json'
+    selected = case if candidate == 'primary' else next(
+        (item for item in case['candidates'] if item['id'] == candidate), None)
+    if selected is None:
+        raise ValueError('Unknown selected candidate: ' + group + '/' + candidate)
     proof = read(PACKAGE / (prefix + 'proof.json'))
     receipt_path = PACKAGE / (prefix + 'saved.log')
     receipt = read(receipt_path)
     selection = read(attempt / 'candidate-selection.json')
-    if (proof['case_id'] != case['case_id'] or proof['candidate'] != 'primary'
+    if (proof['case_id'] != case['case_id'] or proof['candidate'] != candidate
             or proof['cpu_chain_passed'] is not True
             or proof['selected_manifest_sha256'] != sha(selected_manifest)
             or proof['receipts'][prefix + 'saved.log'] != sha(receipt_path)
             or selection['case_id'] != case['case_id']
-            or selection['candidate_id'] != 'primary'
-            or selection['construction_sha256'] != case['construction_sha256']
+            or selection['candidate_id'] != candidate
+            or selection['construction_sha256'] != selected['construction_sha256']
             or selection['manifest_sha256'] != sha(selected_manifest)
-            or sha(PACKAGE / case['construction']) != case['construction_sha256']):
+            or sha(PACKAGE / selected['construction']) != selected['construction_sha256']):
         raise ValueError('Selected chain identity differs: ' + group)
     if (receipt.get('case_id') != case['case_id']
-            or receipt.get('candidate_id') != 'primary'
+            or receipt.get('candidate_id') != candidate
             or receipt.get('passed') is not True
             or receipt.get('recorded_only') is not True
             or receipt.get('originals_preserved') is not True
@@ -101,7 +105,7 @@ def audit(case, corrupt_final_join=False):
                                 capture_output=True, text=True)
         if decode.returncode or decode.stderr.strip():
             raise ValueError('Full video decode failed: ' + group + '/' + video)
-    return {'case_id': case['case_id'], 'candidate_id': 'primary',
+    return {'case_id': case['case_id'], 'candidate_id': candidate,
             'selected_manifest_sha256': sha(selected_manifest),
             'selected_chain_proof_sha256': sha(PACKAGE / (prefix + 'proof.json')),
             'saved_receipt_sha256': sha(receipt_path),
@@ -116,17 +120,18 @@ def main():
     manifest = read(PACKAGE / 'execution-manifest.json')
     records = []
     for case in manifest['cases']:
-        records.append(audit(case))
-        try:
-            audit(case, corrupt_final_join=True)
-        except ValueError as error:
-            if not str(error).startswith('Source join differs: '):
-                raise
-        else:
-            raise ValueError('Corrupted final frame join was accepted')
+        for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+            records.append(audit(case, candidate))
+            try:
+                audit(case, candidate, corrupt_final_join=True)
+            except ValueError as error:
+                if not str(error).startswith('Source join differs: '):
+                    raise
+            else:
+                raise ValueError('Corrupted final frame join was accepted')
     output = {'format': 'c229398-selected-delivery-audit',
               'selected_manifest_sha256': sha(PACKAGE / 'execution-manifest.json'),
-              'primary_cases': records, 'positive_count': len(records),
+              'selected_candidates': records, 'positive_count': len(records),
               'corrupt_final_frame_rejections': len(records),
               'diagnostic_only': True, 'delivery_ready': False}
     (PACKAGE / 'selected-delivery-audit.json').write_text(json.dumps(output, indent=2) + '\n')
