@@ -13,6 +13,9 @@ from saved import prepare, measure
 
 VIEWS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
          'driver_reference.mkv', 'raw.mkv')
+SOURCES = ('native-map-readback.json', 'native-raw-actors.jsonl',
+           'video_frames.jsonl', 'frame-review.jsonl',
+           'native-capture-report.json')
 
 
 def sha(path):
@@ -30,15 +33,17 @@ def analyze(attempt, output, synthetic_cpu=False):
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     if output.exists() or (attempt / 'result.json').exists():
         raise ValueError('Use a fresh saved analysis directory')
+    map_source = json.loads(required(attempt, 'native-map-readback.json').read_text())
+    expected_kind = 'synthetic_cpu' if synthetic_cpu else 'original_native'
+    if map_source.get('source_kind') != expected_kind:
+        raise ValueError('Native source kind differs from analysis mode')
     if not synthetic_cpu:
         for name in VIEWS:
             required(attempt, name)
         if not (attempt / 'trace.jsonl').is_file():
             raise ValueError('Missing required source: trace.jsonl')
-    map_source = json.loads(required(attempt, 'native-map-readback.json').read_text())
-    expected_kind = 'synthetic_cpu' if synthetic_cpu else 'original_native'
-    if map_source.get('source_kind') != expected_kind:
-        raise ValueError('Native source kind differs from analysis mode')
+    for name in SOURCES:
+        required(attempt, name)
     derived = attempt / 'device-derived'
     receipt = prepare(attempt, attempt, derived, synthetic=synthetic_cpu)
     measured = measure(attempt, derived)
@@ -49,10 +54,7 @@ def analyze(attempt, output, synthetic_cpu=False):
     stop_frames = measured['stopped_before_device_frames']
     crossing_frames = measured['front_body_at_device_station_frames']
     target_matched = stop_frames >= 20 if requested_obey else crossing_frames > 0 and stop_frames == 0
-    source_names = ('native-map-readback.json', 'native-raw-actors.jsonl',
-                    'video_frames.jsonl', 'frame-review.jsonl',
-                    'native-capture-report.json')
-    hashes = {name: sha(required(attempt, name)) for name in source_names}
+    hashes = {name: sha(required(attempt, name)) for name in SOURCES}
     analysis = {
         'format': 'worker-analysis-report', 'case_id': cfg['case_id'],
         'candidate_id': cfg['candidate_id'], 'analysis_complete': True,
@@ -77,7 +79,7 @@ def analyze(attempt, output, synthetic_cpu=False):
                            'method': '600 joined Native body/velocity rows and analytic device station',
                            'tolerance': '20 frames at 20 Hz for authored stop request; no legal threshold',
                            'matched': target_matched, 'physical_cause_confirmed': False,
-                           'cause_evidence': list(source_names)}],
+                           'cause_evidence': list(SOURCES)}],
         'setup_confirmed': False,
         'behavior_attempted': not synthetic_cpu,
         'maneuver_completed': bool(not synthetic_cpu and target_matched),
@@ -91,7 +93,7 @@ def analyze(attempt, output, synthetic_cpu=False):
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': cfg.get('recording_description', {}),
         'recording_evidence': [{'name': name, 'unit': 'source', 'reference': name}
-                               for name in source_names],
+                               for name in SOURCES],
         'realized_observables': {'authored_device_response': {
             'value': analysis['measurements'], 'unit': 'frames',
             'method': 'source-bound body and velocity measurement',

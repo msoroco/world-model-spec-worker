@@ -222,8 +222,9 @@ def execute(bundle, distance, candidate, output, host, port):
         capture = PipelineCapture(client, ego, output, config['case_id'],
                                   visibility=False, required_observations=[])
         start = world.get_snapshot().timestamp.elapsed_seconds
+        from worker_exchange.native_output import FrameMap
         with (output/'native-raw-actors.jsonl').open('x') as observed, \
-             (output/'video_frames.jsonl').open('x') as frame_map:
+             FrameMap(output/'video_frames.jsonl') as frame_map:
             for i, request in enumerate(requests):
                 lookahead = requests[lookahead_index(i, len(requests))]
                 target = lookahead['ego_center_xy_m']
@@ -253,8 +254,7 @@ def execute(bundle, distance, candidate, output, host, port):
                     rgb = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(
                         height, width, 4)[:, :, :3][:, :, ::-1]
                     video[name].stdin.write(rgb.tobytes())
-                frame_map.write(json.dumps({'video_frame': i, 'native_frame': frame,
-                                            'time_s': time_s}, allow_nan=False)+'\n')
+                frame_map.append(frame, time_s)
                 frames += 1
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
@@ -315,17 +315,20 @@ def execute(bundle, distance, candidate, output, host, port):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bundle', type=Path, required=True)
-    parser.add_argument('--distance', type=int, choices=(70, 120, 170), required=True)
-    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'), required=True)
+    parser.add_argument('--bundle', type=Path, default=Path.cwd())
+    parser.add_argument('--distance', type=int, choices=(70, 120, 170))
+    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'))
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
+    identity = json.loads((args.bundle/'config.json').read_text())
+    distance = identity['distance_m'] if args.distance is None else args.distance
+    candidate = identity['candidate_id'] if args.candidate is None else args.candidate
     if args.check:
-        print(json.dumps(check(args.bundle, args.distance, args.candidate)))
+        print(json.dumps(check(args.bundle, distance, candidate)))
     else:
         if not args.output_dir or not args.host or not args.port:
             parser.error('Native capture requires --output-dir, --host and --port')
-        execute(args.bundle, args.distance, args.candidate, args.output_dir, args.host, args.port)
+        execute(args.bundle, distance, candidate, args.output_dir, args.host, args.port)

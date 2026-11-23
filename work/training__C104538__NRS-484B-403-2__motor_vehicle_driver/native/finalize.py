@@ -63,6 +63,64 @@ def _original_joins(root):
                  'video_frames.jsonl','capture/manifest.json')}}
 
 
+def _derive_recording_evidence(root, measured):
+    """Regenerate declared channels from retained sources after frame joins pass."""
+    config=json.loads((root/'config.json').read_text())
+    review=json.loads((root/'sign-review.json').read_text())
+    samples=_rows(root/'native_samples.jsonl')
+    mapping=_rows(root/'video_frames.jsonl')
+    captured=_rows(root/'capture/evidence.jsonl')
+    trace=_rows(root/'trace.jsonl')
+    if not all(len(rows)==600 for rows in (samples,mapping,captured,trace)):
+        raise ValueError('Recording source frame counts differ')
+    hashes={name:_sha(root/name) for name in
+        ('native_samples.jsonl','video_frames.jsonl','capture/evidence.jsonl',
+         'trace.jsonl','sign-review.json','pixel_review.jsonl','approach.mkv',
+         'capture/manifest.json')}
+    required={'dev.regulatory_sign','dev.governs','dev.position','drv.u_turn',
+              'kin.heading','rel.occupies','native_body_pose_control','camera_frame_join'}
+    if {x['name'] for x in config['recording_description']['channels']}!=required:
+        raise ValueError('Recording channel declaration differs')
+    channel_dir=root/'channels';channel_dir.mkdir(exist_ok=True)
+    channels={name:[] for name in required}
+    for index,(sample,frame_map,observed,core) in enumerate(zip(samples,mapping,captured,trace)):
+        frame=sample['native_frame'];time=sample['time_s']
+        if (frame_map['video_frame']!=index or frame_map['native_frame']!=frame
+            or observed['original_frame']!=frame or core['frame']!=frame):
+            raise ValueError('Recording source frame identity differs')
+        values={
+            'dev.regulatory_sign':{'code':review['sign_code'],
+                'original_pixel_reviewed':review.get('reviewed_from_original_pixels') is True},
+            'dev.governs':{'approach_lane_id':review['governed_approach_lane_id'],
+                'region_native_xy_bounds_m':review['governed_native_xy_bounds_m'],
+                'applicable':review['governs_approach']},
+            'dev.position':{'native_xy_m':review.get('sign_native_xy_m'),
+                'position_verified':review.get('sign_native_xy_m') is not None},
+            'drv.u_turn':{'observed':measured['u_turn_within_governed_region_observed'],
+                'reversal_native_frame':measured['reversal_native_frame']},
+            'kin.heading':sample['native_forward_xy'],
+            'rel.occupies':sample['native_body_xy_m'],
+            'native_body_pose_control':{'native_sample':sample,'trace_control':core['control'],
+                'captured_ego':observed['ego']},
+            'camera_frame_join':frame_map}
+        for name,value in values.items():
+            channels[name].append({'time_s':time,'native_frame':frame,
+                'value':value,'source_sha256':hashes})
+    for name,rows in channels.items():
+        with (channel_dir/(name+'.jsonl')).open('w') as stream:
+            for row in rows:
+                stream.write(json.dumps(row,allow_nan=False)+'\n')
+    capture=json.loads((root/'capture/manifest.json').read_text())
+    context={'signed_hill_crest':{'capture_manifest_sha256':hashes['capture/manifest.json'],
+        'source_map_sha256':capture.get('sources',{}).get('road.xodr'),
+        'sign_review_sha256':hashes['sign-review.json'],
+        'official_device_original_pixel_reviewed':review.get('reviewed_from_original_pixels') is True,
+        'sign_native_xy_m':review.get('sign_native_xy_m')}}
+    (root/'context.json').write_text(json.dumps(context,indent=2,allow_nan=False)+'\n')
+    return {'channels':{name:_sha(channel_dir/(name+'.jsonl')) for name in sorted(required)},
+            'context_sha256':_sha(root/'context.json'),'source_hashes':hashes}
+
+
 def _native_result(root, measured, joined):
     from worker_exchange.native_output import validate_result
     config=json.loads((root/'config.json').read_text())
@@ -120,13 +178,15 @@ def finalize(attempt,output):
     value=measure_signed_u_turn(root)
     full=(root/'trace.jsonl').is_file()
     joined=_original_joins(root) if full else None
+    derived=_derive_recording_evidence(root,value) if full else None
     report={'format':'c104538-signed-u-turn-saved-analysis-v1',
             'measurements':{'signed_u_turn':{'method':'measure_signed_u_turn',
                 'value':value,'sources':{
                     name:value['source_hashes'][Path(name).name] for name in
                     ('native_samples.jsonl','video_frames.jsonl','sign-review.json',
                      'pixel_review.jsonl','approach.mkv')}}},
-            'original_joins':joined,'native_executed':False,'accepted':False,
+            'original_joins':joined,'derived_recording_evidence':derived,
+            'native_executed':False,'accepted':False,
             'legal_verdict_claimed':False}
     Path(output).write_text(json.dumps(report,indent=2)+'\n')
     if full:

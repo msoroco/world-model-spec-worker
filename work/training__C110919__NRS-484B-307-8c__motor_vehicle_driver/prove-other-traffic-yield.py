@@ -7,8 +7,8 @@ HERE = Path(__file__).resolve().parent
 
 def main():
     for case in ('probe_a', 'probe_b'):
-        ego = json.loads((HERE / 'native/fixtures' / (case + '-480.json')).read_text())
-        assert len(ego['frames']) == 480
+        ego = json.loads((HERE / 'native/fixtures' / (case + '-600.json')).read_text())
+        assert len(ego['frames']) == 600
         rows = []
         for i, frame in enumerate(ego['frames']):
             rows.append({'frame': i, 'video_frame': frame['video_frame'],
@@ -18,7 +18,7 @@ def main():
         packet = {'source_kind': 'synthetic_cpu', 'case': case, 'actor_id': 204,
                   'scope': 'Other-traffic frame join diagnostic; no original Native actor observed',
                   'frames': rows}
-        path = HERE / 'native/fixtures' / (case + '-other-traffic-480.json')
+        path = HERE / 'native/fixtures' / (case + '-other-traffic-600.json')
         path.write_text(json.dumps(packet, separators=(',', ':')) + '\n')
         print(path)
 

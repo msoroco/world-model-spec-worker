@@ -16,7 +16,7 @@ def audit():
     assert comparison['deliberate_differences']==['two_complete_signal_cycles_waited_before_right_turn']
     pair={}
     for case in ('condition_a','condition_b'):
-        path=NATIVE/'fixtures'/f'{case}-480.json'
+        path=NATIVE/'fixtures'/f'{case}-600.json'
         source=json.loads(path.read_text())
         assert source['case']==case and source['source_kind']=='synthetic_cpu'
         pair[case]={'frames':source['frames'],'measurement':measure.measure(path,measure.sha256(path)),

@@ -46,6 +46,11 @@ def main():
                         '-i', f'color=c={color}:s=64x64:r=20:d=30',
                         '-frames:v', str(FRAMES), '-c:v', 'ffv1',
                         str(SCRATCH / (view + '.mkv'))], check=True, timeout=180)
+    inputs = [part for view in VIEWS for part in ('-i', str(SCRATCH / (view + '.mkv')))]
+    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', *inputs,
+                    '-filter_complex', '[0:v][1:v][2:v][3:v]xstack=inputs=4:layout=0_0|64_0|0_64|64_64[out]',
+                    '-map', '[out]', '-frames:v', str(FRAMES), '-c:v', 'ffv1',
+                    str(SCRATCH / 'raw.mkv')], check=True, timeout=180)
     native = [{'source_kind': 'synthetic_native_sample',
                'video_frame': i, 'native_frame': 2000 + i, 'time_s': i / 20,
                'velocity_mps': [2.0, 0.0, 0.0], 'light_state_observed': 3}
@@ -69,7 +74,7 @@ def main():
     write_rows(trace_path, native)
     write_rows(map_path, mapping)
     write_rows(review_path, review)
-    hashes = {view: sha(SCRATCH / (view + '.mkv')) for view in VIEWS}
+    hashes = {view: sha(SCRATCH / (view + '.mkv')) for view in (*VIEWS, 'raw')}
     hashes[trace_path.name] = sha(trace_path)
     hashes[map_path.name] = sha(map_path)
     context = {'source_kind': 'synthetic_native_sample',
@@ -162,6 +167,17 @@ def main():
                          'source video'))
     damaged_video.write_bytes(original_video)
     context['source_sha256']['approach'] = sha(damaged_video)
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+
+    damaged_raw = SCRATCH / 'raw.mkv'
+    original_raw = damaged_raw.read_bytes()
+    damaged_raw.write_bytes(original_raw[:len(original_raw) // 2])
+    context['source_sha256']['raw'] = sha(damaged_raw)
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+    checks.append(reject('damaged-composed-video', lambda: bind(SCRATCH),
+                         'source video'))
+    damaged_raw.write_bytes(original_raw)
+    context['source_sha256']['raw'] = sha(damaged_raw)
     context_path.write_text(json.dumps(context, indent=2) + '\n')
 
     (SCRATCH / 'approach.mkv').unlink()

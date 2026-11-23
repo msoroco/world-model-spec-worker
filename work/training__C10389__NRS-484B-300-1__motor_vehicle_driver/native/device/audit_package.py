@@ -67,7 +67,9 @@ def audit():
             'capture.py': HERE / 'capture.py',
             'measurement-contract.json': HERE / 'measurement-contract.json',
             'saved.py': HERE / 'saved.py', 'fixture_raw.py': HERE / 'fixture_raw.py',
-            'route_fallbacks.py': HERE / 'route_fallbacks.py'}
+            'route_fallbacks.py': HERE / 'route_fallbacks.py',
+            'verify_media.py': HERE / 'verify_media.py',
+            'finalize.py': HERE / 'finalize.py'}
         if set(entry['file_sha256']) != set(sources):
             raise ValueError('copied file set')
         if any(sha(bundle / name) != sha(source) or

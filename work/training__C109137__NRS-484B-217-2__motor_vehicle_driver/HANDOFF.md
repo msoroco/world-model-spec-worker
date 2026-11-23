@@ -31,3 +31,13 @@ Remaining worker-owned work: run and review original Native evidence; verify sta
 ## 2026-11-23 scoped gate record
 
 `runtime.py preflight` passed (log SHA-256 `2abe257b477fbb2006da285da8135f593890ff7e260871ec8992abda5b19bce6`). Assignment scoped `--complete` passed (log SHA-256 `9298543d750dd2412edcdacbc1319af7991c5d5dadfdda61a99745b4b127f610`). Assignment scoped strict exited 1 because partial/missing packages remain (log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`).
+
+## 2026-11-23 retained controlled crossing source pair
+
+`native/zone/prove_current_pair.py` retained full 600-frame, 20 Hz synthetic raw actors, frame map and reviewed-frame source under `.runtime-work/c109137-current-pair-sources/` for `probe_1` and `probe_2` primary requests, then ran the source-bound saved processor. Receipt `native/zone/current-pair-source-proof.json` has SHA-256 `ed63c9e45eebf48c9fcb07496194549291110d6f823830fba31260e0e1f19498`. Both probes reproduce the same 172 first stripe frame, adjoining-road entry, crossing-frame count and traffic-speed measurements. `probe_1` has 5.6 seconds of observed indicator lead; `probe_2` has no observed indicator. This is an authored synthetic comparison, not original Native or a legal outcome.
+
+`native/zone/audit_current_pair.py` independently read all 1,200 raw/video/request frame joins, recalculated crossing/adjoining/indicator events, verified retained source hashes, and rejected an altered actor source and a missing actor source for each probe. Audit `native/zone/current-pair-independent-audit.json` SHA-256 `7c36654f47f9ac2d9f3e9abb019da06b355c47cdac82a5fc4a46cffce5119e7b`. The diagnostic fixture has no original camera pixels; the earlier FFV1 encode/decode diagnostic remains separate.
+
+Current CPU preflight passed (log SHA-256 `5929cfc751f06630ee9c7966b7a90a9c6e5ffab5ed7995b42a7efda2cf60ab3e`). Assignment-scoped `--complete` passed (log SHA-256 `9298543d750dd2412edcdacbc1319af7991c5d5dadfdda61a99745b4b127f610`). Scoped strict exited 1 because the package remains partial (log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`).
+
+Next worker-owned step: convert these retained source rows into a current-runtime fixture recipe with live `.adapter.json` graphs and four source videos, add a construction `finalize.py` and exact measurement contract, then run public `runtime.py compatibility` and `process-saved` for the controlled pair and two target-preserving fallbacks. Independently audit original Native striping, zone designation, adjoining highway, prior signal and traffic impediment; cover the separate left-turn and subsection 3/4 branches. `fallback3` remains an abort and is not a crossing fallback. Status stays `partial`.

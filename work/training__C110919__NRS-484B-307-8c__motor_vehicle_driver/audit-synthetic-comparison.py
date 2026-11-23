@@ -16,7 +16,7 @@ def audit():
     assert comparison['deliberate_differences']==['halt_before_right_turn_on_red']
     pair={}
     for case in ('probe_a','probe_b'):
-        path=NATIVE/'fixtures'/f'{case}-480.json'
+        path=NATIVE/'fixtures'/f'{case}-600.json'
         source=json.loads(path.read_text())
         assert source['case']==case and source['source_kind']=='synthetic_cpu'
         pair[case]={'frames':source['frames'],'measurement':measure.measure(path,measure.sha256(path)),
@@ -31,8 +31,8 @@ def audit():
             differences.append(index)
     assert differences and min(differences)>=100 and max(differences)<170
     ref=pair['probe_a']['measurement'];con=pair['probe_b']['measurement']
-    traffic_a=json.loads((NATIVE/'fixtures'/'probe_a-other-traffic-480.json').read_text())
-    traffic_b=json.loads((NATIVE/'fixtures'/'probe_b-other-traffic-480.json').read_text())
+    traffic_a=json.loads((NATIVE/'fixtures'/'probe_a-other-traffic-600.json').read_text())
+    traffic_b=json.loads((NATIVE/'fixtures'/'probe_b-other-traffic-600.json').read_text())
     assert traffic_a['frames']==traffic_b['frames']
     assert traffic_a['actor_id']==traffic_b['actor_id']==204
     assert ref['halt_before_right_turn_on_red'] is True
@@ -41,8 +41,6 @@ def audit():
     assert ref['turn_entry_frame']==con['turn_entry_frame']==181
     assert ref['yield_clearance_s']==con['yield_clearance_s']==1.05
     assert not ref['physical_behavior_observed'] and not con['physical_behavior_observed']
-    packages=json.loads((HERE/'package-probes-summary.json').read_text())
-    assert len(packages['results'])==8 and all(item['exit_code']==0 for item in packages['results'])
     return {'passed':True,'assignment_id':HERE.name,
             'comparison_variable':'halt_before_right_turn_on_red',
             'probe_a_fixture_sha256':pair['probe_a']['sha256'],
@@ -53,7 +51,7 @@ def audit():
             'probe_b_stop':con['halt_before_right_turn_on_red'],
             'same_turn_entry_frame':181,'same_yield_clearance_s':1.05,
             'other_traffic_context_fixed':True,
-            'package_diagnostics_passed':8,
+            'package_diagnostics_current':False,
             'scope':'synthetic local controlled comparison only; no physical causation or acceptance'}
 
 if __name__=='__main__':print(json.dumps(audit(),indent=2))

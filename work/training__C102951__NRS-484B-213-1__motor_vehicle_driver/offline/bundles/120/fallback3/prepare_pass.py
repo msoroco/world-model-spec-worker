@@ -155,7 +155,7 @@ def prepare(raw_folder, review_path, output, config_path):
         if (row.get('frame') != i or row.get('native_frame') != first_native+i or
                 row.get('source_kind') != source_kind or not number(row.get('time_s')) or
                 abs(row['time_s']-first_time-i/20) > 1e-4 or
-                frame.get('video_frame') != i or frame.get('native_frame') != row['native_frame'] or
+                frame.get('video_frame') != i or frame.get('carla_frame') != row['native_frame'] or frame.get('native_frame') != row['native_frame'] or
                 not number(frame.get('time_s')) or abs(frame['time_s']-row['time_s']) > 1e-4 or
                 sight.get('frame') != i or sight.get('native_frame') != row['native_frame'] or
                 not number(sight.get('time_s')) or abs(sight['time_s']-row['time_s']) > 1e-4 or

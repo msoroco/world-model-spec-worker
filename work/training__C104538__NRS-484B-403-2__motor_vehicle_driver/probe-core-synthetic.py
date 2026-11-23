@@ -74,25 +74,6 @@ def make_attempt(destination,suffix,candidate='primary'):
         'sources':{'road.xodr':sha(destination/'road.xodr'),
                    'trace.jsonl':sha(destination/'trace.jsonl')},
         'synthetic_diagnostic':True}))
-    (destination/'context.json').write_text(json.dumps({'signed_hill_crest':{
-        'native_map_sha256':'a'*64,'official_sign_status':'synthetic_review_only'}}))
-    (destination/'channels').mkdir()
-    config=json.loads((destination/'config.json').read_text())
-    for channel in config['recording_description']['channels']:
-        name=channel['name'];values=[]
-        for index,n in enumerate(samples):
-            if name=='kin.heading':value=n['native_forward_xy']
-            elif name=='rel.occupies':value=n['native_body_xy_m']
-            elif name=='native_body_pose_control':value=n
-            elif name=='camera_frame_join':value=mapping[index]
-            elif name=='drv.u_turn':value={'requested':suffix=='witness_2','observed_from_saved_measurement':None}
-            elif name=='dev.regulatory_sign':value={'code':'no_u_turn','synthetic_review_only':True}
-            elif name=='dev.governs':value={'native_lane_id':-1,'synthetic_review_only':True}
-            elif name=='dev.position':value={'native_xy_m':[-8,4],'synthetic_review_only':True}
-            else:raise ValueError('Unknown channel '+name)
-            values.append({'time_s':n['time_s'],'value':value})
-        write_rows(destination/'channels'/(name+'.jsonl'),values)
-    shutil.copytree(destination/'channels',destination/'source_channels')
     for name in ('overview','approach','sign_reference','driver_reference'):
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=30',
@@ -101,6 +82,8 @@ def make_attempt(destination,suffix,candidate='primary'):
     review=json.loads((source/'sign-review.json').read_text())
     review['video_sha256']=sha(destination/'approach.mkv')
     (destination/'sign-review.json').write_text(json.dumps(review))
+    if (destination/'channels').exists() or (destination/'context.json').exists():
+        raise AssertionError('Diagnostic fixture must retain raw sources only')
     return destination
 
 
@@ -113,6 +96,16 @@ def main():
     attempt=make_attempt(scratch/'attempt',args.case,args.candidate)
     subprocess.run([sys.executable,str(attempt/'finalize.py'),'--attempt',str(attempt),
         '--output',str(attempt/'analysis-report.json')],cwd=attempt,env=execution_env(),check=True,timeout=300)
+    report=json.loads((attempt/'analysis-report.json').read_text())
+    derived=report['derived_recording_evidence']
+    if len(derived['channels'])!=8 or not all(len(rows(attempt/'channels'/(name+'.jsonl')))==600
+            for name in derived['channels']):
+        raise AssertionError('Source-derived channel set incomplete')
+    if any(sha(attempt/'channels'/(name+'.jsonl'))!=digest
+            for name,digest in derived['channels'].items()):
+        raise AssertionError('Source-derived channel digest differs')
+    if sha(attempt/'context.json')!=derived['context_sha256']:
+        raise AssertionError('Source-derived context digest differs')
     core=process(attempt,attempt/'converted',ROOT/'runtime/pipeline/library',
         ROOT/'.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck',
         diagnostic_fixture=True)
@@ -120,8 +113,22 @@ def main():
     video=render(attempt,attempt/'converted',config['case'])
     decoded=audit(video['video'],600,mapping_sha256=video['frame_map_sha256'],
                   receipt=attempt/'final-decode.json')
+    required=attempt/'capture/evidence.jsonl';hidden=attempt/'capture/evidence.hidden'
+    required.rename(hidden)
+    try:
+        negative=subprocess.run([sys.executable,str(attempt/'finalize.py'),
+            '--attempt',str(attempt),'--output',str(attempt/'negative-report.json')],
+            cwd=attempt,env=execution_env(),text=True,stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,timeout=300)
+        if negative.returncode==0 or 'Missing required source: evidence.jsonl' not in negative.stdout:
+            raise AssertionError('Missing retained evidence did not reject')
+    finally:
+        hidden.rename(required)
     print(json.dumps({'scratch':str(scratch),'case':args.case,'candidate':args.candidate,
         'core':core,'render_frames':video['frames'],'final_decode_passed':decoded['passed'],
+        'source_derived_channels':derived['channels'],
+        'source_derived_context_sha256':derived['context_sha256'],
+        'missing_retained_evidence_rejected':True,
         'scope':'synthetic software integration only; no CARLA, official sign review or acceptance'},indent=2))
 
 

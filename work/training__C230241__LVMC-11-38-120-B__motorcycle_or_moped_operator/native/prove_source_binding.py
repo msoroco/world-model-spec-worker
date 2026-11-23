@@ -27,12 +27,12 @@ def expect_reject(label, directory, phrase):
 
 
 def main():
-    assert all((MEDIA / (view + '.mkv')).is_file() for view in VIEWS), \
+    assert all((MEDIA / (view + '.mkv')).is_file() for view in (*VIEWS, 'raw')), \
         'Run prove_video_compose.py first'
     if SCRATCH.exists():
         shutil.rmtree(SCRATCH)
     SCRATCH.mkdir(parents=True)
-    for view in VIEWS:
+    for view in (*VIEWS, 'raw'):
         shutil.copyfile(MEDIA / (view + '.mkv'), SCRATCH / (view + '.mkv'))
     native = [{'source_kind': 'synthetic_native_sample',
                'video_frame': index, 'native_frame': index + 2000,
@@ -51,7 +51,7 @@ def main():
     write_rows(trace_path, native)
     write_rows(map_path, mapping)
     write_rows(review_path, review)
-    hashes = {view: sha(SCRATCH / (view + '.mkv')) for view in VIEWS}
+    hashes = {view: sha(SCRATCH / (view + '.mkv')) for view in (*VIEWS, 'raw')}
     hashes[trace_path.name] = sha(trace_path)
     hashes[map_path.name] = sha(map_path)
     context = {'source_kind': 'synthetic_native_sample',

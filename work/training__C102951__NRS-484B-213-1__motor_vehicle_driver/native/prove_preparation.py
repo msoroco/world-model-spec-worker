@@ -52,7 +52,7 @@ def fixture(distance):
                                        row['overtaken_y_m'], row['overtaken_speed_mps'], 1),
                     'oncoming': actor(3, 'vehicle.audi.tt', row['oncoming_x_m'],
                                       row['oncoming_y_m'], row['oncoming_speed_mps'], -1)})
-        frames.append({'video_frame': i, 'native_frame': row['native_frame'],
+        frames.append({'video_frame': i, 'carla_frame': row['native_frame'], 'native_frame': row['native_frame'],
                        'time_s': row['time_s']})
         review_rows.append({'frame': i, 'native_frame': row['native_frame'],
                             'time_s': row['time_s'],

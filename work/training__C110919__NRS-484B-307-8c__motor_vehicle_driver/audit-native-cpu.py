@@ -26,10 +26,10 @@ def audit() -> dict:
     assert assignment['cell']['layout']=='intersection'
     assert assignment['cell']['maneuver']=='right_turn'
     assert assignment['cell']['control']=='traffic_light'
-    assert assignment['law_record']['id']=='NRS-484B-307-8c'
-    assert 'After complying with the requirement to stop' in assignment['law_record']['text']
+    assert assignment['law']['id']=='NRS-484B-307-8c'
+    assert 'After complying with the requirement to stop' in assignment['law']['text']
     assert contract['assignment_id']==assignment['assignment_id']
-    assert contract['frame_contract']['frames']==480 and contract['frame_contract']['rate_hz']==20
+    assert contract['frame_contract']['frames']==600 and contract['frame_contract']['rate_hz']==20
     assert plan['assignment_id']==assignment['assignment_id']
     assert plan['candidates']==[eng.parameters(case,candidate)
                                 for case in eng.CASES for candidate in eng.CANDIDATES]
@@ -61,21 +61,21 @@ def audit() -> dict:
             changed={k for k,v in p['knobs'].items() if v!=choices[0]['knobs'][k]}
             assert len(changed)==1
         for p in choices:
-            assert p['knobs']['rate_hz']==20 and p['knobs']['duration_s']==24.0
+            assert p['knobs']['rate_hz']==20 and p['knobs']['duration_s']==30.0
             assert p['law_id']=='NRS-484B-307-8c' and p['cell_id']=='C110919'
             assert p['comparison_variable']=='halt_before_right_turn_on_red'
             assert p['yield_command']=='wait_for_pedestrian_clearance'
-        path=NATIVE/'fixtures'/f'{case}-480.json'
+        path=NATIVE/'fixtures'/f'{case}-600.json'
         result=meas.measure(path,meas.sha256(path))
-        assert result['case']==case and result['frames']==480
+        assert result['case']==case and result['frames']==600
         assert result['yield_clearance_s']>=1.0 and not result['physical_behavior_observed']
         pair.append(result)
     assert pair[0]['halt_before_right_turn_on_red'] is True
     assert pair[1]['halt_before_right_turn_on_red'] is False
     assert pair[0]['pre_crossing_stationary_frames_contiguous']>=10
     assert pair[1]['pre_crossing_stationary_frames_contiguous']==0
-    a=json.loads((NATIVE/'fixtures'/'probe_a-480.json').read_text())['frames']
-    b=json.loads((NATIVE/'fixtures'/'probe_b-480.json').read_text())['frames']
+    a=json.loads((NATIVE/'fixtures'/'probe_a-600.json').read_text())['frames']
+    b=json.loads((NATIVE/'fixtures'/'probe_b-600.json').read_text())['frames']
     for left,right in zip(a,b):
         for key in ('signal_state','signal_governs_ego','approach_lane',
                     'intersecting_road','pedestrian_conflict_occupied','ego_turn_entered'):
@@ -83,7 +83,7 @@ def audit() -> dict:
     # Negative fixtures prove the saved checker rejects source mismatches and
     # missing required context instead of merely accepting a nominal trace.
     with tempfile.TemporaryDirectory() as temp:
-        good=NATIVE/'fixtures'/'probe_a-480.json'
+        good=NATIVE/'fixtures'/'probe_a-600.json'
         bad=Path(temp)/'bad.json'
         modified=json.loads(good.read_text())
         modified['frames'][0]['signal_state']='green'

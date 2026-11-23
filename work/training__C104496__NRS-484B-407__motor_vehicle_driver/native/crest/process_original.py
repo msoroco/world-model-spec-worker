@@ -29,16 +29,31 @@ def ffv1_frames(path):
         raise ValueError("Original camera media missing")
     try:
         run = subprocess.run(["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-                              "-show_entries", "stream=codec_name,nb_read_frames", "-of", "json", str(path)],
+                              "-show_entries", "stream=codec_name,width,height,r_frame_rate,nb_read_frames",
+                              "-of", "json", str(path)],
                              capture_output=True, text=True, timeout=120)
     except FileNotFoundError as exc:
         raise ValueError("ffprobe unavailable for original media check") from exc
     if run.returncode:
         raise ValueError("Original camera media unreadable")
     streams = json.loads(run.stdout).get("streams", [])
+    expected_size = (1920, 1080) if path.stem == "overview" else (1280, 720)
     if len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or \
-            streams[0].get("nb_read_frames") != str(FRAMES):
+            streams[0].get("nb_read_frames") != str(FRAMES) or \
+            (streams[0].get("width"), streams[0].get("height")) != expected_size or \
+            streams[0].get("r_frame_rate") != "20/1":
         raise ValueError("Original FFV1 camera contract")
+    try:
+        decoded = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-xerror",
+                                  "-i", str(path), "-map", "0:v:0", "-an", "-sn",
+                                  "-progress", "pipe:1", "-f", "null", "-"],
+                                 capture_output=True, text=True, timeout=300)
+    except FileNotFoundError as exc:
+        raise ValueError("ffmpeg unavailable for original full decode") from exc
+    progress = [line.partition("=")[2] for line in decoded.stdout.splitlines()
+                if line.startswith("frame=")]
+    if decoded.returncode or not progress or int(progress[-1]) != FRAMES:
+        raise ValueError("Original FFV1 full decode incomplete")
     return sha(path)
 
 

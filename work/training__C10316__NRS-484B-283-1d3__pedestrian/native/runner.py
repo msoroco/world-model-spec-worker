@@ -14,7 +14,7 @@ from no_countdown import signal_state
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
-FRAMES = 240
+FRAMES = 600
 DEVICE_ID = 'C10316-authored-pedestrian-head-east'
 
 
@@ -41,7 +41,7 @@ def check(config):
         raise ValueError('No-countdown case identity differs')
     if (config['cell_id'], config['law_id'], config['actor']) != ('C10316', 'NRS-484B-283-1d3', 'pedestrian'):
         raise ValueError('Frozen assignment identity differs')
-    if (config['duration_s'], config['rate_hz']) != (12, RATE_HZ):
+    if (config['duration_s'], config['rate_hz']) != (30, RATE_HZ):
         raise ValueError('Full no-countdown capture window differs')
     if [(x['name'], x['width'], x['height']) for x in camera_specs(plan)] != [
         (x['name'], x['width'], x['height']) for x in config['cameras']

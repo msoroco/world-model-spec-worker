@@ -24,7 +24,7 @@ def build():
     shared={target:(NATIVE/source).read_text() for target,source in SOURCES.items()}
     recording={'channels':[{'name':name,'unit':'structured','sampling_rate_hz':20,
                 'method':'Original Native actor/signal/map readback and full-frame join; authored intent separate',
-                'time_window':'entire 24 s / 480-frame attempt',
+                'time_window':'entire 30 s / 600-frame attempt',
                 'reference_frame':'surveyed Native map and original frame identity',
                 'uncertainty':'50 ms sampling; physical signal and pixel evidence required'}
                for name in json.loads((NATIVE/'config.json').read_text())['mandatory_channels']],
@@ -79,7 +79,7 @@ def build():
                                         'qualified two-wheel motorcycle pose controller and complete halt',
                                         'controlled two-cycle versus one-cycle wait before turn',
                                         'pedestrian yield actor and four synchronized lossless cameras'],
-                          'termination_rules':['exact 480 original frames','capture and restoration errors retained'],
+                          'termination_rules':['exact 600 original frames','capture and restoration errors retained'],
                           'status':'unselected_cpu_draft'}
             path=FOLDER/'draft-candidates'/case/candidate/'construction.json'
             write(path,construction)

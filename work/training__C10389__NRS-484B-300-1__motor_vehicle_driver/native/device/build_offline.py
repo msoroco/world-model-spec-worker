@@ -10,7 +10,7 @@ ROOT = CASE.parents[1]
 NAMES = ('assignment-source.json', 'case-plan.json', 'alley-stop.xodr',
          'config.json', 'requested-tracks.jsonl', 'build.py', 'check.py',
          'capture.py', 'measurement-contract.json', 'saved.py', 'verify_media.py',
-         'fixture_raw.py', 'route_fallbacks.py')
+         'fixture_raw.py', 'route_fallbacks.py', 'finalize.py')
 
 
 def sha(path):
@@ -38,7 +38,8 @@ def build():
             'saved.py': HERE / 'saved.py',
             'verify_media.py': HERE / 'verify_media.py',
             'fixture_raw.py': HERE / 'fixture_raw.py',
-            'route_fallbacks.py': HERE / 'route_fallbacks.py'}
+            'route_fallbacks.py': HERE / 'route_fallbacks.py',
+            'finalize.py': HERE / 'finalize.py'}
         for name, source in sources.items():
             shutil.copyfile(source, target / name)
         entries.append({'case_id': row['case_id'], 'candidate_id': candidate,

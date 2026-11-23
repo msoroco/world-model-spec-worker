@@ -2,6 +2,14 @@
 
 Status: partial. No delivery recording is selected or claimed.
 
+## 2026-11-23 composed-video binding checkpoint
+
+The binder now requires the composed `raw.mkv` alongside all four FFV1 source cameras, verifies its exact source hash and fully decodes its 600 frames. The source-binding diagnostic passes (current receipt SHA-256 `f8a1de618b977984adce6de3c458fed170b24272d39d642ac0733144e2ab9be5`; log SHA-256 `47120351cd26b09335facb5ddec6ef42f8fc8a1bcc6c333fca9989ace6f39642`). The full synthetic 600-frame chain passes ten checks, including a second damaged-media negative for the composed video after updating its declared hash (receipt SHA-256 `ce5aba207305e71a5f70b66e6f727fcff1e561a35366df653fdeba46167c8e1c`; log SHA-256 `d2acb01d206d50e34bc3a6efa8cedf6573c97beb5e9b7d09601fdd8a96a02486`). These tests prove software integrity only; no original Native capture or calibrated physical review exists. Continue exact selected source-only compatibility, saved processing and independent delivery/comparison work. Earlier proof hashes below are historical.
+
+## 2026-11-23 full video decode checkpoint
+
+`native/bind_lighting_sources.py` now runs ffmpeg `framemd5` over every source camera and requires each decoded frame count to match both ffprobe and the 600-frame capture contract. Its binding receipt retains a SHA-256 of each decoded checksum stream. `native/prove_full_lighting_chain.py` adds a damaged-video negative that truncates a camera and updates the source hash, proving that the binder checks the media beyond its declared hash. The full synthetic chain passes nine checks, including this negative: receipt SHA-256 `b6b040e5ee0960202add886b4a987675a4e0775e079be2c825bd80aa9606ab45`, log SHA-256 `a7baf1eb360b25be91c392acd07a969a2c9456cf581872050a76b3065af0a51b`. The source-binding diagnostic passes (receipt SHA-256 `2c455bc5fd27ebe4334b100937970d623b6c14fba6f17471d0e663055d469379`, log SHA-256 `103a1b872def904301cff99e3576a33731fd4cfe7f62372a7270fc950ef67ccd`); the review-join diagnostic passes unchanged. The assignment-scoped `worker_check.py --complete` exits 0. These are software diagnostics with synthetic sources. The source acquisitions, selected cases, exact saved compatibility, fallbacks and independent delivery/comparison audits below remain worker-owned CPU work.
+
 ## 2026-11-23 source lighting measurement checkpoint
 
 `native/measure_lighting.py` now requires 600 joined 20 Hz source rows over 30 seconds, a covered vehicle, at least one headlamp, a rear-mounted tail lamp, UTC clock and sunset/sunrise provenance, and calibrated source distance and visibility reviews. It measures motion-dependent burning during the half-hour sunset/sunrise window or low visibility, lamp colour, and the exact 300 ft front and 500 ft rear thresholds. It reports observations only; it makes no Native, physical, or legal verdict.

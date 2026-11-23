@@ -8,7 +8,7 @@ CASE = HERE.parent.parent
 NAMES = ('assignment-source.json', 'case-plan.json', 'alley-stop.xodr',
          'config.json', 'requested-tracks.jsonl', 'build.py', 'check.py',
          'capture.py', 'measurement-contract.json', 'saved.py', 'verify_media.py',
-         'fixture_raw.py', 'route_fallbacks.py')
+         'fixture_raw.py', 'route_fallbacks.py', 'finalize.py')
 
 TEST = '''import tempfile
 import unittest

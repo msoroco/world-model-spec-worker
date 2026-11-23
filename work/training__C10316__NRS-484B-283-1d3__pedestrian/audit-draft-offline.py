@@ -42,7 +42,7 @@ def main():
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id'] == config['selected_case_id']
             assert config['candidate_id'] == ident
-            assert (config['duration_s'], config['rate_hz']) == (12, 20)
+            assert (config['duration_s'], config['rate_hz']) == (30, 20)
             assert (config['law_id'], config['cell_id'], config['actor']) == ('NRS-484B-283-1d3', 'C10316', 'pedestrian')
             assert config['required_atoms'] == ['ru.pedestrian', 'kin.position', 'kin.heading', 'st.crosswalk', 'rel.occupies']
             assert len(config['cameras']) == 4

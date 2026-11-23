@@ -18,13 +18,13 @@ def sha(path):
 def main():
     cases = {}
     for case in ('probe_a', 'probe_b'):
-        ego = HERE / 'native/fixtures' / (case + '-480.json')
-        traffic = HERE / 'native/fixtures' / (case + '-other-traffic-480.json')
+        ego = HERE / 'native/fixtures' / (case + '-600.json')
+        traffic = HERE / 'native/fixtures' / (case + '-other-traffic-600.json')
         ego_data = json.loads(ego.read_text())
         data = json.loads(traffic.read_text())
-        assert data['case'] == case and len(data['frames']) == len(ego_data['frames']) == 480
-        assert [r['frame'] for r in data['frames']] == list(range(480))
-        assert [r['conflict_occupied'] for r in data['frames']] == [135 <= i <= 155 for i in range(480)]
+        assert data['case'] == case and len(data['frames']) == len(ego_data['frames']) == 600
+        assert [r['frame'] for r in data['frames']] == list(range(600))
+        assert [r['conflict_occupied'] for r in data['frames']] == [135 <= i <= 155 for i in range(600)]
         entry = next(i for i, row in enumerate(ego_data['frames']) if row['ego_turn_entered'])
         assert entry == 181
         result = other_traffic_yield.inspect(ego, sha(ego), traffic, sha(traffic))

@@ -27,7 +27,7 @@ def recording_description():
         ('display_camera_frame_join', 'structured', 'Original RGB frame hash joined to Native frame and no-countdown source'),
     ):
         channels.append({'name': name, 'unit': unit, 'sampling_rate_hz': 20,
-                         'method': method, 'time_window': 'entire 240-frame 12-second crossing',
+                         'method': method, 'time_window': 'entire 600-frame 30-second crossing',
                          'reference_frame': 'Native source frame/time and authored crossing coordinates',
                          'uncertainty': '50 ms event brackets; original pixel, device governance and highway status unverified'})
     return {'channels': channels,
@@ -72,7 +72,7 @@ def build():
                       'case_suffix': suffix, 'candidate_id': ident,
                       'case': {'case_id': case_id}, 'cell_id': 'C10316',
                       'law_id': 'NRS-484B-283-1d3', 'actor': 'pedestrian',
-                      'duration_s': 12, 'rate_hz': 20,
+                      'duration_s': 30, 'rate_hz': 20,
                       'required_atoms': ['ru.pedestrian', 'kin.position', 'kin.heading',
                                          'st.crosswalk', 'rel.occupies'],
                       'source_packets': [],
@@ -92,7 +92,7 @@ def build():
                                                  'status': 'synthetic_cpu_prototype'},
                             'static_checks': ['full-width authored crosswalk geometry',
                                               '20 Hz no-countdown display program', 'four original RGB cameras'],
-                            'termination_rules': ['240 original frames',
+                            'termination_rules': ['600 original frames',
                                                   'retain failure, encoder and world restoration evidence'],
                             'mechanisms': ['same-cell alley crossing', 'moving Native pedestrian',
                                            'frame-synchronized diagnostic no-countdown rendering',

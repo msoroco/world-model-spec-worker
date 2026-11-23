@@ -53,7 +53,7 @@ def probe(path):
 
 def bind(directory, expected_frames=600):
     directory = Path(directory)
-    files = {view: directory / (view + '.mkv') for view in VIEWS}
+    files = {view: directory / (view + '.mkv') for view in (*VIEWS, 'raw')}
     trace = directory / 'native-lighting-frames.jsonl'
     frame_map = directory / 'video_frames.jsonl'
     review = directory / 'lighting-review.jsonl'

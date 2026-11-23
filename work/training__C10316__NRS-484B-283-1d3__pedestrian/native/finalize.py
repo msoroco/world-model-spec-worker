@@ -120,8 +120,8 @@ def finalize(attempt, output):
         raise ValueError('Retain original countdown finalization; use a fresh attempt')
     config = json.loads(required(attempt, 'config.json').read_text())
     count = config['duration_s'] * config['rate_hz']
-    if count != 240:
-        raise ValueError('Full 12-second no-countdown window changed')
+    if count != 600:
+        raise ValueError('Full 30-second no-countdown window changed')
     joins = verify_original_joins(attempt, count)
     derive_channels(attempt, count)
     analysis = report(attempt, config['case_id'])
@@ -170,7 +170,7 @@ def finalize(attempt, output):
                   'value': measured['first_entry']['time_interval_s'][1] - measured['flashing_start']['time_interval_s'][1],
                   'unit': 's',
                   'method': 'original synchronized event brackets',
-                  'time_window': 'entire original 12-second capture',
+                  'time_window': 'entire original 30-second capture',
                   'statistic': 'first full-body entry versus first flashing indication',
                   'reference': 'no-countdown-samples.jsonl'}},
               'provenance_kind': 'synthetic_local_diagnostic' if not native else 'native_source_shape_unverified',

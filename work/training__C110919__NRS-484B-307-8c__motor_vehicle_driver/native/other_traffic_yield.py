@@ -20,8 +20,8 @@ def inspect(ego_source: Path, ego_sha256: str, traffic_source: Path,
         raise ValueError('Traffic history belongs to another case')
     rows = traffic.get('frames')
     ego_rows = ego.get('frames')
-    if not isinstance(rows, list) or len(rows) != 480 or not isinstance(ego_rows, list) or len(ego_rows) != 480:
-        raise ValueError('Full 480-frame histories are required')
+    if not isinstance(rows, list) or len(rows) != 600 or not isinstance(ego_rows, list) or len(ego_rows) != 600:
+        raise ValueError('Full 600-frame histories are required')
     occupied = []
     entry = None
     actor = traffic.get('actor_id')
@@ -48,7 +48,7 @@ def inspect(ego_source: Path, ego_sha256: str, traffic_source: Path,
     if entry <= last:
         raise ValueError('Ego entered before other traffic cleared')
     return {'case': ego['case'], 'ego_source_sha256': ego_sha256,
-            'traffic_source_sha256': traffic_sha256, 'frames': 480,
+            'traffic_source_sha256': traffic_sha256, 'frames': 600,
             'other_actor_id': actor, 'turn_entry_frame': entry,
             'last_other_traffic_conflict_frame': last,
             'other_traffic_clearance_s': round((entry-last)/20, 3),
