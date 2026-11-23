@@ -531,7 +531,7 @@
             "exit_code": 0,
             "construction_sha256": "7fe1b08675630bb135330aa9c80d7a28f650be76a48b7df32ccb54f4dd003d17",
             "log": "cpu-proof-continuation.log",
-            "log_sha256": "6453378755b44e4b4d88813f53c91423488c54d78c34e7e1c0566e6315034e10"
+            "log_sha256": "a7c0b7266d7ea54667af3018ccb02cedd1604e9af7b4f2616d42a6eb4e671258"
           },
           "compatibility": {
             "receipt": "cases/right_residential_at_100_ft-fallback1-compatibility.json",
@@ -562,7 +562,7 @@
             "exit_code": 0,
             "construction_sha256": "9f06a9287e4d688222c2fbb6fd0e0c6dd8e6ebb67832e1d33922826296a04199",
             "log": "cpu-proof-continuation.log",
-            "log_sha256": "6453378755b44e4b4d88813f53c91423488c54d78c34e7e1c0566e6315034e10"
+            "log_sha256": "a7c0b7266d7ea54667af3018ccb02cedd1604e9af7b4f2616d42a6eb4e671258"
           },
           "compatibility": {
             "receipt": "cases/right_residential_at_100_ft-fallback2-compatibility.json",
@@ -573,6 +573,37 @@
           "saved_processing": {
             "receipt": "cases/right_residential_at_100_ft-fallback2-saved-processing.json",
             "sha256": "eee43265397c9a759f61425b42aaf4591fc73c6392134b4d38684cb457000bf6"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/right_residential_at_100_ft-fallback3-construction.json",
+          "construction_sha256": "5abc474930f47694f8309973dd7a8a706e9b3c5ad9a3839d424463d6e7764382",
+          "trigger": {
+            "source": "Original Native drive history and right-indicator readback",
+            "metric": "continuous available approach distance before right-turn onset",
+            "failure_condition": "Primary approach starts too near the sourced course-change point to measure 100 feet of uninterrupted right indication"
+          },
+          "changed_knobs": [
+            "approach_start_m: default 0.0 to 5.0"
+          ],
+          "remedy": "Start the same authored route five metres earlier and remeasure original signal distance",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-residential100-fallback3/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_residential_at_100_ft --candidate fallback3 --output .runtime-work/c412593-residential100-fallback3/offline",
+            "exit_code": 0,
+            "construction_sha256": "5abc474930f47694f8309973dd7a8a706e9b3c5ad9a3839d424463d6e7764382",
+            "log": "cpu-proof-continuation.log",
+            "log_sha256": "a7c0b7266d7ea54667af3018ccb02cedd1604e9af7b4f2616d42a6eb4e671258"
+          },
+          "compatibility": {
+            "receipt": "cases/right_residential_at_100_ft-fallback3-compatibility.json",
+            "sha256": "8fe95dcb3102801a992d1dff95b974c9481862ca2b277216315c5db468c7a56b",
+            "log": "cases/right_residential_at_100_ft-fallback3-positive.log",
+            "negative_log": "cases/right_residential_at_100_ft-fallback3-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_residential_at_100_ft-fallback3-saved-processing.json",
+            "sha256": "b6f009ddb5154a79cc38843b7c08b301eca9fa3d2a0c7b7cbde60cccdd4abe11"
           }
         }
       ],
@@ -639,7 +670,84 @@
         "status": "physical",
         "reason": "Exact 300-foot onset may drift against Native route progress or four-camera visibility"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/right_interrupted-fallback1-construction.json",
+          "construction_sha256": "d1336416b7f9af30e4ad5796fda23c7766d63c991eb4dd3f7491a4079db7c5bd",
+          "trigger": {
+            "source": "Original Native drive history and four source-camera frame joins",
+            "metric": "full original right-indicator on/off/on interval and complete turn",
+            "failure_condition": "Primary speed obscures the source-measured indicator interruption or leaves the turn incomplete"
+          },
+          "changed_knobs": [
+            "requested_speed_mps: 4.0 to 3.0"
+          ],
+          "remedy": "Run a slower authored approach and remeasure the same interrupted business-area selected case",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-interrupted-fallback1/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted --candidate fallback1 --output .runtime-work/c412593-interrupted-fallback1/offline",
+            "exit_code": 0,
+            "construction_sha256": "d1336416b7f9af30e4ad5796fda23c7766d63c991eb4dd3f7491a4079db7c5bd",
+            "log": "cpu-proof-continuation.log",
+            "log_sha256": "a7c0b7266d7ea54667af3018ccb02cedd1604e9af7b4f2616d42a6eb4e671258"
+          },
+          "compatibility": {
+            "receipt": "cases/right_interrupted-fallback1-compatibility.json",
+            "sha256": "ee9439ac15478e10856f1b78c18679c03f2b57bacda30e08623d3e68df4ce76c",
+            "log": "cases/right_interrupted-fallback1-positive.log",
+            "negative_log": "cases/right_interrupted-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_interrupted-fallback1-saved-processing.json",
+            "sha256": "1e68541e6469f3def5796e6a50bdcce7804ead1488d2927fe97fef075f1fdbe6"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/right_interrupted-fallback2-construction.json",
+          "construction_sha256": "cfc2d18c74bc4bcffefd27be1d565bcae8ec4aa0beba68b0081ed8518f1e51c1",
+          "trigger": {
+            "source": "Native actor spawn result and original body/indicator readback",
+            "metric": "ego blueprint spawn success and complete original body geometry",
+            "failure_condition": "Primary subject blueprint fails to spawn or yields incomplete measured body/indicator source"
+          },
+          "changed_knobs": [
+            "blueprint_selection_index: default 0 to 1"
+          ],
+          "remedy": "Select the alternate vehicle blueprint while retaining the same interrupted business-area route, district and indicator on/off/on measurement",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c412593-interrupted-fallback2/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted --candidate fallback2 --output .runtime-work/c412593-interrupted-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "cfc2d18c74bc4bcffefd27be1d565bcae8ec4aa0beba68b0081ed8518f1e51c1",
+            "log": "cpu-proof-continuation.log",
+            "log_sha256": "a7c0b7266d7ea54667af3018ccb02cedd1604e9af7b4f2616d42a6eb4e671258"
+          },
+          "compatibility": {
+            "receipt": "cases/right_interrupted-fallback2-compatibility.json",
+            "sha256": "aab4342e5fb71493411c1a5edae97199c3469cdfc3b9ad9dbd48ddce30d1b73f",
+            "log": "cases/right_interrupted-fallback2-positive.log",
+            "negative_log": "cases/right_interrupted-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "cases/right_interrupted-fallback2-saved-processing.json",
+            "sha256": "67c332748de784604577152b7a07fb5f195ca13e48bff931fbd3532a3ff0459a"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/right_interrupted-fallback3-construction.json",
+          "construction_sha256": "ca6f83c123be29afa55444d133f9bb72523021beaa1bf597a266cc3a3efea1d0",
+          "trigger": {
+            "source": "Original Native drive history and right-indicator readback",
+            "metric": "available original-frame approach history for the required indicator on/off/on interval and turn onset",
+            "failure_condition": "Primary approach starts too near the sourced course-change point to capture the full indicator interruption and turn"
+          },
+          "changed_knobs": [
+            "approach_start_m: default 0.0 to 5.0"
+          ],
+          "remedy": "Start the same authored route five metres earlier and remeasure the original indicator interruption"
+        }
+      ],
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/contract3-right_interrupted-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
         "exit_code": 0,
