@@ -128,7 +128,11 @@ class BundleTest(unittest.TestCase):
     proposal['variable_assignments'] = {}
     proposals = HERE/'proposals'
     proposals.mkdir(exist_ok=True)
-    write(proposals/'cases.json', {'cases': [proposal]})
+    proposal_path = proposals/'cases.json'
+    existing = json.loads(proposal_path.read_text()) if proposal_path.exists() else {'cases': []}
+    existing['cases'] = [row for row in existing['cases']
+                         if row['case_id'] != CASE] + [proposal]
+    write(proposal_path, existing)
     write(HERE/'draft-reference-manifest.json', manifest)
     return {'case_id': CASE,
             'construction_sha256': sha(HERE/'draft-reference-construction.json'),

@@ -27,7 +27,7 @@ def require(condition, message):
 
 
 def audit():
-    manifest_path = HERE/'draft-device_direction-fallback-manifest.json'
+    manifest_path = HERE/'draft-device-direction-fallback-manifest.json'
     manifest = read(manifest_path)
     entry = manifest['cases'][0]
     require(manifest['runtime_manifest_sha256'] ==
