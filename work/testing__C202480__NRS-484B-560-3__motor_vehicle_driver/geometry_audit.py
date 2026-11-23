@@ -45,8 +45,7 @@ def _actor(row: dict, name: str):
 def audit(attempt: Path) -> dict:
     attempt = Path(attempt).resolve()
     verify_release(attempt)
-    root = Path(__file__).resolve().parents[2] / ".runtime-work"
-    if root not in attempt.parents:
+    if not any(parent.name == ".runtime-work" for parent in attempt.parents):
         raise ValueError("geometry audit requires original private attempt")
     status = json.loads((attempt / "native-run-status.json").read_text())
     case_id = status["case_id"]

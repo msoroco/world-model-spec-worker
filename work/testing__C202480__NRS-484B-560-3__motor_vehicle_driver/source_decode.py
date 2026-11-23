@@ -23,11 +23,13 @@ def sha(path: Path) -> str:
 
 
 def _pinned_auditor():
-    root = Path(__file__).resolve().parents[2]
-    private = root / ".runtime-work"
     output = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
-    if not output or private not in Path(output).resolve().parents:
+    path = Path(output).resolve() if output else None
+    private = next((parent for parent in (path, *path.parents)
+                    if parent.name == ".runtime-work"), None) if path else None
+    if private is None:
         raise ValueError("export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
+    root = private.parent
     sys.path.insert(0, str(root / "runtime"))
     from scenario_pipeline.worker_exchange.media import audit
     return audit
@@ -74,8 +76,7 @@ def decode_one(video: Path, receipt_path: Path, mapping_hash: str,
 
 def audit_four_sources(attempt: Path) -> dict:
     attempt = Path(attempt).resolve()
-    private = Path(__file__).resolve().parents[2] / ".runtime-work"
-    if private not in attempt.parents:
+    if not any(parent.name == ".runtime-work" for parent in attempt.parents):
         raise ValueError("source decode requires private original attempt")
     verify_release(attempt)
     media = json.loads((attempt / "media-receipt.json").read_text(encoding="utf-8"))

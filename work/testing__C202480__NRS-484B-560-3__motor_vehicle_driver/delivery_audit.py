@@ -32,8 +32,7 @@ def _verify_decode(video: Path, receipt: Path, count: int,
 
 def audit(attempt: Path, *, decode_verifier=_verify_decode) -> dict:
     attempt = Path(attempt).resolve()
-    private = Path(__file__).resolve().parents[2] / ".runtime-work"
-    if private not in attempt.parents:
+    if not any(parent.name == ".runtime-work" for parent in attempt.parents):
         raise ValueError("delivery audit requires private original attempt")
     verify_release(attempt)
     expected_report, expected_result = analyze(attempt)
