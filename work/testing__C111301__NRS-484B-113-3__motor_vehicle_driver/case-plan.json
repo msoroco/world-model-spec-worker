@@ -24,9 +24,119 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle: Shall in every case yield the right-of-way to moving traffic and pedestrians."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "target_law_id": "NRS-484B-113-3",
+      "branch_id": "pedestrians",
+      "gap_ids": [
+        "pedestrian-backing-unverified"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific alternate Native implementation is justified before site validation."
+      },
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+      "rationale": "Reverse vehicle holds while moving pedestrian occupies measured backing corridor, then resumes after clearance.",
+      "requested_setup": {
+        "reverse": true,
+        "pedestrian_in_corridor": true,
+        "yield_for_pedestrian": true
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-113-3",
+      "branch_id": "pedestrians",
+      "gap_ids": [
+        "pedestrian-backing-unverified"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific alternate Native implementation is justified before site validation."
+      },
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
+      "rationale": "Same reverse and pedestrian routes, with vehicle continuing into corridor to expose precedence contrast; no legal label assigned.",
+      "requested_setup": {
+        "reverse": true,
+        "pedestrian_in_corridor": true,
+        "yield_for_pedestrian": false
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "pedestrian_yield_response",
+      "case_ids": [
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue"
+      ],
+      "fixed_conditions": [
+        "original map/junction source hash",
+        "vehicle and pedestrian blueprints",
+        "reverse path",
+        "pedestrian path, start and speed",
+        "control context",
+        "20 Hz camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "driver reverse hold/brake policy during pedestrian corridor occupancy"
+      ],
+      "audit": "backing_measurements.compare requires distinct original sources, matching source-hashed map, fixed measured pedestrian exposure and observed driver response difference"
+    }
+  ],
+  "observations": [
+    {
+      "name": "vehicle_actor_id",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "pedestrian_actor_id",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "vehicle_xy",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "pedestrian_xy",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "vehicle_velocity_xy",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "vehicle_forward_xy",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "pedestrian_velocity_xy",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "reverse_gear",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "brake",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "pedestrian_in_corridor",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
@@ -51,17 +161,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original C111301 map must be reviewed for a connected backing route intersecting a pedestrian route; backing_geometry.validate rejects absent or nonconflicting source packets.",
+    "Actual CARLA motion, conflict, perception and camera coverage remain to be verified.",
+    "NRS 484B.113 section context and right-of-way remain legal review questions; measured driver response is not a verdict.",
+    "Finalizer integration, canonical proposals, four-camera capture, compatibility receipts, saved-only processing and delivery audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read frozen evidence.json and exact assignment text; no accepted recordings are listed. No physical coverage can be reused.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "pedestrian-backing-unverified",
+        "requirement": "Observed backing phase, moving pedestrian, potential path conflict, and measured driver precedence",
+        "source": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen accepted evidence inventory is empty"
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_case_construction_and_measurement",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,6 +201,27 @@
         "Specify intersection geometry, governing controls, direction, speed, proximity, and a backing interval."
       ],
       "reason": "An intersection pedestrian interaction can make precedence relevant; no crosswalk, signal or priority follows solely from the control."
+    }
+  ],
+  "selected_branch": "pedestrians",
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "Pedestrian precedence during backing under NRS 484B.113(3)",
+      "status": "selected_required",
+      "source": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "No accepted recording; original backing and pedestrian crossing interaction remains unverified",
+      "case_ids": [
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Moving traffic alternative in the full subsection",
+      "status": "alternative_pending",
+      "source": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "Frozen assigned witness branch is pedestrians; full-law branch allocation needs independent review"
     }
   ]
 }

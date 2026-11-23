@@ -1,22 +1,27 @@
 # testing__C111329__NRS-484B-287-1c__pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial case plan and source measurement checkpoint. No Native or accepted recording is claimed.
 
-Exact law: NRS 484B.287(1)(c) — Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: Between adjacent intersections at which official traffic-control devices are in operation pedestrians shall not cross at any place except in a marked crosswalk.
-Assigned branch(es): Travel including a between-intersections crossing.
-Cell: C111329 (intersection, travel, traffic_control_device); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Exact source: NRS 484B.287(1)(c) in frozen `inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json`; witness 390 is conditional and frozen accepted evidence lists zero recordings. The NRS 484B.290 exception remains unresolved.
+
+## Exact cases and comparisons
+
+- `testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating`: crossing outside surveyed marking with both devices operating.
+- `testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating`: same crossing station within surveyed marked crosswalk.
+- `testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive`: same unmarked crossing, one device inactive.
+- `between_intersections_marking` holds site, station and operation fixed; `both_devices_operating` holds site, station and marking fixed. See `case-plan.json` for source gaps, risks and observation mappings. These are planned cases, not recordings.
+
+## Implemented CPU construction and audit
+
+`site_geometry.py` requires SHA-matched map, route, device, marking and highway sources. It checks two distinct junctions, direct source edge, no intervening junction, route crossing both highway banks, strict station between junction envelopes, authority/placement/purpose/governance fields and operation intervals at both devices, and a complete marking survey. It returns legal adjacency, legal official status and the NRS 484B.290 exception as undetermined. Source record IDs are prerequisites for review, not legal conclusions. `native_route.py` lazily spawns a source-selected CARLA walker and applies route controls with readback and cleanup on rejection. `comparison_audit.py` rejects changed fixed sources and conditions. Both crossing directions are CPU-tested.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1c__pedestrian/tests -v` passed 12 tests; SHA256 of `cpu-tests.log`: 33f1e060ae51f15b1552418f67a3f5118e199dc87d39d5ac9cf4ac5aae49de21. These are source-shaped fixtures, not physical evidence.
+
+`.venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` failed with `Preparation acceptance failed: partial/missing packages remain`; see `cpu-strict-check.log` (SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a). The result remains partial.
 
 ## Next CPU actions
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
-
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+1. Bind a real map and two device records to the frozen C111329 scene, validate original map topology and device readback for each case, and complete the Native controller/capture contract. Resolve the fixed intersection layout against the required between-intersection segment without inventing a new cell.
+2. Add per-case config, construction, manifests, finalizers, diagnostic recipes and source-bound positive/negative compatibility/offline/saved-only proofs. Build semantic stage proposals and an independent delivery audit.
+3. Review the NRS 484B.290 exception and legal meaning of adjacent intersections/official devices independently from the geometry packet. Do not infer them from record IDs or visual appearance.
+4. Rerun the tests and exact strict gate; mark ready only after it passes. Physical motion, actual map site, camera coverage and recordings remain later Native checks once CPU preparation is complete.

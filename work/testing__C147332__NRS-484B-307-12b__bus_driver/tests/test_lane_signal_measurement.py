@@ -107,20 +107,27 @@ class RedXLaneMeasurement(unittest.TestCase):
                 def __init__(self, location, rotation):
                     self.location, self.rotation = location, rotation
         class Actor:
-            def __init__(self):
+            def __init__(self, attributes=None):
                 self.bounding_box = Point(extent=Point(x=3.4, y=1.25))
+                self.attributes = dict(attributes or {})
                 self.destroyed = False
             def destroy(self): self.destroyed = True
+        class Blueprint:
+            def __init__(self, identifier):
+                self.id, self.attributes = identifier, {"display_state": "other"}
+            def has_attribute(self, name): return name in self.attributes
+            def set_attribute(self, name, value): self.attributes[name] = value
+            def get_attribute(self, name): return self.attributes[name]
         class Library:
             def find(self, identifier):
                 if identifier not in ("vehicle.mitsubishi.fusorosa", "fixture.red_x_asset"):
                     raise ValueError("unavailable exact blueprint")
-                return identifier
+                return Blueprint(identifier)
         class World:
             def __init__(self): self.spawns = []
             def get_blueprint_library(self): return Library()
             def spawn_actor(self, blueprint, transform):
-                actor = Actor()
+                actor = Actor(blueprint.attributes)
                 self.spawns.append((blueprint, transform, actor))
                 return actor
         world = World()
@@ -128,9 +135,11 @@ class RedXLaneMeasurement(unittest.TestCase):
                  "route": route("lateral_entry"),
                  "signal": {"longitudinal_m": 50.0, "lateral_m": -1.8, "height_m": 6.0}}
         bus, head = spawn_scene(world, scene, FakeCarla,
-                                {"native_asset_blueprint_id": "fixture.red_x_asset"})
-        self.assertEqual([s[0] for s in world.spawns],
+                                {"native_asset_blueprint_id": "fixture.red_x_asset",
+                                 "native_display_state": {"attribute": "display_state", "red_x_value": "red_x"}})
+        self.assertEqual([s[0].id for s in world.spawns],
                          ["fixture.red_x_asset", "vehicle.mitsubishi.fusorosa"])
+        self.assertEqual(head.attributes["display_state"], "red_x")
         self.assertEqual(world.spawns[0][1].location.y, -1.8)
         self.assertEqual(world.spawns[1][1].location.y, -5.4)
         self.assertIs(bus, world.spawns[1][2])
@@ -213,10 +222,17 @@ class RedXLaneMeasurement(unittest.TestCase):
                       "official_device": {**descriptor("device.txt"),
                          "device_kind": "official_overhead_lane_signal", "symbol": "red_x",
                          "faces_bus": True, "governed_lane_id": "red_lane",
-                         "native_asset_blueprint_id": "fixture.red_x_asset"}}
+                         "native_asset_blueprint_id": "fixture.red_x_asset",
+                         "native_display_state": {"attribute": "display_state", "red_x_value": "red_x",
+                                                  "source_citation": "fixture only"}}}
             packet_path = root / "packet.json"
             packet_path.write_text(json.dumps(packet))
             self.assertEqual(validate(packet_path, source_root=root)["governed_lane_id"], "red_lane")
+            state = packet["official_device"].pop("native_display_state")
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "display attribute"):
+                validate(packet_path, source_root=root)
+            packet["official_device"]["native_display_state"] = state
             packet["official_device"]["governed_lane_id"] = "adjacent_lane"
             packet_path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "lane association"):
@@ -242,7 +258,9 @@ class RedXLaneMeasurement(unittest.TestCase):
                       "official_device": {**descriptor("device.txt"),
                           "device_kind": "official_overhead_lane_signal", "symbol": "red_x",
                           "faces_bus": True, "governed_lane_id": "red_lane",
-                          "native_asset_blueprint_id": "fixture.red_x_asset"}}
+                          "native_asset_blueprint_id": "fixture.red_x_asset",
+                          "native_display_state": {"attribute": "display_state", "red_x_value": "red_x",
+                                                   "source_citation": "fixture only"}}}
             (root / "reviewed-context.json").write_text(json.dumps(packet))
             frames = [sample(1, -5.4, 0), sample(2, -3.9, 0)]
             channels = {"bus-body-history.jsonl": [f["body"] for f in frames],

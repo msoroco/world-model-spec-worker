@@ -51,6 +51,13 @@ def spawn_scene(world, scene, carla, site):
     sign_bp = library.find(sign_id)
     if bus_bp is None or sign_bp is None:
         raise ValueError("exact bus or reviewed red-X asset unavailable")
+    state = site["native_display_state"]
+    attribute, value = state["attribute"], state["red_x_value"]
+    if not sign_bp.has_attribute(attribute):
+        raise ValueError("reviewed red-X display attribute unavailable on blueprint")
+    sign_bp.set_attribute(attribute, value)
+    if str(sign_bp.get_attribute(attribute)) != value:
+        raise ValueError("red-X blueprint display state did not read back")
     signal = scene["signal"]
     sign_transform = carla.Transform(
         carla.Location(x=signal["longitudinal_m"], y=signal["lateral_m"],
@@ -58,6 +65,9 @@ def spawn_scene(world, scene, carla, site):
     head = world.spawn_actor(sign_bp, sign_transform)
     if head is None:
         raise RuntimeError("reviewed red-X head spawn failed")
+    if str(head.attributes.get(attribute)) != value:
+        head.destroy()
+        raise ValueError("spawned red-X head display state did not read back")
     x, y = scene["route"]["waypoint_centers_m"][0]
     try:
         bus = world.spawn_actor(bus_bp, carla.Transform(

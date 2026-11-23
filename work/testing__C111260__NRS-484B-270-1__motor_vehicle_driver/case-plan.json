@@ -24,9 +24,71 @@
   "topic_inventory": {
     "exact-text": "The driver of a motor vehicle shall not intentionally interfere with the movement of a person lawfully riding a bicycle, an electric bicycle or an electric scooter."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "target_law_id": "NRS-484B-270-1",
+      "gap_ids": [
+        "missing_original_bicycle_encounter"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Native bicycle actor may not render a visible human rider or the crossing may leave the four-camera field; original actor readback and first capture must check both.",
+        "fallback_policy": "A source-verified spawn or camera geometry adjustment may be authored only after a measured failure; none is presently tested."
+      },
+      "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
+      "purpose": "Ego waits at a surveyed crossing while the same bicycle rider traverses the intersection; record movement without legal conclusion.",
+      "scenario_parameters": {
+        "rider_kind": "human_powered_bicycle",
+        "mode_command": "maintain_clearance",
+        "jurisdiction": "source_required",
+        "lawful_riding": "unresolved"
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-270-1",
+      "gap_ids": [
+        "missing_original_bicycle_encounter"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Native bicycle actor may not render a visible human rider or the crossing may leave the four-camera field; original actor readback and first capture must check both.",
+        "fallback_policy": "A source-verified spawn or camera geometry adjustment may be authored only after a measured failure; none is presently tested."
+      },
+      "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path",
+      "purpose": "Ego controller continues on the surveyed path while the same bicycle rider traverses; preserve command and geometry without asserting intention or interference.",
+      "scenario_parameters": {
+        "rider_kind": "human_powered_bicycle",
+        "mode_command": "cross_rider_path",
+        "jurisdiction": "source_required",
+        "lawful_riding": "unresolved"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "bicycle_encounter_behavior",
+      "case_ids": [
+        "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
+        "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path"
+      ],
+      "fixed_conditions": [
+        "same surveyed Native intersection, source-hashed map and routes",
+        "same human-powered bicycle classification and rider rules inventory",
+        "same motor-vehicle and bicycle blueprints, four cameras and duration",
+        "same rider path, speed and original visual identity"
+      ],
+      "deliberate_differences": [
+        "ego controller waiting versus continuing through surveyed path crossing; original command history retained"
+      ]
+    }
+  ],
+  "observations": [
+    "source-hashed Native intersection map and crossing geometry",
+    "distinct ego motor vehicle and human-powered bicycle with visible rider",
+    "Original 20 Hz identities, blueprints, positions and controller commands",
+    "rider conduct and applicable rules, with lawful-riding verdict unresolved",
+    "four-view image visibility, pending physical capture"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
@@ -51,17 +113,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No original accepted recording exists for this assignment; physical cyclist rider visual, motion and four-view coverage remain unverified.",
+    "Bicycle source packet, finalizer, canonical stage proposals, exact offline/compatibility receipts, saved-only delivery audit and full electric-bicycle/scooter alternatives remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "missing_original_bicycle_encounter",
+        "requirement": "Original source-bound motor-vehicle and human-powered bicycle rider movement, command history, rider conduct and four-view images for NRS 484B.270(1).",
+        "source": "inputs/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory lists zero accepted recordings; no original evidence establishes this bicycle encounter."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_controlled_bicycle_cases_and_native_measurement_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -81,6 +150,33 @@
         "Supply applicable rider rules and conduct facts; lawful riding remains unresolved."
       ],
       "reason": "The fixed cyclist can be a distinct bicycle rider whose movement interacts with ego at the intersection."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "motor-vehicle driver shall not intentionally interfere with movement of a person lawfully riding a bicycle",
+      "source": "NRS 484B.270(1); inputs/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "missing_original_bicycle_encounter",
+      "case_ids": [
+        "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
+        "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "electric bicycle rider alternative",
+      "source": "NRS 484B.270(1); inputs/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "Electric bicycle construction and source-bound definition not yet authored in this assignment."
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "electric scooter rider alternative",
+      "source": "NRS 484B.270(1); inputs/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "Electric scooter construction and source-bound definition not yet authored in this assignment."
     }
   ]
 }

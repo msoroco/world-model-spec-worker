@@ -43,11 +43,16 @@ def verify_site(site, root):
     require(site['layout']=='intersection' and site['maneuver']=='travel' and site['control']=='cyclist', 'fixed catalog mismatch')
     refs=site['original_sources']
     require(len(refs)>=3 and len({r['path'] for r in refs})==len(refs), 'map, bicycle and rider-rule sources required')
-    for r in refs:
-        read_source(r,root)
-    paths={r['path'] for r in refs}
+    source_paths={r['path']:read_source(r,root) for r in refs}
+    paths=set(source_paths)
     for key in ('map_source_path','bicycle_classification_source_path','rider_rules_source_path'):
         require(site[key] in paths, 'unbound site source: '+key)
+    map_packet=json.loads(source_paths[site['map_source_path']].read_text())
+    bicycle_packet=json.loads(source_paths[site['bicycle_classification_source_path']].read_text())
+    rider_rules_packet=json.loads(source_paths[site['rider_rules_source_path']].read_text())
+    require(map_packet.get('native_map_name')==site['native_map_name'] and map_packet.get('ego_route_xy')==site['ego_route_xy'] and map_packet.get('rider_route_xy')==site['rider_route_xy'], 'surveyed map/route packet mismatch')
+    require(bicycle_packet.get('blueprint_id')==site['bicycle_blueprint_id'] and bicycle_packet.get('classification')==site['bicycle_classification'], 'bicycle classification packet mismatch')
+    require(rider_rules_packet.get('applicable_rules') and rider_rules_packet.get('jurisdiction')==site['jurisdiction'], 'rider rules/jurisdiction packet mismatch')
     require(site['native_map_name'] and site['ego_blueprint_id'] and site['bicycle_blueprint_id'], 'map/blueprint identity missing')
     require(site['bicycle_classification']['human_powered'] is True, 'human powered bicycle not established')
     require(site['bicycle_classification']['tandem_wheels']==2, 'two tandem wheels not established')
@@ -100,7 +105,7 @@ def measure_attempt(site, root, event_ref, mode):
     previous=-1; records=[]
     for row in events:
         frame=row['frame']
-        require(isinstance(frame,int) and frame==previous+1 if previous>=0 else isinstance(frame,int) and frame>=0,'noncontinuous Original frames')
+        require(isinstance(frame,int) and (frame==previous+1 if previous>=0 else frame>=0), 'noncontinuous Original frames')
         previous=frame
         require(row['ego_id']==site['ego_actor_id'] and row['rider_id']==site['rider_actor_id'], 'actor identity changed')
         require(row['ego_blueprint_id']==site['ego_blueprint_id'] and row['rider_blueprint_id']==site['bicycle_blueprint_id'], 'actor type changed')

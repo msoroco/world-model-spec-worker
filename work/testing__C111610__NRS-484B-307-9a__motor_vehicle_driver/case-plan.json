@@ -24,9 +24,198 @@
   "topic_inventory": {
     "exact-text": "Where the signal is a steady red with a green turn arrow: Except as otherwise provided in paragraph (b) [NRS-484B-307-9b], vehicular traffic facing the signal may enter the intersection only to make the movement indicated by the green turn arrow, but must yield the right-of-way to pedestrians lawfully within an adjacent crosswalk and to other traffic lawfully using the intersection. Drivers turning in the direction of the arrow are thereby advised that so long as the turn arrow is illuminated, oncoming or opposing traffic simultaneously faces a steady red signal."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+      "target_law_id": "NRS-484B-307-9a",
+      "purpose": "Turn in arrow direction after lawful adjacent-crosswalk pedestrian clears",
+      "gap_ids": [
+        "no_accepted_9a_source"
+      ],
+      "scenario_parameters": {
+        "steady_red_plus_green_turn_arrow": true,
+        "opposing_steady_red_during_arrow": true,
+        "adjacent_crosswalk_pedestrian_present": true,
+        "controller_policy": "hold_until_clear",
+        "intended_route": "arrow_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
+        "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+      "target_law_id": "NRS-484B-307-9a",
+      "purpose": "Turn in arrow direction while lawful adjacent-crosswalk pedestrian remains present",
+      "gap_ids": [
+        "no_accepted_9a_source"
+      ],
+      "scenario_parameters": {
+        "steady_red_plus_green_turn_arrow": true,
+        "opposing_steady_red_during_arrow": true,
+        "adjacent_crosswalk_pedestrian_present": true,
+        "controller_policy": "continue",
+        "intended_route": "arrow_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
+        "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+      "target_law_id": "NRS-484B-307-9a",
+      "purpose": "Turn in arrow direction with adjacent crosswalk clear",
+      "gap_ids": [
+        "no_accepted_9a_source"
+      ],
+      "scenario_parameters": {
+        "steady_red_plus_green_turn_arrow": true,
+        "opposing_steady_red_during_arrow": true,
+        "adjacent_crosswalk_pedestrian_present": false,
+        "controller_policy": "continue",
+        "intended_route": "arrow_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
+        "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+      "target_law_id": "NRS-484B-307-9a",
+      "purpose": "Enter straight while arrow directs a turn and adjacent crosswalk is clear",
+      "gap_ids": [
+        "no_accepted_9a_source"
+      ],
+      "scenario_parameters": {
+        "steady_red_plus_green_turn_arrow": true,
+        "opposing_steady_red_during_arrow": true,
+        "adjacent_crosswalk_pedestrian_present": false,
+        "controller_policy": "continue",
+        "intended_route": "straight"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
+        "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+      "target_law_id": "NRS-484B-307-9a",
+      "purpose": "Arrow turn with lawful other traffic in intersection; hold_until_clear controller",
+      "gap_ids": [
+        "no_accepted_9a_source"
+      ],
+      "scenario_parameters": {
+        "steady_red_plus_green_turn_arrow": true,
+        "opposing_steady_red_during_arrow": true,
+        "adjacent_crosswalk_pedestrian_present": false,
+        "other_traffic_lawfully_using_intersection": true,
+        "controller_policy": "hold_until_clear",
+        "intended_route": "arrow_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Other traffic route and lawful use require original actor and governing signal records.",
+        "fallback_policy": "Only a source-verified route through the same intersection preserving compared traffic relation may substitute."
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
+      "target_law_id": "NRS-484B-307-9a",
+      "purpose": "Arrow turn with lawful other traffic in intersection; continue controller",
+      "gap_ids": [
+        "no_accepted_9a_source"
+      ],
+      "scenario_parameters": {
+        "steady_red_plus_green_turn_arrow": true,
+        "opposing_steady_red_during_arrow": true,
+        "adjacent_crosswalk_pedestrian_present": false,
+        "other_traffic_lawfully_using_intersection": true,
+        "controller_policy": "continue",
+        "intended_route": "arrow_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Other traffic route and lawful use require original actor and governing signal records.",
+        "fallback_policy": "Only a source-verified route through the same intersection preserving compared traffic relation may substitute."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "pedestrian_yield",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same relevant pedestrian permission source and arrow direction"
+      ],
+      "deliberate_differences": [
+        "measured controller hold until crosswalk clears versus turn while lawful pedestrian remains"
+      ]
+    },
+    {
+      "comparison_id": "pedestrian_presence",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same relevant pedestrian permission source and arrow direction"
+      ],
+      "deliberate_differences": [
+        "measured lawful adjacent-crosswalk occupancy at approach"
+      ]
+    },
+    {
+      "comparison_id": "arrow_movement",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same relevant pedestrian permission source and arrow direction"
+      ],
+      "deliberate_differences": [
+        "measured arrow-directed turn versus straight entry"
+      ]
+    },
+    {
+      "comparison_id": "other_traffic_yield",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same other traffic actor and lawful route",
+        "adjacent crosswalk clear"
+      ],
+      "deliberate_differences": [
+        "measured hold until lawful other traffic clears versus movement during occupancy"
+      ]
+    }
+  ],
+  "observations": [
+    "Original ego-facing red and arrow direction and frame interval",
+    "Original opposing red during arrow illumination",
+    "Source-backed official head and governed approach",
+    "Crosswalk polygon and adjacency to actual turn",
+    "Pedestrian track and external lawful-presence context",
+    "Original ego route, intersection entry, speed and stop/clear precedence",
+    "Other traffic actor identity, route, intersection occupancy and externally sourced lawful-use context"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
@@ -51,17 +240,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Physical realization and camera coverage require later CARLA run and original recording review.",
+    "Canonical proposals, exact manifest, finalizer and delivery acceptance receipts remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read frozen evidence.json (zero recordings), assignment law text, paragraph (b) exception and witness context. No accepted recording demonstrates this exact phase, crosswalk occupancy, yield or turn movement.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_9a_source",
+        "requirement": "Original steady red plus green arrow, opposing red, lawfully occupied adjacent crosswalk, measured yield and actual turn movement",
+        "source": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json lists zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_with_controlled_comparisons",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +278,94 @@
       ],
       "reason": "The fixed pedestrian can occupy an adjacent crosswalk relevant to the turning movement."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "steady red plus green turn arrow and directed movement only",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "source": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "no_accepted_9a_source"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "yield to pedestrian lawfully within adjacent crosswalk",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "source": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "no_accepted_9a_source"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "yield to other traffic lawfully using intersection",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "source": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "no_accepted_9a_source"
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "opposing steady red advisory during arrow illumination",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "source": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "no_accepted_9a_source"
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "paragraph (b) exception applies only to listed non-motor-vehicle actors",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "source": "inputs/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/assignment.json",
+      "evidence_or_gap": "no_accepted_9a_source"
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "fps": 20,
+    "duration_seconds": 30,
+    "sources": [
+      "front",
+      "left",
+      "right",
+      "rear"
+    ],
+    "limitation": "Actual coverage and motion require Native review."
+  }
 }

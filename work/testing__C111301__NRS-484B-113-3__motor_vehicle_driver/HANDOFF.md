@@ -1,22 +1,29 @@
 # testing__C111301__NRS-484B-113-3__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction checkpoint. The exact strict gate still fails because result.json is partial. No Native recording or accepted evidence is claimed.
 
-Exact law: NRS 484B.113(3) — The driver of a vehicle: Shall in every case yield the right-of-way to moving traffic and pedestrians.
-Assigned branch(es): pedestrians.
-Cell: C111301 (intersection, travel, pedestrian); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen cell is C111301 (intersection, travel, pedestrian control), with motor vehicle driver. The assigned witness is the pedestrian alternative of NRS 484B.113(3). The full subsection also says moving traffic; that alternative needs independent branch allocation review. The section heading is limitations on backing. A travel label or pedestrian control does not by itself prove backing, a crosswalk, or legal right of way. Frozen evidence.json lists no accepted recordings, and judgment_ranges.json has no matching range for this law and actor.
 
-## Next CPU actions
+## Exact cases and comparison
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+- `testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield`: reverse vehicle holds/brakes while a distinct moving pedestrian occupies the backing corridor, then resumes after clearance.
+- `testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue`: same map, actor classes, reverse and walking routes, and pedestrian exposure; driver continues backing.
+- `pedestrian_yield_response`: compare measured original-frame brake/reverse speed with measured pedestrian gap, speed and corridor occupancy held fixed. This is an engineering contrast, not a legal label.
 
-## Proven checks and dependency boundary
+`backing_geometry.py` requires an original source-hashed map/junction packet, vehicle and pedestrian blueprints, route coordinates and references, control provenance, and a geometric route intersection. It rejects a pedestrian path missing the reverse body corridor. `native_backing.py` lazily resolves native blueprints and spawns both actors with cleanup on failure. `backing_controller.py` injects a control factory for Native VehicleControl and commands hold/release or continued reverse. `backing_measurements.py` rejects missing original frame fields, identity changes, absent measured backing, absent moving pedestrian conflict, and comparison exposure drift.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## Proven checks
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+- `.venv-cpu/bin/python runtime.py preflight` passed in this turn.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v` passed 7 tests. Exact log and SHA are in result.json.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready` reached `Preparation acceptance failed: partial/missing packages remain`; see strict-gate.log. It is deliberately not marked ready.
+
+## Next CPU work
+
+1. Select and review an actual CARLA/OpenDRIVE C111301 site, export its original map packet and Native transforms, and bind reverse motion to the validated path. Do not infer physical geometry from the cell label.
+2. Integrate the controller and original-frame measurements into canonical runner/config/construction and exact bundled case variants. Preserve four-view 20 Hz capture and original telemetry.
+3. Author canonical semantic proposals, exact measurement contracts, source-specific positive/negative compatibility recipes and offline receipts for each case, plus saved-only processor and independent delivery/comparison audits.
+4. Re-read the full statutory subsection and definitions for the moving-traffic alternative and section-context limits. Keep all legal judgments unresolved pending physical review.
+5. Rerun the seven CPU tests and exact strict gate. Mark ready only after the gate passes.
+
+Actual CARLA motion and camera visibility remain later GPU checks; the listed package work is worker-owned CPU preparation. No external blocker is asserted.

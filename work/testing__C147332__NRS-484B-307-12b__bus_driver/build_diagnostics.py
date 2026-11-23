@@ -36,7 +36,9 @@ def diagnostic(scene, kind):
               "official_device": {**descriptor("device.txt"),
                   "device_kind": "official_overhead_lane_signal", "symbol": "red_x",
                   "faces_bus": True, "governed_lane_id": "red_lane",
-                  "native_asset_blueprint_id": "fixture.red_x_asset"}}
+                  "native_asset_blueprint_id": "fixture.red_x_asset",
+                  "native_display_state": {"attribute": "display_state", "red_x_value": "red_x",
+                                           "source_citation": "fixture only"}}}
     files["reviewed-context.json"] = dumps(packet)
     positions = {
         "adjacent_travel": [(10, -5.4), (20, -5.4), (30, -5.4), (40, -5.4), (55, -5.4)],

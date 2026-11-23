@@ -24,9 +24,139 @@
   "topic_inventory": {
     "exact-text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: A pedestrian shall not cross an intersection diagonally unless authorized by official traffic-control devices."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority",
+      "target_law_id": "NRS-484B-287-1d",
+      "purpose": "Adjacent-corner crossing with no diagonal authorization",
+      "gap_ids": [
+        "no_accepted_diagonal_crossing"
+      ],
+      "scenario_parameters": {
+        "route_kind": "adjacent",
+        "source_backed_diagonal_authorization": false,
+        "referenced_exception": "unresolved"
+      },
+      "construction_module": "native_crossing.py",
+      "measurement_module": "saved_measurement.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not name a map polygon, four walkable corners, or an official pedestrian-governing device source. Native path reachability, device provenance, and four-camera body visibility require source readback.",
+        "fallback_policy": "Only a source-verified site satisfying the same intersection geometry, pedestrian-specific device state and comparison controls can be used; no fallback is claimed without a tested exact construction."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority",
+      "target_law_id": "NRS-484B-287-1d",
+      "purpose": "Opposite-corner diagonal crossing with no source-backed authorization",
+      "gap_ids": [
+        "no_accepted_diagonal_crossing"
+      ],
+      "scenario_parameters": {
+        "route_kind": "opposite",
+        "source_backed_diagonal_authorization": false,
+        "referenced_exception": "unresolved"
+      },
+      "construction_module": "native_crossing.py",
+      "measurement_module": "saved_measurement.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not name a map polygon, four walkable corners, or an official pedestrian-governing device source. Native path reachability, device provenance, and four-camera body visibility require source readback.",
+        "fallback_policy": "Only a source-verified site satisfying the same intersection geometry, pedestrian-specific device state and comparison controls can be used; no fallback is claimed without a tested exact construction."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized",
+      "target_law_id": "NRS-484B-287-1d",
+      "purpose": "Opposite-corner diagonal crossing with official pedestrian-specific authorization",
+      "gap_ids": [
+        "no_accepted_diagonal_crossing"
+      ],
+      "scenario_parameters": {
+        "route_kind": "opposite",
+        "source_backed_diagonal_authorization": true,
+        "referenced_exception": "unresolved"
+      },
+      "construction_module": "native_crossing.py",
+      "measurement_module": "saved_measurement.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not name a map polygon, four walkable corners, or an official pedestrian-governing device source. Native path reachability, device provenance, and four-camera body visibility require source readback.",
+        "fallback_policy": "Only a source-verified site satisfying the same intersection geometry, pedestrian-specific device state and comparison controls can be used; no fallback is claimed without a tested exact construction."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device",
+      "target_law_id": "NRS-484B-287-1d",
+      "purpose": "Adjacent-corner crossing at the same official diagonal-authorizing device",
+      "gap_ids": [
+        "no_accepted_diagonal_crossing"
+      ],
+      "scenario_parameters": {
+        "route_kind": "adjacent",
+        "source_backed_diagonal_authorization": true,
+        "referenced_exception": "unresolved"
+      },
+      "construction_module": "native_crossing.py",
+      "measurement_module": "saved_measurement.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not name a map polygon, four walkable corners, or an official pedestrian-governing device source. Native path reachability, device provenance, and four-camera body visibility require source readback.",
+        "fallback_policy": "Only a source-verified site satisfying the same intersection geometry, pedestrian-specific device state and comparison controls can be used; no fallback is claimed without a tested exact construction."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "diagonal_path_without_authority",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority",
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority"
+      ],
+      "fixed_conditions": [
+        "same measured intersection polygon and corner coordinate frame",
+        "same absence of official diagonal pedestrian authorization",
+        "same pedestrian blueprint, controller speed, four cameras, 20 Hz and duration"
+      ],
+      "deliberate_differences": [
+        "measured adjacent-corner versus opposite-corner crossing path"
+      ]
+    },
+    {
+      "comparison_id": "diagonal_device_authority",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority",
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized"
+      ],
+      "fixed_conditions": [
+        "same measured opposite-corner route and intersection polygon",
+        "same pedestrian blueprint, controller speed, four cameras, 20 Hz and duration"
+      ],
+      "deliberate_differences": [
+        "source-backed official pedestrian-governing diagonal authorization versus none"
+      ]
+    },
+    {
+      "comparison_id": "authorized_device_path_control",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized",
+        "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device"
+      ],
+      "fixed_conditions": [
+        "same official pedestrian-governing diagonal-authorizing device and phase",
+        "same intersection polygon, blueprint, four cameras, 20 Hz and duration"
+      ],
+      "deliberate_differences": [
+        "opposite-corner versus adjacent-corner route"
+      ]
+    }
+  ],
+  "observations": [
+    "original walker identity and continuous center positions",
+    "source-measured intersection polygon and corner map points",
+    "official provenance, pedestrian governance, instruction and state for every device potentially authorizing a diagonal crossing",
+    "start, interior, and end crossing frames"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111329__NRS-484B-287-1d__pedestrian/assignment.json",
@@ -51,17 +181,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No CARLA map/device survey source has been bound; native_crossing.py fails closed until supplied.",
+    "No exact runtime offline/compatibility, semantic proposal, process-saved, delivery audit or comparison receipt yet.",
+    "The NRS 484B.290 exception reference is unresolved by the supplied law text; no legal determination is made."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed frozen evidence.json: zero accepted recordings. No existing body route, intersection or device source can establish these alternatives. The witness is a conditional proposal, not physical evidence.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_diagonal_crossing",
+        "requirement": "Measured full pedestrian crossing with adjacent/opposite-corner route and official diagonal authorization status",
+        "source": {
+          "path": "inputs/testing__C111329__NRS-484B-287-1d__pedestrian/evidence.json",
+          "sha256": "01dbce3617ed199eda03d4db7531fb7d2c94caab2090c46ccd971d67bde7b8e3"
+        },
+        "why_existing_insufficient": "No accepted recordings are listed."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_constructed_cpu_probes",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,5 +221,6 @@
       ],
       "reason": "The general travel task permits a complete opposite-corner pedestrian crossing."
     }
-  ]
+  ],
+  "source_observation_mapping": {}
 }

@@ -36,9 +36,15 @@ def validate(packet_path, *, source_root):
             not isinstance(device.get("native_asset_blueprint_id"), str) or
             not device["native_asset_blueprint_id"]):
         raise ValueError("red-X device, facing or lane association unreviewed")
+    state = device.get("native_display_state")
+    if (not isinstance(state, dict) or not isinstance(state.get("attribute"), str) or
+            not state["attribute"] or not isinstance(state.get("red_x_value"), str) or
+            not state["red_x_value"] or not state.get("source_citation")):
+        raise ValueError("reviewed Native red-X display attribute and value required")
     return {"reviewed_packet_sha256": _sha(packet_path),
             "highway_source_sha256": packet["highway"]["source_sha256"],
             "official_device_source_sha256": device["source_sha256"],
             "native_asset_blueprint_id": device["native_asset_blueprint_id"],
+            "native_display_state": state,
             "governed_lane_id": device["governed_lane_id"],
             "legal_judgment": "unresolved"}

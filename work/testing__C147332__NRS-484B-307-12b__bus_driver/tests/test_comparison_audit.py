@@ -32,7 +32,9 @@ def make_attempt(folder, kind):
               "official_device": {**descriptor("device.txt"),
                   "device_kind": "official_overhead_lane_signal", "symbol": "red_x",
                   "faces_bus": True, "governed_lane_id": "red_lane",
-                  "native_asset_blueprint_id": "fixture.red_x_asset"}}
+                  "native_asset_blueprint_id": "fixture.red_x_asset",
+                  "native_display_state": {"attribute": "display_state", "red_x_value": "red_x",
+                                           "source_citation": "fixture only"}}}
     (folder / "reviewed-context.json").write_text(json.dumps(packet))
     positions = {
         "adjacent_travel": [(-5.4, 0), (-5.4, 3)],

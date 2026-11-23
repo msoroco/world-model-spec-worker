@@ -195,6 +195,10 @@ def run_native(scene, road, site, output, host, port, packet_path):
                 cameras.append(frame)
                 frame_map.append(frame, time_s)
                 common = {"frame": frame, "elapsed_seconds": time_s}
+                state = site["native_display_state"]
+                observed_display = head.attributes.get(state["attribute"])
+                if observed_display is None or str(observed_display) != state["red_x_value"]:
+                    raise RuntimeError("original red-X head display state missing or changed")
                 body_file.write(json.dumps({**common, "source_path": "trace.jsonl",
                     "bus_actor_id": int(bus.id), "bus_footprint": _footprint(bus)}, allow_nan=False) + "\n")
                 signal_file.write(json.dumps({**common, "source_path": "sign-state-original.jsonl",
@@ -203,6 +207,8 @@ def run_native(scene, road, site, output, host, port, packet_path):
                     "official_device_source_sha256": site["official_device_source_sha256"]}, allow_nan=False) + "\n")
                 head_file.write(json.dumps({**common, "head_actor_id": int(head.id),
                     "head_blueprint_id": site["native_asset_blueprint_id"],
+                    "display_attribute": state["attribute"],
+                    "observed_display_value": str(observed_display),
                     "head_position": [head.get_transform().location.x,
                                       head.get_transform().location.y,
                                       head.get_transform().location.z]}, allow_nan=False) + "\n")

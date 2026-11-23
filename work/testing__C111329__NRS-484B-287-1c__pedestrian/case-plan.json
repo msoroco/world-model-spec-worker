@@ -24,9 +24,131 @@
   "topic_inventory": {
     "exact-text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: Between adjacent intersections at which official traffic-control devices are in operation pedestrians shall not cross at any place except in a marked crosswalk."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "target_law_id": "NRS-484B-287-1c",
+      "gap_ids": [
+        "between_site",
+        "official_devices",
+        "crosswalk_extent",
+        "exception_290"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The fixed cell has no verified two-junction map segment or official device and marking provenance; a Native site may lack the required layout.",
+        "fallback_policy": "Only another source-verified route in the same fixed cell with two operative official devices and a surveyed crossing may substitute; do not change the comparison variable."
+      },
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
+      "purpose": "Cross between adjacent-intersection candidates outside surveyed marked crosswalk while both devices operate",
+      "scenario_parameters": {
+        "crossing_location": "between_junction_envelopes",
+        "marked_crosswalk_present": false,
+        "both_devices_operating": true
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-287-1c",
+      "gap_ids": [
+        "between_site",
+        "official_devices",
+        "crosswalk_extent",
+        "exception_290"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The fixed cell has no verified two-junction map segment or official device and marking provenance; a Native site may lack the required layout.",
+        "fallback_policy": "Only another source-verified route in the same fixed cell with two operative official devices and a surveyed crossing may substitute; do not change the comparison variable."
+      },
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating",
+      "purpose": "Same crossing station within a documented marked crosswalk while both devices operate",
+      "scenario_parameters": {
+        "crossing_location": "between_junction_envelopes",
+        "marked_crosswalk_present": true,
+        "both_devices_operating": true
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-287-1c",
+      "gap_ids": [
+        "between_site",
+        "official_devices",
+        "crosswalk_extent",
+        "exception_290"
+      ],
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The fixed cell has no verified two-junction map segment or official device and marking provenance; a Native site may lack the required layout.",
+        "fallback_policy": "Only another source-verified route in the same fixed cell with two operative official devices and a surveyed crossing may substitute; do not change the comparison variable."
+      },
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive",
+      "purpose": "Same unmarked crossing with one device documented inactive, probing the operation condition",
+      "scenario_parameters": {
+        "crossing_location": "between_junction_envelopes",
+        "marked_crosswalk_present": false,
+        "both_devices_operating": false
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "between_intersections_marking",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
+        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating"
+      ],
+      "fixed_conditions": [
+        "same two source-identified junctions and direct segment",
+        "same highway crossing station and route",
+        "both official-device candidates operating",
+        "same camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "surveyed marked-crosswalk extent contains the crossing versus does not contain it"
+      ]
+    },
+    {
+      "comparison_id": "both_devices_operating",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
+        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive"
+      ],
+      "fixed_conditions": [
+        "same two junctions, highway banks and crossing station",
+        "same unmarked crossing survey",
+        "same camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "one endpoint official-device candidate inactive versus both operating during crossing"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "between_junction_geometry",
+      "source": "source-hashed original map/route/device/marking/highway packets",
+      "measurement": "direct edge and strict station between junction envelopes"
+    },
+    {
+      "name": "highway_crossing",
+      "source": "source-hashed original map/route/device/marking/highway packets",
+      "measurement": "ordered route intersects both sourced bank lines"
+    },
+    {
+      "name": "official_device_operation",
+      "source": "source-hashed original map/route/device/marking/highway packets",
+      "measurement": "authority/placement/purpose/governance IDs and interval through crossing"
+    },
+    {
+      "name": "marked_crosswalk_extent",
+      "source": "source-hashed original map/route/device/marking/highway packets",
+      "measurement": "complete survey and station interval containment"
+    },
+    {
+      "name": "exception_290",
+      "source": "source-hashed original map/route/device/marking/highway packets",
+      "measurement": "independent legal and factual review pending"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
@@ -51,17 +173,45 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual CARLA route and sight/camera coverage need Native capture.",
+    "Source-derived direct edge is an engineering candidate; legal adjacency is undetermined.",
+    "Authority record IDs are provenance requirements, not proof of legal official status.",
+    "NRS 484B.290 exception remains for independent review.",
+    "Canonical proposals, per-case runners/finalizers/receipts and delivery audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read the exact law, the conditional witness and the frozen evidence inventory. No accepted recording exists, so no source demonstrates the site, crossing or exception. Source packets, not expected labels, must establish physical comparisons.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "between_site",
+        "requirement": "Two actual adjacent-intersection candidates, source-documented highway boundaries and direct intervening street segment",
+        "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json has zero accepted recordings."
+      },
+      {
+        "id": "official_devices",
+        "requirement": "Authority, placement, governing instructions, legal consistency and operation of official devices at both intersections throughout crossing",
+        "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
+        "why_existing_insufficient": "No accepted site or device history exists."
+      },
+      {
+        "id": "crosswalk_extent",
+        "requirement": "Marked-crosswalk survey and crossing station along the between-intersection highway segment",
+        "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
+        "why_existing_insufficient": "No accepted marking survey or route trace exists."
+      },
+      {
+        "id": "exception_290",
+        "requirement": "Independent source-supported review of the NRS 484B.290 exception before a legal conclusion",
+        "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
+        "why_existing_insufficient": "The exception is referenced but no accepted factual or legal review is supplied."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_case_plan_and_source_measurement_audits",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
