@@ -1,0 +1,62 @@
+{
+  "template_id": "NRS-484B-413-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-413-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+  "structure": {
+    "law_id": "NRS-484B-413-2",
+    "activation": {
+      "condition": "A driver intends to turn right or left, or otherwise depart a direct course. The selected C412593 branch is a right turn by a freight-loading zone.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Give the intended turn signal continuously over the applicable final traveled distance, regardless of weather. Business or residential districts use 100 feet; other areas use 300 feet.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "measured_continuous_distance_m",
+          "operator": ">=",
+          "value": 30.48,
+          "unit": "m",
+          "district_branch": "business_or_residential"
+        },
+        {
+          "variable": "measured_continuous_distance_m",
+          "operator": ">=",
+          "value": 91.44,
+          "unit": "m",
+          "district_branch": "other_area"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "During the last applicable distance before changing course.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "district_class",
+      "kind": "world_setup",
+      "range_or_domain": "business, residential, or other; site classification remains unverified"
+    },
+    {
+      "name": "requested_continuous_signal_ft",
+      "kind": "controller",
+      "range_or_domain": "authored 99, 100, 101, 299, 300, or 301 feet; actual continuity is source-measured"
+    },
+    {
+      "name": "signal_continuity",
+      "kind": "controller",
+      "range_or_domain": "continuous or interrupted_on_off_on authored signal schedule"
+    },
+    {
+      "name": "measured_continuous_distance_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "original-source measured continuous indication distance in metres"
+    }
+  ]
+}

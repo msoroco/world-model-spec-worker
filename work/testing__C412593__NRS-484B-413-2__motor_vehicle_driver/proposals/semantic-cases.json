@@ -1,0 +1,981 @@
+{
+  "cell_id": "C412593",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared neutral business-district right-turn plan for the eight selected signal-distance and continuity comparisons; Native status remains unverified.",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "business",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 100,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native right-turn path and indicator pixels need physical review",
+        "Freight zone and district classification need independent site source"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_turn_indicator",
+            "unit": "device state",
+            "method": "original Native light mask readback",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native velocity magnitude",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native yaw readback",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "id",
+            "method": "original Native waypoint road ID",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "path_distance",
+            "unit": "m",
+            "method": "original source position increments joined to frame map",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "freight_zone_site",
+            "unit": "source document",
+            "method": "authored OpenDRIVE sign and bay positions; Native rendering pending"
+          },
+          {
+            "name": "district",
+            "unit": "legal region class",
+            "method": "independent Native/site review required"
+          },
+          {
+            "name": "weather",
+            "unit": "CARLA weather scale",
+            "method": "original Native world.get_weather readback retained in route_context.json"
+          }
+        ],
+        "limitations": [
+          "Authored freight objects do not establish legal business-district status",
+          "Actual indicator pixels and right-turn geometry require Native review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_under_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Business district right turn; original signal distance just below 100 feet",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "business",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 99,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "business_100ft",
+      "deliberate_differences": [
+        "requested_continuous_signal_ft"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "30.48 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 30.48,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 30.1752,
+        "threshold_ref": "obligation.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering source sampling resolution; statutory boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Same route at exact 100-foot boundary",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "business",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 100,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "business_100ft",
+      "deliberate_differences": [
+        "requested_continuous_signal_ft"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "30.48 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 30.48,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 30.48,
+        "threshold_ref": "obligation.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering source sampling resolution; statutory boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_over_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Same route above 100 feet",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "business",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 101,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "business_100ft",
+      "deliberate_differences": [
+        "requested_continuous_signal_ft"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "30.48 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 30.48,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 30.7848,
+        "threshold_ref": "obligation.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering source sampling resolution; statutory boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_residential_at_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Residential district right turn at 100-foot boundary",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "residential",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 100,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "residential_100ft",
+      "deliberate_differences": [
+        "district_class"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "30.48 m final continuous signal distance in a residential district",
+        "target_value_or_branch": 30.48,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 30.48
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_under_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Other-area right turn just under 300 feet",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "other",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 299,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "requested_continuous_signal_ft"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "91.44 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 91.44,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 91.1352,
+        "threshold_ref": "obligation.numeric_conditions[1]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering source sampling resolution; statutory boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_at_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Other-area right turn at 300 feet",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "other",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 300,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "requested_continuous_signal_ft"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "91.44 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 91.44,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 91.44,
+        "threshold_ref": "obligation.numeric_conditions[1]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering source sampling resolution; statutory boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_over_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Other-area right turn above 300 feet",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "other",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 301,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "continuous",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "requested_continuous_signal_ft"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "91.44 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 91.44,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 91.7448,
+        "threshold_ref": "obligation.numeric_conditions[1]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering source sampling resolution; statutory boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "violating_attempt",
+      "rationale": "Same business route with interruption inside last 100 feet",
+      "variable_assignments": {
+        "district_class": {
+          "kind": "world_setup",
+          "value": "business",
+          "unit": "district class",
+          "note": "Planning label; site class requires independent review"
+        },
+        "requested_continuous_signal_ft": {
+          "kind": "controller",
+          "value": 100,
+          "unit": "ft",
+          "note": "Authored target, not observed behavior"
+        },
+        "signal_continuity": {
+          "kind": "controller",
+          "value": "interrupted_on_off_on",
+          "unit": "schedule",
+          "note": "Authored indicator schedule"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read only from joined original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "business_signal_interruption",
+      "deliberate_differences": [
+        "signal_continuity"
+      ],
+      "probe": {
+        "primary_variable": "signal_continuity",
+        "comparison_or_standard": "continuous right indication over the final 100 feet",
+        "target_value_or_branch": "continuous",
+        "test_value": "interrupted_on_off_on"
+      }
+    }
+  ]
+}
