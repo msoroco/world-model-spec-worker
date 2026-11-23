@@ -256,11 +256,41 @@
     "supported_reuses": []
   },
   "observations": [
-    "source-backed one median-opening statutory crossing and different highway identities",
-    "all-entrance official-device inventory and subsection-4 separation",
-    "opposite-direction and intended/making-left-turn exclusion",
-    "original-frame complete body entry time for ego and other",
-    "other body occupancy when ego enters; actual yield behavior separately measured"
+    {
+      "name": "yield_control",
+      "description": "Original-frame joined controller and body-history record required by the exact construction",
+      "mandatory": true
+    },
+    {
+      "name": "planned_source_context_1",
+      "description": "source-backed one median-opening statutory crossing and different highway identities",
+      "mandatory": false,
+      "status": "planned_unverified"
+    },
+    {
+      "name": "planned_source_context_2",
+      "description": "all-entrance official-device inventory and subsection-4 separation",
+      "mandatory": false,
+      "status": "planned_unverified"
+    },
+    {
+      "name": "planned_source_context_3",
+      "description": "opposite-direction and intended/making-left-turn exclusion",
+      "mandatory": false,
+      "status": "planned_unverified"
+    },
+    {
+      "name": "planned_source_context_4",
+      "description": "original-frame complete body entry time for ego and other",
+      "mandatory": false,
+      "status": "planned_unverified"
+    },
+    {
+      "name": "planned_source_context_5",
+      "description": "other body occupancy when ego enters; actual yield behavior separately measured",
+      "mandatory": false,
+      "status": "planned_unverified"
+    }
   ],
   "sources": [
     {
@@ -396,5 +426,172 @@
       ],
       "evidence_or_gap": "original controller decisions and independent physical yield judgment"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 55,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both complete vehicle bodies and crossing polygon",
+        "interval": "startup through complete-body entry, crossing occupancy and final clearance within 55-second planned capture"
+      },
+      {
+        "view": "approach",
+        "subject": "ego and other median-opening approaches with full entry order and opposite left-turn path",
+        "interval": "pre-entry through crossing occupancy"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "median opening, candidate statutory crossing boundaries, signal heads and stop lines",
+        "interval": "setup through restoration"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego approach and both participant identities",
+        "interval": "startup through final observation"
+      }
+    ],
+    "physical_claim": false,
+    "limitations": [
+      "Camera poses and actual Native subject/pixel coverage require independent local review."
+    ]
+  },
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Planned source observation for the intersection region and its boundary; site-review.json describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/site-review.json",
+          "sha256": "0c3763d31b8aa459fa712930039a38e764551615075cfab28f640ce757220627"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane_enters": {
+      "evidence": "Planned source observation for the lanes on which the two vehicles approach enter the same intersection; the exception reads which intersection a device controls through the lanes it governs; site_packet.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/site_packet.py",
+          "sha256": "ca205f9f8cee120c0c5ff8ddb5d55349f9bc2cf576226c0dbb30cc86cff852d7"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.approaching": {
+      "evidence": "Planned source observation for the subject approaching it; capture_sources.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/capture_sources.py",
+          "sha256": "f76d45f829318f68c8fcd5a04d25ad4eb6604c2e029d445ec95544d85cebffb1"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.entering_intersection": {
+      "evidence": "Planned source observation for the other vehicle has entered from a different highway; crossing_precedence.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/crossing_precedence.py",
+          "sha256": "7fa3d08b91155ed83ffe4b7707a89a067b9362c5eab41fc01a66abdf6749d0ce"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.arrival_order": {
+      "evidence": "Planned source observation for who entered first; crossing_precedence.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/crossing_precedence.py",
+          "sha256": "7fa3d08b91155ed83ffe4b7707a89a067b9362c5eab41fc01a66abdf6749d0ce"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.yields_to": {
+      "evidence": "Planned source observation for the subject gives way; runner.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [
+        "yield_control"
+      ],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/runner.py",
+          "sha256": "8e2fce483795206e32eae29227ea347a7188b7ce9cba880fb5211c1814dca846"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.in_intersection": {
+      "evidence": "Planned source observation for the other vehicle inside the region; crossing_precedence.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/crossing_precedence.py",
+          "sha256": "7fa3d08b91155ed83ffe4b7707a89a067b9362c5eab41fc01a66abdf6749d0ce"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.traffic_signal": {
+      "evidence": "Planned source observation for the exception: an intersection controlled by a device; native_crossing.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/native_crossing.py",
+          "sha256": "58bd02fa031c7027eaa154c5b8f847c328aaaac9c53d6495b7cae40d7df9af90"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.stop_sign": {
+      "evidence": "Planned source observation for the same; site-review.json describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/site-review.json",
+          "sha256": "0c3763d31b8aa459fa712930039a38e764551615075cfab28f640ce757220627"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.yield_sign": {
+      "evidence": "Planned source observation for the same; site-review.json describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/site-review.json",
+          "sha256": "0c3763d31b8aa459fa712930039a38e764551615075cfab28f640ce757220627"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.turning": {
+      "evidence": "Planned source observation for the exception for a left-turning vehicle from the opposite direction; turn_exception_audit.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/turn_exception_audit.py",
+          "sha256": "24223e0d88133d70fd22b56e539c83a99dc7e9fb5900f9bd67a63e65dd4a59ca"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.oncoming": {
+      "evidence": "Planned source observation for that vehicle approaches from the opposite direction; turn_exception_audit.py describes the diagnostic construction. Original Native motion, device governance and statutory applicability require independent review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/turn_exception_audit.py",
+          "sha256": "24223e0d88133d70fd22b56e539c83a99dc7e9fb5900f9bd67a63e65dd4a59ca"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  }
 }
