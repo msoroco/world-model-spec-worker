@@ -114,6 +114,7 @@ def execute(config, output, host, port):
         if ego is None:
             raise RuntimeError('Requested route spawn occupied')
         actors.append(ego)
+        (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         for camera in config['cameras']:
             name = camera['name']
             sensor_bp = world.get_blueprint_library().find('sensor.camera.rgb')

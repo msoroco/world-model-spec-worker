@@ -62,7 +62,8 @@ def finalize(attempt, output):
     trace_path = attempt / 'trace.jsonl'
     map_path = attempt / 'video_frames.jsonl'
     provenance_path = attempt / 'acquisition-provenance.json'
-    for path in (config_path, trace_path, map_path, provenance_path):
+    road_path = attempt / 'road.xodr'
+    for path in (config_path, trace_path, map_path, provenance_path, road_path):
         if not path.is_file():
             raise ValueError('Missing required source: ' + path.name)
     config = json.loads(config_path.read_text())
@@ -82,7 +83,9 @@ def finalize(attempt, output):
     for video in videos:
         if not (attempt / video).is_file():
             raise ValueError('Missing required original camera: ' + video)
-    measurement = derive(rows(trace_path), rows(map_path))
+    trace = rows(trace_path)
+    frame_map = rows(map_path)
+    measurement = derive(trace, frame_map)
     sources = {'acquisition-provenance.json': sha(provenance_path),
                'trace.jsonl': sha(trace_path),
                'video_frames.jsonl': sha(map_path),
@@ -95,6 +98,39 @@ def finalize(attempt, output):
     acceleration_channel = channel_dir / 'acceleration_mps2.jsonl'
     acceleration_channel.write_text(''.join(json.dumps({'time_s': i / HZ, 'value': value}) + '\n'
                                             for i, value in enumerate(measurement['acceleration_series_mps2'])))
+    pose_channel = channel_dir / 'ego_pose.jsonl'
+    pose_channel.write_text(''.join(json.dumps({
+        'time_s': motion['time_s'],
+        'value': {'position_m': motion['position_m'],
+                  'heading_deg': motion['heading_deg'],
+                  'native_frame': motion['frame'],
+                  'video_frame': motion['video_frame']}}) + '\n'
+        for motion in trace))
+    episode_context = {
+        'exhibition_episode_context': {
+            'source_kind': provenance['provenance_kind'],
+            'camera_views': {name: sources[name + '.mkv'] for name in VIEWS},
+            'frame_map_sha256': sources['video_frames.jsonl'],
+            'trace_sha256': sources['trace.jsonl'],
+            'requested_control_phases': config['control_phases'],
+            'participant_source': 'original camera views and ego trace; other participants unclassified',
+            'exhibition_review': 'unresolved',
+        }
+    }
+    highway_context = {
+        'original_highway_survey': {
+            'source_kind': provenance['provenance_kind'],
+            'map_name': provenance.get('map_name'),
+            'road_xodr_sha256': sha(road_path),
+            'ego_route_reference': 'channels/ego_pose.jsonl',
+            'jurisdiction_source': None,
+            'highway_classification': 'unresolved',
+        }
+    }
+    (channel_dir / 'exhibition_episode_context.json').write_text(
+        json.dumps(episode_context, indent=2) + '\n')
+    (channel_dir / 'original_highway_survey.json').write_text(
+        json.dumps(highway_context, indent=2) + '\n')
     summary = {key: value for key, value in measurement.items()
                if not key.endswith('_series_mps') and not key.endswith('_series_mps2')}
     report = {'format': 'c229597-source-motion-analysis-v1',
@@ -127,7 +163,13 @@ def finalize(attempt, output):
         'recording_evidence': [{'name': 'ego_speed', 'unit': 'm/s',
                                 'reference': 'channels/speed_mps.jsonl'},
                                {'name': 'ego_acceleration', 'unit': 'm/s2',
-                                'reference': 'channels/acceleration_mps2.jsonl'}],
+                                'reference': 'channels/acceleration_mps2.jsonl'},
+                               {'name': 'ego_pose', 'unit': 'structured',
+                                'reference': 'channels/ego_pose.jsonl'},
+                               {'name': 'exhibition_episode_context', 'unit': 'structured',
+                                'reference': 'channels/exhibition_episode_context.json'},
+                               {'name': 'original_highway_survey', 'unit': 'structured',
+                                'reference': 'channels/original_highway_survey.json'}],
         'realized_observables': {},
         'provenance_kind': 'synthetic_local_diagnostic' if synthetic else 'source_review_unverified',
         'accepted': False, 'legal_verdict_claimed': False,

@@ -1,12 +1,32 @@
 {
   "cell_id": "C229597",
   "actor": "motor_vehicle_driver",
-  "status": "draft_cpu_offline_only",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__reference",
-      "target_law_id": "LVMC-11-16-090-A",
-      "target_type": "observed_motion",
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source observation baseline",
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "steady_low_request"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -26,18 +46,147 @@
             "time_window": "all 600 frames",
             "reference_frame": "Native world",
             "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
         "limitations": [
-          "No numeric legal threshold or intent is inferred from throttle"
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
         ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__reference",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "boundary_probe",
+      "rationale": "Observe the physical effect of the authored reference throttle request without inferring legal status",
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ],
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__throttle_comparison",
+      "deliberate_differences": [
+        "requested_throttle_profile"
+      ],
+      "probe": {
+        "primary_variable": "requested_throttle_profile",
+        "comparison_or_standard": "linked reference/contrast physical comparison; no legal threshold",
+        "target_value_or_branch": "reference"
       }
     },
     {
       "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__contrast",
       "target_law_id": "LVMC-11-16-090-A",
-      "target_type": "observed_motion",
+      "target_type": "boundary_probe",
+      "rationale": "Observe the physical effect of the authored contrast throttle request without inferring legal status",
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "contrast"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -57,13 +206,223 @@
             "time_window": "all 600 frames",
             "reference_frame": "Native world",
             "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
         "limitations": [
-          "No numeric legal threshold or intent is inferred from throttle"
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ],
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__throttle_comparison",
+      "deliberate_differences": [
+        "requested_throttle_profile"
+      ],
+      "probe": {
+        "primary_variable": "requested_throttle_profile",
+        "comparison_or_standard": "linked reference/contrast physical comparison; no legal threshold",
+        "target_value_or_branch": "contrast"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "C229597-judgment-1",
+      "target_law_id": "LVMC-11-16-090-A",
+      "judgment_refs": [
+        {
+          "phrase": "exhibition of power or speed",
+          "note": "Acceleration and controller request alone do not establish a statutory exhibition; independent original video and surrounding episode context are needed."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "A physical sweep must be fixed before legal interpretation; canonical scalar observables and source-supported physical ranges are not yet established.",
+      "missing_inputs": [
+        "Source-supported scalar sweep dimension and physical range for exhibition of power or speed",
+        "Original Native route, jurisdiction and complete episode observations"
+      ],
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      }
+    },
+    {
+      "sweep_id": "C229597-judgment-2",
+      "target_law_id": "LVMC-11-16-090-A",
+      "judgment_refs": [
+        {
+          "phrase": "on a highway",
+          "note": "A drafted road or OpenDRIVE label does not establish whether the realized route is a highway under the applicable law."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "A physical sweep must be fixed before legal interpretation; canonical scalar observables and source-supported physical ranges are not yet established.",
+      "missing_inputs": [
+        "Source-supported scalar sweep dimension and physical range for on a highway",
+        "Original Native route, jurisdiction and complete episode observations"
+      ],
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
         ]
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

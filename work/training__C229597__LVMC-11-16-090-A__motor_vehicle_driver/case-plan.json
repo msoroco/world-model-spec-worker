@@ -71,7 +71,7 @@
         "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__contrast"
       ],
       "deliberate_differences": [
-        "direct_exhibition_of_power_or_speed"
+        "requested_throttle_profile"
       ],
       "fixed_conditions": [
         "cell",
@@ -82,7 +82,7 @@
         "other controller settings",
         "camera and capture profile"
       ],
-      "status": "planned_unverified"
+      "status": "planned_physical_comparison_unverified"
     }
   ],
   "observations": [
@@ -101,8 +101,15 @@
     {
       "name": "direct_exhibition_of_power_or_speed",
       "unit": "bool",
+      "mandatory": false,
+      "purpose": "observed exhibition versus ordinary driving; intentional engagement context unresolved",
+      "evidence_or_gap": "Qualitative judgment remains unresolved for the local Native review"
+    },
+    {
+      "name": "ego_acceleration",
+      "unit": "m/s2",
       "mandatory": true,
-      "purpose": "observed exhibition versus ordinary driving; intentional engagement context unresolved"
+      "method": "original Native acceleration vector, 20 Hz"
     }
   ],
   "source_observation_mapping": {
@@ -214,5 +221,32 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego and surrounding episode",
+        "interval": "all 600 frames",
+        "view": "overview"
+      },
+      {
+        "subject": "ego and surrounding episode",
+        "interval": "all 600 frames",
+        "view": "approach"
+      },
+      {
+        "subject": "ego and surrounding episode",
+        "interval": "all 600 frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "ego and surrounding episode",
+        "interval": "all 600 frames",
+        "view": "driver_reference"
+      }
+    ]
+  }
 }
