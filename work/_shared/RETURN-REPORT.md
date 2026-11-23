@@ -1,3 +1,15 @@
+Current `.venv-cpu/bin/python runtime.py preflight` passed with Lean 4.28.0 and no simulation; the assignment-scoped `worker_check.py --complete` passed for the truthful partial return. The full strict gate still requires the remaining batch packages.
+
+## 2026-11-22 C412593 inventoried diagnostic fixture
+
+Created source-hashed `diagnostic-recipe.json` and `diagnostic-spec.json` for the selected right-business-at-100-ft case. Materialization generated four 900-frame lossless diagnostic videos and the original source files in `.runtime-work/`; fixture fingerprint `bec2f27fb93e2e4df01b8a939c58c9c687a4b3a6a315e92111af4af05fc341c5`. The saved finalizer produced both selected measurements from retained sources, the pinned measurement contract and Native result validator passed, and deleting `drive_history.jsonl` caused the required rejection. All 11 current exact offline constructions pass, including three distinct fallbacks. The 27 unit tests pass after consolidating two modules without dropping methods. Core `source_packets` now uses an empty special-packet declaration; the Native route and site source requirements remain in the runner and source inventory. Status stays partial while canonical manifest, full compatibility, saved processing and independent audits are built. Synthetic fixture statuses do not assert physical or legal acceptance.
+
+## 2026-11-22 C412593 selected measurement contract and negative proof
+
+The exact selected branch is now bound in `case-plan.json` to two required original-source measurements: the right-turn course and district context, and continuous right indication across the applicable 100/300-foot approach regardless of weather. `measurement-contract.json` names the executable saved-finalizer methods and three hashed source inputs for both outputs. The current pinned contract validator and report verifier pass on the materialized business-at-100-foot primary; removing `drive_history.jsonl` causes the declared missing-source rejection. The original four-camera diagnostic fixture reports sampled setup, target and road transition as met, but physical district, sign, lamp pixels and legal judgment remain unverified.
+
+The signal-distance tests were retained in the consolidated native-source test module to stay within the 8600-file return cap. The standalone 27-test suite and all 11 rebuilt exact offline selected/fallback constructions pass. Current commands, hashes and logs are bound in `cpu-tests.log` and partial `result.json`. Canonical manifest, source-bound package compatibility, full recorded-only saved processing, semantic proposals and independent audits remain worker-owned. Status stays **partial**.
+
 # Demo-test CPU preparation return
 
 Checkpoint: 24 ready and 19 partial assignment results across the fixed 43-item batch. C412593 remains partial after the current source-body and road-transition software proof. The complete strict delivery gate has not passed; it is deferred while partial packages remain. Detailed assignment history is in the assignment HANDOFF files and `work/_shared/HANDOFF.md`.
