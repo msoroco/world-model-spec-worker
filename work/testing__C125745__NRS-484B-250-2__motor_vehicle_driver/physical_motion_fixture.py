@@ -33,6 +33,13 @@ def construction_bytes(item):
   return payload
  return item['construction_payload'].encode()
 
+def proof_text(item,field):
+ key=field+'_payload'
+ if key in item:return item[key]
+ raw=zlib.decompress(base64.b64decode(item[field+'_zlib_base64'],validate=True))
+ if len(raw)!=item[field+'_bytes']:raise ValueError('Proof length changed')
+ return raw.decode()
+
 def run(kind,case,output):
  manifest=read(HERE/'execution-manifest.json')
  entry=next(e for e in manifest['cases'] if e['case_id']==case)
@@ -155,7 +162,7 @@ def run_staged(kind,case,attempt,output,candidate=None):
   if kind=='lifecycle':
    if exact is not qualified:raise ValueError('Staged lifecycle requires qualified saved claim')
    saved=(fallback if candidate else qualified)['current_runtime_proof']['recorded_only_saved']
-   payload=saved['receipt_payload'].encode()
+   payload=proof_text(saved,'receipt').encode()
    if hashlib.sha256(payload).hexdigest()!=saved['receipt_sha256']:
     raise ValueError('Qualified saved receipt changed')
    saved_data=json.loads(payload)

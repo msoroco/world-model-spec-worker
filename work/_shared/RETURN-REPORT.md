@@ -380,3 +380,17 @@ All six planned timing/hold sweep points now have assignment-qualified exact pri
 ### 2026-11-23 C125745 frame-40 qualified candidate matrix
 
 The frame-40 qualified timing point now has a primary and three distinct fallbacks passing exact offline, current-runtime positive/missing-source compatibility and recorded-only saved processing. All four pass synthetic three-outcome physical classifier and saved-receipt-bound lifecycle CPU fixtures. Exact bytes and SHA-256 bindings are returned in the sweep index under 2 MiB; 56 CPU tests pass. Canonical standalone manifest/receipt, delivery and comparison bindings and four other qualified sweep points remain incomplete. C125745 stays partial; see its `HANDOFF.md`.
+
+### 2026-11-23 C125745 frame-48 qualified primary CPU proof
+
+The frame-48 timing primary now passes exact current-runtime positive/missing-source compatibility, recorded-only saved processing, three synthetic physical classifier outcomes and saved-receipt-bound lifecycle. Hash-bound proof bytes are in the returned sweep index, now 1,488,201 bytes after lossless construction compression; 58 package tests, pinned preflight and scoped nonready preparation check pass. C125745 remains partial pending its remaining qualified sweep candidates and canonical physical, delivery and comparison bindings. See its `HANDOFF.md`. No Native physical or legal acceptance is claimed.
+
+The 8,612-file transient inventory came from twelve generated Python cache files under C125745; those caches were removed. Final returned inventory is 8,600 files, with no oversized files or whitespace/conflict-marker violations in changed text. The scoped check passes after cleanup.
+
+### 2026-11-23 C125745 qualified hold primary CPU proofs
+
+The qualified 0-, 8- and 16-frame hold primaries now pass exact current-runtime positive/missing-source compatibility, recorded-only saved processing, synthetic three-outcome physical classifier checks, and saved-receipt-bound lifecycle checks on separate 135-frame fixtures. All six qualified sweep primaries now have these CPU proofs. The returned sweep index binds their exact bytes and hashes at 1,807,960 bytes; 59 package tests, pinned preflight and scoped nonready check pass. C125745 remains partial pending four qualified fallback matrices, canonical delivery/comparison bindings and remaining legal-judgment sweeps. See its `HANDOFF.md`.
+
+### 2026-11-23 C125745 frame-48 fallback matrix
+
+Constructed three distinct qualified frame-48 timing fallbacks and passed exact offline, current-runtime positive/missing-source compatibility, recorded-only saved processing, synthetic three-outcome physical classifier and saved-receipt-bound lifecycle checks for each. Exact bytes and hashes are bound in the returned sweep index, now 1,261,476 bytes after lossless receipt compression. The 60-test suite passes. C125745 remains partial pending nine hold-point fallback candidates, canonical delivery/comparison bindings and remaining judgment sweeps. See its `HANDOFF.md`.
