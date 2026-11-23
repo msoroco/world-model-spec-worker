@@ -23,7 +23,12 @@ def run():
         for candidate in [{'id': 'primary', 'construction_sha256': entry['construction_sha256']},
                           *entry['candidates']]:
             ident = candidate['id']
-            output = ROOT / '.runtime-work' / ('c229398-offline-v5-' + suffix + '-' + ident)
+            version = 5
+            while (ROOT / '.runtime-work' /
+                   ('c229398-offline-v' + str(version) + '-' + suffix + '-' + ident)).exists():
+                version += 1
+            output = ROOT / '.runtime-work' / (
+                'c229398-offline-v' + str(version) + '-' + suffix + '-' + ident)
             log = PACKAGE / 'draft-offline-logs' / suffix / (ident + '.log')
             log.parent.mkdir(parents=True, exist_ok=True)
             command = [str(ROOT / '.venv-cpu/bin/python'), str(ROOT / 'runtime.py'),

@@ -66,7 +66,14 @@ def fixture(folder, construction, target):
             trace.write(json.dumps({'frame': frame, 'time_s': time_s,
                                     'position': {'x': 0.0, 'y': maximum_y-0.5,
                                                  'z': 0.0},
+                                    'position_m': [0.0, maximum_y-0.5, 0.0],
                                     'heading_deg': 0.0, 'speed_mps': 0.0,
+                                    'speed_mph': 0.0,
+                                    'velocity_mps': [0.0, 0.0, 0.0],
+                                    'control': {'brake': 1.0, 'gear': 0,
+                                                'hand_brake': True, 'reverse': False,
+                                                'steer': 0.0, 'throttle': 0.0},
+                                    'synthetic_diagnostic': True,
                                     'speed_source_kind': 'synthetic_native_sample'}) + '\n')
             mapping.write(json.dumps({'video_frame': index, 'carla_frame': frame,
                                       'native_frame': frame, 'time_s': time_s}) + '\n')
