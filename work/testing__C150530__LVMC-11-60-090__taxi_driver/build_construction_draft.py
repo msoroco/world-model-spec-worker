@@ -35,13 +35,21 @@ def build(case: str) -> dict:
     map_path = ROOT / "candidates" / (case + ".xodr")
     config = {
         "law_id": "LVMC-11-60-090", "cell_id": "C150530", "actor": "taxi_driver",
-        "selected_case_id": case_id, "case": {"case_id": case_id},
+        "selected_case_id": case_id,
+        "case": {"case_id": case_id,
+                 "recording_description": recording_description()},
         "rate_hz": 20, "duration_s": 35,
         "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
         "context_packet": "reviewed-context.json",
         "candidate_map": "candidates/" + case + ".xodr",
         "candidate_map_sha256": sha(map_path),
         "candidate_layout": "candidates/" + case + ".json",
+        "physical_completion": {
+            "criterion": "road_transition", "motion_source": "original-trace.jsonl",
+            "position_key": "position_m", "road_key": "road_id",
+            "destination_road": 12 if case == "near_stand_straight" else 11,
+            "minimum_progress_m": 1.0,
+            "completion_goal_method": "Original approach-to-receiving-road transition; engineering attempt completion only."},
         "source_packets": [], "required_atoms": [],
         "documentary_status": "original designated-stand and notice sources unbound",
     }
@@ -77,6 +85,8 @@ def main() -> None:
                         "measurement_contract": (Path("cases") / case /
                                                  "selected-measurement-contract.json").as_posix(),
                         "measurement_procedure": {"entrypoint": "saved_case_analysis.py"},
+                        "fixture_recipe": (Path("work") / ASSIGNMENT / "cases" / case /
+                                           "fixture-recipe.json").as_posix(),
                         "proof_status": "draft_offline_only"})
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
                 "runtime_manifest_sha256": sha(REPO / "runtime" / "SOURCE-MANIFEST.json"),

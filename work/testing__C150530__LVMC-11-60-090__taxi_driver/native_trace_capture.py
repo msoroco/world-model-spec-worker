@@ -50,6 +50,8 @@ class TraceCapture:
         row = {"frame": int(snapshot.frame),
                "time_s": float(snapshot.timestamp.elapsed_seconds),
                "x_m": float(transform.location.x), "y_m": float(transform.location.y),
+               "position_m": [float(transform.location.x), float(transform.location.y),
+                              float(transform.location.z)],
                "yaw_deg": float(transform.rotation.yaw),
                "road_id": int(waypoint.road_id), "lane_id": int(waypoint.lane_id)}
         self.handle.write(json.dumps(row, separators=(",", ":")) + "\n")

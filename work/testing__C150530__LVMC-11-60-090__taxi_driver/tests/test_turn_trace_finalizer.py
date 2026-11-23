@@ -22,7 +22,8 @@ def interpolate_path(points, case):
     first_turn = points.index((-4, -1.75))
     last_turn = points.index((-1.75, -4))
     frames = [{"frame": 0, "time_s": 0.0, "x_m": points[0][0],
-               "y_m": points[0][1], "yaw_deg": 0.0,
+               "y_m": points[0][1], "position_m": [points[0][0], points[0][1], 0],
+               "yaw_deg": 0.0,
                "road_id": 10, "lane_id": -1}]
     for segment, (start, end) in enumerate(zip(points, points[1:]), 1):
         distance = math.dist(start, end)
@@ -35,6 +36,8 @@ def interpolate_path(points, case):
             frames.append({"frame": number, "time_s": round(number / 20, 4),
                            "x_m": start[0] + ratio * (end[0] - start[0]),
                            "y_m": start[1] + ratio * (end[1] - start[1]),
+                           "position_m": [start[0] + ratio * (end[0] - start[0]),
+                                          start[1] + ratio * (end[1] - start[1]), 0],
                            "yaw_deg": yaw, "road_id": road, "lane_id": -1})
     return frames
 
@@ -111,7 +114,9 @@ class SavedNativeTraceTest(unittest.TestCase):
         points = route_points(layout)
         first_junction = points.index((-4, -1.75))
         self.rows = [{"frame": 0, "time_s": 0.0, "x_m": points[0][0],
-                      "y_m": points[0][1], "yaw_deg": 0.0,
+                      "y_m": points[0][1],
+                      "position_m": [points[0][0], points[0][1], 0],
+                      "yaw_deg": 0.0,
                       "road_id": 10, "lane_id": -1}]
         for segment, (start, end) in enumerate(zip(points, points[1:]), 1):
             pieces = math.ceil(math.dist(start, end) / 0.5)
@@ -122,6 +127,8 @@ class SavedNativeTraceTest(unittest.TestCase):
                 self.rows.append({"frame": number, "time_s": round(number / 20, 4),
                                   "x_m": start[0] + ratio * (end[0] - start[0]),
                                   "y_m": start[1] + ratio * (end[1] - start[1]),
+                                  "position_m": [start[0] + ratio * (end[0] - start[0]),
+                                                 start[1] + ratio * (end[1] - start[1]), 0],
                                   "yaw_deg": 0.0, "road_id": road, "lane_id": -1})
         self.write_sources()
         result = self.measured()
@@ -156,6 +163,7 @@ class SavedNativeTraceTest(unittest.TestCase):
 
     def test_teleport_rejected_even_with_updated_seal(self):
         self.rows[5]["x_m"] += 3
+        self.rows[5]["position_m"][0] = self.rows[5]["x_m"]
         self.write_sources()
         with self.assertRaisesRegex(ValueError, "teleports"):
             self.measured()
@@ -190,6 +198,7 @@ class SavedNativeTraceTest(unittest.TestCase):
     def test_missing_stand_departure_rejected(self):
         for row in self.rows:
             row["y_m"] += 2.75
+            row["position_m"][1] = row["y_m"]
         self.write_sources()
         with self.assertRaisesRegex(ValueError, "begin at candidate stand"):
             self.measured()
@@ -212,7 +221,7 @@ class SavedNativeTraceTest(unittest.TestCase):
 
         def get_transform():
             row = rows[holder.index]
-            return SimpleNamespace(location=SimpleNamespace(x=row["x_m"], y=row["y_m"]),
+            return SimpleNamespace(location=SimpleNamespace(x=row["x_m"], y=row["y_m"], z=0),
                                    rotation=SimpleNamespace(yaw=row["yaw_deg"]))
 
         return SimpleNamespace(get_snapshot=get_snapshot, get_map=get_map),\

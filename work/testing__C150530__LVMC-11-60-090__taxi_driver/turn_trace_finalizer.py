@@ -46,6 +46,13 @@ def _samples(path: Path) -> list[dict]:
         if any(not isinstance(row[key], (int, float)) or not math.isfinite(row[key])
                for key in ("time_s", "x_m", "y_m", "yaw_deg")):
             raise ValueError("nonfinite original motion sample")
+        point = row.get("position_m")
+        if (not isinstance(point, list) or len(point) != 3 or
+                any(not isinstance(value, (int, float)) or not math.isfinite(value)
+                    for value in point) or
+                abs(point[0] - row["x_m"]) > 1e-6 or
+                abs(point[1] - row["y_m"]) > 1e-6):
+            raise ValueError("original position vector differs")
         if row["lane_id"] != -1 or row["road_id"] not in (10, 110, 11, 120, 12):
             raise ValueError("original sample leaves candidate one-way route")
         if rows:
