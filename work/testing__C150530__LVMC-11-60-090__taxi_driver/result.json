@@ -40,11 +40,29 @@
       "exit_code": 0,
       "log": "queue-proof.log",
       "sha256": "a1ba870009c79cfda4b274bd7375f77d22b5f7602021d0470b31b8499be2708b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/bind_post_capture.py",
+      "exit_code": 0,
+      "log": "post-capture-bind.log",
+      "sha256": "1c0c35eafcee310cd89aa053e0267f35fb8cf0287aa2331ed12eabcccf0dd9d0"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c150530-post-capture-validation-output\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/validate_canonical_draft.py",
+      "exit_code": 0,
+      "log": "canonical-post-capture-validation.log",
+      "sha256": "d73a257e3afbb104c0d6f751a97c653559d40c178a22a287572aea62d58c6adf"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c150530-post-capture-tests-output\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150530__LVMC-11-60-090__taxi_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-post-capture-tests.log",
+      "sha256": "7b28036ec096ae6a62d6f0e3d351e4921670d2db007e7f63d5945e59bbb27f22"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact cases pass canonical execution, semantic, compatibility and independent delivery-acceptance contract validation. Diagnostic audit positives and stale-pixel negatives pass; the partial queue has three exact dispatch rows and two comparison commands with CPU structure proof. The complete shared batch queue and local integration proof remain worker-owned CPU work; genuine source records, actual CARLA motion and reviewed original pixels remain unbound. Status partial; no real delivery acceptance claimed.",
+  "reason": "Three exact canonical cases have current-construction saved-only CPU diagnostic receipts bound as post_capture, plus passing canonical contract validation and 98 focused tests. The complete shared batch queue and local integration proof remain worker-owned CPU work; genuine source records, actual CARLA motion and reviewed original pixels remain unbound. Status partial; no real delivery acceptance claimed.",
   "first_gpu_delivery_command": "python3.11 -m scenario_pipeline.worker_exchange --project \"$PROJECT\" --root \"$LOCAL_ROOT\" execute-delivery --repo \"$WORKER_REPO\" --batch full-test-delivery --db \"$DB\" --assignment testing__C150530__LVMC-11-60-090__taxi_driver --run \"$RUN\" --case testing__C150530__LVMC-11-60-090__taxi_driver__near_stand --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -65,6 +65,24 @@ class SourceTickCaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Native visibility probe"):
             capture.derive(value, GEOMETRY)
 
+    def test_rejects_visibility_origin_on_another_vehicle(self):
+        value = raw(0)
+        value["visibility_probe"]["origin_xy_m"] = [5, -8]
+        with self.assertRaisesRegex(ValueError, "ray origin differs"):
+            capture.derive(value, GEOMETRY)
+
+    def test_rejects_visibility_target_outside_through_body(self):
+        value = raw(0)
+        value["visibility_probe"]["target_xy_m"] = [50, 50]
+        with self.assertRaisesRegex(ValueError, "ray target differs"):
+            capture.derive(value, GEOMETRY)
+
+    def test_rejects_through_center_outside_original_body(self):
+        value = raw(0)
+        value["through_vehicle"]["center_xy_m"] = [50, 50]
+        with self.assertRaisesRegex(ValueError, "through center differs"):
+            capture.derive(value, GEOMETRY)
+
     def test_rejects_noncontiguous_frames(self):
         with tempfile.TemporaryDirectory() as directory:
             writer = capture.TickCapture(Path(directory), GEOMETRY, CONTEXT)

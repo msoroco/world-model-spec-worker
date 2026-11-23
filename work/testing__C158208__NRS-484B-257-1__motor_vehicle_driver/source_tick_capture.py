@@ -67,15 +67,21 @@ def derive(raw, geometry):
     probe = raw["visibility_probe"]
     if probe.get("source") != "native_raycast" or not isinstance(probe.get("occluded"), bool):
         raise ValueError("retained Native visibility probe required")
-    _point(probe["origin_xy_m"], "visibility origin")
-    _point(probe["target_xy_m"], "visibility target")
+    probe_origin = _point(probe["origin_xy_m"], "visibility origin")
+    probe_target = _point(probe["target_xy_m"], "visibility target")
     if not isinstance(raw.get("sign_present"), bool) or not raw["sign_present"]:
         raise ValueError("original governing sign observation required")
-    from shapely.geometry import Polygon
+    from shapely.geometry import Point, Polygon
     ego_shape = Polygon(ego_body)
     through_shape = Polygon(through_body)
     if not ego_shape.is_valid or ego_shape.area <= 0 or not through_shape.is_valid or through_shape.area <= 0:
         raise ValueError("original body polygons must be valid")
+    if not ego_shape.covers(Point(probe_origin)):
+        raise ValueError("visibility ray origin differs from original ego body")
+    if not through_shape.covers(Point(through_center)):
+        raise ValueError("through center differs from original through-vehicle body")
+    if not through_shape.covers(Point(probe_target)):
+        raise ValueError("visibility ray target differs from original through-vehicle body")
     occupied = through_shape.intersects(Polygon(polygon))
     front_station = max(_project(vertex, ego_origin, ego_axis) for vertex in ego_body)
     return {"frame": frame, "time_s": time,

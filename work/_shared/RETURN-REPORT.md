@@ -1317,3 +1317,21 @@ The next C147332 construction records the bus's oriented lower-body hull from ob
 ## 2026-11-23 C150041 delivery and saved-only binding checkpoint
 
 C150041's six exact manifest cases now bind their tested independent delivery audit contracts and source-hashed synthetic saved-only processing logs. The binder, pinned delivery-contract validator, 44-test suite, CPU preflight and exact partial static gate pass; `result.json` stays partial with 66 passing proof-log entries. The unexpanded source-backed orientation sweep still prevents executable-manifest validation. The complete strict batch gate exits 1 because partial/missing packages remain. See the C150041 HANDOFF for the reviewed Native site and sweep construction steps. No Git command was run.
+
+## 2026-11-23 C150530 canonical saved-only checkpoint
+
+C150530's three exact cases now bind current-construction diagnostic `process-saved` receipts and exact saved-only commands to canonical `post_capture` entries. Pinned canonical execution, semantic, compatibility and delivery-contract validation passes; 98 focused tests and CPU preflight pass. Exact static passes. `result.json` remains partial with hash-bound proof logs. Exact and full strict gates still fail on partial/missing packages; the complete queue, local integration and remaining assignment constructions are worker-owned CPU work. Original Native motion, genuine legal context and pixel review remain unverified. See `work/testing__C150530__LVMC-11-60-090__taxi_driver/HANDOFF.md`. No Git command was run.
+
+Final non-Git returned-file scan: 10,360 UTF-8 files; largest 1,846,854 bytes; zero oversize, trailing-whitespace or conflict-marker issues. Exact final static rerun exits 0 (`.runtime-work/c150530-post-capture-final-static.log`).
+
+## 2026-11-23 C153046 saved-only checkpoint
+
+The next batch assignment, C153046, now has eight exact current-construction synthetic saved-only receipts bound as canonical `post_capture` entries. Pinned saved finalization, Core/Lean conversion, rendering and decode pass for each case; canonical validation, 36 tests, CPU preflight and exact static check pass. `result.json` remains partial. The qualitative yielding source review, authoritative site packet, complete shared queue and local integration remain worker-owned; original physical and pixel acceptance are unverified. See `work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/HANDOFF.md`. No Git command was run.
+
+The complete strict batch rerun exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c153046-post-save.log`). Final non-Git scan: 10,374 UTF-8 returned files, largest 1,846,854 bytes; zero size, whitespace, conflict-marker or C150530/C153046 proof-hash issues.
+
+## 2026-11-23 C158208 visibility source checkpoint
+
+C158208 now rejects original visibility probes disconnected from the observed ego and through-vehicle bodies. Twenty-five tests, two rebuilt pinned offline bundles and two pinned physical-preparation receipts pass; CPU preflight and exact static pass. `result.json` remains partial because source-bound Native scene/camera acquisition, compatibility, saved processing and independent audits are still worker-owned. See `work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/HANDOFF.md`. No Git command was run.
+
+Both exact and full strict delivery-ready gates exit 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/c158208-raybind-strict.log`, `.runtime-work/full-strict-c158208-raybind.log`). Non-Git scan of 10,374 returned UTF-8 files found zero size, trailing-whitespace, conflict-marker or C158208 proof-hash issues; largest file is 1,846,854 bytes.

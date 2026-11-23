@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import tempfile
 
 from build_offline_draft import DIAGNOSTIC_GEOMETRY, HERE, ROOT
 from physical_completion import assess
@@ -53,8 +54,9 @@ def lifecycle(events: list[str]) -> None:
 def build() -> None:
     manifest_path = HERE / "execution-manifest.draft.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    scratch = ROOT / ".runtime-work" / "c158208-physical-fixtures"
-    scratch.mkdir(parents=True, exist_ok=True)
+    scratch_root = ROOT / ".runtime-work" / "c158208-physical-fixtures"
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    scratch = Path(tempfile.mkdtemp(prefix="proof-", dir=scratch_root))
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         short = case_id.rsplit("__", 1)[-1]
