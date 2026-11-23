@@ -109,7 +109,10 @@ def analyze(root: Path, expected_signal_state="Off"):
     def before(a, b):
         return bool(a and b and a["time_s"] < b["time_s"])
     ego_stop_before_entry = before(first_stop["ego"], first_entry["ego"])
-    earlier_stop_precedes_ego = before(first_stop["earlier"], first_stop["ego"])
+    # The rolling comparison has no ego stop. Compare its earlier vehicle's
+    # completed stop with ego's first body entry instead.
+    earlier_stop_precedes_ego = before(
+        first_stop["earlier"], first_stop["ego"] or first_entry["ego"])
     occupant_inside_at_ego_entry = bool(first_entry["ego"] and any(
         s["frame"] == first_entry["ego"]["frame"] and s["occupant"]["body_in_intersection"]
         for s in samples))

@@ -1,0 +1,117 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
+  "selected_case_ids": [
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal"
+  ],
+  "requirements": [
+    {
+      "requirement": "Observe all installed, uncovered governing vehicular heads and their Off or explicit operative state at ego entry",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "signal_states",
+      "method": "measure_signal_states",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "Identify the marked stop-line reference on the governed ego approach",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "stop_reference",
+      "method": "measure_stop_reference",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "Measure ego full halt at the marked line before complete-body intersection entry",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "ego_full_halt",
+      "method": "measure_ego_full_halt",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 2
+    },
+    {
+      "requirement": "Determine whether the distinct earlier vehicle completed its line stop before ego",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "prior_stop",
+      "method": "measure_prior_stop",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 3
+    },
+    {
+      "requirement": "Measure distinct occupant complete-body presence when ego enters the intersection",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "intersection_occupancy",
+      "method": "measure_intersection_occupancy",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 4
+    },
+    {
+      "requirement": "Retain post-stop or rolling motion samples without assigning a cautious-proceeding verdict",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "post_stop_motion",
+      "method": "measure_post_stop_motion",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 5
+    },
+    {
+      "requirement": "Retain original signal-view and occluder sight-source context without claiming physical visibility",
+      "source": "NRS 484B.250(4); inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "sight_context",
+      "method": "measure_sight_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 6
+    }
+  ],
+  "negative": {
+    "remove": [
+      "junction_context.json"
+    ],
+    "error_contains": "Missing required source: junction_context.json"
+  }
+}

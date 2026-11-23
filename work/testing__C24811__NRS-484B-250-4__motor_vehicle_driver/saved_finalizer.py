@@ -4,6 +4,7 @@ This module derives observations and source hashes. It does not establish
 statutory inoperability, cautious motion, yielding or physical acceptance.
 """
 
+import argparse
 import hashlib
 import json
 import os
@@ -20,6 +21,62 @@ REQUIRED = ("config.json", "trace.jsonl", "vehicle_signal_history.jsonl",
             "capture/manifest.json", "capture-seal.json",
             *(name+".mkv" for name in CAMERAS))
 PREFIX = "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__"
+MEASUREMENT_INPUTS = ("vehicle_signal_history.jsonl", "video_frames.jsonl",
+                      "junction_context.json")
+
+
+def measure_signal_states(report, context):
+    return {"state": report["expected_governing_signal_state"],
+            "governing_head_ids": report["signal_head_ids"],
+            "installed_uncovered_context": all(
+                head["installed"] and head["uncovered"]
+                for head in context["signal_heads"])}
+
+
+def measure_stop_reference(report, context):
+    return "marked_stop_line" if context["stop_line_exists"] else "none"
+
+
+def measure_ego_full_halt(report, context):
+    return report["ego_stopped_before_entry_observed"]
+
+
+def measure_prior_stop(report, context):
+    return report["distinct_other_stopped_earlier_observed"]
+
+
+def measure_intersection_occupancy(report, context):
+    return {"first_body_entry": report["first_body_entry"],
+            "occupant_inside_at_ego_entry":
+                report["distinct_occupant_inside_at_ego_entry_observed"]}
+
+
+def measure_post_stop_motion(report, context):
+    stop = report["first_full_halt"]["ego"]
+    later = [row for row in report["samples"]
+             if stop is not None and row["frame"] > stop["frame"]]
+    return {"ego_full_halt_frame": stop["frame"] if stop else None,
+            "samples_after_halt": len(later),
+            "first_post_halt_speed_mps": later[0]["ego"]["speed_mps"]
+                if later else None,
+            "complete_capture_samples": len(report["samples"])}
+
+
+def measure_sight_context(report, context):
+    return {"occluder_geometry_source": context["occluder_geometry_source"],
+            "sight_ray_source": context["sight_ray_source"],
+            "signal_head_video_source": context["signal_head_video_source"]}
+
+
+MEASUREMENT_METHODS = {
+    "signal_states": measure_signal_states,
+    "stop_reference": measure_stop_reference,
+    "ego_full_halt": measure_ego_full_halt,
+    "prior_stop": measure_prior_stop,
+    "intersection_occupancy": measure_intersection_occupancy,
+    "post_stop_motion": measure_post_stop_motion,
+    "sight_context": measure_sight_context,
+}
 
 
 def _sha(path):
@@ -47,7 +104,7 @@ def validate_sources(attempt):
     attempt = Path(attempt)
     for name in REQUIRED:
         if not (attempt/name).is_file():
-            raise ValueError("Missing saved original source: " + name)
+            raise ValueError("Missing required source: " + name)
     cfg = json.loads((attempt/"config.json").read_text())
     case_id = cfg.get("selected_case_id")
     if (cfg.get("cell_id") != "C24811" or cfg.get("law_id") != "NRS-484B-250-4" or
@@ -97,8 +154,9 @@ def finalize_saved(attempt, output):
     """Create a fresh saved result only after independent source checks pass."""
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     output_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
-    repo = Path(__file__).resolve().parents[2]
-    if (not output_root or
+    repo = next((parent for parent in Path(__file__).resolve().parents
+                 if (parent/"batch.json").is_file()), None)
+    if (repo is None or not output_root or
             not Path(output_root).resolve().is_relative_to(repo/".runtime-work")):
         raise ValueError("Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     if (not attempt.is_relative_to(Path(output_root).resolve()) or
@@ -167,6 +225,11 @@ def finalize_saved(attempt, output):
     write_result(attempt,result)
     analysis = {"format":"worker-analysis-report","case_id":proof["case_id"],
                 "source_report":report,"source_hashes":proof["source_hashes"],
+                "measurements":{key:{"method":method.__name__,
+                    "value":method(report,json.loads((attempt/"junction_context.json").read_text())),
+                    "sources":{name:report["sources"][name]
+                               for name in MEASUREMENT_INPUTS}}
+                    for key,method in MEASUREMENT_METHODS.items()},
                 "camera_frame_counts":proof["camera_frame_counts"],
                 "physical_checks":result["physical_checks"],
                 "realized_observables":result["realized_observables"],
@@ -176,3 +239,15 @@ def finalize_saved(attempt, output):
                 "legal_verdict_asserted":False,"analysis_complete":True}
     output.write_text(json.dumps(analysis,indent=2,allow_nan=False)+"\n")
     return analysis
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--attempt", required=True)
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
+    finalize_saved(args.attempt, args.output)
+
+
+if __name__ == "__main__":
+    main()
