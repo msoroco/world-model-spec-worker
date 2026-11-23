@@ -1,0 +1,93 @@
+"""Independent saved-source integrity audit for exact 80 mph attempts.
+
+This is a preparation check. Hashes and frame joins do not establish actual
+pixels, public-way status, physical completion, or a legal speed judgment.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+from speed_boundary import EXPECTED_FRAMES, measure
+
+CASE_PREFIX = "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__"
+CAMERAS = ("front", "front_left", "front_right", "rear")
+
+
+def _read(path: Path) -> dict:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("source document is not an object")
+    return value
+
+
+def _sealed(attempt: Path, entry: dict, label: str) -> tuple[Path, str]:
+    if not isinstance(entry, dict) or set(entry) != {"path", "sha256"}:
+        raise ValueError(f"{label} binding incomplete")
+    name, digest = entry["path"], entry["sha256"]
+    if (not isinstance(name, str) or not name or Path(name).is_absolute() or
+            ".." in Path(name).parts or not isinstance(digest, str) or
+            len(digest) != 64):
+        raise ValueError(f"{label} binding invalid")
+    path = attempt / name
+    if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(attempt.resolve()):
+        raise ValueError(f"{label} source missing or escapes attempt")
+    observed = hashlib.sha256(path.read_bytes()).hexdigest()
+    if observed != digest:
+        raise ValueError(f"{label} source hash differs")
+    return path, observed
+
+
+def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = False) -> dict:
+    """Require original trace, frame map, four media files, and receipt joins."""
+    attempt = Path(attempt)
+    if case_id not in {CASE_PREFIX + suffix for suffix in ("below", "equal", "above")}:
+        raise ValueError("unknown exact case")
+    index = _read(attempt / "capture-index.json")
+    if (index.get("format") != "c10301-capture-index-v1" or
+            index.get("case_id") != case_id or
+            index.get("frame_count") != EXPECTED_FRAMES or
+            type(index.get("diagnostic_fixture")) is not bool):
+        raise ValueError("capture index identity or frame count differs")
+    if index["diagnostic_fixture"] and not allow_diagnostic:
+        raise ValueError("diagnostic fixture cannot enter delivery audit")
+    speed = measure(attempt, case_id)
+    if speed["diagnostic_fixture"] != index["diagnostic_fixture"]:
+        raise ValueError("speed and capture provenance differ")
+    motion_path, motion_hash = _sealed(attempt, index.get("native_motion"), "Native motion")
+    motion = _read(motion_path)
+    if (motion.get("case_id") != case_id or
+            motion.get("native_run_id") != speed["native_run_id"] or
+            motion.get("speed_source_sha256") != speed["source_sha256"] or
+            motion.get("diagnostic_fixture") != index["diagnostic_fixture"]):
+        raise ValueError("Native motion and capture index differ")
+    map_path, map_hash = _sealed(attempt, index.get("frame_map"), "frame map")
+    frame_map = _read(map_path)
+    frames = frame_map.get("frames")
+    if (frame_map.get("case_id") != case_id or
+            frame_map.get("native_run_id") != speed["native_run_id"] or
+            not isinstance(frames, list) or len(frames) != EXPECTED_FRAMES):
+        raise ValueError("original frame map incomplete")
+    origin = frames[0].get("frame") if isinstance(frames[0], dict) else None
+    if type(origin) is not int or origin < 0:
+        raise ValueError("original frame origin invalid")
+    for i, row in enumerate(frames):
+        if (not isinstance(row, dict) or row.get("frame") != origin + i or
+                row.get("camera_frames") != {camera: origin + i for camera in CAMERAS}):
+            raise ValueError("camera and original frame join differs")
+    cameras = index.get("cameras")
+    if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
+        raise ValueError("four camera bindings required")
+    camera_hashes = {}
+    for camera in CAMERAS:
+        _, camera_hashes[camera] = _sealed(attempt, cameras[camera], camera)
+    return {"format": "c10301-source-integrity-v1", "case_id": case_id,
+            "native_run_id": speed["native_run_id"], "frame_count": EXPECTED_FRAMES,
+            "motion_sha256": motion_hash, "frame_map_sha256": map_hash,
+            "camera_sha256": camera_hashes,
+            "diagnostic_fixture": index["diagnostic_fixture"],
+            "source_integrity_passed": True, "full_video_decode": False,
+            "actual_pixels": False, "physical_completion": False,
+            "legal_judgment": "unresolved"}

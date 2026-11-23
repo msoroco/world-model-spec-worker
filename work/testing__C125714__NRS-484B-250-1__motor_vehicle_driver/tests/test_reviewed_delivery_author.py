@@ -52,6 +52,12 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             receipts = Path(proof) / "preflight"
             result = author(source, ROOT / "candidate-map.xodr", output, receipts)
             self.assertEqual(len(result["cases"]), 7)
+            self.assertTrue(all(case["kind"] == "delivery" and
+                                case["native_handoff"]["python_env_var"] == "CARLA_PYTHON" and
+                                case["post_capture"]["recorded_only"] is True and
+                                case["case_id"] in case["post_capture"]["command"] and
+                                case["acquisition"]
+                                for case in result["cases"]))
             self.assertTrue(all((output / suffix / "construction.json").is_file()
                                 for suffix in SUFFIXES))
             self.assertTrue(all((receipts / suffix / "preflight.json").is_file()

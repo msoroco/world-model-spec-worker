@@ -41,6 +41,18 @@ class NativeDriverTests(unittest.TestCase):
         self.assertFalse(state["other_cleared"])
         self.assertEqual(state["request"],"brake")
 
+    def test_reentry_after_clearance_aborts_live_controller(self):
+        s = scene()
+        state = {}
+        for frame, other_y in enumerate((-2, 0, 2)):
+            state = control_step(s, state, frame=frame, ego_body=rectangle(-2),
+                                 other_body=rectangle(other_y))
+        self.assertTrue(state["other_cleared"])
+        self.assertEqual(state["request"], "proceed")
+        with self.assertRaisesRegex(ValueError, "reentered crossing"):
+            control_step(s, state, frame=3, ego_body=rectangle(-2),
+                         other_body=rectangle(0))
+
     def test_advance_request_and_other_later_release_ego(self):
         for first, response in ((True, "advance"), (False, "yield")):
             s=scene();s["other_entered_first"]=first;s["ego_response_request"]=response

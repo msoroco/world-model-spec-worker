@@ -19,11 +19,17 @@ class NativeSceneTest(unittest.TestCase):
             p.write_text(data)
             return {'path':name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
         self.ref = ref
-        self.refs = [ref('map.json','{}'),ref('vehicle_signal.json','{}'),ref('pedestrian_signal.json','{}')]
+        self.refs = [
+          ref('map.json',json.dumps({'route_id':'crossing-1',
+            'pedestrian_route_xy':[[-2,1],[-1,1],[1,1],[3,1]],
+            'highway_boundary_xy':[[0,0],[4,0],[4,4],[0,4]]})),
+          ref('vehicle_signal.json',json.dumps({'head_id':'head-1','official':True,
+            'sole_green_arrow_aspect':'green-left-arrow'})),
+          ref('pedestrian_signal.json',json.dumps({'device_id':'ped-1','governs_route_id':'crossing-1'}))]
         self.site = {'cell_id':'C109171','actor':'pedestrian','original_sources':self.refs,
           'map_source_path':'map.json','vehicle_signal_source_path':'vehicle_signal.json',
           'pedestrian_device_source_path':'pedestrian_signal.json','official_vehicle_head_id':'head-1',
-          'pedestrian_device_id':'ped-1','pedestrian_device_governs_route':True,
+          'pedestrian_device_id':'ped-1','pedestrian_route_id':'crossing-1','pedestrian_device_governs_route':True,
           'pedestrian_faces_vehicle_head':True,'sole_green_arrow_aspect':'green-left-arrow',
           'pedestrian_route_xy':[[-2,1],[-1,1],[1,1],[3,1]],
           'highway_boundary_xy':[[0,0],[4,0],[4,4],[0,4]]}
@@ -43,7 +49,9 @@ class NativeSceneTest(unittest.TestCase):
         self.assertFalse(mod.inside_highway([-0.01,1],self.site['highway_boundary_xy']))
     def test_entry_without_other_permission(self):
         ref=self.ref('events.json',json.dumps(self.events()))
-        self.assertFalse(mod.measure_attempt(self.site,self.root,ref)['first_highway_entry']['separate_walk_indication'])
+        entry=mod.measure_attempt(self.site,self.root,ref)['first_highway_entry']
+        self.assertFalse(entry['separate_walk_indication'])
+        self.assertEqual(entry['sampled_entry_bracket_frames'],[1,2])
     def test_entry_after_other_permission(self):
         ref=self.ref('events.json',json.dumps(self.events('WALK')))
         self.assertTrue(mod.measure_attempt(self.site,self.root,ref)['first_highway_entry']['separate_walk_indication'])
@@ -68,10 +76,27 @@ class NativeSceneTest(unittest.TestCase):
         self.site['pedestrian_device_governs_route']=False
         with self.assertRaisesRegex(mod.SourceError,'route relation'):
             mod.verify_site(self.site,self.root)
+    def test_reject_authored_route_not_in_map_packet(self):
+        self.site['pedestrian_route_xy'][1][1]=2
+        with self.assertRaisesRegex(mod.SourceError,'route differs from original map'):
+            mod.verify_site(self.site,self.root)
+    def test_reject_authored_arrow_not_in_signal_packet(self):
+        self.site['sole_green_arrow_aspect']='green-right-arrow'
+        with self.assertRaisesRegex(mod.SourceError,'arrow aspect differs from original source'):
+            mod.verify_site(self.site,self.root)
+    def test_reject_authored_device_not_governing_route(self):
+        self.site['pedestrian_route_id']='other-crossing'
+        with self.assertRaisesRegex(mod.SourceError,'route identity differs from original map'):
+            mod.verify_site(self.site,self.root)
     def test_reject_preentered_capture(self):
         rows=self.events();rows[0]['pedestrian_xy']=[1,1]
         ref=self.ref('events.json',json.dumps(rows))
         with self.assertRaisesRegex(mod.SourceError,'already in highway'):
+            mod.measure_attempt(self.site,self.root,ref)
+    def test_reject_dropped_frame(self):
+        rows=self.events();rows[2]['frame']=3;rows[3]['frame']=4
+        ref=self.ref('events.json',json.dumps(rows))
+        with self.assertRaisesRegex(mod.SourceError,'frame sequence invalid'):
             mod.measure_attempt(self.site,self.root,ref)
 
 if __name__=='__main__':

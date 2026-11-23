@@ -18,18 +18,20 @@ The selected branch has four planned cases in `case-plan.json`: `__below_50ft` (
 
 `comparison_audit.py` independently checks all three original numeric measurements and the censored no-merge contrast, requiring shared site, receiving traffic, entry route and camera bindings. Negative fixture tests reject missing original traces, changed traffic, censored numeric cases and false no-merge markers.
 
-`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/tests -v` passed 23 source-shaped fixture checks in `cpu-construction-tests.log` (SHA256 `f658534224ee7c3f507c95347907b940f6c306d12e5e72a7bc795cff00c4aa79`). These fixtures exercise software geometry and numeric boundaries; they are not original Native measurements.
+`delivery_audit.py::audit_saved_delivery` independently reopens and hashes the original trace, highway review, lane-design packet and 20 Hz frame map; it joins every original trace frame to all four camera source names and recomputes the delivered turn/merge frames and distance. Its read-only CPU tests reject a tampered trace, substituted result arithmetic, changed context source, missing camera, missing frame and path escape. This is a saved-source audit implementation, not a positive compatibility receipt or physical acceptance.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/tests -v` passed 29 source-shaped fixture checks in `cpu-construction-tests.log` (SHA256 `011585dfef7b3a723278bde148480d65ffc05166ed48f1d0fc8e53cc4c48daa9`). These fixtures exercise software geometry, numeric boundaries and source integrity; they are not original Native measurements.
 
 ## Next CPU actions
 
 1. Source-gate a Native map site: original lane topology must establish the single exclusive bidirectional center turn lane and a through-lane merge; review a public-highway source. The exported cell label alone does not establish these facts.
 2. Integrate the controller with the exact CARLA runner and four-camera capture, original sample acquisition and saved finalizer. Keep the four target cases and source-bound reference convention; verify both road approach directions.
-3. Complete exact semantic proposals, offline and positive/negative compatibility receipts, saved-only processing, delivery/comparison audits, and risk-based fallback only after a measurable physical risk has a tested alternative.
+3. Wire the read-only delivery audit to the case-specific saved finalizer and original Native acquisition files; complete exact semantic proposals, offline and positive/negative compatibility receipts, saved-only processing and risk-based fallback only after a measurable physical risk has a tested alternative.
 4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-223-3c__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing CPU gate. Keep original inputs and runtime frozen.
 
 ## Proven checks and dependency boundary
 
-`.venv-cpu/bin/python runtime.py preflight` passed again with the pinned CPU environment, FFmpeg and Lean. The 23 assignment fixture tests passed. These are construction checks, not delivery proofs. CARLA is needed only after the CPU package is ready for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+`.venv-cpu/bin/python runtime.py preflight` passed again with the pinned CPU environment, FFmpeg and Lean. The 29 assignment fixture tests passed. These are construction and saved-source audit checks, not exact delivery proofs. CARLA is needed only after the CPU package is ready for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
 

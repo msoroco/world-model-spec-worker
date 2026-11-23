@@ -222,12 +222,37 @@ def author(source_root, map_path, output_root, proof_root):
         diagnostic_folder = ROOT if suffix == "precedence" else ROOT / "cases" / suffix
         contract_path = folder / "measurement-contract.json"
         contract_path.write_bytes((diagnostic_folder / "measurement-contract.json").read_bytes())
+        measurement = json.loads(contract_path.read_text())
+        acquisition = {
+            requirement["requirement"]: {
+                "entrypoint": "native_capture.py",
+                "method": "original Native frame acquisition, retained reviewed crossing context and saved body-history analysis",
+                "evidence": ", ".join(requirement["inputs"]),
+            }
+            for requirement in measurement["requirements"]
+        }
+        saved_command = (
+            f"PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved "
+            f"--manifest work/{ROOT.name}/execution-manifest.json "
+            f"--case {scene['case_id']} --attempt \"$ATTEMPT\" "
+            "--output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" "
+            "--validator \"$VALIDATOR\""
+        )
         manifest["cases"].append({"case_id": scene["case_id"],
+                                  "kind": "delivery",
                                   "construction": str(path.relative_to(output_root)),
                                   "construction_sha256": digest(path),
                                   "measurement_contract": str(contract_path.relative_to(output_root)),
                                   "measurement_procedure": {"entrypoint": "analysis.py"},
                                   "fixture_recipe": str((diagnostic_folder / "diagnostic-recipe.json").relative_to(REPO)),
+                                  "acquisition": acquisition,
+                                  "native_handoff": {"python_env_var": "CARLA_PYTHON",
+                                                     "host_env_var": "CARLA_HOST",
+                                                     "port_env_var": "CARLA_PORT"},
+                                  "post_capture": {"recorded_only": True,
+                                                   "command": saved_command,
+                                                   "feedback_command": saved_command,
+                                                   "proof_scope": "reviewed-source delivery; passing saved-only test receipt still required"},
                                   "candidate_risk": {"status": "physical", "reason":
                                       "An initial actor spawn can be occupied before capture."},
                                   "candidates": [{"id": "fallback1",

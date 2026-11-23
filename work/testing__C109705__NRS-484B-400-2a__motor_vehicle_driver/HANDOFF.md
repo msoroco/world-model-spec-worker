@@ -26,11 +26,14 @@ required before physical dispatch; the module rejects missing or mismatched
 geometry. It has not run CARLA.
 
 `approach.py` requires original Native acquisition hashes for
-`intersection-context.json` and `approach-history.jsonl`, verifies consecutive
-20 Hz frames, measures every pre-entry full-body footprint relative to the
-oriented centerline and right-half road edge, and rejects comparisons with
-changed fixed conditions or reused original sources. Six focused CPU tests
-passed with `.venv-cpu/bin/python -m unittest discover -s
+`intersection-context.json`, `approach-history.jsonl` and `video_frames.jsonl`,
+verifies consecutive 20 Hz frames and all four synchronized camera identities,
+measures every pre-entry full-body footprint relative to the oriented centerline
+and right-half road edge, and requires an observed left-turn departure. Its
+source-bound comparison recomputes both sides, verifies exact near/far case
+identities and fixed context, rejects source reuse and right-half departures,
+and reports the measured difference without a legal cutoff. Thirteen focused CPU
+tests passed with `.venv-cpu/bin/python -m unittest discover -s
 work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v`;
 the exact hashed log is `cpu-approach-tests.log` in result.json. Assignment
 `--complete` static check passed. Exact
@@ -38,6 +41,24 @@ the exact hashed log is `cpu-approach-tests.log` in result.json. Assignment
 testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --complete
 --require-delivery-ready` still rejects the partial package with
 `Preparation acceptance failed: partial/missing packages remain`.
+
+`accepted_source_review.py` independently verifies the frozen metadata hash
+and exact law/cell/actor/case joins for all four accepted recording IDs. The
+generated `accepted-source-inventory.json` has SHA256
+`42ed4114ba1dc441e3061736098db6549d5ac3f376871c1e780b4793310ea574`.
+It inventories the original trace, video and delivery-audit hashes and leaves
+physical coverage unresolved because none of those assets is present in this
+export. Tests reject stale metadata and a present but wrong original trace.
+
+Four exact primary bundles under `cases/` now inline the source-bound approach
+measurement, construction policy, runner preflight, case config and three bundle
+tests each. `execution-manifest.json` seals each construction and its pinned
+`runtime.py offline` receipt. All four offline commands passed without starting
+simulation; the returned logs are `cpu-offline-*.log`. These checks prove only
+bundle materialization and fixed case/camera/timing settings. `runner.py` still
+rejects Native execution until capture and source packet binding are authored.
+Each manifest entry records a concrete map geometry realization risk but has no
+tested fallback yet, so it remains partial.
 
 Next CPU work: obtain or construct a source-hashed Native map survey and exact
 runner for the four planned cases; add saved-only finalization and source-bound

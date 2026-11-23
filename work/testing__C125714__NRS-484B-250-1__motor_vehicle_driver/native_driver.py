@@ -63,6 +63,8 @@ def control_step(scene, state, *, frame, ego_body, other_body):
     bounds = scene["crossing"]["bounds_xy_m"]
     ego_within = _body_overlaps(ego_body, bounds)
     other_within = _body_overlaps(other_body, bounds)
+    if state.get("other_cleared", False) and other_within:
+        raise ValueError("Other vehicle reentered crossing after clearance")
     other_entered = state.get("other_entered", False) or other_within
     route = scene["other_route_xy_m"]
     delta = [route[-1][i]-route[0][i] for i in (0,1)]

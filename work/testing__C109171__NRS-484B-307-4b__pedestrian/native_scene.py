@@ -42,6 +42,23 @@ def verify_site(site, root):
     _require(site['pedestrian_device_source_path'] in [r['path'] for r in refs], 'pedestrian signal source unbound')
     _require(site['official_vehicle_head_id'] != site['pedestrian_device_id'], 'permission must be a separate device')
     _require(site['pedestrian_device_governs_route'] is True, 'pedestrian device route relation unverified')
+    def packet(path):
+        ref = next(r for r in refs if r['path'] == path)
+        value = json.loads(_source(ref, root).read_text())
+        _require(isinstance(value, dict), 'original site packet must be an object')
+        return value
+    map_packet = packet(site['map_source_path'])
+    head_packet = packet(site['vehicle_signal_source_path'])
+    device_packet = packet(site['pedestrian_device_source_path'])
+    _require(map_packet.get('highway_boundary_xy') == site['highway_boundary_xy'], 'highway boundary differs from original map')
+    _require(map_packet.get('pedestrian_route_xy') == site['pedestrian_route_xy'], 'pedestrian route differs from original map')
+    _require(map_packet.get('route_id') == site['pedestrian_route_id'], 'pedestrian route identity differs from original map')
+    _require(head_packet.get('head_id') == site['official_vehicle_head_id'] and head_packet.get('official') is True,
+             'official vehicle signal head differs from original source')
+    _require(head_packet.get('sole_green_arrow_aspect') == site['sole_green_arrow_aspect'], 'arrow aspect differs from original source')
+    _require(device_packet.get('device_id') == site['pedestrian_device_id'] and
+             device_packet.get('governs_route_id') == site['pedestrian_route_id'],
+             'pedestrian permission device differs from original source')
     route = site['pedestrian_route_xy']
     boundary = site['highway_boundary_xy']
     _require(len(route) >= 3 and len(boundary) >= 3, 'route and highway polygon required')
@@ -81,7 +98,7 @@ def measure_attempt(site, root, events_ref):
     records = []
     for row in events:
         frame = row['frame']
-        _require(isinstance(frame, int) and frame > previous, 'frame sequence invalid')
+        _require(isinstance(frame, int) and frame == previous+1, 'frame sequence invalid')
         previous = frame
         _require(row['vehicle_head_id'] == site['official_vehicle_head_id'], 'vehicle signal identity mismatch')
         _require(row['pedestrian_device_id'] == site['pedestrian_device_id'], 'pedestrian device identity mismatch')
@@ -91,9 +108,14 @@ def measure_attempt(site, root, events_ref):
         _require(sole_arrow, 'vehicle head is not sole green turn arrow')
         _require(row['pedestrian_facing_vehicle_head'] is True, 'facing not evidenced at frame')
         inside = inside_highway(row['pedestrian_xy'], site['highway_boundary_xy'])
+        if not records:
+            _require(not inside, 'first captured frame is already in highway')
         permission = row['pedestrian_device_indication'] == 'WALK'
         records.append({'frame':frame,'inside_highway':inside,'separate_walk_indication':permission})
         if inside and entry is None:
-            entry = {'frame':frame,'separate_walk_indication':permission,'pedestrian_xy':row['pedestrian_xy']}
+            _require(len(records) > 1 and not records[-2]['inside_highway'], 'entry has no outside bracket')
+            entry = {'frame':frame,'previous_outside_frame':records[-2]['frame'],
+                     'sampled_entry_bracket_frames':[records[-2]['frame'],frame],
+                     'separate_walk_indication':permission,'pedestrian_xy':row['pedestrian_xy']}
     _require(not records[0]['inside_highway'], 'first captured frame is already in highway')
     return {'first_highway_entry':entry,'frames':len(records),'sole_green_arrow_frames':len(records),'records':records,'original_sources':[events_ref]+site['original_sources']}

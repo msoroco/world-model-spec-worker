@@ -55,6 +55,10 @@ def audit(plan: dict, sources: dict[str, dict]) -> dict:
         if packet["case_id"] != case_id:
             raise ValueError("source packet case mismatch")
         packets[case_id] = packet
+    return _audit_packets(plan, packets, sources)
+
+
+def _audit_packets(plan: dict, packets: dict, sources: dict) -> dict:
     findings = []
     for comparison in plan["comparisons"]:
         comparison_id = comparison["comparison_id"]
@@ -72,3 +76,25 @@ def audit(plan: dict, sources: dict[str, dict]) -> dict:
                          "source_sha256": [sources[x]["sha256"] for x in comparison["case_ids"]]})
     return {"status": "source_consistency_passed", "findings": findings,
             "legal_judgment": "unresolved", "physical_acceptance": "not_assessed"}
+
+
+def audit_saved_attempts(plan: dict, attempt_roots: dict[str, str]) -> dict:
+    """Run the independent comparison from exact sealed saved attempts.
+
+    This branch accepts only original-shaped acquisition. Diagnostic fixture
+    packets remain useful for unit tests but cannot enter an accepted comparison.
+    """
+    from saved_measurement import comparison_projection
+
+    cases = {case["case_id"] for case in plan["cases"]}
+    if set(attempt_roots) != cases:
+        raise ValueError("saved attempts do not cover exact planned cases")
+    packets = {}
+    sources = {}
+    for case_id, root in attempt_roots.items():
+        packet = comparison_projection(Path(root), case_id)
+        if packet["source_kind"] != "original_saved_acquisition":
+            raise ValueError("comparison requires original saved acquisition")
+        packets[case_id] = packet
+        sources[case_id] = {"sha256": packet["source_packet_sha256"]}
+    return _audit_packets(plan, packets, sources)

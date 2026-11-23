@@ -30,5 +30,20 @@ class ControlTest(unittest.TestCase):
     def test_unknown_case_and_bad_speed_rejected(self):
         with self.assertRaises(ValueError):mod.target_control('other',self.site,(-2,1),self.control,self.vector)
         with self.assertRaises(ValueError):mod.target_control('arrow_early_entry',self.site,(-2,1),self.control,self.vector,3)
+    def test_follower_advances_without_backtracking_and_stops(self):
+        follower=mod.RouteFollower('arrow_walk_entry',self.site)
+        self.assertEqual(follower.control((-2,1),self.control,self.vector)['direction'],(1.0,0.0,0))
+        self.assertEqual(follower.control((-1,1),self.control,self.vector)['direction'],(1.0,0.0,0))
+        self.assertEqual(follower.next_index,2)
+        self.assertEqual(follower.control((1,1),self.control,self.vector)['direction'],(1.0,0.0,0))
+        self.assertEqual(follower.next_index,3)
+        self.assertEqual(follower.control((3,1),self.control,self.vector)['speed'],0)
+        self.assertEqual(follower.control((3.2,1),self.control,self.vector)['speed'],0)
+    def test_follower_rejects_bad_route_and_position(self):
+        with self.assertRaisesRegex(ValueError,'nonfinite coordinate'):
+            mod.RouteFollower('arrow_early_entry',{'pedestrian_route_xy':[[0,0],[float('nan'),1],[2,1]]})
+        follower=mod.RouteFollower('arrow_early_entry',self.site)
+        with self.assertRaisesRegex(ValueError,'nonfinite walker position'):
+            follower.control((float('inf'),1),self.control,self.vector)
 
 if __name__=='__main__':unittest.main()

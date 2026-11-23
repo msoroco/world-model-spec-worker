@@ -1,0 +1,83 @@
+{
+  "format": "worker-pedestrian-bypass-measurement-contract",
+  "assignment_id": "testing__C104081__NRS-484B-297-6__pedestrian",
+  "law_id": "NRS-484B-297-6",
+  "case_ids": [
+    "testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening",
+    "testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening",
+    "testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite",
+    "testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return",
+    "testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk"
+  ],
+  "source_packet": "source-packet.json",
+  "required_saved_sources": [
+    "site-survey.json",
+    "video_frames.jsonl",
+    "pedestrian_history.jsonl",
+    "obstruction_history.jsonl",
+    "traffic_history.jsonl"
+  ],
+  "frame_rate_hz": 20,
+  "measurements": [
+    {
+      "clause": "opening",
+      "observable": "source-bound sidewalk, adjacent highway and obstruction geometry",
+      "source": [
+        "site-survey.json",
+        "obstruction_history.jsonl"
+      ],
+      "method": "surveyed local-to-world transform and observed obstruction vertices; preserve impassability as unresolved judgment"
+    },
+    {
+      "clause": "(a)",
+      "observable": "lateral_distance_to_sidewalk_edge_m",
+      "source": [
+        "site-survey.json",
+        "pedestrian_history.jsonl"
+      ],
+      "method": "transform original walker body vertices; center-to-surveyed sidewalk edge for every highway frame; no lawful cutoff"
+    },
+    {
+      "clause": "(b)",
+      "observable": "pedestrian_direction",
+      "source": [
+        "site-survey.json",
+        "pedestrian_history.jsonl"
+      ],
+      "method": "signed longitudinal displacement compared with original sidewalk direction"
+    },
+    {
+      "clause": "(c)",
+      "observable": "designated_lane_used and intervening_barrier_bounds_local_m",
+      "source": [
+        "site-survey.json",
+        "pedestrian_history.jsonl",
+        "obstruction_history.jsonl"
+      ],
+      "method": "original body-center lane occupancy joined to observed barrier polygon; impassability remains unresolved"
+    },
+    {
+      "clause": "(d)",
+      "observable": "first_sidewalk_return_frame and return_center_local_m",
+      "source": [
+        "site-survey.json",
+        "video_frames.jsonl",
+        "pedestrian_history.jsonl"
+      ],
+      "method": "first observed sidewalk occupancy after bypass; practicability remains unresolved"
+    },
+    {
+      "clause": "due care context",
+      "observable": "nearest_traffic_distance_m",
+      "source": [
+        "traffic_history.jsonl"
+      ],
+      "method": "source-bound traffic distance history; no legal inference"
+    }
+  ],
+  "physical_and_legal_limitations": [
+    "Original Native survey and recorded acquisition are required for a real attempt",
+    "Fixture proof is diagnostic only",
+    "Due care, side-as-possible, impassability and practicability are unresolved legal judgments"
+  ]
+}

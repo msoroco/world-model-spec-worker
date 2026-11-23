@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from approach import body_position, compare, measure, validate_context
+from approach import body_position, compare, compare_original_attempts, measure, validate_context
 from construction import build, control
 
 
@@ -32,6 +32,30 @@ def body(y):
     return [[-20, y], [-19, y], [-19, y-1], [-20, y-1]]
 
 
+def write_attempt(path, *, missing_view=False, wrong_turn=False, lateral_y=-.6,
+                  case_suffix='near_centerline', kind='marked'):
+    (path/'intersection-context.json').write_text(json.dumps(context(kind)))
+    rows = [dict(frame=i, time_s=i*.05, road_id='approach', phase='approach',
+                 ego_heading_rad=0.0, ego_body_vertices_xy_m=body(lateral_y-i*.1))
+            for i in range(3)]
+    rows.extend(dict(frame=i, time_s=i*.05, road_id='departure', phase='departure',
+                     ego_heading_rad=(-1 if wrong_turn else 1.2),
+                     ego_body_vertices_xy_m=body(.3)) for i in range(3, 5))
+    (path/'approach-history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+    views=('overview', 'approach', 'reference_corner', 'driver_reference')
+    frames=[dict(frame=i, time_s=i*.05, camera_frames={name:i for name in views})
+            for i in range(len(rows))]
+    if missing_view:
+        del frames[1]['camera_frames']['approach']
+    (path/'video_frames.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in frames))
+    acquisition = {name: {'kind':'original_native',
+                          'sha256':hashlib.sha256((path/name).read_bytes()).hexdigest()}
+                   for name in ('intersection-context.json','approach-history.jsonl',
+                                'video_frames.jsonl')}
+    acquisition['case_id']='testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__'+case_suffix
+    (path/'acquisition.json').write_text(json.dumps(acquisition))
+
+
 class ApproachTests(unittest.TestCase):
     def test_two_directional_both_roads(self):
         validate_context(context())
@@ -49,6 +73,13 @@ class ApproachTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'left turn'):
             validate_context(c)
 
+    def test_approach_lane_must_match_oriented_right_half(self):
+        c=context()
+        c['intersecting_roads'][0]['lanes'][0]['from_xy_m']=[-40, 2]
+        c['intersecting_roads'][0]['lanes'][0]['to_xy_m']=[0, 2]
+        with self.assertRaisesRegex(ValueError, 'right half'):
+            validate_context(c)
+
     def test_full_body_right_half_and_crossing(self):
         self.assertEqual(body_position(context(), body(-.7))['all_body_in_right_half'], True)
         self.assertEqual(body_position(context(), body(.2))['all_body_in_right_half'], False)
@@ -57,23 +88,49 @@ class ApproachTests(unittest.TestCase):
     def test_original_source_hash_and_preentry_window(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp)
-            (path/'intersection-context.json').write_text(json.dumps(context()))
-            rows = [dict(frame=i, time_s=i*.05, road_id='approach', phase='approach',
-                         ego_body_vertices_xy_m=body(-.6-i*.1)) for i in range(3)]
-            rows.append(dict(frame=3, time_s=.15, road_id='departure', phase='turn',
-                             ego_body_vertices_xy_m=body(.3)))
-            (path/'approach-history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
-            acquisition = {name: {'kind':'original_native',
-                                  'sha256':hashlib.sha256((path/name).read_bytes()).hexdigest()}
-                           for name in ('intersection-context.json','approach-history.jsonl')}
-            (path/'acquisition.json').write_text(json.dumps(acquisition))
+            write_attempt(path)
             result = measure(path)
             self.assertEqual(result['approach_frames'], [0,1,2])
+            self.assertEqual(result['departure_frames'], [3,4])
+            self.assertAlmostEqual(result['observed_left_turn_heading_change_rad'], 1.2)
             self.assertTrue(result['all_sampled_body_in_right_half'])
             self.assertEqual(result['legal_nearest_portion_verdict'], 'unresolved')
             (path/'approach-history.jsonl').write_text('')
             with self.assertRaisesRegex(ValueError, 'stale original'):
                 measure(path)
+
+    def test_missing_camera_frame_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)
+            write_attempt(path, missing_view=True)
+            with self.assertRaisesRegex(ValueError, 'four-camera synchronized'):
+                measure(path)
+
+    def test_right_turn_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)
+            write_attempt(path, wrong_turn=True)
+            with self.assertRaisesRegex(ValueError, 'left-turn heading'):
+                measure(path)
+
+    def test_source_bound_comparison_and_case_pair(self):
+        with tempfile.TemporaryDirectory() as temp:
+            near, far=Path(temp)/'near', Path(temp)/'far'
+            near.mkdir(); far.mkdir()
+            write_attempt(near, lateral_y=-.5)
+            write_attempt(far, lateral_y=-1.5, case_suffix='farther_from_centerline')
+            result=compare_original_attempts(near,far)
+            self.assertGreater(result['signed_difference_m'], .5)
+            self.assertEqual(result['legal_verdict'], 'unresolved')
+            with self.assertRaisesRegex(ValueError, 'wrong exact approach comparison'):
+                compare_original_attempts(far,near)
+            write_attempt(far, lateral_y=-.1, case_suffix='farther_from_centerline')
+            with self.assertRaisesRegex(ValueError, 'not farther'):
+                compare_original_attempts(near,far)
+            write_attempt(near, lateral_y=.2)
+            write_attempt(far, lateral_y=-1.5, case_suffix='farther_from_centerline')
+            with self.assertRaisesRegex(ValueError, 'right half'):
+                compare_original_attempts(near,far)
 
     def test_comparison_fixed_conditions(self):
         with tempfile.TemporaryDirectory() as temp:

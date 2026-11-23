@@ -62,6 +62,8 @@ def measure(waypoints, frames, *, approach_start_m):
         raise ValueError('ego moved backwards in approach window')
     start, end = approach[0], approach[-1]
     minimum_clearance = min(frames, key=lambda f: f['body_clearance_m'])
+    first_decrease = next((f for a, f in zip(approach, approach[1:])
+                           if f['ego_speed_mps'] < a['ego_speed_mps']), None)
     return {
         'crest_station_m': crest_s,
         'approach_start_m': approach_start_m,
@@ -69,8 +71,8 @@ def measure(waypoints, frames, *, approach_start_m):
         'initial_speed_mps': start['ego_speed_mps'],
         'last_precrest_speed_mps': end['ego_speed_mps'],
         'speed_change_mps': end['ego_speed_mps'] - start['ego_speed_mps'],
-        'first_speed_decrease_frame_id': next((f['frame_id'] for a, f in zip(approach, approach[1:])
-                                               if f['ego_speed_mps'] < a['ego_speed_mps']), None),
+        'first_speed_decrease_frame_id': first_decrease['frame_id'] if first_decrease else None,
+        'first_speed_decrease_station_m': first_decrease['ego_s_m'] if first_decrease else None,
         'minimum_body_clearance_m': minimum_clearance['body_clearance_m'],
         'minimum_clearance_frame_id': minimum_clearance['frame_id'],
         'source_frame_refs': [f['source_ref'] for f in frames],

@@ -22,11 +22,13 @@ class CrestSpeedTests(unittest.TestCase):
         out = measure(GRADE, history((12, 11, 9, 8)), approach_start_m=0)
         self.assertEqual(out['crest_station_m'], 20)
         self.assertEqual(out['first_speed_decrease_frame_id'], 1)
+        self.assertEqual(out['first_speed_decrease_station_m'], 5)
         self.assertEqual(out['speed_change_mps'], -4)
 
     def test_steady_speed_retains_no_decrease(self):
         out = measure(GRADE, history((12, 12, 12, 12)), approach_start_m=0)
         self.assertIsNone(out['first_speed_decrease_frame_id'])
+        self.assertIsNone(out['first_speed_decrease_station_m'])
 
     def test_original_motion_required(self):
         frames = history((12, 12, 12, 12))

@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "f284bffb1992eb71aa3dc8fd755986eb28718589d69f1470e660ce06c4f6cc1a",
-  "status": "partial",
   "readiness_kind": "delivery_preparation_partial",
-  "applied_update": 0,
+  "reason": "The below/equal/above boundary triple, original speed writer/reader and fixed-condition comparison pass eight CPU tests. A lazy 20 Hz Native motion loop records 900 original speed samples, validates frame/clock identity and movement, brakes on every exit, and marks CPU fake output diagnostic. Saved-only speed processing rejects diagnostic output in delivery mode and source/receipt drift. Reviewed route/site source, integrated four-camera runner and finalization, remaining canonical semantic stage proposals, per-case offline and source-bound compatibility, complete saved processing and independent delivery audit remain CPU work. Frozen accepted metadata cannot establish exact 80 mph equality or public-way applicability.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
@@ -22,10 +26,12 @@
       "exit_code": 1,
       "log": "cpu-strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-motion-tests.log",
+      "sha256": "5ce82127d006600a26d564a3684318e539dd363c31b5a0cceb632af047337c04"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "80 mph boundary triple and source-bound speed capture/measurement/comparison checker are authored and CPU-tested (5 tests; assignment static check passes). Strict gate remains partial: full Native construction and capture runner, exact-case finalization/diagnostic compatibility, semantic proposals, saved-only processing, independent delivery acceptance and source review of accepted original traces/videos remain worker-owned CPU preparation. The accepted metadata-only export cannot establish 80 mph equality or physical coverage."
+  ]
 }
