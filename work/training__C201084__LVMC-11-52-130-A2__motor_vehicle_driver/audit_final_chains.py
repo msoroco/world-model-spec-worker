@@ -98,7 +98,7 @@ def audit():
             bindings[group + '/' + candidate] = sha(proof_path)
     return {'format': 'c201084-final-candidate-cpu-audit-v1',
             'passed': True, 'diagnostic_only': True,
-            'selected_manifest_sha256': manifest_sha,
+            'final_manifest_sha256': manifest_sha,
             'candidate_proof_sha256': bindings,
             'selected_cases': 8, 'candidate_chains_proven': 32,
             'original_native_observed': False, 'delivery_ready': False,

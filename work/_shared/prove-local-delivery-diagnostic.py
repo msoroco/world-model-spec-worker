@@ -120,6 +120,8 @@ def run_campaign():
                    "actor": "motor_vehicle_driver", "artifact_id": "artifact",
                    "payload": json.dumps({"cell": {"cell_id": "C1"}, "case": {
                        "case_id": case, "target_law_id": "LAW-1"}})}
+            archive = tempfile.TemporaryDirectory(prefix="worker-review-archive-")
+            self.addCleanup(archive.cleanup)
 
             class FakeDB:
                 def execute(self, *_args): return self
@@ -138,6 +140,12 @@ def run_campaign():
                   patch("recording_store.stored_attempt_path", return_value=attempt),
                   patch("batch_pipeline.completion.verify"),
                   patch("worker_exchange.media.audit"),
+                  patch("recording_store.verified_label", return_value={
+                      "expected_label": "compliant", "judgment_sweep": []}),
+                  patch("recording_store.accept_recording", return_value=rid),
+                  patch("recording_store.verify_recording"),
+                  patch("production_verdicts.presentation", return_value={
+                      "expected_label": "compliant"}),
                   patch("worker_exchange.review_materialization.materialize") as materialize_review,
                   patch.dict(sys.modules, {"review_workspaces": types.SimpleNamespace(
                       refresh_workspaces=lambda _root: None)})):
@@ -145,12 +153,14 @@ def run_campaign():
                 write(attempt / "audit.json", audit)
                 with self.assertRaisesRegex(ValueError, "audit incomplete"):
                     accept(root, self.repo, "batch", db, "run", self.aid,
-                           case, 7, 1, attempt / "audit.json")
+                           case, 7, 1, attempt / "audit.json",
+                           review_archive=archive.name)
                 self.assertEqual(read(root / "sets/full-train/selection.json")["members"], [])
                 audit["passed"] = True
                 write(attempt / "audit.json", audit)
                 accepted = accept(root, self.repo, "batch", db, "run", self.aid,
-                                  case, 7, 1, attempt / "audit.json")
+                                  case, 7, 1, attempt / "audit.json",
+                                  review_archive=archive.name)
                 materialize_review.assert_called_once()
             self.assertEqual(accepted["accepted_in"], ["full-train"])
             self.assertEqual(read(root / "sets/full-train/selection.json")["members"][0]["recording_id"], rid)
