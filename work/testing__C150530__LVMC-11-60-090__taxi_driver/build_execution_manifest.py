@@ -57,6 +57,24 @@ def bind() -> dict:
         if (ROOT / physical).is_file():
             entry["physical_preparation"] = {"receipt": physical.as_posix(),
                                              "sha256": sha(ROOT / physical)}
+        script = Path("independent/delivery_audit.py")
+        positive = Path("cases") / suffix / "delivery-positive.log"
+        negative = Path("cases") / suffix / "delivery-negative.log"
+        if all((ROOT / path).is_file() for path in (script, positive, negative)):
+            proof = "work/" + ROOT.name + "/independent/prove_delivery_audit.py"
+            entry["delivery_acceptance"] = {
+                "case_id": case, "sets": ["full-test"],
+                "checks": ["native_source", "all_participants", "time_join",
+                           "full_video_decode", "actual_pixels", "physical_completion"],
+                "script": script.as_posix(), "script_sha256": sha(ROOT / script),
+                "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python " + proof + " " + case,
+                "test_exit_code": 0, "test_log": positive.as_posix(),
+                "test_log_sha256": sha(ROOT / positive),
+                "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python " + proof + " " + case + " --negative",
+                "negative_exit_code": 1,
+                "negative_expected_error": "original pixel review source changed",
+                "negative_log": negative.as_posix(),
+                "negative_log_sha256": sha(ROOT / negative)}
         entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON",
                                    "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"}
         entry["acquisition"] = {
