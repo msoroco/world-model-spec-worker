@@ -306,3 +306,7 @@ C125714(250-1) is **ready** for CPU delivery preparation. Root config and embedd
 ## 2026-11-23 C412593(413-2) camera construction progress
 
 The 32 exact primary/fallback construction mirrors with four-view `pose_strategy` fields all passed current-runtime offline CPU checks. The first repaired primary passed positive/missing-source compatibility and recorded-only saved processing. Hash-bound proof outputs are staged under ignored `.runtime-work/c412593-camera-repair/`; canonical return rebinding and the other 31 compatibility/saved reruns remain. C412593 stays **partial**. Pinned CPU preflight passes.
+
+## 2026-11-23 C412593(413-2) scoped strict gate passed
+
+C412593(413-2) is **ready** for CPU delivery preparation. Its 32 exact primary/fallback camera-profile constructions passed offline, positive/missing-source compatibility and recorded-only saved processing. Eight selected cases passed physical classifier/lifecycle fixtures and independent positive/negative delivery audits. Three source-bound comparison families passed with altered-camera negatives rejected. Returned receipts and archives were rebound to current hashes; explicit execution-manifest, semantic, delivery and compatibility validators passed. The actual assignment-scoped strict `worker_check.py --complete --require-delivery-ready` exited 0. Native capture, real pixels, physical completion and legal acceptance remain unclaimed. Current batch status is 27 ready and 16 partial of 43; the full strict gate cannot pass until the remaining packages are completed.
