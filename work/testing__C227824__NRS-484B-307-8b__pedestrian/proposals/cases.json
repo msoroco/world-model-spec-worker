@@ -135,7 +135,7 @@
         }
       ],
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Enter the mapped highway while facing steady red alone, with no separate permitting device. Original signal, body, device and camera sources determine the physical event; legal permission remains unresolved.",
       "variable_assignments": {
         "entry_request": {
@@ -167,7 +167,19 @@
       },
       "comparison_overrides_from_baseline": [
         "entry_request"
-      ]
+      ],
+      "deterministic_branch": {
+        "source_clause": "shall not enter the highway",
+        "judgment_context": [
+          {
+            "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
+            "note": "Permission depends on original device authority, indication, timing and the referenced subsection; no legal verdict is assigned.",
+            "status": "not_exercised",
+            "reason": "No separate other device is present in the paired no-device scenes, so the permission exception is not exercised.",
+            "world_setup_refs": []
+          }
+        ]
+      }
     },
     {
       "target_law_id": "NRS-484B-307-8b",
@@ -230,7 +242,7 @@
         }
       ],
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
-      "target_type": "boundary_probe",
+      "target_type": "compliant_attempt",
       "rationale": "Remain wholly outside the mapped highway while facing steady red alone, with no separate permitting device. Original signal, body, device and camera sources determine the physical event; legal permission remains unresolved.",
       "variable_assignments": {
         "entry_request": {
@@ -260,7 +272,19 @@
         "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
         "fallback_construction": null
       },
-      "comparison_overrides_from_baseline": []
+      "comparison_overrides_from_baseline": [],
+      "deterministic_branch": {
+        "source_clause": "shall not enter the highway",
+        "judgment_context": [
+          {
+            "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
+            "note": "Permission depends on original device authority, indication, timing and the referenced subsection; no legal verdict is assigned.",
+            "status": "not_exercised",
+            "reason": "No separate other device is present in the paired no-device scenes, so the permission exception is not exercised.",
+            "world_setup_refs": []
+          }
+        ]
+      }
     },
     {
       "target_law_id": "NRS-484B-307-8b",
@@ -647,5 +671,22 @@
       ]
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "c227824-other-device-permission",
+      "target_law_id": "NRS-484B-307-8b",
+      "judgment_refs": [
+        {
+          "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
+          "note": "Permission depends on original device authority, indication, timing and the referenced subsection; no legal verdict is assigned."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exported assignment supplies the statutory text but no source-reviewed official device geometry, authority or feasible fixed physical range for the referenced other-device conditions. The four device-indication boundary probes retain raw observations without assigning legal permission.",
+      "missing_inputs": [
+        "Source-reviewed official separate pedestrian-device authority and facing route for the selected map",
+        "Verified NRS 484B.283 device implementation and physically feasible indication/countdown timing range"
+      ]
+    }
+  ]
 }

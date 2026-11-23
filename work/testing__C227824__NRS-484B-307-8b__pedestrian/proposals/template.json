@@ -1,0 +1,48 @@
+{
+  "template_id": "NRS-484B-307-8b@pedestrian",
+  "law_id": "NRS-484B-307-8b",
+  "actor": "pedestrian",
+  "quote": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
+  "structure": {
+    "law_id": "NRS-484B-307-8b",
+    "activation": {
+      "condition": "Pedestrian faces an official steady red signal alone at the highway entry.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not enter the highway while facing the steady red signal, subject to permission from another device under NRS 484B.283.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Pedestrian is permitted to proceed by another device as provided in NRS 484B.283.",
+        "effect": "The red-signal entry prohibition is subject to that permission.",
+        "replacement_obligation": "Follow the applicable other-device indication under the referenced statute.",
+        "source_clause": "unless permitted to proceed by another device as provided in NRS 484B.283"
+      }
+    ],
+    "timing": {
+      "description": "Evaluate the facing signal and other-device indication at first full-body highway entry; retain earlier lawful entry and countdown clearance history.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
+        "note": "Permission depends on original device authority, indication, timing and the referenced subsection; no legal verdict is assigned."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "entry_request",
+      "kind": "controller",
+      "range_or_domain": "request to wait or attempt entry; actual body movement is measured separately"
+    },
+    {
+      "name": "other_device_indication",
+      "kind": "world_setup",
+      "range_or_domain": "none, WALK, flashing hand with countdown, flashing hand without countdown, or steady hand"
+    }
+  ]
+}

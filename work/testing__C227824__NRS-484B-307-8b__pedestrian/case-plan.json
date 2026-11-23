@@ -242,27 +242,29 @@
   ],
   "observations": [
     {
-      "name": "walker_full_body_polygon_xy_m",
+      "name": "walker_body_history",
       "source": "original Native walker bounding-box vertices joined to world frame",
       "mandatory": true
     },
     {
-      "name": "highway_polygon_xy_m",
+      "name": "highway_boundary",
       "source": "source-hashed map survey including public highway boundary, not roadway edge alone",
-      "mandatory": true
+      "mandatory": false,
+      "evidence_kind": "required_static_context",
+      "required_by": "saved_entry and independent delivery audit"
     },
     {
-      "name": "facing_traffic_signal",
+      "name": "facing_signal_history",
       "source": "original official traffic-light actor state and facing orientation at each walker frame",
       "mandatory": true
     },
     {
-      "name": "other_devices",
+      "name": "other_device_history",
       "source": "complete source-bound inventory of governing pedestrian devices and their frame indications, including countdown when present",
       "mandatory": true
     },
     {
-      "name": "camera_frame_join",
+      "name": "camera_frame_map",
       "source": "synchronized four-camera original frame map and decoded actual pixels",
       "mandatory": true
     }
@@ -327,6 +329,54 @@
         "Use a person afoot facing an official steady-red-alone signal."
       ],
       "reason": "The fixed road-crossing task supports pedestrian highway entry facing red."
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full highway boundary, walker and facing signal",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "approach",
+        "subject": "original walker body and highway entry line",
+        "interval": "startup through entry or wait"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "route-facing red head and independent pedestrian device",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "walker route and device countdown/pixels",
+        "interval": "startup through final observation"
+      }
+    ]
+  },
+  "selected_branch": "pedestrian_highway_entry",
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "Steady-red pedestrian highway entry subject to another-device permission under NRS 484B.283",
+      "source": {
+        "path": "inputs/testing__C227824__NRS-484B-307-8b__pedestrian/assignment.json",
+        "quote": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; six controlled entry/device cases planned with original body, signal and device histories.",
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry"
+      ]
     }
   ]
 }
