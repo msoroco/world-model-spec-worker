@@ -24,9 +24,132 @@
   "topic_inventory": {
     "exact-text": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: The approach for a left turn must be made in that portion of the right half of the highway nearest the centerline thereof."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Original accepted recording reanalysis: near centerline",
+      "recording_reuse_id": "be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827",
+      "capture_disposition": "reuse_pending_original_source_audit",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Original trace and full camera pixels are absent from this worker export; verify original archive before dispatching a new recording."
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Original accepted recording reanalysis: farther from centerline",
+      "recording_reuse_id": "7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd",
+      "capture_disposition": "reuse_pending_original_source_audit",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Original trace and full camera pixels are absent from this worker export; verify original archive before dispatching a new recording."
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Original accepted recording reanalysis: imaginary near centerline",
+      "recording_reuse_id": "c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18",
+      "capture_disposition": "reuse_pending_original_source_audit",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Original trace and full camera pixels are absent from this worker export; verify original archive before dispatching a new recording."
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "purpose": "Original accepted recording reanalysis: imaginary farther from centerline",
+      "recording_reuse_id": "d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9",
+      "capture_disposition": "reuse_pending_original_source_audit",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Original trace and full camera pixels are absent from this worker export; verify original archive before dispatching a new recording."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_lateral_position",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline"
+      ],
+      "fixed_conditions": [
+        "same C109705 intersection and left turn",
+        "same two-directional road geometry within each pair",
+        "same approach centerline kind within each pair",
+        "same driver/controller and 45 s four-camera plan"
+      ],
+      "deliberate_differences": [
+        "measured pre-entry full-body lateral offset from approach centerline"
+      ],
+      "original_evidence_status": "accepted metadata only; original trace and videos require independent source audit"
+    },
+    {
+      "comparison_id": "imaginary_approach_lateral_position",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline"
+      ],
+      "fixed_conditions": [
+        "same C109705 intersection and left turn",
+        "same two-directional road geometry within each pair",
+        "same approach centerline kind within each pair",
+        "same driver/controller and 45 s four-camera plan"
+      ],
+      "deliberate_differences": [
+        "measured pre-entry full-body lateral offset from approach centerline"
+      ],
+      "original_evidence_status": "accepted metadata only; original trace and videos require independent source audit"
+    }
+  ],
+  "observations": [
+    {
+      "name": "two_directional_intersecting_highways",
+      "mandatory": true,
+      "source": "intersection-context.json"
+    },
+    {
+      "name": "public_highway_and_non_alley_context",
+      "mandatory": true,
+      "source": "intersection-context.json"
+    },
+    {
+      "name": "approach_centerline_kind_and_right_half",
+      "mandatory": true,
+      "source": "intersection-context.json"
+    },
+    {
+      "name": "ego_full_body_preentry_history",
+      "mandatory": true,
+      "source": "approach-history.jsonl"
+    },
+    {
+      "name": "left_turn_intent_and_road_transition",
+      "mandatory": true,
+      "source": "intersection-context.json and approach-history.jsonl"
+    },
+    {
+      "name": "four_camera_frame_join",
+      "mandatory": true,
+      "source": "original video_frames.jsonl and streams"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
@@ -80,8 +203,9 @@
     "d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original accepted recording trace and video not present in worker export; archived sources require independent audit before reusing or proposing recapture.",
+    "Portable 400-2a source-bound geometry and comparison checker is CPU-tested; Native runner, finalizer integration, semantic proposals, saved-only and delivery proofs remain to prepare.",
+    "Legal nearest-portion judgment, public highway status, physical realization and visibility remain unresolved."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -161,7 +285,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_and_source_bound_measurement_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -187,5 +311,47 @@
       "imaginary_approach_lateral_position"
     ],
     "remaining_requirements_note": "Farther approach and imaginary-centerline cases plus their imported comparisons remain pending. No final legal-position judgment or full law coverage is claimed."
-  }
+  },
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "vehicle driver intends left turn at intersection",
+      "source": "NRS 484B.400(2)(a)",
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "both intersecting highways two-directional",
+      "source": "NRS 484B.400(2)(a)",
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "approach body in right half nearest approach centerline",
+      "source": "NRS 484B.400(2)(a)",
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline"
+      ]
+    }
+  ],
+  "source_observation_mapping": []
 }

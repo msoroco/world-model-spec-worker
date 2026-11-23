@@ -24,9 +24,202 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle may overtake and pass upon the right of another vehicle only under the following conditions: (a) When the driver of the vehicle overtaken is making or signaling to make a left turn. (b) Upon a highway with unobstructed pavement which is not occupied by parked vehicles and which is of sufficient width for two or more lines of moving vehicles in each direction. (c) Upon a highway with unobstructed pavement which is not marked as a traffic lane and which is not occupied by parked vehicles, if the vehicle that is overtaking and passing another vehicle: (1) Except as otherwise provided in subsection 4 [(4) appended below], does not travel more than 200 feet in the section of pavement not marked as a traffic lane; or (2) While being driven in the section of pavement not marked as a traffic lane, does not travel through an intersection or past any private way that is used to enter or exit the highway. (d) Upon any highway on which traffic is restricted to one direction of movement, where the highway is free from obstructions and of sufficient width for two or more lines of moving vehicles. The provisions of subparagraph (1) of paragraph (c) of subsection 1 do not apply to: (a) An authorized emergency vehicle described in NRS 484A.480; (b) A vehicle which has been issued a permit to operate as an authorized emergency vehicle pursuant to NRS 484A.490; (c) A traffic incident management vehicle; (d) A tow car; (e) A coroner vehicle; or (f) A public transit motor bus, that is being driven on the paved shoulder of a highway where lawfully placed signage allows that vehicle to use the shoulder in that manner."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal",
+      "target_law_id": "NRS-484B-210-1",
+      "target_type": "deterministic_observation",
+      "branch": "paragraph (a) near an intersection",
+      "gap_ids": [
+        "G1",
+        "G2"
+      ],
+      "draft_variables": {
+        "world_setup": {
+          "layout": "intersection",
+          "maneuver": "overtake_right",
+          "control": "other_vehicle",
+          "right_corridor": "source-review required"
+        },
+        "controller": {
+          "ego": "pass to right",
+          "target": "left_signal"
+        },
+        "subject_behavior": {
+          "actual_pass": null,
+          "actual_left_signal": null,
+          "actual_left_motion": null
+        }
+      },
+      "intended_observation": "Target signals a left turn without left-turn motion during the right pass.",
+      "source_measurement": "pass_right_measure.py on sealed original Native trace",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "reason": "Actual paved right corridor, footprint clearance and intersection overlap need Native map and collision review; no fallback selected without measured failure."
+      },
+      "physical_acceptance_claimed": false,
+      "legal_outcome": "unresolved",
+      "preparation_status": "case_and_measurement_cpu_draft"
+    },
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn",
+      "target_law_id": "NRS-484B-210-1",
+      "target_type": "deterministic_observation",
+      "branch": "paragraph (a) near an intersection",
+      "gap_ids": [
+        "G1",
+        "G2"
+      ],
+      "draft_variables": {
+        "world_setup": {
+          "layout": "intersection",
+          "maneuver": "overtake_right",
+          "control": "other_vehicle",
+          "right_corridor": "source-review required"
+        },
+        "controller": {
+          "ego": "pass to right",
+          "target": "left_turn"
+        },
+        "subject_behavior": {
+          "actual_pass": null,
+          "actual_left_signal": null,
+          "actual_left_motion": null
+        }
+      },
+      "intended_observation": "Target makes a left turn without left signal during the right pass.",
+      "source_measurement": "pass_right_measure.py on sealed original Native trace",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "reason": "Actual paved right corridor, footprint clearance and intersection overlap need Native map and collision review; no fallback selected without measured failure."
+      },
+      "physical_acceptance_claimed": false,
+      "legal_outcome": "unresolved",
+      "preparation_status": "case_and_measurement_cpu_draft"
+    },
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither",
+      "target_law_id": "NRS-484B-210-1",
+      "target_type": "deterministic_observation",
+      "branch": "paragraph (a) near an intersection",
+      "gap_ids": [
+        "G1",
+        "G2"
+      ],
+      "draft_variables": {
+        "world_setup": {
+          "layout": "intersection",
+          "maneuver": "overtake_right",
+          "control": "other_vehicle",
+          "right_corridor": "source-review required"
+        },
+        "controller": {
+          "ego": "pass to right",
+          "target": "neither"
+        },
+        "subject_behavior": {
+          "actual_pass": null,
+          "actual_left_signal": null,
+          "actual_left_motion": null
+        }
+      },
+      "intended_observation": "Target neither signals nor makes a left turn during the right pass.",
+      "source_measurement": "pass_right_measure.py on sealed original Native trace",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "reason": "Actual paved right corridor, footprint clearance and intersection overlap need Native map and collision review; no fallback selected without measured failure."
+      },
+      "physical_acceptance_claimed": false,
+      "legal_outcome": "unresolved",
+      "preparation_status": "case_and_measurement_cpu_draft"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "left_signal_presence",
+      "case_ids": [
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal",
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed map and intersection",
+        "same ego trajectory and nominal controller",
+        "same target initial position and speed",
+        "same paved right corridor and actor class",
+        "same cameras and duration"
+      ],
+      "deliberate_differences": [
+        "target left signal during pass"
+      ]
+    },
+    {
+      "comparison_id": "left_turn_motion_presence",
+      "case_ids": [
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn",
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed map and intersection",
+        "same ego trajectory and nominal controller",
+        "same target initial position and speed",
+        "same paved right corridor and actor class",
+        "same cameras and duration"
+      ],
+      "deliberate_differences": [
+        "target left-turn trajectory and heading during pass"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_target_identity",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "distinct source-bound actor IDs"
+    },
+    {
+      "name": "relative_longitudinal_order",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "trailing and ahead samples after startup"
+    },
+    {
+      "name": "relative_lateral_order",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "ego right of target during pass"
+    },
+    {
+      "name": "target_left_signal",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "actual signal state per frame"
+    },
+    {
+      "name": "target_left_motion",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "actual heading and lateral displacement"
+    },
+    {
+      "name": "intersection_bounds",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "original map bounds and frame crossing"
+    },
+    {
+      "name": "paved_surface_occupation",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "original surface geometry and actor footprints"
+    },
+    {
+      "name": "road_direction_and_lane_count",
+      "mandatory": true,
+      "source": "original Native actor trace or source-reviewed map",
+      "method": "source-reviewed road context"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/assignment.json",
@@ -51,17 +244,31 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original map not source-reviewed for paved corridor, marked lanes, intersection, shoulder, signage, direction or footprints.",
+    "No Native CARLA run or accepted original trace; measurement fixtures establish CPU behavior only.",
+    "Other statutory permission alternatives and subsection 4 remain unresolved; no legal outcome inferred."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed frozen evidence inventory: zero accepted recordings. No existing case establishes the selected paragraph (a) intersection branch.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "G1",
+        "requirement": "Source-observed right pass of separately identified target at intersection with left-turn motion or signal varied",
+        "source": "inputs/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero recordings."
+      },
+      {
+        "id": "G2",
+        "requirement": "Source-reviewed road, paved surface, intersection, vehicle class and other alternatives",
+        "source": "inputs/coverage/branch-sources.json",
+        "why_existing_insufficient": "No accepted recording or Native map packet establishes these predicates."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_case_and_source_measurement_cpu_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,6 +287,49 @@
         "Specify target left-turn motion or signal during the pass and locate both trajectories relative to intersection boundaries."
       ],
       "reason": "The intersection cell supports a constructed right pass of a separate left-turning or left-signaling vehicle."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "paragraph (a): target makes or signals left turn",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal",
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn",
+        "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither"
+      ],
+      "evidence_or_gap": "G1: exact cases distinguish signal, motion and neither."
+    },
+    {
+      "requirement": "paragraph (b): unobstructed pavement, no parked vehicles, two or more lines each direction",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "G2: original road and pass geometry needed."
+    },
+    {
+      "requirement": "paragraph (c)(1): unmarked pavement, no parked vehicles, no more than 200 feet except subsection 4",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "G2: original road and pass geometry needed."
+    },
+    {
+      "requirement": "paragraph (c)(2): unmarked pavement, no parked vehicles, no intersection or private-way traversal",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "G2: original road and pass geometry needed."
+    },
+    {
+      "requirement": "paragraph (d): one-way highway, unobstructed, sufficient width for two or more lines",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "alternative_pending",
+      "evidence_or_gap": "G2: original road and pass geometry needed."
+    },
+    {
+      "requirement": "subsection 4: enumerated vehicle classes on signed paved shoulder, except only (c)(1)",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "exception_pending",
+      "evidence_or_gap": "G2: vehicle class, shoulder and signage require original review."
     }
   ]
 }

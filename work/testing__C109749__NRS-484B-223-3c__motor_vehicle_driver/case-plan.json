@@ -22,11 +22,144 @@
   "law_text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 50 feet in a center turn lane after making a left-hand turn onto the highway before merging with traffic.",
   "law_source": "NRS 484B.223(3)(c)",
   "topic_inventory": {
-    "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 50 feet in a center turn lane after making a left-hand turn onto the highway before merging with traffic."
+    "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 50 feet in a center turn lane after making a left-hand turn onto the highway before merging with traffic.",
+    "activation": "Public highway designed with one shared bidirectional center lane used only for turning; original source needed.",
+    "event_sequence": "Left turn onto highway finishes in center turn lane, then driver merges into through traffic.",
+    "numeric_boundary": "Travel in center turn lane after completing turn must not exceed 50 feet before merge; plan below, at and above probes.",
+    "no_merge": "Absent merge is censored and cannot be reported as a measured before-merge interval."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "purpose": "Left turn into shared center turn lane, then merge before 50 feet of measured travel.",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "authored_target_distance_ft": 49,
+      "threshold_reference": "NRS 484B.223(3)(c): 50 feet",
+      "measurement": "Original body-centre path distance between source-marked turn completion and first merge into receiving through lane; retain raw frames and front/rear body histories for reference convention review.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch.",
+        "fallback_policy": "No alternate construction has yet passed source-gated map and motion tests."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "purpose": "Left turn into shared center turn lane, then merge at the 50-foot boundary target.",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "authored_target_distance_ft": 50,
+      "threshold_reference": "NRS 484B.223(3)(c): 50 feet",
+      "measurement": "Original body-centre path distance between source-marked turn completion and first merge into receiving through lane; retain raw frames and front/rear body histories for reference convention review.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch.",
+        "fallback_policy": "No alternate construction has yet passed source-gated map and motion tests."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "purpose": "Left turn into shared center turn lane, then merge after 50 feet of measured travel.",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "authored_target_distance_ft": 51,
+      "threshold_reference": "NRS 484B.223(3)(c): 50 feet",
+      "measurement": "Original body-centre path distance between source-marked turn completion and first merge into receiving through lane; retain raw frames and front/rear body histories for reference convention review.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch.",
+        "fallback_policy": "No alternate construction has yet passed source-gated map and motion tests."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge",
+      "target_law_id": "NRS-484B-223-3c",
+      "purpose": "Left turn into shared center turn lane with no observed through-lane merge during delivered trace; retain censoring rather than inventing a distance to merge.",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "authored_target_distance_ft": null,
+      "threshold_reference": "NRS 484B.223(3)(c): 50 feet",
+      "measurement": "Original body-centre path distance between source-marked turn completion and first merge into receiving through lane; retain raw frames and front/rear body histories for reference convention review.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch.",
+        "fallback_policy": "No alternate construction has yet passed source-gated map and motion tests."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "post_turn_center_lane_distance",
+      "case_ids": [
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft"
+      ],
+      "fixed_conditions": [
+        "Same source-verified highway, single exclusive bidirectional shared center turn lane, entry turn, actor, receiving vehicle route and through lane, cameras and duration."
+      ],
+      "deliberate_differences": [
+        "Requested merge station produces three original measured travel targets: 49, 50 and 51 feet; realized distance and timing remain measured, never inferred from the command."
+      ]
+    },
+    {
+      "comparison_id": "merge_observation",
+      "case_ids": [
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge"
+      ],
+      "fixed_conditions": [
+        "Same source-verified highway, lane design, entry turn, actor, receiving vehicle route, cameras and duration."
+      ],
+      "deliberate_differences": [
+        "Through-lane merge occurs within delivered trace versus no merge observed; no-merge distance is censored."
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "public_highway_context",
+      "mandatory": true,
+      "source": "Source citation plus Native road identifier"
+    },
+    {
+      "name": "center_turn_lane_design",
+      "mandatory": true,
+      "source": "Native lane topology, directions, markings and documented use"
+    },
+    {
+      "name": "turn_completion_event",
+      "mandatory": true,
+      "source": "Original Native ego route, transforms and body corners"
+    },
+    {
+      "name": "center_lane_body_history",
+      "mandatory": true,
+      "source": "Original Native ego body centre and footprint per frame"
+    },
+    {
+      "name": "through_lane_merge_event",
+      "mandatory": true,
+      "source": "Original lane/footprint transition and receiving traffic relation"
+    },
+    {
+      "name": "receiving_vehicle_history",
+      "mandatory": true,
+      "source": "Original vehicle identity, lane, route and transforms"
+    },
+    {
+      "name": "frame_and_camera_join",
+      "mandatory": true,
+      "source": "Native frame map and synchronized four-camera sources"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/assignment.json",
@@ -51,17 +184,29 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Native highway dedication, exclusive bidirectional center turn lane design and receiving-lane geometry are unverified.",
+    "Actual body route, turn completion, merge station, receiving vehicle relationship and camera coverage require later CARLA execution.",
+    "Path reference-point and event conventions need reviewer confirmation; raw body and frame histories must be retained.",
+    "Semantic proposals, exact Native construction/runner, source-bound compatibility, saved-only processing and independent audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed all zero frozen accepted recordings; no existing evidence can establish the lane design, turn, measured distance, or merge.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "Original left turn onto a verified public highway, exclusive bidirectional center turn lane, measured travel to through-lane merge, and receiving traffic",
+        "source": {
+          "path": "inputs/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/evidence.json",
+          "sha256": "105d87704d8a414b087e1a9e541d764dd8c1f37b3a909df4fb62fc2f6f9605fb"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_case_plan_and_source_bound_measurement",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,5 +225,53 @@
       ],
       "reason": "The intersection left turn and other vehicle support an entering turn followed by a merge into an established traffic stream."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "single exclusive shared center lane for turns by both directions",
+      "source": "NRS 484B.223(3)(c)",
+      "status": "selected_required",
+      "evidence_or_gap": "Requires source-verified Native highway lane topology and dedication; no accepted recording exists.",
+      "case_ids": [
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "left turn onto highway then center-lane travel before merging with traffic",
+      "source": "NRS 484B.223(3)(c)",
+      "status": "selected_required",
+      "evidence_or_gap": "Original event sequence, center-lane footprint and receiving vehicle must be retained.",
+      "case_ids": [
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "no more than 50 feet",
+      "source": "NRS 484B.223(3)(c)",
+      "status": "selected_required",
+      "evidence_or_gap": "Source-bound below, at and above path-distance probes; no-merge observation remains censored.",
+      "case_ids": [
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
+        "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge"
+      ],
+      "disposition_index": 2
+    }
+  ],
+  "source_observation_mapping": {},
+  "construction_scope": {
+    "site_checker": "center_lane_site.py::validate_site",
+    "distance_checker": "center_lane_measurement.py::measure_center_lane_distance",
+    "limitations": "CPU tests use source-shaped fake packets. Native map selection, public-highway source review, physical route and exact capture are pending.",
+    "route_controller": "turn_merge_controller.py::TurnMergeController; waypoint route must be derived from source-gated Native site"
+  }
 }

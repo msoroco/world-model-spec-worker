@@ -24,9 +24,135 @@
   "topic_inventory": {
     "exact-text": "Where the signal is a green turn arrow alone: Pedestrians facing such a signal shall not enter the highway until permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_wait",
+      "target_law_id": "NRS-484B-307-4b",
+      "purpose": "Sole green turn arrow, no other permissive device, pedestrian stays outside highway",
+      "gap_ids": [
+        "unrecorded_sole_arrow_pedestrian_entry"
+      ],
+      "scenario_parameters": {
+        "green_turn_arrow_alone": true,
+        "pedestrian_permission_device": false,
+        "pedestrian_enters_highway": false
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The supplied cell has no verified map, official sole-arrow signal head, separate pedestrian device, or mapped sidewalk-to-highway boundary. Native site selection and capture must check all four sources before physical acceptance.",
+        "fallback_policy": "Only a source-verified intersection with the same official arrow, separate device relation and crossing geometry can substitute; no circular-green or invented permission is an equivalent fallback."
+      }
+    },
+    {
+      "case_id": "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_early_entry",
+      "target_law_id": "NRS-484B-307-4b",
+      "purpose": "Same arrow and no other permissive device; pedestrian enters highway before separate permission",
+      "gap_ids": [
+        "unrecorded_sole_arrow_pedestrian_entry"
+      ],
+      "scenario_parameters": {
+        "green_turn_arrow_alone": true,
+        "pedestrian_permission_device": false,
+        "pedestrian_enters_highway": true
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The supplied cell has no verified map, official sole-arrow signal head, separate pedestrian device, or mapped sidewalk-to-highway boundary. Native site selection and capture must check all four sources before physical acceptance.",
+        "fallback_policy": "Only a source-verified intersection with the same official arrow, separate device relation and crossing geometry can substitute; no circular-green or invented permission is an equivalent fallback."
+      }
+    },
+    {
+      "case_id": "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_entry",
+      "target_law_id": "NRS-484B-307-4b",
+      "purpose": "Same arrow; separately applicable WALK device permits crossing before pedestrian enters",
+      "gap_ids": [
+        "unrecorded_sole_arrow_pedestrian_entry"
+      ],
+      "scenario_parameters": {
+        "green_turn_arrow_alone": true,
+        "pedestrian_permission_device": true,
+        "pedestrian_enters_highway": true
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The supplied cell has no verified map, official sole-arrow signal head, separate pedestrian device, or mapped sidewalk-to-highway boundary. Native site selection and capture must check all four sources before physical acceptance.",
+        "fallback_policy": "Only a source-verified intersection with the same official arrow, separate device relation and crossing geometry can substitute; no circular-green or invented permission is an equivalent fallback."
+      }
+    },
+    {
+      "case_id": "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_wait",
+      "target_law_id": "NRS-484B-307-4b",
+      "purpose": "Same arrow and separately applicable WALK device; pedestrian remains outside highway",
+      "gap_ids": [
+        "unrecorded_sole_arrow_pedestrian_entry"
+      ],
+      "scenario_parameters": {
+        "green_turn_arrow_alone": true,
+        "pedestrian_permission_device": true,
+        "pedestrian_enters_highway": false
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The supplied cell has no verified map, official sole-arrow signal head, separate pedestrian device, or mapped sidewalk-to-highway boundary. Native site selection and capture must check all four sources before physical acceptance.",
+        "fallback_policy": "Only a source-verified intersection with the same official arrow, separate device relation and crossing geometry can substitute; no circular-green or invented permission is an equivalent fallback."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entry_without_other_permission",
+      "case_ids": [
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_wait",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_early_entry"
+      ],
+      "fixed_conditions": [
+        "same pedestrian route and highway boundary",
+        "same official sole green turn arrow and facing relationship",
+        "same absence of other permission",
+        "same camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "pedestrian remains outside versus crosses measured highway boundary"
+      ]
+    },
+    {
+      "comparison_id": "separate_device_permission",
+      "case_ids": [
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_early_entry",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_entry"
+      ],
+      "fixed_conditions": [
+        "same pedestrian entry route and crossing onset",
+        "same sole green turn arrow on the facing vehicle head",
+        "same highway boundary and camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "separate applicable pedestrian WALK device absent versus activated before entry"
+      ]
+    },
+    {
+      "comparison_id": "permitted_entry_choice",
+      "case_ids": [
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_wait",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_entry"
+      ],
+      "fixed_conditions": [
+        "same sole green turn arrow and separate WALK permission",
+        "same sidewalk, highway and crossing route",
+        "same camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "pedestrian stays outside versus enters after separate permission"
+      ]
+    }
+  ],
+  "observations": [
+    "original official vehicle-head phase and lit arrows per frame",
+    "original pedestrian-device indication and governed crossing per frame",
+    "pedestrian body position and sidewalk-to-highway boundary in map coordinates",
+    "first highway-entry frame with phase at that frame",
+    "camera evidence of arrow and pedestrian device; physical visibility remains unverified"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C109171__NRS-484B-307-4b__pedestrian/assignment.json",
@@ -58,10 +184,17 @@
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "unrecorded_sole_arrow_pedestrian_entry",
+        "requirement": "Original sole green turn arrow, facing pedestrian, separate permission state and measured highway entry",
+        "source": "inputs/testing__C109171__NRS-484B-307-4b__pedestrian/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json lists zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_with_controlled_comparisons",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +215,44 @@
       ],
       "reason": "An intersection road-entry route can begin outside the highway while ego faces the arrow."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "sole green turn arrow and facing relationship",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_wait",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_early_entry",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_entry",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_wait"
+      ],
+      "source": "inputs/testing__C109171__NRS-484B-307-4b__pedestrian/assignment.json",
+      "evidence_or_gap": "unrecorded_sole_arrow_pedestrian_entry"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "no highway entry until another device permits passage",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_wait",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_early_entry",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_entry",
+        "testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_wait"
+      ],
+      "source": "inputs/testing__C109171__NRS-484B-307-4b__pedestrian/assignment.json",
+      "evidence_or_gap": "unrecorded_sole_arrow_pedestrian_entry"
+    }
+  ],
+  "camera_plan": {
+    "fps": 20,
+    "duration_seconds": 30,
+    "sources": [
+      "front",
+      "left",
+      "right",
+      "rear"
+    ],
+    "limitation": "Exact pixel coverage awaits Native site and camera review."
+  }
 }

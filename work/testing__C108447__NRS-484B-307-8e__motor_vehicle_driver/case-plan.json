@@ -22,11 +22,206 @@
   "law_text": "Where the signal is a steady red signal alone: Vehicular traffic facing the signal may not proceed on or through any private or public property to enter the intersecting street where traffic is not facing a red signal to avoid the red signal.",
   "law_source": "NRS 484B.307(8)(e)",
   "topic_inventory": {
-    "exact-text": "Where the signal is a steady red signal alone: Vehicular traffic facing the signal may not proceed on or through any private or public property to enter the intersecting street where traffic is not facing a red signal to avoid the red signal."
+    "steady_red_alone": "The approach traffic must face an official steady red signal alone during property movement; red combined with another signal is a distinct excluded activation.",
+    "property": "The route may pass on or through private or public property. Original parcel and street boundaries require independent authority and Native geometry.",
+    "destination": "The property route must enter the intersecting street where traffic does not face red at entry. Yellow/dark states may qualify as not red, but actual states and direction must be observed.",
+    "purpose": "Avoidance purpose is a separate declared and sourced fact; a shortcut or path shape does not establish it.",
+    "vehicle": "Vehicular traffic must be identified from the original Native actor record."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+      "target_law_id": "NRS-484B-307-8e",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Vehicle traverses source-identified private property from the red-signal approach into the intersecting street whose traffic does not face red; separate avoidance purpose declared.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "fallback_policy": "No alternate connector geometry is yet source-bound; a fallback requires the same signal, parcel class and comparison condition with its own offline proof."
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass",
+      "target_law_id": "NRS-484B-307-8e",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Same route and signal timing through source-identified public property.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "fallback_policy": "No alternate connector geometry is yet source-bound; a fallback requires the same signal, parcel class and comparison condition with its own offline proof."
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing",
+      "target_law_id": "NRS-484B-307-8e",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Vehicle uses the roadway/intersection without entering the property while signal and destination context remain fixed.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "fallback_policy": "No alternate connector geometry is yet source-bound; a fallback requires the same signal, parcel class and comparison condition with its own offline proof."
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red",
+      "target_law_id": "NRS-484B-307-8e",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Vehicle traverses the same private property while approach signal is not steady red alone.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "fallback_policy": "No alternate connector geometry is yet source-bound; a fallback requires the same signal, parcel class and comparison condition with its own offline proof."
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red",
+      "target_law_id": "NRS-484B-307-8e",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Vehicle traverses the same private property but destination traffic faces red at street entry.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "fallback_policy": "No alternate connector geometry is yet source-bound; a fallback requires the same signal, parcel class and comparison condition with its own offline proof."
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose",
+      "target_law_id": "NRS-484B-307-8e",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Vehicle traverses the same private property with a separately sourced non-avoidance purpose.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "fallback_policy": "No alternate connector geometry is yet source-bound; a fallback requires the same signal, parcel class and comparison condition with its own offline proof."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "public_vs_private_property",
+      "case_ids": [
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass"
+      ],
+      "fixed_conditions": [
+        "same intersection, vehicle class, four-camera 20 Hz recording and duration",
+        "same source-bound approach/destination identities and Native route timing except the stated difference",
+        "same bypass path and red-signal phase"
+      ],
+      "deliberate_differences": [
+        "original parcel classification private versus public; corresponding authority source changes"
+      ]
+    },
+    {
+      "comparison_id": "property_vs_roadway_route",
+      "case_ids": [
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing"
+      ],
+      "fixed_conditions": [
+        "same intersection, vehicle class, four-camera 20 Hz recording and duration",
+        "same source-bound approach/destination identities and Native route timing except the stated difference",
+        "same approach red-alone state, destination not-red state and purpose declaration"
+      ],
+      "deliberate_differences": [
+        "ego body traverses property connector versus the ordinary intersection roadway"
+      ]
+    },
+    {
+      "comparison_id": "approach_signal_activation",
+      "case_ids": [
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red"
+      ],
+      "fixed_conditions": [
+        "same intersection, vehicle class, four-camera 20 Hz recording and duration",
+        "same source-bound approach/destination identities and Native route timing except the stated difference",
+        "same private parcel traversal and destination not-red state"
+      ],
+      "deliberate_differences": [
+        "approach signal steady red alone versus a non-red state during property movement"
+      ]
+    },
+    {
+      "comparison_id": "destination_signal_condition",
+      "case_ids": [
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red"
+      ],
+      "fixed_conditions": [
+        "same intersection, vehicle class, four-camera 20 Hz recording and duration",
+        "same source-bound approach/destination identities and Native route timing except the stated difference",
+        "same red-alone approach and private parcel traversal"
+      ],
+      "deliberate_differences": [
+        "destination traffic signal not red versus red at street entry"
+      ]
+    },
+    {
+      "comparison_id": "avoidance_purpose",
+      "case_ids": [
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+        "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose"
+      ],
+      "fixed_conditions": [
+        "same intersection, vehicle class, four-camera 20 Hz recording and duration",
+        "same source-bound approach/destination identities and Native route timing except the stated difference",
+        "same red-alone approach, parcel traversal and destination not-red state"
+      ],
+      "deliberate_differences": [
+        "separately sourced avoidance purpose versus another sourced purpose"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "vehicle_class",
+      "mandatory": true,
+      "source": "Original Native blueprint/actor registry"
+    },
+    {
+      "name": "approach_official_signal_state_and_facing",
+      "mandatory": true,
+      "source": "Native device ID, light state, lane orientation and frame join"
+    },
+    {
+      "name": "original_property_boundaries_and_status",
+      "mandatory": true,
+      "source": "Original map polygons and authority source"
+    },
+    {
+      "name": "ego_body_route",
+      "mandatory": true,
+      "source": "Native per-frame body transforms and map coordinate join"
+    },
+    {
+      "name": "destination_street_and_signal",
+      "mandatory": true,
+      "source": "Original street identity, destination traffic light state and orientation at entry"
+    },
+    {
+      "name": "avoidance_purpose",
+      "mandatory": true,
+      "source": "Separately authored/sourced purpose declaration, not inferred from route"
+    },
+    {
+      "name": "camera_frame_join",
+      "mandatory": true,
+      "source": "Synchronized four-camera frame map"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/assignment.json",
@@ -51,17 +246,29 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original Native map/property-authority packet has not been supplied or selected.",
+    "Original vehicle route and device-state trace have not been captured.",
+    "The purpose declaration is authored context and must be source-bound; it cannot be inferred from movement.",
+    "Runner, semantic proposals, saved-only finalization and independent delivery/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed the empty frozen accepted-recording inventory and the source-hashed conditional witness. There is no prior recording to equate with any branch; physical route, signal and property status remain to be observed.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "Source-bound approach signal, original public/private property traversal, destination signal and separate avoidance purpose",
+        "source": {
+          "path": "inputs/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/evidence.json",
+          "sha256": "3e4c820adcf5ba64a529c19b2d3c52ea3367c5aea089541a99bb98f8f9d0ba90"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings for this exact assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_case_plan",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

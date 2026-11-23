@@ -64,7 +64,9 @@ def construct(world, path: Path, *, case_id: str, kind: str, expected_count: int
                 raise ValueError("count probe actor spawn failed")
             spawned.append(native_actor)
         return {"case_id": case_id, "kind": kind, "expected_count": expected_count,
-                "actors": spawned, "packet_sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest(),
+                "actors": spawned,
+                "declared_blueprint_ids": [actor["blueprint_id"] for actor in packet["actors"]],
+                "packet_sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest(),
                 "opendrive_sha256": map_sha, "physical_acceptance_claimed": False}
     except Exception:
         for actor in reversed(spawned):

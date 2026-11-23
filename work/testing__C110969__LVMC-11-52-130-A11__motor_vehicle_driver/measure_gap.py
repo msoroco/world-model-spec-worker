@@ -1,0 +1,60 @@
+"""Read original Native pose samples for a proposed intersection halt.
+
+This computes a physical measurement only. It makes no necessity or legal finding.
+"""
+
+import hashlib
+import json
+from pathlib import Path
+
+from intersection_geometry import Box, footprint, polygon_gap_to_boundary
+
+
+def _sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def measure(packet_path):
+    packet_path = Path(packet_path)
+    packet = json.loads(packet_path.read_text())
+    for name in ("map_source", "pose_source"):
+        source = packet[name]
+        path = (packet_path.parent / source["path"]).resolve()
+        if not path.is_file() or _sha(path) != source["sha256"]:
+            raise ValueError(name + " missing or hash mismatch")
+    map_path = (packet_path.parent / packet["map_source"]["path"]).resolve()
+    pose_path = (packet_path.parent / packet["pose_source"]["path"]).resolve()
+    map_data = json.loads(map_path.read_text())
+    if not map_data.get("map_id") or not map_data.get("geometry_provenance"):
+        raise ValueError("Intersection map identity/provenance missing")
+    bounds = map_data["intersection_boundary_local_m"]
+    boundary = Box(bounds["west"], bounds["south"], bounds["east"], bounds["north"])
+    length = float(packet["vehicle_length_m"])
+    width = float(packet["vehicle_width_m"])
+    frames = []
+    with pose_path.open() as stream:
+        for raw in stream:
+            frame = json.loads(raw)
+            frames.append(frame)
+    if len(frames) != 900:
+        raise ValueError("Need full 900-frame original trace")
+    if [f["frame"] for f in frames] != list(range(900)):
+        raise ValueError("Original frame sequence incomplete")
+    if any(abs(f["time_s"] - f["frame"] / 20) > 1e-6 for f in frames):
+        raise ValueError("Original time sequence is not 20 Hz")
+    if any(f.get("actor_id") != packet["actor_id"] for f in frames):
+        raise ValueError("Actor binding changed within original trace")
+    halted = [f for f in frames if f.get("halt_state") is True and f.get("speed_mps", 1) <= 0.1]
+    if len(halted) < 40:
+        raise ValueError("No two-second observed halt")
+    gaps = [polygon_gap_to_boundary(footprint(f["x_m"], f["y_m"],
+                                                    f["heading_deg"], length, width), boundary)
+            for f in halted]
+    return {"map_id": map_data["map_id"], "actor_id": packet["actor_id"],
+            "original_frame_count": 900, "halt_frame_count": len(halted),
+            "minimum_halt_body_gap_m": min(gaps),
+            "maximum_halt_body_gap_m": max(gaps),
+            "map_sha256": packet["map_source"]["sha256"],
+            "pose_sha256": packet["pose_source"]["sha256"],
+            "limitations": ["Original samples do not establish the driver's purpose or legal necessity.",
+                            "The source-bound intersection boundary still requires physical map review."]}

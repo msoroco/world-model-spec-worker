@@ -24,9 +24,303 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "initial_within",
+      "rationale": "opponent fully within intersection; ego remains paused until full clearance",
+      "requested_setup": {
+        "opponent_start": "inside",
+        "ego_yields": true,
+        "signal_left": true,
+        "opponent_yields_after_turn": null
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific fallback needed before physical execution."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_no_yield",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "initial_within",
+      "rationale": "opponent fully within intersection; ego initiates left turn before clearance",
+      "requested_setup": {
+        "opponent_start": "inside",
+        "ego_yields": false,
+        "signal_left": true,
+        "opponent_yields_after_turn": null
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific fallback needed before physical execution."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "approaching_hazard",
+      "rationale": "opponent approaches from opposite direction outside intersection; ego waits",
+      "requested_setup": {
+        "opponent_start": "approaching",
+        "ego_yields": true,
+        "signal_left": true,
+        "opponent_yields_after_turn": null
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific fallback needed before physical execution."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "approaching_hazard",
+      "rationale": "opponent approaches from opposite direction outside intersection; ego initiates turn",
+      "requested_setup": {
+        "opponent_start": "approaching",
+        "ego_yields": false,
+        "signal_left": true,
+        "opponent_yields_after_turn": null
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific fallback needed before physical execution."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "subsequent_permission",
+      "rationale": "ego yields to initial opponent, then turns with left signal omitted",
+      "requested_setup": {
+        "opponent_start": "inside",
+        "ego_yields": true,
+        "signal_left": false,
+        "opponent_yields_after_turn": null
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific fallback needed before physical execution."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_given",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "subsequent_permission",
+      "rationale": "ego yields to initial opponent, then turns with left signal given",
+      "requested_setup": {
+        "opponent_start": "inside",
+        "ego_yields": true,
+        "signal_left": true,
+        "opponent_yields_after_turn": null
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No specific fallback needed before physical execution."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "reciprocal_duty",
+      "rationale": "after ego yield and signaled turn, later opposite vehicle continues through intersection",
+      "requested_setup": {
+        "opponent_start": "inside",
+        "ego_yields": true,
+        "signal_left": true,
+        "opponent_yields_after_turn": false
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "physical",
+        "reason": "Two opposing bodies may collide or miss the intended temporal order; verify actual motion and sightlines."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield",
+      "target_law_id": "NRS-484B-253",
+      "branch_id": "reciprocal_duty",
+      "rationale": "after ego yield and signaled turn, later opposite vehicle waits",
+      "requested_setup": {
+        "opponent_start": "inside",
+        "ego_yields": true,
+        "signal_left": true,
+        "opponent_yields_after_turn": true
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "physical",
+        "reason": "Two opposing bodies may collide or miss the intended temporal order; verify actual motion and sightlines."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "initial_within_yield",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_no_yield"
+      ],
+      "fixed_conditions": [
+        "reviewed intersection map and boundary",
+        "left-turn route connectivity",
+        "ordinary motor vehicles",
+        "camera policy and 20 Hz duration",
+        "initial opponent path and speed",
+        "weather and road surface"
+      ],
+      "deliberate_differences": [
+        "ego wait versus early left-turn commitment"
+      ],
+      "evidence_status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "approaching_hazard_yield",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield"
+      ],
+      "fixed_conditions": [
+        "reviewed intersection map and boundary",
+        "left-turn route connectivity",
+        "ordinary motor vehicles",
+        "camera policy and 20 Hz duration",
+        "initial opponent path and speed",
+        "weather and road surface"
+      ],
+      "deliberate_differences": [
+        "ego wait versus early left-turn commitment"
+      ],
+      "evidence_status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "opponent_location",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield"
+      ],
+      "fixed_conditions": [
+        "reviewed intersection map and boundary",
+        "left-turn route connectivity",
+        "ordinary motor vehicles",
+        "camera policy and 20 Hz duration",
+        "initial opponent path and speed",
+        "weather and road surface"
+      ],
+      "deliberate_differences": [
+        "initial opposing vehicle within intersection versus approaching outside"
+      ],
+      "evidence_status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "signal_condition",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_given",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted"
+      ],
+      "fixed_conditions": [
+        "reviewed intersection map and boundary",
+        "left-turn route connectivity",
+        "ordinary motor vehicles",
+        "camera policy and 20 Hz duration",
+        "initial opponent path and speed",
+        "weather and road surface"
+      ],
+      "deliberate_differences": [
+        "observed left signal active versus omitted after initial yield"
+      ],
+      "evidence_status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "reciprocal_duty",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield"
+      ],
+      "fixed_conditions": [
+        "reviewed intersection map and boundary",
+        "left-turn route connectivity",
+        "ordinary motor vehicles",
+        "camera policy and 20 Hz duration",
+        "initial opponent path and speed",
+        "weather and road surface"
+      ],
+      "deliberate_differences": [
+        "later opposing vehicle waits versus continues after ego yield and signaled turn"
+      ],
+      "evidence_status": "planned_unmeasured"
+    }
+  ],
+  "observations": [
+    {
+      "name": "intersection_occupancy",
+      "source": "original Native trace and frame-synced raw cameras",
+      "method": "Map boundary polygon and all eight native body vertices per frame; distinguish any overlap, center, full containment.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "name": "opposite_direction",
+      "source": "original Native trace and frame-synced raw cameras",
+      "method": "Reviewed lane route and heading history of ego and each opponent; opposing cosine alone is diagnostic.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "name": "yield_and_turn_sequence",
+      "source": "original Native trace and frame-synced raw cameras",
+      "method": "Original frame-indexed ego braking, speed, control, turn commitment and opponent clearance histories.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "name": "signal_when_required",
+      "source": "original Native trace and frame-synced raw cameras",
+      "method": "Original left-signal control state and visual corroboration across approach, yield and turn.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "name": "reciprocal_traffic",
+      "source": "original Native trace and frame-synced raw cameras",
+      "method": "Distinct later opposing vehicle identity, approach and pause/continue history after ego turn commitment.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "name": "hazard_context",
+      "source": "original Native trace and frame-synced raw cameras",
+      "method": "Actual speed, boundary-relative position, time-to-conflict and crossing history retained without a legal cutoff.",
+      "legal_judgment": "unresolved"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -90,8 +384,9 @@
     "ae6464d74919438d1bef6fb149f6e672af91101d98261451e4ac234c8ecfb50c"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Six accepted metadata entries have no original trace/video in this export; physical equivalence, statutory intersection occupancy, actual yield and signal remain unverified.",
+    "Eight planned exact cases have no CPU offline or compatibility receipts; no accepted measurement or legal judgment follows from the authored targets.",
+    "Judgment probe plan has two impossible strict-endpoint targets: count below zero and an interior integer between identical bounds."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -319,5 +614,64 @@
       "subsequent_signal"
     ],
     "remaining_requirements_note": null
-  }
+  },
+  "selected_branch": "Initial yield duty; opposing vehicle within intersection.",
+  "requirement_dispositions": [
+    {
+      "requirement": "Initial yield to opposing vehicle within intersection",
+      "source": {
+        "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
+        "sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_no_yield"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "Initial yield to opposing vehicle so close as immediate hazard",
+      "source": {
+        "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
+        "sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "Having so yielded and given signal when and as required",
+      "source": {
+        "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
+        "sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_given",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted"
+      ],
+      "disposition_index": 2
+    },
+    {
+      "requirement": "Later opposite-direction drivers yield to left-turning vehicle",
+      "source": {
+        "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
+        "sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "unverified-law-coverage",
+      "case_ids": [
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield",
+        "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield"
+      ],
+      "disposition_index": 3
+    }
+  ]
 }
