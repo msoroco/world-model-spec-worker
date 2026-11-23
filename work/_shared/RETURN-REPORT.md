@@ -230,3 +230,19 @@ Current long saved proof rose from 24 to 32 of 64. C150142 remains partial: the 
 
 Pinned preflight exited 0 (ignored log SHA-256 `4de7920cfc2f3addc4788cc9641f38751ea18e093889557cce1b31773f38af89`); assignment static complete exited 0 (ignored log SHA-256 `e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a`). This static check is not scoped strict readiness.
 
+## 2026-11-23 C150142 all current long saved candidates audited
+
+Current-manifest pinned recorded-only saved processing and independent selected-construction audits now pass for all 64 long candidates across 16 selected cases (primary plus three distinct fallbacks each). This turn added the 32 no-loading and above-boundary candidates at 36,121 or 36,122 frames. For every new attempt, checked reuse verified identical four synthetic source-camera files, exact frame map, prior original-source hashes and a passed full saved receipt before copying the synthetic composition. Each pinned process completed one fresh source-camera decode plus three independently verified reused decode receipts, JSON graph/Core conversion, Lean, full review render/final decode, original preservation and `missing_evidence=false`. The eight new case indexes bind all candidate summary, audit, composition and selected-construction hashes to the current selected manifest:
+
+- `current-tour-bus-no-loading-long-saved-index.json` SHA-256 `8c362e2cb8ce5df408a2dfbfdd2047bf9d5a08db8d0f2bd9386ba61eac1403ee`
+- `current-shuttle-bus-no-loading-long-saved-index.json` SHA-256 `d55233e074f26e56f91fee324384fab28f36157a457419154541867277891670`
+- `current-rtc-bus-no-loading-long-saved-index.json` SHA-256 `b24eab4cc10940315f96912815dbce5c40b2c4e26579bd651dd511e57c702ca5`
+- `current-limo-no-loading-long-saved-index.json` SHA-256 `7840bdd1027f1ef82b164f60cd48a92cc1dea01fa59a58fa64ea8d1c804b03a5`
+- `current-tour-bus-above-long-saved-index.json` SHA-256 `15b65c7386af2b21563aff59392c2069bb15d4883a12ab793bd38eec458dc252`
+- `current-shuttle-bus-above-long-saved-index.json` SHA-256 `7eb12a98e4ed5f7a750e45aa2c3900107f9e923ea7c46a1c2b3f327b97792551`
+- `current-rtc-bus-above-long-saved-index.json` SHA-256 `6db198332870688571b43c72e1be3db8c185dad6124c27a0dec6b993401a6b93`
+- `current-limo-above-long-saved-index.json` SHA-256 `b1d7959d53fc09e0451b7940278ecccbfd57ab92066ec3e557e2a3f972920757`
+
+C150142 remains `partial`: all 64 official pinned recipe-bound positive/negative long compatibility chains still need a bounded diagnostic under the frozen 2,000-frame fixture-generator limit, with numeric 30-minute timing proof. Final independent delivery/comparison, physical/semantic/package/queue integration and assignment-scoped strict readiness remain worker-owned CPU tasks. The batch strict gate has not passed; 236 of 253 assignments remain partial. These synthetic checks do not establish original Native observation or physical/legal acceptance. No frozen input, runtime or batch file was edited, and no Git command was run.
+
+Pinned preflight exited 0 (ignored log SHA-256 `ffd8a37728df4435745b337bf60a97be363678edfa18e5c1c814655c7f5a7f2e`); assignment static complete exited 0 (ignored log SHA-256 `e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a`). This static check is not scoped strict readiness.
