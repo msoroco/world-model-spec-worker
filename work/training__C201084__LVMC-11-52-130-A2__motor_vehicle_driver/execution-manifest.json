@@ -1,0 +1,1191 @@
+{
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/reference-fallback1.log",
+            "negative_log": "current-combined-reference-fallback1-negative-analysis.log",
+            "receipt": "current-combined-reference-fallback1-compatibility.log",
+            "sha256": "2df0093d7ccafcfb24e874807b65d8e88853841e243f593fa07ecb05c338b5ea"
+          },
+          "construction": "draft-reference-fallback1-construction.json",
+          "construction_sha256": "02d218b9bb0cbf7b59c5e53b65ff84008f0b815cba316ddbcbd37edc30ffde4c",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference --candidate fallback1 --output .runtime-work/c201084-combined-reference-fallback1-offline",
+            "construction_sha256": "02d218b9bb0cbf7b59c5e53b65ff84008f0b815cba316ddbcbd37edc30ffde4c",
+            "exit_code": 0,
+            "log": "current-combined-reference-fallback1-offline.log",
+            "log_sha256": "0938031cad6eb19e6ebf0422c055982fa361a58285bf222912464c1cb57916aa"
+          },
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/reference-fallback2.log",
+            "negative_log": "current-combined-reference-fallback2-negative-analysis.log",
+            "receipt": "current-combined-reference-fallback2-compatibility.log",
+            "sha256": "40312bd0aa3c06d75e2d6548ba03c636aedb76c0ae0ab58ada8272c95c990b4e"
+          },
+          "construction": "draft-reference-fallback2-construction.json",
+          "construction_sha256": "46c53a0a1f9f2c506ffe45b6f441c67cbf571a2d866d24765a25f790d7035fa7",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference --candidate fallback2 --output .runtime-work/c201084-combined-reference-fallback2-offline",
+            "construction_sha256": "46c53a0a1f9f2c506ffe45b6f441c67cbf571a2d866d24765a25f790d7035fa7",
+            "exit_code": 0,
+            "log": "current-combined-reference-fallback2-offline.log",
+            "log_sha256": "46558cc337f115b0a9d06c343876682b5f264c40823a96348095905cda62c89c"
+          },
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/reference-fallback3.log",
+            "negative_log": "current-combined-reference-fallback3-negative-analysis.log",
+            "receipt": "current-combined-reference-fallback3-compatibility.log",
+            "sha256": "1885f1e651062f5759386b716574b530e7effd847c8da5f1c6dee5b71cfe6e24"
+          },
+          "construction": "draft-reference-fallback3-construction.json",
+          "construction_sha256": "d451c5f3d06255bfb61641ea31b66a60be5f9acc04afa61a1b0afc75fa3c645a",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference --candidate fallback3 --output .runtime-work/c201084-combined-reference-fallback3-offline",
+            "construction_sha256": "d451c5f3d06255bfb61641ea31b66a60be5f9acc04afa61a1b0afc75fa3c645a",
+            "exit_code": 0,
+            "log": "current-combined-reference-fallback3-offline.log",
+            "log_sha256": "7f34422a1742c056daa01f616c3031d27440a648e557d84b6619927b18176f3e"
+          },
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/reference-primary.log",
+        "negative_log": "current-combined-reference-primary-negative-analysis.log",
+        "receipt": "current-combined-reference-primary-compatibility-v2.log",
+        "sha256": "4896c528bed21fefc67dc6a0fd54c5d15f6f6da9efe0b87a35bc0766dccfc884"
+      },
+      "construction": "draft-reference-construction.json",
+      "construction_sha256": "e7edbbf0071967570f919f48a778ec96890a691c7cb165a7d92a2fd518140542",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-reference-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-reference-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference --candidate primary --output .runtime-work/c201084-combined-reference-primary-offline",
+        "construction_sha256": "e7edbbf0071967570f919f48a778ec96890a691c7cb165a7d92a2fd518140542",
+        "exit_code": 0,
+        "log": "current-combined-reference-primary-offline.log",
+        "log_sha256": "9f52a1d70bc2f20d74590b42cbfef7193889f7f5227dd9de2bb092139d4aa543"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "receipt": "physical-proof/reference/proof.json",
+        "sha256": "223953573889a449211ee93a3005a4ca91770dc9fa37d3accae36ae93826281f"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-reference-primary-saved.log",
+        "sha256": "d341666d9c3c1c8066c0fc6fdbfb0069cdf9f2669c5cf546b40b3e180135507e"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/contrast-fallback1.log",
+            "negative_log": "current-combined-contrast-fallback1-negative-analysis.log",
+            "receipt": "current-combined-contrast-fallback1-compatibility.log",
+            "sha256": "a3dbf90e09ee2b6ece25aca67291448db1d1244a8891a1c51bc5c521f81bc8b4"
+          },
+          "construction": "draft-contrast-fallback1-construction.json",
+          "construction_sha256": "29945ecf17fed801ee5288c9fa541d095b3823dbc35ea5f430172bf1b1bf7168",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast --candidate fallback1 --output .runtime-work/c201084-combined-contrast-fallback1-offline",
+            "construction_sha256": "29945ecf17fed801ee5288c9fa541d095b3823dbc35ea5f430172bf1b1bf7168",
+            "exit_code": 0,
+            "log": "current-combined-contrast-fallback1-offline.log",
+            "log_sha256": "ce8df65e7ff8de35c76b34cbae505c1ce4c2a1000aeae73816e2a9f4f5930100"
+          },
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/contrast-fallback2.log",
+            "negative_log": "current-combined-contrast-fallback2-negative-analysis.log",
+            "receipt": "current-combined-contrast-fallback2-compatibility.log",
+            "sha256": "7c9f24451b8b95c1609a145b43260528c71be3a213806e7ee5f0d913f53bc0b2"
+          },
+          "construction": "draft-contrast-fallback2-construction.json",
+          "construction_sha256": "f66f51fd09b972dff9721e7a651a5e71cf149cd06791dce46b2b13b802a5c63a",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast --candidate fallback2 --output .runtime-work/c201084-combined-contrast-fallback2-offline",
+            "construction_sha256": "f66f51fd09b972dff9721e7a651a5e71cf149cd06791dce46b2b13b802a5c63a",
+            "exit_code": 0,
+            "log": "current-combined-contrast-fallback2-offline.log",
+            "log_sha256": "b138c8a4ae07bfcd4a076948e9768444f626387058760b8196f122b617fe620b"
+          },
+          "trigger": {
+            "failure_condition": "no near-zero disjoint sample in the 600-frame capture",
+            "metric": "near-zero samples disjoint from the authored zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/contrast-fallback3.log",
+            "negative_log": "current-combined-contrast-fallback3-negative-analysis.log",
+            "receipt": "current-combined-contrast-fallback3-compatibility.log",
+            "sha256": "b6f458c0d832467e0907d1f797d0b2fa27145bbec444b364a943ea8acb5e3709"
+          },
+          "construction": "draft-contrast-fallback3-construction.json",
+          "construction_sha256": "b0cf2eab1a0428825479e4c9ed2f7f12e8a8752c105377db177f5c06275d95fb",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast --candidate fallback3 --output .runtime-work/c201084-combined-contrast-fallback3-offline",
+            "construction_sha256": "b0cf2eab1a0428825479e4c9ed2f7f12e8a8752c105377db177f5c06275d95fb",
+            "exit_code": 0,
+            "log": "current-combined-contrast-fallback3-offline.log",
+            "log_sha256": "7fa8975c963520bbd9306534102eea95a3c72830ff114620553fa9412bd5a2af"
+          },
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/contrast-primary.log",
+        "negative_log": "current-combined-contrast-primary-negative-analysis.log",
+        "receipt": "current-combined-contrast-primary-compatibility.log",
+        "sha256": "97de68aefce95b2a0037d5761a70e306b7284f7d809d9f641dd87e26d9cd06be"
+      },
+      "construction": "draft-contrast-construction.json",
+      "construction_sha256": "89681b9bb347a19a572fcc769029042b12b13dc7b28e0a35bf0839697cd2e948",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-contrast-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-contrast-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-contrast-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast --candidate primary --output .runtime-work/c201084-combined-contrast-primary-offline",
+        "construction_sha256": "89681b9bb347a19a572fcc769029042b12b13dc7b28e0a35bf0839697cd2e948",
+        "exit_code": 0,
+        "log": "current-combined-contrast-primary-offline.log",
+        "log_sha256": "e39ce107bdc1bdeabba2d2ec673fcb0f3ed107bfbdadbec081f76e3a427e82ee"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "receipt": "physical-proof/contrast/proof.json",
+        "sha256": "05bce04fc2b45ae9176296bcafa51e0711ecfefcb9532e5926bd49bf4af2f247"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-contrast-primary-saved.log",
+        "sha256": "ab6be9c84125e40c2b41bee975998c9b24303bca449a3e8ef0c6f45290957db2"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "lead_traffic_relation": {
+          "entrypoint": "exception_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive lead_traffic_relation from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Lead gap, closing speed and approach speed are separately observed Native motion risks; select alternatives only from source-measured failures.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "stop_gap_m: 6.0 -> 8.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/conflict-fallback1.log",
+            "negative_log": "current-combined-conflict-fallback1-negative-analysis.log",
+            "receipt": "current-combined-conflict-fallback1-compatibility.log",
+            "sha256": "8526b2502044e3ad65ad012946aa2d1c707e6a9d9831eb1ae0470f235355292e"
+          },
+          "construction": "draft-conflict-fallback1-construction.json",
+          "construction_sha256": "ced5e1bd8e67f56a4bdfa48edcc3f2fcb15a73d458a26ff52bdbe17f355d49f4",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict --candidate fallback1 --output .runtime-work/c201084-combined-conflict-fallback1-offline",
+            "construction_sha256": "ced5e1bd8e67f56a4bdfa48edcc3f2fcb15a73d458a26ff52bdbe17f355d49f4",
+            "exit_code": 0,
+            "log": "current-combined-conflict-fallback1-offline.log",
+            "log_sha256": "34c0259883c7d4606fa91a287f56aba8e4c5989b0c19bada232c6e88ca322741"
+          },
+          "trigger": {
+            "failure_condition": "gap drops below 6 m while ego speed exceeds 0.05 m/s",
+            "metric": "lead longitudinal gap before near-zero ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 3.0 -> 2.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/conflict-fallback2.log",
+            "negative_log": "current-combined-conflict-fallback2-negative-analysis.log",
+            "receipt": "current-combined-conflict-fallback2-compatibility.log",
+            "sha256": "297a7694b51ffd875442599cc60deee4730069fd446f0e2701f1c1050eb27e56"
+          },
+          "construction": "draft-conflict-fallback2-construction.json",
+          "construction_sha256": "c1eb2486d4b8f5d5109647e1d5083198d2b44f1788168edcaeafd6fbfc7cb61d",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict --candidate fallback2 --output .runtime-work/c201084-combined-conflict-fallback2-offline",
+            "construction_sha256": "c1eb2486d4b8f5d5109647e1d5083198d2b44f1788168edcaeafd6fbfc7cb61d",
+            "exit_code": 0,
+            "log": "current-combined-conflict-fallback2-offline.log",
+            "log_sha256": "01133d56f0002c1455b98149dfb318ee5e757b7ef3eb78ddab865cc8c1a8c430"
+          },
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained longitudinal gap",
+            "metric": "closing speed and lead gap over the approach",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_throttle: 0.28 -> 0.18"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/conflict-fallback3.log",
+            "negative_log": "current-combined-conflict-fallback3-negative-analysis.log",
+            "receipt": "current-combined-conflict-fallback3-compatibility.log",
+            "sha256": "3ae3988f0d4e74a9716bd61c919304dd8ccb9f289d3ddc3c837fcbf47b951e46"
+          },
+          "construction": "draft-conflict-fallback3-construction.json",
+          "construction_sha256": "7c467f322a8149be9556674c5ad02c2736ef710e8754df5f4e31393018f727f4",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict --candidate fallback3 --output .runtime-work/c201084-combined-conflict-fallback3-offline",
+            "construction_sha256": "7c467f322a8149be9556674c5ad02c2736ef710e8754df5f4e31393018f727f4",
+            "exit_code": 0,
+            "log": "current-combined-conflict-fallback3-offline.log",
+            "log_sha256": "41ace8e00b53dd31b26857d96ae9cd424776a9cfecd7aa681fec67d815fdc25f"
+          },
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s before the first brake request",
+            "metric": "ego speed before first saved brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/conflict-primary.log",
+        "negative_log": "current-combined-conflict-primary-negative-analysis.log",
+        "receipt": "current-combined-conflict-primary-compatibility.log",
+        "sha256": "88334e572dcfa7458ef3b723dade07594e016bbc08038d4ce93770a43459796a"
+      },
+      "construction": "draft-conflict-construction.json",
+      "construction_sha256": "534263d7024a90346be92b1c306d79dc9f736b28c3ad4e7ce010ad92409157a0",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-conflict-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-conflict-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "exception_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-conflict-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict --candidate primary --output .runtime-work/c201084-combined-conflict-primary-offline",
+        "construction_sha256": "534263d7024a90346be92b1c306d79dc9f736b28c3ad4e7ce010ad92409157a0",
+        "exit_code": 0,
+        "log": "current-combined-conflict-primary-offline.log",
+        "log_sha256": "76266b23c02a2be831b1c829b784b8041f6bf27e5f18543fbc87e6288513633b"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+        "receipt": "physical-proof/conflict/proof.json",
+        "sha256": "12a5ede67e2c1e3b776c42df45bd304fd18ef91c38385add912c27b2e1cb1f04"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-conflict-primary-saved.log",
+        "sha256": "7f7d70b40bd0c1bd45a9ba9c00abc8f69de1dc2028ff43147afa8ba391e8034d"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "lead_traffic_relation": {
+          "entrypoint": "exception_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive lead_traffic_relation from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Lead gap, closing speed and approach speed are separately observed Native motion risks; select alternatives only from source-measured failures.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "stop_gap_m: 6.0 -> 8.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/clear-fallback1.log",
+            "negative_log": "current-combined-clear-fallback1-negative-analysis.log",
+            "receipt": "current-combined-clear-fallback1-compatibility.log",
+            "sha256": "38aa59cde63a8eb1fb98ffbf87fe20f8b5d60caf8e844f6e28a5fd9639da1133"
+          },
+          "construction": "draft-clear-fallback1-construction.json",
+          "construction_sha256": "5936cc9c869935d52f3dc1c0ea565b274c53603d37641b71f0b811d7f4fd1c2f",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear --candidate fallback1 --output .runtime-work/c201084-combined-clear-fallback1-offline",
+            "construction_sha256": "5936cc9c869935d52f3dc1c0ea565b274c53603d37641b71f0b811d7f4fd1c2f",
+            "exit_code": 0,
+            "log": "current-combined-clear-fallback1-offline.log",
+            "log_sha256": "3f4f0315e9ff0118cc18b0b4150ae8fc073d6e306f67aff0ebab8f8dd9db5987"
+          },
+          "trigger": {
+            "failure_condition": "gap drops below 6 m while ego speed exceeds 0.05 m/s",
+            "metric": "lead longitudinal gap before near-zero ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 3.0 -> 2.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/clear-fallback2.log",
+            "negative_log": "current-combined-clear-fallback2-negative-analysis.log",
+            "receipt": "current-combined-clear-fallback2-compatibility.log",
+            "sha256": "c5aabfd9930f357fcca3cfefb6e770a70abe89a64e1ee4c44552b4dcd8ae6d55"
+          },
+          "construction": "draft-clear-fallback2-construction.json",
+          "construction_sha256": "179dc3ca9824e63f7260c02b0c799c38c90f78c332b40ab74d5961181154e1dd",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear --candidate fallback2 --output .runtime-work/c201084-combined-clear-fallback2-offline",
+            "construction_sha256": "179dc3ca9824e63f7260c02b0c799c38c90f78c332b40ab74d5961181154e1dd",
+            "exit_code": 0,
+            "log": "current-combined-clear-fallback2-offline.log",
+            "log_sha256": "2aadbfe0438c9baa965e808004cb7bf3e9d914ec3ba5dca2f52a2fa617fc6b5a"
+          },
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained longitudinal gap",
+            "metric": "closing speed and lead gap over the approach",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_throttle: 0.28 -> 0.18"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/clear-fallback3.log",
+            "negative_log": "current-combined-clear-fallback3-negative-analysis.log",
+            "receipt": "current-combined-clear-fallback3-compatibility.log",
+            "sha256": "2c1cb30c47094d6ef652fa92589ff962057cdc21b6b16f0141b0c1224441e06f"
+          },
+          "construction": "draft-clear-fallback3-construction.json",
+          "construction_sha256": "4b7709ecaf92ed71e8f6b60d1c344b76162cea673014252968435efa6e244b93",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear --candidate fallback3 --output .runtime-work/c201084-combined-clear-fallback3-offline",
+            "construction_sha256": "4b7709ecaf92ed71e8f6b60d1c344b76162cea673014252968435efa6e244b93",
+            "exit_code": 0,
+            "log": "current-combined-clear-fallback3-offline.log",
+            "log_sha256": "61df6cf9049c6bc93a1d95372e7f1981f9c391e646429e5621fc30e1cb25c707"
+          },
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s before the first brake request",
+            "metric": "ego speed before first saved brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/clear-primary.log",
+        "negative_log": "current-combined-clear-primary-negative-analysis.log",
+        "receipt": "current-combined-clear-primary-compatibility.log",
+        "sha256": "ede286014f399be31cf5ee5bb9ad8c0a4a649a381fc6aa1c9de66ec9b76ddecd"
+      },
+      "construction": "draft-clear-construction.json",
+      "construction_sha256": "ded6e0bb701c9dc739ebb410679b02a919d676d5ca18570e59cecc6fedf52424",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-clear-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-clear-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "clear_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-clear-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear --candidate primary --output .runtime-work/c201084-combined-clear-primary-offline",
+        "construction_sha256": "ded6e0bb701c9dc739ebb410679b02a919d676d5ca18570e59cecc6fedf52424",
+        "exit_code": 0,
+        "log": "current-combined-clear-primary-offline.log",
+        "log_sha256": "743d565fabf6a2caa38dd637584480eaf251c3ea177f00af60fd60a7eaadf63a"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+        "receipt": "physical-proof/clear/proof.json",
+        "sha256": "48b81e6c1a9bc111bcc8683f101f648cffec287cb436c6b4b9bb28921027600e"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-clear-primary-saved.log",
+        "sha256": "a33ddca80e17c008a9ec1852a284e80c76e8e56e2e5bce8f44b7f67284d0b598"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "lead_traffic_presence": {
+          "entrypoint": "traffic_pair_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive lead_traffic_presence from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Destination settling and lead-relative closure need separate source-measured alternative controls.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lead_stop_gap_m: 8.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/near_lead-fallback1.log",
+            "negative_log": "current-combined-near_lead-fallback1-negative-analysis.log",
+            "receipt": "current-combined-near_lead-fallback1-compatibility.log",
+            "sha256": "21342f768ee734723b890a950026fe17d0980a393b04608cffda92bca565283c"
+          },
+          "construction": "draft-near_lead-fallback1-construction.json",
+          "construction_sha256": "7f67038744c6f3f9b42229ba5505500da40601c47b2f82d79649c18b68104878",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead --candidate fallback1 --output .runtime-work/c201084-combined-near_lead-fallback1-offline",
+            "construction_sha256": "7f67038744c6f3f9b42229ba5505500da40601c47b2f82d79649c18b68104878",
+            "exit_code": 0,
+            "log": "current-combined-near_lead-fallback1-offline.log",
+            "log_sha256": "1e2257d05de205993c8231bd24015c5589e025a19ce93a5eacb39317b05e466e"
+          },
+          "trigger": {
+            "failure_condition": "gap falls below 6 m while ego remains moving",
+            "metric": "lead longitudinal gap before near-zero speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "lead_deceleration_mps2: 2.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/near_lead-fallback2.log",
+            "negative_log": "current-combined-near_lead-fallback2-negative-analysis.log",
+            "receipt": "current-combined-near_lead-fallback2-compatibility.log",
+            "sha256": "40d1f75b4d39a7b6a8907f07359665aa08c15775147e11d539ff1f491e4cf219"
+          },
+          "construction": "draft-near_lead-fallback2-construction.json",
+          "construction_sha256": "e96f216d0229e741838fb9a177d3447d423e0dae7ff070ed86cabd1acfbc273e",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead --candidate fallback2 --output .runtime-work/c201084-combined-near_lead-fallback2-offline",
+            "construction_sha256": "e96f216d0229e741838fb9a177d3447d423e0dae7ff070ed86cabd1acfbc273e",
+            "exit_code": 0,
+            "log": "current-combined-near_lead-fallback2-offline.log",
+            "log_sha256": "88ccd19c6e8aeec160d75f0d03e72b1951a6c7252685f11949d86c54949e96c6"
+          },
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained gap",
+            "metric": "lead-relative closing speed and gap",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_mps: 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/near_lead-fallback3.log",
+            "negative_log": "current-combined-near_lead-fallback3-negative-analysis.log",
+            "receipt": "current-combined-near_lead-fallback3-compatibility.log",
+            "sha256": "c94290e8a9249062cd7c4dfa1af6a61d0b17ad24b624c93d4ecd2e5f8e73d005"
+          },
+          "construction": "draft-near_lead-fallback3-construction.json",
+          "construction_sha256": "79b6a5b4ea8f8122c9f859e0dbcd9d8cd888a05247e9a6e1ca2643b227f2705b",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead --candidate fallback3 --output .runtime-work/c201084-combined-near_lead-fallback3-offline",
+            "construction_sha256": "79b6a5b4ea8f8122c9f859e0dbcd9d8cd888a05247e9a6e1ca2643b227f2705b",
+            "exit_code": 0,
+            "log": "current-combined-near_lead-fallback3-offline.log",
+            "log_sha256": "0d262bc8ab0669fee648fc47885737fb1e44f250f21d128d61a610686fdff79e"
+          },
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s on approach",
+            "metric": "ego speed before the first lead brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/near_lead-primary.log",
+        "negative_log": "current-combined-near_lead-primary-negative-analysis.log",
+        "receipt": "current-combined-near_lead-primary-compatibility.log",
+        "sha256": "e5486eb5505082ba71c655b2583e71d8f61f1a99b3e96c3fd5d542da73f781f1"
+      },
+      "construction": "draft-near_lead-construction.json",
+      "construction_sha256": "bce41bd1394f70095d3ab01dba4f90c2f9a487b2d08b2997b106f5075acfbbf8",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-near_lead-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-near_lead-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "traffic_pair_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-near_lead-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead --candidate primary --output .runtime-work/c201084-combined-near_lead-primary-offline",
+        "construction_sha256": "bce41bd1394f70095d3ab01dba4f90c2f9a487b2d08b2997b106f5075acfbbf8",
+        "exit_code": 0,
+        "log": "current-combined-near_lead-primary-offline.log",
+        "log_sha256": "42f689eb3978ca54bc2ec6e15af4b643f8eb5483e89b4bd359314865871f8360"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+        "receipt": "physical-proof/near_lead/proof.json",
+        "sha256": "00548bf754c25e3d2c884bc99c2ac5aaf51beabf3ae69c0a6c59c167ac57542f"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-near_lead-primary-saved.log",
+        "sha256": "2c11986f09323c5bad64a3cb80285b173781e40dcce9ea373800fa533afdcf7a"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "lead_traffic_presence": {
+          "entrypoint": "traffic_pair_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive lead_traffic_presence from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Destination settling and lead-relative closure need separate source-measured alternative controls.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "destination_deceleration_mps2: 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/absent_lead-fallback1.log",
+            "negative_log": "current-combined-absent_lead-fallback1-negative-analysis.log",
+            "receipt": "current-combined-absent_lead-fallback1-compatibility.log",
+            "sha256": "856031ad7dc60477e91c7fe4298bf96e212cb19c445639d47c544e389c2f1fb3"
+          },
+          "construction": "draft-absent_lead-fallback1-construction.json",
+          "construction_sha256": "f9cb554ac8709bbee78c1fcf3bfd4e743b49fa6d024d0eb718a53019285cefde",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead --candidate fallback1 --output .runtime-work/c201084-combined-absent_lead-fallback1-offline",
+            "construction_sha256": "f9cb554ac8709bbee78c1fcf3bfd4e743b49fa6d024d0eb718a53019285cefde",
+            "exit_code": 0,
+            "log": "current-combined-absent_lead-fallback1-offline.log",
+            "log_sha256": "a82472dd2736e97d5cc4dc1b4fab5c87f235e2c6fbab672c57465d5251efd366"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed destination",
+            "metric": "remaining destination distance and ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_mps: 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/absent_lead-fallback2.log",
+            "negative_log": "current-combined-absent_lead-fallback2-negative-analysis.log",
+            "receipt": "current-combined-absent_lead-fallback2-compatibility.log",
+            "sha256": "e45fa750ad5805c8cc39dd7f36481f3039177322237e93fc8cf621c14167e8a2"
+          },
+          "construction": "draft-absent_lead-fallback2-construction.json",
+          "construction_sha256": "1d81bf8d928c6b72190ff09d699745ae681eaa4e77c105ab18bce5dabc5c7af3",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead --candidate fallback2 --output .runtime-work/c201084-combined-absent_lead-fallback2-offline",
+            "construction_sha256": "1d81bf8d928c6b72190ff09d699745ae681eaa4e77c105ab18bce5dabc5c7af3",
+            "exit_code": 0,
+            "log": "current-combined-absent_lead-fallback2-offline.log",
+            "log_sha256": "fea2219b54bd3829af0befac03e505571f2402a551556315909e29d6081fae9e"
+          },
+          "trigger": {
+            "failure_condition": "ego approaches faster than a stable stop allows",
+            "metric": "ego speed on approach to destination",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 1.2"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/absent_lead-fallback3.log",
+            "negative_log": "current-combined-absent_lead-fallback3-negative-analysis.log",
+            "receipt": "current-combined-absent_lead-fallback3-compatibility.log",
+            "sha256": "481f21044a5ec59a2fa97aefb54aad0e7a0dc299049903f3957c7806dd2b23cd"
+          },
+          "construction": "draft-absent_lead-fallback3-construction.json",
+          "construction_sha256": "fe53951246a979cd4c3377a514b22ec561d13b12231a60336c1e3b5d472e75d4",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead --candidate fallback3 --output .runtime-work/c201084-combined-absent_lead-fallback3-offline",
+            "construction_sha256": "fe53951246a979cd4c3377a514b22ec561d13b12231a60336c1e3b5d472e75d4",
+            "exit_code": 0,
+            "log": "current-combined-absent_lead-fallback3-offline.log",
+            "log_sha256": "4bc47efefd160455a9c80746e24bb8acfc9b0f5690093978b0bce011e8aa8e1f"
+          },
+          "trigger": {
+            "failure_condition": "ego does not settle within the nominal 0.8 m radius",
+            "metric": "distance to destination at near-zero speed",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/absent_lead-primary.log",
+        "negative_log": "current-combined-absent_lead-primary-negative-analysis.log",
+        "receipt": "current-combined-absent_lead-primary-compatibility.log",
+        "sha256": "262d1fcfb8552f6996ba1a363d61ce586133ea7ef430343d8d7af9917171f889"
+      },
+      "construction": "draft-absent_lead-construction.json",
+      "construction_sha256": "375e5c4a327bae8a37b858e0a62a0457b776d88a0eb4a0176e8b6d046fb4310a",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-absent_lead-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-absent_lead-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "traffic_pair_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-absent_lead-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead --candidate primary --output .runtime-work/c201084-combined-absent_lead-primary-offline",
+        "construction_sha256": "375e5c4a327bae8a37b858e0a62a0457b776d88a0eb4a0176e8b6d046fb4310a",
+        "exit_code": 0,
+        "log": "current-combined-absent_lead-primary-offline.log",
+        "log_sha256": "8755fa3013a25e37a93cdf3863b0f0b98a8229c295bbac44193d7ab8faffb00c"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead",
+        "receipt": "physical-proof/absent_lead/proof.json",
+        "sha256": "454c4d24a950ac0f5868829bc23547161a8e175fc42d7ce50f53245b1199180a"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-absent_lead-primary-saved.log",
+        "sha256": "02ed3e34405632d8f0fecc552805ef20028c628d2353cd26a9c8611173ead2eb"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient stopped samples and follower closing remain distinct risks while the device source is held fixed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/device_direction-fallback1.log",
+            "negative_log": "current-combined-device_direction-fallback1-negative-analysis.log",
+            "receipt": "current-combined-device_direction-fallback1-compatibility.log",
+            "sha256": "440e008a3613de1cbc18d2eb1d494fd551e85ed768295931fa374a4d9504e4a1"
+          },
+          "construction": "draft-device-direction-fallback1-construction.json",
+          "construction_sha256": "ee83adeb160aed48e24d1c625db7b494c183b998739352a80a5b8c2a66c02e11",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction --candidate fallback1 --output .runtime-work/c201084-combined-device_direction-fallback1-offline",
+            "construction_sha256": "ee83adeb160aed48e24d1c625db7b494c183b998739352a80a5b8c2a66c02e11",
+            "exit_code": 0,
+            "log": "current-combined-device_direction-fallback1-offline.log",
+            "log_sha256": "1f76c370ad2f98295e5852d61ebd0dbb5dc7988904fc11ee3552f685c3dd5d8e"
+          },
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/device_direction-fallback2.log",
+            "negative_log": "current-combined-device_direction-fallback2-negative-analysis.log",
+            "receipt": "current-combined-device_direction-fallback2-compatibility.log",
+            "sha256": "ade76d0c80bb8f082acfab1ffe2ee31902ba2896bf08861ef2dba29a593ae752"
+          },
+          "construction": "draft-device-direction-fallback2-construction.json",
+          "construction_sha256": "067755ecfdbb6101f3a93a731ef4ee4844cd26e21c8535bb9d5f87d48eb881a7",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction --candidate fallback2 --output .runtime-work/c201084-combined-device_direction-fallback2-offline",
+            "construction_sha256": "067755ecfdbb6101f3a93a731ef4ee4844cd26e21c8535bb9d5f87d48eb881a7",
+            "exit_code": 0,
+            "log": "current-combined-device_direction-fallback2-offline.log",
+            "log_sha256": "8395600279d7fb3c7d5a64db2129f29f5afcfdd9480fd301b7c1f0670137753a"
+          },
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/device_direction-fallback3.log",
+            "negative_log": "current-combined-device_direction-fallback3-negative-analysis.log",
+            "receipt": "current-combined-device_direction-fallback3-compatibility.log",
+            "sha256": "d5262bf3ed9a43620c191fe3fdff4329df3adbbdbee1c33598e2f11ddf165117"
+          },
+          "construction": "draft-device-direction-fallback3-construction.json",
+          "construction_sha256": "2b728c6032ecd2ebf317fa97c899aec0bac067345f32988b7efcd67336403ba2",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction --candidate fallback3 --output .runtime-work/c201084-combined-device_direction-fallback3-offline",
+            "construction_sha256": "2b728c6032ecd2ebf317fa97c899aec0bac067345f32988b7efcd67336403ba2",
+            "exit_code": 0,
+            "log": "current-combined-device_direction-fallback3-offline.log",
+            "log_sha256": "e2e05c453a08c2059d2f3b041d465585f606463deeb0ce7f5d568f8b8576a579"
+          },
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/device_direction-primary.log",
+        "negative_log": "current-combined-device_direction-primary-negative-analysis.log",
+        "receipt": "current-combined-device_direction-primary-compatibility.log",
+        "sha256": "f962b590d0294824397f5894d7e84413bd58f2c91fe162d3dc66c3b69cf1c05d"
+      },
+      "construction": "draft-device-direction-construction.json",
+      "construction_sha256": "09aa4bf3463cea3d07859845fb8386a001dc4fdd74a2eefd61e305537ae1bcf5",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-device-direction-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-device-direction-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "device_direction_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-device_direction-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction --candidate primary --output .runtime-work/c201084-combined-device_direction-primary-offline",
+        "construction_sha256": "09aa4bf3463cea3d07859845fb8386a001dc4fdd74a2eefd61e305537ae1bcf5",
+        "exit_code": 0,
+        "log": "current-combined-device_direction-primary-offline.log",
+        "log_sha256": "da24c262ac1f5336f48c2e1a526710e3fe0b6ca51e62a6c0387e22486573748a"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction",
+        "receipt": "physical-proof/device_direction/proof.json",
+        "sha256": "14fe8b2eceb228ed4a1cc291f676fd00d889cafa67486f693d88a1d6de8627b2"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-device_direction-primary-saved.log",
+        "sha256": "421235fce94aacb1f4f9899a2308bfeb6e4cbc4c8e4d38c18a71c5a8c802edb1"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_pose from retained actor and frame sources"
+        },
+        "ego_speed": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive ego_speed from retained actor and frame sources"
+        },
+        "vehicle_stops_in_posted_fire_lane": {
+          "entrypoint": "source_measurement.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl, native-survey-readback.json",
+          "method": "derive vehicle_stops_in_posted_fire_lane from retained actor and frame sources"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient stopped samples and follower closing remain distinct risks while the pedestrian actor source is held fixed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/officer_direction-fallback1.log",
+            "negative_log": "current-combined-officer_direction-fallback1-negative-analysis.log",
+            "receipt": "current-combined-officer_direction-fallback1-compatibility.log",
+            "sha256": "28579c3249fca33e754f2fe7255fd0688f94a1ddd419aa05790d8e179c1588ac"
+          },
+          "construction": "draft-officer-direction-fallback1-construction.json",
+          "construction_sha256": "3220f4e4520b617ffb684c99824847aac17f6eb573b2577eb1a7f00191e9c8a3",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction --candidate fallback1 --output .runtime-work/c201084-combined-officer_direction-fallback1-offline",
+            "construction_sha256": "3220f4e4520b617ffb684c99824847aac17f6eb573b2577eb1a7f00191e9c8a3",
+            "exit_code": 0,
+            "log": "current-combined-officer_direction-fallback1-offline.log",
+            "log_sha256": "370053b50556230cead11c71bbdfddacd8e698a7e3a713c62c897de7a20d4b96"
+          },
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/officer_direction-fallback2.log",
+            "negative_log": "current-combined-officer_direction-fallback2-negative-analysis.log",
+            "receipt": "current-combined-officer_direction-fallback2-compatibility.log",
+            "sha256": "c5d1360c44d75f0b933fe41e02a4c6402b3e07c5a9f4060ecbb9d397f1185973"
+          },
+          "construction": "draft-officer-direction-fallback2-construction.json",
+          "construction_sha256": "6303bccda5c288dfa4a7d02e1ed32e72c4a3cdbd186bb8480bc3f0e0e16fd3bf",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction --candidate fallback2 --output .runtime-work/c201084-combined-officer_direction-fallback2-offline",
+            "construction_sha256": "6303bccda5c288dfa4a7d02e1ed32e72c4a3cdbd186bb8480bc3f0e0e16fd3bf",
+            "exit_code": 0,
+            "log": "current-combined-officer_direction-fallback2-offline.log",
+            "log_sha256": "aa1ae22d7861d110b9af3e81e87c1b131951c32fd0c54954f315b1984f1f0464"
+          },
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-analysis/officer_direction-fallback3.log",
+            "negative_log": "current-combined-officer_direction-fallback3-negative-analysis.log",
+            "receipt": "current-combined-officer_direction-fallback3-compatibility.log",
+            "sha256": "41e3702fc32514249fd3f017ab7c094ca470853c0d1162549d44054fa8496a3f"
+          },
+          "construction": "draft-officer-direction-fallback3-construction.json",
+          "construction_sha256": "34350294e64f9c80384b7a756e836cba1b2aad494ae51ffbff5b6b300b8a49f3",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction --candidate fallback3 --output .runtime-work/c201084-combined-officer_direction-fallback3-offline",
+            "construction_sha256": "34350294e64f9c80384b7a756e836cba1b2aad494ae51ffbff5b6b300b8a49f3",
+            "exit_code": 0,
+            "log": "current-combined-officer_direction-fallback3-offline.log",
+            "log_sha256": "f5834cd643a4ca05ef80934a7db79e89d8167c7d48d6d28e995c4bf0b52cbaaf"
+          },
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction",
+      "compatibility": {
+        "log": "selected-compatibility-analysis/officer_direction-primary.log",
+        "negative_log": "current-combined-officer_direction-primary-negative-analysis.log",
+        "receipt": "current-combined-officer_direction-primary-compatibility.log",
+        "sha256": "3a5537749b965f3878dbec9e0c7ed5c2b518e1fc3ba628bdf3d84f7aa6448fa7"
+      },
+      "construction": "draft-officer-direction-construction.json",
+      "construction_sha256": "982a6e7739fad919b90278a787fa84e57776df14237ec619a464255c07adf9a2",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-officer-direction-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-officer-direction-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_direction_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "current-combined-officer_direction-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/current-combined-delivery-draft.json --case training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction --candidate primary --output .runtime-work/c201084-combined-officer_direction-primary-offline",
+        "construction_sha256": "982a6e7739fad919b90278a787fa84e57776df14237ec619a464255c07adf9a2",
+        "exit_code": 0,
+        "log": "current-combined-officer_direction-primary-offline.log",
+        "log_sha256": "79c9c853c7793d5d6f8ab1552fcd098b9bb28a52804ba505fbff8c5d56bbfca4"
+      },
+      "physical_preparation": {
+        "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction",
+        "receipt": "physical-proof/officer_direction/proof.json",
+        "sha256": "dde785e0defb964cccb397ed6355a594f49a102bc80a340a9c0cce6859240323"
+      },
+      "preparation_status": "selected_requires_exact_manifest_cpu_reproof",
+      "saved_processing": {
+        "receipt": "current-combined-officer_direction-primary-saved.log",
+        "sha256": "7ef90444a1ce78debd6e4bdacd181bda14462d2af7659438219ba1d3f68bd403"
+      }
+    }
+  ],
+  "delivery_ready": false,
+  "format": "worker-execution-manifest",
+  "original_native_observed": false,
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "source_draft_sha256": "512f0146fe6b03f79133ccf0a71f8978f9e6f9f9aaa08602262dc18dba04e9f0",
+  "status": "selected_cpu_reproof_incomplete"
+}
