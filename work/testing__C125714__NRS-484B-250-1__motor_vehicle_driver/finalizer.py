@@ -137,6 +137,16 @@ def finalize(attempt: Path, output: Path) -> dict:
                 stream.write(json.dumps({"time_s": sample["time_s"],
                                          "original_frame": sample["frame"],
                                          "value": int(sample[role + "_inside"])}) + "\n")
+    with (channels / "yield_control.jsonl").open("x") as stream:
+        for row in (json.loads(line) for line in
+                    (attempt / "controller_history.jsonl").read_text().splitlines()
+                    if line.strip()):
+            stream.write(json.dumps({
+                "time_s": row["time_s"], "original_frame": row["frame"],
+                "value": {key: row[key] for key in (
+                    "ego_held", "other_body_inside_before_tick",
+                    "other_entered_once_before_tick", "precedence_hold")},
+            }) + "\n")
     context = {
         "format": "worker-median-crossing-measurements",
         "first_body_entry": report["first_body_entry"],
@@ -145,6 +155,12 @@ def finalize(attempt: Path, output: Path) -> dict:
         "entry_time_difference_s": report["entry_time_difference_s"],
         "source_hashes": sources,
         "legal_conclusion": "unresolved",
+    }
+    context["entry_context"] = {
+        "first_body_entry": report["first_body_entry"],
+        "other_enters_before_ego": report["other_enters_before_ego"],
+        "other_body_inside_at_ego_entry": report["other_body_inside_at_ego_entry"],
+        "source_hashes": sources,
     }
     (channels / "crossing_context.json").write_text(json.dumps(context, indent=2) + "\n")
     measured = report["other_enters_before_ego"]
@@ -174,10 +190,10 @@ def finalize(attempt: Path, output: Path) -> dict:
             {"name": role + "_inside", "unit": "boolean sample",
              "reference": "channels/" + role + "_inside.jsonl"}
             for role in ("ego", "other")
-        ] + [{"name": "crossing_context", "unit": "structured record",
+        ] + [{"name": "entry_context", "unit": "structured record",
               "reference": "channels/crossing_context.json"},
-             {"name": "yield_control_attempt", "unit": "structured record",
-              "reference": "controller_history.jsonl"}],
+             {"name": "yield_control", "unit": "structured record",
+              "reference": "channels/yield_control.jsonl"}],
         "source_evidence_hashes": sources,
         "capture_evidence_sha256": _sha(attempt / "capture/evidence.jsonl"),
         "realized_observables": {},

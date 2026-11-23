@@ -41,8 +41,28 @@ def analyze(root):
     officer_id = context.get('native_officer_actor_id')
     if type(officer_id) not in (int, str) or not str(officer_id):
         raise ValueError('Original officer actor identity required')
-    if context.get('officer_assignment_source') is None:
-        raise ValueError('Officer assignment source required')
+    assignment_ref = context.get('officer_assignment_source')
+    if not isinstance(assignment_ref, dict) or set(assignment_ref) != {'path', 'sha256'}:
+        raise ValueError('Hashed officer assignment source required')
+    assignment_path = assignment_ref['path']
+    if not isinstance(assignment_path, str) or not assignment_path.endswith('.json') or \
+       Path(assignment_path).name != assignment_path:
+        raise ValueError('Officer assignment source must be a local JSON file')
+    assignment_file = root / assignment_path
+    if not assignment_file.is_file():
+        raise ValueError('Original officer assignment source missing')
+    assignment_hash = hashlib.sha256(assignment_file.read_bytes()).hexdigest()
+    if assignment_hash != assignment_ref['sha256']:
+        raise ValueError('Officer assignment source hash differs from original bytes')
+    assignment = json.loads(assignment_file.read_text())
+    if (assignment.get('native_officer_actor_id') != officer_id or
+        assignment.get('controlled_approach_lane') != context.get('controlled_approach_lane') or
+        assignment.get('native_map_id') != context.get('native_map_id') or
+        assignment.get('intersection_id') != context.get('intersection_id') or
+        assignment.get('assignment_status') not in ('assigned', 'unverified') or
+        assignment.get('provenance_kind') not in ('original_source_review', 'synthetic_fixture')):
+        raise ValueError('Officer assignment differs from selected actor and entrance')
+    hashes[assignment_path] = assignment_hash
     if context.get('controlled_approach_lane') != [signal['ego_road_id'], signal['ego_lane_id']]:
         raise ValueError('Officer does not govern selected ego entrance')
     polygon = Polygon(signal.get('intersection_polygon_xy_m', []))
@@ -121,5 +141,6 @@ def analyze(root):
             'first_observed_control': first_control, 'first_ego_entry': first_entry,
             'officer_controls_ego_at_entry_observed': first_entry['officer_controls_ego'] and
             first_entry['observed_gesture'] != 'none', 'provenance_kind': review['provenance_kind'],
+            'assignment_status': assignment['assignment_status'],
             'physical_control_verified': False, 'legal_exception_judgment': 'unresolved',
             'legal_conclusion': 'unresolved'}
