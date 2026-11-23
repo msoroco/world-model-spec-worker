@@ -14,7 +14,12 @@ from pathlib import Path
 
 from native_camera import VIEWS
 from native_scene import VARIABLES
-from saved_conditions import FIELDS, measure
+from saved_conditions import FIELDS, measure as _measure
+
+
+def measure(*args, **kwargs):
+    """Expose the original-condition measurement used by this finalizer."""
+    return _measure(*args, **kwargs)
 
 
 def sha(path: Path) -> str:
@@ -44,7 +49,15 @@ def _finite(value, name: str) -> float:
     return float(value)
 
 
-def recording_description() -> dict:
+def recording_description(attempt: Path | None = None) -> dict:
+    if attempt is not None and (Path(attempt) / "config.json").is_file():
+        config = _document(Path(attempt) / "config.json")
+        if config.get("selected_case_id") != config.get("case", {}).get("case_id"):
+            raise ValueError("materialized recording case identity differs")
+        description = config["case"].get("recording_description")
+        if not isinstance(description, dict) or not description.get("channels"):
+            raise ValueError("materialized recording description missing")
+        return description
     channels = []
     units = {"ego_speed_mps": "m/s", "leader_gap_m": "m", "highway_width_m": "m",
              "roadway_driving_width_m": "m", "shoulder_width_m": "m",
@@ -164,7 +177,7 @@ def analyze(attempt: Path) -> tuple[dict, dict, dict]:
                        "physical_cause_confirmed": False,
                        "cause_evidence": ["original-conditions.jsonl", "trace.jsonl"]})
     video_names = [name + ".mkv" for name, _, _ in VIEWS]
-    recording = recording_description()
+    recording = recording_description(attempt)
     evidence = []
     channel_values = {}
     for index, channel in enumerate(recording["channels"]):

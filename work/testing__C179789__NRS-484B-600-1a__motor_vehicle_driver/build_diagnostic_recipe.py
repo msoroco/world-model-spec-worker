@@ -53,6 +53,15 @@ def adapt_attempt(attempt: Path, case_id: str, variables: dict):
     status = json.loads(status_path.read_text(encoding="utf-8"))
     status["case_id"] = case_id
     status_path.write_text(json.dumps(status), encoding="utf-8")
+    trace_path = attempt / "trace.jsonl"
+    trace_rows = [json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()]
+    for row in trace_rows:
+        x, y, z = row["position_m"]
+        row["position"] = {"x": x, "y": y, "z": z}
+        row["heading_deg"] = 0.0
+        row["speed_mps"] = float(variables["ego_speed_request_mps"])
+    trace_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n"
+                                  for row in trace_rows), encoding="utf-8")
 
 
 def build():
@@ -84,6 +93,7 @@ def build():
             receipt = attempt / "media-receipt.json"
             document = json.loads(receipt.read_text(encoding="utf-8"))
             document["video_sha256"] = video_hashes
+            document["trace_sha256"] = sha(attempt / "trace.jsonl")
             receipt.write_text(json.dumps(document), encoding="utf-8")
             files = {path.name: path.read_text(encoding="utf-8") for path in attempt.iterdir()
                      if path.is_file() and path.suffix != ".mkv"}

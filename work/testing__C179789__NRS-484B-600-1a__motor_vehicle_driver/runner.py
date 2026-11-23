@@ -19,6 +19,33 @@ from native_media import finalize as finalize_media
 from native_scene import create, validate
 
 
+def check_bundle() -> dict:
+    """Check the materialized exact-case bundle without starting Native CARLA."""
+    here = Path(__file__).resolve().parent
+    config = json.loads((here / "config.json").read_text(encoding="utf-8"))
+    plan = json.loads((here / "case-plan.json").read_text(encoding="utf-8"))
+    case_id = config.get("selected_case_id")
+    if (config.get("assignment_id") != plan.get("assignment_id") or
+            config.get("cell_id") != plan.get("cell_id") or
+            config.get("law_id") != plan.get("law_id") or
+            config.get("actor") != plan.get("actor") or
+            case_id not in {item["case_id"] for item in plan["cases"]} or
+            config.get("case", {}).get("case_id") != case_id):
+        raise ValueError("exact case bundle identity differs from frozen plan")
+    if config.get("rate_hz") != 20 or config.get("duration_s") != 45:
+        raise ValueError("exact case bundle must request 900 frames at 20 Hz")
+    if config.get("capture_provenance") != "original Native samples required":
+        raise ValueError("exact case bundle requires original Native acquisition")
+    expected = [("overview", 1920, 1080), ("approach", 1280, 720),
+                ("reference_corner", 1280, 720), ("driver_reference", 1280, 720)]
+    cameras = config.get("cameras", [])
+    if [(item.get("name"), item.get("width"), item.get("height"))
+            for item in cameras] != expected:
+        raise ValueError("exact case bundle camera profile differs")
+    return {"case_id": case_id, "bundle_checked": True,
+            "physical_acceptance_claimed": False}
+
+
 def seal_authored_setup(attempt: Path, packet_path: Path, plan_path: Path, case_id: str):
     """Retain the exact authored setup separately from measured Native outcomes."""
     packet, item, _ = validate(packet_path, plan_path, case_id)
@@ -117,13 +144,19 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path, case_id:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--attempt", required=True, type=Path)
-    parser.add_argument("--site-packet", required=True, type=Path)
-    parser.add_argument("--plan", required=True, type=Path)
-    parser.add_argument("--case-id", required=True)
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--attempt", type=Path)
+    parser.add_argument("--site-packet", type=Path)
+    parser.add_argument("--plan", type=Path)
+    parser.add_argument("--case-id")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
-    print(json.dumps(capture_original(args.attempt, args.site_packet,
-                                      args.plan, args.case_id,
-                                      host=args.host, port=args.port), indent=2))
+    if args.check:
+        print(json.dumps(check_bundle(), indent=2))
+    else:
+        if not all((args.attempt, args.site_packet, args.plan, args.case_id)):
+            parser.error("Native capture requires --attempt, --site-packet, --plan and --case-id")
+        print(json.dumps(capture_original(args.attempt, args.site_packet,
+                                          args.plan, args.case_id,
+                                          host=args.host, port=args.port), indent=2))

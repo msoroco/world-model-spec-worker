@@ -84,6 +84,15 @@ def build() -> dict:
     plan = json.loads(plan_path.read_text())
     plan["cases"] = list(cases.values())
     plan["comparisons"] = comparisons
+    plan["requirement_dispositions"] = [{
+        "requirement": "NRS-484B-600-1a",
+        "source": {"path": "inputs/" + HERE.name + "/assignment.json",
+                   "sha256": hashlib.sha256((REPO / "inputs" / HERE.name /
+                                            "assignment.json").read_bytes()).hexdigest()},
+        "status": "selected_required",
+        "case_ids": list(cases),
+        "method": "Measure original speed, traffic, roadway width, surface, weather and visibility; legal reasonableness remains unresolved.",
+    }]
     plan["observations"] = [
         {"name": "ego_speed_mps", "source": "original actor velocity at each Native frame", "unit": "m/s"},
         {"name": "leader_gap_m", "source": "original ego and leader body polygons", "unit": "m"},
