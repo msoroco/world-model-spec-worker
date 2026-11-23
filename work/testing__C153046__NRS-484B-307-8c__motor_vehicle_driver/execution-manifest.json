@@ -1,0 +1,664 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
+  "cases": [
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear",
+      "kind": "delivery",
+      "construction": "constructions/stopped_leftmost_clear.json",
+      "construction_sha256": "933ee207faf84fdc0e7c7dc56d4bfbca3f01b9f893fc4c1868891af5e32abedd",
+      "measurement_contract": "constructions/stopped_leftmost_clear-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_leftmost_clear/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_leftmost_clear --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_leftmost_clear/compatibility.json",
+        "sha256": "533006ded28ec06a4d74aa4367855d14e76a32e562211baf2aecfabbfc453280",
+        "log": "diagnostics/stopped_leftmost_clear/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_leftmost_clear/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_leftmost_clear/negative-analysis.log",
+        "sha256": "46bf3e0333447656e0f18d0aeb290f8297efae13fd2b23e561e1867c89caba46"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_leftmost_clear",
+        "construction_sha256": "933ee207faf84fdc0e7c7dc56d4bfbca3f01b9f893fc4c1868891af5e32abedd",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_leftmost_clear/offline.log",
+        "log_sha256": "649c52b963b63f159a6f8a497ed1063d2004193c3f3a37578ab8b1c4cb39cdfb"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__rolling_leftmost_clear",
+      "kind": "delivery",
+      "construction": "constructions/rolling_leftmost_clear.json",
+      "construction_sha256": "1cf9379765ee8d12278a9757dccbc7205274ae489a4351efd489fcc92bbf7baf",
+      "measurement_contract": "constructions/rolling_leftmost_clear-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/rolling_leftmost_clear/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__rolling_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/rolling_leftmost_clear --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/rolling_leftmost_clear/compatibility.json",
+        "sha256": "a3d72b7a38a12aa42ccaae9ecfffbe478be0e831bc93f451160b9b6a09aad70a",
+        "log": "diagnostics/rolling_leftmost_clear/compat-analysis.log",
+        "negative_log": "diagnostics/rolling_leftmost_clear/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/rolling_leftmost_clear/negative-analysis.log",
+        "sha256": "74ea1d54adcf97607cbb0a6c3a877cb5ca559649a7a0a039822fd284d1720676"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__rolling_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/rolling_leftmost_clear",
+        "construction_sha256": "1cf9379765ee8d12278a9757dccbc7205274ae489a4351efd489fcc92bbf7baf",
+        "exit_code": 0,
+        "log": "diagnostics/rolling_leftmost_clear/offline.log",
+        "log_sha256": "66b026e23e8bf79bacc216690e35d6ab48bb6656265f89c3f426466f4fc60de9"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_inner_lane_clear",
+      "kind": "delivery",
+      "construction": "constructions/stopped_inner_lane_clear.json",
+      "construction_sha256": "254c4ae2138e8512bc68ad3f15609712358982fc488760d7a615c44eba79e5cf",
+      "measurement_contract": "constructions/stopped_inner_lane_clear-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_inner_lane_clear/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_inner_lane_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_inner_lane_clear --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_inner_lane_clear/compatibility.json",
+        "sha256": "2163fc28cff1ea572ecbe88a1c370c3d7d192c692a1ef469f07af7fdf935bce7",
+        "log": "diagnostics/stopped_inner_lane_clear/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_inner_lane_clear/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_inner_lane_clear/negative-analysis.log",
+        "sha256": "a53cf739c847e4066a73a1ebcea60506a2dd6d348a3245b46bbe7c51c34d7ac1"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_inner_lane_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_inner_lane_clear",
+        "construction_sha256": "254c4ae2138e8512bc68ad3f15609712358982fc488760d7a615c44eba79e5cf",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_inner_lane_clear/offline.log",
+        "log_sha256": "4ebba8423a8f4ae8bc2f0e4ad154d36866432bd419a387c7adf420c699063f99"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_two_way_receive",
+      "kind": "delivery",
+      "construction": "constructions/stopped_leftmost_two_way_receive.json",
+      "construction_sha256": "9badc786ed9dda31c2b443241588bcedcdde2980b72d183e401864010cb5d269",
+      "measurement_contract": "constructions/stopped_leftmost_two_way_receive-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_leftmost_two_way_receive/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_two_way_receive --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_leftmost_two_way_receive --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_leftmost_two_way_receive/compatibility.json",
+        "sha256": "6bd40c3e6c6bf139798d512b0e47f45b2b11202ad69bdd38d8df0c4cb1eee76d",
+        "log": "diagnostics/stopped_leftmost_two_way_receive/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_leftmost_two_way_receive/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_leftmost_two_way_receive/negative-analysis.log",
+        "sha256": "035331f0d132206c1173d1e9e33dde63422c2beab65a3617b63fc24fa0e5e8c9"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_two_way_receive --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_leftmost_two_way_receive",
+        "construction_sha256": "9badc786ed9dda31c2b443241588bcedcdde2980b72d183e401864010cb5d269",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_leftmost_two_way_receive/offline.log",
+        "log_sha256": "d48a830cc445458f986f3b4c8aaac48ba39a392ddb94fae7fcd0f641fbc29fc1"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
+      "kind": "delivery",
+      "construction": "constructions/stopped_leftmost_pedestrian_yield.json",
+      "construction_sha256": "8a53821cb837e37ec39b21dfbeb190f445b6495852aae91ed7b61639b96ad1fb",
+      "measurement_contract": "constructions/stopped_leftmost_pedestrian_yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_leftmost_pedestrian_yield/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_leftmost_pedestrian_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_leftmost_pedestrian_yield/compatibility.json",
+        "sha256": "12b0ce4d8115a08e1551ca17da8fd36e3942bdf76c926758f86f9fd5b667ccd8",
+        "log": "diagnostics/stopped_leftmost_pedestrian_yield/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_leftmost_pedestrian_yield/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_leftmost_pedestrian_yield/negative-analysis.log",
+        "sha256": "7c7bedcd4791316c9fb7ae7492369536691bab71aafbd187ee1c9a61f277f75a"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_leftmost_pedestrian_yield",
+        "construction_sha256": "8a53821cb837e37ec39b21dfbeb190f445b6495852aae91ed7b61639b96ad1fb",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_leftmost_pedestrian_yield/offline.log",
+        "log_sha256": "557880732fbd33745eb705fb5ac42d225f47490bdf7f34c8fcb1ecc0fda5bfb3"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_advance",
+      "kind": "delivery",
+      "construction": "constructions/stopped_leftmost_pedestrian_advance.json",
+      "construction_sha256": "87fee1b2010b1501f6e5b14643b0d91f5488f54867a3b7d50942ac988d679db0",
+      "measurement_contract": "constructions/stopped_leftmost_pedestrian_advance-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_leftmost_pedestrian_advance/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_leftmost_pedestrian_advance --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_leftmost_pedestrian_advance/compatibility.json",
+        "sha256": "8eb1e57df2d78377c849a01d92e0921dba3a5299512eb2833ab44718e10e655a",
+        "log": "diagnostics/stopped_leftmost_pedestrian_advance/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_leftmost_pedestrian_advance/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_leftmost_pedestrian_advance/negative-analysis.log",
+        "sha256": "29b056e019951fb12c9e110ca822a09b8e3be09fa050603789df9d64f6ab1a15"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_leftmost_pedestrian_advance",
+        "construction_sha256": "87fee1b2010b1501f6e5b14643b0d91f5488f54867a3b7d50942ac988d679db0",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_leftmost_pedestrian_advance/offline.log",
+        "log_sha256": "2ac82a141fa371aefb4d6bad852d40bca8fafd040c527ddb2d0a089cefeb2a80"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield",
+      "kind": "delivery",
+      "construction": "constructions/stopped_leftmost_traffic_yield.json",
+      "construction_sha256": "b98a628856e1424e7fa13b510b7ac116dd66270be97c543a80d663f4b66632db",
+      "measurement_contract": "constructions/stopped_leftmost_traffic_yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_leftmost_traffic_yield/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_leftmost_traffic_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_leftmost_traffic_yield/compatibility.json",
+        "sha256": "2480c30162f19fd5d4cbe0d3bfbcf994473052ad3ebf80410ac2ba0c80a85925",
+        "log": "diagnostics/stopped_leftmost_traffic_yield/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_leftmost_traffic_yield/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_leftmost_traffic_yield/negative-analysis.log",
+        "sha256": "eb63b43809111c186231b2b5227a11d3eaa26c495ed6c984f1a0ceb666ea74fa"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_leftmost_traffic_yield",
+        "construction_sha256": "b98a628856e1424e7fa13b510b7ac116dd66270be97c543a80d663f4b66632db",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_leftmost_traffic_yield/offline.log",
+        "log_sha256": "cda6f9fd3b095865f284b45e5c80b1e4412337cd3eb1d761b760d34629319860"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_advance",
+      "kind": "delivery",
+      "construction": "constructions/stopped_leftmost_traffic_advance.json",
+      "construction_sha256": "05ecc2981a9225d62263a182efe3079ce919dc66924ec340d5541765f4b3db9d",
+      "measurement_contract": "constructions/stopped_leftmost_traffic_advance-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_measurement.py"
+      },
+      "fixture_recipe": "work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/diagnostics/stopped_leftmost_traffic_advance/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "unverified",
+        "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."
+      },
+      "candidates": [],
+      "proof_status": "diagnostic_compatibility_passed_physical_pending",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-compatibility-20261123T043904147738/stopped_leftmost_traffic_advance --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "diagnostics/stopped_leftmost_traffic_advance/compatibility.json",
+        "sha256": "fdeb42d9aa56debdd56a379685e0be1852eb9740ca6d9c72089404320778c701",
+        "log": "diagnostics/stopped_leftmost_traffic_advance/compat-analysis.log",
+        "negative_log": "diagnostics/stopped_leftmost_traffic_advance/negative-analysis.log"
+      },
+      "negative": {
+        "log": "diagnostics/stopped_leftmost_traffic_advance/negative-analysis.log",
+        "sha256": "ddfee58906b5a9cfcec4ff54a1eb2d75b4de030a6828b1d24511ceb9857b7c85"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-offline-20261123T043310259576/stopped_leftmost_traffic_advance",
+        "construction_sha256": "05ecc2981a9225d62263a182efe3079ce919dc66924ec340d5541765f4b3db9d",
+        "exit_code": 0,
+        "log": "diagnostics/stopped_leftmost_traffic_advance/offline.log",
+        "log_sha256": "b8e55bd5c08b4228e9a218f5fa10660333fd081f48759cf25bed0abeac3bba8d"
+      },
+      "acquisition": {
+        "antecedent stop location": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl distance_to_stop_boundary_m and native_frame.ego.body_vertices_xyz_m"
+        },
+        "complete stop": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.ego.velocity_xyz_mps with site.json stop_boundary"
+        },
+        "extreme left of one-way approach": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json approach lane_centers_xy and trace.jsonl selected_approach_lane_id"
+        },
+        "official steady red alone": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.signal_actor_id/signal_state"
+        },
+        "other traffic right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.other_traffic and traffic_conflict"
+        },
+        "pedestrian right-of-way": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl native_frame.pedestrians and pedestrian_conflict"
+        },
+        "receiving one-way to left": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "site.json receiving.direction_xy/one_way_to_left and trace.jsonl junction_exited"
+        },
+        "yield response": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native frame acquisition joined to reviewed site and saved analysis",
+          "evidence": "trace.jsonl control_request, pedestrian_conflict and traffic_conflict"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ],
+  "status": "diagnostic_compatibility_passed_other_delivery_gates_pending"
+}

@@ -9,6 +9,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[2]
 ASSIGNMENT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "runtime"))
+sys.path.insert(0, str(ROOT / "runtime" / "scenario_pipeline"))
 sys.path.insert(0, str(ASSIGNMENT))
 
 from scenario_pipeline.worker_exchange.fixture_recipe import inspect, materialize
@@ -32,7 +33,11 @@ def main() -> None:
         fixture = Path(temporary) / "positive"
         recipe = ASSIGNMENT / "diagnostics" / suffix / "fixture-recipe.json"
         source = materialize(ROOT, recipe, fixture)
-        if len(source["fixture_manifest"]) != 13:
+        required = {"site.json", "trace.jsonl", "video_frames.jsonl", "road.xodr",
+                    "capture/evidence.jsonl", "capture/native/frames.jsonl",
+                    "capture/manifest.json", *(name + ".mkv" for name in
+                    ("overview", "approach", "reference_corner", "driver_reference"))}
+        if not required <= set(source["fixture_manifest"]) or len(source["fixture_manifest"]) < 30:
             raise ValueError("diagnostic source inventory lacks text or cameras")
         videos = {name: fixture / (name + ".mkv") for name in
                   ("overview", "approach", "reference_corner", "driver_reference")}
