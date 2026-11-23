@@ -22,7 +22,7 @@ def _rows(path):
     return rows
 
 
-def bind(attempt, review):
+def bind(attempt, review, diagnostic_fixture=False):
     attempt, review = Path(attempt), Path(review)
     data = json.loads(review.read_text())
     names = ('native-signal-frames.jsonl',
@@ -40,11 +40,15 @@ def bind(attempt, review):
     geometry = json.loads((attempt / 'road-boundary.json').read_text())
     governing = json.loads((attempt / 'governing-device-authority.json').read_text())
     highway = json.loads((attempt / 'highway-authority.json').read_text())
-    if geometry.get('source_kind') != 'native_map_readback' or \
+    if geometry.get('source_kind') != ('synthetic_native_sample' if diagnostic_fixture
+                                      else 'native_map_readback') or \
             data.get('highway_boundary_reviewed') is not True or \
-            data.get('highway_boundary_basis') not in ('dedication_and_public_use',
-                                                      'official_road_inventory') or \
+            data.get('highway_boundary_basis') not in (
+                ('synthetic_cpu_fixture',) if diagnostic_fixture else
+                ('dedication_and_public_use', 'official_road_inventory')) or \
             highway.get('format') != 'c228133-highway-authority-v1' or \
+            highway.get('source_kind') != ('synthetic_cpu_fixture' if diagnostic_fixture
+                                           else 'independent_highway_authority') or \
             highway.get('basis') != data.get('highway_boundary_basis') or \
             highway.get('native_road_id') != geometry.get('native_road_id') or \
             highway.get('boundary_y_m') != geometry.get('boundary_y_m') or \
@@ -53,8 +57,9 @@ def bind(attempt, review):
             not highway['authority_reference'].strip():
         raise ValueError('Highway boundary requires independent source review')
     if governing.get('format') != 'c228133-governing-device-authority-v1' or \
-            governing.get('source_kind') != 'official_traffic_control_inventory' or \
-            governing.get('is_debug_geometry') is not False or \
+            governing.get('source_kind') != ('synthetic_cpu_fixture' if diagnostic_fixture
+                                             else 'official_traffic_control_inventory') or \
+            (not diagnostic_fixture and governing.get('is_debug_geometry') is not False) or \
             not isinstance(governing.get('authority_reference'), str) or \
             not governing['authority_reference'].strip() or \
             governing.get('red_actor_id') == governing.get('arrow_actor_id'):
@@ -113,8 +118,8 @@ def bind(attempt, review):
     return reviewed_signals, reviewed_devices
 
 
-def write_bound_rows(attempt, review, output):
-    signals, devices = bind(attempt, review)
+def write_bound_rows(attempt, review, output, diagnostic_fixture=False):
+    signals, devices = bind(attempt, review, diagnostic_fixture)
     output = Path(output)
     if output.exists():
         raise ValueError('Retain prior review output; use a new directory')

@@ -17,13 +17,15 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.package_compatibility import _process_fixture, materialize_case
+from worker_exchange.fixture_recipe import fixture_fingerprint
+from worker_exchange.common import digest
 from worker_exchange.measurement_contract import verify_report
 from worker_exchange.runtime_cli import execution_env
 
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('acquisition-provenance.json', 'native-map-readback.json',
            'native-passenger-actors.jsonl', 'native-raw-actors.jsonl',
-           'road.xodr', 'statutory-context.json', 'trace.jsonl',
+           'red-curb-road.xodr', 'road.xodr', 'statutory-context.json', 'trace.jsonl',
            'video_frames.jsonl') + tuple(view + '.mkv' for view in VIEWS)
 
 
@@ -65,9 +67,11 @@ def run(case, candidate, attempt, root, validator):
         raise ValueError('Missing retained Native-shaped capture inventory')
     shutil.copytree(capture, fixture / 'capture')
     output = root / 'positive'
+    fingerprint = fixture_fingerprint(fixture)
+    source = {'fixture_sha256': digest(fingerprint), 'fixture_manifest': fingerprint}
     receipt = _process_fixture(manifest, case_id, fixture, output,
                                REPO / 'runtime/pipeline/library', validator,
-                               candidate)
+                               candidate, source)
     if receipt['passed'] is not True or receipt['case_id'] != case_id or \
             receipt['candidate_id'] != candidate:
         raise ValueError('Pinned compatibility core did not pass exact selection')

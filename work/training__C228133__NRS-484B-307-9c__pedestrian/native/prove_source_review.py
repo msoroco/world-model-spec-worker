@@ -59,6 +59,7 @@ def prove():
                        'authority_reference': 'synthetic-stub-inventory'},
                    'highway-authority.json': {
                        'format': 'c228133-highway-authority-v1',
+                       'source_kind': 'independent_highway_authority',
                        'basis': 'official_road_inventory', 'native_road_id': 7,
                        'road_side': 'at_or_above_y', 'boundary_y_m': 0,
                        'authority_reference': 'synthetic-stub-road-inventory'}}

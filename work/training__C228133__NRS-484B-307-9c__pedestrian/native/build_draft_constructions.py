@@ -11,7 +11,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent.name
 SOURCE = ('runner.py', 'signal_display.py', 'source_capture.py', 'source_review.py',
-          'road_entry_measure.py', 'test_offline.py')
+          'road_entry_measure.py', 'saved_source_analysis.py',
+          'finalize_saved.py', 'test_offline.py')
 
 
 def write(path, value):
@@ -62,6 +63,9 @@ def build():
                         'construction_sha256': sha(path),
                         'candidate_risk': {'status': 'physical',
                            'reason': 'Native signal pair, arrow pixels, pedestrian path and camera framing need physical review'},
+                        'measurement_procedure': {
+                            'entrypoint': 'finalize_saved.py',
+                            'output_schema': 'c228133-saved-analysis-v1'},
                         'candidates': []})
     batch = json.loads((HERE.parents[2] / 'batch.json').read_text())
     manifest = {
