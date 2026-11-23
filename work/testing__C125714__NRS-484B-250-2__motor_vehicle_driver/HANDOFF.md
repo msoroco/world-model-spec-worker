@@ -262,3 +262,15 @@ All 32 current physical fixture and lifecycle commands were rerun for eight case
 ## 2026-11-23 archive consolidation with physical receipt rebind
 
 Preserved the first selected case's four original offline stdout files as byte-exact archive members, backed up under ignored `.runtime-work/`, and refreshed every offline, result-test and eight physical-receipt reference to `command-log-archive.json` SHA-256 `19662f023bf4418956828764ff3ec485a8b9de89db022717cc4961ff33663584`. The assignment-scoped strict delivery gate passed after rebind; ready status remains valid.
+
+## 2026-11-23 log compaction
+
+Archived four exact offline logs for `source_verified_other_right_later` into `command-log-archive.json` to keep the returned work below its file cap. Rebound manifest and result references and all physical receipt archive hashes. New archive SHA256: `ab87cf8928c34fcab65089f5bdf3293b1d7da72c10b072cc4b8f868ae3352801`. The assignment-scoped complete delivery-ready check passed after compaction; this ready package retains its CPU proof status.
+
+## 2026-11-23 further bound-log compaction
+
+Archived eight exact offline logs for `source_verified_other_right_earlier` and `source_verified_other_left_near_time`. Updated the execution manifest, result tests, and all physical receipt references to the new `command-log-archive.json` SHA256 `3579054b41bf750348a2f1df55051d6e30ababf1f0dba696e95a20b4c0b0f8ae`. The assignment-scoped complete delivery-ready check passed after compaction.
+
+## 2026-11-23 opposite-straight offline log compaction
+
+Archived the four exact offline logs for `source_verified_opposite_straight` and rebound all affected manifest, result, and physical receipt hashes. New `command-log-archive.json` SHA256 is `e2f07929ea90bc9ce6c7bad9d8aba1899a41cace493d709c1650d2e139ee8963`. The assignment-scoped complete delivery-ready check passed after compaction.
