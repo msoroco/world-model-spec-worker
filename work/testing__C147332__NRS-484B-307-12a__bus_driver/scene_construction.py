@@ -80,8 +80,11 @@ def check_scene(value, map_path):
 
 
 def build():
-    if not MAP.is_file():
-        MAP.write_bytes(SIBLING_MAP.read_bytes())
+    source = SIBLING_MAP.read_text()
+    candidate = source.replace("C147332 red-X engineering candidate",
+                               "C147332 green-arrow engineering candidate")
+    if not MAP.is_file() or MAP.read_text() != candidate:
+        MAP.write_text(candidate)
     map_sha = check_map(MAP)
     paths = []
     for kind in KINDS:
