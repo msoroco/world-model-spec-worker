@@ -937,3 +937,7 @@ C24811 remains partial. Its saved source preflight now checks confirmed live ext
 ## 2026-11-22 C24811 exact primary draft
 
 C24811 now has a canonical draft `runner.py`, source-mapped `config.json`, full four-view camera plan in `case-plan.json`, and an inline `construction.json` with 17 bound files. Nineteen local CPU tests, runner `--check` and scoped partial check pass. Native occluder blueprint/placement is intentionally unresolved; execution manifest, fifteen fallbacks, semantic/independent audits and delivery proofs are outstanding. Status remains partial, 23 ready/20 partial overall.
+
+## 2026-11-22 C24811 Native candidate and saved primary
+
+C24811 remains partial. Its Native occluder candidate now uses a map-bound blind-corner placement and selects available vehicle blueprints by realized two-ray obstruction and corridor clearance, cleaning rejected actors. The selected primary passed a complete saved-processing CPU fixture with four decoded FFV1 streams and explicit synthetic provenance; mixed Native/synthetic provenance was rejected. A five-case draft proposal was added. Twenty unit tests, runtime preflight, runner check and scoped partial check pass. Exact offline/compatibility, independent audits, fifteen fallback constructions and execution manifest remain. Batch stays 23 ready/20 partial.

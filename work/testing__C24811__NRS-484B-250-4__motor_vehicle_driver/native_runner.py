@@ -15,7 +15,7 @@ from queue import Queue
 from blind_site import validate as validate_site
 from blind_signal_measurements import STOP_LINE_TOLERANCE_M
 from interaction_routes import release_permission, validate as validate_routes
-from occluder_construction import spawn_verified_occluder
+from occluder_construction import spawn_matching_occluder
 from signal_control import find_entrance_lights, request_all_state
 from source_cameras import (CAMERAS, SIZES, ffv1_writer, source_camera_frame,
                             source_cameras, validate_plan as validate_cameras)
@@ -98,8 +98,8 @@ def capture(args):
         if args.operative_state not in ("Green", "Yellow", "Red"):
             raise ValueError("Explicit operative state required")
         signal_state = args.operative_state
-    if not args.occluder_blueprint:
-        raise ValueError("Source-reviewed Native occluder blueprint required")
+    if not args.occluder_blueprint and args.occluder_filter != "vehicle.*":
+        raise ValueError("Bounded Native occluder blueprint filter required")
     output = Path(args.output_dir).resolve()
     repo = ROOT.parents[1]
     runtime_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
@@ -150,7 +150,9 @@ def capture(args):
                  for role in ("ego", "other")]
         lights = find_entrance_lights(world, lanes)
         desired = getattr(carla.TrafficLightState, signal_state)
-        blueprint = world.get_blueprint_library().find(args.occluder_blueprint)
+        candidates = ([world.get_blueprint_library().find(args.occluder_blueprint)]
+                      if args.occluder_blueprint else
+                      list(world.get_blueprint_library().filter(args.occluder_filter)))
         occluder_pose = carla.Transform(
             carla.Location(x=args.occluder_x, y=args.occluder_y, z=args.occluder_z),
             carla.Rotation(yaw=args.occluder_yaw))
@@ -175,8 +177,8 @@ def capture(args):
                      if role == "ego" else routes["vehicles"][role]["target_speed_mps"])
             controllers[role] = (RollingController(speed) if policy in ("rolling", "no_prior_halt")
                                  else StopController(100 if role == "earlier" else 0, speed))
-        with spawn_verified_occluder(world, blueprint, occluder_pose, rays, corridors,
-                                     site["occluder"]["minimum_corridor_clearance_m"]):
+        with spawn_matching_occluder(world, candidates, occluder_pose, rays, corridors,
+                                     site["occluder"]["minimum_corridor_clearance_m"]) as realized_occluder:
             with request_all_state(world, lights, desired):
                 with source_cameras(world, actors["ego"], carla, camera_plan) as sensors:
                     queues = {camera: Queue() for camera in CAMERAS}
@@ -224,7 +226,9 @@ def capture(args):
                    "signal_head_video_source": "overview, approach, reference_corner, driver_reference original streams",
                    "all_entrances_source": site["map"]["sha256"],
                    "stop_line_source": site["map"]["sha256"],
-                   "occluder_geometry_source": "realized Native footprint and source camera review pending",
+                   "occluder_geometry_source": "realized Native actor bounding box and four original camera streams",
+                   "occluder_realization": {key:value for key,value in realized_occluder.items()
+                                             if key != "actor"},
                    "sight_ray_source": "authored viewpoints and realized footprint",
                    "stop_line_exists": True,
                    "signal_heads": [{"native_id": light.id, "entrance_id": role,
@@ -256,6 +260,7 @@ def main():
     parser.add_argument("--case-id")
     parser.add_argument("--operative-state", choices=("Green","Yellow","Red"))
     parser.add_argument("--occluder-blueprint")
+    parser.add_argument("--occluder-filter", default="vehicle.*")
     parser.add_argument("--occluder-x", type=float, default=-12)
     parser.add_argument("--occluder-y", type=float, default=-12)
     parser.add_argument("--occluder-z", type=float, default=0)

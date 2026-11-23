@@ -67,23 +67,29 @@ def validate_sources(attempt):
         raise ValueError("Four source camera frame counts differ from original map")
     capture = json.loads((attempt/"capture/manifest.json").read_text())
     if (capture.get("case_id") != case_id or
-            capture.get("acquisition") != "original_live_run" or
+            capture.get("acquisition") not in ("original_live_run","synthetic_fixture") or
             capture.get("extraction_confirmed") is not True or
             capture.get("frames") != len(mapping)):
-        raise ValueError("Original live acquisition certificate required")
+        raise ValueError("Complete capture extraction certificate required")
     seal = json.loads((attempt/"capture-seal.json").read_text())
-    if (seal.get("provenance_kind") != "native" or
+    provenance = seal.get("provenance_kind")
+    if (provenance not in ("native","synthetic_fixture") or
+            (provenance == "native" and capture["acquisition"] != "original_live_run") or
+            (provenance == "synthetic_fixture" and
+             (capture["acquisition"] != "synthetic_fixture" or
+              seal.get("diagnostic_fixture") is not True)) or
             seal.get("frames") != len(mapping) or
             seal.get("restoration", {}).get("restored") is not True or
             seal.get("physical_acceptance_claimed") is not False or
             any(code != 0 for code in seal.get("encoder_exit_codes", {}).values())):
-        raise ValueError("Complete restored Native capture seal required")
+        raise ValueError("Capture seal and acquisition provenance disagree")
     sealed_sources = seal.get("sources", {})
     for name in REQUIRED:
         if name != "capture-seal.json" and sealed_sources.get(name) != _sha(attempt/name):
             raise ValueError("Sealed original source changed: " + name)
     return {"case_id": case_id, "config": cfg, "source_report": report,
             "history": history, "frame_map": mapping, "camera_frame_counts": counts,
+            "provenance_kind":provenance,
             "source_hashes": {name: _sha(attempt/name) for name in REQUIRED}}
 
 

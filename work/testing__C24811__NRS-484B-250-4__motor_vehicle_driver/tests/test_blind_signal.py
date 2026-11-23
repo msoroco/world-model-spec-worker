@@ -49,6 +49,10 @@ class BlindSignalTests(unittest.TestCase):
         self.assertEqual(config["selected_case_id"],plan["cases"][0]["case_id"])
         self.assertEqual(set(config["supported_case_ids"]),
                          {case["case_id"] for case in plan["cases"]})
+        proposal=json.loads((ROOT/"proposals/cases.json").read_text())
+        self.assertEqual({case["case_id"] for case in proposal["cases"]},
+                         set(config["supported_case_ids"]))
+        self.assertEqual(proposal["status"],"draft")
         self.assertEqual(config["frames"],config["duration_s"]*config["rate_hz"])
         self.assertEqual([camera["name"] for camera in config["cameras"]],
                          list(cameras.CAMERAS))
@@ -58,7 +62,9 @@ class BlindSignalTests(unittest.TestCase):
         for mapping in plan["source_observation_mapping"].values():
             self.assertTrue(set(mapping["channels"]) <= declared)
             self.assertTrue(mapping["source_refs"])
-        self.assertIsNone(config["occluder"]["blueprint_id"])
+        self.assertEqual(config["occluder"]["blueprint_filter"],"vehicle.*")
+        self.assertEqual(config["occluder"]["placement"],
+                         {"x":-12,"y":-12,"z":0.5,"yaw":45})
         self.assertEqual(entrypoint.validate_config()["selected_case_id"],
                          config["selected_case_id"])
 
@@ -74,7 +80,7 @@ class BlindSignalTests(unittest.TestCase):
             (root/"capture").mkdir()
             (root/"capture/evidence.jsonl").write_text("{}\n")
             (root/"capture/manifest.json").write_text(json.dumps({"case_id":case,
-                "acquisition":"original_live_run","extraction_confirmed":True,
+                "acquisition":"synthetic_fixture","extraction_confirmed":True,
                 "frames":len(mapping)}))
             for name in cameras.CAMERAS:
                 with cameras.ffv1_writer(root/(name+".mkv"),(4,4)) as write:
@@ -83,12 +89,14 @@ class BlindSignalTests(unittest.TestCase):
             sealed={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
                     for name in finalizer.REQUIRED if name!="capture-seal.json"}
             (root/"capture-seal.json").write_text(json.dumps({
-                "provenance_kind":"native","frames":len(mapping),
+                "provenance_kind":"synthetic_fixture","diagnostic_fixture":True,
+                "frames":len(mapping),
                 "restoration":{"restored":True},"physical_acceptance_claimed":False,
                 "encoder_exit_codes":{name:0 for name in cameras.CAMERAS},
                 "sources":sealed}))
             proof=finalizer.validate_sources(root)
             self.assertEqual(proof["camera_frame_counts"],{name:4 for name in cameras.CAMERAS})
+            self.assertEqual(proof["provenance_kind"],"synthetic_fixture")
             (root/"capture/evidence.jsonl").write_text("{\"changed\":true}\n")
             with self.assertRaisesRegex(ValueError,"Sealed original source changed"):
                 finalizer.validate_sources(root)
@@ -414,6 +422,27 @@ class BlindSignalTests(unittest.TestCase):
             with construction.spawn_verified_occluder(world,"blueprint","spawn",rays):
                 pass
         self.assertEqual(destroyed,[True,True,True])
+
+    def test_native_occluder_candidate_selection_rejects_bad_geometry(self):
+        destroyed=[]
+        def actor(identifier, y):
+            vertices=[NS(x=x,y=v) for x,v in ((4,y-1),(4,y+1),(6,y+1),(6,y-1))]
+            return NS(bounding_box=NS(get_world_vertices=lambda transform:vertices),
+                      get_transform=lambda:None,
+                      destroy=lambda:destroyed.append(identifier))
+        candidates=[NS(id="vehicle.b"),NS(id="vehicle.a")]
+        world=NS(try_spawn_actor=lambda blueprint,transform:
+                 actor(blueprint.id,5 if blueprint.id=="vehicle.a" else 0))
+        rays={"ego":(NS(x=0,y=0),NS(x=10,y=0)),
+              "other":(NS(x=0,y=0.5),NS(x=10,y=0.5))}
+        corridors={"ego":[NS(x=0,y=3),NS(x=10,y=3)],
+                   "other":[NS(x=0,y=4),NS(x=10,y=4)]}
+        with construction.spawn_matching_occluder(
+                world,candidates,"pose",rays,corridors,1.5) as realized:
+            self.assertEqual(realized["blueprint_id"],"vehicle.b")
+            self.assertEqual(realized["rejected_candidates"][0]["blueprint_id"],"vehicle.a")
+            self.assertEqual(destroyed,["vehicle.a"])
+        self.assertEqual(destroyed,["vehicle.a","vehicle.b"])
 
 
 if __name__ == "__main__":

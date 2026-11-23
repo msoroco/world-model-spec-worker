@@ -1,0 +1,681 @@
+{
+  "cell_id": "C24811",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Installed/uncovered signals wholly inoperative at ego entry; ego stops at marked line, distinct earlier-stopped and occupying vehicles",
+      "variable_assignments": {
+        "signal": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "categorical"
+        },
+        "ego_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "earlier_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "occupant_entry": {
+          "kind": "controller",
+          "value": "required",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_speed",
+            "unit": "m/s",
+            "method": "Original earlier vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_speed",
+            "unit": "m/s",
+            "method": "Original occupying vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "ego_stop_line_distance",
+            "unit": "m",
+            "method": "Original ego body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_stop_line_distance",
+            "unit": "m",
+            "method": "Original earlier vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_stop_line_distance",
+            "unit": "m",
+            "method": "Original occupying vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "governing_signal_states",
+            "unit": "device states",
+            "method": "Original frame readback of both governing heads",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head/occluder context retained with original capture",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Physical geometry and legal significance require source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map bound to observed Native heads and original frames"
+          }
+        ],
+        "limitations": [
+          "Authored site and routes are construction candidates; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Installed/uncovered and physically inoperative head appearance requires original pixels",
+        "Cautious proceeding and yielding remain legal judgments"
+      ],
+      "deliberate_differences": [
+        "earlier completed stop and occupying-body status of distinct others",
+        "observed full halt before entry",
+        "all governing heads inoperative versus operative indication at ego entry"
+      ]
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Same junction and stop, earlier-stopped vehicle not occupying at ego entry",
+      "variable_assignments": {
+        "signal": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "categorical"
+        },
+        "ego_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "earlier_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "occupant_entry": {
+          "kind": "controller",
+          "value": "hold_before_entry",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_speed",
+            "unit": "m/s",
+            "method": "Original earlier vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_speed",
+            "unit": "m/s",
+            "method": "Original occupying vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "ego_stop_line_distance",
+            "unit": "m",
+            "method": "Original ego body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_stop_line_distance",
+            "unit": "m",
+            "method": "Original earlier vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_stop_line_distance",
+            "unit": "m",
+            "method": "Original occupying vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "governing_signal_states",
+            "unit": "device states",
+            "method": "Original frame readback of both governing heads",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head/occluder context retained with original capture",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Physical geometry and legal significance require source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map bound to observed Native heads and original frames"
+          }
+        ],
+        "limitations": [
+          "Authored site and routes are construction candidates; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Installed/uncovered and physically inoperative head appearance requires original pixels",
+        "Cautious proceeding and yielding remain legal judgments"
+      ],
+      "deliberate_differences": [
+        "earlier completed stop and occupying-body status of distinct others"
+      ]
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Same junction and stop, occupant inside without another earlier-stopped vehicle",
+      "variable_assignments": {
+        "signal": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "categorical"
+        },
+        "ego_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "earlier_stop": {
+          "kind": "controller",
+          "value": "no_prior_halt",
+          "unit": "categorical"
+        },
+        "occupant_entry": {
+          "kind": "controller",
+          "value": "required",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_speed",
+            "unit": "m/s",
+            "method": "Original earlier vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_speed",
+            "unit": "m/s",
+            "method": "Original occupying vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "ego_stop_line_distance",
+            "unit": "m",
+            "method": "Original ego body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_stop_line_distance",
+            "unit": "m",
+            "method": "Original earlier vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_stop_line_distance",
+            "unit": "m",
+            "method": "Original occupying vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "governing_signal_states",
+            "unit": "device states",
+            "method": "Original frame readback of both governing heads",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head/occluder context retained with original capture",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Physical geometry and legal significance require source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map bound to observed Native heads and original frames"
+          }
+        ],
+        "limitations": [
+          "Authored site and routes are construction candidates; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Installed/uncovered and physically inoperative head appearance requires original pixels",
+        "Cautious proceeding and yielding remain legal judgments"
+      ],
+      "deliberate_differences": [
+        "earlier completed stop and occupying-body status of distinct others"
+      ]
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Same junction and signal, rolling ego response before entry",
+      "variable_assignments": {
+        "signal": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "categorical"
+        },
+        "ego_stop": {
+          "kind": "controller",
+          "value": "rolling",
+          "unit": "categorical"
+        },
+        "ego_target_speed_override_mps": {
+          "kind": "controller",
+          "value": 1,
+          "unit": "m/s"
+        },
+        "earlier_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "occupant_entry": {
+          "kind": "controller",
+          "value": "required",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_speed",
+            "unit": "m/s",
+            "method": "Original earlier vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_speed",
+            "unit": "m/s",
+            "method": "Original occupying vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "ego_stop_line_distance",
+            "unit": "m",
+            "method": "Original ego body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_stop_line_distance",
+            "unit": "m",
+            "method": "Original earlier vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_stop_line_distance",
+            "unit": "m",
+            "method": "Original occupying vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "governing_signal_states",
+            "unit": "device states",
+            "method": "Original frame readback of both governing heads",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head/occluder context retained with original capture",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Physical geometry and legal significance require source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map bound to observed Native heads and original frames"
+          }
+        ],
+        "limitations": [
+          "Authored site and routes are construction candidates; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Installed/uncovered and physically inoperative head appearance requires original pixels",
+        "Cautious proceeding and yielding remain legal judgments"
+      ],
+      "deliberate_differences": [
+        "observed full halt before entry"
+      ]
+    },
+    {
+      "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Same governing installed uncovered heads, operative indication at entry",
+      "variable_assignments": {
+        "signal": {
+          "kind": "world_setup",
+          "value": "explicit_operative_indication",
+          "unit": "categorical"
+        },
+        "ego_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "earlier_stop": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "occupant_entry": {
+          "kind": "controller",
+          "value": "required",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_speed",
+            "unit": "m/s",
+            "method": "Original earlier vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_speed",
+            "unit": "m/s",
+            "method": "Original occupying vehicle complete-body velocity magnitude",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "ego_stop_line_distance",
+            "unit": "m",
+            "method": "Original ego body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "earlier_stop_line_distance",
+            "unit": "m",
+            "method": "Original earlier vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "occupant_stop_line_distance",
+            "unit": "m",
+            "method": "Original occupying vehicle body-front signed distance to marked stop line",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "governing_signal_states",
+            "unit": "device states",
+            "method": "Original frame readback of both governing heads",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+          },
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head/occluder context retained with original capture",
+            "time_window": "complete original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Physical geometry and legal significance require source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map bound to observed Native heads and original frames"
+          }
+        ],
+        "limitations": [
+          "Authored site and routes are construction candidates; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Installed/uncovered and physically inoperative head appearance requires original pixels",
+        "Cautious proceeding and yielding remain legal judgments"
+      ],
+      "deliberate_differences": [
+        "all governing heads inoperative versus operative indication at ego entry"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "blind_inoperative_signal_stop_and_priority",
+      "target_law_id": "NRS-484B-250-4",
+      "judgment_refs": [
+        {
+          "phrase": "dev.traffic_signal",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "dev.inoperative",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "st.lane_enters",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "st.stop_line",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "st.crosswalk",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "st.sight_distance",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "rel.visible",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "drv.stopped",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "drv.entering_intersection",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "drv.arrival_order",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "drv.in_intersection",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        },
+        {
+          "phrase": "drv.yields_to",
+          "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+        }
+      ],
+      "rationale": "Source-bound five-case sweep over Off/operative, full halt, earlier completed stop and occupied intersection",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native pixels, installed/uncovered status, physical motion and legal judgments remain unmeasured"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

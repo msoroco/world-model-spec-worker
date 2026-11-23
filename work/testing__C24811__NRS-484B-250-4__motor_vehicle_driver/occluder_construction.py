@@ -1,10 +1,9 @@
-"""Spawn a physical sight occluder and verify two approach rays intersect it.
+"""Spawn and measure a Native occluder candidate at a map-bound placement.
 
-The caller supplies a source-reviewed blueprint and clear roadway placement.
 Planar ray intersection is a CPU geometry check, not proof of camera visibility.
 """
 
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 import math
 
 from shapely.geometry import LineString, MultiPoint
@@ -60,3 +59,31 @@ def spawn_verified_occluder(world, blueprint, transform, approach_rays,
                "vehicle_corridor_clearance_m": clearances}
     finally:
         actor.destroy()
+
+
+@contextmanager
+def spawn_matching_occluder(world, blueprints, transform, approach_rays,
+                            vehicle_corridors, minimum_clearance_m):
+    """Choose the first realized Native footprint meeting the authored geometry.
+
+    Rejected actors are destroyed by spawn_verified_occluder. The selected
+    blueprint and realized footprint remain in the original junction context.
+    """
+    candidates = sorted(blueprints, key=lambda blueprint: blueprint.id)
+    if not candidates:
+        raise ValueError("No Native occluder blueprint candidates")
+    rejected = []
+    with ExitStack() as stack:
+        for blueprint in candidates:
+            try:
+                realized = stack.enter_context(spawn_verified_occluder(
+                    world, blueprint, transform, approach_rays,
+                    vehicle_corridors, minimum_clearance_m))
+            except ValueError as error:
+                rejected.append({"blueprint_id":blueprint.id,"reason":str(error)})
+                continue
+            realized["blueprint_id"] = blueprint.id
+            realized["rejected_candidates"] = rejected
+            yield realized
+            return
+    raise ValueError("No Native occluder footprint met both rays and corridor clearance")

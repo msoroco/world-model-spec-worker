@@ -1,7 +1,7 @@
 """Canonical draft entrypoint for the C24811 exact Native package.
 
-The config deliberately leaves the Native occluder blueprint and placement
-unselected until source review. A capture refuses to run without them.
+Native capture selects an available vehicle blueprint only after checking its
+realized footprint against both sight rays and the two travel corridors.
 """
 
 import argparse
@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 def validate_config():
     config = json.loads((ROOT/"config.json").read_text())
     case_ids = [case["case_id"] for case in json.loads((ROOT/"case-plan.json").read_text())["cases"]]
+    site = json.loads((ROOT/"blind-site-candidate.json").read_text())
     if (config.get("assignment_id") !=
             "testing__C24811__NRS-484B-250-4__motor_vehicle_driver" or
             config.get("cell_id") != "C24811" or
@@ -27,6 +28,15 @@ def validate_config():
             config.get("rate_hz") != 20 or
             config.get("frames") != config.get("duration_s", 0)*20):
         raise ValueError("Exact C24811 materialized configuration required")
+    occluder = config.get("occluder", {})
+    placement = occluder.get("placement")
+    planned = site["occluder"]["planned_footprint_xy_m"]
+    center = [sum(point[axis] for point in planned)/len(planned) for axis in (0,1)]
+    if (occluder.get("blueprint_filter") != "vehicle.*" or
+            not isinstance(placement,dict) or
+            (placement.get("x"),placement.get("y")) != tuple(center) or
+            placement.get("z") != 0.5 or placement.get("yaw") != 45):
+        raise ValueError("Occluder placement differs from map-bound blind-corner candidate")
     check()
     return config
 
@@ -51,11 +61,12 @@ def main():
     elif args.output_dir:
         occluder = config["occluder"]
         placement = occluder.get("placement")
-        if not occluder.get("blueprint_id") or not isinstance(placement,dict):
-            raise ValueError("Source-reviewed Native occluder blueprint and placement required")
+        if occluder.get("blueprint_filter") != "vehicle.*" or not isinstance(placement,dict):
+            raise ValueError("Map-bound Native occluder placement and bounded filter required")
         state = config.get("operative_signal_state")
         capture(argparse.Namespace(case_id=config["selected_case_id"],
             operative_state=state,occluder_blueprint=occluder["blueprint_id"],
+            occluder_filter=occluder["blueprint_filter"],
             occluder_x=placement["x"],occluder_y=placement["y"],
             occluder_z=placement["z"],occluder_yaw=placement["yaw"],
             output_dir=args.output_dir,host=args.host,port=args.port))
