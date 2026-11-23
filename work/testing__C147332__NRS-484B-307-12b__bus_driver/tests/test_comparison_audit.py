@@ -131,6 +131,23 @@ class RedXComparisonAudit(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "original map source"):
                 audit_pair("red_x_lateral_entry", root / "adjacent_travel", root / "lateral_entry", diagnostic=True)
 
+    def test_rehashed_original_signal_change_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            make_attempt(root / "adjacent_travel", "adjacent_travel")
+            changed = root / "lateral_entry"
+            make_attempt(changed, "lateral_entry")
+            signal = changed / "lane-signal-history.jsonl"
+            rows = [json.loads(line) for line in signal.read_text().splitlines()]
+            rows[0]["faces_bus"] = False
+            signal.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            acquisition = json.loads((changed / "acquisition.json").read_text())
+            acquisition[signal.name] = sha(signal)
+            (changed / "acquisition.json").write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, "observed red-X signal condition changed"):
+                audit_pair("red_x_lateral_entry", root / "adjacent_travel", changed,
+                           diagnostic=True)
+
 
 if __name__ == "__main__":
     unittest.main()

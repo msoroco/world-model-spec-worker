@@ -48,9 +48,11 @@ def main() -> None:
                    'negative_log': negative, 'negative_log_sha256': sha(ROOT / negative),
                    'scope': 'Synthetic source audit only; Native physical acceptance requires later original capture'}
         entry['delivery_acceptance'] = receipt
+        entry['preparation_status'] = 'offline_compatibility_physical_delivery_cpu_proven_partial'
         tests.append({'command': receipt['command'], 'exit_code': 0,
                       'log': positive, 'sha256': sha(ROOT / positive)})
     result['tests'] = tests
+    manifest['preparation_status'] = 'offline_compatibility_physical_delivery_cpu_proven_partial'
     result['readiness_kind'] = 'green_arrow_offline_compatibility_physical_and_delivery_cpu_protocol_proven'
     result['reason'] = ('Four exact cases and four fallbacks pass pinned offline and source-bound compatibility. '
                         'All four cases have three synthetic physical outcomes and independent delivery-audit '

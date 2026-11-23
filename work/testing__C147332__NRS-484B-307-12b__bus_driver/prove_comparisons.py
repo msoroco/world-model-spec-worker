@@ -71,6 +71,27 @@ def main():
     else:
         raise AssertionError("changed signal passed comparison audit")
     scene_path.write_bytes(original)
+    signal_path = output / "lateral_entry" / "lane-signal-history.jsonl"
+    original_signal = signal_path.read_bytes()
+    rows = [json.loads(line) for line in original_signal.splitlines()]
+    rows[0]["faces_bus"] = False
+    signal_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    acquisition_path = output / "lateral_entry" / "acquisition.json"
+    original_acquisition = acquisition_path.read_bytes()
+    acquisition = json.loads(original_acquisition)
+    acquisition[signal_path.name] = sha(signal_path)
+    write(acquisition_path, acquisition)
+    try:
+        audit_pair(PAIRS[0][0], output / "adjacent_travel", output / "lateral_entry",
+                   diagnostic=True)
+    except ValueError as error:
+        if "observed red-X signal condition changed" not in str(error):
+            raise
+        print("rehashed observed-signal tamper rejected")
+    else:
+        raise AssertionError("changed observed signal passed comparison audit")
+    signal_path.write_bytes(original_signal)
+    acquisition_path.write_bytes(original_acquisition)
     map_path = output / "red_lane_drive" / "road.xodr"
     original_map = map_path.read_bytes()
     map_path.write_bytes(original_map + b"\nchanged\n")
@@ -88,6 +109,7 @@ def main():
         "format": "worker-red-x-comparison-diagnostic-proof",
         "source_root": str(source.relative_to(REPO)), "bindings": bindings,
         "results": results, "negative_checks": ["fixed-condition tamper rejected",
+                                                 "rehashed observed-signal tamper rejected",
                                                  "original-map tamper rejected"],
         "provenance_kind": "synthetic_fixture", "physical_acceptance_claimed": False,
         "legal_verdict_claimed": False})

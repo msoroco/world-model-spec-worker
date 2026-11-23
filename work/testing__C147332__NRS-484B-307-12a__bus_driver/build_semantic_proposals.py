@@ -67,16 +67,26 @@ def main() -> None:
         construction = json.loads((ROOT / 'cases' / suffix / 'construction.json').read_text())
         if construction['case_id'] != planned['case_id']:
             raise ValueError('Semantic case selects another construction')
+        variable = 'second_lane_green_request' if 'indication' in pairs[suffix] else 'bus_motion_request'
         cases.append({'case_id': planned['case_id'], 'target_law_id': LAW_ID,
-                      'target_type': 'permission_probe', 'status': 'draft',
+                      'target_type': 'boundary_probe', 'status': 'draft',
                       'rationale': planned['scenario'] + '; physical outcome and legal judgment remain unconfirmed.',
                       'paired_probe_id': pairs[suffix], 'variable_assignments': assignments,
-                      'deliberate_differences': next(c['deliberate_differences'] for c in PLAN['comparisons'] if c['comparison_id'] == pairs[suffix]),
-                      'probe': {'primary_variable': 'second_lane_green_request' if 'indication' in pairs[suffix] else 'bus_motion_request',
+                      'deliberate_differences': [{'variable': variable,
+                          'description': next(c['deliberate_differences'][0] for c in PLAN['comparisons']
+                                              if c['comparison_id'] == pairs[suffix])}],
+                      'probe': {'primary_variable': variable,
                                 'comparison_or_standard': 'Paired original-frame comparison under source-reviewed lane signal',
                                 'target_value_or_branch': arrow if 'indication' in pairs[suffix] else motion},
                       'recording_description': construction['recording_description'],
                       'unresolved_judgment_calls': []})
+    baseline = {'case_id': AID + '__baseline', 'target_law_id': None,
+                'target_type': 'baseline', 'status': 'draft',
+                'rationale': 'Shared fixed highway, mapped lanes, bus and source-review context; no acceptance claim.',
+                'variable_assignments': cases[0]['variable_assignments'],
+                'recording_description': cases[0]['recording_description'],
+                'unresolved_judgment_calls': []}
+    cases.insert(0, baseline)
     case_stage = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
                   'cases': cases, 'sweep_specs': []}
     refs = {'relevance_batch': write('relevance_batch.json', relevance),
@@ -87,8 +97,9 @@ def main() -> None:
             'cases': write('cases.json', case_stage)}
     write('semantic-index.json', {'format': 'worker-semantic-delivery',
                                   'assignment_id': AID, 'stages': refs})
-    assert {c['case_id'] for c in cases} == {c['case_id'] for c in PLAN['cases']}
-    by_suffix = {c['case_id'].removeprefix(AID + '__'): c['variable_assignments'] for c in cases}
+    assert {c['case_id'] for c in cases if c['target_type'] != 'baseline'} == {c['case_id'] for c in PLAN['cases']}
+    by_suffix = {c['case_id'].removeprefix(AID + '__'): c['variable_assignments']
+                 for c in cases if c['target_type'] != 'baseline'}
     for left, right, expected in (
         ('adjacent_dark_drive', 'second_green_drive', 'second_lane_green_request'),
         ('green_selected_drive', 'green_selected_stand', 'bus_motion_request'),
@@ -96,7 +107,7 @@ def main() -> None:
         changed = {name for name in by_suffix[left] if by_suffix[left][name] != by_suffix[right][name]}
         assert changed == {expected}, (left, right, changed)
     assert template['quote'] == PLAN['law_text']
-    print('six canonical stage entries, four exact draft cases, two comparison pairs')
+    print('six canonical stage entries, one shared baseline, four exact draft cases, two comparison pairs')
 
 
 if __name__ == '__main__':

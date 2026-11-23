@@ -4,9 +4,73 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared fixed highway, mapped lanes, bus and source-review context; no acceptance claim.",
+      "variable_assignments": {
+        "bus_lane_request": {
+          "kind": "world_setup",
+          "value": "selected"
+        },
+        "second_lane_green_request": {
+          "kind": "world_setup",
+          "value": "dark"
+        },
+        "bus_motion_request": {
+          "kind": "controller",
+          "value": "drive"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bus_full_body_footprint",
+            "unit": "structured original source record",
+            "method": "Native bus bounding-box XY corners",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, original pixels and bus motion require later review"
+          },
+          {
+            "name": "mapped_lane_signals",
+            "unit": "structured original source record",
+            "method": "Native overhead head positions and lane mapping",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, original pixels and bus motion require later review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured original source record",
+            "method": "four synchronized original camera frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "every original captured frame",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native import, original pixels and bus motion require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_official_device",
+            "unit": "retained original source packet",
+            "method": "source_review.validate before Native dispatch"
+          }
+        ],
+        "limitations": [
+          "Engineering map and authored arrow do not establish a public highway or official device.",
+          "Requested route does not establish actual motion or pixel visibility."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
       "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive",
       "target_law_id": "NRS-484B-307-12a",
-      "target_type": "permission_probe",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Bus fully in a lane with its own downward green arrow, driving; physical outcome and legal judgment remain unconfirmed.",
       "paired_probe_id": "green_permission_without_motion",
@@ -25,7 +89,10 @@
         }
       },
       "deliberate_differences": [
-        "bus longitudinal motion versus stationary body under the green arrow"
+        {
+          "variable": "bus_motion_request",
+          "description": "bus longitudinal motion versus stationary body under the green arrow"
+        }
       ],
       "probe": {
         "primary_variable": "bus_motion_request",
@@ -79,7 +146,7 @@
     {
       "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive",
       "target_law_id": "NRS-484B-307-12a",
-      "target_type": "permission_probe",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Same bus travel in an adjacent lane without a green arrow over it; physical outcome and legal judgment remain unconfirmed.",
       "paired_probe_id": "second_lane_green_indication",
@@ -98,7 +165,10 @@
         }
       },
       "deliberate_differences": [
-        "second-lane indication changes from dark to downward green arrow"
+        {
+          "variable": "second_lane_green_request",
+          "description": "second-lane indication changes from dark to downward green arrow"
+        }
       ],
       "probe": {
         "primary_variable": "second_lane_green_request",
@@ -152,7 +222,7 @@
     {
       "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive",
       "target_law_id": "NRS-484B-307-12a",
-      "target_type": "permission_probe",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Same adjacent-lane bus travel with an additional downward green arrow over that lane; physical outcome and legal judgment remain unconfirmed.",
       "paired_probe_id": "second_lane_green_indication",
@@ -171,7 +241,10 @@
         }
       },
       "deliberate_differences": [
-        "second-lane indication changes from dark to downward green arrow"
+        {
+          "variable": "second_lane_green_request",
+          "description": "second-lane indication changes from dark to downward green arrow"
+        }
       ],
       "probe": {
         "primary_variable": "second_lane_green_request",
@@ -225,7 +298,7 @@
     {
       "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand",
       "target_law_id": "NRS-484B-307-12a",
-      "target_type": "permission_probe",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Bus fully in green-arrow lane, stationary to test permission without a duty; physical outcome and legal judgment remain unconfirmed.",
       "paired_probe_id": "green_permission_without_motion",
@@ -244,7 +317,10 @@
         }
       },
       "deliberate_differences": [
-        "bus longitudinal motion versus stationary body under the green arrow"
+        {
+          "variable": "bus_motion_request",
+          "description": "bus longitudinal motion versus stationary body under the green arrow"
+        }
       ],
       "probe": {
         "primary_variable": "bus_motion_request",

@@ -17,6 +17,23 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _fixed_signal_history(folder):
+    """Read the observed device conditions that a controlled pair must hold fixed."""
+    acquisition = json.loads((folder / "acquisition.json").read_text())
+    name = "lane-signal-history.jsonl"
+    source = acquisition.get(name)
+    recorded = source.get("sha256") if isinstance(source, dict) else source
+    if recorded != _sha(folder / name):
+        raise ValueError("original comparison signal source changed")
+    rows = [json.loads(line) for line in (folder / name).read_text().splitlines() if line.strip()]
+    if not rows:
+        raise ValueError("original comparison signal history absent")
+    fields = ("frame", "elapsed_seconds", "governed_lane_id",
+              "lane_lateral_bounds_m", "symbol", "faces_bus",
+              "official_device_source_sha256")
+    return [{key: row.get(key) for key in fields} for row in rows]
+
+
 def audit_pair(comparison_id, baseline, changed, *, diagnostic=False):
     if comparison_id not in PAIRS:
         raise ValueError("unknown exact red-X comparison")
@@ -30,6 +47,8 @@ def audit_pair(comparison_id, baseline, changed, *, diagnostic=False):
     for scene, suffix in zip(scenes, (expected_left, expected_right)):
         if scene.get("case_id") != ASSIGNMENT + "__" + suffix:
             raise ValueError("wrong exact comparison case")
+    if _fixed_signal_history(baseline) != _fixed_signal_history(changed):
+        raise ValueError("observed red-X signal condition changed within comparison")
     reports = [build_report(folder) for folder in (baseline, changed)]
     if reports[0]["site_review"] != reports[1]["site_review"]:
         raise ValueError("reviewed highway or official red-X device changed")
