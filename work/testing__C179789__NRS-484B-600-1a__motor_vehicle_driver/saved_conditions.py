@@ -11,7 +11,8 @@ import math
 from pathlib import Path
 
 
-FIELDS = ("ego_speed_mps", "leader_gap_m", "highway_width_m", "surface_wetness",
+FIELDS = ("ego_speed_mps", "leader_gap_m", "highway_width_m",
+          "roadway_driving_width_m", "shoulder_width_m", "surface_wetness",
           "precipitation_strength", "fog_density", "tire_friction")
 
 
@@ -54,6 +55,11 @@ def measure(attempt: Path, case_id: str) -> dict:
                 raise ValueError(f"{field} cannot be negative")
         if row["surface_wetness"] > 1 or row["precipitation_strength"] > 100 or row["fog_density"] > 100:
             raise ValueError("Native weather or wetness range differs")
+        if (row["highway_width_m"] + 1e-6 <
+                row["roadway_driving_width_m"] + row["shoulder_width_m"] or
+                row.get("mapped_width_scope") !=
+                "OpenDRIVE lane cross section; statutory highway boundary unverified"):
+            raise ValueError("mapped width components or statutory scope missing")
         if not isinstance(row.get("source_frame"), int) or row["source_frame"] != frame:
             raise ValueError("condition source frame join differs")
         ids = row.get("source_ids")

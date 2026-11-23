@@ -14,14 +14,13 @@ from pathlib import Path
 import subprocess
 
 from native_camera import VIEWS
+from saved_conditions import FIELDS
 
 
 SOURCES = ("authored-setup.json", "authored-setup-seal.json",
            "original-conditions.jsonl", "original-conditions-seal.json",
            "trace.jsonl", "video_frames.jsonl", "media-receipt.json",
            "native-run-status.json")
-FIELDS = ("ego_speed_mps", "leader_gap_m", "highway_width_m", "surface_wetness",
-          "precipitation_strength", "fog_density", "tire_friction")
 
 
 def sha(path: Path) -> str:

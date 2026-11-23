@@ -40,6 +40,8 @@ def fixture(attempt: Path):
         conditions.append({"frame": frame, "time_s": time_s, "source_frame": frame,
                            "ego_speed_mps": 8., "leader_gap_m": 30.,
                            "surface_wetness": .1, "highway_width_m": 7.2,
+                           "roadway_driving_width_m": 7.2, "shoulder_width_m": 0.,
+                           "mapped_width_scope": "OpenDRIVE lane cross section; statutory highway boundary unverified",
                            "precipitation_strength": 0., "fog_density": 0.,
                            "tire_friction": 2., "source_ids": ids})
         camera = {name: {"sha256": "c" * 64} for name in VIEWS}
@@ -91,7 +93,7 @@ class SavedMeasurementTests(unittest.TestCase):
         self.assertEqual(result["measured_values"]["legal_judgment"], "unresolved")
         self.assertFalse(result["physical_acceptance_claimed"])
         self.assertFalse(result["setup_confirmed"])
-        self.assertEqual(len(list((self.attempt / "channels").glob("*"))), 9)
+        self.assertEqual(len(list((self.attempt / "channels").glob("*"))), 11)
         with self.assertRaisesRegex(ValueError, "retain previous saved analysis"):
             finalize_attempt(self.attempt, self.attempt / "analysis-report.json")
 

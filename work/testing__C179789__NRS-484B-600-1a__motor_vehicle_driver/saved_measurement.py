@@ -47,6 +47,7 @@ def _finite(value, name: str) -> float:
 def recording_description() -> dict:
     channels = []
     units = {"ego_speed_mps": "m/s", "leader_gap_m": "m", "highway_width_m": "m",
+             "roadway_driving_width_m": "m", "shoulder_width_m": "m",
              "surface_wetness": "fraction", "precipitation_strength": "Native scale",
              "fog_density": "Native scale", "tire_friction": "Native tire friction"}
     for name in FIELDS:

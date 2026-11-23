@@ -50,11 +50,12 @@ def build():
                 "parameter_refs": [{"name": "ego_speed", "kind": "subject_behavior", "range_or_domain": "observed m/s"},
                                    {"name": "leader_gap", "kind": "world_setup", "range_or_domain": "observed m"},
                                    {"name": "surface_wetness", "kind": "world_setup", "range_or_domain": "observed fraction"},
-                                   {"name": "highway_width", "kind": "world_setup", "range_or_domain": "observed m"},
+                                   {"name": "highway_width", "kind": "world_setup", "range_or_domain": "mapped OpenDRIVE cross section in m; statutory boundary unverified"},
                                    {"name": "precipitation_strength", "kind": "world_setup", "range_or_domain": "observed Native scale"},
                                    {"name": "fog_density", "kind": "world_setup", "range_or_domain": "observed Native scale"}]}
     channels = [("ego_speed_mps", "m/s"), ("leader_gap_m", "m"),
-                ("highway_width_m", "m"), ("surface_wetness", "fraction"),
+                ("highway_width_m", "m"), ("roadway_driving_width_m", "m"),
+                ("shoulder_width_m", "m"), ("surface_wetness", "fraction"),
                 ("precipitation_strength", "Native scale"), ("fog_density", "Native scale"),
                 ("tire_friction", "Native tire friction")]
     observations = [{"name": name, "unit": unit,
@@ -70,12 +71,13 @@ def build():
                                               "sweep_dimensions": observations[:6],
                                               "landmarks": [],
                                               "recording_needs": observations,
-                                              "limitations": ["These physical observations do not define a reasonable or proper speed or a legal verdict."]}}
+                                              "limitations": ["The mapped OpenDRIVE cross section does not establish statutory boundary-to-boundary highway width.",
+                                                              "These physical observations do not define a reasonable or proper speed or a legal verdict."]}}
     names = [("ego_speed", "subject_behavior", "Actual speed is trace-only; never guaranteed."),
              ("commanded_approach_speed", "controller", "Scalar m/s target mapped to ego_speed_request_mps in the Native setup."),
              ("leader_gap", "world_setup", "Leader initial gap in m; maps to leader_initial_gap_m."),
              ("surface_wetness", "world_setup", "Requested wetness fraction; maps to surface_wetness_request."),
-             ("highway_width", "world_setup", "Requested driving width in m; maps to highway_width_m."),
+             ("highway_width", "world_setup", "Requested mapped OpenDRIVE cross-section width in m; maps to highway_width_m; legal boundary remains unverified."),
              ("precipitation_strength", "world_setup", "Native precipitation request; maps to native_precipitation_request."),
              ("fog_density", "world_setup", "Native fog request; maps to native_fog_request.")]
     binding = {"cell_id": cell, "actor": actor, "status": "draft",
@@ -94,7 +96,8 @@ def build():
                                for name, unit in channels],
                  "context_inputs": [{"name": item["name"], "unit": item["unit"],
                                      "method": item["description"]} for item in context],
-                 "limitations": ["Authored requests are not measured outcomes; legal judgment is unresolved."]}
+                 "limitations": ["OpenDRIVE mapped width is not proof of statutory highway boundaries.",
+                                 "Authored requests are not measured outcomes; legal judgment is unresolved."]}
     assignments = {name: {"kind": kind, "value": None} for name, kind, _ in names}
     reference_id = next(c["case_id"] for c in plan["cases"] if c["case_id"].endswith("__reference"))
     baseline = {"case_id": assignment["assignment_id"] + "__shared_baseline",

@@ -13,7 +13,7 @@ import copy
 from pathlib import Path
 
 from comparison_audit import DIRECTION
-from native_conditions import _driving_width
+from native_conditions import _cross_section_widths
 
 
 VARIABLES = ("ego_speed_request_mps", "leader_initial_gap_m",
@@ -102,9 +102,10 @@ def create(world, packet_path: Path, plan_path: Path, case_id: str, velocity_fac
         item["road_id"], item["lane_id"], item["ego_station_m"])
     if waypoint is None or waypoint.is_junction or waypoint.lane_type.name != "Driving":
         raise ValueError("reviewed Native ego spawn is not on a driving lane")
-    realized_width = _driving_width(map_text, waypoint.road_id, item["ego_station_m"])
+    realized_width = _cross_section_widths(
+        map_text, waypoint.road_id, item["ego_station_m"])["mapped_cross_section_width_m"]
     if abs(realized_width - item["variables"]["highway_width_m"]) > .05:
-        raise ValueError("OpenDRIVE driving width differs from reviewed Native request")
+        raise ValueError("OpenDRIVE mapped cross-section width differs from reviewed Native request")
     gap = _finite(item["variables"]["leader_initial_gap_m"], "leader gap")
     ahead = waypoint.next(gap + 5.0)
     if len(ahead) != 1 or (ahead[0].road_id, ahead[0].lane_id) != (waypoint.road_id, waypoint.lane_id):

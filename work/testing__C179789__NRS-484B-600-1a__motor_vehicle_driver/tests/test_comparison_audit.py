@@ -61,6 +61,9 @@ class ComparisonAuditTests(unittest.TestCase):
                 for row in altered:
                     row[OBSERVED[comparison_id]] += (-DIRECTION[comparison_id] if reverse_observation
                                                      else DIRECTION[comparison_id]) * .1
+                    if comparison_id == "width":
+                        row["roadway_driving_width_m"] += (-DIRECTION[comparison_id]
+                                                             if reverse_observation else DIRECTION[comparison_id]) * .1
             seal(first, item["case_ids"][0], source, diagnostic_fixture=diagnostic)
             seal(second, item["case_ids"][1], altered, diagnostic_fixture=diagnostic)
             if tamper:

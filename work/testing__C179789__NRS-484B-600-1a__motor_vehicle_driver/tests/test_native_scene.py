@@ -157,7 +157,7 @@ class NativeSceneTests(unittest.TestCase):
             item["variables"]["highway_width_m"] += 1
         def check(path):
             world = FakeWorld()
-            with self.assertRaisesRegex(ValueError, "driving width differs"):
+            with self.assertRaisesRegex(ValueError, "mapped cross-section width differs"):
                 create(world, path, HERE / "case-plan.json", PLAN["cases"][0]["case_id"],
                        lambda x, y, z: (x, y, z))
             self.assertEqual(world.spawned, [])

@@ -61,9 +61,23 @@ class NativeConditionsTests(unittest.TestCase):
         row = sample_native(self.world, self.ego, self.leader, self.snapshot)
         self.assertEqual(row["leader_gap_m"], 26)
         self.assertEqual(row["highway_width_m"], 7.5)
+        self.assertEqual(row["roadway_driving_width_m"], 7.5)
+        self.assertEqual(row["shoulder_width_m"], 0)
         self.assertEqual(row["surface_wetness"], .2)
         self.assertEqual(row["tire_friction"], .8)
         self.assertEqual(len(row["source_ids"]["opendrive_sha256"]), 64)
+
+    def test_shoulder_kept_separate_from_driving_width(self):
+        class ShoulderMap(Map):
+            def to_opendrive(self):
+                return ROAD.replace('</right>',
+                    '<lane id="-2" type="shoulder"><width sOffset="0" a="1.25"/></lane></right>')
+        self.world.get_map = lambda: ShoulderMap()
+        row = sample_native(self.world, self.ego, self.leader, self.snapshot)
+        self.assertEqual(row["roadway_driving_width_m"], 7.5)
+        self.assertEqual(row["shoulder_width_m"], 1.25)
+        self.assertEqual(row["highway_width_m"], 8.75)
+        self.assertIn("boundary unverified", row["mapped_width_scope"])
 
     def test_wrong_lane_or_rear_actor_rejected(self):
         self.leader.location.lane_id = 1

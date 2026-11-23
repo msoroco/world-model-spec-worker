@@ -16,6 +16,9 @@ def rows():
              "ego_speed_mps": 8 + index,
              "leader_gap_m": 30 - index,
              "highway_width_m": 8.0,
+             "roadway_driving_width_m": 7.0,
+             "shoulder_width_m": 1.0,
+             "mapped_width_scope": "OpenDRIVE lane cross section; statutory highway boundary unverified",
              "surface_wetness": .2,
              "precipitation_strength": 20,
              "fog_density": 10,
@@ -73,6 +76,15 @@ class SavedConditionsTests(unittest.TestCase):
             sample[-1]["source_ids"] = {**sample[-1]["source_ids"], "opendrive_sha256": "b" * 64}
             seal(attempt, "exact-case", sample)
             with self.assertRaisesRegex(ValueError, "source changed"):
+                measure(attempt, "exact-case")
+
+    def test_mapped_width_cannot_omit_driving_or_shoulder(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            sample = rows()
+            sample[1]["shoulder_width_m"] = 2.0
+            seal(attempt, "exact-case", sample)
+            with self.assertRaisesRegex(ValueError, "mapped width components"):
                 measure(attempt, "exact-case")
 
 

@@ -27,8 +27,11 @@ def _road_lane(world, actor):
     return waypoint, transform
 
 
-def _driving_width(map_text: str, road_id: int, station: float) -> float:
-    """Evaluate both directions' driving-lane widths at the source waypoint."""
+def _cross_section_widths(map_text: str, road_id: int, station: float) -> dict:
+    """Read mapped driving, shoulder and other lane widths at one road station.
+
+    OpenDRIVE alone does not establish the statutory boundary of a highway.
+    """
     root = ET.fromstring(map_text)
     road = next((item for item in root.findall("road")
                  if item.get("id") == str(road_id)), None)
@@ -40,25 +43,34 @@ def _driving_width(map_text: str, road_id: int, station: float) -> float:
         raise ValueError("original OpenDRIVE lane section is missing")
     section = active[-1]
     offset = station - float(section.get("s", "0"))
-    total = 0.0
+    totals = {"driving": 0.0, "shoulder": 0.0, "other": 0.0}
     for side in ("left", "right"):
         for lane in section.findall("./" + side + "/lane"):
-            if lane.get("type") != "driving":
-                continue
             records = sorted(lane.findall("width"), key=lambda item: float(item.get("sOffset", "0")))
+            if not records:
+                raise ValueError("original OpenDRIVE lane width is missing")
             active_width = [item for item in records if float(item.get("sOffset", "0")) <= offset]
             if not active_width:
-                raise ValueError("original OpenDRIVE driving width is missing")
+                raise ValueError("original OpenDRIVE lane width is missing")
             record = active_width[-1]
             ds = offset - float(record.get("sOffset", "0"))
             width = sum(float(record.get(name, "0")) * ds ** power
                         for power, name in enumerate(("a", "b", "c", "d")))
             if not math.isfinite(width) or width <= 0:
                 raise ValueError("original OpenDRIVE driving width is invalid")
-            total += width
-    if total <= 0:
+            lane_type = lane.get("type")
+            group = lane_type if lane_type in ("driving", "shoulder") else "other"
+            totals[group] += width
+    if totals["driving"] <= 0:
         raise ValueError("original OpenDRIVE has no driving width")
-    return total
+    return {"roadway_driving_width_m": totals["driving"],
+            "shoulder_width_m": totals["shoulder"],
+            "mapped_cross_section_width_m": sum(totals.values())}
+
+
+def _driving_width(map_text: str, road_id: int, station: float) -> float:
+    """Compatibility accessor for the roadway's mapped driving lanes."""
+    return _cross_section_widths(map_text, road_id, station)["roadway_driving_width_m"]
 
 
 def sample_native(world, ego, leader, snapshot) -> dict:
@@ -89,9 +101,9 @@ def sample_native(world, ego, leader, snapshot) -> dict:
                           for axis in ("x", "y", "z")))
     weather = world.get_weather()
     map_text = world.get_map().to_opendrive()
-    width = _driving_width(map_text, ego_waypoint.road_id,
-                           _finite(ego_waypoint.s, "road station"))
-    if width < _finite(ego_waypoint.lane_width, "lane width"):
+    widths = _cross_section_widths(map_text, ego_waypoint.road_id,
+                                   _finite(ego_waypoint.s, "road station"))
+    if widths["roadway_driving_width_m"] < _finite(ego_waypoint.lane_width, "lane width"):
         raise ValueError("OpenDRIVE carriageway width is narrower than ego lane")
     wheels = ego.get_physics_control().wheels
     if not wheels:
@@ -99,7 +111,10 @@ def sample_native(world, ego, leader, snapshot) -> dict:
     tire_friction = min(_finite(wheel.tire_friction, "wheel tire friction") for wheel in wheels)
     return {"frame": frame, "time_s": time, "source_frame": frame,
             "ego_speed_mps": speed, "leader_gap_m": gap,
-            "highway_width_m": width,
+            "highway_width_m": widths["mapped_cross_section_width_m"],
+            "roadway_driving_width_m": widths["roadway_driving_width_m"],
+            "shoulder_width_m": widths["shoulder_width_m"],
+            "mapped_width_scope": "OpenDRIVE lane cross section; statutory highway boundary unverified",
             "surface_wetness": _finite(weather.wetness, "native wetness") / 100,
             "precipitation_strength": _finite(weather.precipitation, "native precipitation"),
             "fog_density": _finite(weather.fog_density, "native fog density"),
