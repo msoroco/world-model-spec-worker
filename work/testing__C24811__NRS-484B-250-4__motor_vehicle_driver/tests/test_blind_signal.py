@@ -51,7 +51,8 @@ class BlindSignalTests(unittest.TestCase):
         self.assertEqual(set(config["supported_case_ids"]),
                          {case["case_id"] for case in plan["cases"]})
         proposal=json.loads((ROOT/"proposals/cases.json").read_text())
-        self.assertEqual({case["case_id"] for case in proposal["cases"]},
+        self.assertEqual({case["case_id"] for case in proposal["cases"]
+                          if case["target_type"]!="baseline"},
                          set(config["supported_case_ids"]))
         self.assertEqual(proposal["status"],"draft")
         self.assertEqual(config["frames"],config["duration_s"]*config["rate_hz"])

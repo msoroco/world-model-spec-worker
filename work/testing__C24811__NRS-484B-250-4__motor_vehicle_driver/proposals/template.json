@@ -1,0 +1,116 @@
+{
+  "template_id": "NRS-484B-250-4@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-250-4",
+    "activation": {
+      "condition": "A vehicle enters an intersection with installed, uncovered vehicular signals that are inoperative at entry",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Treat each entrance as stop signed; stop at the statutory location and then proceed cautiously while yielding to vehicles with a prior completed stop or within the intersection",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Evaluate signal condition at ego entry, stop before entry, earlier stop completion, and occupancy through cautious proceeding",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "dev.traffic_signal",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "dev.inoperative",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "st.lane_enters",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "st.stop_line",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "st.crosswalk",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "st.sight_distance",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "rel.visible",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "drv.stopped",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "drv.entering_intersection",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "drv.arrival_order",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "drv.in_intersection",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      },
+      {
+        "phrase": "drv.yields_to",
+        "note": "Original source row and four-camera review required; current map and geometry are authored candidates"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "signal",
+      "kind": "world_setup",
+      "range_or_domain": "all governing heads Off or operative, with independent physical status review",
+      "used_by_laws": [
+        "NRS-484B-250-4"
+      ]
+    },
+    {
+      "name": "ego_stop",
+      "kind": "controller",
+      "range_or_domain": "full halt at authored marked stop line or rolling response",
+      "used_by_laws": [
+        "NRS-484B-250-4"
+      ]
+    },
+    {
+      "name": "earlier_stop",
+      "kind": "controller",
+      "range_or_domain": "earlier vehicle full halt/release control",
+      "used_by_laws": [
+        "NRS-484B-250-4"
+      ]
+    },
+    {
+      "name": "occupant_entry",
+      "kind": "controller",
+      "range_or_domain": "occupant release and complete-body entry control",
+      "used_by_laws": [
+        "NRS-484B-250-4"
+      ]
+    },
+    {
+      "name": "ego_target_speed_override_mps",
+      "kind": "controller",
+      "range_or_domain": "optional physical approach-speed override in m/s for rolling comparison; absence uses common controller",
+      "used_by_laws": [
+        "NRS-484B-250-4"
+      ]
+    }
+  ]
+}
