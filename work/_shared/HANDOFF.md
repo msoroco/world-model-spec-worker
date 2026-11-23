@@ -202,3 +202,7 @@ Earlier continuation: [handoff continuation](HANDOFF-archive-continuation-2026-1
 ## 2026-11-23 C215286 next work
 
 The reverse package's primary saved binding and synthetic physical receipt log were corrected and current validators pass. Its result remains partial. Next: bind independent district, crosswalk geometry and marking sources, create canonical semantic stages with required judgment sweep coverage, then run source-bound full-duration delivery acceptance for both selected cases and recheck scoped strict. The old saved command log is byte-exact archived in `c125745-stale-axis-diagnostics-2026-11-23.json`.
+
+## 2026-11-23 C125714 next work
+
+The precedence and source-verified-advance cases each have three exact CPU-proved fallback constructions. C125714 remains partial. Next construct and prove trios for the five other selected cases, then bind physical, semantic, independent delivery and comparison receipts before scoped strict readiness. The package has 8,600 returned files after consolidating nine identical empty logs.
