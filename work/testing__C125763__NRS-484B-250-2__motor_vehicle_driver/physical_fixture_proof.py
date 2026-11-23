@@ -1,9 +1,12 @@
 """Synthetic CPU tests of C125763 physical classification and closure order."""
 import argparse
+import base64
 import copy
+import hashlib
 import json
 import sys
 import tempfile
+import zlib
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
@@ -16,6 +19,19 @@ from worker_exchange.saved_processing import record_native_exit,acknowledge_owne
 
 def read(path):return json.loads(Path(path).read_text())
 def write(path,value):Path(path).write_text(json.dumps(value,indent=2,allow_nan=False)+'\n')
+
+
+def archived_primary_saved_receipt(name):
+    """Recover an exact archived CPU receipt without changing returned files."""
+    archive=REPO/'work/_shared/archived-unbound-negative-logs-20261119.json'
+    matches=[item for item in read(archive)['files']
+             if item['path']==str((ROOT/name).relative_to(REPO))]
+    if len(matches)!=1:raise ValueError('Archived selected saved receipt missing')
+    item=matches[0]
+    payload=zlib.decompress(base64.b64decode(item['content_zlib_base64']))
+    if hashlib.sha256(payload).hexdigest()!=item['sha256']:
+        raise ValueError('Archived selected saved receipt changed')
+    return json.loads(payload),item['sha256']
 
 
 def fixture_sources(root,entry):
@@ -82,7 +98,11 @@ def lifecycle(entry,output):
                 'yield_opposite_left_turn':'promoted-opposite-primary-saved-receipt.json'}
     suffix=entry['case_id'].split('__')[-1]
     saved_path=ROOT/saved_name[suffix]
-    saved=read(saved_path)
+    if saved_path.is_file():
+        saved=read(saved_path)
+        saved_sha=sha(saved_path)
+    else:
+        saved,saved_sha=archived_primary_saved_receipt(saved_path.name)
     if (saved.get('passed') is not True or saved.get('recorded_only') is not True or
             saved.get('case_id')!=entry['case_id'] or
             saved['analysis_revision']['construction_sha256']!=entry['construction_sha256']):
@@ -117,7 +137,7 @@ def lifecycle(entry,output):
                       'capture_seal_sha256':sha(root/'capture-seal.json'),
                       'native_exit_sha256':sha(root/'native-exit.json'),
                       'owner_release_sha256':sha(root/'owner-release.json'),
-                      'saved_processing_receipt_sha256':sha(saved_path)})
+                      'saved_processing_receipt_sha256':saved_sha})
         print(json.dumps({'case_id':entry['case_id'],'events':events,
                           'diagnostic_fixture':True}))
 

@@ -116,13 +116,83 @@
     "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
   },
   "observations": [
-    "proper stop sign physically governing ego approach",
-    "marked or sidewalk-derived near-side crosswalk geometry and approach direction",
-    "source-backed intersection boundary and any stop line",
-    "original-frame complete ego body position and speed at halt, crosswalk and junction entry",
-    "crosswalk-before-stop-line priority specific to NRS 484A.450(2)",
-    "original marked stop-line source and complete-body crossing only when no near-side crosswalk exists",
-    "original per-frame approaching-traffic visibility and first sight point only when both crosswalk and marked stop line are absent"
+    {
+      "name": "stop_sign_governance",
+      "description": "proper stop sign physically governing ego approach",
+      "mandatory": false,
+      "required_source": true,
+      "source_refs": [
+        "approach_context.json",
+        "stop_sign_control.py"
+      ],
+      "capture_mode": "retained_original_source_or_context"
+    },
+    {
+      "name": "crosswalk_geometry",
+      "description": "marked or sidewalk-derived near-side crosswalk geometry and approach direction",
+      "mandatory": false,
+      "required_source": true,
+      "source_refs": [
+        "approach_context.json",
+        "site.json"
+      ],
+      "capture_mode": "retained_original_source_or_context"
+    },
+    {
+      "name": "intersection_and_stop_line",
+      "description": "source-backed intersection boundary and any stop line",
+      "mandatory": false,
+      "required_source": true,
+      "source_refs": [
+        "approach_context.json",
+        "site.json"
+      ],
+      "capture_mode": "retained_original_source_or_context"
+    },
+    {
+      "name": "halt_timing",
+      "description": "original-frame complete ego body position and speed at halt, crosswalk and junction entry",
+      "mandatory": true,
+      "required_source": true,
+      "source_refs": [
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ],
+      "capture_mode": "derived_channel"
+    },
+    {
+      "name": "crosswalk_priority",
+      "description": "crosswalk-before-stop-line priority specific to NRS 484A.450(2)",
+      "mandatory": false,
+      "required_source": true,
+      "source_refs": [
+        "approach_context.json",
+        "stop_history.jsonl"
+      ],
+      "capture_mode": "retained_original_source_or_context"
+    },
+    {
+      "name": "marked_line_without_crosswalk",
+      "description": "original marked stop-line source and complete-body crossing only when no near-side crosswalk exists",
+      "mandatory": false,
+      "required_source": true,
+      "source_refs": [
+        "approach_context.json",
+        "stop_history.jsonl"
+      ],
+      "capture_mode": "retained_original_source_or_context"
+    },
+    {
+      "name": "first_view_proxy",
+      "description": "original per-frame approaching-traffic visibility and first sight point only when both crosswalk and marked stop line are absent",
+      "mandatory": false,
+      "required_source": true,
+      "source_refs": [
+        "sight_history.jsonl",
+        "approach_context.json"
+      ],
+      "capture_mode": "retained_original_source_or_context"
+    }
   ],
   "sources": [
     {
@@ -204,5 +274,116 @@
         "interval": "all 900 frames, approach through clearance"
       }
     ]
+  },
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Native governing stop sign identified from the approach waypoint; sign identity retained in original approach context.",
+      "channels": [],
+      "source_refs": [
+        "stop_sign_control.py",
+        "approach_context.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Native sign trigger and approach road/lane identity are checked before capture; governance remains subject to physical review.",
+      "channels": [],
+      "source_refs": [
+        "stop_sign_control.py",
+        "approach_context.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Native approach waypoint road/lane ID is matched to the sourced site and retained through reference entry.",
+      "channels": [],
+      "source_refs": [
+        "site.json",
+        "approach_context.json",
+        "stop_history.jsonl"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Original ego transform, road/lane and frame history show approach progression toward the selected intersection.",
+      "channels": [],
+      "source_refs": [
+        "trace.jsonl",
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Native map crosswalk is checked against the site polygon; marked and unmarked dispositions are recorded in case-specific approach context.",
+      "channels": [],
+      "source_refs": [
+        "site.json",
+        "approach_context.json",
+        "stop_history.jsonl"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "When present, sourced site marked-line segment and original ego body positions locate the selected stop reference; absence is explicit in other branches.",
+      "channels": [],
+      "source_refs": [
+        "cases/no_crosswalk_marked_stop_line/site.json",
+        "approach_context.json",
+        "stop_history.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Sourced intersection polygon and original body vertices locate entry and complete clearance; Native waypoint checks the approach lane.",
+      "channels": [],
+      "source_refs": [
+        "site.json",
+        "approach_context.json",
+        "stop_history.jsonl"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "In the no-crosswalk/no-line case, original sampled traffic visibility and observer context identify first observed view; nearest legal point remains unresolved.",
+      "channels": [],
+      "source_refs": [
+        "sight_history.jsonl",
+        "cases/no_crosswalk_no_line_first_view/runner.py"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Original visible-traffic IDs are joined to each sight sample; this is a sampled proxy, with actual driver sight and occlusion awaiting Native review.",
+      "channels": [],
+      "source_refs": [
+        "sight_history.jsonl",
+        "approach_context.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original speed and complete body vertices identify a zero-speed halt and its frame before the selected reference.",
+      "channels": [
+        "halt_timing"
+      ],
+      "source_refs": [
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "Original complete-body footprint is compared with crosswalk or marked-line geometry at synchronized frames.",
+      "channels": [
+        "halt_timing"
+      ],
+      "source_refs": [
+        "stop_history.jsonl",
+        "approach_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Original complete-body footprint is joined to the sourced intersection polygon and Native frame map.",
+      "channels": [
+        "halt_timing"
+      ],
+      "source_refs": [
+        "stop_history.jsonl",
+        "approach_context.json",
+        "video_frames.jsonl"
+      ]
+    }
   }
 }

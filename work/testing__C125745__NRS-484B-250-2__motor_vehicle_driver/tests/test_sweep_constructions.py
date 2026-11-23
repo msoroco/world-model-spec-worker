@@ -39,6 +39,34 @@ def indexed_file_json(spec):
 
 
 class SweepConstructionTests(unittest.TestCase):
+    def test_first_timing_point_qualified_fallback_payloads(self):
+        index = read('sweep-constructions/index.json')
+        row = next(item for item in index['constructions']
+                   if item['case_id'] == 'c125745-1-0000')
+        full_id = HERE.name + '__c125745-1-0000'
+        proof = row['qualified_fallbacks']
+        self.assertEqual([item['id'] for item in proof['candidates']],
+                         ['fallback1', 'fallback2', 'fallback3'])
+        hashes = set()
+        for item in proof['candidates']:
+            with self.subTest(candidate=item['id']):
+                payload = item['construction_payload'].encode()
+                self.assertEqual(hashlib.sha256(payload).hexdigest(),
+                                 item['construction_sha256'])
+                bundle = json.loads(payload)
+                config = json.loads(next(file['content'] for file in bundle['files']
+                                         if file['path'] == 'config.json'))
+                self.assertEqual(bundle['case_id'], full_id)
+                self.assertEqual(config['selected_case_id'], full_id)
+                self.assertEqual(bundle['recording_description'],
+                                 json.loads((HERE / row['qualified_primary']['construction']).read_text())['recording_description'])
+                self.assertEqual(hashlib.sha256(item['offline_log_payload'].encode()).hexdigest(),
+                                 item['offline_log_sha256'])
+                self.assertEqual(item['offline_exit_code'], 0)
+                self.assertFalse(item['offline_simulation_started'])
+                hashes.add(item['construction_sha256'])
+        self.assertEqual(len(hashes), 3)
+
     def test_staged_physical_classifier_archive(self):
         index = read('sweep-constructions/index.json')
         for row in index['constructions']:
