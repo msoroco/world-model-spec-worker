@@ -2,11 +2,30 @@
   "assignment_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver",
   "input_sha256": "9fbbfa138edaa7336c22f0f79c2266ed404dda2a4e77789a973d1c2685a4ee74",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "delivery_construction_checkpoint",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "b873dc445b8f40a6978518c5f9c707e8b1ff4821ae1e0fb06fafb5ecddee5de4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "assignment-check.log",
+      "sha256": "01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "assignment-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Three exact cases and two controlled comparisons are drafted; source-bound Native route/actor analysis and lazy two-vehicle construction passed 13 CPU tests. Delivery remains partial: reviewed map/district/boundary source packets, case-specific routes and controller, manifest/semantic proposals, full positive and negative compatibility, saved-only and independent delivery/comparison audit receipts are not yet authored or proven."
 }

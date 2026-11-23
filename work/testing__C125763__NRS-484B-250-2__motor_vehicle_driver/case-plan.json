@@ -20,9 +20,90 @@
   "topic_inventory": {
     "exact-text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Original-footprint crossing entry timing probe below",
+      "capture_disposition": "new_capture_pending_cpu_delivery_proofs",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "requested_entry_difference_s": -2.860000042617321,
+      "judgment_range_relation": "below",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Both vehicle footprints may fail to enter the mapped median-opening intersection within the recorded window or remain visible in all required cameras."
+      },
+      "measurement": "crossing_timing.py measure; original Native body histories and reviewed map/context, with bracket and no legal verdict",
+      "applicability_note": "C125763 has a yield sign. Official-control exception applies absent subsection 4; the subsection 4 basis is not established.",
+      "construction": "native_construction.py reviewed_scene, spawn_pair, control_step; reviewed OpenDRIVE/device/highway source packet required; target release offset is engineering only"
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Original-footprint crossing entry timing probe inside",
+      "capture_disposition": "new_capture_pending_cpu_delivery_proofs",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "requested_entry_difference_s": -0.02500000037252903,
+      "judgment_range_relation": "inside",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Both vehicle footprints may fail to enter the mapped median-opening intersection within the recorded window or remain visible in all required cameras."
+      },
+      "measurement": "crossing_timing.py measure; original Native body histories and reviewed map/context, with bracket and no legal verdict",
+      "applicability_note": "C125763 has a yield sign. Official-control exception applies absent subsection 4; the subsection 4 basis is not established.",
+      "construction": "native_construction.py reviewed_scene, spawn_pair, control_step; reviewed OpenDRIVE/device/highway source packet required; target release offset is engineering only"
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above",
+      "target_law_id": "NRS-484B-250-2",
+      "purpose": "Original-footprint crossing entry timing probe above",
+      "capture_disposition": "new_capture_pending_cpu_delivery_proofs",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "requested_entry_difference_s": 2.810000041872263,
+      "judgment_range_relation": "above",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Both vehicle footprints may fail to enter the mapped median-opening intersection within the recorded window or remain visible in all required cameras."
+      },
+      "measurement": "crossing_timing.py measure; original Native body histories and reviewed map/context, with bracket and no legal verdict",
+      "applicability_note": "C125763 has a yield sign. Official-control exception applies absent subsection 4; the subsection 4 basis is not established.",
+      "construction": "native_construction.py reviewed_scene, spawn_pair, control_step; reviewed OpenDRIVE/device/highway source packet required; target release offset is engineering only"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entry_timing_range",
+      "case_ids": [
+        "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+        "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+        "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above"
+      ],
+      "fixed_conditions": [
+        "same reviewed C125763 map and median-opening geometry",
+        "same yield-sign device status and subsection 4 uncertainty",
+        "same ego/other highway and left/right approach roles",
+        "same vehicle blueprints, weather, four camera positions and 20 Hz original capture"
+      ],
+      "deliberate_differences": [
+        "other vehicle release schedule and realized entry-time difference"
+      ],
+      "legal_limit": "Training bounds are coverage targets, not an approximately-same-time legal threshold."
+    }
+  ],
+  "observations": [
+    {
+      "name": "intersection_entry_time_difference",
+      "unit": "s",
+      "method": "First original footprint-intersection transition upper timestamp for each actor; ego minus other; retain consecutive-sample brackets",
+      "source": "crossing_timing.py measure from source-hashed original Native histories"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
@@ -66,8 +147,9 @@
     "d9a36d908fbe971ebda0b6adaffcf97e6160f145b7cd06230cb486bab4780aeb"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original accepted traces/videos are absent, so accepted metadata cannot establish timing coverage.",
+    "The three planned probes lack complete four-camera capture, saved finalization, semantic proposals, compatibility, and independent delivery/comparison audits.",
+    "The fixed yield sign invokes the official-device exception; subsection 4 basis remains unestablished."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -129,7 +211,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "timing_measurement_and_comparison_draft",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/assignment.json",

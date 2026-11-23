@@ -24,9 +24,106 @@
   "topic_inventory": {
     "exact-text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: When authorized to cross diagonally, pedestrians shall cross only in accordance with the official traffic-control devices pertaining to such crossing movements."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
+      "target_law_id": "NRS-484B-287-1e",
+      "purpose": "Measured opposite-corner traversal under source-backed diagonal pedestrian instruction throughout crossing",
+      "gap_ids": [
+        "no_accepted_diagonal_device_recording"
+      ],
+      "scenario_parameters": {
+        "crossing_route": "opposite_corner_diagonal",
+        "governing_device_instruction": "diagonal_walk",
+        "exception_484b_290": "unresolved_source_review"
+      },
+      "construction_module": "diagonal_crossing.py",
+      "measurement_module": "crossing_audit.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
+        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing",
+      "target_law_id": "NRS-484B-287-1e",
+      "purpose": "Same opposite-corner traversal while governing diagonal instruction is prohibitive throughout crossing",
+      "gap_ids": [
+        "no_accepted_diagonal_device_recording"
+      ],
+      "scenario_parameters": {
+        "crossing_route": "opposite_corner_diagonal",
+        "governing_device_instruction": "diagonal_dont_walk",
+        "exception_484b_290": "unresolved_source_review"
+      },
+      "construction_module": "diagonal_crossing.py",
+      "measurement_module": "crossing_audit.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
+        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing",
+      "target_law_id": "NRS-484B-287-1e",
+      "purpose": "Same opposite-corner traversal with governing diagonal instruction changing during observed crossing",
+      "gap_ids": [
+        "no_accepted_diagonal_device_recording"
+      ],
+      "scenario_parameters": {
+        "crossing_route": "opposite_corner_diagonal",
+        "governing_device_instruction": "diagonal_walk_then_dont_walk",
+        "exception_484b_290": "unresolved_source_review"
+      },
+      "construction_module": "diagonal_crossing.py",
+      "measurement_module": "crossing_audit.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
+        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "diagonal_instruction_permissive_vs_prohibitive",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
+        "testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing"
+      ],
+      "fixed_conditions": [
+        "same source-surveyed intersection and opposite-corner pedestrian route",
+        "same official pedestrian-specific diagonal-governing device, walker blueprint, speed, 20 Hz, cameras and duration",
+        "same 484B.290 exception review state"
+      ],
+      "deliberate_differences": [
+        "original observed diagonal pedestrian instruction during crossing: permissive versus prohibitive"
+      ]
+    },
+    {
+      "comparison_id": "diagonal_instruction_phase_change",
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
+        "testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing"
+      ],
+      "fixed_conditions": [
+        "same source-surveyed intersection, opposite-corner route and device identity",
+        "same walker blueprint, speed, 20 Hz, cameras and duration",
+        "same observed route and entry instruction"
+      ],
+      "deliberate_differences": [
+        "governing diagonal pedestrian instruction changes during crossing"
+      ]
+    }
+  ],
+  "observations": [
+    "source-hashed map and four-corner survey; complete opposite-corner pedestrian route",
+    "source documents for official diagonal authorization, device placement, instruction and exception review",
+    "original synchronized walker identity, location, route footprint and governing device identity/state each crossing frame",
+    "four-camera coverage and original-to-presented frame map"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111329__NRS-484B-287-1e__pedestrian/assignment.json",
@@ -51,17 +148,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No source-surveyed site or official pedestrian-diagonal governing device packet is frozen; diagonal_crossing.py fails closed until a measured packet is supplied.",
+    "No exact runtime offline/compatibility, semantic proposals, process-saved, delivery audit or complete manifest receipts yet.",
+    "The referenced NRS 484B.290 exception remains an unresolved legal branch; no compliance decision is generated."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read frozen evidence.json: zero accepted recordings. Reviewed the conditional witness against exact NRS 484B.287(1)(e). No source establishes an actual diagonal route, official pedestrian-governing instructions or a frame-synchronized trajectory.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_diagonal_device_recording",
+        "requirement": "Full diagonal pedestrian route, official governing instructions and synchronized original crossing evidence",
+        "source": {
+          "path": "inputs/testing__C111329__NRS-484B-287-1e__pedestrian/evidence.json",
+          "sha256": "86db67f225ac05d59af6a0c3c57007a2fab2edd597f1f0dd5efed35205205b78"
+        },
+        "why_existing_insufficient": "The frozen accepted-recording inventory is empty."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_constructed_cpu_probes",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,5 +188,6 @@
       ],
       "reason": "The travel route can include an authorized opposite-corner crossing with actual pertaining instructions."
     }
-  ]
+  ],
+  "source_observation_mapping": {}
 }

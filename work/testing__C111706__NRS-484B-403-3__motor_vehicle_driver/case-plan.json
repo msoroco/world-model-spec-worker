@@ -24,9 +24,139 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle shall not make a U-turn in a business district, except at an intersection or on a divided highway where an appropriate opening or crossing place exists."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near",
+      "target_law_id": "NRS-484B-403-3",
+      "purpose": "Intersection U-turn with a separate motor vehicle crossing nearby",
+      "gap_ids": [
+        "no_accepted_intersection_exception_source"
+      ],
+      "scenario_parameters": {
+        "business_district_context": "independent_source_review_required",
+        "intersection_occupancy_target": true,
+        "other_vehicle_timing": "near",
+        "ego_maneuver": "u_turn",
+        "other_vehicle_route": "same_conflict_approach"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A map junction flag may not match statutory intersection boundaries and the opposite lane may not admit a full-size U-turn; original map geometry, body footprint, and camera visibility require review.",
+        "fallback_policy": "A different reviewed intersection approach is permitted only with an exact candidate construction and proof preserving district context and comparison variables."
+      }
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__approach_before_intersection",
+      "target_law_id": "NRS-484B-403-3",
+      "purpose": "U-turn completed on the approach before entering intersection",
+      "gap_ids": [
+        "no_accepted_intersection_exception_source"
+      ],
+      "scenario_parameters": {
+        "business_district_context": "independent_source_review_required",
+        "intersection_occupancy_target": false,
+        "other_vehicle_timing": "near",
+        "ego_maneuver": "u_turn",
+        "other_vehicle_route": "same_conflict_approach"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A map junction flag may not match statutory intersection boundaries and the opposite lane may not admit a full-size U-turn; original map geometry, body footprint, and camera visibility require review.",
+        "fallback_policy": "A different reviewed intersection approach is permitted only with an exact candidate construction and proof preserving district context and comparison variables."
+      }
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_far",
+      "target_law_id": "NRS-484B-403-3",
+      "purpose": "Intersection U-turn with the same other-vehicle route and later arrival",
+      "gap_ids": [
+        "no_accepted_intersection_exception_source"
+      ],
+      "scenario_parameters": {
+        "business_district_context": "independent_source_review_required",
+        "intersection_occupancy_target": true,
+        "other_vehicle_timing": "far",
+        "ego_maneuver": "u_turn",
+        "other_vehicle_route": "same_conflict_approach"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A map junction flag may not match statutory intersection boundaries and the opposite lane may not admit a full-size U-turn; original map geometry, body footprint, and camera visibility require review.",
+        "fallback_policy": "A different reviewed intersection approach is permitted only with an exact candidate construction and proof preserving district context and comparison variables."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "intersection_exception_location",
+      "case_ids": [
+        "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near",
+        "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__approach_before_intersection"
+      ],
+      "fixed_conditions": [
+        "business district source and assumption",
+        "map/intersection",
+        "ego blueprint and U-turn destination",
+        "other vehicle route and timing",
+        "weather",
+        "cameras and duration"
+      ],
+      "deliberate_differences": [
+        "ego turn path position relative to independently reviewed statutory intersection boundary"
+      ]
+    },
+    {
+      "comparison_id": "surrounding_vehicle_context",
+      "case_ids": [
+        "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near",
+        "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_far"
+      ],
+      "fixed_conditions": [
+        "business district source and assumption",
+        "map/intersection",
+        "ego blueprint and U-turn path",
+        "other vehicle blueprint and route",
+        "weather",
+        "cameras and duration"
+      ],
+      "deliberate_differences": [
+        "other vehicle arrival timing and resulting separation"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "business_district",
+      "method": "retain independent district classification evidence and uncertainty; no simulator tag alone establishes statutory context",
+      "source_refs": [
+        "assignment law text",
+        "district source"
+      ]
+    },
+    {
+      "name": "intersection_exception",
+      "method": "original Native map junction and geometry with ego bounding-box sweep; compare physical swept envelope to statutory intersection boundary",
+      "source_refs": [
+        "original map",
+        "original frame map",
+        "ego poses"
+      ]
+    },
+    {
+      "name": "vehicle_reversal",
+      "method": "original ego lane, road and yaw histories; require opposite heading and lane continuity",
+      "source_refs": [
+        "original Native ego poses"
+      ]
+    },
+    {
+      "name": "surrounding_vehicle",
+      "method": "original other-actor identity, route, time and center separation histories",
+      "source_refs": [
+        "original Native other vehicle poses"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/assignment.json",
@@ -51,17 +181,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Business-district classification and statutory intersection boundary must be independently reviewed from original sources; Native junction flag alone is not a legal determination.",
+    "Physical U-turn swept footprint, realization and video coverage need a later CARLA run.",
+    "Exact manifest, case bundles, semantic proposals, compatibility and independent delivery/comparison receipts are still CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_intersection_exception_source",
+        "requirement": "Original business-district, statutory intersection boundary, complete U-turn path and surrounding vehicle history",
+        "source": "inputs/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen inventory lists no accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_executable_native_measurement",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

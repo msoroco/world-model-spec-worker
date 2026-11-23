@@ -51,6 +51,16 @@ class CountCaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "readback missing"):
             capture.append(_snapshot(1), lambda actor: {"actor_id": 100, "alive": True})
 
+    def test_rejects_slow_original_tick(self):
+        capture = CountCapture(_construction())
+        actors = capture.construction["actors"]
+        read = lambda actor: {"actor_id": actors.index(actor) + 100,
+                              "type_id": "animal.source", "alive": True}
+        capture.append(_snapshot(0), read)
+        slow = SimpleNamespace(frame=1, timestamp=SimpleNamespace(elapsed_seconds=.1))
+        with self.assertRaisesRegex(ValueError, "discontinuity"):
+            capture.append(slow, read)
+
     def test_rejects_actor_identity_change_and_incomplete_episode(self):
         capture = CountCapture(_construction())
         actors = capture.construction["actors"]

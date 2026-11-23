@@ -38,7 +38,7 @@ class CountCapture:
         if type(frame) is not int or frame < 0 or not math.isfinite(elapsed):
             raise ValueError("invalid original Native frame/time")
         if self.rows and (frame != self.rows[-1]["native_frame"] + 1 or
-                          elapsed <= self.rows[-1]["native_elapsed_s"]):
+                          abs((elapsed - self.rows[-1]["native_elapsed_s"]) - .05) > .001):
             raise ValueError("count original frame/time discontinuity")
         identities = []
         observed = []

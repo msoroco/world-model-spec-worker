@@ -20,9 +20,132 @@
   "topic_inventory": {
     "exact-text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_range_coverage_probe",
+      "preparation_status": "measurement_code_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -2.860000042617321,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_range_coverage_probe",
+      "preparation_status": "measurement_code_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -0.02500000037252903,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_range_coverage_probe",
+      "preparation_status": "measurement_code_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": 2.810000041872263,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "side_relation_probe",
+      "preparation_status": "measurement_code_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -0.02500000037252903,
+      "ego_approach_side": "right",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "left_approach_entry_timing_training_range",
+      "case_ids": [
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training"
+      ],
+      "fixed_conditions": [
+        "same median-opening intersection geometry and distinct crossing highways",
+        "ego approaches from left; other from right",
+        "both vehicles travel straight",
+        "inoperative signal readback; no official traffic control",
+        "same actor blueprints, routes, camera plan and capture duration"
+      ],
+      "deliberate_differences": [
+        "requested crossing-entry timing offset only"
+      ],
+      "status": "planned_unexecuted_source_checker_cpu_tested",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "entry_side_relation",
+      "case_ids": [
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside"
+      ],
+      "fixed_conditions": [
+        "same median-opening intersection geometry and distinct crossing highways",
+        "both vehicles travel straight",
+        "inoperative signal readback; no official traffic control",
+        "same requested entry timing offset and capture plan"
+      ],
+      "deliberate_differences": [
+        "ego/other left-right approach relation and corresponding routes"
+      ],
+      "status": "planned_unexecuted_source_checker_cpu_tested",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "observations": [
+    {
+      "name": "intersection_entry_time_difference",
+      "unit": "s",
+      "method": "First original footprint-intersection transition upper timestamp for each actor, ego minus other; retain preceding/following samples without interpolation",
+      "source": "original Native frame map plus both actor footprint/intersection geometry",
+      "implementation": "entry_timing.py",
+      "legal_interpretation": "unresolved"
+    },
+    {
+      "name": "left_right_road_relation",
+      "source": "Native route road IDs and approach vectors for both participants",
+      "implementation": "entry_timing.py; actual route readback still pending"
+    },
+    {
+      "name": "inoperative_signal",
+      "source": "Native signal state and control readback on every relevant approach",
+      "implementation": "entry_timing.py requires sealed packet; capture not yet implemented"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
@@ -66,8 +189,10 @@
     "02938dbc7e7f14eb829ebbd4a48381197ea0dfe64cdd69ea1037d5d3de54cc87"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual median-opening and distinct highways route geometry require a later Native map readback.",
+    "Timing/side target values are authored requests; original measured values and legal meaning remain unconfirmed.",
+    "No exact CARLA runner, sealed acquisition packet, compatibility receipts, semantic proposals or full independent delivery audit yet.",
+    "Original accepted traces and videos are not exported; only metadata/review context can be examined here."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -129,7 +254,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cases_and_source_measurement_cpu_tested",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
@@ -147,5 +272,39 @@
       "inoperative_signal_precedence"
     ],
     "remaining_requirements_note": null
-  }
+  },
+  "branch_decomposition": [
+    {
+      "branch": "two vehicles from different highways, approximately same entry time, ego on left",
+      "case_ids": [
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training"
+      ],
+      "status": "planned_measurement_code_cpu_tested"
+    },
+    {
+      "branch": "ego on right / vehicle on left yields",
+      "case_ids": [
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside",
+        "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training"
+      ],
+      "status": "planned_measurement_code_cpu_tested"
+    },
+    {
+      "branch": "official traffic-control device controls intersection",
+      "case_ids": [],
+      "status": "incompatible_with_fixed_inoperative_signal_cell; other cell binding required if in assigned law coverage"
+    },
+    {
+      "branch": "opposite approaches with one left turn",
+      "case_ids": [],
+      "status": "incompatible_with_fixed_travel_maneuver; other cell binding required if in assigned law coverage"
+    },
+    {
+      "branch": "subsection 4 exception",
+      "case_ids": [],
+      "status": "requires source review of subsection 4 and compatible control context"
+    }
+  ]
 }

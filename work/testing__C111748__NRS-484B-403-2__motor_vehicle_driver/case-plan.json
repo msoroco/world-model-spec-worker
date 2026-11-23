@@ -24,9 +24,127 @@
   "topic_inventory": {
     "exact-text": "If an official traffic-control device indicates that a U-turn is prohibited, the driver shall obey the directions of the device."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey",
+      "target_law_id": "NRS-484B-403-2",
+      "purpose": "Official no-U-turn display governs approach; driver observes it and does not start reversal.",
+      "gap_ids": [
+        "no_accepted_device_duty_source"
+      ],
+      "scenario_parameters": {
+        "device_prohibits_u_turn": true,
+        "driver_turn_target": false,
+        "map_and_governed_approach": "same reviewed source",
+        "ego_maneuver": "u_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A rendered traffic sign may not be legible in all four saved camera views, and an opposite-lane U-turn may exceed the reviewed roadway envelope.",
+        "fallback_policy": "Alternate sign placement or route geometry requires exact source-reviewed candidate and reproof, preserving display applicability and comparison conditions."
+      }
+    },
+    {
+      "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt",
+      "target_law_id": "NRS-484B-403-2",
+      "purpose": "Same official prohibition, approach and route; driver starts reversal after device observation.",
+      "gap_ids": [
+        "no_accepted_device_duty_source"
+      ],
+      "scenario_parameters": {
+        "device_prohibits_u_turn": true,
+        "driver_turn_target": true,
+        "map_and_governed_approach": "same reviewed source",
+        "ego_maneuver": "u_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A rendered traffic sign may not be legible in all four saved camera views, and an opposite-lane U-turn may exceed the reviewed roadway envelope.",
+        "fallback_policy": "Alternate sign placement or route geometry requires exact source-reviewed candidate and reproof, preserving display applicability and comparison conditions."
+      }
+    },
+    {
+      "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn",
+      "target_law_id": "NRS-484B-403-2",
+      "purpose": "Same approach and route with reviewed display that does not prohibit U-turn; driver starts reversal.",
+      "gap_ids": [
+        "no_accepted_device_duty_source"
+      ],
+      "scenario_parameters": {
+        "device_prohibits_u_turn": false,
+        "driver_turn_target": true,
+        "map_and_governed_approach": "same reviewed source",
+        "ego_maneuver": "u_turn"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A rendered traffic sign may not be legible in all four saved camera views, and an opposite-lane U-turn may exceed the reviewed roadway envelope.",
+        "fallback_policy": "Alternate sign placement or route geometry requires exact source-reviewed candidate and reproof, preserving display applicability and comparison conditions."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "device_obedience",
+      "case_ids": [
+        "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey",
+        "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt"
+      ],
+      "fixed_conditions": [
+        "reviewed official no-U-turn device",
+        "governed approach and timing",
+        "map, road, ego blueprint and U-turn route",
+        "weather, camera and duration"
+      ],
+      "deliberate_differences": [
+        "driver continuation versus initiated U-turn after observation"
+      ]
+    },
+    {
+      "comparison_id": "device_applicability",
+      "case_ids": [
+        "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt",
+        "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn"
+      ],
+      "fixed_conditions": [
+        "map, road, governed approach",
+        "driver U-turn route and timing",
+        "ego blueprint",
+        "weather, camera and duration"
+      ],
+      "deliberate_differences": [
+        "reviewed device display prohibits U-turn versus does not prohibit U-turn"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "official_device_context",
+      "method": "retain independently reviewed placement authority, regulatory purpose, legal consistency, governed approach and display source hashes; simulator sign alone cannot establish legal status",
+      "source_refs": [
+        "assignment law text",
+        "device authority source",
+        "display source"
+      ]
+    },
+    {
+      "name": "display_and_observation",
+      "method": "retain original device live readback, original frame timing, display identity and camera video; a visibility flag is not proof of actual legibility",
+      "source_refs": [
+        "original device/readback packets",
+        "four original camera streams"
+      ]
+    },
+    {
+      "name": "u_turn_action",
+      "method": "retain original ego pose, lane and controller/action history; compare observed turn start to device observation and governed approach",
+      "source_refs": [
+        "original frame map",
+        "original ego poses",
+        "route source"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/assignment.json",
@@ -51,17 +169,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Independent official-device authority and legal consistency require reviewed external source; Native sign presence is not sufficient.",
+    "Actual sign legibility, route realization, motion and four-camera coverage require later CARLA capture.",
+    "Exact delivery manifest, semantic proposals, compatibility receipts, and independent delivery/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_device_duty_source",
+        "requirement": "Original official device, displayed direction, governed approach, observation timing and driver U-turn action",
+        "source": "inputs/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen inventory lists no accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_executable_native_measurement",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

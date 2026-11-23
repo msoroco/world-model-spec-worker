@@ -24,9 +24,129 @@
   "topic_inventory": {
     "exact-text": "A person shall not stop, stand or park a vehicle for any purpose or length of time in any restricted parking zone other than for the purpose to which parking in such zone is restricted, except that a driver of a passenger vehicle may stop temporarily in such zone for the purpose of and while actually engaged in loading or unloading of passengers when such stopping does not interfere with any vehicle which is waiting to enter or about to enter the zone for the purpose of parking in accordance with the purpose to which parking is restricted."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C135087__NRS-484B-510__motor_vehicle_driver__clear_before_entry",
+      "target_law_id": "NRS-484B-510",
+      "purpose": "Subject completes boarding and clears zone before restricted-purpose entrant reaches access point",
+      "gap_ids": [
+        "no_accepted_restricted_zone_entrant_recording"
+      ],
+      "scenario_parameters": {
+        "zone_start_m": 10,
+        "zone_end_m": 30,
+        "subject_stop_m": 16,
+        "entrant_start_m": 0,
+        "entrant_destination_m": 23,
+        "passenger_exchange_start_s": 8,
+        "passenger_exchange_end_s": 15,
+        "subject_departure_s": 18,
+        "entrant_departure_s": 16,
+        "restricted_purpose": "reserved vehicle parking",
+        "effective_conditions": "source-backed active interval required"
+      },
+      "construction_module": "restricted_zone.py",
+      "measurement_module": "zone_audit.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen narrow-road cell has no source-surveyed restricted-zone sign, legal authority, zone boundaries or reserved-purpose vehicle blueprint. Native parking access and passenger animation may fail to realize or appear in all cameras.",
+        "fallback_policy": "No fallback selected until site and controller readback establishes a concrete failure trigger; preserve zone, participant roles, purpose, cameras and comparison variable."
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-510__motor_vehicle_driver__entrant_during_loading",
+      "target_law_id": "NRS-484B-510",
+      "purpose": "Restricted-purpose entrant reaches zone during active passenger exchange",
+      "gap_ids": [
+        "no_accepted_restricted_zone_entrant_recording"
+      ],
+      "scenario_parameters": {
+        "zone_start_m": 10,
+        "zone_end_m": 30,
+        "subject_stop_m": 16,
+        "entrant_start_m": 0,
+        "entrant_destination_m": 23,
+        "passenger_exchange_start_s": 8,
+        "passenger_exchange_end_s": 15,
+        "subject_departure_s": 24,
+        "entrant_departure_s": 6,
+        "restricted_purpose": "reserved vehicle parking",
+        "effective_conditions": "source-backed active interval required"
+      },
+      "construction_module": "restricted_zone.py",
+      "measurement_module": "zone_audit.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen narrow-road cell has no source-surveyed restricted-zone sign, legal authority, zone boundaries or reserved-purpose vehicle blueprint. Native parking access and passenger animation may fail to realize or appear in all cameras.",
+        "fallback_policy": "No fallback selected until site and controller readback establishes a concrete failure trigger; preserve zone, participant roles, purpose, cameras and comparison variable."
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-510__motor_vehicle_driver__entrant_after_exchange",
+      "target_law_id": "NRS-484B-510",
+      "purpose": "Subject remains in zone after passenger exchange ends while entrant seeks reserved parking",
+      "gap_ids": [
+        "no_accepted_restricted_zone_entrant_recording"
+      ],
+      "scenario_parameters": {
+        "zone_start_m": 10,
+        "zone_end_m": 30,
+        "subject_stop_m": 16,
+        "entrant_start_m": 0,
+        "entrant_destination_m": 23,
+        "passenger_exchange_start_s": 8,
+        "passenger_exchange_end_s": 15,
+        "subject_departure_s": 33,
+        "entrant_departure_s": 18,
+        "restricted_purpose": "reserved vehicle parking",
+        "effective_conditions": "source-backed active interval required"
+      },
+      "construction_module": "restricted_zone.py",
+      "measurement_module": "zone_audit.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The frozen narrow-road cell has no source-surveyed restricted-zone sign, legal authority, zone boundaries or reserved-purpose vehicle blueprint. Native parking access and passenger animation may fail to realize or appear in all cameras.",
+        "fallback_policy": "No fallback selected until site and controller readback establishes a concrete failure trigger; preserve zone, participant roles, purpose, cameras and comparison variable."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entrant_arrival_during_loading",
+      "case_ids": [
+        "testing__C135087__NRS-484B-510__motor_vehicle_driver__clear_before_entry",
+        "testing__C135087__NRS-484B-510__motor_vehicle_driver__entrant_during_loading"
+      ],
+      "fixed_conditions": [
+        "same source-surveyed narrow road and active restricted zone",
+        "same subject/entrant/passenger identities and vehicle classes",
+        "same reserved parking task, zone destination, subject stop, passenger exchange, cameras, frame rate and 45-second duration"
+      ],
+      "deliberate_differences": [
+        "entrant approach schedule relative to subject departure and passenger exchange; original observed access, waiting and blockage remain measured"
+      ]
+    },
+    {
+      "comparison_id": "subject_departure_after_exchange",
+      "case_ids": [
+        "testing__C135087__NRS-484B-510__motor_vehicle_driver__entrant_during_loading",
+        "testing__C135087__NRS-484B-510__motor_vehicle_driver__entrant_after_exchange"
+      ],
+      "fixed_conditions": [
+        "same zone and restricted purpose",
+        "same entrant reserved parking task and destination, subject stop, exchange timing, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "subject dwell after completed exchange and entrant approach timing; original physical effects measured without a legal cutoff"
+      ]
+    }
+  ],
+  "observations": [
+    "Source-surveyed zone sign/marking, authority, purpose, boundaries and effective conditions; prohibited-stopping exclusions reviewed",
+    "Independent subject passenger-vehicle classification and driver identity; original passenger trajectory and boarding/alighting state transition",
+    "Original 20 Hz subject/entrant/passenger positions, speeds, tasks, waiting, access attempts and blockage through entire 45-second trace",
+    "Original four-camera frames and synchronized frame map; observed access geometry and physical interference remain for later review"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C135087__NRS-484B-510__motor_vehicle_driver/assignment.json",
@@ -51,17 +171,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original zone source and authority, subject passenger-vehicle classification, actual passenger exchange, Native motion and camera visibility remain unverified.",
+    "Legal meanings of temporarily, interfere and about to enter remain unresolved judgments; original measurements will not issue verdicts.",
+    "Exact delivery manifest, canonical proposals, case-specific compatibility receipts and independent media/comparison audit remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_restricted_zone_entrant_recording",
+        "requirement": "Source-backed restricted zone, actual passenger exchange and restricted-purpose entrant during loading",
+        "source": "NRS 484B.510; frozen branch witness index 457",
+        "why_existing_insufficient": "Frozen evidence inventory lists zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_executable_case_and_saved_audit",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

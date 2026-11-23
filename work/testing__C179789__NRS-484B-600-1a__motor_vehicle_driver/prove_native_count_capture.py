@@ -43,6 +43,8 @@ def prove(source: Path, *, case_id: str, kind: str, packet_sha256: str,
                 not isinstance(observed, list) or len(observed) != len(declared_blueprint_ids) or
                 len(identities) != len(observed) or len(set(identities)) != len(identities)):
             raise ValueError("original count row continuity or source mismatch")
+        if index and abs((elapsed - previous_time) - .05) > .001:
+            raise ValueError("original count sample rate differs from 20 Hz")
         for actor, actor_id, blueprint in zip(observed, identities, declared_blueprint_ids):
             if (type(actor_id) is not int or actor.get("actor_id") != actor_id or
                     actor.get("type_id") != blueprint or type(actor.get("alive")) is not bool):

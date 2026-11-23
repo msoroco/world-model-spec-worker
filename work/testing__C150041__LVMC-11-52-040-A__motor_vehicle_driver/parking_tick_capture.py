@@ -44,6 +44,7 @@ def capture_ticks(world, vehicle, scene, output, carla, pipeline_capture,
     if type(count) is not int or count <= 0 or count > expected:
         raise ValueError("capture sample count invalid")
     frames = []
+    previous_time_s = None
     paths = {name: output / name for name in
              ("parking-history.jsonl", "camera-frame-map.jsonl", "controller-history.jsonl")}
     with paths["parking-history.jsonl"].open("x", buffering=1) as history, \
@@ -54,9 +55,16 @@ def capture_ticks(world, vehicle, scene, output, carla, pipeline_capture,
             apply(vehicle, request, carla)
             frame = world.tick()
             snapshot = world.get_snapshot()
-            if frame != snapshot.frame:
+            if type(frame) is not int or frame < 0 or frame != snapshot.frame:
                 raise RuntimeError("Native world frame mismatch")
+            if frames and frame != frames[-1] + 1:
+                raise RuntimeError("Native world frame sequence is not contiguous")
             time_s = snapshot.timestamp.elapsed_seconds
+            if (type(time_s) not in (int, float) or not math.isfinite(time_s) or
+                    time_s < 0 or
+                    (previous_time_s is not None and time_s <= previous_time_s)):
+                raise RuntimeError("Native world timestamp is not finite and increasing")
+            previous_time_s = time_s
             pipeline_capture.capture(frame, time_s)
             cameras.append(frame)
             frame_map.append(frame, time_s)

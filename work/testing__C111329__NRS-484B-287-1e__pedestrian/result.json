@@ -2,11 +2,30 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1e__pedestrian",
   "input_sha256": "a6783ac09cade183f65b2d3d63c367a8543b58c76d0ffbc1f1b472aab2728c79",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "construction_and_measurement_probe",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1e__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "026b485af057a7f12df5851d25e2ffff47c0227495152136a6004f0a237c1b38"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1e__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1e__pedestrian --complete",
+      "exit_code": 0,
+      "log": "static-check.log",
+      "sha256": "eb23bd8689dc8a4f3633aa409b7e3f48122673352264b6aad3782b4eab2f5d15"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Three exact diagonal crossing cases and two controlled comparisons are planned; source-gated Native walker construction and original-frame comparison audit pass 3 CPU tests. Delivery remains partial: no source-bound real site/device packet, canonical stage proposals, exact runner/config/manifest, case-specific finalizer/diagnostics, offline and positive/negative compatibility receipts, saved-only processing proof or full independent delivery audit. Strict gate fails because status is partial."
 }

@@ -16,13 +16,9 @@ class CrossingSiteTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        sources = {}
-        for name in ("map", "route", "devices", "markings", "highway"):
-            p = Path(self.tmp.name) / (name + ".json")
-            p.write_text(json.dumps({"source": name}))
-            sources[name] = {"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
+        self.counter = 0
         self.packet = {
-            "sources": sources,
+            "sources": {},
             "coordinate_frame": "map_xy_m",
             "highway": {"boundary_document_id": "h-boundary", "public_access_document_id": "h-access"},
             "junctions": [{"id": "west", "center": [0, 0], "envelope_radius_m": 8}, {"id": "east", "center": [100, 0], "envelope_radius_m": 8}],
@@ -37,10 +33,26 @@ class CrossingSiteTests(unittest.TestCase):
             ],
             "markings": {"survey_complete": True, "marked_crosswalks": []},
         }
+        for name in ("map", "route", "devices", "markings", "highway"):
+            self.bind(self.packet, name)
+
+    def bind(self, packet, name, *, indent=None):
+        payload = {
+            "map": {"junctions": packet["junctions"], "between_edge": packet["between_edge"], "intervening_junction_ids": packet["intervening_junction_ids"], "highway_banks": packet["highway_banks"]},
+            "route": {"pedestrian_route": packet["pedestrian_route"], "crossing": packet["crossing"]},
+            "devices": packet["devices"],
+            "markings": packet["markings"],
+            "highway": packet["highway"],
+        }[name]
+        self.counter += 1
+        p = Path(self.tmp.name) / f"{name}-{self.counter}.json"
+        p.write_text(json.dumps(payload, indent=indent))
+        packet["sources"][name] = {"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
 
     def marked(self):
         packet = copy.deepcopy(self.packet)
         packet["markings"]["marked_crosswalks"] = [{"marking_id": "stripe-1", "survey_record_id": "survey-1", "between_edge_station_fraction": [0.45, 0.55]}]
+        self.bind(packet, "markings")
         return packet
 
     def test_unmarked_and_marked_comparison(self):
@@ -52,11 +64,13 @@ class CrossingSiteTests(unittest.TestCase):
         packet = copy.deepcopy(self.packet)
         packet["pedestrian_route"] = list(reversed(packet["pedestrian_route"]))
         packet["crossing"]["entry"], packet["crossing"]["exit"] = packet["crossing"]["exit"], packet["crossing"]["entry"]
+        self.bind(packet, "route")
         self.assertTrue(assess_site(packet)["crosses_both_highway_banks"])
 
     def test_rejects_unordered_route(self):
         packet = copy.deepcopy(self.packet)
         packet["crossing"]["entry"], packet["crossing"]["exit"] = packet["crossing"]["exit"], packet["crossing"]["entry"]
+        self.bind(packet, "route")
         with self.assertRaisesRegex(ValueError, "ordered"):
             assess_site(packet)
 
@@ -66,15 +80,23 @@ class CrossingSiteTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source hash mismatch"):
             assess_site(packet)
 
+    def test_rejects_packet_fields_not_in_hashed_source(self):
+        packet = copy.deepcopy(self.packet)
+        packet["junctions"][1]["center"] = [200, 0]
+        with self.assertRaisesRegex(ValueError, "source content mismatch: map"):
+            assess_site(packet)
+
     def test_rejects_intervening_junction(self):
         packet = copy.deepcopy(self.packet)
         packet["intervening_junction_ids"] = ["middle"]
+        self.bind(packet, "map")
         with self.assertRaisesRegex(ValueError, "direct segment"):
             assess_site(packet)
 
     def test_rejects_inactive_device(self):
         packet = copy.deepcopy(self.packet)
         packet["devices"][1]["operating_intervals_s"] = [[0, 8]]
+        self.bind(packet, "devices")
         with self.assertRaisesRegex(ValueError, "operation"):
             assess_site(packet)
         self.assertFalse(assess_site(packet, require_operating=False)["device_operation_observed"])
@@ -83,26 +105,27 @@ class CrossingSiteTests(unittest.TestCase):
     def test_rejects_unobserved_crossing(self):
         packet = copy.deepcopy(self.packet)
         packet["highway_banks"][1] = [[0, 30], [100, 30]]
+        self.bind(packet, "map")
         with self.assertRaisesRegex(ValueError, "both highway banks"):
             assess_site(packet)
 
     def test_rejects_missing_authority(self):
         packet = copy.deepcopy(self.packet)
         packet["devices"][0]["authority_record_id"] = ""
+        self.bind(packet, "devices")
         with self.assertRaisesRegex(ValueError, "provenance"):
             assess_site(packet)
 
     def test_rejects_incomplete_marking_survey(self):
         packet = copy.deepcopy(self.packet)
         packet["markings"]["survey_complete"] = False
+        self.bind(packet, "markings")
         with self.assertRaisesRegex(ValueError, "survey incomplete"):
             assess_site(packet)
 
     def test_rejects_changed_fixed_device_source(self):
         packet = self.marked()
-        new = Path(self.tmp.name) / "other-device.json"
-        new.write_text("{}")
-        packet["sources"]["devices"] = {"path": str(new), "sha256": hashlib.sha256(new.read_bytes()).hexdigest()}
+        self.bind(packet, "devices", indent=2)
         with self.assertRaisesRegex(ValueError, "fixed source changed"):
             compare_marking_cases(self.packet, packet)
 

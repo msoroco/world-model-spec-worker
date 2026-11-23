@@ -158,6 +158,43 @@ class TickCaptureTests(unittest.TestCase):
                 capture_ticks(world, Vehicle(), scene, output, CARLA,
                               Receiver(), Receiver(), Receiver(), sample_count=1)
 
+    def test_tick_capture_rejects_skipped_frame_and_backward_time(self):
+        class World:
+            def __init__(self, *, skip=False, backward=False):
+                self.frame = 0
+                self.skip = skip
+                self.backward = backward
+
+            def tick(self):
+                self.frame += 2 if self.skip and self.frame else 1
+                return self.frame
+
+            def get_snapshot(self):
+                time_s = .05 if self.backward else self.frame * .05
+                return SimpleNamespace(frame=self.frame,
+                                       timestamp=SimpleNamespace(elapsed_seconds=time_s))
+
+        class Receiver:
+            def capture(self, *args):
+                pass
+
+            def append(self, *args):
+                pass
+
+        scratch = ROOT.parents[1] / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        with TemporaryDirectory() as source:
+            packet, _ = fixture(source)
+            scene = build(packet, source, "park_parallel_lawful")
+            for world, error in ((World(skip=True), "frame sequence is not contiguous"),
+                                 (World(backward=True), "timestamp is not finite and increasing")):
+                with self.subTest(error=error), TemporaryDirectory(dir=scratch) as output:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        capture_ticks(world, Vehicle(), scene, output, CARLA,
+                                      Receiver(), Receiver(), Receiver(), sample_count=2)
+                    rows = (Path(output) / "parking-history.jsonl").read_text().splitlines()
+                    self.assertEqual(len(rows), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

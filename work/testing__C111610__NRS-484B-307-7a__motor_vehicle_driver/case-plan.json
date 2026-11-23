@@ -24,9 +24,203 @@
   "topic_inventory": {
     "exact-text": "Where the signal is a flashing yellow turn arrow, displayed alone or in combination with another signal: Vehicular traffic facing the signal is permitted to cautiously enter the intersection only to make the movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time. Such vehicular traffic must yield the right-of-way to pedestrians lawfully within the intersection or an adjacent crosswalk and yield the right-of-way to other traffic lawfully within the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
+      "case_suffix": "arrow_clear",
+      "description": "Arrow-only left turn, no intersection or crosswalk participant",
+      "gap_ids": [
+        "no-accepted-arrow-evidence"
+      ],
+      "construction": {
+        "site_packet": "original survey bound by native_arrow.verify_site",
+        "native_entry": "native_arrow.construct_native",
+        "measurement": "native_arrow.measure_original",
+        "control": "turn_control.command",
+        "signal": "official flashing yellow turn arrow facing ego; verify original aspect packet",
+        "participant": "none",
+        "movement": "arrow-indicated turn"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+      },
+      "planned_capture": "20 Hz; four-camera shared profile; original signal aspect, actor transforms, crossing and route packets"
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk",
+      "case_suffix": "arrow_ped_crosswalk",
+      "description": "Pedestrian afoot in adjacent crosswalk during turn",
+      "gap_ids": [
+        "no-accepted-arrow-evidence",
+        "pedestrian-presence"
+      ],
+      "construction": {
+        "site_packet": "original survey bound by native_arrow.verify_site",
+        "native_entry": "native_arrow.construct_native",
+        "measurement": "native_arrow.measure_original",
+        "control": "turn_control.command",
+        "signal": "official flashing yellow turn arrow facing ego; verify original aspect packet",
+        "participant": "pedestrian in adjacent crosswalk",
+        "movement": "arrow-indicated turn"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+      },
+      "planned_capture": "20 Hz; four-camera shared profile; original signal aspect, actor transforms, crossing and route packets"
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection",
+      "case_suffix": "arrow_ped_intersection",
+      "description": "Pedestrian afoot within intersection during turn",
+      "gap_ids": [
+        "no-accepted-arrow-evidence",
+        "pedestrian-presence"
+      ],
+      "construction": {
+        "site_packet": "original survey bound by native_arrow.verify_site",
+        "native_entry": "native_arrow.construct_native",
+        "measurement": "native_arrow.measure_original",
+        "control": "turn_control.command",
+        "signal": "official flashing yellow turn arrow facing ego; verify original aspect packet",
+        "participant": "pedestrian in intersection",
+        "movement": "arrow-indicated turn"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+      },
+      "planned_capture": "20 Hz; four-camera shared profile; original signal aspect, actor transforms, crossing and route packets"
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection",
+      "case_suffix": "arrow_vehicle_intersection",
+      "description": "Other motor traffic within intersection during turn",
+      "gap_ids": [
+        "no-accepted-arrow-evidence",
+        "traffic-presence"
+      ],
+      "construction": {
+        "site_packet": "original survey bound by native_arrow.verify_site",
+        "native_entry": "native_arrow.construct_native",
+        "measurement": "native_arrow.measure_original",
+        "control": "turn_control.command",
+        "signal": "official flashing yellow turn arrow facing ego; verify original aspect packet",
+        "participant": "other vehicle in intersection",
+        "movement": "arrow-indicated turn"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+      },
+      "planned_capture": "20 Hz; four-camera shared profile; original signal aspect, actor transforms, crossing and route packets"
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement",
+      "case_suffix": "arrow_concurrent_movement",
+      "description": "Arrow with concurrent indication permitting an additional movement",
+      "gap_ids": [
+        "no-accepted-arrow-evidence",
+        "concurrent-movement"
+      ],
+      "construction": {
+        "site_packet": "original survey bound by native_arrow.verify_site",
+        "native_entry": "native_arrow.construct_native",
+        "measurement": "native_arrow.measure_original",
+        "control": "turn_control.command",
+        "signal": "official flashing yellow turn arrow facing ego; verify original aspect packet",
+        "participant": "none",
+        "movement": "concurrent indication movement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+      },
+      "planned_capture": "20 Hz; four-camera shared profile; original signal aspect, actor transforms, crossing and route packets"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "pedestrian_crosswalk",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk"
+      ],
+      "fixed_conditions": [
+        "Native map and geometry source hashes",
+        "ego approach and official head identity",
+        "20 Hz four-camera capture and duration",
+        "turn route except concurrent movement comparison",
+        "signal arrow display and timing except concurrent indication comparison"
+      ],
+      "deliberate_differences": [
+        "Pedestrian afoot in adjacent crosswalk during turn"
+      ],
+      "audit": "comparison_audit.audit"
+    },
+    {
+      "comparison_id": "pedestrian_intersection",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection"
+      ],
+      "fixed_conditions": [
+        "Native map and geometry source hashes",
+        "ego approach and official head identity",
+        "20 Hz four-camera capture and duration",
+        "turn route except concurrent movement comparison",
+        "signal arrow display and timing except concurrent indication comparison"
+      ],
+      "deliberate_differences": [
+        "Pedestrian afoot within intersection during turn"
+      ],
+      "audit": "comparison_audit.audit"
+    },
+    {
+      "comparison_id": "other_traffic_intersection",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection"
+      ],
+      "fixed_conditions": [
+        "Native map and geometry source hashes",
+        "ego approach and official head identity",
+        "20 Hz four-camera capture and duration",
+        "turn route except concurrent movement comparison",
+        "signal arrow display and timing except concurrent indication comparison"
+      ],
+      "deliberate_differences": [
+        "Other motor traffic within intersection during turn"
+      ],
+      "audit": "comparison_audit.audit"
+    },
+    {
+      "comparison_id": "concurrent_indication",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
+        "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement"
+      ],
+      "fixed_conditions": [
+        "Native map and geometry source hashes",
+        "ego approach and official head identity",
+        "20 Hz four-camera capture and duration",
+        "turn route except concurrent movement comparison",
+        "signal arrow display and timing except concurrent indication comparison"
+      ],
+      "deliberate_differences": [
+        "Arrow with concurrent indication permitting an additional movement"
+      ],
+      "audit": "comparison_audit.audit"
+    }
+  ],
+  "observations": [
+    "Original official signal head identity and facing approach",
+    "Frame-by-frame flashing yellow arrow exhibition and concurrent indication inventory",
+    "Measured ego turn path and intersection entry",
+    "Pedestrian or vehicle actor class, ID, original trajectory and surveyed region",
+    "External lawful-presence source retained as context; no automated legal verdict"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/assignment.json",
@@ -51,17 +245,43 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CARLA Native signal head readback alone does not establish a flashing yellow turn-arrow aspect; external original aspect packet and physical display still require validation.",
+    "Exact runner/config/manifest, source-bound compatibility receipts, semantic proposals, saved-only processor and delivery audit are unfinished CPU work.",
+    "Physical motion, visibility and capture quality remain prospective."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed the complete frozen evidence.json inventory (zero recordings) against the exact statute, witness requirements and fixed C111610 cell. All lawful-presence and official-indication claims remain source contingent.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-arrow-evidence",
+        "requirement": "Official flashing yellow turn arrow facing ego, exact arrow movement, simultaneous indications, position and trajectories",
+        "source": "inputs/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "The frozen inventory has no accepted recordings."
+      },
+      {
+        "id": "pedestrian-presence",
+        "requirement": "Distinct person afoot lawfully within intersection or adjacent crosswalk, with source-backed occupancy and participant trajectories",
+        "source": "NRS 484B.307(7)(a)",
+        "why_existing_insufficient": "No accepted recording establishes either pedestrian location or lawful-presence context."
+      },
+      {
+        "id": "traffic-presence",
+        "requirement": "Other traffic lawfully within intersection and a measured turn interaction",
+        "source": "NRS 484B.307(7)(a)",
+        "why_existing_insufficient": "No accepted recording establishes other traffic occupancy or lawful-presence context."
+      },
+      {
+        "id": "concurrent-movement",
+        "requirement": "Separate an arrow-indicated movement from a movement permitted by a concurrent indication",
+        "source": "NRS 484B.307(7)(a)",
+        "why_existing_insufficient": "No accepted recording has simultaneous indication inventory."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_executable_native_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

@@ -1,0 +1,64 @@
+{
+  "format": "nrs-484b-250-2-construction-targets-v1",
+  "assignment_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver",
+  "cell": {
+    "layout": "median_opening",
+    "maneuver": "travel",
+    "control": "inoperative_signal"
+  },
+  "target_source": "judgment-probe-plan.json",
+  "status": "authored_requests_unexecuted",
+  "route_requirements": [
+    "two distinct highway road IDs",
+    "crossing trajectories through a physically measured median opening",
+    "ego/other approach vectors establish left/right relation",
+    "both movements straight for in-scope timing pair",
+    "signal physically present but inoperative and not controlling intersection"
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+      "requested_ego_minus_other_entry_s": -2.860000042617321,
+      "ego_approach_side": "left",
+      "other_approach_side": "right",
+      "controller_target": "adjust other vehicle release delay against a fixed ego approach; measure realized original-frame entry times",
+      "unconfirmed_physical_target": true
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+      "requested_ego_minus_other_entry_s": -0.02500000037252903,
+      "ego_approach_side": "left",
+      "other_approach_side": "right",
+      "controller_target": "adjust other vehicle release delay against a fixed ego approach; measure realized original-frame entry times",
+      "unconfirmed_physical_target": true
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+      "requested_ego_minus_other_entry_s": 2.810000041872263,
+      "ego_approach_side": "left",
+      "other_approach_side": "right",
+      "controller_target": "adjust other vehicle release delay against a fixed ego approach; measure realized original-frame entry times",
+      "unconfirmed_physical_target": true
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside",
+      "requested_ego_minus_other_entry_s": -0.02500000037252903,
+      "ego_approach_side": "right",
+      "other_approach_side": "left",
+      "controller_target": "adjust other vehicle release delay against a fixed ego approach; measure realized original-frame entry times",
+      "unconfirmed_physical_target": true
+    }
+  ],
+  "measurement_script": "entry_timing.py",
+  "required_native_sources": [
+    "full original frame map",
+    "each participant identity, kind, road ID, movement and approach side from route readback",
+    "both participant original footprint intersection occupancy per frame",
+    "intersection geometry and median opening readback",
+    "inoperative signal state and control readback"
+  ],
+  "physical_risk": {
+    "status": "physical",
+    "reason": "Median opening route association and two-vehicle release timing may fail to yield complete independent footprint entry transitions; measure route readback and original frames before selecting any fallback."
+  }
+}

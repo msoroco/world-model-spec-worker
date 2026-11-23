@@ -70,6 +70,19 @@ class CountProofTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not measured"):
             self.check()
 
+    def test_rejects_resealed_slow_tick(self):
+        seal = self.source.with_name(self.source.name + ".seal.json")
+        lines = self.source.read_text().splitlines()
+        row = json.loads(lines[1])
+        row["native_elapsed_s"] = .1
+        lines[1] = json.dumps(row, sort_keys=True)
+        self.source.write_text("\n".join(lines) + "\n")
+        receipt = json.loads(seal.read_text())
+        receipt["sha256"] = hashlib.sha256(self.source.read_bytes()).hexdigest()
+        seal.write_text(json.dumps(receipt) + "\n")
+        with self.assertRaisesRegex(ValueError, "sample rate differs"):
+            self.check()
+
 
 if __name__ == "__main__":
     unittest.main()

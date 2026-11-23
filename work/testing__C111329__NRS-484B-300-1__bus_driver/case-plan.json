@@ -24,9 +24,140 @@
   "topic_inventory": {
     "exact-text": "Except as otherwise provided in NRS 484B.307 [NRS-484B-307-2a, NRS-484B-307-2b, NRS-484B-307-3a, NRS-484B-307-4a, NRS-484B-307-4b, NRS-484B-307-5a, NRS-484B-307-6a, NRS-484B-307-7a, NRS-484B-307-8a, NRS-484B-307-8b, NRS-484B-307-8c, NRS-484B-307-8d, NRS-484B-307-8e, NRS-484B-307-9a, NRS-484B-307-9b, NRS-484B-307-9c, NRS-484B-307-11, NRS-484B-307-12a, NRS-484B-307-12b], it is unlawful for any driver to disobey the instructions of any official traffic-control device placed in accordance with the provisions of chapters 484A to 484E, inclusive, of NRS, unless at the time otherwise directed by a police officer."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_hold",
+      "target_law_id": "NRS-484B-300-1",
+      "purpose": "Observed red signal and bus remains before surveyed line",
+      "gap_ids": [
+        "no_accepted_device_bus_evidence"
+      ],
+      "scenario_parameters": {
+        "device_aspect": "red",
+        "bus_control_policy": "hold_red",
+        "police_direction": null,
+        "official_placement": "source_check_required",
+        "nrs_307_exception": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Bus may not clear the source-surveyed intersection or remain visible at the governing signal; Native readback and four-view replay must measure clearance and visibility.",
+        "fallback_policy": "No alternate construction is claimed until a measured physical trigger and exact CPU proof exist."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+      "target_law_id": "NRS-484B-300-1",
+      "purpose": "Observed red signal and bus front enters beyond surveyed line",
+      "gap_ids": [
+        "no_accepted_device_bus_evidence"
+      ],
+      "scenario_parameters": {
+        "device_aspect": "red",
+        "bus_control_policy": "enter_red",
+        "police_direction": null,
+        "official_placement": "source_check_required",
+        "nrs_307_exception": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Bus may not clear the source-surveyed intersection or remain visible at the governing signal; Native readback and four-view replay must measure clearance and visibility.",
+        "fallback_policy": "No alternate construction is claimed until a measured physical trigger and exact CPU proof exist."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed",
+      "target_law_id": "NRS-484B-300-1",
+      "purpose": "Observed red signal, contemporaneous officer direction to proceed, bus enters",
+      "gap_ids": [
+        "no_accepted_device_bus_evidence"
+      ],
+      "scenario_parameters": {
+        "device_aspect": "red",
+        "bus_control_policy": "follow_police",
+        "police_direction": "proceed",
+        "official_placement": "source_check_required",
+        "nrs_307_exception": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Bus may not clear the source-surveyed intersection or remain visible at the governing signal; Native readback and four-view replay must measure clearance and visibility.",
+        "fallback_policy": "No alternate construction is claimed until a measured physical trigger and exact CPU proof exist."
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed",
+      "target_law_id": "NRS-484B-300-1",
+      "purpose": "Observed green signal and bus enters under same route",
+      "gap_ids": [
+        "no_accepted_device_bus_evidence"
+      ],
+      "scenario_parameters": {
+        "device_aspect": "green",
+        "bus_control_policy": "proceed_when_green",
+        "police_direction": null,
+        "official_placement": "source_check_required",
+        "nrs_307_exception": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Bus may not clear the source-surveyed intersection or remain visible at the governing signal; Native readback and four-view replay must measure clearance and visibility.",
+        "fallback_policy": "No alternate construction is claimed until a measured physical trigger and exact CPU proof exist."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "red_instruction_conduct",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_hold",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter"
+      ],
+      "fixed_conditions": [
+        "same surveyed intersection, connected bus route, bus blueprint and clearance, governing official signal head and facing approach, 45-second four-view capture, source-bound original frame measurements, no NRS 484B.307 exception asserted",
+        "same red aspect and absent police direction"
+      ],
+      "deliberate_differences": [
+        "measured bus front line entry versus no entry"
+      ]
+    },
+    {
+      "comparison_id": "contemporaneous_police_direction",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed"
+      ],
+      "fixed_conditions": [
+        "same surveyed intersection, connected bus route, bus blueprint and clearance, governing official signal head and facing approach, 45-second four-view capture, source-bound original frame measurements, no NRS 484B.307 exception asserted",
+        "same red aspect and bus front line entry"
+      ],
+      "deliberate_differences": [
+        "source-backed contemporaneous police direction to proceed versus no direction"
+      ]
+    },
+    {
+      "comparison_id": "device_instruction",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+        "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed"
+      ],
+      "fixed_conditions": [
+        "same surveyed intersection, connected bus route, bus blueprint and clearance, governing official signal head and facing approach, 45-second four-view capture, source-bound original frame measurements, no NRS 484B.307 exception asserted",
+        "same bus route and line-entry trajectory; no police direction"
+      ],
+      "deliberate_differences": [
+        "source-observed governing red versus green aspect; NRS 484B.307 meaning remains unresolved"
+      ]
+    }
+  ],
+  "observations": [
+    "source-hashed official device identity, provenance, placement, facing relation, displayed instruction and frame timing",
+    "bus blueprint, source-surveyed connected route, dimensions, intersection clearance and front-body position against original surveyed stop line",
+    "original traffic control aspect history, original bus pose and frame-continuous line entry or hold",
+    "authorized police officer identity, direction, timing and source; absent direction must be recorded as such",
+    "source context for each applicable NRS 484B.307 exception; statutory applicability left unresolved by engineering code",
+    "synchronized four-camera evidence and actual Native bus motion pending physical replay"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111329__NRS-484B-300-1__bus_driver/assignment.json",
@@ -51,17 +182,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No source-surveyed Native site packet or accepted recording is supplied. The construction adapter requires a source-hashed map/device/route/authority packet and readback; actual CARLA motion and camera visibility remain pending.",
+    "CPU work still required: canonical semantic stage proposals, every exact case bundle and manifest, source-bound positive/negative compatibility receipts, saved-only processing, and complete independent delivery audit.",
+    "Police authority, official placement compliance and NRS 484B.307 applicability require original context and independent review; fixture tests cannot establish legal facts."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed frozen evidence.json: zero accepted recordings. Compared the selected intersection/device/bus branch to this empty inventory; no reusable original signal, bus motion or authority source exists. The proposed controlled cases remain unrecorded.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_device_bus_evidence",
+        "requirement": "Original official-device instruction and placement, bus motion and contemporaneous police/307 context",
+        "source": {
+          "path": "inputs/testing__C111329__NRS-484B-300-1__bus_driver/evidence.json",
+          "sha256": "b3370a98e29c4f4874d43c2069cd2bb9a0cbdfe15fbaa28ccdfaef68ae4c868d"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "controlled_device_bus_cases_and_source_gated_native_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -79,6 +221,68 @@
         "Supply public-authority or railroad provenance, placement compliance, applicable NRS 484B.307 provisions and police-direction context."
       ],
       "reason": "An intersection device can govern the bus driver's intended route when its actual instruction and legal placement are established."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "Official traffic-control device instruction governs bus approach and is placed in accordance with applicable NRS chapters",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted source; site packet and original device trace required",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_hold",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed",
+        "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Bus conduct relative to observed device instruction",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "Original front-body line crossing and aspect history needed",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_hold",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed",
+        "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Contemporaneous direction by police officer",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "status": "exception_pending",
+      "evidence_or_gap": "Officer authority and direction require independent original source; intent flag cannot prove it",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Except as otherwise provided in NRS 484B.307",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "status": "exception_pending",
+      "evidence_or_gap": "Device-specific statutory branch and original applicable context must be resolved; generic red/green label does not settle exception",
+      "case_ids": [
+        "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+        "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed"
+      ]
     }
   ]
 }
