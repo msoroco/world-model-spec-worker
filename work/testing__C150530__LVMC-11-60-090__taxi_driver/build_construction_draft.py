@@ -19,7 +19,8 @@ CASES = ("near_stand", "far_stand", "near_stand_straight")
 CODE = ("stand_route.py", "candidate_opendrive.py", "reviewed_context.py",
         "native_trace_capture.py", "turn_trace_finalizer.py", "taxi_native_motion.py",
         "taxi_cameras.py", "taxi_capture_ticks.py", "saved_turn_check.py",
-        "delivery_audit.py", "four_view_composition.py", "turn_pair_audit.py")
+        "delivery_audit.py", "four_view_composition.py", "turn_pair_audit.py",
+        "saved_case_analysis.py")
 
 
 def sha(path: Path) -> str:
@@ -73,6 +74,9 @@ def main() -> None:
         entries.append({"case_id": ASSIGNMENT + "__" + case, "kind": "delivery",
                         "construction": path.relative_to(ROOT).as_posix(),
                         "construction_sha256": sha(path),
+                        "measurement_contract": (Path("cases") / case /
+                                                 "selected-measurement-contract.json").as_posix(),
+                        "measurement_procedure": {"entrypoint": "saved_case_analysis.py"},
                         "proof_status": "draft_offline_only"})
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
                 "runtime_manifest_sha256": sha(REPO / "runtime" / "SOURCE-MANIFEST.json"),

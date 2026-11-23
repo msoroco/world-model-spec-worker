@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "cab leaves a stand designated under the referenced Section",
+      "source": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+      "output_key": "cab_stand_context",
+      "method": "measure_cab_stand_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "reviewed-context.json",
+        "original-trace.jsonl",
+        "original-trace-seal.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "a sign is posted giving notice of the right-turn requirement",
+      "source": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+      "output_key": "posted_notice_context",
+      "method": "measure_posted_notice_context",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "reviewed-context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "right-hand turn at the first street intersection after stand departure",
+      "source": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+      "output_key": "first_intersection_maneuver",
+      "method": "measure_first_intersection_maneuver",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "reviewed-context.json",
+        "original-trace.jsonl",
+        "original-trace-seal.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "reviewed-context.json"
+    ],
+    "error_contains": "Missing required source: reviewed-context.json"
+  }
+}
