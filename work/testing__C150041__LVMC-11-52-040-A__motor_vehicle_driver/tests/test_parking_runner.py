@@ -11,11 +11,24 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from parking_runner import check_native_map, main, run_native
+from parking_runner import check_native_map, locate_repo_root, main, run_native
 from test_source_review import fixture
 
 
 class RunnerTests(unittest.TestCase):
+    def test_materialized_runner_finds_frozen_runtime_from_nested_attempt(self):
+        repo = ROOT.parents[1]
+        with TemporaryDirectory(dir=repo / ".runtime-work") as tmp:
+            nested = Path(tmp) / "case" / "primary" / "offline"
+            nested.mkdir(parents=True)
+            script = nested / "parking_runner.py"
+            script.write_text("# materialized bundle\n")
+            self.assertEqual(locate_repo_root(script), repo)
+        self.assertEqual(locate_repo_root(ROOT / "parking_runner.py"), repo)
+        with TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, "cannot locate repository runtime"):
+                locate_repo_root(Path(tmp) / "runner.py")
+
     def test_reviewed_native_map_readback_and_mismatch(self):
         with TemporaryDirectory() as tmp:
             packet_path, packet = fixture(tmp)

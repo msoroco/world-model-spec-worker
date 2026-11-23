@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 
@@ -111,17 +112,21 @@ def audit_attempt(attempt, *, diagnostic=False, decoder=None):
                          (camera_rows, history, trace, controller)) or len(frames) != seal.get("frames"):
         raise ValueError("sealed original frame count differs")
     previous = -1
+    previous_time = -math.inf
     for video_index, (frame, camera, body, movement, request) in enumerate(
             zip(frames, camera_rows, history, trace, controller)):
         identity = frame.get("carla_frame")
         time_s = frame.get("time_s")
         if (frame.get("video_frame") != video_index or type(identity) is not int or
                 identity <= previous or
+                type(time_s) not in (int, float) or not math.isfinite(time_s) or
+                time_s < 0 or time_s <= previous_time or
                 any(row.get("frame") != identity or row.get("time_s") != time_s
                     for row in (camera, body, movement, request)) or
                 camera.get("camera_names") != list(CAMERAS)):
             raise ValueError("original body/trace/camera/control frame join incomplete")
         previous = identity
+        previous_time = time_s
     decoder = decoder or _decode
     decoded = {name: decoder(root / (name + ".mkv")) for name in CAMERAS}
     if any(count != len(frames) for count in decoded.values()):

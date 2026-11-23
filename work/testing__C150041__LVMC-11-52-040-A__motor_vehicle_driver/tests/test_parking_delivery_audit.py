@@ -109,6 +109,23 @@ class ParkingDeliveryAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "frame join incomplete"):
                 audit_attempt(tmp, diagnostic=True, decoder=lambda path: 3)
 
+    def test_resealed_backward_timestamp_rejected(self):
+        with TemporaryDirectory() as tmp:
+            diagnostic(tmp)
+            root = Path(tmp)
+            for name in ("video_frames.jsonl", "camera-frame-map.jsonl",
+                         "parking-history.jsonl", "trace.jsonl", "controller-history.jsonl"):
+                path = root / name
+                data = [json.loads(line) for line in path.read_text().splitlines()]
+                data[2]["time_s"] = 0.01
+                rows(path, data)
+                seal_path = root / "capture-seal.json"
+                seal = json.loads(seal_path.read_text())
+                seal["sources"][name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                put(seal_path, seal)
+            with self.assertRaisesRegex(ValueError, "frame join incomplete"):
+                audit_attempt(root, diagnostic=True, decoder=lambda path: 3)
+
 
 if __name__ == "__main__":
     unittest.main()

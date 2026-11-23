@@ -25,6 +25,17 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def locate_repo_root(script_path):
+    """Find the frozen runtime from a source file or nested materialized bundle."""
+    script = Path(script_path).resolve()
+    for parent in script.parents:
+        if ((parent / "batch.json").is_file() and
+                (parent / "runtime" / "SOURCE-MANIFEST.json").is_file() and
+                (parent / ".runtime-work").is_dir()):
+            return parent
+    raise ValueError("materialized runner cannot locate repository runtime")
+
+
 def check_native_map(world, packet_path, source_root):
     context = validate(packet_path, source_root=source_root)
     packet = json.loads(Path(packet_path).read_text())
@@ -59,7 +70,7 @@ def check_materialized_package(output, scene):
 
 def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1", port=2000,
                approach_distance_m=8.0):
-    repo = Path(__file__).resolve().parents[2]
+    repo = locate_repo_root(__file__)
     scratch = (repo / ".runtime-work").resolve()
     output = Path(output_dir).resolve()
     if not output.is_dir() or not output.is_relative_to(scratch):
