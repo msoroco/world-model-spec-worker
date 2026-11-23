@@ -1,0 +1,239 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C150530__LVMC-11-60-090__taxi_driver",
+  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
+  "cases": [
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+      "kind": "delivery",
+      "construction": "cases/near_stand/construction.json",
+      "construction_sha256": "c7bb68da0be3212442776ce81f74fdaef918a70f884c0001accc866d5f0647bd",
+      "measurement_contract": "cases/near_stand/selected-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_case_analysis.py"
+      },
+      "fixture_recipe": "work/testing__C150530__LVMC-11-60-090__taxi_driver/cases/near_stand/fixture-recipe.json",
+      "offline": {
+        "construction_sha256": "c7bb68da0be3212442776ce81f74fdaef918a70f884c0001accc866d5f0647bd",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C150530__LVMC-11-60-090__taxi_driver/execution-manifest.draft.json --case testing__C150530__LVMC-11-60-090__taxi_driver__near_stand --output .runtime-work/c150530-offline-draft-near_stand-20261122-v12 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "cases/near_stand/offline.log",
+        "log_sha256": "5ae844f643818178c8a91e4354b629331f46cf66947dc00dcabf793f3f46e335"
+      },
+      "compatibility": {
+        "receipt": "cases/near_stand/primary-compatibility.json",
+        "sha256": "a17225b6b9b7c5606dc0e37fd2c6ab5a7ac22fda2d28cd7855b1ee0f50d8fa67",
+        "log": "cases/near_stand/primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "cases/near_stand/primary-compat-negative.log"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "CPU topology checks found no case-specific physical failure; Native curb departure and visibility remain untested and will be assessed after an original attempt."
+      },
+      "candidates": [],
+      "physical_preparation": {
+        "receipt": "cases/near_stand/physical-preparation.partial.json",
+        "sha256": "9ca6c5d0a4891dc9fdb0ffe1d3a7b6a6dbe516c6fee0afd4c5ebf45785ae3808"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "original_motion": {
+          "entrypoint": "native_trace_capture.py",
+          "method": "TraceCapture.record on each synchronous world tick",
+          "evidence": "original-trace.jsonl"
+        },
+        "controller_history": {
+          "entrypoint": "taxi_capture_ticks.py",
+          "method": "capture_ticks writes the applied command per tick",
+          "evidence": "taxi-controller-history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "taxi_capture_ticks.py",
+          "method": "capture_ticks calls FrameMap.append on each world tick",
+          "evidence": "video_frames.jsonl"
+        },
+        "overview_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "overview.mkv"
+        },
+        "approach_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "approach.mkv"
+        },
+        "reference_corner_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "reference_corner.mkv"
+        },
+        "driver_reference_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "driver_reference.mkv"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+      "kind": "delivery",
+      "construction": "cases/far_stand/construction.json",
+      "construction_sha256": "99f3f912f2a59d4ee40f5f17e65709f0d714cf7f1f0976e9eddc4d2b786e103d",
+      "measurement_contract": "cases/far_stand/selected-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_case_analysis.py"
+      },
+      "fixture_recipe": "work/testing__C150530__LVMC-11-60-090__taxi_driver/cases/far_stand/fixture-recipe.json",
+      "offline": {
+        "construction_sha256": "99f3f912f2a59d4ee40f5f17e65709f0d714cf7f1f0976e9eddc4d2b786e103d",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C150530__LVMC-11-60-090__taxi_driver/execution-manifest.draft.json --case testing__C150530__LVMC-11-60-090__taxi_driver__far_stand --output .runtime-work/c150530-offline-draft-far_stand-20261122-v12 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "cases/far_stand/offline.log",
+        "log_sha256": "855bd11792b8642d1e8635fdf4262abfdd95d1407de4b342838f02a9342c1967"
+      },
+      "compatibility": {
+        "receipt": "cases/far_stand/primary-compatibility.json",
+        "sha256": "73c3963f7508573f63f50a956813a1629c6a4c98ebc06bcf4a1e4507ab7e7fb7",
+        "log": "cases/far_stand/primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "cases/far_stand/primary-compat-negative.log"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "CPU topology checks found no case-specific physical failure; Native curb departure and visibility remain untested and will be assessed after an original attempt."
+      },
+      "candidates": [],
+      "physical_preparation": {
+        "receipt": "cases/far_stand/physical-preparation.partial.json",
+        "sha256": "b02d7d0916b94c02d52225a9df347589d9b446c665946888cd57f94378d5740b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "original_motion": {
+          "entrypoint": "native_trace_capture.py",
+          "method": "TraceCapture.record on each synchronous world tick",
+          "evidence": "original-trace.jsonl"
+        },
+        "controller_history": {
+          "entrypoint": "taxi_capture_ticks.py",
+          "method": "capture_ticks writes the applied command per tick",
+          "evidence": "taxi-controller-history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "taxi_capture_ticks.py",
+          "method": "capture_ticks calls FrameMap.append on each world tick",
+          "evidence": "video_frames.jsonl"
+        },
+        "overview_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "overview.mkv"
+        },
+        "approach_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "approach.mkv"
+        },
+        "reference_corner_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "reference_corner.mkv"
+        },
+        "driver_reference_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "driver_reference.mkv"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight",
+      "kind": "delivery",
+      "construction": "cases/near_stand_straight/construction.json",
+      "construction_sha256": "c03e34d93ca59386c65c1502f00548978c7af1cc7b45eb4e04ab79e746446302",
+      "measurement_contract": "cases/near_stand_straight/selected-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_case_analysis.py"
+      },
+      "fixture_recipe": "work/testing__C150530__LVMC-11-60-090__taxi_driver/cases/near_stand_straight/fixture-recipe.json",
+      "offline": {
+        "construction_sha256": "c03e34d93ca59386c65c1502f00548978c7af1cc7b45eb4e04ab79e746446302",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C150530__LVMC-11-60-090__taxi_driver/execution-manifest.draft.json --case testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight --output .runtime-work/c150530-offline-draft-near_stand_straight-20261122-v12 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "cases/near_stand_straight/offline.log",
+        "log_sha256": "85e10e355218cab80cab1ce4c548f8ac117f9940120c6774c1dc3cd441c4e549"
+      },
+      "compatibility": {
+        "receipt": "cases/near_stand_straight/primary-compatibility.json",
+        "sha256": "46191f6f49597f81b13021a1509ef25969a113f3435c8f91c9759ffdf54203ee",
+        "log": "cases/near_stand_straight/primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "cases/near_stand_straight/primary-compat-negative.log"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "CPU topology confirms the straight connection; actual Native traversal and sign visibility remain untested."
+      },
+      "candidates": [],
+      "physical_preparation": {
+        "receipt": "cases/near_stand_straight/physical-preparation.partial.json",
+        "sha256": "74282bb51e70a87103f306b053ece43fa9dc76cd261e3c7b7c7f2118ba90da45"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "original_motion": {
+          "entrypoint": "native_trace_capture.py",
+          "method": "TraceCapture.record on each synchronous world tick",
+          "evidence": "original-trace.jsonl"
+        },
+        "controller_history": {
+          "entrypoint": "taxi_capture_ticks.py",
+          "method": "capture_ticks writes the applied command per tick",
+          "evidence": "taxi-controller-history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "taxi_capture_ticks.py",
+          "method": "capture_ticks calls FrameMap.append on each world tick",
+          "evidence": "video_frames.jsonl"
+        },
+        "overview_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "overview.mkv"
+        },
+        "approach_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "approach.mkv"
+        },
+        "reference_corner_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "reference_corner.mkv"
+        },
+        "driver_reference_rgb": {
+          "entrypoint": "taxi_cameras.py",
+          "method": "CameraCapture.append writes same-frame RGB sensor bytes",
+          "evidence": "driver_reference.mkv"
+        }
+      }
+    }
+  ],
+  "status": "partial; canonical offline and compatibility receipts bound"
+}
