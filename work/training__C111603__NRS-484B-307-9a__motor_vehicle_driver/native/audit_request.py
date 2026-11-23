@@ -48,7 +48,7 @@ def audit():
         track = path / "requested-tracks.jsonl"
         assert sha(track) == cfg["tracks_sha256"]
         rows = [json.loads(line) for line in track.read_text().splitlines()]
-        assert len(rows) == 480 and [row["frame"] for row in rows] == list(range(480))
+        assert len(rows) == 600 and [row["frame"] for row in rows] == list(range(600))
         assert all(row["requested_signal"] == {"circular_red": True,
                     "green_arrow": "right", "governs_ego": True} for row in rows)
         assert all(row["original_native_observed"] is False and row["legal_verdict"] is None
@@ -62,8 +62,8 @@ def audit():
         assert raw["source_kind"] == "synthetic_cpu_fixture"
         assert raw["config_sha256"] == sha(path / "config.json")
         assert len(raw["rows"]) == len(rows)
-        assert saved["row_count"] == 480 and saved["joined_video_frames"] == 480
-        assert saved["observed_steady_red_with_green_right_arrow_frames"] == 480
+        assert saved["row_count"] == 600 and saved["joined_video_frames"] == 600
+        assert saved["observed_steady_red_with_green_right_arrow_frames"] == 600
         assert saved["requested_yield_hold_frames"] >= 60
         assert saved["synthetic_cpu_fixture"] and not saved["original_native_observed"]
         assert not saved["signal_state_originally_verified"]

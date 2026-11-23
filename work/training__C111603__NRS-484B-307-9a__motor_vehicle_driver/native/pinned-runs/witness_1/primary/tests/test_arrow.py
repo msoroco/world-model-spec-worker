@@ -20,12 +20,12 @@ class ArrowRequest(unittest.TestCase):
 
     def test_exact_request(self):
         result = check(self.bundle)
-        self.assertEqual(result["frames"], 480)
+        self.assertEqual(result["frames"], 600)
         self.assertFalse(result["delivery_ready"])
 
     def test_synthetic_saved_join(self):
         saved = process(self.bundle, fixture(self.bundle))
-        self.assertEqual(saved["joined_video_frames"], 480)
+        self.assertEqual(saved["joined_video_frames"], 600)
         self.assertFalse(saved["original_native_observed"])
         self.assertIsNone(saved["legal_verdict"])
 
@@ -34,7 +34,7 @@ class ArrowRequest(unittest.TestCase):
             "--check", "--bundle", str(self.bundle)], capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         result = json.loads(completed.stdout)
-        self.assertEqual(result["frames"], 480)
+        self.assertEqual(result["frames"], 600)
         self.assertFalse(result["original_native_observed"])
 
     def test_original_processor_source_shape(self):
@@ -58,7 +58,7 @@ class ArrowRequest(unittest.TestCase):
             directory = Path(name)
             review = original_fixture(self.bundle, directory)
             value = json.loads(review.read_text())
-            value["quality_signal_other_visible_frames"] = list(range(480))
+            value["quality_signal_other_visible_frames"] = list(range(600))
             review.write_text(json.dumps(value))
             if "primary" == "primary":
                 result = from_capture(self.bundle, directory, review, synthetic_fixture=True)

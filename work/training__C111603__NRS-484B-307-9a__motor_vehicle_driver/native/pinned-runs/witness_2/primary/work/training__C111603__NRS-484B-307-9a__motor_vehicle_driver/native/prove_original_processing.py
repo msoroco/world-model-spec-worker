@@ -4,6 +4,7 @@ import math
 from pathlib import Path
 import tempfile
 
+from build import FRAMES
 from process_original import CAMERAS, FIXTURE_MEDIA, LANES, REVIEW_FLAGS, process, sha
 
 
@@ -46,7 +47,7 @@ def fixture(bundle, directory):
     write(directory / "native-capture-report.json", {
         "case_id": cfg["case_id"], "candidate_id": cfg["candidate_id"],
         "config_sha256": sha(bundle / "config.json"),
-        "requested_frames": 480, "observed_frames": 480,
+        "requested_frames": FRAMES, "observed_frames": FRAMES,
         "restoration": {"restored": True}, "error": None,
         "accepted": False, "delivery_ready": False, "legal_verdict": None})
     raw, video = [], []
@@ -122,7 +123,7 @@ def prove(bundle):
         directory = Path(name)
         review = fixture(bundle, directory)
         measured = process(bundle, directory, review, synthetic_fixture=True)
-        assert measured["frames_joined"] == 480
+        assert measured["frames_joined"] == FRAMES
         assert measured["observed_movement_matches_request"]
         assert not measured["original_native_observed"] and not measured["delivery_ready"]
         negatives = []
@@ -161,7 +162,7 @@ def prove(bundle):
         rejected("signal_state", lambda: change_line(
             directory / "native-raw-actors.jsonl", 10,
             lambda row: row.update(arrow_state="Red")), rehash=True)
-        rejected("media", lambda: (directory / "overview.mkv").write_bytes(b"altered"),
+        rejected("media", lambda: (directory / "reference_corner.mkv").write_bytes(b"altered"),
                  rehash=True)
         rejected("review_digest", lambda: change_json(
             review, lambda row: row.update(raw_sha256="0" * 64)))

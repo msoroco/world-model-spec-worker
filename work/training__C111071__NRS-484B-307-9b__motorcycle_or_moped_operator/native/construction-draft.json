@@ -1,0 +1,67 @@
+{
+  "format": "c111071-307-9b-native-construction-draft-v1",
+  "assignment_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator",
+  "case_ids": [
+    "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
+    "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2"
+  ],
+  "selection_status": "unselected_draft",
+  "cell": {
+    "layout": "intersection",
+    "maneuver": "straight",
+    "control": "inoperative_signal",
+    "actor": "motorcycle_or_moped_operator"
+  },
+  "source_witness": "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/witnesses.json",
+  "frame_contract": {
+    "rate_hz": 20,
+    "frames": 600,
+    "duration_s": 30,
+    "camera_names": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "overview_resolution": [
+      1920,
+      1080
+    ],
+    "detail_resolution": [
+      1280,
+      720
+    ]
+  },
+  "controller": {
+    "path": "native/cycle_controller.py",
+    "primary_target_complete_cycles": 2,
+    "controlled_target_complete_cycles": 1,
+    "post_tick_command_only": true,
+    "physical_ego_motion_claim": false
+  },
+  "signal": {
+    "ego_face": "circular_red_green_left_arrow",
+    "other_phases": [
+      "cross_green",
+      "cross_yellow",
+      "cross_red"
+    ],
+    "complete_cycle_method": "observed phase transition from initial phase through both other phases back to initial phase after measured halt",
+    "detector_failure_request": "request present and intentionally not serviced by authored controller; Native readback and physical causation still required"
+  },
+  "source_acquisition": {
+    "NativeFrameMap": "frame and timestamp join to all four decoded camera streams",
+    "ego_body": "raw Native position, speed, heading, bounding vertices and front-to-stop-boundary distance per frame",
+    "signal": "raw governing signal state and other applicable phase state per frame, with controller commands and Native readback",
+    "actor": "Native blueprint/type/physics readback",
+    "conflicts": "pedestrian body/crosswalk occupancy and lawful traffic trajectory/status source per frame",
+    "road": "source-located stop hierarchy, lane-to-signal relation, crosswalk and any prohibiting device"
+  },
+  "unresolved": [
+    "Native map geometry and motorcycle blueprint/route realization",
+    "physical signal cycles and causal failed detection",
+    "original source video and raw joins",
+    "saved-processing and selected exact case proofs",
+    "statutory opposite-turn alternative in different compatible cell if needed"
+  ]
+}

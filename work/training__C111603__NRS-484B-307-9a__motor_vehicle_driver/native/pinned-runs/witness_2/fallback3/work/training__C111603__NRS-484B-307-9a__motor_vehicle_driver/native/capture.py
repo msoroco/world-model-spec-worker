@@ -14,7 +14,7 @@ import traceback
 
 from build import FRAMES, RATE, check, digest
 
-CAMERAS = ("ego_view", "signal_view", "overview")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def xyz(value):
@@ -142,9 +142,10 @@ def capture(bundle, output, host, port):
             "other_traffic_lawfulness_verified": False,
             "legal_verdict": None}, indent=2) + "\n")
         overview_z = 55 if cfg["camera_policy"] == "elevated_overview" else 38
-        specs = (("ego_view", 1280, 720, (-2, -35, 4), 0, -5),
-                 ("signal_view", 1280, 720, (5, -16, 8), -90, -30),
-                 ("overview", 1280, 720, (10, -5, overview_z), -90, -90))
+        specs = (("overview", 1920, 1080, (10, -5, overview_z), -90, -90),
+                 ("approach", 1280, 720, (-2, -35, 4), 0, -5),
+                 ("reference_corner", 1280, 720, (5, -16, 8), -90, -30),
+                 ("driver_reference", 1280, 720, (-2, 15, 7), 90, -15))
         for name, width, height, position, yaw, pitch in specs:
             blueprint = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),

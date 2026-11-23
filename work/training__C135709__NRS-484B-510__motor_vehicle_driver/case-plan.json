@@ -53,7 +53,7 @@
   "timing_requirements": [
     {
       "kind": "duration",
-      "requirement": "'for any purpose or length of time' — no duration makes the wrong use lawful; but the excepted loading stop is 'temporary', so a duration bound for it must be declared"
+      "requirement": "'for any purpose or length of time' \u2014 no duration makes the wrong use lawful; but the excepted loading stop is 'temporary', so a duration bound for it must be declared"
     },
     {
       "kind": "continuous",
@@ -269,7 +269,7 @@
     },
     {
       "term": "ru.occupant_count",
-      "purpose": "a change in occupancy — the evidence of loading or unloading passengers",
+      "purpose": "a change in occupancy \u2014 the evidence of loading or unloading passengers",
       "status": "measurement_mapping_pending"
     },
     {
@@ -322,7 +322,7 @@
     {
       "name": "ru.occupant_count",
       "mandatory": true,
-      "reason": "a change in occupancy — the evidence of loading or unloading passengers"
+      "reason": "a change in occupancy \u2014 the evidence of loading or unloading passengers"
     },
     {
       "name": "sig.door_open",
@@ -366,5 +366,110 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "source_observation_mapping": [
+    {
+      "term": "st.curb_zone",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "zone.json:zone_bounds_m,restricted_purpose",
+      "evidence": "source context; authority and map applicability unverified",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "zone.json:sign_text",
+      "evidence": "literal sign context only; Native sign pixels and authority unverified",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "drv.condition_in_effect",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "zone.json:sign_text",
+      "evidence": "effective hours and authority need independent original-source review",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:ego_footprint_m,ego_speed_mps",
+      "evidence": "source-derived in-zone stationary frame count, engineering speed threshold 0.05 m/s",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "kin.time",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:frame,elapsed_s",
+      "evidence": "600-frame 20 Hz clock and stopped-frame duration; not a legal temporariness cutoff",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "ru.occupant_count",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:occupant_count",
+      "evidence": "retained occupancy count; physical visibility and passenger identity unverified",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "sig.door_open",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:door_open",
+      "evidence": "retained door state; opening alone does not prove actual passenger loading",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "ru.pedestrian",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:pedestrian_count",
+      "evidence": "retained pedestrian count; association with this car requires original review",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "ru.motor_vehicle",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:ego_footprint_m",
+      "evidence": "passenger vehicle classification requires Native blueprint and original review",
+      "status": "draft_measurement_only"
+    },
+    {
+      "term": "drv.approaching",
+      "source_refs": [
+        "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
+      ],
+      "raw_source": "raw-frames.json:other_vehicle_waiting,other_vehicle_about_to_enter",
+      "evidence": "overlap with stationary in-zone frames; other vehicle purpose is unobserved",
+      "status": "draft_measurement_only"
+    }
+  ],
+  "draft_saved_measurement": {
+    "script": "native/restricted_zone_measure.py",
+    "proof": "native/restricted-zone-proof.json",
+    "source_kind": "synthetic_native_sample",
+    "frame_count": 600,
+    "camera_ids": [
+      "front",
+      "front_left",
+      "front_right",
+      "rear"
+    ],
+    "selected_delivery_proof": false
+  }
 }

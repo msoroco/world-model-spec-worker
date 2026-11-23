@@ -24,7 +24,7 @@ def audit():
                               for a, b in zip(approach, approach[1:])), 4)
             window = round((movement[0]["frame"] - hold[0]["frame"]) / 20, 4)
             cfg = json.loads((bundle / "config.json").read_text())
-            if (len(rows) != 480 or saved["approach_speed_mps"] != speed or
+            if (len(rows) != 600 or saved["approach_speed_mps"] != speed or
                     saved["yield_hold_to_entry_window_s"] != window or
                     saved["camera_policy"] != cfg["camera_policy"] or
                     saved["original_native_observed"] is not False):

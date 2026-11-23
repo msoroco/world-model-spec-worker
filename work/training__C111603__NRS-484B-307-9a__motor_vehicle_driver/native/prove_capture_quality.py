@@ -17,7 +17,7 @@ def prove():
             directory = Path(temp)
             review_path = fixture(bundle, directory)
             review = json.loads(review_path.read_text())
-            review["quality_signal_other_visible_frames"] = list(range(480))
+            review["quality_signal_other_visible_frames"] = list(range(600))
             review_path.write_text(json.dumps(review, indent=2) + "\n")
             result = from_capture(bundle, directory, review_path, synthetic_fixture=True)
             assert result["triggers"] == {"fallback1": True, "fallback2": False,
@@ -25,7 +25,7 @@ def prove():
             assert not result["original_native_observed"] and not result["delivery_ready"]
             positive += 1
             records.append({"case_id": suffix, "metrics": result["metrics"]})
-            for frames in ([], [0, 0], [480], None):
+            for frames in ([], [0, 0], [600], None):
                 changed = dict(review)
                 changed["quality_signal_other_visible_frames"] = frames
                 review_path.write_text(json.dumps(changed, indent=2) + "\n")

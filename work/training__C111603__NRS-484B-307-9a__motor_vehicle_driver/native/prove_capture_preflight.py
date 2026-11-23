@@ -21,7 +21,7 @@ def prove():
             value = json.loads(result.stdout)
             assert value["case_id"] == CASE.name + "__" + suffix
             assert value["candidate_id"] == candidate
-            assert value["frames"] == 480 and not value["delivery_ready"]
+            assert value["frames"] == 600 and not value["delivery_ready"]
             positive += 1
             with tempfile.TemporaryDirectory(prefix="c111603-preflight-") as name:
                 changed = Path(name) / "bundle"

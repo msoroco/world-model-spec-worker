@@ -7,7 +7,7 @@ import subprocess
 
 from build import FRAMES, RATE, check, digest
 
-CAMERAS = ("ego_view", "signal_view", "overview")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 LANES = {"south_approach": (1, -1), "east_departure": (2, -1)}
 FIXTURE_MEDIA = b"C111603 SYNTHETIC FIXTURE; NOT VIDEO\n"
 REVIEW_FLAGS = (
@@ -78,7 +78,7 @@ def process(bundle, directory, review_path, *, synthetic_fixture=False):
     mapping, report, review = (json.loads(path.read_text()) for path in
                                (map_path, report_path, review_path))
     if len(requests) != FRAMES or len(raw) != FRAMES or len(video) != FRAMES:
-        raise ValueError("Exactly 480 joined frames required")
+        raise ValueError("Exactly 600 joined frames required")
     kind = "synthetic_fixture" if synthetic_fixture else "original_native"
     if (mapping.get("source_kind") != kind or
             mapping.get("road_sha256") != digest(bundle / "arrow-intersection.xodr") or

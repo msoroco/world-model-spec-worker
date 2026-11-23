@@ -27,7 +27,7 @@ def prove():
         for candidate in POLICIES:
             bundle = HERE / "drafts" / suffix / candidate
             result = check(bundle)
-            assert result["frames"] == 480 and not result["delivery_ready"]
+            assert result["frames"] == 600 and not result["delivery_ready"]
             positive += 1
 
             def edit_config(path):
@@ -85,7 +85,7 @@ def prove():
             assert a[key] == b[key]
         rows_a = [json.loads(row) for row in (one / "requested-tracks.jsonl").read_text().splitlines()]
         rows_b = [json.loads(row) for row in (two / "requested-tracks.jsonl").read_text().splitlines()]
-        assert len(rows_a) == len(rows_b) == 480
+        assert len(rows_a) == len(rows_b) == 600
         assert all(x["requested_signal"] == y["requested_signal"] and
                    x["requested_other_vehicle_xyz_m"] == y["requested_other_vehicle_xyz_m"]
                    for x, y in zip(rows_a, rows_b))

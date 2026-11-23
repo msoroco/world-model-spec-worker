@@ -11,8 +11,8 @@ ROOT = CASE.parents[1]
 SOURCE = ROOT / "inputs" / CASE.name / "assignment.json"
 PLAN = CASE / "case-plan.json"
 TEMPLATE = HERE / "road-template.xodr"
-SOURCE_SHA = "aa4cb76c4fc251e5dc1ad7f2e95776abc317c737f1dff66fc6ce41e8df1f3b8d"
-FRAMES = 480
+SOURCE_SHA = "dec45d9a59caf5589820a4f2a20e69857706b6dfad4f27b03d1d5c17c6152e8a"
+FRAMES = 600
 RATE = 20
 POLICIES = {
     "primary": (8.0, "standard", 0.0),
@@ -36,7 +36,9 @@ def source_text():
     if digest(SOURCE) != SOURCE_SHA:
         raise ValueError("Frozen C111603 assignment changed")
     source = json.loads(SOURCE.read_text())
-    law = next(item for item in source["law_records"] if item["id"] == "NRS-484B-307-9a") if "law_records" in source else None
+    law = source.get("law")
+    if law is not None and law.get("id") != "NRS-484B-307-9a":
+        raise ValueError("Frozen law identity changed")
     if law is None:
         plan = json.loads(PLAN.read_text())
         text = plan["source_law"]["text"]
