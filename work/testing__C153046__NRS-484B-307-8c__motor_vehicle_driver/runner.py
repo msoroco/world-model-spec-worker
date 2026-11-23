@@ -15,6 +15,9 @@ def capture_original(output_dir: Path, host: str, port: int, site_packet: Path) 
     """Connect to a Native host and write original data only under .runtime-work."""
     import carla
     from native_capture import capture
+    from saved_measurement import finalize_attempt
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.world_restore import snapshot, restore
 
     output_dir = Path(output_dir).resolve()
     packet = Path(site_packet).resolve()
@@ -25,8 +28,8 @@ def capture_original(output_dir: Path, host: str, port: int, site_packet: Path) 
     client = carla.Client(host, port)
     client.set_timeout(30.0)
     world = client.get_world()
-    previous = copy.copy(world.get_settings())
-    settings = copy.copy(previous)
+    saved = snapshot(client)
+    settings = copy.copy(saved["settings"])
     settings.synchronous_mode = True
     settings.no_rendering_mode = False
     settings.fixed_delta_seconds = .05
@@ -34,12 +37,41 @@ def capture_original(output_dir: Path, host: str, port: int, site_packet: Path) 
     def transform(location, rotation):
         return carla.Transform(carla.Location(*location), carla.Rotation(*rotation))
 
+    errors = []
+    acquired = None
     try:
         world.apply_settings(settings)
-        return capture(world, packet, suffix, output_dir, transform,
-                       carla.VehicleControl, carla.WalkerControl, carla.Vector3D)
-    finally:
-        world.apply_settings(previous)
+        acquired = capture(world, packet, suffix, output_dir, transform,
+                           carla.VehicleControl, carla.WalkerControl, carla.Vector3D)
+    except Exception as error:
+        errors.append("capture: " + str(error))
+    try:
+        restoration = restore(client, saved)
+    except Exception as error:
+        restoration = {"restored": False}
+        errors.append("world restoration: " + str(error))
+    if errors:
+        (output_dir / "native-run-status.json").write_text(json.dumps({
+            "errors": errors, "restoration": restoration,
+            "physical_acceptance_claimed": False}, indent=2) + "\n")
+        raise ValueError("; ".join(errors))
+    try:
+        report = finalize_attempt(output_dir, output_dir / "analysis-report.json")
+        (output_dir / "acquisition-provenance.json").write_text(json.dumps({
+            "provenance_kind": "native", "diagnostic_fixture": False,
+            "site_packet_sha256": report["measurement"]["site_packet_sha256"],
+            "physical_acceptance_claimed": False}, indent=2) + "\n")
+        closure = seal_capture(output_dir, frames=acquired["trace"]["samples"],
+                               restoration=restoration, errors=[],
+                               encoder_exit_codes={name: 0 for name in
+                                   ("overview", "approach", "reference_corner", "driver_reference")})
+        return {"capture": acquired, "analysis": report["case_id"],
+                "seal": closure["format"], "physical_acceptance_claimed": False}
+    except Exception as error:
+        (output_dir / "native-run-status.json").write_text(json.dumps({
+            "errors": ["finalization or seal: " + str(error)],
+            "restoration": restoration, "physical_acceptance_claimed": False}, indent=2) + "\n")
+        raise
 
 
 def check() -> None:

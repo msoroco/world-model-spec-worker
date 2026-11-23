@@ -16,9 +16,9 @@ SOURCES = ["runner.py", "native_capture.py", "native_runner.py", "native_frame.p
            "source_bound_scene.py", "build_case_plan.py", "case-plan.json",
            "tests/__init__.py", "tests/test_case_plan.py",
            "tests/test_red_left_turn_controller.py", "tests/test_source_bound_scene.py",
-           "tests/test_native_runner.py", "tests/test_native_frame.py",
+           "tests/test_native_runner.py", "tests/test_native_frame.py", "tests/test_runner_capture_closure.py",
            "tests/test_native_camera.py", "tests/test_native_media.py", "tests/test_native_setup.py", "tests/test_native_observation.py", "tests/test_native_capture.py", "tests/test_native_routes.py",
-           "tests/test_saved_measurement.py", "tests/test_comparison_audit.py",
+           "tests/test_saved_measurement.py", "tests/test_saved_finalizer.py", "tests/test_comparison_audit.py",
            "independent/__init__.py", "independent/delivery_audit.py",
            "tests/test_delivery_audit.py"]
 
@@ -50,20 +50,21 @@ def build() -> dict:
                            "recording_description": recording_description()},
                   "physical_completion": {"criterion": "original stop, entry, yield, and exit histories",
                                           "status": "unverified"}}
-        contract = {"format": "c153046-saved-measurement-draft", "case_id": case_id,
-                    "law_id": "NRS-484B-307-8c", "actor": "motor_vehicle_driver",
-                    "required_original_sources": ["reviewed site packet", "live OpenDRIVE bytes",
-                                                  "Native ego/participant body frame history",
-                                                  "Native signal actor/state frame history"],
-                    "metrics": ["stationary duration before boundary",
-                                "first full-body boundary crossing", "first approach lane",
-                                "left displacement", "pedestrian/traffic conflicts at crossing"],
-                    "requested_variables": dict(zip(("stop_request", "approach_position",
-                                                     "receiving_direction", "conflict_response_request"),
-                                                    variables)),
-                    "engineering_stop_tolerance_mps": 0.05,
-                    "engineering_stop_dwell_s": 0.5,
-                    "physical_acceptance_claimed": False, "legal_judgment": "unresolved"}
+        dispositions = json.loads((ROOT / "case-plan.json").read_text())["requirement_dispositions"]
+        selected = [(index, row) for index, row in enumerate(dispositions)
+                    if row["status"] == "selected_required" and
+                    (not row.get("case_ids") or case_id in row["case_ids"])]
+        contract = {
+            "format": "worker-measurement-contract",
+            "requirements": [{
+                "disposition_index": index, "requirement": row["requirement"],
+                "source": row["source"], "output_key": "red_left_turn_observation",
+                "method": "measure", "value_type": "object", "kind": "measured",
+                "inputs": ["site.json", "trace.jsonl"],
+            } for index, row in selected],
+            "negative": {"remove": ["site.json"],
+                         "error_contains": "Missing required source: site.json"},
+        }
         contract_path = folder / (suffix + "-measurement-contract.json")
         contract_path.write_text(json.dumps(contract, indent=2) + "\n")
         files = [{"path": name, "content": (ROOT / name).read_text()} for name in SOURCES]

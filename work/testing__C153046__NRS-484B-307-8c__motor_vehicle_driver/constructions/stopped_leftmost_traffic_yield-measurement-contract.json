@@ -1,29 +1,27 @@
 {
-  "format": "c153046-saved-measurement-draft",
-  "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield",
-  "law_id": "NRS-484B-307-8c",
-  "actor": "motor_vehicle_driver",
-  "required_original_sources": [
-    "reviewed site packet",
-    "live OpenDRIVE bytes",
-    "Native ego/participant body frame history",
-    "Native signal actor/state frame history"
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-484B-307-8c",
+      "source": {
+        "path": "inputs/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/assignment.json",
+        "sha256": "e99f0b8b74a045dd63b24d3c46d21eff15a66339aaee8336ffc03d695405209f"
+      },
+      "output_key": "red_left_turn_observation",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "site.json",
+        "trace.jsonl"
+      ]
+    }
   ],
-  "metrics": [
-    "stationary duration before boundary",
-    "first full-body boundary crossing",
-    "first approach lane",
-    "left displacement",
-    "pedestrian/traffic conflicts at crossing"
-  ],
-  "requested_variables": {
-    "stop_request": "complete_stop",
-    "approach_position": "extreme_left",
-    "receiving_direction": "one_way_left",
-    "conflict_response_request": "traffic_yield"
-  },
-  "engineering_stop_tolerance_mps": 0.05,
-  "engineering_stop_dwell_s": 0.5,
-  "physical_acceptance_claimed": false,
-  "legal_judgment": "unresolved"
+  "negative": {
+    "remove": [
+      "site.json"
+    ],
+    "error_contains": "Missing required source: site.json"
+  }
 }
