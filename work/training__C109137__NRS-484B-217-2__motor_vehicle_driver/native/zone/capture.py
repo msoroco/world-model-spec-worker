@@ -149,7 +149,8 @@ def capture(bundle, output, host, port):
         specs = (("overview", 1280, 720, 90 if elevated else 80,
                   (50, -25, 50 if elevated else 35), -70 if elevated else -60),
                  ("forward", 1280, 720, 90, (1, 0, 1.5), 0),
-                 ("stripe_side", 1280, 720, 80, (52, -14, 8), -25))
+                 ("stripe_side", 1280, 720, 80, (52, -14, 8), -25),
+                 ("rear", 1280, 720, 90, (-1, 0, 1.5), 0))
         for name, width, height, fov, xyz, pitch in specs:
             camera_bp = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),
@@ -157,8 +158,8 @@ def capture(bundle, output, host, port):
                 camera_bp.set_attribute(key, str(value))
             camera = world.spawn_actor(
                 camera_bp,
-                carla.Transform(carla.Location(*xyz), carla.Rotation(pitch=pitch)),
-                attach_to=ego if name == "forward" else None)
+                carla.Transform(carla.Location(*xyz), carla.Rotation(pitch=pitch, yaw=180 if name == "rear" else 0)),
+                attach_to=ego if name in ("forward", "rear") else None)
             owned.append(camera)
             cameras[name] = queue.Queue()
             camera.listen(cameras[name].put)

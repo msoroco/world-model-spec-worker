@@ -98,7 +98,7 @@ def run():
         visual['raw_sha256']=sha(raw);put(review,visual)
         slow=process(bundle,raw,video,review,synthetic=True)
         assert slow['observed_signal_lead_s']<2 and slow['fallback_triggers']['fallback1']
-        visual['stripe_visible_frames']=list(range(300));put(review,visual)
+        visual['stripe_visible_frames']=list(range(450));put(review,visual)
         obscured=process(bundle,raw,video,review,synthetic=True)
         assert obscured['stripe_review_fraction']==.75 and obscured['fallback_triggers']['fallback2']
         stop=next(x for x in compared if x['case']=='probe_2')['candidates'][0]

@@ -7,7 +7,7 @@ import subprocess
 from check import check
 from build import FRAMES, RATE
 
-CAMERAS = ('overview', 'forward', 'stripe_side')
+CAMERAS = ('overview', 'forward', 'stripe_side', 'rear')
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -53,7 +53,7 @@ def process(bundle, raw, video, review, *, synthetic=False):
     req, actors, frames = rows(bundle/'requested-tracks.jsonl'), rows(raw), rows(video)
     visual = json.loads(review.read_text())
     if len(req) != FRAMES or len(actors) != FRAMES or len(frames) != FRAMES:
-        raise ValueError('400 source frames required')
+        raise ValueError('600 source frames required')
     kind = 'synthetic_fixture' if synthetic else 'original_native_review'
     if visual.get('source_kind') != kind or visual.get('case_id') != cfg['case_id'] or \
             visual.get('candidate_id') != cfg['candidate_id']:

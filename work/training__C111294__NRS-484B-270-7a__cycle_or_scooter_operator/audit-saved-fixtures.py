@@ -21,7 +21,7 @@ def audit():
         report = json.loads((folder / 'analysis-report.json').read_text())
         result = json.loads((folder / 'result.json').read_text())
         frames = source['frames']
-        assert len(frames) == 480
+        assert len(frames) == 600
         assert manifest['sources']['interaction.json'] == sha(folder / 'interaction.json')
         assert all(row['frame'] == i and row['video_frame'] == i and
                    row['native_frame'] == i for i, row in enumerate(frames))

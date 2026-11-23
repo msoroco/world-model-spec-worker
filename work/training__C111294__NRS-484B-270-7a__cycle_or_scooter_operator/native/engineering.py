@@ -8,8 +8,8 @@ CASES=('witness_1','witness_2')
 CANDIDATES=('primary','fallback1','fallback2','fallback3')
 BASE={'bicycle_route_tracking_lookahead_m':5.0,
       'motorist_clearance_buffer_s':1.0,'overview_fov_deg':90.0,
-      'rate_hz':20,'duration_s':24.0,
-      'camera_profile':['overview','bicycle_approach','motorist_approach','conflict']}
+      'rate_hz':20,'duration_s':30.0,
+      'camera_profile':['overview','approach','reference_corner','driver_reference']}
 CHANGES={'primary':{},'fallback1':{'bicycle_route_tracking_lookahead_m':3.0},
          'fallback2':{'motorist_clearance_buffer_s':2.0},
          'fallback3':{'overview_fov_deg':105.0}}

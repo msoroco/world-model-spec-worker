@@ -37,13 +37,13 @@ def build():
             config={'case_id':case_id,'selected_case_id':case_id,'supported_case_ids':[case_id],
                 'case_suffix':suffix,'candidate_id':candidate,'cell_id':'C111294',
                 'law_id':'NRS-484B-270-7a','actor':'cycle_or_scooter_operator',
-                'rate_hz':20,'duration_s':24,'required_atoms':['st.intersection','kin.position'],
+                'rate_hz':20,'duration_s':30,'required_atoms':['st.intersection','kin.position'],
                 'source_packets':[],
                 'case':{'case_id':case_id},'knobs':params['knobs'],
                 'recording_description':{'channels':[
                     {'name':name,'unit':'structured','sampling_rate_hz':20,
                      'method':'original Native actor/camera source; synthetic CPU fixture is diagnostic',
-                     'time_window':'entire 24 s / 480-frame attempt',
+                     'time_window':'entire 30 s / 600-frame attempt',
                      'reference_frame':'surveyed Native map and original frame identity',
                      'uncertainty':'50 ms sampling; human propulsion, intent and pixels require physical review'}
                     for name in ('bicycle_body_pose','motorist_body_pose','motorist_brake','camera_frame_join')],
@@ -58,7 +58,7 @@ def build():
                                     'status':'source_bound_cpu_draft'},
                 'static_checks':['two through-connector OpenDRIVE map','two actor class and body sources',
                                  'four candidate knob sets and source-bound trigger tests'],
-                'termination_rules':['480 original 20 Hz frames','retain failed capture and restoration report'],
+                'termination_rules':['600 original 20 Hz frames','retain failed capture and restoration report'],
                 'mechanisms':['bicycle through route','separate motorist through route',
                               'observed Native actor body/pose samples','proposed four original camera views'],
                 'status':'unselected_cpu_draft'}

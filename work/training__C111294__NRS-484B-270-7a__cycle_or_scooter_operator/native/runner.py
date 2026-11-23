@@ -18,7 +18,7 @@ from geometry import check as geometry_check,open_drive
 HERE=Path(__file__).resolve().parent
 CASES=('witness_1','witness_2')
 RATE_HZ=20
-FRAMES=480
+FRAMES=600
 
 def check(case:str,candidate:str)->dict:
     if case not in CASES or candidate not in CANDIDATES:raise ValueError('Unknown exact bicycle case/candidate')

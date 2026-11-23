@@ -16,7 +16,7 @@ from cameras import camera_plan
 from engineering import parameters
 from geometry import open_drive
 
-FRAMES = 480
+FRAMES = 600
 
 
 def sha(path: Path) -> str:

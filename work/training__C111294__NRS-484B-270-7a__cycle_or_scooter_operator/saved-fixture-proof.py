@@ -4,7 +4,6 @@ import hashlib
 import json
 import math
 import os
-import pickle
 from pathlib import Path
 import shutil
 import subprocess
@@ -77,26 +76,17 @@ def make(root, suffix, full_resolution=False):
                        ('video_frames.jsonl', mapping), ('native_samples.jsonl', native)):
         write_rows(root / name, rows)
     (root / 'capture/manifest.json').write_text(json.dumps({'extraction_confirmed': True,
-        'frames': 480, 'sources': {'interaction.json': sha(root / 'interaction.json')},
+        'frames': 600, 'sources': {'interaction.json': sha(root / 'interaction.json')},
         'synthetic_diagnostic': True}))
     (root / 'capture/recorder_info.txt').write_text('Create 101: vehicle.bh.crossbike\n')
-    for channel in config['recording_description']['channels']:
-        name = channel['name']
-        values = []
-        for i, row in enumerate(native):
-            if name == 'bicycle_body_pose': value = row['bicycle']
-            elif name == 'motorist_body_pose': value = row['motor_vehicle']
-            elif name == 'motorist_brake': value = row['motor_vehicle']['brake_applied']
-            elif name == 'camera_frame_join': value = mapping[i]
-            else: raise ValueError('Unknown channel ' + name)
-            values.append({'time_s': row['time_s'], 'value': value})
-        write_rows(root / 'channels' / (name + '.jsonl'), values)
+    # Derived channels are intentionally absent. The saved finalizer must build
+    # them from retained Native samples and the original frame map.
     ffmpeg = ROOT / '.runtime-work/linux_arm64/ffmpeg'
-    for name in ('overview', 'bicycle_approach', 'motorist_approach', 'conflict'):
+    for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
         size = '1920x1080' if name == 'overview' and full_resolution else (
             '1280x720' if full_resolution else '32x32')
         subprocess.run([str(ffmpeg), '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
-            '-f', 'lavfi', '-i', 'color=c=black:s=' + size + ':r=20:d=24', '-frames:v', '480',
+            '-f', 'lavfi', '-i', 'color=c=black:s=' + size + ':r=20:d=30', '-frames:v', '600',
             '-c:v', 'ffv1', str(root / (name + '.mkv'))], check=True, timeout=120)
     x,y,z=20,-24,40
     (root/'camera_context.json').write_text(json.dumps({'name':'overview',
@@ -106,18 +96,26 @@ def make(root, suffix, full_resolution=False):
         'pitch_deg':math.degrees(math.atan2(1.0-z,math.hypot(x,y)))},
         'source_kind':'synthetic_cpu_camera_emulation'}))
     if full_resolution:
-        from scenario_pipeline.traffic_spec_adapter.adapter import load_graph
-        graph = load_graph(ROOT / 'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
         folder = root / 'capture/native/graphs/base'
         folder.mkdir(parents=True)
         graph_rows = []
         for item in mapping:
             frame = item['native_frame']
-            graph.graph['frame'] = frame
-            (folder / f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph, protocol=4))
+            center = trace[item['video_frame']]['position_m']
+            graph_path = folder / f'{frame:08d}.adapter.json'
+            graph_path.write_text(json.dumps({
+                'format': 'native-adapter-graph-v1', 'multigraph': False,
+                'metadata': {'frame': frame, 'simulation_time_s': item['time_s'],
+                             'synthetic_diagnostic': True},
+                'nodes': [{'id': 'ego', 'attributes': {'sem_class': 'ego',
+                    'entity_id': 101, 'vertex': center, 'forward': [0, 1, 0],
+                    'threedbbox': evidence[item['video_frame']]['ego']['body_vertices_m']}}],
+                'edges': []}, separators=(',', ':')) + '\n')
             graph_rows.append({'frame': frame, 'simulation_time': item['time_s'],
-                'time_s': item['time_s'], 'base': f'graphs/base/{frame:08d}.pkl',
-                'abstract': f'graphs/abstract/{frame:08d}.pkl', 'synthetic_diagnostic': True})
+                'time_s': item['time_s'],
+                'adapter_graph': f'graphs/base/{frame:08d}.adapter.json',
+                'base': f'graphs/base/{frame:08d}.adapter.json',
+                'nodes': 1, 'edges': 0, 'synthetic_diagnostic': True})
         write_rows(root / 'capture/native/frames.jsonl', graph_rows)
         manifest = json.loads((root / 'capture/manifest.json').read_text())
         manifest['sources'].update({'road.xodr': sha(root / 'road.xodr'),
@@ -187,7 +185,7 @@ def run():
             text=True, capture_output=True, env=env, timeout=300)
         if rejected.returncode == 0 or 'Missing required source: interaction.json' not in rejected.stderr:
             raise RuntimeError('Missing interaction source accepted: ' + rejected.stdout + rejected.stderr)
-        results.append({'case': suffix, 'frames': 480,
+        results.append({'case': suffix, 'frames': 600,
             'braking_frames': report['measurements']['bicycle_motorist_interaction']['value']['motor_braking_frames'],
             'positive_result_sha256': sha(positive / 'result.json'),
             'positive_report_sha256': sha(positive / 'analysis-report.json'),

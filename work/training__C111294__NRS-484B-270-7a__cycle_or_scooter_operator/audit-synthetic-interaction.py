@@ -12,7 +12,7 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def read(case):
     road=SOURCE/case/'road.xodr';path=SOURCE/case/'interaction.json'
     data=json.loads(path.read_text())
-    if data['map_sha256']!=sha(road) or data['case']!=case or len(data['frames'])!=480:
+    if data['map_sha256']!=sha(road) or data['case']!=case or len(data['frames'])!=600:
         raise ValueError('Source, case or frame count differs')
     if data['intent_physically_verified'] or data['legal_interference_claimed'] or data['source_kind']!='synthetic_cpu':
         raise ValueError('Synthetic source has an unsupported intent or legal claim')
@@ -47,7 +47,7 @@ def main():
         for case,record in (('witness_1',a),('witness_2',b))}
     if not first_bike['witness_2']<first_bike['witness_1'] or first_bike['witness_2'] not in braking:
         raise ValueError('Controlled bicycle entry does not precede reference')
-    print(json.dumps({'passed':True,'frames_per_case':480,'same_map_and_frozen_identity':True,
+    print(json.dumps({'passed':True,'frames_per_case':600,'same_map_and_frozen_identity':True,
         'identical_actor_sources_before_frame':75,'motor_braking_frames':len(braking),
         'bicycle_entry_frames':first_bike,'source_sha256':{'witness_1':reference[1],'witness_2':intervention[1]},
         'intent_or_legal_claim':False},sort_keys=True))

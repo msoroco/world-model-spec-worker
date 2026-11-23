@@ -45,8 +45,8 @@ def altered_law_with_rehashed_copies(bundle):
     plan = bundle / 'case-plan.json'
     cfg = bundle / 'config.json'
     source = json.loads(assignment.read_text())
-    changed = source['law_record']['text'] + ' Altered applicability sentence.'
-    source['law_record']['text'] = changed
+    changed = source['law']['text'] + ' Altered applicability sentence.'
+    source['law']['text'] = changed
     assignment.write_text(json.dumps(source) + '\n')
     planned = json.loads(plan.read_text())
     planned['source_law']['text'] = changed

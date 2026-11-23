@@ -1,4 +1,4 @@
-"""Persist and adversarially test the 480-frame C110763 reverse pair."""
+"""Persist and adversarially test the 600-frame C110763 reverse pair."""
 import hashlib
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ from measure import measure
 def rows(suffix):
     stop=STOPS[suffix]
     out=[]
-    for i in range(480):
+    for i in range(600):
         fraction=min(i/199,1)
         x=round(12+(stop-12)*fraction,5)
         out.append({'video_frame':i,'native_frame':2000+i,'time_s':i/20,

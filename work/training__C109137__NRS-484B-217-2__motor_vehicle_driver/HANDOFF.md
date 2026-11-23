@@ -1,3 +1,13 @@
+# C109137 current CPU continuation (2026-11-23)
+
+The canonical input now uses `law`, with SHA-256 `7af2a5e97c8c9e0ed830a9a27365e371975ad836d801190423fe5d2035ecb16a`; the exact law text and case-plan hash are checked by `native/zone/build.py` and `check.py`. The two unselected comparison cases and eight candidate bundles have 600 requests at 20 Hz (30 seconds). Adjoining road 218 extends 150 m so the 30-second requested trajectory remains on the authored road. `capture.py` declares overview, forward, stripe-side and rear FFV1 sources; `saved.py` requires all four for original media review. The separate diagnostic media proof exercises four 600-frame FFV1 positives and eight missing/short source negatives. No generated pixels are represented as original.
+
+CPU commands passed under `.venv-cpu/bin/python`: `runtime.py preflight`; `native/zone/prove_request.py` (8 positive, 64 source/track negatives); `prove_saved.py` (8 synthetic saved positive, 80 negatives); `audit.py` (4,800 frame joins, four comparison pairs, three trigger probes); `build_runtime_offline.py`; `prove_runtime_offline.py` (8 pinned current-runtime constructions, 24 tests); `audit_runtime_offline.py` (96 materialized source files); `prove_media.py` (4 diagnostic media positives, 8 negatives); and scoped `worker_check.py --assignment training__C109137__NRS-484B-217-2__motor_vehicle_driver --complete` (exit 0). Receipt SHA-256 values: request `340c2a84f8af82b98e174bfb286fd36b4750d6fad1199209cb09c0f8dd834264`, saved `9b6638560bdf4a5ade6a19ac878a89fb4786e4633f5c63819196da456f939ca9`, independent `d75c80d489f979d6cdfe3c02e4cb81f310e9b5fc62b773142091572c6220f252`, pinned offline `96af6c2a2e64756f37f3652c36b44ff8c8979085d6556fe241d008a5eae1367a`, pinned audit `b7dd3f1ed1cc91489ea50786e62e3942a6f218662320f553eb9095cb1e588fec`, and media `5682fa8ca1635faf9c8a0761a73d2fd9c855af22f6ce6871fab4e9182a1374c2`.
+
+Status remains **partial**. These are unselected diagnostics. Worker-owned next work is to promote a source-reviewed primary adjoining-highway case, run current-runtime selected compatibility and saved processing with retained raw sources and four videos, expand its three distinct fallbacks, cover the separate left-turn and subsection 3/4 branches, then complete independent acceptance/comparison audits and the assignment-scoped strict gate. Original Native road, striping, signal, traffic behavior and statutory judgments remain unobserved.
+
+## Historical handoff
+
 # NRS 484B.217(2) at C109137
 
 Frozen actor/cell: `motor_vehicle_driver`, `intersection` / `enter_road` / `pavement_striping`. The exact frozen assignment text and case plan are pinned by SHA-256 in `native/zone/build.py` and `native/zone/check.py`.

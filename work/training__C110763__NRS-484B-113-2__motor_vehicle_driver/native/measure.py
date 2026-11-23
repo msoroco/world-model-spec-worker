@@ -12,7 +12,7 @@ def measure(source: Path, expected_sha256: str):
     if hashlib.sha256(raw).hexdigest()!=expected_sha256:
         raise ValueError('Saved Native source hash differs')
     rows=[json.loads(line) for line in raw.splitlines()]
-    if len(rows)!=480:raise ValueError('Exact 480-frame saved path required')
+    if len(rows)!=600:raise ValueError('Exact 600-frame saved path required')
     events=[];backing_frames=0;prior_frame=None;prior_time=None;last_x=None
     for index,row in enumerate(rows):
         frame=row.get('native_frame');time=row.get('time_s')

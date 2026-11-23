@@ -31,7 +31,7 @@ class ReverseIntersectionUnit(unittest.TestCase):
         for candidate in ('fallback1','fallback2','fallback3'):
             knobs=parameters('condition_b',candidate)['knobs']
             changed.append({key for key in base if base[key]!=knobs[key]})
-            self.assertEqual((knobs['rate_hz'],knobs['duration_s']),(20,24))
+            self.assertEqual((knobs['rate_hz'],knobs['duration_s']),(20,30))
         self.assertEqual(changed,[{'lateral_gain'},{'brake_margin_m'},
                                   {'overview_fov_deg'}])
 

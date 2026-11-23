@@ -104,17 +104,20 @@ def capture(bundle, output, host, port):
             raise RuntimeError('C10389 ego spawn failed')
         owned.append(ego)
         elevated = cfg['camera_policy'] == 'elevated_overview'
-        specs = (('overview', 1280, 720, 100 if elevated else 85,
-                  (50, -15, 45 if elevated else 30), -70 if elevated else -60),
-                 ('forward', 1280, 720, 90, (1, 0, 1.5), 0))
-        for name, width, height, fov, location, pitch in specs:
+        specs = (('overview', 1920, 1080, 100 if elevated else 85,
+                  (50, -15, 45 if elevated else 30), -70 if elevated else -60, 90),
+                 ('approach', 1280, 720, 90, (1, 0, 1.5), 0, 0),
+                 ('reference_corner', 1280, 720, 85, (48, -8, 5), -30, 70),
+                 ('driver_reference', 1280, 720, 90, (0, 0, 1.5), 0, 0))
+        for name, width, height, fov, location, pitch, yaw in specs:
             camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
                                ('fov', fov), ('sensor_tick', 0)):
                 camera_bp.set_attribute(key, str(value))
             camera = world.spawn_actor(camera_bp,
-                carla.Transform(carla.Location(*location), carla.Rotation(pitch=pitch)),
-                attach_to=ego if name == 'forward' else None)
+                carla.Transform(carla.Location(*location),
+                                carla.Rotation(pitch=pitch, yaw=yaw)),
+                attach_to=ego if name in ('approach', 'driver_reference') else None)
             owned.append(camera)
             queues[name] = queue.Queue()
             camera.listen(queues[name].put)
@@ -160,7 +163,7 @@ def capture(bundle, output, host, port):
                     'observed_device_obedience': None, 'legal_verdict': None}
                 actors.write(json.dumps(row, allow_nan=False) + '\n')
                 pipeline.capture(frame, time_s, extra={'c10389_device': row})
-                for name, width, height, _, _, _ in specs:
+                for name, width, height, _, _, _, _ in specs:
                     image = queues[name].get(timeout=30)
                     while image.frame < frame:
                         image = queues[name].get(timeout=30)
@@ -189,6 +192,19 @@ def capture(bundle, output, host, port):
             except BaseException as exc:
                 error = error or {'encoder_error': str(exc)}
             logs[name].close()
+        if not error and len(encoders) == 4:
+            try:
+                subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
+                    '-n', '-i', str(output / 'overview.mkv'),
+                    '-i', str(output / 'approach.mkv'),
+                    '-i', str(output / 'reference_corner.mkv'),
+                    '-i', str(output / 'driver_reference.mkv'),
+                    '-filter_complex',
+                    'xstack=inputs=4:layout=960_0|0_1080|1280_1080|2560_1080:fill=black',
+                    '-an', '-c:v', 'ffv1', str(output / 'raw.mkv')],
+                    check=True, timeout=900)
+            except BaseException as exc:
+                error = {'compose_error': str(exc)}
         for actor in reversed(owned):
             try:
                 if actor.type_id.startswith('sensor.') and actor.is_listening:

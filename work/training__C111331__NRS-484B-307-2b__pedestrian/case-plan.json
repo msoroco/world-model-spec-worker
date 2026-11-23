@@ -326,5 +326,95 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "source_observation_mapping": [
+    {
+      "term": "dev.traffic_signal",
+      "measurement": "traffic_signal.state at observed entry frame",
+      "evidence": "raw per-frame signal packet",
+      "channels": [
+        "traffic_signal"
+      ],
+      "source_refs": [
+        "saved_entry_measurement.py"
+      ],
+      "status": "cpu_diagnostic_only"
+    },
+    {
+      "term": "dev.governs",
+      "measurement": "traffic head ID matches declared governing traffic head",
+      "evidence": "raw packet ID and governing device identity",
+      "channels": [
+        "traffic_signal",
+        "governing_devices"
+      ],
+      "source_refs": [
+        "saved_entry_measurement.py"
+      ],
+      "status": "cpu_diagnostic_only"
+    },
+    {
+      "term": "ru.subject",
+      "measurement": "pedestrian ID stable over all frames",
+      "evidence": "raw per-frame pedestrian ID",
+      "channels": [
+        "pedestrian_id"
+      ],
+      "source_refs": [
+        "saved_entry_measurement.py"
+      ],
+      "status": "cpu_diagnostic_only"
+    },
+    {
+      "term": "st.crosswalk",
+      "measurement": "pedestrian pose enters declared crosswalk bounds",
+      "evidence": "raw per-frame pose and crosswalk geometry",
+      "channels": [
+        "pedestrian_xy",
+        "crosswalk"
+      ],
+      "source_refs": [
+        "saved_entry_measurement.py"
+      ],
+      "status": "cpu_diagnostic_only"
+    },
+    {
+      "term": "rel.occupies",
+      "measurement": "entry/exit interval from raw pedestrian pose",
+      "evidence": "raw per-frame pose and crosswalk geometry",
+      "channels": [
+        "pedestrian_xy",
+        "crosswalk"
+      ],
+      "source_refs": [
+        "saved_entry_measurement.py"
+      ],
+      "status": "cpu_diagnostic_only"
+    },
+    {
+      "term": "dev.pedestrian_signal",
+      "measurement": "pedestrian device state at entry and governing ID",
+      "evidence": "raw per-frame pedestrian signal packet",
+      "channels": [
+        "pedestrian_signal",
+        "governing_devices"
+      ],
+      "source_refs": [
+        "saved_entry_measurement.py"
+      ],
+      "status": "cpu_diagnostic_only"
+    }
+  ],
+  "saved_entry_cpu_diagnostic": {
+    "script": "saved_entry_measurement.py",
+    "script_sha256": "3ebd818cf3dd040f63fc74c34a1536ccce8e963ff69383ec3723abb3597a6892",
+    "proof": "saved-entry-diagnostic.json",
+    "proof_sha256": "77f1b57ea1f70cd52d41d109716e8c887752151d15c9ec393a3956b42dc640af",
+    "test_log": "saved-entry-diagnostic.log",
+    "test_log_sha256": "7c67f29351e081ab13635f65fd81b307fa15d7766a868308dc57f60558330fd9",
+    "test_exit_code": 0,
+    "positive_scenarios": 4,
+    "negative_rejections": 7,
+    "source_type": "synthetic raw packets; no Native provenance, camera pixels, or pinned runtime process-saved proof"
+  }
 }

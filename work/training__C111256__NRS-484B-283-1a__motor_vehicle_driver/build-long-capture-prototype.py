@@ -87,6 +87,8 @@ def main():
         generator['files'][filename] = ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows)
     capture_manifest = json.loads(generator['files']['capture/manifest.json'])
     capture_manifest['frames'] = 600
+    capture_manifest['sources']['trace.jsonl'] = hashlib.sha256(
+        generator['files']['trace.jsonl'].encode()).hexdigest()
     generator['files']['capture/manifest.json'] = json.dumps(capture_manifest, separators=(',', ':')) + '\n'
     assert len(generator['graphs']) == 480
     last_graph = generator['graphs'][-1]
@@ -114,8 +116,11 @@ def main():
     gpath.write_text(json.dumps(generator, separators=(',', ':')) + '\n')
     assert gpath.stat().st_size <= 2 * 1024 * 1024
     source_path = OUT / 'witness_1-600.json'
+    measure_path = HERE.parents[1] / '.runtime-work/c111256-long-capture-measure.py'
+    measure_path.parent.mkdir(exist_ok=True)
+    measure_path.write_text(files['measure.py'])
     subprocess.run([str(HERE.parents[1] / '.venv-cpu/bin/python'),
-                    str(HERE.parents[1] / '.runtime-work/c111256-long-capture-offline/measure.py'),
+                    str(measure_path),
                     '--output', str(OUT)], check=True, capture_output=True, text=True)
     generated = OUT / 'witness_1-600.json'
     assert generated.is_file()

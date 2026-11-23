@@ -20,7 +20,7 @@ def check(bundle):
     plan = json.loads((bundle / "case-plan.json").read_text())
     suffix = cfg["case_id"].split("__")[-1]
     candidate = cfg["candidate_id"]
-    law = a["law_record"]["text"]
+    law = a["law"]["text"]
     if (suffix not in CASES or candidate not in POLICIES or
             sha(bundle / "assignment-source.json") != ASSIGNMENT_SHA or
             sha(bundle / "case-plan.json") != PLAN_SHA or
@@ -99,7 +99,7 @@ def check(bundle):
         raise ValueError("Candidate policy or unverified status changed")
     rows = [json.loads(x) for x in (bundle / "requested-tracks.jsonl").read_text().splitlines()]
     if rows != request_rows(suffix, candidate):
-        raise ValueError("400 request rows changed")
+        raise ValueError("600 request rows changed")
     crosses = any(r["requested_ego_xy_m"][1] > 0 for r in rows)
     first_cross = next((r["frame"] for r in rows if r["requested_ego_xy_m"][1] > 0), None)
     if candidate == "fallback3":

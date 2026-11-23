@@ -4,7 +4,6 @@ import argparse
 import hashlib
 import json
 import math
-import pickle
 from pathlib import Path
 import shutil
 import subprocess
@@ -19,6 +18,8 @@ from geometry import body, STOPS
 from worker_exchange.fixture_generator import _graph
 from worker_exchange.package_compatibility import _process_fixture, materialize_case
 from worker_exchange.runtime_cli import execution_env
+from worker_exchange.common import digest, tree
+from traffic_spec_adapter.adapter import write_adapter_graph
 
 
 def write_rows(path: Path, rows):
@@ -48,7 +49,7 @@ def fixture(destination: Path, suffix: str):
     graph = _graph(graph_spec)
     graph_dir = destination / "capture/native/graphs/base"; graph_dir.mkdir(parents=True)
     stop = STOPS[suffix]
-    for i in range(480):
+    for i in range(600):
         frame = 100 + i; time_s = .05 * (i + 1)
         fraction = min(i / 199, 1.0)
         x = round(12 + (stop - 12) * fraction, 5); y = -1.75
@@ -89,10 +90,11 @@ def fixture(destination: Path, suffix: str):
                                                        "s_m": x + 100}}})
         graph.graph["frame"] = frame
         graph.graph["synthetic_diagnostic"] = True
-        (graph_dir / f"{frame:08d}.pkl").write_bytes(pickle.dumps(graph, protocol=4))
+        write_adapter_graph(graph, graph_dir / f"{frame:08d}.adapter.json")
         frames.append({"frame": frame, "simulation_time": time_s,
                        "time_s": time_s,
-                       "base": f"graphs/base/{frame:08d}.pkl",
+                       "adapter_graph": f"graphs/base/{frame:08d}.adapter.json",
+                       "base": f"graphs/base/{frame:08d}.adapter.json",
                        "abstract": f"graphs/abstract/{frame:08d}.pkl",
                        "synthetic_diagnostic": True})
     for name, rows in (("trace.jsonl", trace), ("capture/evidence.jsonl", evidence),
@@ -101,7 +103,7 @@ def fixture(destination: Path, suffix: str):
         write_rows(destination / name, rows)
     (destination / "capture/recorder_info.txt").write_text("Create 107: vehicle.lincoln.mkz_2020\n")
     (destination / "capture/manifest.json").write_text(json.dumps({
-        "extraction_confirmed": True, "frames": 480,
+        "extraction_confirmed": True, "frames": 600,
         "sources": {"road.xodr": sha(HERE / "native/road.xodr"),
                     "trace.jsonl": sha(destination / "trace.jsonl")},
         "synthetic_diagnostic": True}))
@@ -111,8 +113,8 @@ def fixture(destination: Path, suffix: str):
     for name, (width, height) in zip(names, sizes):
         size = f"{width}x{height}"
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
-                        "-f", "lavfi", "-i", f"color=c=black:s={size}:r=20:d=24",
-                        "-frames:v", "480", "-c:v", "ffv1",
+                        "-f", "lavfi", "-i", f"color=c=black:s={size}:r=20:d=30",
+                        "-frames:v", "600", "-c:v", "ffv1",
                         str(destination / (name + ".mkv"))],
                        check=True, timeout=120)
 
@@ -140,7 +142,7 @@ def main():
     receipt = _process_fixture(HERE / "draft-execution-manifest.json", case, source, output,
                   ROOT / "runtime/pipeline/library",
                   ROOT / ".runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
-                  args.candidate)
+                  args.candidate, {"fixture_sha256": digest(tree(source)), "fixture_manifest": tree(source)})
     negative = scratch / "negative"
     materialize_case(HERE / "draft-execution-manifest.json", case, negative, source, args.candidate)
     (negative / "native_samples.jsonl").unlink()

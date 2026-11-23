@@ -31,8 +31,8 @@ def audit():
     proof = read(HERE / 'offline' / 'proof-compatibility.json')
     assignment = ROOT / 'inputs' / CASE.name / 'assignment.json'
     plan = CASE / 'case-plan.json'
-    law = read(assignment)['law_record']['text']
-    if (sha(assignment) != 'cac267c7efd21c4efa3f18a3531b2d3311be9d41d6abdc161aa6854ee050dbad' or
+    law = read(assignment)['law']['text']
+    if (sha(assignment) != 'e34b92fea95ce943c8bee703c64285f568f4c5cfdb0a6b6428072f57dd846ee0' or
             hashlib.sha256(law.encode()).hexdigest() !=
             '0083bdf940bab787cf1d1cf789a93d1edf516df1df6de3b3e91cca237c6bbba8'):
         raise ValueError('exact frozen statutory source')
@@ -80,7 +80,7 @@ def audit():
         signal = root.find('./road/signals/signal')
         if (root.find('./road').get('id') != '389' or signal is None or
                 signal.get('id') != '3891' or signal.get('type') != '206' or
-                signal.get('s') != '50' or len(track) != 240):
+                signal.get('s') != '50' or len(track) != 600):
             raise ValueError('independent OpenDRIVE/request cardinality')
         speed, camera, policy = POLICIES[candidate]
         obey = suffix == 'probe_1'

@@ -11,7 +11,7 @@ import math
 from pathlib import Path
 import subprocess
 
-COUNT=480
+COUNT=600
 SOURCES=('road.xodr','interaction.json','native_samples.jsonl',
          'video_frames.jsonl','camera_context.json','overview.mkv')
 
@@ -74,7 +74,7 @@ def measure(attempt:Path)->dict:
     measure_interaction(attempt/'interaction.json',declared['interaction.json'],attempt/'road.xodr')
     native=rows(attempt/'native_samples.jsonl');mapping=rows(attempt/'video_frames.jsonl')
     if len(native)!=COUNT or len(mapping)!=COUNT or len(interaction.get('frames',[]))!=COUNT:
-        raise ValueError('Full 480-frame trigger join required')
+        raise ValueError('Full 600-frame trigger join required')
     camera=json.loads((attempt/'camera_context.json').read_text())
     if camera.get('name')!='overview' or any(type(camera.get(key)) not in (int,float) for key in ('width','height','fov_deg')):
         raise ValueError('Overview calibration absent')

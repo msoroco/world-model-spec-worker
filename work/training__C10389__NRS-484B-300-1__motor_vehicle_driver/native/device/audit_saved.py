@@ -58,9 +58,9 @@ def audit():
                 receipt['original_native_observed'] or receipt['delivery_ready'] or
                 receipt['official_placement_verified'] or
                 receipt['legal_verdict'] is not None or
-                not (len(raw_actors) == len(raw_videos) == len(raw_reviews) == 240) or
+                not (len(raw_actors) == len(raw_videos) == len(raw_reviews) == 600) or
                 not (len(observed) == len(cameras) == len(reviews) ==
-                     len(requests) == 240)):
+                     len(requests) == 600)):
             raise ValueError('synthetic provenance or cardinality')
         stopped = crossed = face = line = 0
         first = None

@@ -15,9 +15,9 @@ POLICIES = {
 SUFFIXES = ('probe_1', 'probe_2')
 STOP_X = 44.0
 DEVICE_X = 50.0
-FRAMES = 240
+FRAMES = 600
 RATE = 20
-FROZEN_ASSIGNMENT_SHA = 'cac267c7efd21c4efa3f18a3531b2d3311be9d41d6abdc161aa6854ee050dbad'
+FROZEN_ASSIGNMENT_SHA = 'e34b92fea95ce943c8bee703c64285f568f4c5cfdb0a6b6428072f57dd846ee0'
 EXACT_LAW_TEXT_SHA = '0083bdf940bab787cf1d1cf789a93d1edf516df1df6de3b3e91cca237c6bbba8'
 
 
@@ -32,10 +32,10 @@ def write_json(path, value):
 
 def road():
     return '''<?xml version="1.0" encoding="UTF-8"?>
-<OpenDRIVE><header revMajor="1" revMinor="4" name="C10389 alley device request" version="1.00" date="2026-11-08" north="4" south="-4" east="120" west="0" vendor="worker"/>
-<road name="alley stop-device request" length="120" id="389" junction="-1">
+<OpenDRIVE><header revMajor="1" revMinor="4" name="C10389 alley device request" version="1.00" date="2026-11-08" north="4" south="-4" east="300" west="0" vendor="worker"/>
+<road name="alley stop-device request" length="300" id="389" junction="-1">
 <type s="0" type="town"><speed max="20" unit="mph"/></type>
-<planView><geometry s="0" x="0" y="0" hdg="0" length="120"><line/></geometry></planView>
+<planView><geometry s="0" x="0" y="0" hdg="0" length="300"><line/></geometry></planView>
 <lanes><laneSection s="0"><center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid" color="yellow" width="0.15"/></lane></center><right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></right></laneSection></lanes>
 <objects/><signals><signal id="3891" name="C10389_authored_stop_control" s="50" t="-4.2" zOffset="0" hOffset="0" pitch="0" roll="0" dynamic="no" orientation="+" country="US" type="206" subtype="0" value="0" height="0.75" width="0.75"/></signals>
 </road></OpenDRIVE>
@@ -79,7 +79,7 @@ def build():
     a = json.loads(assignment.read_text())
     plan_path = CASE / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
-    law = a['law_record']['text']
+    law = a['law']['text']
     if (sha(assignment) != FROZEN_ASSIGNMENT_SHA or
             hashlib.sha256(law.encode()).hexdigest() != EXACT_LAW_TEXT_SHA or
             plan['source_law']['text'] != law or
@@ -111,6 +111,7 @@ def build():
                    'road_sha256': sha(road_path),
                    'tracks_sha256': sha(tracks),
                    'rate_hz': RATE, 'frames': FRAMES,
+                   'camera_views': ['overview', 'approach', 'reference_corner', 'driver_reference'],
                    'requested_obey': obey, 'requested_speed_mps': speed,
                    'camera_policy': camera, 'route_policy': policy,
                    'device_id': '3891', 'device_s_m': DEVICE_X,

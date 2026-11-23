@@ -32,7 +32,7 @@ def run():
                 original['frames'][index]=built
             path=root/(suffix+'.json');path.write_text(json.dumps(original)+'\n')
             result=measure(path,sha(path),road)
-            assert result['frames']==480 and not result['human_propulsion_physically_verified']
+            assert result['frames']==600 and not result['human_propulsion_physically_verified']
             assert not result['physical_behavior_observed']
             changed=copy.deepcopy(original)
             changed['frames'][20]['bicycle']['blueprint_id']='vehicle.tesla.model3'

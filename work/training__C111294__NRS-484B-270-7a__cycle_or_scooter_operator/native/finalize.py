@@ -50,7 +50,7 @@ def finalize(attempt: Path, output: Path) -> dict:
     if value['case'] != config['case_suffix'] or config['case_id'].split('__')[-1] != value['case']:
         raise ValueError('Case source differs')
     count = config['rate_hz'] * config['duration_s']
-    if count != 480 or manifest.get('frames') != count or manifest.get('extraction_confirmed') is not True:
+    if count != 600 or manifest.get('frames') != count or manifest.get('extraction_confirmed') is not True:
         raise ValueError('Full saved extraction absent')
     joined = {name: rows(required(attempt, name)) for name in
               ('trace.jsonl', 'capture/evidence.jsonl', 'video_frames.jsonl', 'native_samples.jsonl')}
@@ -86,16 +86,31 @@ def finalize(attempt: Path, output: Path) -> dict:
         if evidence.get('ego', {}).get('body_vertices_m') != native.get('bicycle_body_vertices_m'):
             raise ValueError('Original bicycle body source differs')
     videos = [name + '.mkv' for name in
-              ('overview', 'bicycle_approach', 'motorist_approach', 'conflict')]
+              ('overview', 'approach', 'reference_corner', 'driver_reference')]
     counts = {name: decoded_frames(required(attempt, name)) for name in videos}
     if any(frames != count for frames in counts.values()):
         raise ValueError('Original video frame count differs')
     recording = []
+    channel_values = {
+        'bicycle_body_pose': [row['bicycle'] for row in joined['native_samples.jsonl']],
+        'motorist_body_pose': [row['motor_vehicle'] for row in joined['native_samples.jsonl']],
+        'motorist_brake': [row['motor_vehicle']['brake_applied'] for row in joined['native_samples.jsonl']],
+        'camera_frame_join': joined['video_frames.jsonl'],
+    }
     for channel in config['recording_description']['channels']:
         name = channel['name']
         path = 'channels/' + name + '.jsonl'
-        if len(rows(required(attempt, path))) != count:
-            raise ValueError('Channel frame count differs: ' + name)
+        if name not in channel_values:
+            raise ValueError('Unknown source-derived channel: ' + name)
+        derived = [{'time_s': row['time_s'], 'value': value} for row, value in
+                   zip(joined['native_samples.jsonl'], channel_values[name])]
+        destination = attempt / path
+        if destination.exists():
+            if rows(destination) != derived:
+                raise ValueError('Channel differs from retained Native source: ' + name)
+        else:
+            destination.parent.mkdir(exist_ok=True)
+            destination.write_text(''.join(json.dumps(row, allow_nan=False) + '\n' for row in derived))
         recording.append({'name': name, 'unit': channel['unit'], 'reference': path})
     expected_brake = value['case'] == 'witness_2'
     observed_brake = value['motorist_braked']
@@ -115,7 +130,7 @@ def finalize(attempt: Path, output: Path) -> dict:
         'recording_evidence': recording,
         'realized_observables': {'motor_braking_frames': {'value': value['motor_braking_frames'],
             'unit': 'frame', 'method': 'source-hashed motor-vehicle brake samples',
-            'time_window': 'saved 24 s diagnostic', 'statistic': 'count',
+            'time_window': 'saved 30 s diagnostic', 'statistic': 'count',
             'reference': 'interaction.json'}},
         'provenance_kind': 'synthetic_cpu' if not value['physical_behavior_observed'] else 'native',
         'accepted': False, 'legal_verdict_claimed': False}

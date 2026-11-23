@@ -22,7 +22,7 @@ def main():
     for suffix in ('condition_a','condition_b'):
         path=HERE/'fixtures'/suffix/'native_samples.jsonl'
         rows=[json.loads(line) for line in path.read_text().splitlines()]
-        if len(rows)!=480:raise ValueError('Saved sample count differs')
+        if len(rows)!=600:raise ValueError('Saved sample count differs')
         events=[]
         for i,row in enumerate(rows):
             if row['native_frame']!=2000+i or row['video_frame']!=i or abs(row['time_s']-i/20)>1e-8:

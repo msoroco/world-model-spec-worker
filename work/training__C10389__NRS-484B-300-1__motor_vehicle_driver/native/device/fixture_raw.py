@@ -64,8 +64,10 @@ def build(bundle, output):
         videos.append({'video_frame': i, 'native_frame': native, 'time_s': t})
         reviews.append({'frame': i, 'native_frame': native, 'time_s': t,
             'source_kind': 'synthetic_cpu', 'review_provenance': 'synthetic_cpu',
-            'forward_video_sha256': 'synthetic_cpu',
             'overview_video_sha256': 'synthetic_cpu',
+            'approach_video_sha256': 'synthetic_cpu',
+            'reference_corner_video_sha256': 'synthetic_cpu',
+            'driver_reference_video_sha256': 'synthetic_cpu',
             'device_face_pixel_reviewed': True, 'device_face_visible': True,
             'approach_area_pixel_reviewed': True, 'approach_area_visible': True})
     write_rows(output / 'native-raw-actors.jsonl', actors)
@@ -74,12 +76,12 @@ def build(bundle, output):
     put(output / 'native-capture-report.json', {
         'case_id': checked['case_id'], 'candidate_id': checked['candidate_id'],
         'config_sha256': sha(bundle / 'config.json'),
-        'requested_frames': 240, 'observed_frames': 240,
+        'requested_frames': len(requests), 'observed_frames': len(requests),
         'error': None, 'accepted': False, 'delivery_ready': False,
         'stop_landmark_verified': True,
         'official_placement_verified': False,
         'police_direction_verified': False, 'legal_verdict': None})
-    return {'source_kind': 'synthetic_cpu', 'rows': 240, 'delivery_ready': False}
+    return {'source_kind': 'synthetic_cpu', 'rows': len(requests), 'delivery_ready': False}
 
 
 if __name__ == '__main__':

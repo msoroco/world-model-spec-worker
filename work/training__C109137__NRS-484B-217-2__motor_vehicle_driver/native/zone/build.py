@@ -7,11 +7,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 CASE = HERE.parent.parent
 ROOT = CASE.parents[1]
-ASSIGNMENT_SHA = "a681240f21707409e973168946afc2944b800e337a04cc12580542df6657d6f0"
+ASSIGNMENT_SHA = "7af2a5e97c8c9e0ed830a9a27365e371975ad836d801190423fe5d2035ecb16a"
 LAW_SHA = "d00bf2542a89af95bac14f1c81f22d0a0c54cbfe1ac7cf868dfa76df2669fd0e"
-PLAN_SHA = "dfb7b614785f23960fc4a4eac4cd858f75673f451149a75d938354c1a348f226"
+PLAN_SHA = "40c2262b14f8c310c62b1d1b8353fc774caeeb72b9cc13b63e43dac0991cd2a9"
 RATE = 20
-FRAMES = 400
+FRAMES = 600
 STRIPE_Y = 0.0
 TURN_X = 50.0
 POLICIES = {
@@ -34,7 +34,7 @@ def put(path, obj):
 
 def road():
     return '''<?xml version="1.0" encoding="UTF-8"?>
-<OpenDRIVE><header revMajor="1" revMinor="4" name="C109137 striped-zone intersection request" version="1.00" date="2026-11-08" north="35" south="-5" east="160" west="0" vendor="worker"/>
+<OpenDRIVE><header revMajor="1" revMinor="4" name="C109137 striped-zone intersection request" version="1.00" date="2026-11-08" north="160" south="-5" east="160" west="0" vendor="worker"/>
 <road name="west two-way highway with no-passing striping" length="50" id="217" junction="-1">
 <link><successor elementType="junction" elementId="1"/></link>
 <type s="0" type="town"><speed max="25" unit="mph"/></type>
@@ -49,7 +49,7 @@ def road():
 <lanes><laneSection s="0"><left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></left>
 <center><lane id="0" type="none" level="false"><roadMark sOffset="0" type="solid solid" color="yellow" width="0.15"/></lane></center>
 <right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></right></laneSection></lanes><objects/><signals/></road>
-<road name="adjoining highway north" length="30" id="218" junction="-1">
+<road name="adjoining highway north" length="150" id="218" junction="-1">
 <link><predecessor elementType="junction" elementId="1"/></link>
 <type s="0" type="town"><speed max="20" unit="mph"/></type>
 <planView><geometry s="0" x="53.5" y="3.5" hdg="1.5707963267948966" length="30"><line/></geometry></planView>
@@ -114,7 +114,7 @@ def build():
     source = ROOT / "inputs" / CASE.name / "assignment.json"
     plan_path = CASE / "case-plan.json"
     a, plan = json.loads(source.read_text()), json.loads(plan_path.read_text())
-    law = a["law_record"]["text"]
+    law = a["law"]["text"]
     if (sha(source) != ASSIGNMENT_SHA or sha(plan_path) != PLAN_SHA or
             hashlib.sha256(law.encode()).hexdigest() != LAW_SHA or
             plan["source_law"]["text"] != law or

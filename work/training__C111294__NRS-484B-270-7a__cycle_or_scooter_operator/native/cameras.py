@@ -7,10 +7,10 @@ def camera_plan(candidate: str):
     return [
         {'name':'overview','width':1920,'height':1080,'fov_deg':fov,
          'attachment':'world','xyz_m':[20,-24,40], 'purpose':'both full bodies and intersection conflict zone'},
-        {'name':'bicycle_approach','width':1280,'height':720,'fov_deg':90,
+        {'name':'approach','width':1280,'height':720,'fov_deg':90,
          'attachment':'world','xyz_m':[9,-22,14], 'purpose':'bicycle class, rider and approach route'},
-        {'name':'motorist_approach','width':1280,'height':720,'fov_deg':85,
+        {'name':'reference_corner','width':1280,'height':720,'fov_deg':85,
          'attachment':'world','xyz_m':[-22,9,14], 'purpose':'separate motor vehicle and brake response'},
-        {'name':'conflict','width':1280,'height':720,'fov_deg':90,
+        {'name':'driver_reference','width':1280,'height':720,'fov_deg':90,
          'attachment':'world','xyz_m':[14,8,12], 'purpose':'body clearance and time joined interaction'},
     ]

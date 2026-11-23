@@ -57,7 +57,7 @@ def main():
             scratch = Path(proof["scratch"])
             fixture = Path(proof["fixture"])
             final_decode = json.loads((scratch / "output/final-decode.json").read_text())
-            if final_decode.get("passed") is not True or final_decode.get("frames") != 480:
+            if final_decode.get("passed") is not True or final_decode.get("frames") != 600:
                 raise ValueError("Current portable final decode differs")
             if not (scratch / "output/converted/manifest.json").is_file():
                 raise ValueError("Current portable Core manifest absent")

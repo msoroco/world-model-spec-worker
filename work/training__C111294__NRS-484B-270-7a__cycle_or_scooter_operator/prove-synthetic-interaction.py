@@ -1,4 +1,4 @@
-"""Two 480-frame bicycle/motorist CPU positives and source-bound negatives."""
+"""Two 600-frame bicycle/motorist CPU positives and source-bound negatives."""
 import importlib.util
 import json
 from pathlib import Path
@@ -50,7 +50,7 @@ def main():
         source.write_text(json.dumps(original,sort_keys=True)+'\n')
         changed=dict(original);changed['frames']=original['frames'][:-1]
         source.write_text(json.dumps(changed)+'\n');reject(source,expected,road,'missing or changed')
-        reject(source,measurement.sha(source),road,'Full 480-frame')
+        reject(source,measurement.sha(source),road,'Full 600-frame')
         changed=dict(original);changed['frames']=[dict(row) for row in original['frames']]
         changed['frames'][200]=dict(changed['frames'][200]);changed['frames'][200]['bicycle']=dict(changed['frames'][200]['bicycle'])
         changed['frames'][200]['bicycle']['class']='moped'
@@ -68,7 +68,7 @@ def main():
             'minimum_clearance_m':value['minimum_actor_body_clearance_m'],
             'bicycle_intersection_first_frame':value['bicycle_intersection_first_frame'],
             'motor_intersection_first_frame':value['motor_intersection_first_frame']}
-    print(json.dumps({'passed':True,'frames_per_case':480,'cases':results,'negative_checks_per_case':5,
+    print(json.dumps({'passed':True,'frames_per_case':600,'cases':results,'negative_checks_per_case':5,
         'physical_behavior_or_intent_claimed':False},sort_keys=True))
 
 if __name__=='__main__':main()

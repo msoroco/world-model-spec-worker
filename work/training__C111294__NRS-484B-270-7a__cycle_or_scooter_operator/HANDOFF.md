@@ -1,5 +1,14 @@
 # NRS-484B-270-7a at C111294
 
+## 2026-11-23 current-runtime 30-second checkpoint
+
+The Native proposal, two synthetic interaction sources, saved finalizer and all eight draft constructions now use 600 frames at 20 Hz (30 seconds). The four camera sources use the pinned `overview`, `approach`, `reference_corner`, and `driver_reference` names. The full-resolution diagnostic fixture now writes JSON adapter graphs instead of obsolete pickle graphs. The saved finalizer derives four recording channels from retained `native_samples.jsonl` and `video_frames.jsonl`; it rejects any supplied channel that disagrees with those sources. No original CARLA motion or pixels are claimed.
+
+Current CPU proofs (SHA-256): `synthetic-interaction-proof.log` 1019aaac1953b8244c9332fbd328861b79e3954521f550eb062e2a3d1b05ce9e; `synthetic-interaction-audit.log` 51d513f8a86915a6a7a28ef2e44b593bd70ac7678a0b530779c1138e8b07ae0d; `saved-fixture-proof.log` f8a088bbb9430f0a939442d01afaae0bba90f560b3cd252a41509d8e4389a490; `saved-fixture-audit.log` 0bd592785832010e97a1e321779699c67e0890292b410193cc03fc9a2115998d; `original-shape-proof.log` f73e6c4a4b0a14355cdcd5fdc04fa0872ea1e085a429c68ed2851597a1dff767; `pinned-offline-proof.log` 2d879c8977583a71fe41898931de6daf7b01985e427be57d53083dc45d1ef872 (all eight exact draft constructions exit zero). The current draft manifest SHA-256 is e010283619999f9fe12b3119d149c33817e3edd8cf016729b7167e4dddf9a6c8.
+
+The v1 portable package receipts below are historical after the runtime refresh and these construction changes. A current-runtime portable run reached Core/Lean but failed with `TrafficSpec decoder rejected output: manifest is not complete`; the exact failing log is `draft-package-proof.log` (SHA-256 07df248084c42b276318cea20afa782391fabc6cc4da5330826cc88ee16272f2). Next worker-owned work: inspect the retained converted manifest and JSON graph source requirements, repair the fixture/converter inputs, rerun portable positive and negative saved-processing, author selected v2 recipe and acceptance audits, then scoped strict gate before any ready status.
+
+
 Actor: `cycle_or_scooter_operator`. Frozen cell: `intersection` / `travel` / `other_vehicle`.
 
 Exact statutory source: NRS 484B.270(7)(a). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.

@@ -31,7 +31,7 @@ class ExactZone(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             raw,video,review=fixture(Path.cwd(),Path(folder))
             row=process(Path.cwd(),raw,video,review,synthetic=True)
-            self.assertEqual(row['frames'],400)
+            self.assertEqual(row['frames'],600)
             self.assertFalse(row['delivery_ready'])
             self.assertIsNone(row['physical_legal_verdict'])
 '''

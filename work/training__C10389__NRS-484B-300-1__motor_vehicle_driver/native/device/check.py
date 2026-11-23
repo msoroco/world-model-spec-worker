@@ -24,7 +24,7 @@ def check(bundle):
     plan = json.loads((bundle / 'case-plan.json').read_text())
     suffix = cfg['case_id'].split('__')[-1]
     candidate = cfg['candidate_id']
-    law = a['law_record']['text']
+    law = a['law']['text']
     if (suffix not in SUFFIXES or candidate not in POLICIES or
             sha(bundle / 'assignment-source.json') != FROZEN_ASSIGNMENT_SHA or
             hashlib.sha256(law.encode()).hexdigest() != EXACT_LAW_TEXT_SHA or
@@ -62,7 +62,9 @@ def check(bundle):
     if (cfg['requested_obey'] is not obey or
             cfg['requested_speed_mps'] != speed or cfg['camera_policy'] != camera or
             cfg['route_policy'] != policy or cfg['rate_hz'] != RATE or
-            cfg['frames'] != FRAMES or cfg['device_id'] != '3891' or
+            cfg['frames'] != FRAMES or
+            cfg.get('camera_views') != ['overview', 'approach', 'reference_corner', 'driver_reference'] or
+            cfg['device_id'] != '3891' or
             cfg['device_s_m'] != DEVICE_X or
             cfg['stop_hold_s'] != (1.0 if obey and policy == 'target' else 0.0) or
             cfg['official_placement_verified'] is not False or
@@ -73,7 +75,7 @@ def check(bundle):
     observed = rows(bundle / 'requested-tracks.jsonl')
     expected = request(speed, obey, policy)
     if observed != expected:
-        raise ValueError('240 source-bound request rows')
+        raise ValueError('600 source-bound request rows')
     stopped = sum(row['requested_speed_mps'] == 0 for row in observed)
     requested_crossing = any(row['requested_ego_x_m'] > DEVICE_X for row in observed)
     if ((policy == 'stop_before_device' and (not stopped or requested_crossing)) or

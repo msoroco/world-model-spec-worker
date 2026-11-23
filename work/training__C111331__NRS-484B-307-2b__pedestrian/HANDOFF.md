@@ -19,3 +19,11 @@ Accepted membership: 0 membership rows; exact source-hashed equivalence and reus
 Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
 
 Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+
+## 2026-11-23 CPU saved-entry measurement checkpoint
+
+Implemented `saved_entry_measurement.py` over 600 joined raw signal and pedestrian-pose packets at 20 Hz. It measures the crosswalk entry frame, circular-green state at entry, governing pedestrian-signal state, and the crossing interval; it emits no legal verdict. `prove_saved_entry_measurement.py` passes four synthetic scenarios (walk, contrary device, signal change after entry, red at entry) and rejects seven missing or mismatched source conditions. This is a CPU diagnostic with synthetic packets and camera IDs only; it contains no source-camera video, Native provenance or physical observation.
+
+Command: `.venv-cpu/bin/python work/training__C111331__NRS-484B-307-2b__pedestrian/prove_saved_entry_measurement.py > work/training__C111331__NRS-484B-307-2b__pedestrian/saved-entry-diagnostic.log` (exit 0). Receipt `saved-entry-diagnostic.json` SHA-256 `77f1b57ea1f70cd52d41d109716e8c887752151d15c9ec393a3956b42dc640af`; log SHA-256 `7c67f29351e081ab13635f65fd81b307fa15d7766a868308dc57f60558330fd9`; script SHA-256 `3ebd818cf3dd040f63fc74c34a1536ccce8e963ff69383ec3723abb3597a6892`. Pinned `runtime.py preflight` and assignment `worker_check.py --complete` exited 0 this turn.
+
+Next CPU work: build the exact Native construction and all four named video captures for the primary selected case; bind this raw-source measurement to the actual saved-processing adapter; run exact offline/compatibility positive and negative proofs; add selected fallback constructions, semantic proposals, and independent delivery/comparison audits. Keep `partial` until the scoped strict delivery gate passes.

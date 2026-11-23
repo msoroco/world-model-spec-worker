@@ -8,7 +8,7 @@ from controller import ReverseKnobs
 CASES=('condition_a','condition_b')
 CANDIDATES=('primary','fallback1','fallback2','fallback3')
 BASE={'lateral_gain':.18,'brake_margin_m':.10,'overview_fov_deg':90,
-      'rate_hz':20,'duration_s':24}
+      'rate_hz':20,'duration_s':30}
 CHANGES={'primary':{},'fallback1':{'lateral_gain':.33},
          'fallback2':{'brake_margin_m':.4},
          'fallback3':{'overview_fov_deg':105}}

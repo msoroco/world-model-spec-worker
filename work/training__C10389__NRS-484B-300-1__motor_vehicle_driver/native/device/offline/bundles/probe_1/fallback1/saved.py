@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 from check import check
+from build import FRAMES
 
 RAW = ('native-map-readback.json', 'native-raw-actors.jsonl',
        'video_frames.jsonl', 'frame-review.jsonl', 'native-capture-report.json')
@@ -38,15 +39,22 @@ def media(raw, synthetic):
     if synthetic:
         return {}
     result = {}
-    for name in ('forward.mkv', 'overview.mkv'):
+    expected = {'overview.mkv': (1920, 1080), 'approach.mkv': (1280, 720),
+                'reference_corner.mkv': (1280, 720),
+                'driver_reference.mkv': (1280, 720), 'raw.mkv': (3840, 1800)}
+    for name, dimensions in expected.items():
         result[name] = sha(raw / name)
         probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames',
-            '-select_streams', 'v:0', '-show_entries', 'stream=codec_name,nb_read_frames',
+            '-select_streams', 'v:0', '-show_entries',
+            'stream=codec_name,nb_read_frames,width,height,r_frame_rate',
             '-of', 'json', str(raw / name)], capture_output=True, text=True,
             check=True, timeout=120)
         streams = json.loads(probe.stdout).get('streams', [])
         require(len(streams) == 1 and streams[0].get('codec_name') == 'ffv1' and
-                streams[0].get('nb_read_frames') == '240', 'original 240-frame FFV1 media')
+                streams[0].get('nb_read_frames') == str(FRAMES) and
+                (streams[0].get('width'), streams[0].get('height')) == dimensions and
+                streams[0].get('r_frame_rate') == '20/1',
+                'original 600-frame 20 Hz FFV1 media')
     return result
 
 
@@ -80,8 +88,8 @@ def prepare(bundle, raw, output, synthetic=False):
     actors, videos, reviews = (rows(raw / name) for name in RAW[1:4])
     requests = rows(bundle / 'requested-tracks.jsonl')
     kind = 'synthetic_cpu' if synthetic else 'original_native'
-    require(len(actors) == len(videos) == len(reviews) == len(requests) == 240,
-            '240 raw joins')
+    require(len(actors) == len(videos) == len(reviews) == len(requests) == FRAMES,
+            '600 raw joins')
     landmark = mapping.get('stop_landmark_readback')
     require(type(landmark) is dict and landmark.get('id') == '3891' and
             landmark.get('road_id') == 389 and
@@ -104,7 +112,7 @@ def prepare(bundle, raw, output, synthetic=False):
     require(report.get('case_id') == checked['case_id'] and
             report.get('candidate_id') == checked['candidate_id'] and
             report.get('config_sha256') == sha(bundle / 'config.json') and
-            report.get('requested_frames') == report.get('observed_frames') == 240 and
+            report.get('requested_frames') == report.get('observed_frames') == FRAMES and
             report.get('error') is None and report.get('accepted') is False and
             report.get('delivery_ready') is False and
             report.get('stop_landmark_verified') is True and
@@ -149,10 +157,10 @@ def prepare(bundle, raw, output, synthetic=False):
                 review.get('source_kind') == kind and
                 review.get('review_provenance') ==
                     ('synthetic_cpu' if synthetic else 'human_frame_review') and
-                review.get('forward_video_sha256') ==
-                    media_hashes.get('forward.mkv', 'synthetic_cpu') and
-                review.get('overview_video_sha256') ==
-                    media_hashes.get('overview.mkv', 'synthetic_cpu') and
+                all(review.get(name + '_video_sha256') ==
+                    media_hashes.get(name + '.mkv', 'synthetic_cpu')
+                    for name in ('overview', 'approach', 'reference_corner',
+                                 'driver_reference')) and
                 type(review.get('device_face_pixel_reviewed')) is bool and
                 (type(review.get('device_face_visible')) is bool
                  if review['device_face_pixel_reviewed'] else
@@ -199,7 +207,7 @@ def measure(bundle, saved):
             receipt.get('legal_verdict') is None and
             receipt.get('delivery_ready') is False and
             all(receipt['saved_hashes'][name] == sha(saved / name) for name in SAVED) and
-            len(observations) == len(cameras) == len(reviews) == 240,
+            len(observations) == len(cameras) == len(reviews) == FRAMES,
             'prepared source and joins')
     stopped_before = crossed = face_reviewed = line_reviewed = 0
     first_crossing = None

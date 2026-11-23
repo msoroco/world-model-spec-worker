@@ -51,9 +51,9 @@ def prove():
                 assignment = json.loads((bundle / "assignment-source.json").read_text())
                 plan = json.loads((bundle / "case-plan.json").read_text())
                 cfg = json.loads((bundle / "config.json").read_text())
-                changed = assignment["law_record"]["text"].replace(
+                changed = assignment["law"]["text"].replace(
                     "A driver may drive across", "A driver shall drive across", 1)
-                assignment["law_record"]["text"] = changed
+                assignment["law"]["text"] = changed
                 plan["source_law"]["text"] = changed
                 cfg["source_text"] = changed
                 import hashlib

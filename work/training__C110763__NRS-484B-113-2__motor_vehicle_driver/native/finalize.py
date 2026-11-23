@@ -197,7 +197,7 @@ def finalize(attempt,output):
       'realized_observables':{'reverse_path_overlap':
           {'value':actual['max_backing_intersection_overlap_m2'],'unit':'m2',
            'method':'maximum sampled backing full-body overlap with surveyed intersection polygon',
-           'time_window':'original 24 s / 480 frame attempt',
+           'time_window':'original 30 s / 600 frame attempt',
            'statistic':'maximum sampled overlap','reference':'native_samples.jsonl'}},
       'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result

@@ -43,7 +43,7 @@ def main():
             if config["candidate_id"] != ref["id"] or config["case_suffix"] != suffix or \
                config["law_id"] != "NRS-484B-113-2" or config["cell_id"] != "C110763":
                 raise ValueError("Bundled config differs")
-            if config["duration_s"] * config["rate_hz"] != 480:
+            if config["duration_s"] * config["rate_hz"] != 600:
                 raise ValueError("Bundled capture cardinality differs")
             knobs.append(config["engineering_knobs"])
         primary = knobs[0]

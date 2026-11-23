@@ -5,7 +5,7 @@ import json
 import math
 from pathlib import Path
 
-FRAMES=480
+FRAMES=600
 RATE_HZ=20
 CASES=('witness_1','witness_2')
 INTERSECTION=(-7.,-7.,7.,7.)
@@ -60,7 +60,7 @@ def measure(source:Path,expected_sha256:str,road:Path)->dict:
     command='hold_before_motorist_crosses' if case=='witness_1' else 'enter_before_motorist_crosses'
     if data.get('rider_command_declared')!=command:raise ValueError('Rider command source differs')
     rows=data.get('frames')
-    if not isinstance(rows,list) or len(rows)!=FRAMES:raise ValueError('Full 480-frame interaction source required')
+    if not isinstance(rows,list) or len(rows)!=FRAMES:raise ValueError('Full 600-frame interaction source required')
     bike_cross=[];motor_cross=[];brake=[];minimum=math.inf
     prior=None;previous_native_frame=None
     original=data['source_kind'] in ('synthetic_original_shape_emulation','original_native_and_video')
