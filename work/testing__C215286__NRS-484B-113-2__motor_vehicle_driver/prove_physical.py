@@ -30,6 +30,15 @@ def main():
     staged = []
     for entry in manifest['cases']:
         short = entry['case_id'].endswith('__reverse_stops_before_crosswalk')
+        saved_ref = entry['saved_processing']
+        saved_path = ROOT / saved_ref['receipt']
+        saved = json.loads(saved_path.read_text())
+        if (digest(saved_path) != saved_ref['sha256'] or
+                saved.get('case_id') != entry['case_id'] or
+                saved.get('passed') is not True or
+                saved.get('recorded_only') is not True or
+                'saved_processing_started' not in saved.get('events', [])):
+            raise ValueError(f'{entry["case_id"]}: missing current recorded-only saved-processing evidence')
         construction = json.loads((ROOT / entry['construction']).read_text())
         config = json.loads(next(f['content'] for f in construction['files'] if f['path'] == 'config.json'))
         fixtures = []
@@ -61,7 +70,11 @@ def main():
                              'exit_code': 0, 'result': name, 'result_sha256': digest(path)})
             lines.append(f'{entry["case_id"]} {kind}: {actual}; result_sha256={digest(path)}')
         staged.append((entry, fixtures))
-    lines.append('capture_finished -> encoders_closed -> restoration_verified -> native_exit -> owner_released -> saved_processing_started: CPU ordering assertion passed')
+        lines.append(f'{entry["case_id"]}: recorded-only saved-processing receipt verified; '
+                     f'sha256={digest(saved_path)}; event=saved_processing_started')
+    lines.append('Synthetic lifecycle contract order asserted: capture_finished -> encoders_closed -> '
+                 'restoration_verified -> native_exit -> owner_released -> saved_processing_started. '
+                 'The CPU fixture does not observe a Native capture or ownership release.')
     log.write_text('\n'.join(lines) + '\n')
     for entry, fixtures in staged:
         for fixture in fixtures:

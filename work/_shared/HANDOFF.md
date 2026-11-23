@@ -1,3 +1,11 @@
+## 2026-11-23 C215286 current-runtime completion proof checkpoint
+
+C215286 remains **partial**. The short-of-crosswalk primary and three fallbacks previously bound an x=10 m reverse goal; with the source-shaped crosswalk beginning at x=8 m, a nonintersecting complete body needed a center beyond x=13 m, outside the pinned 3 m goal tolerance. All four exact embedded configurations now target x=14 m, and a regression test checks each against the pinned physical assessor. The short and over branches each passed all four current-runtime exact offline runs, positive/missing-source compatibility with `.adapter.json` graphs and original-frame adapter paths, and recorded-only saved processing. `execution-manifest.json` binds their fresh hashes. Six source-shaped synthetic physical results plus two physical-preparation receipts passed the pinned physical validator for met/not_met/unverified outcomes. The execution-manifest, candidate and primary compatibility validators pass; 14 CPU tests pass. These prove software preparation only.
+
+Remaining worker-owned CPU tasks for C215286: review real residence-district/crosswalk/marking sources, author the canonical semantic proposal chain and `semantic-index.json`, add independent positive/tamper-negative full-duration delivery acceptance audits for both cases, revalidate the controlled comparison against current original-source fixtures, and integrate the cases and fallbacks into the ordered GPU queue. Then run the assignment-scoped strict gate before changing status. C125745 remains partial with its six timing/hold sweep primaries and 18 fallbacks staged, awaiting assignment-qualified canonical integration and additional judgment sweeps. Batch readiness is still 25/43. The full strict gate cannot pass yet.
+
+The latest checkpoint failure reports a remote `index-pack`/temporary pack failure during push. The local `work/` scan found 8,598 files after archiving two unbound C125745 diagnostic command logs into the existing byte-exact archive, no file over its size limit, no trailing whitespace and no conflict markers. No Git command was run here; the separate timer owns publication.
+
 # Current handoff
 
 ## 2026-11-23 C125745 full sweep candidate CPU proof checkpoint
@@ -190,3 +198,7 @@ The first primary C177008 case is now identified as `business_right_at_100ft` in
 Historical C125751 exact archive: [base64 part 02](c125751-historical-delivery-v1.tar.gz.base64.part02.txt), SHA-256 `12548a5c1579d514fe55555a8c0dc1cb07308553f8b423beb9facf2954e2f710`.
 
 Earlier continuation: [handoff continuation](HANDOFF-archive-continuation-2026-11-22.md).
+
+## 2026-11-23 C215286 next work
+
+The reverse package's primary saved binding and synthetic physical receipt log were corrected and current validators pass. Its result remains partial. Next: bind independent district, crosswalk geometry and marking sources, create canonical semantic stages with required judgment sweep coverage, then run source-bound full-duration delivery acceptance for both selected cases and recheck scoped strict. The old saved command log is byte-exact archived in `c125745-stale-axis-diagnostics-2026-11-23.json`.
