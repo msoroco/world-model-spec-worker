@@ -250,3 +250,7 @@ Rebound 31 execution-manifest references from 29 duplicate zero-byte compatibili
 ## Return file consolidation
 
 Two historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c125714-2-archive/`. These are prior diagnostic proofs.
+
+## 2026-11-23 strict receipt integrity correction
+
+The scoped strict recheck found 32 missing physical fixture/lifecycle logs referenced by eight receipts. The previous `ready` status was demoted to `partial`; the scoped partial static check passes. Restore and rerun the physical CPU proof commands, rebind their hashes, and rerun the scoped strict gate before promotion. This is worker-owned returned-proof repair, not an external dependency.

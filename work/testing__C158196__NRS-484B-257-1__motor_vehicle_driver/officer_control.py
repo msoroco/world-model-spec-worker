@@ -65,6 +65,9 @@ def analyze(root):
     hashes[assignment_path] = assignment_hash
     if context.get('controlled_approach_lane') != [signal['ego_road_id'], signal['ego_lane_id']]:
         raise ValueError('Officer does not govern selected ego entrance')
+    route = signal.get('ego_route_lanes', [context['controlled_approach_lane']])
+    if not isinstance(route, list) or not route or route[0] != context['controlled_approach_lane']:
+        raise ValueError('Officer governed entrance differs from sourced ego route')
     polygon = Polygon(signal.get('intersection_polygon_xy_m', []))
     if not polygon.is_valid or polygon.area <= 0:
         raise ValueError('Original intersection geometry required')
@@ -114,8 +117,9 @@ def analyze(root):
         controls = officer.get('officer_controls_ego')
         if type(controls) is not bool or type(observed.get('officer_visible')) is not bool:
             raise ValueError('Officer control or visibility observation missing')
-        if [source.get('ego_road_id'), source.get('ego_lane_id')] != context['controlled_approach_lane']:
-            raise ValueError('Ego left officer-governed entrance')
+        observed_lane = [source.get('ego_road_id'), source.get('ego_lane_id')]
+        if observed_lane not in route or (index == 0 and observed_lane != route[0]):
+            raise ValueError('Ego left sourced officer-governed route')
         vertices = source.get('ego_body_vertices_xy_m')
         if not isinstance(vertices, list) or len(vertices) < 4:
             raise ValueError('Complete original ego body required')
