@@ -456,3 +456,7 @@ Return cap checkpoint: 16 additional unbound historical top-level logs and their
 2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
 
 - Final verification checkpoint: C178244 scoped `--complete` passed; its `--complete --require-delivery-ready` form exited 1 with `Preparation acceptance failed: partial/missing packages remain`. C129731 scoped complete check after helper archival emitted no output for over five minutes and was interrupted (exit 130). Treat C129731 archival as pending scoped verification; its archived bytes passed SHA-256 round-trip verification. The user-supplied full strict gate still reports unapproved `runtime/runs/scenario_pipeline/inputs/shared/manifest.json`, which remains in frozen runtime.
+
+## 2026-11-22 scoped strict recheck correction
+
+A fresh `worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready` failed at the first missing physical fixture log. A receipt inventory found 96 missing log paths across selected physical fixtures and lifecycle checks. `result.json` is therefore partial pending regenerated CPU logs, receipt rebinding and a passing scoped strict check. The prior ready label is withdrawn; construction remains worker-owned.
