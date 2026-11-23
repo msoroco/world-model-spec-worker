@@ -145,6 +145,7 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path, case_id:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--attempt", type=Path)
     parser.add_argument("--site-packet", type=Path)
     parser.add_argument("--plan", type=Path)
@@ -155,8 +156,19 @@ if __name__ == "__main__":
     if args.check:
         print(json.dumps(check_bundle(), indent=2))
     else:
-        if not all((args.attempt, args.site_packet, args.plan, args.case_id)):
-            parser.error("Native capture requires --attempt, --site-packet, --plan and --case-id")
-        print(json.dumps(capture_original(args.attempt, args.site_packet,
-                                          args.plan, args.case_id,
+        here = Path(__file__).resolve().parent
+        attempt = args.output_dir or args.attempt
+        site_packet = args.site_packet or here / "native-site-packet.json"
+        plan = args.plan or here / "case-plan.json"
+        config = json.loads((here / "config.json").read_text(encoding="utf-8"))
+        case_id = args.case_id or config.get("selected_case_id")
+        if not attempt or not case_id:
+            parser.error("Native capture requires an output directory and selected exact case")
+        if not site_packet.is_file():
+            parser.error("reviewed native-site-packet.json is required for original capture")
+        if not plan.is_file():
+            parser.error("selected case-plan.json is required for original capture")
+        os.environ.setdefault("SCENARIO_PIPELINE_OUTPUT_ROOT", str(Path(attempt).resolve()))
+        print(json.dumps(capture_original(attempt, site_packet,
+                                          plan, case_id,
                                           host=args.host, port=args.port), indent=2))

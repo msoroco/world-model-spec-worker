@@ -959,3 +959,7 @@ Final C179789 check: current assignment static check and pinned CPU preflight pa
 ## 2026-11-23 C179789 capture-stream checkpoint
 
 The C179789 reference diagnostic now passes the pinned end-to-end CPU compatibility command with 900 hash-bound evidence/frame rows and generated Native-shaped graphs. Its assignment retains the log and receipt. Six comparison cases remain under full compatibility proof; status stays partial.
+
+## 2026-11-23 C179789 seven-case compatibility proof
+
+All seven C179789 exact constructions have positive pinned offline checks (47 tests each) and positive pinned compatibility receipts with negative missing-source rejection. The assignment manifest binds seven retained receipt, analysis, and negative-log hashes. The reference and six comparison cases each use 900-frame synthetic capture streams and four diagnostic video sources. Assignment static `--complete` passes; status remains partial pending worker-owned capture-runner, reviewed Native packet, physical preparation, acquisition mapping, and other ready-gate work. CPU preflight passes.

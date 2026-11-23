@@ -158,3 +158,17 @@ Final check: pinned CPU preflight, the current exact-assignment `worker_check.py
 ## 2026-11-23 capture stream compatibility checkpoint
 
 Seven exact diagnostic specs now include 900 case-aligned capture evidence rows and frame indexes as separate hash-bound recipe sources, plus 900 minimal frame-keyed adapter graphs generated under .runtime-work. The reference case passed the pinned `runtime.py compatibility` command through finalizer, Native validator, converter, Lean decoder, renderer, full media decode and missing-source rejection. Its retained log is `cpu-compat-reference.log`; receipt is `cpu-compat-reference-receipt.json`. Six comparison cases are still running. The fixture is synthetic and does not prove physical motion or visibility.
+
+## 2026-11-23 seven-case compatibility proof
+
+All seven exact cases passed `.venv-cpu/bin/python runtime.py compatibility` using the pinned CPU library, Lean decoder, 900-frame synthetic fixture, and each case-specific source-hashed recipe. Each receipt records positive saved analysis, Native validation, shared conversion, Lean decoding, rendering, full video decode, and missing-source rejection. Retained files are `cpu-compat-<case>-receipt.json`, `cpu-compat-<case>-analysis.log`, `cpu-compat-<case>-negative.log`, and `cpu-compat-<case>.log`; `execution-manifest.json` binds their hashes. Receipt SHA256 values:
+
+- `reference`: `3fb4fc5064d67890745eba2897adcec4ecadf5874e83b210e69de8ae1ceec160`
+- `faster`: `b8b001f1a39bf95a94562aadf632fa77a3be1fd0f0479382389a0df3394f56fa`
+- `nearer_traffic`: `887b6a40e3d3d9f7fc9b9bd06fdb7ca359e5b1dc12c141a84a7ee5a0c8e00287`
+- `wet_surface`: `8588ab20d0807cfd9ff9504436ebd288ccd22a75a46e319a70e948edf63dec67`
+- `narrower`: `0d663cc7544c729f716d08df646a9eaf4e8b7bf3ef85e0ae29d59c8c74638253`
+- `rain`: `55aea66d95b63e7d33572b907c942f9f423a9fb8162d11f802c0ef78f7cc00f6`
+- `fog`: `b45187fbe1b4e3fddef8b588a0b5e221ae2e9a5c6c86e6d91d27b792e65fc2bd`
+
+`bind_compatibility_receipts.py --run-number 8` verified the source and construction bindings. `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__NRS-484B-600-1a__motor_vehicle_driver --complete` passes the static checkpoint. `runtime.py preflight` passes with the pinned CPU environment and Lean 4.28.0. The remaining worker-owned CPU work is the `--output-dir` capture-runner interface, reviewed seven-case Native site packet binding, physical outcome/lifecycle fixtures, acquisition mappings, and full ready-gate requirements. These diagnostics do not establish actual CARLA motion, visibility, or legal judgment.
