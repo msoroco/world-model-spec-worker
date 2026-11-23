@@ -1,3 +1,7 @@
+## 2026-11-22 C412593 physical prototype and return-cap correction
+
+Three synthetic road-transition outcome probes and a fixture-only lifecycle ordering probe passed in ignored `.runtime-work`. They are not canonical returned physical proof yet. An attempted archive of 32 C101303 draft logs failed that ready package's scoped strict check; every log was restored byte-for-byte and removed from the archive. The C412593 prototype files remain in ignored runtime work so `work/` remains at its 8,600-file cap; C101303 passed its scoped strict recheck after restoration. C412593 is partial for physical receipt binding, seven other exact cases and independent comparisons. No Native or legal acceptance is claimed.
+
 ## 2026-11-22 C412593 fresh saved-only checkpoint
 
 A newly materialized selected primary attempt passed `runtime.py process-saved` from 916 retained diagnostic source files. The processor rebuilt analysis, converted and rendered the final video, and preserved the originals. The full receipt stdout is bound in `cpu-tests.log` (SHA-256 `570ab06ba76dcd497d31f2e2dce667d421a6040dab581d7314df7c9f5fc1ff9e`), with a compact checkpoint in `result.json`. The C412593 assignment-scoped partial checker passes. Status stays partial while seven selected cases, physical outcome fixtures and independent comparisons remain. The batch is still 24 ready and 19 partial; the global strict gate has not passed. The diagnostic fixture asserts no Native or legal acceptance.
@@ -34,3 +38,4 @@ Checkpoint: 24 ready and 19 partial assignment results across the fixed 43-item 
 
 All eight selected and three business-at-100-foot fallback bundles were rebuilt with the current recorder, config and tests. All 11 passed current-runtime exact offline with 27 bundled CPU tests each and no simulation. Commands, construction and log hashes are bound in `cpu-tests.log` and partial `result.json`. Canonical manifest, positive/negative package compatibility, full recorded-only saved processing, semantic proposals and independent audits remain worker-owned. Status remains **partial**.
 
+Final checkpoint recheck: the selected candidate validator and primary package receipt verifier both pass after the aggregate log rebind; C412593 assignment-scoped `worker_check.py --complete` passes at status partial. C101303 passed scoped strict after byte-exact restoration.

@@ -1,5 +1,6 @@
 """Native median precedence candidate capture; CPU --check never imports CARLA."""
 import argparse
+import hashlib
 import json
 import math
 from contextlib import ExitStack, contextmanager
@@ -26,6 +27,11 @@ OTHER_CASES = {
     "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_makes_left",
     "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_wide_same_crossing",
 }
+TURN_MODES = {
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_straight": "straight",
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left": "intends_left",
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_makes_left": "makes_left",
+}
 CAMERAS = tuple(SIZES)
 POSES = ("ego_approach", "ego_entry", "other_approach", "other_entry")
 
@@ -50,12 +56,41 @@ def validate_case_target(config):
     return case_id
 
 
+def turn_intent_sources(config, site, ego_actor_id, other_actor_id):
+    """Prepare original route-intent sources for the three opposite-turn cases."""
+    mode = TURN_MODES.get(config["selected_case_id"])
+    if mode is None:
+        return None
+    intended = "straight" if mode == "straight" else "left"
+    if config.get("other_turn_intent") != intended:
+        raise ValueError("Exact opposite-turn intent required")
+    if type(ego_actor_id) is not int or type(other_actor_id) is not int or ego_actor_id == other_actor_id:
+        raise ValueError("Distinct Native route-intent actors required")
+    ego_yaw, other_yaw = site["ego_approach"][3], site["other_approach"][3]
+    opposite = abs((other_yaw - ego_yaw + 180) % 360 - 180)
+    if opposite < 160:
+        raise ValueError("Authored approaches are not opposite directions")
+    plan = {"ego_route_xy_m": site["routes"]["ego"],
+            "other_route_xy_m": site["routes"]["other"],
+            "site_route_source": site["entrance_source"]}
+    encoded = (json.dumps(plan, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    intent = {"ego_turn_intent": "straight", "other_turn_intent": intended,
+              "ego_actor_id": ego_actor_id, "other_actor_id": other_actor_id,
+              "route_plan_source": {"path": "authored_route_plan.json",
+                                    "sha256": hashlib.sha256(encoded).hexdigest()}}
+    return encoded, intent
+
+
 def validate_config(config, base_dir=Path.cwd()):
     case_id = validate_case_target(config)
     if config.get("law_id") != "NRS-484B-250-1" or config.get("cell_id") != "C125714":
         raise ValueError("Exact median entry-order case required")
     if config.get("rate_hz") != 20 or config.get("duration_s") != 55:
         raise ValueError("Planned 20 Hz, 55-second capture required")
+    if case_id in TURN_MODES:
+        intended = "straight" if TURN_MODES[case_id] == "straight" else "left"
+        if config.get("other_turn_intent") != intended:
+            raise ValueError("Exact opposite-turn intent required")
     if not isinstance(config.get("required_atoms"), list):
         raise ValueError("Pinned Core required_atoms list required")
     if not isinstance(config.get("recording_description"), dict):
@@ -226,7 +261,18 @@ def capture(args, config):
                     "median_spacing_measurement": site_review["median_spacing_measurement"],
                     "controller_history_source": "controller_history.jsonl",
                     "authored_routes_xy_m": site["routes"],
+                    "camera_plan_sha256": hashlib.sha256(json.dumps(
+                        site["cameras"], sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
                 }
+                turn_sources = turn_intent_sources(config, site, ego.id, other.id)
+                if turn_sources is not None:
+                    route_bytes, route_intent = turn_sources
+                    (output / "authored_route_plan.json").write_bytes(route_bytes)
+                    (output / "route_intent.json").write_text(json.dumps(route_intent, indent=2) + "\n")
+                    context["opposite_approach"] = True
+                    context["opposite_approach_source"] = site["entrance_source"]
+                    context["approach_geometry_source"] = site["entrance_source"]
+                    context["opposite_approach_with_left_turn"] = route_intent["other_turn_intent"] == "left"
                 (output / "junction_context.json").write_text(json.dumps(context, indent=2) + "\n")
                 camera_transforms = {name: _transform(carla, site["cameras"][name]) for name in CAMERAS}
                 with source_cameras(world, ego, camera_transforms) as sensors:

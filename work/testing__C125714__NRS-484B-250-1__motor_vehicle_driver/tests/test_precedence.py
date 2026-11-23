@@ -11,6 +11,30 @@ route=load('route_control')
 site_packet=load('site_packet')
 def body(x,y):return [[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
 class Tests(unittest.TestCase):
+    def test_opposite_turn_intent_source_binding(self):
+        site={'routes':{'ego':[[-20,0],[0,0],[20,0]],
+                        'other':[[20,0],[0,0],[-20,0]]},
+              'entrance_source':'reviewed-entrance-packet',
+              'ego_approach':[-20,0,0,0],
+              'other_approach':[20,0,0,180]}
+        for suffix,intended in (('opposite_straight','straight'),
+                                ('opposite_intends_left','left'),
+                                ('opposite_makes_left','left')):
+            config={'selected_case_id':next(case for case in runner.TURN_MODES
+                                        if case.endswith(suffix)),
+                    'other_turn_intent':intended}
+            raw,record=runner.turn_intent_sources(config,site,101,102)
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                             record['route_plan_source']['sha256'])
+            self.assertEqual(record['other_turn_intent'],intended)
+            self.assertNotEqual(record['ego_actor_id'],record['other_actor_id'])
+            with self.assertRaisesRegex(ValueError,'Exact opposite-turn intent'):
+                runner.turn_intent_sources({**config,'other_turn_intent':'other'},site,101,102)
+        with self.assertRaisesRegex(ValueError,'not opposite directions'):
+            runner.turn_intent_sources(config,{**site,'other_approach':[20,0,0,0]},101,102)
+        with self.assertRaisesRegex(ValueError,'Distinct Native'):
+            runner.turn_intent_sources(config,site,101,101)
+
     def test_runner_recognizes_all_selected_comparison_cases(self):
         plan=json.loads((ROOT/'case-plan.json').read_text())
         planned={case['case_id'] for case in plan['cases']}
@@ -365,6 +389,11 @@ class Tests(unittest.TestCase):
             for case_id in runner.OTHER_CASES:
                 variant=json.loads(json.dumps(config))
                 variant['selected_case_id']=case_id
+                if case_id in runner.TURN_MODES:
+                    with self.assertRaisesRegex(ValueError,'Exact opposite-turn intent'):
+                        runner.validate_config(variant,root)
+                    variant['other_turn_intent']=(
+                        'straight' if runner.TURN_MODES[case_id]=='straight' else 'left')
                 self.assertIs(runner.validate_config(variant,root),variant)
                 source.write_text(json.dumps(variant))
                 checked=json.loads(subprocess.run(

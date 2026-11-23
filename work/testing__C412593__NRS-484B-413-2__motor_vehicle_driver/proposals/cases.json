@@ -4,15 +4,19 @@
   "status": "partial_cpu_construction",
   "cases": [
     {
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_under_100_ft",
       "target_law_id": "NRS-484B-413-2",
       "target_type": "delivery",
-      "rationale": "Same route at exact 100-foot boundary",
-      "variable_assignments": {},
+      "rationale": "Business district right turn; original signal distance just below 100 feet",
+      "variable_assignments": {
+        "district_class": "business",
+        "requested_continuous_signal_ft": 99,
+        "signal_continuity": "continuous"
+      },
       "unresolved_judgment_calls": [
-        "business district status",
-        "freight loading zone status",
-        "ordinary driver turn course"
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
       ],
       "recording_description": {
         "channels": [
@@ -66,7 +70,504 @@
           }
         ],
         "limitations": [
-          "Native indicator pixels, legal district class and freight-zone visibility remain unverified"
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Same route at exact 100-foot boundary",
+      "variable_assignments": {
+        "district_class": "business",
+        "requested_continuous_signal_ft": 100,
+        "signal_continuity": "continuous"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_over_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Same route above 100 feet",
+      "variable_assignments": {
+        "district_class": "business",
+        "requested_continuous_signal_ft": 101,
+        "signal_continuity": "continuous"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_residential_at_100_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Residential district right turn at 100-foot boundary",
+      "variable_assignments": {
+        "district_class": "residential",
+        "requested_continuous_signal_ft": 100,
+        "signal_continuity": "continuous"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_under_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Other-area right turn just under 300 feet",
+      "variable_assignments": {
+        "district_class": "other",
+        "requested_continuous_signal_ft": 299,
+        "signal_continuity": "continuous"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_at_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Other-area right turn at 300 feet",
+      "variable_assignments": {
+        "district_class": "other",
+        "requested_continuous_signal_ft": 300,
+        "signal_continuity": "continuous"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_other_over_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Other-area right turn above 300 feet",
+      "variable_assignments": {
+        "district_class": "other",
+        "requested_continuous_signal_ft": 301,
+        "signal_continuity": "continuous"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_interrupted",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "delivery",
+      "rationale": "Same business route with interruption inside last 100 feet",
+      "variable_assignments": {
+        "district_class": "business",
+        "requested_continuous_signal_ft": 100,
+        "signal_continuity": "interrupted_on_off_on"
+      },
+      "unresolved_judgment_calls": [
+        "district class from reviewed frontage and building use",
+        "freight loading zone designation and relation to route",
+        "Native right turn and actual visible indication"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_indicator",
+            "unit": "Native device state",
+            "method": "original light-mask readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_position_xy_m",
+            "unit": "m",
+            "method": "original Native location at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_heading_deg",
+            "unit": "degrees",
+            "method": "original Native transform at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "Native road ID",
+            "method": "original waypoint readback at every 20 Hz frame",
+            "time_window": "entire 45-second original-frame capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "diagnostic source, physical and legal review pending",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_map_context",
+            "unit": "structured record",
+            "method": "saved route_context native map and route source, with source hash"
+          },
+          {
+            "name": "district_zone_context",
+            "unit": "structured record",
+            "method": "saved route_context district source and unresolved freight-zone review"
+          }
+        ],
+        "limitations": [
+          "Draft district and zone are planning sources; Native route, lamp pixels, physical completion and legal classification require local review"
         ]
       }
     }

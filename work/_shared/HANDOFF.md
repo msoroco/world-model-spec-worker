@@ -1076,3 +1076,7 @@ C412593 remains partial. Its right-business-at-100-foot primary and all three di
 ## 2026-11-22 C412593 fresh saved-only checkpoint
 
 C412593 selected right-business-at-100-foot primary passed a fresh recorded-only saved-processing version with 916 original source files preserved, selected measurements rebuilt, Core and Lean conversion, and decoded final video. Its receipt content is in the bound CPU log; the assignment remains partial because seven other selected cases, physical fixtures and independent audits remain. Synthetic evidence does not establish Native or legal acceptance.
+
+## 2026-11-22 C412593 physical prototype and cap correction
+
+C412593 synthetic road-transition outcome and fixture-only lifecycle probes passed in ignored `.runtime-work`, but their canonical physical receipt is not yet returned. The attempted C101303 draft-log archive was reverted after its scoped strict gate showed those logs are still referenced. C101303 evidence is restored byte-exactly and its scoped strict recheck passed; work is at the 8,600-file cap. C412593 remains partial for physical receipt binding, seven selected branches and independent audits.
