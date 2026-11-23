@@ -25,7 +25,7 @@ from worker_exchange.runtime_cli import execution_env
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('acquisition-provenance.json', 'native-map-readback.json',
            'native-passenger-actors.jsonl', 'native-raw-actors.jsonl',
-           'red-curb-road.xodr', 'road.xodr', 'statutory-context.json', 'trace.jsonl',
+           'road.xodr', 'statutory-context.json', 'trace.jsonl',
            'video_frames.jsonl') + tuple(view + '.mkv' for view in VIEWS)
 
 
