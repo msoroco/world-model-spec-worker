@@ -118,10 +118,19 @@ def measure(site, root, events_ref):
         in_highway = inside(row['pedestrian_xy'], site['highway_polygon_xy'])
         in_crosswalk = inside(row['pedestrian_xy'], site['crosswalk_polygon_xy'])
         device = row['other_device_indication']
-        require(device in ('none', 'WALK', 'DONT_WALK', 'unknown'), 'device state missing')
+        require(device in ('none', 'WALK', 'DONT_WALK', 'WAIT', 'unknown'), 'device state missing')
         require(row['other_device_id'] == site['other_device_id'], 'other-device identity changed')
+        mode = row.get('other_device_mode', 'unknown')
+        require(mode in ('absent', 'walk', 'flashing_countdown', 'flashing_no_countdown',
+                         'steady', 'unknown'), 'other-device display mode invalid')
+        countdown = row.get('other_device_countdown')
+        require(countdown is None or (isinstance(countdown, int) and countdown >= 0),
+                'other-device countdown invalid')
+        if mode == 'flashing_countdown':
+            require(countdown is not None, 'flashing countdown lacks observed value')
         fact = {'frame': frame, 'green_alone': green_alone, 'in_highway': in_highway,
-                'in_crosswalk': in_crosswalk, 'other_device_indication': device}
+                'in_crosswalk': in_crosswalk, 'other_device_indication': device,
+                'other_device_mode': mode, 'other_device_countdown': countdown}
         measurements.append(fact)
         if in_highway and first_entry is None:
             first_entry = fact

@@ -12,7 +12,7 @@ import math
 from pathlib import Path
 from typing import Any, Callable
 
-from route_controller import steering_command, validate_route
+from route_controller import apply_carla_control, steering_command, validate_route
 
 
 def _require(ok: bool, message: str) -> None:
@@ -48,6 +48,7 @@ def capture(
     signal_observer: Callable[[int, str], dict[str, Any]],
     destination_street_id: str, output: Path, ticks: int = 900,
     waypoint_tolerance_m: float = 1.5,
+    control_applier: Callable[[Any, dict[str, float]], None] = apply_carla_control,
 ) -> dict[str, Any]:
     """Drive one 20 Hz episode and write observed route/phase source, or fail closed.
 
@@ -93,7 +94,7 @@ def capture(
             if math.dist(location, route[waypoint]) <= waypoint_tolerance_m and waypoint < len(route) - 1:
                 waypoint += 1
             command = steering_command(location, yaw, route[waypoint], speed)
-            ego.apply_control(command)
+            control_applier(ego, command)
         _require(entry_frame is not None, 'destination street entry not observed')
         _require(len(samples) >= 2, 'ordered Native body route required')
         trace = {
@@ -113,4 +114,4 @@ def capture(
                 'first_frame': samples[0]['frame'], 'last_frame': entry_frame,
                 'sample_count': len(samples), 'physical_acceptance_claimed': False}
     finally:
-        ego.apply_control({'steer': 0.0, 'throttle': 0.0, 'brake': 1.0})
+        control_applier(ego, {'steer': 0.0, 'throttle': 0.0, 'brake': 1.0})

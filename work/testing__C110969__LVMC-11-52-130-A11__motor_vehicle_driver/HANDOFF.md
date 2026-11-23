@@ -2,6 +2,14 @@
 
 Status: partial executable CPU construction. Seven exact proposed cases and three controlled comparisons are in `case-plan.json`; none is a verified recording.
 
+## 2026-11-24 Native source and comparison checkpoint
+
+- `original_capture.py` now writes an original 900-tick synchronous 20 Hz Native ego pose and requested-control trace from a caller-owned world, actor and reviewed world-to-local mapping. It checks frame continuity, finite position and velocity, approach alignment through the existing controller, and intersection intrusion, and applies a final brake during cleanup. It does not own the four cameras, observed traffic/directions, world restoration or the sealed acquisition receipt; these still need a full runner.
+- `measure_gap.py` now requires at least one contiguous 40-frame observed halt and reports its exact interval. Scattered stationary flags cannot satisfy the two-second dwell.
+- `comparison_audit.py` reads seven exact saved measurements and source-hashed context packets. It rejects missing/duplicate cases, changed fixed map/vehicle/route/camera conditions, wrong numeric targets, changed activity/exception cause, diagnostic sources, missing observation files and hash/path tampering. It returns measured gaps and leaves legal necessity unresolved. This is an independent software audit; the test fixture does not establish physical evidence.
+- `cpu-geometry-tests.log` records 23 passing tests with `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -v`. The exact static check passed; the exact strict check returned exit 1 because status remains partial.
+- Next CPU work is to bind a reviewed intersection map/route and actor, acquire original traffic/police/device context with four cameras, integrate finalization and sealed acquisition, author semantic proposals and exact offline/compatibility/saved-only bundles, and add the delivery audit and full manifest. Source-hashed intended cause is not proof of actual conflict necessity or legal compliance.
+
 Exact law: LVMC 11.52.130(A)(11) — No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: Within fifteen feet of an intersection.
 Assigned branch(es): Intersection proximity during destination stopping or standing.
 Cell: C110969 (intersection, stop_stand, intersection_boundary); actor: motor_vehicle_driver.

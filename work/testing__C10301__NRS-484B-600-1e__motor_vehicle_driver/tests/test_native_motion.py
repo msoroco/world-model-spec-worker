@@ -11,6 +11,7 @@ from native_motion import capture_speed
 from saved_speed import process
 from speed_boundary import measure
 from delivery_audit import audit_integrity
+from capture_finalizer import finalize_capture
 
 
 CASE = "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above"
@@ -132,8 +133,69 @@ class NativeMotionTests(unittest.TestCase):
         self.assertEqual(world.frame, 100)
 
     def test_source_integrity_audit_rejects_missing_and_changed_media(self):
-        capture_speed(FakeWorld(FakeActor()), FakeActor(), control, self.attempt,
-                      CASE, "native-audit", 0.05, diagnostic_fixture=True)
+        actor = FakeActor()
+        capture_speed(FakeWorld(actor), actor, control, self.attempt, CASE,
+                      "native-audit", 0.05, diagnostic_fixture=True)
+
+        def seal(name, value):
+            path = self.attempt / name
+            path.write_bytes(value)
+            return {"path": name, "sha256": hashlib.sha256(value).hexdigest()}
+
+        frames = [{"frame": 101 + i,
+                   "camera_frames": {camera: 101 + i for camera in
+                                     ("front", "front_left", "front_right", "rear")}}
+                  for i in range(900)]
+        frame_map = json.dumps({"case_id": CASE, "native_run_id": "native-audit",
+                                "frames": frames}).encode()
+        index = {"format": "c10301-capture-index-v1", "case_id": CASE,
+                 "frame_count": 900, "diagnostic_fixture": True,
+                 "native_motion": seal("native-motion-receipt.json",
+                                       (self.attempt / "native-motion-receipt.json").read_bytes()),
+                 "frame_map": seal("frame-map.json", frame_map),
+                 "cameras": {camera: seal(camera + ".mp4", camera.encode())
+                             for camera in ("front", "front_left", "front_right", "rear")}}
+        (self.attempt / "capture-index.json").write_text(json.dumps(index))
+        with self.assertRaisesRegex(ValueError, "diagnostic fixture"):
+            audit_integrity(self.attempt, CASE)
+        result = audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+        self.assertTrue(result["source_integrity_passed"])
+        self.assertFalse(result["full_video_decode"])
+        (self.attempt / "rear.mp4").write_bytes(b"changed")
+        with self.assertRaisesRegex(ValueError, "rear source hash differs"):
+            audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+        (self.attempt / "rear.mp4").unlink()
+        with self.assertRaisesRegex(ValueError, "rear source missing"):
+            audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+        index["cameras"]["rear"] = {"path": "../foreign.mp4", "sha256": "0" * 64}
+        (self.attempt / "capture-index.json").write_text(json.dumps(index))
+        with self.assertRaisesRegex(ValueError, "rear binding invalid"):
+            audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+
+    def test_finalizer_requires_original_camera_joins_and_seals_once(self):
+        actor = FakeActor()
+        capture_speed(FakeWorld(actor), actor, control, self.attempt, CASE,
+                      "native-finalize", 0.05, diagnostic_fixture=True)
+        cameras = ("front", "front_left", "front_right", "rear")
+        media = {}
+        for camera in cameras:
+            path = self.attempt / (camera + ".mp4")
+            path.write_bytes(camera.encode())
+            media[camera] = path
+        frames = [{"frame": 101 + i,
+                   "camera_frames": {camera: 101 + i for camera in cameras}}
+                  for i in range(900)]
+        altered = json.loads(json.dumps(frames))
+        altered[10]["camera_frames"]["rear"] += 1
+        with self.assertRaisesRegex(ValueError, "camera frame join"):
+            finalize_capture(self.attempt, CASE, altered, media)
+        self.assertFalse((self.attempt / "capture-index.json").exists())
+        index = finalize_capture(self.attempt, CASE, frames, media)
+        self.assertEqual(index["frame_count"], 900)
+        self.assertTrue(audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+                        ["source_integrity_passed"])
+        with self.assertRaisesRegex(ValueError, "already exists"):
+            finalize_capture(self.attempt, CASE, frames, media)
 
 
 

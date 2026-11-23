@@ -71,9 +71,9 @@ def check_site(site, root):
     return True
 
 
-def measure_original(site, root, event_ref):
+def measure_original(site, root, event_ref, event_root=None):
     check_site(site, root)
-    rows = json.loads(read_source(root, event_ref).read_text())
+    rows = json.loads(read_source(event_root or root, event_ref).read_text())
     require(isinstance(rows, list) and len(rows) >= 3, "original event history absent")
     previous_frame = -1
     exhibition = None

@@ -72,6 +72,17 @@ class OriginalMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "provenance"):
             measure_gap.measure(self.packet_path)
 
+    def test_scattered_halt_frames_rejected(self):
+        rows = [json.loads(line) for line in self.pose_path.read_text().splitlines()]
+        for row in rows:
+            row["halt_state"] = row["frame"] % 2 == 0
+            row["speed_mps"] = 0 if row["halt_state"] else 5
+        self.pose_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        self.packet["pose_source"]["sha256"] = self._sha(self.pose_path)
+        self._save_packet()
+        with self.assertRaisesRegex(ValueError, "contiguous two-second"):
+            measure_gap.measure(self.packet_path)
+
 
 if __name__ == "__main__":
     unittest.main()

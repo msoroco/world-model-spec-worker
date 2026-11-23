@@ -21,6 +21,7 @@ control = module('pedestrian_control')
 comparison = module('comparison_audit')
 sys.path.insert(0, str(ROOT))
 measurement = module('saved_measurement')
+capture_module = module('native_capture')
 
 
 class CrossingTests(unittest.TestCase):
@@ -206,6 +207,86 @@ class CrossingTests(unittest.TestCase):
         self.site['original_sources'][2]=self.write('devices.json',json.dumps({'other_device_id':'ped1','inventory_complete':False}))
         with self.assertRaises(crossing.SourceError):
             crossing.verify_site(self.site,self.root)
+
+    def native_fakes(self):
+        class Location:
+            def __init__(self, x, y, z=0):
+                self.x, self.y, self.z = x, y, z
+        class Actor:
+            id = 42
+            type_id = 'walker.pedestrian.0001'
+            def __init__(self):
+                self.location = Location(-2, 5)
+                self.command = {'direction': (0, 0, 0), 'speed': 0}
+            def get_location(self):
+                return self.location
+            def apply_control(self, command):
+                self.command = command
+        class World:
+            def __init__(self, actor):
+                self.actor = actor
+                self.frame = 0
+                self.gap = False
+            def get_snapshot(self):
+                from types import SimpleNamespace
+                return SimpleNamespace(frame=self.frame,
+                    timestamp=SimpleNamespace(elapsed_seconds=self.frame * .05))
+            def tick(self):
+                self.frame += 2 if self.gap else 1
+                direction = self.actor.command['direction']
+                speed = self.actor.command['speed']
+                self.actor.location.x += direction[0] * speed * .05
+                self.actor.location.y += direction[1] * speed * .05
+                return self.frame
+        actor = Actor()
+        world = World(actor)
+        head = lambda identity: {'head_id': identity, 'pedestrian_faces_head': True,
+                                 'lit_aspects': ['circular_green']}
+        device = lambda identity: {'device_id': identity, 'indication': 'none',
+                                   'mode': 'absent', 'countdown': None}
+        return actor, world, head, device
+
+    def test_native_capture_original_motion_and_waypoint_advance(self):
+        actor, world, head, device = self.native_fakes()
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            self.root / 'attempt', ticks=90)
+        self.assertEqual(receipt['frame_count'], 91)
+        self.assertEqual(receipt['first_highway_entry_frame'], 34)
+        self.assertGreater(actor.location.x, 2.5)
+        self.assertEqual(actor.command['speed'], 0)
+        saved = self.root / 'attempt' / receipt['original_frames']['path']
+        self.assertEqual(hashlib.sha256(saved.read_bytes()).hexdigest(),
+                         receipt['original_frames']['sha256'])
+        rows = json.loads(saved.read_text())
+        self.assertEqual(rows[0]['actor_id'], 42)
+        self.assertEqual(rows[-1]['frame'], 90)
+
+    def test_native_capture_wait_and_frame_gap_rejection(self):
+        actor, world, head, device = self.native_fakes()
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'other_device_stop', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            self.root / 'wait-attempt', ticks=3)
+        self.assertIsNone(receipt['first_highway_entry_frame'])
+        self.assertEqual(actor.location.x, -2)
+        actor, world, head, device = self.native_fakes()
+        world.gap = True
+        with self.assertRaisesRegex(ValueError, 'frame gap'):
+            capture_module.capture(world, actor, self.site, self.root,
+                'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+                self.root / 'gap-attempt', ticks=2)
+        self.assertEqual(actor.command['speed'], 0)
+        self.assertFalse((self.root / 'gap-attempt' / 'capture-receipt.json').exists())
+
+    def test_native_capture_rejects_unbound_signal(self):
+        actor, world, _, device = self.native_fakes()
+        bad_head = lambda identity: {'head_id': 'unbound',
+            'pedestrian_faces_head': True, 'lit_aspects': ['circular_green']}
+        with self.assertRaisesRegex(ValueError, 'signal head mismatch'):
+            capture_module.capture(world, actor, self.site, self.root,
+                'marked_cross', bad_head, device, lambda **kw: kw,
+                lambda *xyz: xyz, self.root / 'signal-attempt', ticks=2)
+        self.assertEqual(actor.command['speed'], 0)
 
 
 if __name__ == '__main__':

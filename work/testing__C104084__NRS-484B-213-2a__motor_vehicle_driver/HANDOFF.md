@@ -80,3 +80,28 @@ separate original topology binder and is not certified by this two-way binder.
 Next CPU work: bind an actual original Native map and original highway/one-way authority source; implement exact case capture/controllers, finalizers, diagnostic recipes and positive/negative compatibility, saved-only delivery audits and semantic proposals. The curve alternative still needs the batch lead to bind a compatible curve cell. Actual CARLA raycasts, motion and pixels remain later physical checks.
 
 The refreshed assignment static check (`.venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete`) exited 0 in `assignment-check.log`. The exact strict check with `--require-delivery-ready` exited 1 in `strict-gate.log` with `Preparation acceptance failed: partial/missing packages remain`; the package correctly retains `status: partial` until the remaining CPU deliverables and their proofs pass.
+
+### Saved original crest observation follow-up (2026-11-24)
+
+`saved_crest.py` joins byte-hashed original attempt sources for the four exact
+crest case IDs: 20 Hz Native body history, original lane/highway context,
+per-frame opposing-body corner rays, frame map, and four camera source files.
+It rejects a changed or missing source, case/law drift, absent original
+opposing-lane or one-way authority binding, frame gaps, ray/frame mismatches,
+timestamp drift, and absent actor/body packets. It reports observed left-side
+body and ray states, distance range and whether the intended construction
+target was observed, while keeping hazard-distance judgment unresolved.
+Text-only camera files in the CPU tests prove source binding only; media
+decoding and physical pixel visibility are still unimplemented CPU/delivery
+work and later physical checks. The one-way authority reference is required
+but its external original document has not yet been independently validated.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s
+work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/tests -v`
+passed 17 tests in `cpu-tests.log` (SHA256 in `result.json`). The saved join
+is a source-observation component, not a canonical runtime finalizer or
+acceptance receipt. Next CPU actions: implement exact Native controller/capture
+with guaranteed cleanup and original camera acquisition, connect the saved
+join to runtime finalization, build four positive/negative diagnostic recipes,
+run offline/compatibility and saved-only delivery audits, and author proposals.
+The exact scoped `worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete` passed in `assignment-check.log`; the scoped `--require-delivery-ready` exited 1 in `strict-gate.log` because the package remains partial.

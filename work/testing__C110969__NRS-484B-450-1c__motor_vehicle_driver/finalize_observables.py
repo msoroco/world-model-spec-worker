@@ -26,6 +26,15 @@ def finalize(manifest_path: Path) -> dict:
         if not path.is_relative_to(manifest_path.parent.resolve()):
             raise SourceError(f"original {name} source escapes attempt")
         packets[name] = load_source(path, source["sha256"])
+    for name in ("trace", "activity"):
+        if packets[name].get("case_id", _case) != _case:
+            raise SourceError(f"original {name} case identity differs")
+        if manifest.get("native_run_id") and packets[name].get("native_run_id") != manifest["native_run_id"]:
+            raise SourceError(f"original {name} Native run identity differs")
+    trace_frames = [row.get("frame") for row in packets["trace"].get("samples", [])]
+    activity_samples = packets["activity"].get("activity_samples")
+    if activity_samples is not None and [row.get("frame") for row in activity_samples] != trace_frames:
+        raise SourceError("original activity/trace frame join differs")
     result = measure(packets["boundary"], packets["trace"], packets["activity"])
     return {"format": "intersection-observables-v1", "case_id": _case,
             "source_manifest": manifest_path.name, "source_seals": {

@@ -61,10 +61,20 @@ def run_bicycle_route(world, carla, bicycle, *, target_speed_mps: float,
     origin_x = float(first.x)
     samples = []
     previous_x = float(first.x)
+    previous_frame = None
+    previous_time = None
     try:
         for index in range(max_frames):
             bicycle.set_target_velocity(command)
             frame_id = world.tick()
+            snapshot = world.get_snapshot()
+            native_frame = int(snapshot.frame)
+            native_time = float(snapshot.timestamp.elapsed_seconds)
+            if native_frame != int(frame_id) or not math.isfinite(native_time):
+                raise ValueError("Native bicycle frame/time snapshot mismatch")
+            if previous_frame is not None and (native_frame != previous_frame + 1 or
+                    abs(native_time - previous_time - DT_S) > .005):
+                raise ValueError("Native bicycle frame/time continuity failure")
             loc = bicycle.get_transform().location
             vel = bicycle.get_velocity()
             x, y = float(loc.x), float(loc.y)
@@ -75,10 +85,12 @@ def run_bicycle_route(world, carla, bicycle, *, target_speed_mps: float,
                 raise ValueError("Native bicycle left checked alley route")
             if x < previous_x - .05:
                 raise ValueError("Native bicycle reversed on checked route")
-            samples.append({"frame_id": int(frame_id), "time_s": index * DT_S,
+            samples.append({"frame_id": native_frame, "time_s": native_time,
                             "x_m": x, "y_m": y,
                             "velocity_mps": [vx, vy, vz]})
             previous_x = x
+            previous_frame = native_frame
+            previous_time = native_time
             if index >= FPS and x - origin_x < .5:
                 raise ValueError("Native bicycle failed measured-motion check")
             if x >= ROUTE_END_X_M:

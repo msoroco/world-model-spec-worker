@@ -1,0 +1,77 @@
+{
+  "format": "c10301-measurement-contract-v1",
+  "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
+  "law": "NRS 484B.600(1)(e)",
+  "case_ids": [
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above"
+  ],
+  "capture": {
+    "duration_s": 45,
+    "frequency_hz": 20,
+    "frames": 900,
+    "required_original_sources": [
+      "original-speed.jsonl",
+      "speed-source.json",
+      "native-motion-receipt.json",
+      "frame-map.json",
+      "front.mp4",
+      "front_left.mp4",
+      "front_right.mp4",
+      "rear.mp4",
+      "authored-setup.json"
+    ],
+    "source_integrity": "delivery_audit.py:audit_integrity; four camera hashes and original frame join; full decode remains separate"
+  },
+  "observables": [
+    {
+      "element": "drive or operate vehicle",
+      "source": [
+        "authored-setup.json",
+        "native-motion-receipt.json"
+      ],
+      "measurement": "source-bound ego vehicle identity and observed Native control/movement",
+      "unresolved": "vehicle classification and personal operation require original source review"
+    },
+    {
+      "element": "rate of speed greater than 80 miles per hour",
+      "source": [
+        "original-speed.jsonl",
+        "speed-source.json"
+      ],
+      "measurement": "every original 20 Hz SI speed converted to mph with stated uncertainty; maximum sampled speed and relation to strict >80 boundary",
+      "unresolved": "between-sample peaks and exact 80 mph equality are not established by a sampled maximum"
+    },
+    {
+      "element": "qualifying setting and route",
+      "source": [
+        "authored-setup.json",
+        "frame-map.json",
+        "four original camera files"
+      ],
+      "measurement": "alley route, marked access aisle position and original camera/trace identity",
+      "unresolved": "public-way applicability, route clearance, camera pixels and physical completion require reviewed sources"
+    }
+  ],
+  "comparison": {
+    "id": "strict_rate_boundary",
+    "cases": [
+      "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+      "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+      "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above"
+    ],
+    "fixed": [
+      "alley layout",
+      "motor_vehicle_driver",
+      "travel maneuver",
+      "marked access aisle",
+      "camera profile",
+      "45-second 20-Hz window"
+    ],
+    "deliberate_difference": "requested_speed_mph",
+    "audit": "speed_boundary.py:compare plus delivery_audit.py:audit_integrity per case"
+  },
+  "acceptance_claimed": false,
+  "legal_judgment": "unresolved"
+}

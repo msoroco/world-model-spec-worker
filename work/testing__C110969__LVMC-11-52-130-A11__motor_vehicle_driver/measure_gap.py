@@ -5,6 +5,7 @@ This computes a physical measurement only. It makes no necessity or legal findin
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from intersection_geometry import Box, footprint, polygon_gap_to_boundary
@@ -45,13 +46,30 @@ def measure(packet_path):
     if any(f.get("actor_id") != packet["actor_id"] for f in frames):
         raise ValueError("Actor binding changed within original trace")
     halted = [f for f in frames if f.get("halt_state") is True and f.get("speed_mps", 1) <= 0.1]
-    if len(halted) < 40:
-        raise ValueError("No two-second observed halt")
+    halt_runs = []
+    current = []
+    for frame in frames:
+        if frame.get("halt_state") is True and frame.get("speed_mps", 1) <= 0.1:
+            current.append(frame)
+        elif current:
+            halt_runs.append(current)
+            current = []
+    if current:
+        halt_runs.append(current)
+    complete_runs = [run for run in halt_runs if len(run) >= 40]
+    if not complete_runs:
+        raise ValueError("No contiguous two-second observed halt")
+    halted = [frame for run in complete_runs for frame in run]
+    if any(not all(math.isfinite(float(f[key])) for key in
+                   ("x_m", "y_m", "heading_deg", "speed_mps")) for f in halted):
+        raise ValueError("Nonfinite original halt sample")
     gaps = [polygon_gap_to_boundary(footprint(f["x_m"], f["y_m"],
                                                     f["heading_deg"], length, width), boundary)
             for f in halted]
     return {"map_id": map_data["map_id"], "actor_id": packet["actor_id"],
             "original_frame_count": 900, "halt_frame_count": len(halted),
+            "halt_intervals": [{"first_frame": run[0]["frame"],
+                                "last_frame": run[-1]["frame"]} for run in complete_runs],
             "minimum_halt_body_gap_m": min(gaps),
             "maximum_halt_body_gap_m": max(gaps),
             "map_sha256": packet["map_source"]["sha256"],

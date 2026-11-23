@@ -2,18 +2,30 @@
   "assignment_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver",
   "input_sha256": "0d7cdb67c208a8e876a7613f4a173438bde0dc54b0d49509e3f3d7e1ae339e8d",
   "status": "partial",
-  "readiness_kind": "exact_case_measurement_draft",
+  "readiness_kind": "native_source_capture_partial",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-lamp-tests.log",
-      "sha256": "e361b2419aa6bf0e9328923aa0e3e2f1f93dd2ad2317154b9cbe9047ad2795a0"
+      "sha256": "19955a94dcc378f7895a64cde4d3a510757f0b2beb0bf9d8a154b56acfe93fc8"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "718f8cc5dcda62dcf0f81f4249dab89bbeec8a36ef2530dcfb1c01ed938f8e69"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact unlit/low/high headlamp cases, two comparisons, source-bound original readback/parking geometry measurements, and independent fixed-condition comparison audit are CPU-tested. Native runner/source writer, reviewed intersection map packet, physical depressed-aim construction, semantic proposals, exact offline/compatibility/saved-only/delivery proofs and manifest remain CPU work; actual emission/aim remain physical review."
+  "reason": "Three exact unlit/low/high cases and two comparisons remain partial. Source-hashed Native 20 Hz actor and four-camera frame capture plus saved-only receipt/source join are implemented and CPU-tested with frame-gap, stale-camera, site-geometry/source-tamper, exact-ID, diagnostic-site and missing-source rejection; original emission and aim are unverified. Reviewed site acquisition, physical depressed-aim construction, complete exact runner/finalizer, semantic proposals, per-case offline/compatibility/delivery proofs and manifest remain CPU work."
 }

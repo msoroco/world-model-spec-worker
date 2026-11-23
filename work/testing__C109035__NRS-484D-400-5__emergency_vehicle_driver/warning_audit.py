@@ -26,7 +26,8 @@ def audit(folder: Path, source_manifest: dict) -> dict:
     if source_manifest.get("source_kind") != "original_capture":
         raise ValueError("Only original capture sources are auditable")
     refs = source_manifest.get("sources", {})
-    if set(refs) != {"device_trace", "dispatch_context", "equipment_record"}:
+    required = {"device_trace", "dispatch_context", "equipment_record"}
+    if not required.issubset(refs) or set(refs) - (required | {"camera_trace"}):
         raise ValueError("Required source inventory incomplete")
     documents = {}
     for key, ref in refs.items():
@@ -40,6 +41,13 @@ def audit(folder: Path, source_manifest: dict) -> dict:
         raise ValueError("Authorization or device inventory missing")
     if len(samples) != 900 or [x.get("frame") for x in samples] != list(range(900)):
         raise ValueError("Original 45-second 20-Hz frame sequence incomplete")
+    if "camera_trace" in documents:
+        camera_samples = [json.loads(line) for line in documents["camera_trace"].decode().splitlines() if line]
+        if len(camera_samples) != 900 or [x.get("frame") for x in camera_samples] != list(range(900)):
+            raise ValueError("Original camera frame sequence incomplete")
+        for device, camera in zip(samples, camera_samples):
+            if camera.get("native_frame") != device.get("native_frame") or set(camera.get("sources", {})) != {"front", "rear", "left", "right"}:
+                raise ValueError("Original camera/source synchronization mismatch")
     for sample in samples:
         if not isinstance(sample.get("siren_active"), bool) or not isinstance(sample.get("warning_lamp_active"), bool):
             raise ValueError("Original device state missing")

@@ -88,14 +88,23 @@ def analyze(map_packet: dict[str, Any], trace: dict[str, Any], case: dict[str, A
     _require(trace.get('destination_entry_frame') in [s['frame'] for s in samples], 'destination entry frame required')
     _require(trace['destination_signal']['frame'] == trace['destination_entry_frame'], 'destination signal must be observed at entry')
     _require(trace.get('purpose', {}).get('source') and trace['purpose'].get('value') in ('avoid_red', 'other', 'unknown'), 'purpose must be a separate sourced or unknown observation')
+    for name in ('approach_signal', 'destination_signal'):
+        history = trace.get(name + '_history')
+        if history is not None:
+            _require(len(history) == len(samples), f'{name} history must cover every body frame')
+            _require([row.get('frame') for row in history] == [row['frame'] for row in samples], f'{name} history frame join required')
+            _require(all(row.get('device_id') == history[0].get('device_id') and row.get('source') and row.get('state') in ('red_alone', 'red_combined', 'yellow', 'green', 'dark', 'unknown') for row in history), f'{name} source and stable device required')
+            _require(history[0] == trace[name] if name == 'approach_signal' else history[-1] == trace[name], f'{name} endpoint must match history')
     traversed = _traversed_property_ids(samples, properties)
     known = {p['id']: p for p in properties}
-    bypass = bool(traversed) and trace['approach_signal']['state'] == 'red_alone' and trace['approach_signal']['facing_ego'] is True and trace['destination_signal']['state'] != 'red_alone' and trace['destination_signal']['state'] != 'red_combined' and trace['destination_signal']['state'] != 'unknown' and trace['destination_signal']['facing_ego'] is False and trace['purpose']['value'] == 'avoid_red'
+    approach_history = trace.get('approach_signal_history', [trace['approach_signal']])
+    red_throughout = all(row['state'] == 'red_alone' and row['facing_ego'] is True for row in approach_history)
+    bypass = bool(traversed) and red_throughout and trace['approach_signal']['facing_ego'] is True and trace['destination_signal']['state'] != 'red_alone' and trace['destination_signal']['state'] != 'red_combined' and trace['destination_signal']['state'] != 'unknown' and trace['destination_signal']['facing_ego'] is False and trace['purpose']['value'] == 'avoid_red'
     return {
         'case_id': case['case_id'],
         'traversed_property_ids': traversed,
         'traversed_property_statuses': [known[k]['status'] for k in traversed],
-        'approach_red_alone_facing_ego': trace['approach_signal']['state'] == 'red_alone' and trace['approach_signal']['facing_ego'] is True,
+        'approach_red_alone_facing_ego': red_throughout,
         'destination_traffic_not_facing_red': trace['destination_signal']['state'] not in ('red_alone', 'red_combined', 'unknown') and trace['destination_signal']['facing_ego'] is False,
         'avoidance_purpose_observed_separately': trace['purpose']['value'] == 'avoid_red',
         'all_observation_conditions_present': bypass,

@@ -41,6 +41,10 @@ class World:
             self.bicycle.velocity = self.bicycle.command
         return self.frame
 
+    def get_snapshot(self):
+        return SimpleNamespace(frame=self.frame,
+                               timestamp=SimpleNamespace(elapsed_seconds=(self.frame - 1) / 20))
+
 
 class NativeControllerTests(unittest.TestCase):
     def test_all_five_exact_cases_bind_to_controller(self):
@@ -81,6 +85,17 @@ class NativeControllerTests(unittest.TestCase):
         bike.location.x = -25
         with self.assertRaisesRegex(ValueError, "start outside"):
             run_bicycle_route(World(bike), CARLA, bike, target_speed_mps=3.0)
+
+    def test_original_clock_discontinuity_rejected(self):
+        class BadClock(World):
+            def get_snapshot(self):
+                snapshot = super().get_snapshot()
+                snapshot.timestamp.elapsed_seconds *= 2
+                return snapshot
+        bike = Bicycle()
+        with self.assertRaisesRegex(ValueError, "frame/time continuity"):
+            run_bicycle_route(BadClock(bike), CARLA, bike, target_speed_mps=3.0)
+        self.assertEqual(bike.command.x, 0)
 
 
 if __name__ == "__main__":

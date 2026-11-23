@@ -1,6 +1,6 @@
 # testing__C110454__NRS-484D-165-4__motor_vehicle_driver
 
-Status: partial executable headlamp measurement checkpoint. Three exact planned
+Status: partial executable Native headlamp source checkpoint. Three exact planned
 cases are proposed; no original recording is claimed.
 
 Exact law: NRS 484D.165(4) — Any lighted headlamps upon a parked vehicle shall be depressed or dimmed.
@@ -21,7 +21,7 @@ and high beam. These are requested CARLA light modes; they establish neither
 emitted intensity nor legal meaning. A physical depressed-aim construction is
 still missing and cannot be represented merely by a requested flag.
 
-`lamp_probe.py` applies the requested CARLA light state lazily and reads back the
+`saved_lamps.py` consumes the sealed Native receipt and source hashes without CARLA; it rejects diagnostic-site data for delivery, changed original sources and case mismatches. Its output keeps emitted brightness, beam aim and legal judgment unresolved. `lamp_probe.py` applies the requested CARLA light state lazily and reads back the
 actual actor bits. Its source-bound measurement requires contiguous original
 20 Hz actor and four-camera frame-map histories, sealed hashes, measured speed,
 parking brake, reviewed-polygon footprint predicate and actor identity. The
@@ -31,7 +31,7 @@ against a reviewed Native parking polygon and reports intersection corner
 overlap witnesses. `comparison_audit.py` rejects absent exact measurements,
 missing source seals, altered fixed setup hashes, incomplete parked intervals
 and wrong light-state readback. It does not check pixels or legal compliance.
-The six focused tests include positive measurements and negative source,
+The eleven focused tests include positive measurements and negative source,
 camera, geometry and comparison cases. Run:
 
 `.venv-cpu/bin/python -m unittest discover -s work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/tests -v`
@@ -47,14 +47,14 @@ reviewed Native site packet confirms that risk.
 
 ## Next CPU actions
 
-1. Obtain a reviewed Native intersection site packet and implement a runner that parks the vehicle, records actual body corners, light-state readback, original camera frames and source hashes. Construct and test the depressed-beam-aim alternative if the pinned Native capability supports physical adjustment; otherwise retain its exact tested limitation without claiming that low-beam bits prove aim.
+1. Obtain a reviewed Native intersection site packet and integrate `native_capture.capture_interval` into the exact runner. The current lazy capture applies parking brake and requested light state, reads actual body corners/velocity/light bits from the Native actor, joins four original camera frames at 20 Hz, and seals actor/camera JSONL hashes. It rejects site-source tamper, frame gaps and stale/missing camera joins before emitting sources. Its CPU fake fixture proves software behavior only; the runner still needs actor spawning, world ownership and source pixel capture. The site polygons must match their sealed JSON source. Construct and test the depressed-beam-aim alternative if the pinned Native capability supports physical adjustment; otherwise retain its exact tested limitation without claiming that low-beam bits prove aim.
 2. Build complete exact constructions and finalizer outputs for each case, then canonical semantic proposals, offline and positive/negative compatibility recipes, saved-only processing, independent delivery audit, and execution manifest with source hashes and risk-based fallbacks.
 3. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
 
 ## Proven checks and dependency boundary
 
 `.venv-cpu/bin/python runtime.py preflight` passed in this turn. The focused
-assignment tests passed 6 tests. The assignment `--complete` static check
+assignment tests passed 11 tests. The assignment `--complete` static check
 passed, while the exact `--complete --require-delivery-ready` command failed
 with `Preparation acceptance failed: partial/missing packages remain` because
 `result.json` truthfully remains partial. See `cpu-static-check.log` and

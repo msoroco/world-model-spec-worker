@@ -97,8 +97,15 @@ def measure(boundary_packet: dict, samples_packet: dict, activity_packet: dict) 
                               sample["body_footprint"], boundary),
                           "speed_mps": sample["speed_mps"]})
     _require(samples_packet.get("fps") == 20, "original 20 Hz frame basis missing")
+    activity_samples = activity_packet.get("activity_samples")
+    if activity_samples is not None:
+        _require([row.get("frame") for row in activity_samples] == [row["frame"] for row in intervals],
+                 "activity samples not joined to original frames")
+        _require(all(row.get("source_ref") for row in activity_samples),
+                 "activity sample original source missing")
     return {"map_id": boundary_packet["map_id"], "boundary_method": boundary_packet["boundary_method"],
-            "frames": intervals, "activity_observation": activity_packet.get("activity_observation"),
+            "frames": intervals, "activity_samples": activity_samples,
+            "activity_observation": activity_packet.get("activity_observation"),
             "traffic_conflict_observation": activity_packet.get("traffic_conflict_observation"),
             "law_direction_observation": activity_packet.get("law_direction_observation"),
             "officer_direction_observation": activity_packet.get("officer_direction_observation"),
