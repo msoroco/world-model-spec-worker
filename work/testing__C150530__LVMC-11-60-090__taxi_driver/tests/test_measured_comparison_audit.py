@@ -26,6 +26,7 @@ class MeasuredComparisonTest(unittest.TestCase):
         return {"format": "c150530-saved-source-audit-v1", "passed": True,
                 "case_id": case_id, "frames": 700, "trace_sha256": trace_hash,
                 "capture_seal_sha256": seal_hash,
+                "source_hashes": {"runner.py": "same-sealed-controller-code"},
                 "physical_or_pixel_acceptance": False,
                 "measurement": {"case_id": case_id, "map_sha256": map_hash,
                                 "engineering_right_turn_observed": True,
@@ -63,6 +64,16 @@ class MeasuredComparisonTest(unittest.TestCase):
     def test_changed_duration_rejected(self):
         self.far["frames"] = 650
         with self.assertRaisesRegex(ValueError, "fixed capture duration"):
+            compare_receipts(self.near, self.far, self.candidate)
+
+    def test_missing_departure_frame_rejected(self):
+        self.near["measurement"].pop("stand_departure_frame")
+        with self.assertRaisesRegex(ValueError, "frame order incomplete"):
+            compare_receipts(self.near, self.far, self.candidate)
+
+    def test_changed_runner_implementation_rejected(self):
+        self.far["source_hashes"]["runner.py"] = "changed-code"
+        with self.assertRaisesRegex(ValueError, "sealed runner implementation"):
             compare_receipts(self.near, self.far, self.candidate)
 
 

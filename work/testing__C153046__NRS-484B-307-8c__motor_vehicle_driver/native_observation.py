@@ -42,6 +42,7 @@ def plan(packet_path: Path, suffix: str) -> tuple[dict, dict]:
         raise ValueError('unreviewed receiving-road exit gate')
     gate_point = _xy(gate.get('point_xy'), 'exit gate')
     return scene, {'zones': zones, 'exit_point_xy': gate_point,
+                   'signal_actor_id': str(packet['signal']['native_actor_id']),
                    'source_packet_sha256': scene['source_packet_sha256']}
 
 
@@ -64,6 +65,8 @@ def from_frame(frame: dict, scene: dict, observation_plan: dict) -> Observation:
     if (frame.get('origin') != 'native_world_snapshot' or
             observation_plan['source_packet_sha256'] != scene['source_packet_sha256']):
         raise ValueError('original frame/observation source differs')
+    if str(frame.get('signal_actor_id')) != observation_plan['signal_actor_id']:
+        raise ValueError('original signal actor differs from reviewed site')
     ego = frame.get('ego')
     if not isinstance(ego, dict):
         raise ValueError('original ego body missing')

@@ -30,7 +30,7 @@ def compare_receipts(near: dict, far: dict, candidate: dict) -> dict:
         if (measurement.get("first_junction_road_id"),
                 measurement.get("receiving_road_id")) != (110, 11):
             raise ValueError("measured comparison changed first junction or receiving road")
-        if not (measurement.get("stand_departure_frame", -1) <
+        if not (0 <= measurement.get("stand_departure_frame", -1) <
                 measurement.get("first_intersection_entry_frame", -1) <
                 measurement.get("first_intersection_exit_frame", -1) < receipt.get("frames", 0)):
             raise ValueError("measured comparison frame order incomplete")
@@ -38,6 +38,10 @@ def compare_receipts(near: dict, far: dict, candidate: dict) -> dict:
         raise ValueError("comparison reused the same original attempt")
     if near["frames"] != far["frames"]:
         raise ValueError("comparison changed fixed capture duration")
+    if (not near.get("source_hashes", {}).get("runner.py") or
+            near["source_hashes"]["runner.py"] !=
+            far.get("source_hashes", {}).get("runner.py")):
+        raise ValueError("comparison changed sealed runner implementation")
     fixed = ("cab_license", "jurisdiction", "designation_provisions")
     near_context = near["measurement"]["context_source_joins"]
     far_context = far["measurement"]["context_source_joins"]

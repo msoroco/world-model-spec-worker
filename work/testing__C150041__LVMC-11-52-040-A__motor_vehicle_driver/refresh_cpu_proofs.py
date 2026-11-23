@@ -44,7 +44,7 @@ def main():
             [item["angle_deg"] for item in sweep["samples"]] != list(range(0, 91, 10))):
         raise ValueError("provisional orientation proof is stale or overstated")
     sweep_log = ROOT / "cpu-sweep-feasibility-tests.log"
-    if "Ran 3 tests" not in sweep_log.read_text() or "\nOK\n" not in sweep_log.read_text():
+    if "Ran 6 tests" not in sweep_log.read_text() or "\nOK\n" not in sweep_log.read_text():
         raise ValueError("provisional sweep tests did not pass")
     tests.append({"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest "
                   "discover -s " + PREFIX + "/tests -p test_parking_sweep_feasibility.py -v",
@@ -65,7 +65,7 @@ def main():
                   "sha256": sha(exception_log)})
     for kind in REQUESTS:
         folder = ROOT / "diagnostic" / kind
-        fixture = REPO / ".runtime-work" / ("c150041-saved-fixture-v8-" + kind)
+        fixture = REPO / ".runtime-work" / ("c150041-saved-fixture-v9-" + kind)
         tests.append(run([PYTHON, REPO / "runtime.py", "fixture", "--recipe",
                           folder / "saved-fixture-recipe.json", "--output", fixture],
                          folder / "cpu-fixture-materialize.log"))
@@ -73,7 +73,7 @@ def main():
                           "--case", kind, "--output", folder / "cpu-saved-fixture-proof.json"],
                          folder / "cpu-saved-fixture-check.log"))
     tests.append(run([PYTHON, ROOT / "verify_saved_comparisons.py", "--fixture-prefix",
-                      REPO / ".runtime-work/c150041-saved-fixture-v8-", "--output",
+                      REPO / ".runtime-work/c150041-saved-fixture-v9-", "--output",
                       ROOT / "diagnostic/cpu-comparison-fixture-proof.json"],
                      ROOT / "diagnostic/cpu-comparison-fixture-check.log"))
     for kind in REQUESTS:
@@ -82,7 +82,7 @@ def main():
         manifest = json.loads(manifest_path.read_text())
         case = ROOT.name + "__" + kind
         for candidate in ("primary", "fallback1"):
-            output = REPO / ".runtime-work" / ("c150041-analysis-bundle-v8-" + candidate + "-" + kind)
+            output = REPO / ".runtime-work" / ("c150041-analysis-bundle-v9-" + candidate + "-" + kind)
             log = (ROOT / ("cpu-" + kind + "-offline-diagnostic.log") if candidate == "primary"
                    else folder / "cpu-fallback1-offline.log")
             tests.append(run([PYTHON, REPO / "runtime.py", "offline", "--manifest", manifest_path,

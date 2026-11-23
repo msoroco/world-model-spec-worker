@@ -37,7 +37,7 @@ class NativeObservationTests(unittest.TestCase):
             path = observation_packet(Path(temp))
             scene, reviewed = plan(path, "stopped_leftmost_clear")
             frame = {"origin": "native_world_snapshot", "time_s": 1.0,
-                     "ego": body(-1.75, -5), "signal_state": "Red",
+                     "ego": body(-1.75, -5), "signal_actor_id": "9", "signal_state": "Red",
                      "pedestrians": [body(3, 0)], "other_traffic": [body(5, 0)]}
             observed = from_frame(frame, scene, reviewed)
             self.assertAlmostEqual(observed.distance_to_stop_boundary_m, 2.5)
@@ -55,6 +55,10 @@ class NativeObservationTests(unittest.TestCase):
             self.assertFalse(observed.pedestrian_conflict)
             with self.assertRaisesRegex(ValueError, "source differs"):
                 from_frame(frame, scene, {**reviewed, "source_packet_sha256": "changed"})
+            frame["signal_actor_id"] = "other-signal"
+            with self.assertRaisesRegex(ValueError, "signal actor differs"):
+                from_frame(frame, scene, reviewed)
+            frame["signal_actor_id"] = "9"
             frame["ego"]["body_vertices_xyz_m"] = []
             with self.assertRaisesRegex(ValueError, "ego body vertices"):
                 from_frame(frame, scene, reviewed)
