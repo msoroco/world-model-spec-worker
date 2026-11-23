@@ -1,5 +1,11 @@
 # Current handoff
 
+## 2026-11-23 C125745 full sweep candidate CPU proof checkpoint
+
+C125745 remains **partial**. Its six exact timing/hold sweep primaries and all 18 distinct fallback constructions now pass pinned offline, current-runtime positive/missing-source compatibility, and recorded-only saved processing on separate 135-frame synthetic original-source fixtures. The corrected 48-frame release and 16-frame hold primaries have fresh exact receipts; the stale prior receipts are preserved byte-exactly in `work/_shared/c125745-stale-axis-diagnostics-2026-11-23.json`. Three textual archives, `work/_shared/c125745-sweep-fallback{1,2,3}-proofs-2026-11-23.json`, retain every fallback's exact positive receipt, analysis/negative logs and recorded-only processing receipt; `sweep-constructions/index.json` binds the construction hashes and commands. The 47-test suite verifies these archived hashes, case IDs and candidate IDs.
+
+The canonical execution manifest still lists the four original selected stop-sign cases. The six sweep cases and their 18 fallbacks need canonical proposal/plan/manifest integration, per-case physical-preparation, delivery-acceptance and comparison CPU receipts, and assignment-scoped strict validation. The official-device and opposite-direction-turn judgment sweeps also remain incomplete. The current synthetic fixtures demonstrate software wiring only; physical motion, original vehicle pixels, official sign governance and legal outcomes remain unverified. Pinned CPU preflight and the assignment-scoped nonready check pass. Batch status is 25 ready, 18 partial; the full strict delivery gate has not passed.
+
 ## 2026-11-23 C125745 exact sweep and fallback construction checkpoint
 
 C125745 stays **partial**. Six exact timing/hold sweep primary constructions now command the indexed 32/40/48 release and 0/8/16 hold values. The 48-frame and 16-frame bundles had still commanded 40 and 8; corrected bundles passed pinned offline, current-runtime positive/missing-source compatibility and recorded-only saved processing. Their old receipts are historical, preserved byte-exactly in `work/_shared/c125745-stale-axis-diagnostics-2026-11-23.json`. The other four primary receipts remain source-bound. `sweep-constructions/index.json` binds current construction and receipt hashes.

@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import json
 import unittest
@@ -59,3 +60,30 @@ class SweepConstructionTests(unittest.TestCase):
                 saved = row['current_runtime_proof']['recorded_only_saved_receipt']
                 self.assertEqual(digest(saved['file']), saved['sha256'])
                 self.assertTrue(read(saved['file'])['recorded_only'])
+
+    def test_archived_candidate_receipts_bind_exact_constructions(self):
+        index = read('sweep-constructions/index.json')
+        root = HERE.parent
+        for candidate_id in ('fallback1', 'fallback2', 'fallback3'):
+            archive_path = root / '_shared' / f'c125745-sweep-{candidate_id}-proofs-2026-11-23.json'
+            archive = json.loads(archive_path.read_text())
+            for row in index['constructions']:
+                with self.subTest(case=row['case_id'], candidate=candidate_id):
+                    fallback = row[candidate_id]
+                    proof = fallback['current_runtime_proof']
+                    self.assertEqual(proof['status'], 'positive_negative_and_saved_passed')
+                    members = archive['members'][row['case_id']]
+                    decoded = {}
+                    for name, item in members.items():
+                        data = base64.b64decode(item['base64'], validate=True)
+                        self.assertEqual(hashlib.sha256(data).hexdigest(), item['sha256'])
+                        decoded[name] = data
+                    receipt = json.loads(decoded['positive_receipt'])
+                    saved = json.loads(decoded['recorded_only_receipt'])
+                    self.assertEqual(receipt['construction_sha256'], fallback['construction_sha256'])
+                    self.assertEqual(receipt['candidate_id'], candidate_id)
+                    self.assertTrue(receipt['passed'])
+                    self.assertEqual(receipt['log_sha256'], members['positive_analysis_log']['sha256'])
+                    self.assertEqual(receipt['negative_log_sha256'], members['negative_analysis_log']['sha256'])
+                    self.assertEqual(saved['native_revision']['construction_sha256'], fallback['construction_sha256'])
+                    self.assertTrue(saved['recorded_only'])
