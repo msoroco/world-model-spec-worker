@@ -925,3 +925,15 @@ C24811 remains partial. Source analysis now handles Off and explicit operative i
 ## 2026-11-22 C24811 three-vehicle route/source checkpoint
 
 C24811 stays partial. Authored-map-bound route candidate has ego plus distinct earlier and occupant actors, 32 m shared-lane spawn spacing and measured release conditions. Native source-row builder captures three complete bodies and two observed head states. Twelve CPU tests, runtime preflight and scoped partial check pass. Continue with synchronized Native runner, raw cameras, saved finalizer, fallbacks and exact proofs. No motion or physical acceptance claimed. See assignment HANDOFF.
+
+## 2026-11-22 C24811 four-camera capture candidate
+
+C24811 stays partial. Added a 20 Hz four-camera FFV1 source plan/helper, three-vehicle Native runner candidate and saved-only finalizer with trace/history/frame-map/capture-certificate/video-count preflight. Seventeen CPU tests, runtime preflight, runner `--check` and scoped partial check pass. No Native run or end-to-end saved finalization proof yet; bind runtime construction, 15 fallbacks and exact audits before ready. See assignment HANDOFF.
+
+## 2026-11-22 C24811 sealed-source and boundary checkpoint
+
+C24811 remains partial. Its saved source preflight now checks confirmed live extraction, restored Native seal, exact frame counts and every sealed source hash. Both finalizer paths must be inside the ignored output root. Original-frame halt measurements and runner feedback require the complete-body front within 0.5 m upstream of the stop line; zero-speed spawn far upstream is rejected. Eighteen CPU tests pass. C125763 historical review and physical draft files were byte-exact archived in `archived-C125763-review-physical-20261122.json` to free 24 return slots; its partial check passes. Full C24811 construction/fallback/audit proofs remain worker-owned; batch is 23 ready, 20 partial.
+
+## 2026-11-22 C24811 exact primary draft
+
+C24811 now has a canonical draft `runner.py`, source-mapped `config.json`, full four-view camera plan in `case-plan.json`, and an inline `construction.json` with 17 bound files. Nineteen local CPU tests, runner `--check` and scoped partial check pass. Native occluder blueprint/placement is intentionally unresolved; execution manifest, fifteen fallbacks, semantic/independent audits and delivery proofs are outstanding. Status remains partial, 23 ready/20 partial overall.

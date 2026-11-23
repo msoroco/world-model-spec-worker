@@ -92,6 +92,11 @@ def validate(path):
                 control.get("earlier_stop") not in ("full_halt", "no_prior_halt") or
                 control.get("occupant_entry") not in ("required", "hold_before_entry")):
             raise ValueError("Invalid case control: " + name)
+        override = control.get("ego_target_speed_override_mps")
+        if override is not None and (name != "off_no_full_halt" or
+                type(override) not in (int, float) or not math.isfinite(override) or
+                not 1 <= override <= vehicles["ego"]["target_speed_mps"]):
+            raise ValueError("Rolling comparison speed override invalid")
     return {"map_sha256": digest, "route_roles": list(ROLES),
             "shared_lane_spawn_spacing_m": spawns["earlier"][0]-spawns["occupant"][0],
             "case_count": len(controls), "native_motion_verified": False}

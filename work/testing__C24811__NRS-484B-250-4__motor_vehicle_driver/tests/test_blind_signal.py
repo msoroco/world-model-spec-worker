@@ -1,11 +1,14 @@
 import importlib.util
 import copy
 import subprocess
+import sys
 import json
 import tempfile
 import unittest
+import hashlib
 from pathlib import Path
 from queue import Queue
+from shapely.geometry import Polygon
 from types import SimpleNamespace as NS
 
 
@@ -27,6 +30,10 @@ routes = load("interaction_routes")
 sources = load("three_vehicle_sources")
 cameras = load("source_cameras")
 control = load("vehicle_control")
+sys.path.insert(0,str(ROOT))
+runner = load("native_runner")
+entrypoint = load("runner")
+finalizer = load("saved_finalizer")
 
 
 def vehicle(x, speed, signed):
@@ -36,6 +43,84 @@ def vehicle(x, speed, signed):
 
 
 class BlindSignalTests(unittest.TestCase):
+    def test_draft_package_config_binds_all_cases_cameras_and_source_terms(self):
+        config=json.loads((ROOT/"config.json").read_text())
+        plan=json.loads((ROOT/"case-plan.json").read_text())
+        self.assertEqual(config["selected_case_id"],plan["cases"][0]["case_id"])
+        self.assertEqual(set(config["supported_case_ids"]),
+                         {case["case_id"] for case in plan["cases"]})
+        self.assertEqual(config["frames"],config["duration_s"]*config["rate_hz"])
+        self.assertEqual([camera["name"] for camera in config["cameras"]],
+                         list(cameras.CAMERAS))
+        self.assertEqual(plan["camera_plan"]["profile"],"overview1080-capability")
+        declared={channel["name"] for channel in config["recording_description"]["channels"]}
+        self.assertEqual({item["name"] for item in plan["observations"]},declared)
+        for mapping in plan["source_observation_mapping"].values():
+            self.assertTrue(set(mapping["channels"]) <= declared)
+            self.assertTrue(mapping["source_refs"])
+        self.assertIsNone(config["occluder"]["blueprint_id"])
+        self.assertEqual(entrypoint.validate_config()["selected_case_id"],
+                         config["selected_case_id"])
+
+    def test_saved_only_source_preflight_joins_trace_and_four_videos(self):
+        case="testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied"
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            (root/"config.json").write_text(json.dumps({"cell_id":"C24811",
+                "law_id":"NRS-484B-250-4","selected_case_id":case}))
+            mapping=[json.loads(line) for line in (root/"video_frames.jsonl").read_text().splitlines()]
+            (root/"trace.jsonl").write_text("".join(json.dumps({"frame":m["carla_frame"],
+                "time_s":m["time_s"]})+"\n" for m in mapping))
+            (root/"capture").mkdir()
+            (root/"capture/evidence.jsonl").write_text("{}\n")
+            (root/"capture/manifest.json").write_text(json.dumps({"case_id":case,
+                "acquisition":"original_live_run","extraction_confirmed":True,
+                "frames":len(mapping)}))
+            for name in cameras.CAMERAS:
+                with cameras.ffv1_writer(root/(name+".mkv"),(4,4)) as write:
+                    for _ in mapping:
+                        write(bytes([0,0,0,255])*16)
+            sealed={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+                    for name in finalizer.REQUIRED if name!="capture-seal.json"}
+            (root/"capture-seal.json").write_text(json.dumps({
+                "provenance_kind":"native","frames":len(mapping),
+                "restoration":{"restored":True},"physical_acceptance_claimed":False,
+                "encoder_exit_codes":{name:0 for name in cameras.CAMERAS},
+                "sources":sealed}))
+            proof=finalizer.validate_sources(root)
+            self.assertEqual(proof["camera_frame_counts"],{name:4 for name in cameras.CAMERAS})
+            (root/"capture/evidence.jsonl").write_text("{\"changed\":true}\n")
+            with self.assertRaisesRegex(ValueError,"Sealed original source changed"):
+                finalizer.validate_sources(root)
+            (root/"capture/evidence.jsonl").write_text("{}\n")
+            (root/"driver_reference.mkv").unlink()
+            with self.assertRaisesRegex(ValueError,"driver_reference"):
+                finalizer.validate_sources(root)
+
+    def test_native_runner_cpu_plan_and_latched_three_body_feedback(self):
+        proof=runner.check()
+        self.assertEqual(proof["routes"]["case_count"],5)
+        self.assertFalse(proof["native_capture_verified"])
+        region=Polygon([[-8,-8],[8,-8],[8,8],[-8,8]])
+        entered={role:False for role in ("ego","earlier","occupant")}
+        cleared=dict(entered)
+        previous={"observed_ego_halt":False,"observed_earlier_halt":False,
+                  "observed_occupant_halt":False}
+        def row(earlier_y,occupant_y,speed):
+            def body(x,y):
+                return [[x-1,y-1],[x-1,y+1],[x+1,y+1],[x+1,y-1]]
+            return {role:{"speed_mps":speed,"front_to_stop_line_signed_m":0.2,
+                          "body_vertices_xy_m":body(*point)} for role,point in
+                    (("ego",(-20,-1.8)),("earlier",(1.8,earlier_y)),
+                     ("occupant",(1.8,occupant_y)))}
+        first=runner._feedback(row(-20,-40,0),entered,cleared,region,previous)
+        self.assertTrue(first["observed_earlier_halt"])
+        second=runner._feedback(row(0,-30,3),entered,cleared,region,first)
+        third=runner._feedback(row(20,0,3),entered,cleared,region,second)
+        self.assertTrue(third["observed_earlier_halt"])
+        self.assertTrue(third["observed_earlier_clearance"])
+        self.assertTrue(third["observed_occupant_entry"])
+
     def test_native_stop_and_rolling_commands_use_speed_feedback(self):
         commands=[]
         actor=NS(get_velocity=lambda:NS(x=0,y=0,z=0),
@@ -118,7 +203,7 @@ class BlindSignalTests(unittest.TestCase):
                 (ROOT/"blind-inoperative-stop-line.xodr").read_bytes())
             path=root/"interaction-routes.json"
             overlapping=copy.deepcopy(original)
-            overlapping["vehicles"]["occupant"]["spawn_road_lane_s"][2]=40
+            overlapping["vehicles"]["occupant"]["spawn_road_lane_s"][2]=45
             path.write_text(json.dumps(overlapping))
             with self.assertRaisesRegex(ValueError,"overlap"):
                 routes.validate(path)
@@ -224,8 +309,8 @@ class BlindSignalTests(unittest.TestCase):
         for i,(ego_x,earlier_x,occupant_x) in enumerate(positions):
             rows.append({"frame":100+i,"time_s":1+i*.05,
                          "signal_states":{"17":"Off","18":"Off"},
-                         "ego":vehicle(ego_x,0 if i == 1 else 2,2 if i == 1 else -1),
-                         "earlier":vehicle(earlier_x,0,2),
+                         "ego":vehicle(ego_x,0 if i == 1 else 2,0.2 if i == 1 else -1),
+                         "earlier":vehicle(earlier_x,0,0.2),
                          "occupant":vehicle(occupant_x,1,-1)})
         frames=[{"video_frame":i,"carla_frame":row["frame"],"time_s":row["time_s"]}
                 for i,row in enumerate(rows)]
@@ -240,6 +325,20 @@ class BlindSignalTests(unittest.TestCase):
             self.assertTrue(result["distinct_other_stopped_earlier_observed"])
             self.assertTrue(result["distinct_occupant_inside_at_ego_entry_observed"])
             self.assertEqual(result["legal_conclusion"],"unresolved")
+
+    def test_stationary_spawn_upstream_is_not_a_stop_line_halt(self):
+        prefix="testing__C24811__NRS-484B-250-4__motor_vehicle_driver__"
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            rows=[json.loads(s) for s in (root/"vehicle_signal_history.jsonl").read_text().splitlines()]
+            rows[1]["ego"]["front_to_stop_line_signed_m"]=5
+            (root/"vehicle_signal_history.jsonl").write_text(
+                "".join(json.dumps(row)+"\n" for row in rows))
+            result=measure.analyze(root)
+            self.assertIsNone(result["first_full_halt"]["ego"])
+            self.assertFalse(result["ego_stopped_before_entry_observed"])
+            with self.assertRaisesRegex(ValueError,"do not satisfy exact case"):
+                measure.analyze_exact_case(root,prefix+"off_stop_earlier_and_occupied")
 
     def test_exact_case_observations_reject_comparison_mismatch(self):
         prefix="testing__C24811__NRS-484B-250-4__motor_vehicle_driver__"

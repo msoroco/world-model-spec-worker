@@ -13,6 +13,7 @@ from shapely.geometry import MultiPoint, Polygon
 
 
 REQUIRED = ("junction_context.json", "vehicle_signal_history.jsonl", "video_frames.jsonl")
+STOP_LINE_TOLERANCE_M = 0.5
 
 
 def _number(value, label):
@@ -98,7 +99,7 @@ def analyze(root: Path, expected_signal_state="Off"):
             inside = _body(actor).intersects(polygon)
             if i == 0 and inside:
                 raise ValueError("Missing pre-entry history")
-            if speed == 0 and signed >= 0 and first_stop[role] is None:
+            if speed == 0 and 0 <= signed <= STOP_LINE_TOLERANCE_M and first_stop[role] is None:
                 first_stop[role] = {"frame": fid, "time_s": time}
             if inside and first_entry[role] is None:
                 first_entry[role] = {"frame": fid, "time_s": time}

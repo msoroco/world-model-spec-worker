@@ -87,13 +87,54 @@
     "uncovered": "All exact cases; frozen evidence.json has zero accepted recordings."
   },
   "observations": [
-    "Native and original-camera installed uncovered vehicular heads governing every entrance",
-    "complete inoperative state of all relevant heads at ego entry, distinct from malfunction or failed detection",
-    "clearly marked stop line and original-frame full halt before body entry",
-    "separate earlier completed stop and occupied-intersection histories with complete bodies",
-    "blind-intersection occluder geometry and both approach sight rays",
-    "cautious proceeding and yield context retained without invented legal numeric standard",
-    "operative-signal comparison requires the same original-frame all-head state join, expected operative state explicit per case"
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "m/s"
+    },
+    {
+      "name": "earlier_speed",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "m/s"
+    },
+    {
+      "name": "occupant_speed",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "m/s"
+    },
+    {
+      "name": "ego_stop_line_distance",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "m"
+    },
+    {
+      "name": "earlier_stop_line_distance",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "m"
+    },
+    {
+      "name": "occupant_stop_line_distance",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "m"
+    },
+    {
+      "name": "governing_signal_states",
+      "mandatory": true,
+      "source": "vehicle_signal_history.jsonl",
+      "unit": "device states"
+    },
+    {
+      "name": "junction_context",
+      "mandatory": true,
+      "source": "junction_context.json",
+      "unit": "structured record"
+    }
   ],
   "sources": [
     {
@@ -116,10 +157,10 @@
     "Exact scene runner, four source cameras, saved finalizer and all delivery proofs remain worker-owned CPU work.",
     "Authored map, planned sight-ray and corridor checks are CPU construction evidence; realized 3D occlusion, source camera pixels and Native site acceptance remain unverified."
   ],
-  "planning_status": "partial; authored site, three-vehicle route and source-row candidates, measured release permissions, reversible signals, exact branch source observations and occluder checks CPU-tested",
+  "planning_status": "partial; three-vehicle Native runner, four-camera capture and saved-only source/finalizer candidates CPU checked; exact runtime delivery proofs remain",
   "site_candidate": {
     "path": "blind-site-candidate.json",
-    "sha256": "4153780031ac990fa8f6f5a1c515a0aa27129d88532a2e6aded67c3d69facc3d",
+    "sha256": "f2c0c918bef0379e89dd50d98b2b5c7b6483debd3b63ff5c2878481c86385a94",
     "validation_command": ".venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/blind_site.py",
     "status": "authored_cpu_candidate_native_review_pending"
   },
@@ -136,7 +177,7 @@
   },
   "route_candidate": {
     "path": "interaction-routes.json",
-    "sha256": "dc541f816cab739ccda0e83094b1799a3b408479797d0f68d50f5dc0634f5a29",
+    "sha256": "0ea51a588214b7887b9efbd8ca7e28c4229bd598bc6d90c6f725d113af9e092a",
     "validator": "interaction_routes.py",
     "native_motion_verified": false
   },
@@ -158,5 +199,231 @@
       "occupant"
     ],
     "native_capture_verified": false
-  }
+  },
+  "capture_candidate": {
+    "runner": "native_runner.py",
+    "runner_sha256": "3f8d274a01c309874c283bd035431d30c98807f6e77b51ada2b32951dd5f550e",
+    "capture_plan": "capture-plan.json",
+    "capture_plan_sha256": "60ebc9de50c43769c96f8eb7c3352e933c7454b1d688684af85c7d2b27bf1ddf",
+    "saved_finalizer": "saved_finalizer.py",
+    "source_camera_count": 4,
+    "native_capture_verified": false,
+    "saved_finalization_end_to_end_verified": false
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full junction, both governed entrances and occluder",
+        "interval": "complete capture"
+      },
+      {
+        "view": "approach",
+        "subject": "ego marked stop line and installed signal heads",
+        "interval": "complete capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both approach sight rays and occupying vehicle",
+        "interval": "complete capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego source view of approaching traffic",
+        "interval": "complete capture"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "governing_signal_states"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "dev.inoperative": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "governing_signal_states"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "junction_context"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "ego_stop_line_distance",
+        "junction_context"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "junction_context"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "junction_context"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "junction_context"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "ego_speed",
+        "ego_stop_line_distance"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "junction_context",
+        "ego_speed"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "earlier_speed",
+        "earlier_stop_line_distance"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "occupant_speed",
+        "junction_context"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original source row and four-camera review required; current map and geometry are authored candidates",
+      "channels": [
+        "ego_speed",
+        "occupant_speed"
+      ],
+      "source_refs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  },
+  "draft_recording_description": "config.json"
 }

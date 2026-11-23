@@ -37,6 +37,9 @@ def validate(candidate_path):
     junction_id = candidate["junction_id"]
     if root.find(f"junction[@id='{junction_id}']") is None:
         raise ValueError("Authored junction missing")
+    crossing = Polygon([_point(p) for p in candidate["intersection_polygon_xy_m"]])
+    if not crossing.is_valid or crossing.area <= 0:
+        raise ValueError("Finite intersection geometry required")
     roads = {int(r.get("id")): r for r in root.findall("road")}
     entrances = candidate["entrances"]
     if set(entrances) != {"ego", "other"}:

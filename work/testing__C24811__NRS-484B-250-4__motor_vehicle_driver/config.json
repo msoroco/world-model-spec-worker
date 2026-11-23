@@ -1,0 +1,309 @@
+{
+  "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "cell_id": "C24811",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+  "supported_case_ids": [
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt",
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal"
+  ],
+  "rate_hz": 20,
+  "frames": 900,
+  "duration_s": 45,
+  "required_atoms": [
+    "ru.subject",
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.intersection",
+    "st.sight_distance"
+  ],
+  "source_packets": [],
+  "physical_completion": {
+    "motion_source": "vehicle_signal_history.jsonl",
+    "body_key": "ego.body_vertices_xy_m",
+    "context_sources": [
+      "junction_context.json"
+    ],
+    "criterion": "intersection_clearance",
+    "intersection_polygon_xy_m": [
+      [
+        -8,
+        -8
+      ],
+      [
+        8,
+        -8
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        -8,
+        8
+      ]
+    ],
+    "exit_axis": 0,
+    "exit_sign": 1,
+    "minimum_progress_m": 0.25,
+    "engineering_tolerances_not_legal": true
+  },
+  "site": {
+    "map_path": "blind-inoperative-stop-line.xodr",
+    "map_sha256": "36a15c42ccc9ce63623021d8935b094a308aa43fe3f1e4056207b513487d9e41",
+    "junction_id": 158191,
+    "status": "authored_candidate"
+  },
+  "actor_routes": {
+    "ego": {
+      "spawn_road_lane_s": [
+        158190,
+        -1,
+        50
+      ],
+      "target_xy_m": [
+        [
+          -15,
+          -1.8
+        ],
+        [
+          20,
+          -1.8
+        ]
+      ],
+      "stop_line_s_m": 68,
+      "stop_line_point_xy_m": [
+        -12,
+        -1.8
+      ],
+      "upstream_normal_xy": [
+        -1,
+        0
+      ],
+      "target_speed_mps": 3,
+      "release_after": [
+        "observed_ego_halt",
+        "observed_occupant_entry",
+        "minimum_body_separation"
+      ]
+    },
+    "earlier": {
+      "spawn_road_lane_s": [
+        158194,
+        -1,
+        55
+      ],
+      "target_xy_m": [
+        [
+          1.8,
+          -15
+        ],
+        [
+          1.8,
+          20
+        ]
+      ],
+      "stop_line_s_m": 68,
+      "stop_line_point_xy_m": [
+        1.8,
+        -12
+      ],
+      "upstream_normal_xy": [
+        0,
+        -1
+      ],
+      "target_speed_mps": 3,
+      "release_after": [
+        "observed_earlier_halt",
+        "scheduled_frame"
+      ]
+    },
+    "occupant": {
+      "spawn_road_lane_s": [
+        158194,
+        -1,
+        23
+      ],
+      "target_xy_m": [
+        [
+          1.8,
+          -15
+        ],
+        [
+          1.8,
+          20
+        ]
+      ],
+      "stop_line_s_m": 68,
+      "stop_line_point_xy_m": [
+        1.8,
+        -12
+      ],
+      "upstream_normal_xy": [
+        0,
+        -1
+      ],
+      "target_speed_mps": 3,
+      "release_after": [
+        "observed_earlier_clearance",
+        "observed_occupant_halt"
+      ]
+    }
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed elevated whole junction and occluder",
+      "pose": {
+        "x": 0,
+        "y": 0,
+        "z": 25,
+        "yaw": 0,
+        "pitch": -90
+      }
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed ego approach, stop line and signal heads",
+      "pose": {
+        "x": -22,
+        "y": -8,
+        "z": 8,
+        "yaw": 20,
+        "pitch": -25
+      }
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed southwest corner, occluder and both approaches",
+      "pose": {
+        "x": -12,
+        "y": -12,
+        "z": 10,
+        "yaw": 45,
+        "pitch": -25
+      }
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-mounted forward driver view",
+      "pose": {
+        "x": 1,
+        "y": 0,
+        "z": 1.5,
+        "yaw": 0,
+        "pitch": 0
+      }
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "method": "Original ego complete-body velocity magnitude",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "earlier_speed",
+        "unit": "m/s",
+        "method": "Original earlier vehicle complete-body velocity magnitude",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "occupant_speed",
+        "unit": "m/s",
+        "method": "Original occupying vehicle complete-body velocity magnitude",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "ego_stop_line_distance",
+        "unit": "m",
+        "method": "Original ego body-front signed distance to marked stop line",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "earlier_stop_line_distance",
+        "unit": "m",
+        "method": "Original earlier vehicle body-front signed distance to marked stop line",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "occupant_stop_line_distance",
+        "unit": "m",
+        "method": "Original occupying vehicle body-front signed distance to marked stop line",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "governing_signal_states",
+        "unit": "device states",
+        "method": "Original frame readback of both governing heads",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Original pixels, Native geometry and legal significance require source review"
+      },
+      {
+        "name": "junction_context",
+        "unit": "structured record",
+        "method": "Authored map and observed Native head/occluder context retained with original capture",
+        "time_window": "complete original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Physical geometry and legal significance require source review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "junction_context",
+        "unit": "structured record",
+        "method": "Authored map bound to observed Native heads and original frames"
+      }
+    ],
+    "limitations": [
+      "Authored site and routes are construction candidates; actual physical and legal acceptance unclaimed"
+    ]
+  },
+  "occluder": {
+    "blueprint_id": null,
+    "placement": null,
+    "status": "Native blueprint and realized placement pending source review"
+  },
+  "operative_signal_state": null
+}

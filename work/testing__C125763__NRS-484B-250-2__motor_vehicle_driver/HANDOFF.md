@@ -758,3 +758,7 @@ Current-manifest 16/16 saved-only replay index remains valid. Assignment-scoped 
 ## 2026-11-22 active fallback proof restoration
 
 Restored the active primary offline log, 16 physical outcome/lifecycle logs, and 46 fallback offline, saved, negative and receipt files from the byte-exact `archived-unbound-negative-logs-20261119.json`. Every restored byte hash matches its archive row; the 16 physical log hashes also match active receipts. The current `execution_manifest.validate` now passes and scoped `worker_check.py --complete` exits 0. An equal number of inactive historical C101303 physical result files were archived to keep `work/` at 8,600 files. Status remains partial for the stated qualitative sweep and delivery tasks; no Native/physical/legal acceptance is claimed.
+
+## 2026-11-22 returned-file archival
+
+Historical `review/` and `physical-proofs/` draft files were preserved byte-for-byte in `work/_shared/archived-C125763-review-physical-20261122.json` and removed from this partial package to stay within the 8,600 returned-file cap. Each record includes its original relative path, SHA-256 and compressed bytes. The assignment-scoped partial check passed after archival. Restore the archived drafts before using them as active proof inputs. Status remains partial.
