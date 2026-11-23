@@ -42,7 +42,48 @@
       "diagnostic_saved_processing": {
         "receipt": "primary-saved-processing.json",
         "sha256": "c3793e662dac4b1f9c2ede8483ae24326cce7ea6405942ad2f903b7cb275af51"
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach timing and the source-camera coverage of the nearest through-highway view may drift during physical capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_nearest_slowed/fallback1-construction.json",
+          "construction_sha256": "28e2763b2fd98b0d9d7b1aa1a3b698f820f89bd9a9ab48a62ad33b53d507add7",
+          "trigger": {
+            "source": "original Native approach-history body centres and map lane projection",
+            "metric": "distance from ego spawn to nearest sourced through-highway view point",
+            "failure_condition": "Source history has too few pre-view approach samples to establish the planned slowdown or stop"
+          },
+          "changed_knobs": [
+            "ego spawn x: -60 m to -66 m on the same authored approach lane"
+          ],
+          "remedy": "Give the same controlled response six additional metres of approach while retaining case, actor, sign, through traffic, cameras and capture contract.",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_slowed --candidate fallback1 --output .runtime-work/c158208-slowed-fallback1-offline-20261122-b --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "28e2763b2fd98b0d9d7b1aa1a3b698f820f89bd9a9ab48a62ad33b53d507add7",
+            "log": "cases/yield_nearest_slowed/fallback1-offline.log",
+            "log_sha256": "39954705d708ea96621bfab99080353c7a70f5110a643d1a324283d8e61cd412"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_nearest_slowed/fallback2-construction.json",
+          "construction_sha256": "b8a3be22525ca2163d67f4ba7af3c0d950c8aaa9b1bd1d5ffda134034752523f",
+          "trigger": {
+            "source": "four original camera streams and timestamp-joined through-highway sight rays",
+            "metric": "fraction of nearest-view frames with visible sign and through approach in the source camera",
+            "failure_condition": "Approach camera misses either the yield sign or through-highway target at the sourced nearest-view interval"
+          },
+          "changed_knobs": [
+            "approach camera pose: (-38,-16,9,30,-13) to (-34,-14,12,25,-17)"
+          ],
+          "remedy": "Raise and reposition only the fixed approach camera to cover the same sign and through-lane view; preserve its name, dimensions, FOV, frame rate and capture duration."
+        }
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_stopped",
@@ -83,7 +124,41 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/stopped/primary-saved-processing.json",
         "sha256": "a14e3712229609f2ae88a85d4e0fe75943809335d7edcc328e6c420b25848fe0"
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach timing and the source-camera coverage of the nearest through-highway view may drift during physical capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_nearest_stopped/fallback1-construction.json",
+          "construction_sha256": "a18bd695db42adb8096fee6afe4a27f6f4adf8e7c655d04d5a83db9fd1b603b7",
+          "trigger": {
+            "source": "original Native approach-history body centres and map lane projection",
+            "metric": "distance from ego spawn to nearest sourced through-highway view point",
+            "failure_condition": "Source history has too few pre-view approach samples to establish the planned slowdown or stop"
+          },
+          "changed_knobs": [
+            "ego spawn x: -60 m to -66 m on the same authored approach lane"
+          ],
+          "remedy": "Give the same controlled response six additional metres of approach while retaining case, actor, sign, through traffic, cameras and capture contract."
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_nearest_stopped/fallback2-construction.json",
+          "construction_sha256": "d804f6c914a3002d5709703bb6c1f24daba9593245abd99679c473b1fd55b8ba",
+          "trigger": {
+            "source": "four original camera streams and timestamp-joined through-highway sight rays",
+            "metric": "fraction of nearest-view frames with visible sign and through approach in the source camera",
+            "failure_condition": "Approach camera misses either the yield sign or through-highway target at the sourced nearest-view interval"
+          },
+          "changed_knobs": [
+            "approach camera pose: (-38,-16,9,30,-13) to (-34,-14,12,25,-17)"
+          ],
+          "remedy": "Raise and reposition only the fixed approach camera to cover the same sign and through-lane view; preserve its name, dimensions, FOV, frame rate and capture duration."
+        }
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_unchanged_speed",
@@ -124,7 +199,41 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/unchanged/primary-saved-processing.json",
         "sha256": "1ab1273e7b4c80ed54d6b73818375275e2e0f7d6fa044ea0a3d1a9c5a33be7dc"
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach timing and the source-camera coverage of the nearest through-highway view may drift during physical capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_nearest_unchanged_speed/fallback1-construction.json",
+          "construction_sha256": "7aeb50a0ca765c9826312df5d067fa37ab8c5031a12720778299c27ea022e792",
+          "trigger": {
+            "source": "original Native approach-history body centres and map lane projection",
+            "metric": "distance from ego spawn to nearest sourced through-highway view point",
+            "failure_condition": "Source history has too few pre-view approach samples to establish the planned slowdown or stop"
+          },
+          "changed_knobs": [
+            "ego spawn x: -60 m to -66 m on the same authored approach lane"
+          ],
+          "remedy": "Give the same controlled response six additional metres of approach while retaining case, actor, sign, through traffic, cameras and capture contract."
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_nearest_unchanged_speed/fallback2-construction.json",
+          "construction_sha256": "ccc29d9e7fd5eaaca6ceebcde4a46230c4fe39c3d956d814ef0663bbad9bbe7b",
+          "trigger": {
+            "source": "four original camera streams and timestamp-joined through-highway sight rays",
+            "metric": "fraction of nearest-view frames with visible sign and through approach in the source camera",
+            "failure_condition": "Approach camera misses either the yield sign or through-highway target at the sourced nearest-view interval"
+          },
+          "changed_knobs": [
+            "approach camera pose: (-38,-16,9,30,-13) to (-34,-14,12,25,-17)"
+          ],
+          "remedy": "Raise and reposition only the fixed approach camera to cover the same sign and through-lane view; preserve its name, dimensions, FOV, frame rate and capture duration."
+        }
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_through_occupied",
@@ -165,7 +274,41 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/occupied/primary-saved-processing.json",
         "sha256": "97bd13a9a43d9635c43b0caae948743d47f8d71e858da6cb22ba7738728bc9c6"
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach timing and the source-camera coverage of the nearest through-highway view may drift during physical capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_nearest_through_occupied/fallback1-construction.json",
+          "construction_sha256": "1c795506e78fbd64bfcfef06fab2167264ad7858f9d67f04c6d50f77b9578527",
+          "trigger": {
+            "source": "original Native approach-history body centres and map lane projection",
+            "metric": "distance from ego spawn to nearest sourced through-highway view point",
+            "failure_condition": "Source history has too few pre-view approach samples to establish the planned slowdown or stop"
+          },
+          "changed_knobs": [
+            "ego spawn x: -60 m to -66 m on the same authored approach lane"
+          ],
+          "remedy": "Give the same controlled response six additional metres of approach while retaining case, actor, sign, through traffic, cameras and capture contract."
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_nearest_through_occupied/fallback2-construction.json",
+          "construction_sha256": "3a29aa556ee3e47009366eb8c883a97e104da9a5f9f2b0f54f72efcf935847f7",
+          "trigger": {
+            "source": "four original camera streams and timestamp-joined through-highway sight rays",
+            "metric": "fraction of nearest-view frames with visible sign and through approach in the source camera",
+            "failure_condition": "Approach camera misses either the yield sign or through-highway target at the sourced nearest-view interval"
+          },
+          "changed_knobs": [
+            "approach camera pose: (-38,-16,9,30,-13) to (-34,-14,12,25,-17)"
+          ],
+          "remedy": "Raise and reposition only the fixed approach camera to cover the same sign and through-lane view; preserve its name, dimensions, FOV, frame rate and capture duration."
+        }
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_through_approaching",
@@ -206,7 +349,41 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/approaching/primary-saved-processing.json",
         "sha256": "afa676cc16fba106ebc01d3861bd943a4b7f28ba1e2b5aea8a6c6192353d3135"
-      }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach timing and the source-camera coverage of the nearest through-highway view may drift during physical capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_nearest_through_approaching/fallback1-construction.json",
+          "construction_sha256": "ab3015d316fe8de23339e8a9ac0734d44e6890a01ef05b9b83b02d4ccd41ef3f",
+          "trigger": {
+            "source": "original Native approach-history body centres and map lane projection",
+            "metric": "distance from ego spawn to nearest sourced through-highway view point",
+            "failure_condition": "Source history has too few pre-view approach samples to establish the planned slowdown or stop"
+          },
+          "changed_knobs": [
+            "ego spawn x: -60 m to -66 m on the same authored approach lane"
+          ],
+          "remedy": "Give the same controlled response six additional metres of approach while retaining case, actor, sign, through traffic, cameras and capture contract."
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_nearest_through_approaching/fallback2-construction.json",
+          "construction_sha256": "02482cb9bc80355dc53b8a3d7bae02c295ee4e1df7311641d59de0497c9e27ec",
+          "trigger": {
+            "source": "four original camera streams and timestamp-joined through-highway sight rays",
+            "metric": "fraction of nearest-view frames with visible sign and through approach in the source camera",
+            "failure_condition": "Approach camera misses either the yield sign or through-highway target at the sourced nearest-view interval"
+          },
+          "changed_knobs": [
+            "approach camera pose: (-38,-16,9,30,-13) to (-34,-14,12,25,-17)"
+          ],
+          "remedy": "Raise and reposition only the fixed approach camera to cover the same sign and through-lane view; preserve its name, dimensions, FOV, frame rate and capture duration."
+        }
+      ]
     }
   ]
 }

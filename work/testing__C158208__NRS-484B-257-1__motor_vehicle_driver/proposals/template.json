@@ -1,0 +1,91 @@
+{
+  "template_id": "NRS-484B-257-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-257-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-257-1",
+    "activation": {
+      "condition": "proper sign governs a vehicle approaching the through-highway intersection, absent police-officer or traffic-signal control",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "stop or yield at the stated reference hierarchy, then yield to through-highway vehicles already entered or approaching closely enough to constitute an immediate hazard while crossing or within the intersection",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "traffic controlled by police officer or traffic-control signal",
+        "effect": "subsection-1 signed-intersection duty does not govern under that control",
+        "replacement_obligation": "unresolved under the controlling officer or signal rule",
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal:"
+      }
+    ],
+    "timing": {
+      "description": "stop/yield reference precedes entry; through-highway priority is assessed during the ego crossing or within-intersection interval",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "proper signs",
+        "note": "Sign face, placement and governance require original Native and pixel evidence."
+      },
+      {
+        "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "note": "Sampled collision rays do not establish the nearest legally sufficient human view."
+      },
+      {
+        "phrase": "immediate hazard",
+        "note": "The statute supplies no numerical hazard cutoff."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "Body and speed histories alone do not decide legal priority."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "sign_type",
+      "kind": "world_setup",
+      "range_or_domain": "stop or yield sign with original Native sign and face readback"
+    },
+    {
+      "name": "stopping_reference",
+      "kind": "world_setup",
+      "range_or_domain": "stop line, near-side crosswalk or nearest-view location with original evidence"
+    },
+    {
+      "name": "through_vehicle_state",
+      "kind": "world_setup",
+      "range_or_domain": "approaching, already entered or absent through-highway actor staging"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "positive engineering m/s target; not a legal slowing cutoff"
+    },
+    {
+      "name": "commanded_view_speed",
+      "kind": "controller",
+      "range_or_domain": "positive engineering m/s target at the constructed view bracket"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original Native measured m/s history"
+    },
+    {
+      "name": "through_highway_sight_clear",
+      "kind": "subject_behavior",
+      "range_or_domain": "original sampled sight-ray history; human visibility unresolved"
+    },
+    {
+      "name": "ego_in_intersection",
+      "kind": "subject_behavior",
+      "range_or_domain": "original ego-body overlap with sourced junction"
+    }
+  ]
+}
