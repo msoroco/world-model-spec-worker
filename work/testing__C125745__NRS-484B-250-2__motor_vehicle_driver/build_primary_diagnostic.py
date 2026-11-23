@@ -120,11 +120,11 @@ def build(output_dir=HERE, config_name='config.json', diagnostic_name='diagnosti
                                                        'lane_id': -1, 's_m': center[0]}},
                          'original_observations': observations,
                          'timing': {}, 'visibility': {}, 'supporting_only': True})
-        base_name = f'graphs/base/{frame:08d}.pkl'
-        abstract_name = f'graphs/abstract/{frame:08d}.pkl'
+        base_name = f'graphs/base/{frame:08d}.adapter.json'
+        abstract_name = f'graphs/abstract/{frame:08d}.adapter.json'
         native_frames.append({'frame': frame, 'simulation_time': time_s,
                               'base': base_name, 'abstract': abstract_name,
-                              'nodes': 0, 'edges': 0,
+                              'adapter_graph': base_name, 'nodes': 0, 'edges': 0,
                               'extraction_seconds': 0, 'capture_seconds': 0})
         for name in (base_name, abstract_name):
             graphs.append({'path': 'capture/native/' + name,
