@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver",
   "input_sha256": "549eb468832750db3d904a4bdf7028af2c3517b97266bf6203a5b528115ea0df",
-  "readiness_kind": "seven_exact_offline_compatibility_physical_cpu_and_acquisition_mapping_proved_site_pending",
-  "reason": "Seven exact cases pass pinned offline and full source-bound compatibility proofs. Each binds sealed synthetic complete/incomplete/missing-motion and fake-Native lifecycle CPU proofs, plus nine channel-to-Native-sampler acquisition mappings checked against the pinned compatibility contract. Reviewed numeric/site inputs and remaining batch packages remain worker-owned preparation. Synthetic diagnostics do not establish actual CARLA motion, visibility or legal acceptance.",
+  "readiness_kind": "seven_exact_offline_compatibility_physical_acquisition_and_saved_processing_cpu_proved_site_pending",
+  "reason": "Seven exact cases pass pinned offline, source-bound compatibility, physical-preparation CPU, acquisition-mapping, sealed synthetic saved-only processing, canonical execution-manifest validation, and exact positive/negative independent delivery-audit contracts. A source-gated Native actor constructor now covers the three additional traffic-count probe kinds with fail-closed blueprint/map/spawn checks (59 CPU tests total); actual count capture, reviewed numeric/site inputs and all judgment probes remain worker-owned preparation. Synthetic diagnostics do not establish CARLA motion, visibility or legal acceptance; the complete batch still has partial packages.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -16,10 +16,10 @@
       "sha256": "fb4ee457a79fc3598efc7ac1b2f38bb7a289d08b63473fab5fd1022d4daa299e"
     },
     {
-      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/tests -v",
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c179789-count-probes\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "b48f197d5577631f7369599cf71896f2ffeba8842298d6b6317724561d693717"
+      "sha256": "6da5deb10860c8d16fb9bd92cfa26cc807cc0a58249e833e514ee047c8b006d8"
     },
     {
       "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$(pwd -P)/.runtime-work/c179789-saved-validation-v2\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_saved_measurement.py",
@@ -140,6 +140,48 @@
       "exit_code": 0,
       "log": "cpu-acquisition-contract.log",
       "sha256": "441071f8789ff46acc32e37138fd07b84e0416a69773a2d2fc1731f990c662f6"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$(pwd -P)/.runtime-work/c179789-saved-only-runtime\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_saved_only.py",
+      "exit_code": 0,
+      "log": "cpu-saved-only-proof.log",
+      "sha256": "7867784753aff16b812c8f04fe8d8df37cc5f64a0b59103e5329a0192836556f"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/bind_saved_only.py",
+      "exit_code": 0,
+      "log": "cpu-saved-only-bind.log",
+      "sha256": "25185590f25f162cddb309c6dbfc913ec8660037d04c19a27ae2b7b02b7c871b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/bind_candidate_risk.py",
+      "exit_code": 0,
+      "log": "cpu-candidate-risk-bind.log",
+      "sha256": "9e9c289b25cb4b7468e6ed552b4f3c945f2dc5b49818eedecc67a5095ff9aafe"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$(pwd -P)/.runtime-work/c179789-canonical-validation\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_canonical.py",
+      "exit_code": 0,
+      "log": "cpu-canonical-validation.log",
+      "sha256": "83f893ca8fcf643668c2eaa93bd15fead1ec60b21adb0a518171728e6dd16301"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_suite.py",
+      "exit_code": 0,
+      "log": "cpu-delivery-suite.log",
+      "sha256": "5b95c179d6236843e0f0221b2481c99fed97f0fc0de54e4dcd2e2c77d620d9f0"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/bind_delivery.py",
+      "exit_code": 0,
+      "log": "cpu-delivery-bind.log",
+      "sha256": "9e3d67f83e370d70ee47ed240f84c24aff7880f1ce3439bcc561d7c265e5bfba"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$(pwd -P)/.runtime-work/c179789-delivery-contract\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_contract.py",
+      "exit_code": 0,
+      "log": "cpu-delivery-contract.log",
+      "sha256": "91b90b55f4fd37041a33daff6e2f9ebb5309240ec4eda122228f5120ada07ac8"
     }
   ]
 }

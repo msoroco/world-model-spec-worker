@@ -1,6 +1,6 @@
 # testing__C102642__NRS-484B-153-2__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction draft. Five exact cases and three controlled comparisons are proposed; no recording has been executed or accepted.
 
 Exact law: NRS 484B.153(2) — A person shall not open the door of or board or alight from the side of a vehicle which is closest to passing traffic in such a manner as to interfere with moving vehicular traffic.
 Assigned branch(es): Door opening during loading in a hill-crest scene.
@@ -20,3 +20,13 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 CPU construction checkpoint
+
+The frozen accepted recording inventory is empty. The exact law has three act alternatives: open a door, board, and alight. All require the actor and side closest to passing traffic and the moving-traffic interference context; no numerical legal interference threshold is supplied. The revised `case-plan.json` names five exact cases: `open_near_overlap`, `open_near_clear`, `open_far_side`, `board_near`, and `alight_near`, each prefixed by this assignment ID. It declares controlled `door_sweep_clearance`, `door_side`, and `selected_act` comparisons. These are planned recordings, not executed or accepted evidence.
+
+`door_interaction.py` now provides an actual CARLA front-door command hook, geometric passing-side classification, synchronized original-frame checks, a conservative door-sweep proximity proxy, and a route-grade reversal and loading-site spatial check. It rejects centerline-crossing traffic, incomplete source joins and a route without a unique crest. The proxy explicitly leaves legal interference unresolved and requires original Native door/body vertices before any acceptance claim. Boarding and alighting still require executable capture; a door command is not their proof.
+
+`.venv-cpu/bin/python -m unittest discover -s work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/tests -v` passed 4 tests; log `cpu-door-geometry-tests.log`, SHA256 `0fb180b74d89c13e77dc9e12c783f6193cda9685b2d95cd69f3e2eed50e46a3c`. `.venv-cpu/bin/python runtime.py preflight` passed with Lean 4.28.0 and pinned CPU packages. `.venv-cpu/bin/python worker_check.py --updates` reported version 0 and no paused assignments. The exact `worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready` still fails with `Preparation acceptance failed: partial/missing packages remain`, consistent with `result.json` status `partial`.
+
+Next CPU work: bind an exact surveyed hill-crest loading site and parked/passing vehicle poses into a lazy Native runner; capture original door articulation and driver act, moving body and response, and four-camera frame identities; write source-bound finalization for each act; complete canonical semantic proposals, per-case constructions, manifest, pinned offline/positive-negative/saved-only proofs, and independent delivery/comparison auditors. Run the exact strict assignment gate after all CPU proofs pass. Later physical motion, visibility and capture-quality review remain GPU checks.

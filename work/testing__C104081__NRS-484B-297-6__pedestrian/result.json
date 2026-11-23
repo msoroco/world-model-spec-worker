@@ -2,11 +2,36 @@
   "assignment_id": "testing__C104081__NRS-484B-297-6__pedestrian",
   "input_sha256": "fbb2fc464c1006f98ec7784c68c2e0cabc0a9243dec1a2b4da839e8dedfc5221",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "cpu_geometry_native_boundary_and_comparison_audit_partial",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "c82c04b469c49b97d1d3660df01285c4c000feeab03113c3aab5f66ea5054ded"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C104081__NRS-484B-297-6__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "93b804d81fc939e8b7e8df25df89dd63ae1b5f45cc2e0fd59c28d53483dbe57d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104081__NRS-484B-297-6__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "f7ae058c828bf483f5ae261c3eeab547c77f7393c695b92673bf338ea14b63a4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104081__NRS-484B-297-6__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-gate.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Five exact cases and four controlled comparisons are planned. Geometry, SHA-bound Native-survey construction boundary, actor call/cleanup and independent source-consistency comparison audit pass 21 CPU tests. Actual surveyed map and CARLA adapter, capture/finalizer, canonical proposals, per-case offline/compatibility/saved-only proofs and delivery audit remain worker-owned CPU work; strict gate fails while status is partial."
 }

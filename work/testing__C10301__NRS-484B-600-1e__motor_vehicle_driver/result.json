@@ -2,11 +2,30 @@
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "f284bffb1992eb71aa3dc8fd755986eb28718589d69f1470e660ce06c4f6cc1a",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "delivery_preparation_partial",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-speed-boundary-tests.log",
+      "sha256": "a35754d31e84f47f45f4d2d6fc8f151369636966373cbcd1656c8c25aaf9988d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "80 mph boundary triple and source-bound speed capture/measurement/comparison checker are authored and CPU-tested (5 tests; assignment static check passes). Strict gate remains partial: full Native construction and capture runner, exact-case finalization/diagnostic compatibility, semantic proposals, saved-only processing, independent delivery acceptance and source review of accepted original traces/videos remain worker-owned CPU preparation. The accepted metadata-only export cannot establish 80 mph equality or physical coverage."
 }

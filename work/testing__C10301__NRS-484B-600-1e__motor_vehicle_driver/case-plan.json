@@ -24,9 +24,102 @@
   "topic_inventory": {
     "exact-text": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "delivery",
+      "boundary_probe": "below",
+      "statutory_boundary": {
+        "value": 80,
+        "unit": "mph",
+        "operator": "greater_than",
+        "source": "NRS 484B.600(1)(e)"
+      },
+      "intended_speed_mph": 75,
+      "existing_recording_id": "d40367aa09c6a2317bc0d75bdd79f4a2cb0987e2c2950f84153cea1445172370",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_status": "unverified",
+      "reuse_decision": "Retain accepted metadata; source-bound sufficiency unresolved. Do not duplicate capture unless original review finds a real gap."
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "delivery",
+      "boundary_probe": "equal",
+      "statutory_boundary": {
+        "value": 80,
+        "unit": "mph",
+        "operator": "greater_than",
+        "source": "NRS 484B.600(1)(e)"
+      },
+      "intended_speed_mph": 80,
+      "existing_recording_id": "c76134bfaae4877b8b4b022dec93e217dd3cf840319a3c1b69ecd6cb09f33197",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_status": "unverified",
+      "reuse_decision": "Retain accepted metadata; source-bound sufficiency unresolved. Do not duplicate capture unless original review finds a real gap."
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "delivery",
+      "boundary_probe": "above",
+      "statutory_boundary": {
+        "value": 80,
+        "unit": "mph",
+        "operator": "greater_than",
+        "source": "NRS 484B.600(1)(e)"
+      },
+      "intended_speed_mph": 85,
+      "existing_recording_id": "94949cafef78412a15ef3d77525b0bf58967b7708c5ed46b90fa391740bd8462",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "physical_status": "unverified",
+      "reuse_decision": "Retain accepted metadata; source-bound sufficiency unresolved. Do not duplicate capture unless original review finds a real gap."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "strict_rate_boundary",
+      "case_ids": [
+        "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+        "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+        "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above"
+      ],
+      "fixed_conditions": [
+        "C10301 alley layout",
+        "motor_vehicle_driver",
+        "travel maneuver",
+        "marked access_aisle control",
+        "camera profile",
+        "45-second 20-Hz observation window"
+      ],
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "interpretation": "The middle target is 80 mph; its accepted review summary reports only 79.73 mph sampled maximum, so exact observed equality is unproven. Observed speeds and uncertainty decide sampled relation; no legal verdict."
+    }
+  ],
+  "observations": [
+    {
+      "name": "original_speed_mps",
+      "source": "original-speed.jsonl",
+      "sample_rate_hz": 20,
+      "measurement": "maximum and full history, with uncertainty in mph",
+      "uncertainty": "Between-sample peaks remain unobserved."
+    },
+    {
+      "name": "qualifying_vehicle_and_personal_operation",
+      "source": "authored-setup.json and original Native actor binding",
+      "measurement": "actor identity, vehicle classification and active control",
+      "uncertainty": "Territorial applicability and definitions remain subject to original-source review."
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
@@ -76,7 +169,7 @@
   ],
   "runtime_uncertainties": [
     "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Boundary checker is CPU-tested, but Native source writer, exact constructions, finalizer, delivery audit and compatibility proofs remain to be authored."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -141,7 +234,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "boundary_triple_planned_source_review_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

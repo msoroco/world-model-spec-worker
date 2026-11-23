@@ -93,6 +93,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "saved-only-processing.json",
+        "test_log_sha256": "1bd0c647e5b41a1599dc9e92634c2fc0737931fca6ec8d252c8b98b3d0bfc51c",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The reviewed lane and leader spawn may not sustain a 900-frame, four-view travel window. The predeclared failure trigger is A Native spawn fails, the controller stops progress, or a required view misses either participant. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference",
+        "test_exit_code": 0,
+        "test_log": "delivery/reference/positive.log",
+        "test_log_sha256": "fbfdcc024f29ccfdb01d2f6df27e09b080af728a59785d676c0a9bf0f940828d",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/reference/negative.log",
+        "negative_log_sha256": "f45c2681e54657e1ea19664f4956ff179484f154c455acaed27ae154095a4a14",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     },
     {
@@ -185,6 +225,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__faster --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__faster --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "diagnostics/faster/saved-only-processing.json",
+        "test_log_sha256": "8eb6d551d65dc9b0170c35f7f705c23538079c260a030df9c5a629f37e1c58a6",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The requested higher ego speed may close the fixed leader gap and trigger safety braking before the steady window. The predeclared failure trigger is The original steady ego-speed mean misses its request or emergency braking dominates frames 180-899. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__faster",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__faster",
+        "test_exit_code": 0,
+        "test_log": "delivery/faster/positive.log",
+        "test_log_sha256": "ccb8a050a66b55a0cb355eb434f6e1c841b973fce5bb328eec00159fc050fc9a",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__faster --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/faster/negative.log",
+        "negative_log_sha256": "5c8c7474f21d716b4c6bf93baddb852204fbe57969b452a35ab84bcbf4d74da9",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     },
     {
@@ -277,6 +357,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__nearer_traffic --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__nearer_traffic --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "diagnostics/nearer_traffic/saved-only-processing.json",
+        "test_log_sha256": "c8f1d6d0801da261650dd12bc839f482b3d28b26d384d49f1038c270d3f5a1f0",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The smaller authored leader gap may prevent a safe same-lane spawn or trigger sustained emergency braking. The predeclared failure trigger is Native spawn fails, measured leader clearance is absent, or the brake remains active in the steady window. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__nearer_traffic",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__nearer_traffic",
+        "test_exit_code": 0,
+        "test_log": "delivery/nearer_traffic/positive.log",
+        "test_log_sha256": "5844d0a135a0e8e78a600ff22b74e2d52d5f243f5de4ca32fa5b3a6dd17fefd2",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__nearer_traffic --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/nearer_traffic/negative.log",
+        "negative_log_sha256": "bf4284c5d7e46759b807c9bb544af50c96eacca8211cbdd30b619e1de93a31de",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     },
     {
@@ -369,6 +489,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_surface --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_surface --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "diagnostics/wet_surface/saved-only-processing.json",
+        "test_log_sha256": "138969dab89b3f956bdf8f79d5742bb1fc8c1369f6c7c197d9ad673578dbb3d8",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Native wetness and optional wheel friction may not produce a distinct measured paved-surface condition. The predeclared failure trigger is Original wetness or friction readback does not differ from the reference, or the road material cannot be verified. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_surface",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_surface",
+        "test_exit_code": 0,
+        "test_log": "delivery/wet_surface/positive.log",
+        "test_log_sha256": "dfaed1d7227a343c0cc0b0715b972aeb67e890c322106226c1bd29d17fe9bc7d",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_surface --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/wet_surface/negative.log",
+        "negative_log_sha256": "c3419037f7a9a244626bfb83f22dfc4d97638675aea6537d0014a54b01525a7d",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     },
     {
@@ -461,6 +621,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrower --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrower --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "diagnostics/narrower/saved-only-processing.json",
+        "test_log_sha256": "0331c4ff37bab972e59688c598df468234ede1a4f44b6228cf4ec3c5733ebac2",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A narrower OpenDRIVE driving section may lack the requested width or enough forward same-lane route for both vehicles. The predeclared failure trigger is OpenDRIVE width readback differs, the leader route changes lane, or either spawn fails. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrower",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrower",
+        "test_exit_code": 0,
+        "test_log": "delivery/narrower/positive.log",
+        "test_log_sha256": "56fb924ab6efb201fae486266b01ea2c528967f705179fe6bc03ea2b3b0bc56b",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrower --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/narrower/negative.log",
+        "negative_log_sha256": "3312a7a6133bc2f9890afdb57e60645bae5d199d78133a10fb705642d13b1da2",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     },
     {
@@ -553,6 +753,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "diagnostics/rain/saved-only-processing.json",
+        "test_log_sha256": "ef67b8952b34e880ce50dc1c26e563a6bb101b9e75a799482f63c1f2fcbbb187",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Native precipitation may impair required four-view participant visibility without a distinct retained weather readback. The predeclared failure trigger is The original precipitation readback matches the reference or a required view loses the vehicle bodies. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain",
+        "test_exit_code": 0,
+        "test_log": "delivery/rain/positive.log",
+        "test_log_sha256": "6ddb7bb23a5383c239dc3ce4542a0df85a6dcf07fc5b9887d6426237eec3a726",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__rain --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/rain/negative.log",
+        "negative_log_sha256": "5cfc0c54662f4ebc72641440b5a0acca9ac5d72f92796b9abcb05380b7221c21",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     },
     {
@@ -645,6 +885,46 @@
           "method": "sample_native reads wheel.tire_friction each tick; NativeConditionCapture.append checks contiguous frames and source IDs",
           "evidence": "original-conditions.jsonl tire_friction and ego actor id"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__fog --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/execution-manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__fog --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "diagnostics/fog/saved-only-processing.json",
+        "test_log_sha256": "e87c0362e84123643f9193ea12eedefffdbdd5835cc740f528f489b695df7263",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic CPU fixture; original Native capture unreviewed"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Native fog may obscure the leader or roadway in the required views before the planned observation ends. The predeclared failure trigger is The original fog readback matches the reference or a required view loses the leader or road context. No original Native attempt or reviewed alternate roadway has established a specific tested fallback construction; retain the trigger for the first physical attempt."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__fog",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5b65417c60d76636d2a1afd8f823300a824a8d7ae47ee0a1e12fbcb225edd42b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__fog",
+        "test_exit_code": 0,
+        "test_log": "delivery/fog/positive.log",
+        "test_log_sha256": "6d468f913c5c9417f4839cfde66c02b3c65f5eb1b1bcf2c96209194d79678035",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_audit_cases.py testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__fog --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original capture seal, source or restoration differs",
+        "negative_log": "delivery/fog/negative.log",
+        "negative_log_sha256": "6d0f14f6cad56e1b6b7e62d4a20de714b87d3e899a0b77339794f172c1a9afe7",
+        "proof_scope": "case-specific synthetic source and two-pixel diagnostic views"
       }
     }
   ],

@@ -20,3 +20,55 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 CPU construction checkpoint
+
+The exact law has separate crest and curve alternatives. This assignment's frozen
+`hill_crest` layout supports the crest alternative; the curve alternative needs a
+compatible cell binding in the batch-level branch allocation. Subsection 3's
+one-way exception is represented as an explicit original lane-allocation case,
+not inferred from the absence of an oncoming actor. No numeric hazard-distance
+threshold exists in the supplied law, so the judgment remains unlabelled.
+
+`case-plan.json` now lists four exact crest cases: `right_crest_obstructed`,
+`left_crest_obstructed`, `left_crest_clear`, and `left_one_way_obstructed`, each
+prefixed by this assignment ID. The three comparisons separately vary actual
+left-side body motion, sampled crest-ray obstruction, and original one-way lane
+allocation. The frozen evidence inventory has zero accepted recordings, so all
+four remain planned captures rather than reuse claims. Each case now records its
+physical risk: no source-bounded Native map crest or lane-direction packet has
+yet been selected. No fallback is claimed without a tested alternate construction.
+
+`crest_geometry.py` requires original waypoint source references, a same-road
+opposing lane with opposite direction, aligned stations, and an actual sampled
+grade intersecting the declared 1.4 m virtual-observer proxy ray. Its CPU tests
+exercise both approach directions, reject a flat grade, and reject wrong lane
+orientation or missing provenance. `comparison_audit.py` requires source-bound
+packets and rejects missing sources, confounded fixed conditions and missing
+planned differences. Its tests cover all three comparisons. These checks are
+preparation code and synthetic unit evidence; they are not physical completion,
+actual Native raycasts, delivered pixels, or a legal hazard conclusion.
+
+Proof: `.venv-cpu/bin/python -m unittest discover -s work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/tests -v` passed six tests in `cpu-tests.log` (hash in `result.json`). `.venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete` passed static checks in `assignment-check.log`. The exact strict command with `--require-delivery-ready` failed because this assignment is still partial; see `strict-gate.log`. CPU preflight passed with the pinned environment.
+
+Next worker-owned work: bind a real Native hill-crest map and highway context to
+these geometry checks; implement the four exact capture constructions, controller,
+measurement/finalization code, source-bound diagnostics and positive/negative
+compatibility proofs; author semantic proposals, saved-only processing and
+independent delivery audits; then rerun the exact strict gate. The batch lead
+owns any shared curve cell binding. Actual CARLA motion, visibility and video
+quality remain later physical checks after CPU preparation.
+
+### Native map binding follow-up
+
+`native_map.py` now follows the original CARLA map's connected ego waypoints,
+retrieves each adjacent lane waypoint, checks opposing headings, rejects route
+termination/branching and road/lane changes, retains original map/road/lane
+source references and elevation samples, and requires the sampled grade to
+intersect the declared proxy ray. It imports no CARLA module at import time.
+The added CPU fake-world tests cover a grade with an opposing lane and reject
+flat grade, a same-direction adjacent lane, and a truncated route. All nine
+assignment tests pass in the refreshed `cpu-tests.log`. These checks are a
+source-gated map-selection implementation; a real CARLA map and actual vehicle
+rays have not been exercised on this CPU host. The one-way case still needs a
+separate original topology binder and is not certified by this two-way binder.

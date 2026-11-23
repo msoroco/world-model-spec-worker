@@ -22,11 +22,228 @@
   "law_text": "The fact that the speed of a vehicle is lower than the prescribed limits does not relieve a driver from the duty to decrease speed when approaching and crossing an intersection, when approaching and going around a curve, when approaching a hill crest, when traveling upon any narrow or winding highway, or when special hazards exist or may exist with respect to pedestrians or other traffic, or by reason of weather or other highway conditions, and speed must be decreased as may be necessary to avoid colliding with any person, vehicle or other conveyance on or entering a highway in compliance with legal requirements and the duty of all persons to use due care.",
   "law_source": "NRS 484B.603(1)",
   "topic_inventory": {
-    "exact-text": "The fact that the speed of a vehicle is lower than the prescribed limits does not relieve a driver from the duty to decrease speed when approaching and crossing an intersection, when approaching and going around a curve, when approaching a hill crest, when traveling upon any narrow or winding highway, or when special hazards exist or may exist with respect to pedestrians or other traffic, or by reason of weather or other highway conditions, and speed must be decreased as may be necessary to avoid colliding with any person, vehicle or other conveyance on or entering a highway in compliance with legal requirements and the duty of all persons to use due care."
+    "below_limit_not_exempt": "A speed below the prescribed limit does not remove the decrease-speed duty; capture actual limit and speed separately.",
+    "enumerated_crest": "The selected hill_crest cell covers approaching a hill crest; other listed circumstances are separate assigned branches.",
+    "necessary_decrease": "Whether and how much decrease is necessary to avoid collision depends on actual people/vehicles/conveyances and conditions; no numeric legal cutoff is supplied.",
+    "lawful_entry_and_due_care": "Record source context for on/entering highway and legal compliance; simulation motion cannot establish due care."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+      "target_law_id": "NRS-484B-603-1",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Ego begins a measured speed decrease during the precrest approach; another vehicle is on its own original route.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
+        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests."
+      },
+      "fixed_context": {
+        "layout": "hill_crest",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "duration_s": 45,
+        "frame_rate_hz": 20,
+        "camera_sources": [
+          "front",
+          "left",
+          "right",
+          "rear"
+        ]
+      },
+      "comparison_variable": {
+        "name": "measured_precrest_speed_profile",
+        "intended_variant": "early_decrease",
+        "source": "original Native frame history, not commanded target"
+      },
+      "required_measurements": [
+        "original grade crest station",
+        "ego precrest speed history",
+        "ego body station",
+        "other vehicle route and body station",
+        "same-frame body clearance",
+        "prescribed limit and highway source context",
+        "camera/frame joins"
+      ],
+      "construction": {
+        "map_binding": "Original Native hill-crest route with measured grade, crest station and second-vehicle route; no map has been source-bound yet.",
+        "controller": "crest_controller.py:step",
+        "profile": "early_decrease",
+        "measurement": "crest_speed.py:measure",
+        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence."
+      }
+    },
+    {
+      "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+      "target_law_id": "NRS-484B-603-1",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Ego holds its prior speed until near the measured crest, then decreases before reaching it; same other vehicle route.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
+        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests."
+      },
+      "fixed_context": {
+        "layout": "hill_crest",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "duration_s": 45,
+        "frame_rate_hz": 20,
+        "camera_sources": [
+          "front",
+          "left",
+          "right",
+          "rear"
+        ]
+      },
+      "comparison_variable": {
+        "name": "measured_precrest_speed_profile",
+        "intended_variant": "late_decrease",
+        "source": "original Native frame history, not commanded target"
+      },
+      "required_measurements": [
+        "original grade crest station",
+        "ego precrest speed history",
+        "ego body station",
+        "other vehicle route and body station",
+        "same-frame body clearance",
+        "prescribed limit and highway source context",
+        "camera/frame joins"
+      ],
+      "construction": {
+        "map_binding": "Original Native hill-crest route with measured grade, crest station and second-vehicle route; no map has been source-bound yet.",
+        "controller": "crest_controller.py:step",
+        "profile": "late_decrease",
+        "measurement": "crest_speed.py:measure",
+        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence."
+      }
+    },
+    {
+      "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach",
+      "target_law_id": "NRS-484B-603-1",
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "purpose": "Ego maintains measured speed through the approach; same other vehicle route. This is a physical contrast, not a legal verdict.",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
+        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests."
+      },
+      "fixed_context": {
+        "layout": "hill_crest",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "duration_s": 45,
+        "frame_rate_hz": 20,
+        "camera_sources": [
+          "front",
+          "left",
+          "right",
+          "rear"
+        ]
+      },
+      "comparison_variable": {
+        "name": "measured_precrest_speed_profile",
+        "intended_variant": "steady_approach",
+        "source": "original Native frame history, not commanded target"
+      },
+      "required_measurements": [
+        "original grade crest station",
+        "ego precrest speed history",
+        "ego body station",
+        "other vehicle route and body station",
+        "same-frame body clearance",
+        "prescribed limit and highway source context",
+        "camera/frame joins"
+      ],
+      "construction": {
+        "map_binding": "Original Native hill-crest route with measured grade, crest station and second-vehicle route; no map has been source-bound yet.",
+        "controller": "crest_controller.py:step",
+        "profile": "steady_approach",
+        "measurement": "crest_speed.py:measure",
+        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "early_vs_late_precrest_decrease",
+      "case_ids": [
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease"
+      ],
+      "fixed_conditions": [
+        "same source-bound crest road/grade and ego route",
+        "same other vehicle route and motion",
+        "same prescribed limit/highway context",
+        "same actor, cameras, duration and initial speed"
+      ],
+      "deliberate_differences": [
+        "original measured station and frame at which ego first decreases speed before crest"
+      ]
+    },
+    {
+      "comparison_id": "decrease_vs_steady_approach",
+      "case_ids": [
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
+      ],
+      "fixed_conditions": [
+        "same source-bound crest road/grade and ego route",
+        "same other vehicle route and motion",
+        "same prescribed limit/highway context",
+        "same actor, cameras, duration and initial speed"
+      ],
+      "deliberate_differences": [
+        "original measured precrest ego speed change; no legal decrease magnitude is assumed"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "crest_station_and_grade",
+      "mandatory": true,
+      "source": "original Native map waypoint samples"
+    },
+    {
+      "name": "ego_precrest_speed_history",
+      "mandatory": true,
+      "source": "original Native ego frame samples"
+    },
+    {
+      "name": "other_vehicle_route_and_body",
+      "mandatory": true,
+      "source": "original Native route and actor transforms"
+    },
+    {
+      "name": "same_frame_body_clearance",
+      "mandatory": true,
+      "source": "original Native bounding boxes"
+    },
+    {
+      "name": "prescribed_limit_and_highway",
+      "mandatory": true,
+      "source": "source-bound setup/context"
+    },
+    {
+      "name": "visibility_and_sight_lines",
+      "mandatory": true,
+      "source": "Native ray samples and synchronized cameras"
+    },
+    {
+      "name": "frame_and_camera_join",
+      "mandatory": true,
+      "source": "Native frame map and four original video streams"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json",
@@ -52,16 +269,24 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No exact execution manifest, source-bound finalizer/diagnostic recipe, semantic proposals, offline/compatibility/saved-only proof, delivery or comparison audit yet.",
+    "The legal necessity of slowing, applicable limits, lawful highway entry and due care remain unadjudicated."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "Source-measured hill-crest approach with actual speed history, other vehicle context, and controlled profile comparison",
+        "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen accepted recording inventory is empty."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_cases_and_measurement_code",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +307,21 @@
       ],
       "reason": "The unreserved hill-crest cell directly matches an enumerated approach circumstance."
     }
-  ]
+  ],
+  "comparison_audit": {
+    "implementation": "comparison_audit.py:compare",
+    "fixed_fields": [
+      "map_source_sha256",
+      "ego_route_source_sha256",
+      "other_route_source_sha256",
+      "other_motion_source_sha256",
+      "highway_context_source_sha256",
+      "prescribed_limit_source_sha256",
+      "camera_contract_sha256",
+      "duration_s",
+      "initial_speed_mps"
+    ],
+    "positive_and_negative_tests": "tests/test_comparison_audit.py",
+    "limitation": "CPU source-shaped fixtures are not original capture evidence."
+  }
 }
