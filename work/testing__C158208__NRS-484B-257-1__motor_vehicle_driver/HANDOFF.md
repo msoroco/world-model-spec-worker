@@ -2,6 +2,8 @@
 
 Status: **partial**. The frozen evidence inventory has zero accepted recordings. The exact branch has a yield sign, no stop line or near crosswalk, and the closest sourced view of approaching through-highway traffic. The case plan retains five selected cases and two controlled comparisons. No Native, physical, legal or canonical acceptance is claimed.
 
+The first selected `yield_nearest_slowed` construction now passes exact materialized offline, positive and missing-source negative compatibility, and a separate recorded-only saved-processing run. The returned `primary-compatibility.json`, `primary-negative-analysis.log`, `primary-saved-processing.json`, and corresponding logs bind those CPU checks. The diagnostic uses 600 synthetic graph frames and four generated solid-color videos, so its review labels establish software compatibility only. The source-shaped diagnostic recipe is `diagnostic-recipe.json`; the exact measurement contract is `measurement-contract.json`.
+
 ## Current construction and proof
 
 - `native-map-plan/yield-nearest-view.xodr` and `yield_site.py` author and validate a one-way approach to a two-way through highway, a lane-bound yield signal and Native waypoint/sign-trigger readback. The authored map has no stop-line or crosswalk object; actual rendered absence and proper erection remain camera review questions.
@@ -11,7 +13,7 @@ Status: **partial**. The frozen evidence inventory has zero accepted recordings.
 
 ## Next CPU work
 
-Build a C158208 diagnostic source recipe, then run first-case positive and missing-source negative compatibility and recorded-only saved processing against the materialized first construction. Review its derived channels and finalizer output. Expand three measurable-risk fallback constructions for each of the five exact cases and prove offline, compatibility and saved processing for each. Add the remaining four primaries, semantic stages, independent delivery/comparison audits, and a complete execution manifest. Run the scoped strict gate before changing status to ready.
+Review the first case's derived channels and finalizer output independently. Expand three measurable-risk fallback constructions for each of the five exact cases and prove offline, compatibility and saved processing for each. Add the remaining four primaries, semantic stages, independent delivery/comparison audits, a complete execution manifest and the canonical first GPU dispatch command. Run the scoped strict gate before changing status to ready.
 
 The physical operator must later verify the Native sign face/governance, absence of stop line and near crosswalk, nearest-view sight, actual vehicle motion, continuous crossing interaction and all four original camera views. The plan's first GPU command is prospective and its manifest will need the complete CPU proofs first.
 
