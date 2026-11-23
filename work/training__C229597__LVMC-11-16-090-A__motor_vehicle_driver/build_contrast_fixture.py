@@ -36,8 +36,9 @@ def main():
     for index, (motion, event, graph) in enumerate(zip(trace, evidence, spec['graphs'])):
         speed = 4.0 + index * .005
         if index:
-            x += speed / 20
+            x += (speed + (4.0 + (index - 1) * .005)) / 40
         motion['position_m'] = [x, 0.0, 0.0]
+        motion['position'] = {'x': x, 'y': 0.0, 'z': 0.0}
         motion['velocity_mps'] = [speed, 0.0, 0.0]
         motion['acceleration_mps2'] = [.1, 0.0, 0.0]
         motion['speed_mps'] = speed
