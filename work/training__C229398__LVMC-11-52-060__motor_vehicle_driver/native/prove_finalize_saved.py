@@ -46,6 +46,7 @@ def fixture(folder, construction, target):
                                        'synthetic_curb_line': 'y=0'}) + '\n')
     (folder / 'reviewed-curb.json').write_text(json.dumps({
         'format': 'c229398-reviewed-curb-v1', 'reviewed': True,
+        'reviewed_curb': {'line': 'y=0', 'source_kind': 'synthetic_native_sample'},
         'source_kind': 'synthetic_native_sample',
         'source_file': curb_source.name, 'source_sha256': sha(curb_source),
         'origin_xy_m': [0, 0], 'street_normal_xy': [0, 1]}) + '\n')
@@ -62,7 +63,11 @@ def fixture(folder, construction, target):
                 'actors': {'vehicle': actor('ego', maximum_y-0.5),
                            'load': actor('load', maximum_y-1, 'ego'),
                            'trailer': actor('trailer', maximum_y-1.5, 'ego')}}) + '\n')
-            trace.write(json.dumps({'frame': frame, 'time_s': time_s}) + '\n')
+            trace.write(json.dumps({'frame': frame, 'time_s': time_s,
+                                    'position': {'x': 0.0, 'y': maximum_y-0.5,
+                                                 'z': 0.0},
+                                    'heading_deg': 0.0, 'speed_mps': 0.0,
+                                    'speed_source_kind': 'synthetic_native_sample'}) + '\n')
             mapping.write(json.dumps({'video_frame': index, 'carla_frame': frame,
                                       'native_frame': frame, 'time_s': time_s}) + '\n')
     for view in VIEWS:
@@ -84,11 +89,11 @@ def prove(log_dir):
     scratch = ROOT / '.runtime-work' / 'c229398-finalizer-proof'
     scratch.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ)
-    env['PYTHONPATH'] = str(ROOT / 'runtime/pipeline')
+    env['PYTHONPATH'] = str(ROOT / 'runtime/pipeline/scenario_pipeline')
     env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(scratch)
     os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(scratch)
     sys.path.insert(0, env['PYTHONPATH'])
-    from scenario_pipeline.worker_exchange.measurement_contract import verify_report
+    from worker_exchange.measurement_contract import verify_report
     manifest = json.loads((PACKAGE / 'draft-primary-manifest.json').read_text())
     outputs = []
     with tempfile.TemporaryDirectory(dir=scratch, prefix='saved-') as temporary:

@@ -142,7 +142,7 @@ def finalize(attempt, output):
         'provenance_kind': 'synthetic_local_diagnostic' if synthetic else 'source_review_unverified',
         'accepted': False, 'legal_verdict_claimed': False,
     }
-    from scenario_pipeline.worker_exchange.native_output import validate_result
+    from worker_exchange.native_output import validate_result
     validate_result(result)
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     (attempt / 'result.json').write_text(json.dumps(result, indent=2,
