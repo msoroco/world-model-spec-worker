@@ -28,6 +28,10 @@ class SemanticProposalTests(unittest.TestCase):
         self.assertEqual(template["actor"], ACTOR)
         self.assertIn("Except as otherwise provided in this Chapter",
                       template["structure"]["exceptions"][0]["source_clause"])
+        angle_exception = template["structure"]["exceptions"][1]
+        self.assertEqual(angle_exception["source_law_id"], "LVMC-11-52-070")
+        self.assertEqual(angle_exception["source_inventory_sha256"],
+                         hashlib.sha256((ROOT / "diagnostic/chapter-exception-inventory.json").read_bytes()).hexdigest())
         self.assertEqual(template["structure"]["obligation"]["numeric_conditions"], [])
         proposal = json.loads((ROOT / "proposals" / "cases.json").read_text())
         planned_ids = {case["case_id"] for case in plan["cases"]}
@@ -38,6 +42,8 @@ class SemanticProposalTests(unittest.TestCase):
         self.assertTrue(all(PHRASE in case["unresolved_judgment_calls"] for case in proposal["cases"]))
         self.assertEqual(proposal["sweep_specs"][0]["status"], "incomplete")
         self.assertEqual(proposal["sweep_specs"][0]["target_law_id"], LAW)
+        self.assertEqual(proposal["sweep_specs"][0]["axes"][0]["max"], 90)
+        self.assertIn("synthetic", proposal["sweep_specs"][0]["provisional_cpu_feasibility"]["scope"])
 
 
 if __name__ == "__main__":

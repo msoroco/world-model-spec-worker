@@ -47,6 +47,23 @@ def _decode(path):
     return int(probe.stdout.strip())
 
 
+def verify_native_map_binding(root, packet, source_hashes):
+    """Join retained OpenDRIVE and pipeline map identity to reviewed context."""
+    root = Path(root)
+    context = packet.get("context", {})
+    expected_hash = context.get("native_opendrive_sha256")
+    expected_name = context.get("native_map_name")
+    if not expected_hash or not expected_name:
+        raise ValueError("reviewed Native map identity missing")
+    road = root / "road.xodr"
+    if not road.is_file() or _sha(road) != expected_hash or source_hashes.get("road.xodr") != expected_hash:
+        raise ValueError("original OpenDRIVE differs from reviewed Native map")
+    manifest = root / "capture/manifest.json"
+    if (not manifest.is_file() or source_hashes.get("capture/manifest.json") != _sha(manifest) or
+            _read(manifest).get("map") != expected_name):
+        raise ValueError("original pipeline map name differs from reviewed Native map")
+
+
 def audit_attempt(attempt, *, diagnostic=False, decoder=None):
     root = Path(attempt)
     seal = _read(root / "capture-seal.json")
@@ -71,6 +88,8 @@ def audit_attempt(attempt, *, diagnostic=False, decoder=None):
             raise ValueError("sealed original source missing or changed: " + name)
     context = validate(root / "reviewed-context.json", source_root=root)
     packet = _read(root / "reviewed-context.json")
+    if not diagnostic:
+        verify_native_map_binding(root, packet, source_hashes)
     for descriptor in packet["sources"].values():
         name = descriptor["path"]
         if source_hashes.get(name) != _sha(root / name):

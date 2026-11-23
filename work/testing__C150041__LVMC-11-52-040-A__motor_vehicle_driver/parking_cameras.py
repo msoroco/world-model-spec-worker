@@ -38,6 +38,7 @@ class CameraCapture:
     def __init__(self, world, vehicle, scene, output, carla, *, popen=None):
         self.sensors = []
         self.processes = {}
+        self.exit_codes = {}
         self.queues = {}
         self.closed = False
         popen = popen or subprocess.Popen
@@ -94,7 +95,9 @@ class CameraCapture:
             try:
                 if process.stdin and not process.stdin.closed:
                     process.stdin.close()
-                if process.wait(timeout=180) != 0:
+                code = process.wait(timeout=180)
+                self.exit_codes[name] = code
+                if code != 0:
                     errors.append("camera encoder failed: " + name)
             except BaseException as exc:
                 errors.append(repr(exc))

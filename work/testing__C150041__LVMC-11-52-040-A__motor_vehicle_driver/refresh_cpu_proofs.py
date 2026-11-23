@@ -35,9 +35,37 @@ def main():
     tests = []
     tests.append(run([PYTHON, "-m", "unittest", "discover", "-s", ROOT / "tests", "-v"],
                      ROOT / "cpu-tests.log"))
+    sweep = json.loads((ROOT / "diagnostic/provisional-sweep-feasibility.json").read_text())
+    if (sweep.get("source_kind") != "authored_synthetic_cpu_opendrive" or
+            sweep.get("source_reviewed_native_site") is not False or
+            sweep.get("legal_judgment") != "unresolved" or
+            sweep.get("source_sha256") != sha(ROOT / "diagnostic-road.xodr") or
+            not sweep.get("all_footprints_fit") or
+            [item["angle_deg"] for item in sweep["samples"]] != list(range(0, 91, 10))):
+        raise ValueError("provisional orientation proof is stale or overstated")
+    sweep_log = ROOT / "cpu-sweep-feasibility-tests.log"
+    if "Ran 3 tests" not in sweep_log.read_text() or "\nOK\n" not in sweep_log.read_text():
+        raise ValueError("provisional sweep tests did not pass")
+    tests.append({"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest "
+                  "discover -s " + PREFIX + "/tests -p test_parking_sweep_feasibility.py -v",
+                  "exit_code": 0, "log": sweep_log.relative_to(ROOT).as_posix(),
+                  "sha256": sha(sweep_log)})
+    exception = json.loads((ROOT / "diagnostic/chapter-exception-inventory.json").read_text())
+    if (exception.get("format") != "c150041-exported-chapter-exception-inventory-v1" or
+            exception.get("frozen_source_sha256") != sha(REPO / "inputs/coverage/branch-sources.json") or
+            exception.get("potential_exception", {}).get("law_id") != "LVMC-11-52-070" or
+            exception.get("site_exception_status") != "unresolved"):
+        raise ValueError("exported Chapter exception inventory stale or overstated")
+    exception_log = ROOT / "cpu-chapter-inventory-tests.log"
+    if "Ran 2 tests" not in exception_log.read_text() or "\nOK\n" not in exception_log.read_text():
+        raise ValueError("Chapter inventory tests did not pass")
+    tests.append({"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest "
+                  "discover -s " + PREFIX + "/tests -p test_chapter_exception_inventory.py -v",
+                  "exit_code": 0, "log": exception_log.relative_to(ROOT).as_posix(),
+                  "sha256": sha(exception_log)})
     for kind in REQUESTS:
         folder = ROOT / "diagnostic" / kind
-        fixture = REPO / ".runtime-work" / ("c150041-saved-fixture-v4-" + kind)
+        fixture = REPO / ".runtime-work" / ("c150041-saved-fixture-v8-" + kind)
         tests.append(run([PYTHON, REPO / "runtime.py", "fixture", "--recipe",
                           folder / "saved-fixture-recipe.json", "--output", fixture],
                          folder / "cpu-fixture-materialize.log"))
@@ -45,7 +73,7 @@ def main():
                           "--case", kind, "--output", folder / "cpu-saved-fixture-proof.json"],
                          folder / "cpu-saved-fixture-check.log"))
     tests.append(run([PYTHON, ROOT / "verify_saved_comparisons.py", "--fixture-prefix",
-                      REPO / ".runtime-work/c150041-saved-fixture-v4-", "--output",
+                      REPO / ".runtime-work/c150041-saved-fixture-v8-", "--output",
                       ROOT / "diagnostic/cpu-comparison-fixture-proof.json"],
                      ROOT / "diagnostic/cpu-comparison-fixture-check.log"))
     for kind in REQUESTS:
@@ -54,7 +82,7 @@ def main():
         manifest = json.loads(manifest_path.read_text())
         case = ROOT.name + "__" + kind
         for candidate in ("primary", "fallback1"):
-            output = REPO / ".runtime-work" / ("c150041-analysis-bundle-v4-" + candidate + "-" + kind)
+            output = REPO / ".runtime-work" / ("c150041-analysis-bundle-v8-" + candidate + "-" + kind)
             log = (ROOT / ("cpu-" + kind + "-offline-diagnostic.log") if candidate == "primary"
                    else folder / "cpu-fallback1-offline.log")
             tests.append(run([PYTHON, REPO / "runtime.py", "offline", "--manifest", manifest_path,
@@ -74,15 +102,39 @@ def main():
                       PREFIX + "/run_compatibility_diagnostic.py",
                       "exit_code": 0, "log": log.relative_to(ROOT).as_posix(),
                       "sha256": sha(log)})
+        saved_receipt = folder / "cpu-process-saved-processing.json"
+        saved_log = folder / "cpu-process-saved.log"
+        if not json.loads(saved_receipt.read_text()).get("passed"):
+            raise ValueError("saved processing not passed: " + kind)
+        tests.append({"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python " +
+                      PREFIX + "/run_saved_processing_diagnostic.py",
+                      "exit_code": 0, "log": saved_log.relative_to(ROOT).as_posix(),
+                      "sha256": sha(saved_log)})
+        for candidate in ("primary", "fallback1"):
+            draft_log = folder / ("cpu-native-draft-" + candidate + ".log")
+            draft = json.loads(draft_log.read_text())
+            if (draft.get("offline_passed") is not True or
+                    draft.get("candidate_id") != candidate or
+                    draft.get("case_id") != case or
+                    "c150041-native-draft-v4-" not in draft.get("log", "")):
+                raise ValueError("Native draft offline proof missing: " + kind + " " + candidate)
+            tests.append({"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python " +
+                          PREFIX + "/run_native_draft_checks.py",
+                          "exit_code": 0, "log": draft_log.relative_to(ROOT).as_posix(),
+                          "sha256": sha(draft_log)})
     result_path = ROOT / "result.json"
     result = json.loads(result_path.read_text())
     result["tests"] = tests
     result["status"] = "partial"
-    result["reason"] = ("All six exact synthetic saved fixture, primary/fallback offline, "
-                        "and positive/negative pinned compatibility proofs pass. Genuine "
-                        "source-reviewed roadway/activity/Chapter context, full semantic "
-                        "judgment sweep, process-saved delivery receipts and Native delivery "
-                        "remain worker-owned and incomplete; no physical/legal acceptance claimed.")
+    result["reason"] = ("Exported Section 11.52.070 angle-parking exception inventory and "
+                        "provisional synthetic OpenDRIVE orientation footprint proof pass "
+                        "without claiming a reviewed Native site or legal cutoff. All six exact "
+                        "synthetic fixture, primary/fallback offline, "
+                        "positive/negative pinned compatibility, synthetic saved processing, "
+                        "and primary/fallback Native draft offline proofs pass. Genuine "
+                        "source-reviewed roadway/activity/Chapter context, source-backed "
+                        "judgment sweep, canonical delivery package and local integration "
+                        "proof remain worker-owned and incomplete; no physical/legal acceptance claimed.")
     result_path.write_text(json.dumps(result, indent=2) + "\n")
     return len(tests)
 

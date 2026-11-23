@@ -81,13 +81,13 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
     client.set_timeout(30)
     saved_world = snapshot(client)
     world = client.get_world()
-    check_native_map(world, packet_path, source_root)
     vehicle = None
     cameras = pipeline = frame_map = None
     cleanup_errors = []
     restoration = {"restored": False}
     captured = None
     try:
+        check_native_map(world, packet_path, source_root)
         packet_path = Path(packet_path).resolve()
         source_root = Path(source_root).resolve()
         for name, descriptor in json.loads(packet_path.read_text())["sources"].items():
@@ -120,7 +120,10 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
         for resource in (pipeline, frame_map, cameras):
             if resource is not None:
                 try:
-                    resource.close()
+                    if resource is pipeline:
+                        resource.close(confirmed=captured is not None)
+                    else:
+                        resource.close()
                 except BaseException as exc:
                     cleanup_errors.append(repr(exc))
         if vehicle is not None:
@@ -134,8 +137,11 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
             cleanup_errors.append(repr(exc))
     if cleanup_errors or captured is None or not restoration.get("restored"):
         raise RuntimeError("Native capture or restoration failed: " + "; ".join(cleanup_errors))
+    codes = cameras.exit_codes
+    if set(codes) != set(CAMERAS) or any(code != 0 for code in codes.values()):
+        raise RuntimeError("Native camera encoder exits incomplete or failed")
     seal_capture(output, frames=len(captured["frames"]), restoration=restoration,
-                 errors=[], encoder_exit_codes={name: 0 for name in CAMERAS},
+                 errors=[], encoder_exit_codes=codes,
                  context={"case_id": scene["case_id"],
                           "reviewed_packet_sha256": scene["source_packet_sha256"]})
     return captured

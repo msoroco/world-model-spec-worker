@@ -785,12 +785,34 @@
       "status": "incomplete",
       "mode": "one_dimensional",
       "missing_inputs": [
-        "Reviewed physical one-way site and source-backed orientation feasibility",
-        "Approved judgment coverage range and spacing"
+        "Reviewed Native one-way site, roadway edge, and exact map readback",
+        "Site-specific physical feasibility and landmark verification"
       ],
-      "axes": [],
+      "axes": [
+        {
+          "variable": "orientation_request_deg",
+          "observable": "parallel_deviation_deg",
+          "unit": "deg",
+          "min": 0,
+          "max": 90,
+          "spacing": 10,
+          "range_rationale": "Provisional 0..90 degree vehicle-to-edge orientation on the authored straight lane; no legal angular threshold.",
+          "spacing_rationale": "Ten-degree geometry samples include both endpoints and intermediate poses; recheck against reviewed Native geometry before freezing.",
+          "feasibility_evidence": "diagnostic/provisional-sweep-feasibility.json, SHA-256 ccc78cae667da0eb6cc31efe0bc9e1ae1d45d53da6d87dbda60a1f0106e93f99",
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
+        }
+      ],
       "landmarks": [],
-      "rationale": "A source-backed sweep cannot be bounded from this frozen inventory.",
+      "provisional_cpu_feasibility": {
+        "path": "diagnostic/provisional-sweep-feasibility.json",
+        "sha256": "ccc78cae667da0eb6cc31efe0bc9e1ae1d45d53da6d87dbda60a1f0106e93f99",
+        "scope": "authored synthetic OpenDRIVE footprint only; not a Native site review or legal range"
+      },
+      "rationale": "A synthetic authored lane bounds a provisional engineering grid; the exact Native site and landmarks are still unreviewed.",
       "variable_assignments": {
         "roadway_context": {
           "kind": "world_setup",

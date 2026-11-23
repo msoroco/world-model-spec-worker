@@ -68,6 +68,19 @@ def build():
     if plan["assignment_id"] != ASSIGNMENT or plan["law_id"] != LAW:
         raise ValueError("exact law or assignment changed")
     quote = plan["law_text"]
+    provisional_path = ROOT / "diagnostic/provisional-sweep-feasibility.json"
+    provisional = json.loads(provisional_path.read_text())
+    if (provisional.get("format") != "parking-provisional-orientation-feasibility-v1" or
+            provisional.get("source_kind") != "authored_synthetic_cpu_opendrive" or
+            provisional.get("source_reviewed_native_site") is not False or
+            provisional.get("legal_judgment") != "unresolved"):
+        raise ValueError("provisional orientation proof must remain diagnostic")
+    exception_path = ROOT / "diagnostic/chapter-exception-inventory.json"
+    exception = json.loads(exception_path.read_text())
+    if (exception.get("format") != "c150041-exported-chapter-exception-inventory-v1" or
+            exception.get("site_exception_status") != "unresolved" or
+            exception.get("potential_exception", {}).get("law_id") != "LVMC-11-52-070"):
+        raise ValueError("exported angle-parking exception inventory differs")
     directory = ROOT / "proposals"
     directory.mkdir(exist_ok=True)
     relevance = {"cell_id": CELL, "actor": ACTOR, "status": "draft",
@@ -86,7 +99,13 @@ def build():
                               "exceptions": [{"trigger": "Otherwise provided in this Chapter",
                                               "effect": "Potential displacement or qualification of this clause; unresolved pending Chapter review",
                                               "replacement_obligation": None,
-                                              "source_clause": "Except as otherwise provided in this Chapter"}],
+                                              "source_clause": "Except as otherwise provided in this Chapter"},
+                                             {"trigger": "City Traffic Engineer permits angle parking at the exact street and signage or markings indicate where permitted",
+                                              "effect": "Potential exception for angle parking; site conditions and full Chapter review unresolved",
+                                              "replacement_obligation": "Where angle parking is permitted, vehicle front points toward lawful traffic movement.",
+                                              "source_clause": exception["potential_exception"]["text"],
+                                              "source_law_id": "LVMC-11-52-070",
+                                              "source_inventory_sha256": hashlib.sha256(exception_path.read_bytes()).hexdigest()}],
                               "timing": {"description": "During the observed standing or parking interval.",
                                          "numeric_conditions": []},
                               "judgment_calls_needed": [{"phrase": PHRASE,
@@ -160,10 +179,24 @@ def build():
                                        "judgment_refs": [{"phrase": PHRASE,
                                                           "note": "No legal angular threshold is provided."}],
                                        "status": "incomplete", "mode": "one_dimensional",
-                                       "missing_inputs": ["Reviewed physical one-way site and source-backed orientation feasibility",
-                                                          "Approved judgment coverage range and spacing"],
-                                       "axes": [], "landmarks": [],
-                                       "rationale": "A source-backed sweep cannot be bounded from this frozen inventory.",
+                                       "missing_inputs": ["Reviewed Native one-way site, roadway edge, and exact map readback",
+                                                          "Site-specific physical feasibility and landmark verification"],
+                                       "axes": [{
+                                           "variable": "orientation_request_deg",
+                                           "observable": "parallel_deviation_deg", "unit": "deg",
+                                           "min": 0, "max": 90, "spacing": 10,
+                                           "range_rationale": "Provisional 0..90 degree vehicle-to-edge orientation on the authored straight lane; no legal angular threshold.",
+                                           "spacing_rationale": "Ten-degree geometry samples include both endpoints and intermediate poses; recheck against reviewed Native geometry before freezing.",
+                                           "feasibility_evidence": "diagnostic/provisional-sweep-feasibility.json, SHA-256 " + hashlib.sha256(provisional_path.read_bytes()).hexdigest(),
+                                           "measurement": {"method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+                                                           "time_window": "original stationary interval",
+                                                           "statistic": "mean"}}],
+                                       "landmarks": [],
+                                       "provisional_cpu_feasibility": {
+                                           "path": "diagnostic/provisional-sweep-feasibility.json",
+                                           "sha256": hashlib.sha256(provisional_path.read_bytes()).hexdigest(),
+                                           "scope": "authored synthetic OpenDRIVE footprint only; not a Native site review or legal range"},
+                                       "rationale": "A synthetic authored lane bounds a provisional engineering grid; the exact Native site and landmarks are still unreviewed.",
                                        "variable_assignments": _assign("park", "parallel", "lawful"),
                                        "recording_description": _recording()}]}
     stages = {"relevance_batch": _write(directory, "relevance_batch.json", relevance),
@@ -174,7 +207,9 @@ def build():
               "cases": _write(directory, "cases.json", proposal_cases)}
     _write(directory, "semantic-index.json",
            {"format": "worker-semantic-delivery", "assignment_id": ASSIGNMENT,
-            "stages": stages, "status": "draft_source_binding_and_sweep_pending"})
+            "stages": stages, "status": "draft_source_binding_and_sweep_pending",
+            "exception_inventory": {"path": "diagnostic/chapter-exception-inventory.json",
+                                    "sha256": hashlib.sha256(exception_path.read_bytes()).hexdigest()}})
     return stages
 
 

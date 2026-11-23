@@ -22,7 +22,7 @@ def sha(path):
 
 def run(kind):
     case = ROOT.name + "__" + kind
-    output = REPO / ".runtime-work" / ("c150041-compat-v8-" + kind)
+    output = REPO / ".runtime-work" / ("c150041-compat-v10-" + kind)
     if output.exists():
         raise ValueError("retain prior compatibility attempt: " + str(output))
     command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),

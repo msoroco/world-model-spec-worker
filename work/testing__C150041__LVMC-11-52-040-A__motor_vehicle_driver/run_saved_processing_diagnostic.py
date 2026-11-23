@@ -21,8 +21,8 @@ def sha(path):
 
 def run(kind):
     case = ROOT.name + "__" + kind
-    source = REPO / ".runtime-work" / ("c150041-compat-v8-" + kind)
-    destination = REPO / ".runtime-work" / ("c150041-process-saved-v3-" + kind)
+    source = REPO / ".runtime-work" / ("c150041-compat-v10-" + kind)
+    destination = REPO / ".runtime-work" / ("c150041-process-saved-v5-" + kind)
     command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),
                "process-saved", "--manifest", str(ROOT / "cpu-compatibility-manifest.json"),
                "--case", case, "--attempt", str(source), "--output", str(destination),

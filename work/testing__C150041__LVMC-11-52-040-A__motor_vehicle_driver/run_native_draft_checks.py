@@ -22,7 +22,7 @@ def sha(path):
 
 def run(kind, candidate):
     case = ROOT.name + "__" + kind
-    output = REPO / ".runtime-work" / ("c150041-native-draft-v2-" + candidate + "-" + kind)
+    output = REPO / ".runtime-work" / ("c150041-native-draft-v4-" + candidate + "-" + kind)
     command = [str(PYTHON), str(REPO / "runtime.py"), "offline", "--manifest",
                str(MANIFEST), "--case", case, "--candidate", candidate,
                "--output", str(output), "--python", str(PYTHON)]

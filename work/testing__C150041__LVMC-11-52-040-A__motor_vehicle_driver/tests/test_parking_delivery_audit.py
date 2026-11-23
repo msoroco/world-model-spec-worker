@@ -10,7 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from parking_cameras import CAMERAS
-from parking_delivery_audit import ORIGINALS, audit_attempt
+from parking_delivery_audit import ORIGINALS, audit_attempt, verify_native_map_binding
 from parking_pose import construct
 from parking_scene import build
 from source_review import validate
@@ -59,6 +59,25 @@ def diagnostic(root):
 
 
 class ParkingDeliveryAuditTests(unittest.TestCase):
+    def test_reviewed_map_requires_exact_original_hash_and_pipeline_name(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "capture").mkdir()
+            (root / "road.xodr").write_text("original authored map\n")
+            put(root / "capture/manifest.json", {"map": "reviewed-map"})
+            digest = lambda path: hashlib.sha256((root / path).read_bytes()).hexdigest()
+            hashes = {name: digest(name) for name in ("road.xodr", "capture/manifest.json")}
+            packet = {"context": {"native_map_name": "reviewed-map",
+                                  "native_opendrive_sha256": hashes["road.xodr"]}}
+            verify_native_map_binding(root, packet, hashes)
+            packet["context"]["native_map_name"] = "other-map"
+            with self.assertRaisesRegex(ValueError, "pipeline map name differs"):
+                verify_native_map_binding(root, packet, hashes)
+            packet["context"]["native_map_name"] = "reviewed-map"
+            (root / "road.xodr").write_text("substituted map\n")
+            with self.assertRaisesRegex(ValueError, "OpenDRIVE differs"):
+                verify_native_map_binding(root, packet, hashes)
+
     def test_synthetic_source_join_and_native_rejection(self):
         with TemporaryDirectory() as tmp:
             diagnostic(tmp)
