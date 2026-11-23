@@ -45,7 +45,7 @@ class StandRouteTest(unittest.TestCase):
         root = ET.fromstring(build_xodr("near_stand"))
         geometry = root.find("./road[@id='11']/planView/geometry")
         geometry.set("x", "1")
-        with self.assertRaisesRegex(ValueError, "endpoint discontinuity"):
+        with self.assertRaisesRegex(ValueError, "authored road geometry differs"):
             inspect_xodr(ET.tostring(root), "near_stand")
 
     def test_opendrive_missing_right_arc_is_rejected(self):
@@ -54,6 +54,27 @@ class StandRouteTest(unittest.TestCase):
         geometry.remove(geometry.find("arc"))
         ET.SubElement(geometry, "line")
         with self.assertRaisesRegex(ValueError, "endpoint discontinuity|right turn arc absent"):
+            inspect_xodr(ET.tostring(root), "near_stand")
+
+    def test_opendrive_widened_lane_is_rejected(self):
+        root = ET.fromstring(build_xodr("near_stand"))
+        width = root.find("./road[@id='10']/lanes/laneSection/right/lane/width")
+        width.set("a", "4.0")
+        with self.assertRaisesRegex(ValueError, "lane width"):
+            inspect_xodr(ET.tostring(root), "near_stand")
+
+    def test_opendrive_counterflow_lane_is_rejected(self):
+        root = ET.fromstring(build_xodr("near_stand"))
+        section = root.find("./road[@id='10']/lanes/laneSection")
+        left = ET.SubElement(section, "left")
+        ET.SubElement(left, "lane", {"id": "1", "type": "driving"})
+        with self.assertRaisesRegex(ValueError, "counterflow"):
+            inspect_xodr(ET.tostring(root), "near_stand")
+
+    def test_opendrive_wrong_turn_notice_is_rejected(self):
+        root = ET.fromstring(build_xodr("near_stand"))
+        root.find("./road[@id='10']/signals/signal").set("subtype", "left")
+        with self.assertRaisesRegex(ValueError, "notice object"):
             inspect_xodr(ET.tostring(root), "near_stand")
 
     def test_comparison_audit_accepts_only_distance_change(self):

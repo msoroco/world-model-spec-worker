@@ -1,6 +1,6 @@
 # testing__C150530__LVMC-11-60-090__taxi_driver
 
-Status: **partial CPU source-join and trace chain**, not ready for local delivery. No original recording, physical success, or legal finding is claimed.
+Status: **partial CPU Native runner and source-join chain**, not ready for local delivery. No original recording, physical success, or legal finding is claimed.
 
 ## Exact scope and evidence
 
@@ -27,6 +27,8 @@ The controlled `stand_to_first_intersection_distance` comparison moves the stand
 
 `measurement-contract.json` binds both exact case IDs, candidate map hashes, component code hashes, original acquisition filenames and the three selected requirement dispositions. `case-plan.json` maps those dispositions to gaps G1–G4. The technical turn-angle range is explicitly an engineering classifier and does not supply a legal threshold.
 
+`taxi_cameras.py` now constructs four original RGB views at 20 Hz with 1920×1080 overview and three 1280×720 details. The approach view is positioned to see the stand and posted notice; the reference-corner view targets the first junction and south exit. Fake sensors and FFmpeg processes prove same-frame joins, exact dimensions, source closure and failed encoder exit rejection. `taxi_capture_ticks.py` joins controller, world tick/snapshot, `PipelineCapture`, all four camera sources, `FrameMap` and `TraceCapture`; a world-frame mismatch aborts the original trace unsealed. `taxi_runner.py` is a lazy CARLA entrypoint: it preflights a fresh `.runtime-work` attempt and retained context, sets `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work` before pinned pipeline imports, snapshots the operator world, generates the candidate OpenDRIVE, checks readback, captures, destroys owned actors and restores the world before sealing. Its preflight and components have CPU fake proofs; a real generated-world import and a canonical offline proof are still missing. The candidate inspector now rejects altered road geometry, counterflow lanes, lane width and notice type in addition to route discontinuity.
+
 ## Proven commands
 
 - `.venv-cpu/bin/python runtime.py preflight` exited 0 with pinned Lean 4.28.0 and CPU requirements.
@@ -34,15 +36,25 @@ The controlled `stand_to_first_intersection_distance` comparison moves the stand
 - `.venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/candidate_opendrive.py` materialized both candidate maps and topology receipts.
 - `.venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/candidate_comparison_audit.py` wrote the passing candidate comparison receipt.
 - `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/build_measurement_contract.py` wrote the current source-hashed measurement contract.
-- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150530__LVMC-11-60-090__taxi_driver/tests -v` passed 36 tests; `cpu-tests.log` SHA-256 is `37433d66c27598348bfe06cef20e57cb3ba5fb2beb25e746f956afef413e4071`. Tests include negative topology, notice, context quote/hash, event ordering, stale trace/map/packet, missing frame, teleport, changed comparison, Native map readback and blueprint probes.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150530__LVMC-11-60-090__taxi_driver/tests -v` passed 49 tests; `cpu-tests.log` SHA-256 is `876f41ea26e5bab0b9e475f313dabf3ed51d9ba93174a50182c3e2ef5dc7d768`. Tests include negative map geometry/lanes/notice, source quote/hash, stale trace/map/packet, missing frame, teleport, changed comparison, camera encoder exit, tick joins, Native map readback and fresh-attempt preflight.
 
 ## Exact remaining CPU work and resume actions
 
 1. Bind genuine original stand designation, licence, notice, jurisdiction and referenced-section applicability sources to the exact Native road. Populate a retained reviewed-context packet only after source review; the current template has no original records.
-2. Complete the Native runner around the tested trace writer with four-view 20 Hz camera capture, frame map, sealed video output, guaranteed restoration and owner release. Exercise both exact candidates with offline and pinned source-bound positive/negative compatibility proofs, not only fake spawn calls.
-3. Integrate the partial measurement contract/finalizer into the exact pinned `runtime.py process-saved` path, implement canonical semantic stage proposals and case-specific physical/pixel checks, then CPU-test independent delivery/video and measured comparison audits and the complete execution manifest.
+2. Materialize canonical exact-case config/construction/manifest around the authored Native runner. Run both candidate maps through the pinned offline and source-bound positive/negative compatibility commands; resolve real Native import or camera findings without changing frozen runtime. The CPU fake runner proof is insufficient for readiness.
+3. Add synchronized video composition, case-specific physical/pixel checks and owner-release contract; integrate the measurement finalizer into exact pinned `runtime.py process-saved`. Implement canonical semantic stage proposals, independent delivery/video and measured comparison audits, and the complete execution manifest.
 4. CPU test the exact `runtime.py process-saved` path, prepare the ordered local GPU queue and integration proof, then run `.venv-cpu/bin/python worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete --require-delivery-ready`. Keep `result.json` partial until every required CPU proof passes. Run the complete-batch strict gate after the assignment gate.
 
 The only later GPU checks are real Native trajectory, sign/stand visibility, camera coverage and original video acceptance. No absent CPU package or tool is classified as an external blocker. The independent timer publishes checkpoints; no Git command was run by the worker.
 
 Current gates: exact static `worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete` exits 0 (`.runtime-work/c150530-static-trace.log`). Its exact strict gate exits 1 at the truthful partial status (`.runtime-work/c150530-strict-trace.log`). The complete-batch strict gate exits 1 at the same partial/missing-package acceptance condition (`.runtime-work/full-strict-c150530-trace.log`).
+
+Latest runner checkpoint: 49 focused CPU tests pass with the hash recorded in `result.json`; exact static `worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete` exits 0 (`.runtime-work/c150530-static-runner.log`). The full strict gate exits 1 at truthful partial/missing-package acceptance (`.runtime-work/full-strict-c150530-runner.log`). Continue the canonical package and pinned proofs in the steps above; no CPU gap is reclassified as an external blocker.
+
+## Saved-source audit continuation
+
+`delivery_audit.py` independently reruns the exact saved turn finalizer and joins every original motion row to `video_frames.jsonl`, `trace.jsonl` and taxi controller history. It requires a complete Native capture seal with successful restoration, all four closed encoder exits, exact source hashes, and a construction/runner revision binding. It checks the four-view composition receipt against sealed camera hashes and the composed `raw.mkv` hash, then checks a current full-decode receipt against the frame map and media auditor hash. The result explicitly says physical and pixel acceptance are unverified. No original attempt or complete canonical `worker-delivery-audit` receipt exists yet; the CPU fixtures only exercise source rejection and join logic.
+
+The new audit exposed a concrete Native integration gap: `taxi_runner.py` does not yet place exact `config.json`, `construction.json` and `runner.py` in the attempt, which `seal_capture` and this audit require. Resolve this while materializing the canonical exact-case bundle. Both cases still need genuine reviewed context, pinned offline/compatibility and saved processing, actual pixel checks, semantic proposals, measured comparison, and local integration proof. None is treated as an external blocker.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150530__LVMC-11-60-090__taxi_driver/tests -v` passed 57 tests in `cpu-tests.log`, SHA-256 `24e75243abe47b6edbf87a9b2abbec72c895c630c7a0195cbbb98943bf3a9965`. `.venv-cpu/bin/python runtime.py preflight` passed again with Lean 4.28.0; `worker_check.py --updates` reports version 0 and no pauses. The exact static check passed (`.runtime-work/c150530-static-audit.log`); the batch strict gate still fails at partial/missing packages (`.runtime-work/full-strict-c150530-audit.log`). Next, build the exact case bundle and package inventory, then run pinned offline and saved-only proofs before claiming readiness.

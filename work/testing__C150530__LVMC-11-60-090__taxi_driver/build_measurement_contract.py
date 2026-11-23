@@ -23,7 +23,8 @@ def build() -> dict:
                       "candidate_layout": "candidates/" + suffix + ".json"})
     code = {name: {"path": name, "sha256": _sha(ROOT / name)} for name in
             ("reviewed_context.py", "native_trace_capture.py",
-             "turn_trace_finalizer.py", "taxi_native_motion.py")}
+             "turn_trace_finalizer.py", "taxi_native_motion.py", "taxi_cameras.py",
+             "taxi_capture_ticks.py", "taxi_runner.py", "delivery_audit.py")}
     return {
         "format": "c150530-partial-measurement-contract-v1",
         "assignment_id": ASSIGNMENT,
@@ -32,7 +33,11 @@ def build() -> dict:
                        "sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9"},
         "cases": cases,
         "source_files_per_attempt": ["original-trace.jsonl", "original-trace-seal.json",
-                                     "reviewed-context.json", "reviewed_sources/"],
+                                     "reviewed-context.json", "reviewed_sources/",
+                                     "video_frames.jsonl", "taxi-controller-history.jsonl",
+                                     "capture-seal.json", "raw.mkv",
+                                     "overview.mkv", "approach.mkv",
+                                     "reference_corner.mkv", "driver_reference.mkv"],
         "code": code,
         "selected_requirements": [
             {"disposition_index": 0, "requirement": "cab and qualifying designated stand",

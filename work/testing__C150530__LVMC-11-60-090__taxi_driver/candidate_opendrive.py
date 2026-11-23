@@ -115,6 +115,28 @@ def inspect(data: bytes, case: str) -> dict:
     roads = {int(road.get("id")): road for road in root.findall("road")}
     if set(roads) != set(ROAD_SPEC):
         raise ValueError("candidate roads differ")
+    for ident, expected in ROAD_SPEC.items():
+        road = roads[ident]
+        x, y, heading, length, junction = expected
+        geometry = road.find("./planView/geometry")
+        if geometry is None or road.get("junction") != str(junction) or any(
+                not math.isclose(float(geometry.get(key, "nan")), value, abs_tol=1e-8)
+                for key, value in (("x", x), ("y", y), ("hdg", heading),
+                                   ("length", length))) or not math.isclose(float(road.get("length", "nan")), length, abs_tol=1e-8):
+            raise ValueError("authored road geometry differs")
+        if ident != 110 and (geometry.find("line") is None or geometry.find("arc") is not None):
+            raise ValueError("one-way road primitive differs")
+        section = road.find("./lanes/laneSection")
+        if section is None or section.find("./left/lane") is not None:
+            raise ValueError("counterflow or missing one-way lane section")
+        right_lanes = section.findall("./right/lane")
+        if len(right_lanes) != 1 or right_lanes[0].get("id") != "-1" or right_lanes[0].get("type") != "driving":
+            raise ValueError("one-way driving lane differs")
+        width = right_lanes[0].find("width")
+        if width is None or any(not math.isclose(float(width.get(key, "nan")), expected_value, abs_tol=1e-8)
+                                for key, expected_value in (("a", 3.5), ("b", 0),
+                                                            ("c", 0), ("d", 0))):
+            raise ValueError("one-way driving lane width differs")
     junctions = root.findall("junction")
     if len(junctions) != 1 or junctions[0].get("id") != "1":
         raise ValueError("first junction count differs")
@@ -138,6 +160,10 @@ def inspect(data: bytes, case: str) -> dict:
             (expected["stand"]["center"][0] + 90)) > 1e-9 or abs(float(notice.get("s")) -
             (expected["posted_notice"]["point"][0] + 90)) > 1e-9:
         raise ValueError("stand or notice position differs")
+    if stand.get("type") != "parkingSpace" or stand.get("t") != "-4.5":
+        raise ValueError("stand marker geometry differs")
+    if notice.get("type") != "R2-1" or notice.get("subtype") != "right" or notice.get("t") != "-3.5":
+        raise ValueError("right-turn notice object differs")
     return {"format": "c150530-xodr-cpu-topology-v1", "case": case,
             "sha256": hashlib.sha256(data).hexdigest(),
             "routes": [list(route) for route in ROUTES],
