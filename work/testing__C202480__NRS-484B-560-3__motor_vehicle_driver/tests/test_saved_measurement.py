@@ -24,9 +24,11 @@ def write_trace(path, rows):
         ego = row["ego"]
         row["position"] = dict(zip(("x", "y", "z"), ego["position_m"]))
         row["position_m"] = ego["position_m"]
+        row["velocity_mps"] = ego["velocity_mps"]
         row["heading_deg"] = ego["heading_deg"]
         row["speed_mps"] = math.dist(ego["velocity_mps"], (0., 0., 0.))
         row["speed_mph"] = row["speed_mps"] / .44704
+        row["control"] = row["controls"]["ego"]
     path.write_text("".join(json.dumps(row) + "\n" for row in rows))
 
 

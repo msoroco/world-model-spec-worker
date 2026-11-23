@@ -216,6 +216,7 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                                     "y": row["ego"]["position_m"][1],
                                     "z": row["ego"]["position_m"][2]} or
                 row.get("position_m") != row["ego"]["position_m"] or
+                row.get("velocity_mps") != row["ego"]["velocity_mps"] or
                 row.get("heading_deg") != row["ego"]["heading_deg"] or
                 type(row.get("speed_mps")) not in (int, float) or
                 not math.isclose(row["speed_mps"], speed, rel_tol=0, abs_tol=1e-8) or
@@ -239,6 +240,8 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
         if not isinstance(controls, dict) or not isinstance(controls.get("ego"), dict):
             raise ValueError("original Native ego control missing")
         ego_control = controls["ego"]
+        if row.get("control") != ego_control:
+            raise ValueError("original canonical control differs from ego control")
         throttle = ego_control.get("throttle")
         brake = ego_control.get("brake")
         if (type(throttle) not in (int, float) or type(brake) not in (int, float) or
