@@ -24,9 +24,175 @@
   "topic_inventory": {
     "exact-text": "When the signal is circular green alone: Pedestrians facing such a signal may proceed across the highway within any marked or unmarked crosswalk, unless directed otherwise by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+      "target_law_id": "NRS-484B-307-2b",
+      "purpose": "Marked crosswalk crossing while facing circular green alone; no contrary device",
+      "gap_ids": [
+        "no_accepted_green_pedestrian_crossing"
+      ],
+      "scenario_parameters": {
+        "circular_green_alone": true,
+        "crosswalk_kind": "marked",
+        "other_device_indication": "none",
+        "pedestrian_enters_highway": true,
+        "entry_inside_crosswalk": true
+      },
+      "construction_module": "native_crossing.py",
+      "controller_module": "pedestrian_control.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing.",
+        "fallback_policy": "Use only a source-verified intersection with the same cell geometry, governing signal and crosswalk qualification; no invented device or crossing qualifies."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+      "target_law_id": "NRS-484B-307-2b",
+      "purpose": "Qualifying unmarked crosswalk crossing while facing circular green alone; no contrary device",
+      "gap_ids": [
+        "no_accepted_green_pedestrian_crossing"
+      ],
+      "scenario_parameters": {
+        "circular_green_alone": true,
+        "crosswalk_kind": "unmarked",
+        "other_device_indication": "none",
+        "pedestrian_enters_highway": true,
+        "entry_inside_crosswalk": true
+      },
+      "construction_module": "native_crossing.py",
+      "controller_module": "pedestrian_control.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing.",
+        "fallback_policy": "Use only a source-verified intersection with the same cell geometry, governing signal and crosswalk qualification; no invented device or crossing qualifies."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+      "target_law_id": "NRS-484B-307-2b",
+      "purpose": "Contrary pedestrian device indication; remain outside highway",
+      "gap_ids": [
+        "no_accepted_green_pedestrian_crossing"
+      ],
+      "scenario_parameters": {
+        "circular_green_alone": true,
+        "crosswalk_kind": "marked",
+        "other_device_indication": "DONT_WALK",
+        "pedestrian_enters_highway": false,
+        "entry_inside_crosswalk": true
+      },
+      "construction_module": "native_crossing.py",
+      "controller_module": "pedestrian_control.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing.",
+        "fallback_policy": "Use only a source-verified intersection with the same cell geometry, governing signal and crosswalk qualification; no invented device or crossing qualifies."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+      "target_law_id": "NRS-484B-307-2b",
+      "purpose": "Same contrary indication; observed highway entry within marked crosswalk",
+      "gap_ids": [
+        "no_accepted_green_pedestrian_crossing"
+      ],
+      "scenario_parameters": {
+        "circular_green_alone": true,
+        "crosswalk_kind": "marked",
+        "other_device_indication": "DONT_WALK",
+        "pedestrian_enters_highway": true,
+        "entry_inside_crosswalk": true
+      },
+      "construction_module": "native_crossing.py",
+      "controller_module": "pedestrian_control.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing.",
+        "fallback_policy": "Use only a source-verified intersection with the same cell geometry, governing signal and crosswalk qualification; no invented device or crossing qualifies."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
+      "target_law_id": "NRS-484B-307-2b",
+      "purpose": "Circular green entry outside measured crosswalk boundaries",
+      "gap_ids": [
+        "no_accepted_green_pedestrian_crossing"
+      ],
+      "scenario_parameters": {
+        "circular_green_alone": true,
+        "crosswalk_kind": "marked",
+        "other_device_indication": "none",
+        "pedestrian_enters_highway": true,
+        "entry_inside_crosswalk": false
+      },
+      "construction_module": "native_crossing.py",
+      "controller_module": "pedestrian_control.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing.",
+        "fallback_policy": "Use only a source-verified intersection with the same cell geometry, governing signal and crosswalk qualification; no invented device or crossing qualifies."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "marked_vs_unmarked",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross"
+      ],
+      "fixed_conditions": [
+        "same public highway and intersection",
+        "same circular green alone and facing signal head",
+        "same absence of contrary device",
+        "same pedestrian entry behavior and 20 Hz camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "source-qualified marked versus unmarked crosswalk"
+      ]
+    },
+    {
+      "comparison_id": "contrary_device_choice",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross"
+      ],
+      "fixed_conditions": [
+        "same marked crosswalk and public highway",
+        "same official circular green alone and facing relation",
+        "same source-verified contrary device indication",
+        "same cameras and duration"
+      ],
+      "deliberate_differences": [
+        "wait outside highway versus enter within crosswalk"
+      ]
+    },
+    {
+      "comparison_id": "crosswalk_boundary",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross"
+      ],
+      "fixed_conditions": [
+        "same public highway, official circular green and head",
+        "same marked crosswalk boundary source",
+        "same absence of contrary direction",
+        "same crossing controller speed and cameras/duration"
+      ],
+      "deliberate_differences": [
+        "measured entry inside versus outside crosswalk boundary"
+      ]
+    }
+  ],
+  "observations": [
+    "original frame/time and actor identity",
+    "official facing signal head with circular green as sole lit aspect",
+    "other-device identity, route applicability and frame indication",
+    "public-highway and marked or qualifying unmarked crosswalk geometry from map source",
+    "pedestrian location, highway entry and crosswalk membership per original frame"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
@@ -51,17 +217,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Exact NRS 484B.283 device provisions and applicability remain for source-backed review; a DONT_WALK label alone cannot establish a legal exception.",
+    "Native site, frame stream and camera coverage require the later operator run.",
+    "Canonical stage proposals, manifest, source-bound compatibility and saved-only delivery audit remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_green_pedestrian_crossing",
+        "requirement": "Source-bound green-alone pedestrian crossing across marked/unmarked crosswalk and other-device exception",
+        "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json lists no accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_with_controlled_comparisons",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -81,5 +255,55 @@
       ],
       "reason": "A straight pedestrian route through the intersection can cross the highway within a crosswalk while facing the specified signal."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "circular green alone, official signal and facing pedestrian",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross"
+      ],
+      "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+      "evidence_or_gap": "no_accepted_green_pedestrian_crossing"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "marked or qualifying unmarked crosswalk boundaries and highway route",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross"
+      ],
+      "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+      "evidence_or_gap": "no_accepted_green_pedestrian_crossing"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "contrary direction by another applicable device and NRS 484B.283 reference",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross"
+      ],
+      "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+      "evidence_or_gap": "no_accepted_green_pedestrian_crossing"
+    }
+  ],
+  "camera_plan": {
+    "fps": 20,
+    "duration_seconds": 30,
+    "sources": [
+      "front",
+      "left",
+      "right",
+      "rear"
+    ],
+    "limitation": "Native source and pixel visibility await local site review."
+  }
 }

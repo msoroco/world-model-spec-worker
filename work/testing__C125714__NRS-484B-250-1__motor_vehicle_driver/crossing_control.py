@@ -73,6 +73,7 @@ def bind_map(world_map, scene, location_factory):
     if actual_hash != scene["crossing"]["map_source_sha256"]:
         raise ValueError("live OpenDRIVE map hash differs from inspected source")
     bound = {}
+    bounds = scene["crossing"]["bounds_xy_m"]
     for party in ("ego", "other"):
         route = scene[f"{party}_route_xy_m"]
         waypoints = []
@@ -84,6 +85,11 @@ def bind_map(world_map, scene, location_factory):
             if math.hypot(location.x-x, location.y-y) > 2:
                 raise ValueError(f"{party} route point is too far from its drivable lane")
             waypoints.append(waypoint)
+        mapped = [[waypoint.transform.location.x, waypoint.transform.location.y]
+                  for waypoint in waypoints]
+        if (_inside(mapped[0], bounds) or _inside(mapped[-1], bounds) or
+                not any(_inside(point, bounds) for point in mapped[1:-1])):
+            raise ValueError(f"{party} mapped route does not traverse the declared crossing")
         declared_road = scene[f"{party}_approach_road_id"]
         if waypoints[0].road_id != declared_road:
             raise ValueError(f"{party} approach road ID differs from source plan")

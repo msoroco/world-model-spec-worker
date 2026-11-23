@@ -24,9 +24,156 @@
   "topic_inventory": {
     "exact-text": "Where the signal is circular green with a green turn arrow: Vehicular traffic facing the signal may proceed to make the movement indicated by the green turn arrow or such other movement as is permitted by the circular green signal, but the traffic must yield the right-of-way to pedestrians lawfully within an adjacent crosswalk and to other traffic lawfully using the intersection at the time the signal is exhibited. Drivers turning in the direction of the arrow when displayed with the circular green are thereby advised that so long as a turn arrow is illuminated, oncoming or opposing traffic simultaneously faces a steady red signal."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear",
+      "target_law_id": "NRS-484B-307-3a",
+      "purpose": "Straight movement under circular green and concurrent green turn arrow, clear at exhibition",
+      "gap_ids": [
+        "dual_aspect_straight_unobserved"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green",
+          "green_left_arrow"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": null,
+        "other_user_region_at_exhibition": "clear",
+        "other_user_lawful_use": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Native traffic-light Green state may not reveal a simultaneous arrow lamp; original aspect observation and camera views must establish both lamps.",
+        "fallback_policy": "No fallback has been built or tested; only source-measured spawn or camera changes that preserve the dual-aspect comparison could be proposed."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present",
+      "target_law_id": "NRS-484B-307-3a",
+      "purpose": "Other vehicle in intersection at dual-green exhibition",
+      "gap_ids": [
+        "dual_aspect_straight_unobserved"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green",
+          "green_left_arrow"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": "motor_vehicle",
+        "other_user_region_at_exhibition": "intersection",
+        "other_user_lawful_use": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Native traffic-light Green state may not reveal a simultaneous arrow lamp; original aspect observation and camera views must establish both lamps.",
+        "fallback_policy": "No fallback has been built or tested; only source-measured spawn or camera changes that preserve the dual-aspect comparison could be proposed."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present",
+      "target_law_id": "NRS-484B-307-3a",
+      "purpose": "Pedestrian in adjacent crosswalk at dual-green exhibition",
+      "gap_ids": [
+        "dual_aspect_straight_unobserved"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green",
+          "green_left_arrow"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": "pedestrian",
+        "other_user_region_at_exhibition": "adjacent_crosswalk",
+        "other_user_lawful_use": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Native traffic-light Green state may not reveal a simultaneous arrow lamp; original aspect observation and camera views must establish both lamps.",
+        "fallback_policy": "No fallback has been built or tested; only source-measured spawn or camera changes that preserve the dual-aspect comparison could be proposed."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late",
+      "target_law_id": "NRS-484B-307-3a",
+      "purpose": "Pedestrian outside crosswalk at exhibition and entering later",
+      "gap_ids": [
+        "dual_aspect_straight_unobserved"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green",
+          "green_left_arrow"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": "pedestrian",
+        "other_user_region_at_exhibition": "outside",
+        "other_user_lawful_use": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Native traffic-light Green state may not reveal a simultaneous arrow lamp; original aspect observation and camera views must establish both lamps.",
+        "fallback_policy": "No fallback has been built or tested; only source-measured spawn or camera changes that preserve the dual-aspect comparison could be proposed."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "vehicle_at_exhibition",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear",
+        "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present"
+      ],
+      "fixed_conditions": [
+        "same source-surveyed Native map, straight route, intersection and crosswalk polygons",
+        "same facing official head and simultaneous circular green plus green turn arrow",
+        "same camera profile and duration",
+        "same arrow direction, movement permission review and source channels"
+      ],
+      "deliberate_differences": [
+        "vehicle presence in intersection at exhibition"
+      ]
+    },
+    {
+      "comparison_id": "pedestrian_at_exhibition",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear",
+        "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present"
+      ],
+      "fixed_conditions": [
+        "same source-surveyed Native map, straight route, intersection and crosswalk polygons",
+        "same facing official head and simultaneous circular green plus green turn arrow",
+        "same camera profile and duration",
+        "same arrow direction, movement permission review and source channels"
+      ],
+      "deliberate_differences": [
+        "pedestrian presence in adjacent crosswalk at exhibition"
+      ]
+    },
+    {
+      "comparison_id": "exhibition_timing",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present",
+        "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late"
+      ],
+      "fixed_conditions": [
+        "same source-surveyed Native map, straight route, intersection and crosswalk polygons",
+        "same facing official head and simultaneous circular green plus green turn arrow",
+        "same camera profile and duration",
+        "same arrow direction, movement permission review and source channels"
+      ],
+      "deliberate_differences": [
+        "pedestrian position at first dual-green exhibition"
+      ]
+    }
+  ],
+  "observations": [
+    "source-sealed official facing head, circular green lamp and green-arrow direction, each original frame",
+    "source-sealed straight route, movement restriction review and ego crossing of surveyed intersection",
+    "original pedestrian and other-traffic identity, pose, region and lawful-use source at exhibition and afterward",
+    "actual Native lamp appearance, video visibility, lawful-use facts and right-of-way interpretation pending physical/review evidence"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/assignment.json",
@@ -51,17 +198,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual Native dual-aspect lamp appearance and four-camera visibility require a CARLA run.",
+    "Exact manifest, capture/finalization, semantic proposals, compatibility and saved-only delivery receipts remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "dual_aspect_straight_unobserved",
+        "requirement": "Original simultaneous circular green plus green turn arrow facing a straight-moving ego, with lawful-use and exhibition timing retained",
+        "source": "inputs/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "The frozen evidence inventory lists zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_case_construction_and_comparison_proofs",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

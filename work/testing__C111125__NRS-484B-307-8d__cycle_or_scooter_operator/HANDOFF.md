@@ -1,22 +1,27 @@
-# testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator
+# C111125 / NRS 484B.307(8)(d) / cycle or scooter operator
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: **partial CPU construction and measurement checkpoint**. The fixed assigned witness is a bicycle proceeding straight after failed detection. Zero accepted recordings are listed in the frozen evidence inventory. No physical or legal outcome is claimed.
 
-Exact law: NRS 484B.307(8)(d) — Where the signal is a steady red signal alone: After complying with the requirement to stop, a person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter may proceed straight through or turn right or left if: (1) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (2) No other device at the place prohibits either or both such turns, if applicable; and (3) The person yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.
-Assigned branch(es): bicycle_straight_failed_detection.
-Cell: C111125 (intersection, straight, traffic_light); actor: cycle_or_scooter_operator.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Exact cases and comparisons
 
-## Next CPU actions
+`case-plan.json` selects five exact cases: `two_cycles_failed_detection` (reference), `one_cycle`, `signal_changes`, `no_prior_stop`, and `fails_to_yield`. The four comparisons isolate observed complete cycle count, failed detection versus a changing signal, antecedent stop, and yielding to a signal-directed participant. Every case retains the C111125 intersection, bicycle, straight maneuver and official traffic light. No numeric legal threshold is invented; the two complete cycles are the statute's count. The packet records all phase transitions because the meaning of the applicable device's cycle boundary still needs original source and legal review.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+The statute also names device malfunction, pedestrians and other traffic, three other road-user types, and right/left turns. The assigned witness fixes bicycle, failed detection and straight. The malfunction alternative and separate pedestrian/traffic yield contrasts could be added in this same cell after source review. Right/left turns conflict with this cell's fixed straight maneuver and need lead review of existing compatible cells; this package does not claim those alternatives covered.
 
-## Proven checks and dependency boundary
+## Implemented CPU path
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+`signal_trial.py` verifies source hashes for map, official device, detector link and bicycle blueprint packet before planning. Its CARLA-lazy `spawn_case` calls the injected Native world blueprint library, reads back the spawned blueprint and actor ID, installs a detector/device policy by injected adapter, and destroys an owned actor on failed setup. `control_step` requests stop, creep or straight travel from current readbacks while preserving each deliberate case contrast. Requested behavior is separate from measured behavior.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+`measure_attempt` requires sealed original Native, device, detector and geometry files; the per-frame rows must exactly join those files. It rejects stale hashes, absent channels, discontinuous frames, non-20 Hz timestamps, wrong actor/device/map identity, missing straight entry and nonmonotone route. It measures stationary behavior before the source-bound stop boundary, observed red through entry, sensor-zone occupancy versus output, complete observed green/yellow/red rotations, and directed-participant conflict at entry. The output has no legal verdict or physical acceptance. `comparison_audit.py` independently checks exact pairs, fixed source identities, original bindings, intended measured differences and the reference prerequisites.
+
+`tests/test_signal_trial.py` and `tests/test_comparison_audit.py` cover positive construction, source rejection, all five measurements, actor cleanup and all four comparisons. The fixtures are synthetic CPU packets and do not prove Native execution or video visibility.
+
+## Proofs and exact gate
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/tests -v` passed 8 tests. `cpu-tests.log` SHA256 `4fdb7a6cc6f6d3919e14a5168c98aa37530776255c897e5c00f5455d4c13b495`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete` passed static checks. `assignment-check.log` SHA256 `4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete --require-delivery-ready` failed, as expected for truthful partial status, at `Preparation acceptance failed: partial/missing packages remain`. See `strict-gate.log`.
+
+## Exact remaining CPU work
+
+Source a Native C111125 map/device/detector packet and an actor blueprint that substantively represents a bicycle with rider; make the policy adapter observe the detector-to-signal causal link. Author full canonical semantic proposals and `semantic-index.json`, exact per-case configurations, source-hashed diagnostics, manifest, offline and positive/negative compatibility receipts, saved-only processor, independent delivery audit and video/source decode proofs. Assess whether malfunction and separate participant variants remain within the assigned branch. For the fixed straight cell, refer turns to the lead's branch binding review. Keep status partial until the exact strict gate passes. Then run the prepared GPU queue locally for actual motion, sensor behavior, camera visibility and full video review.

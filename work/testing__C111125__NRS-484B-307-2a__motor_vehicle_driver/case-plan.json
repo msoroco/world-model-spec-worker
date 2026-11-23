@@ -24,9 +24,153 @@
   "topic_inventory": {
     "exact-text": "When the signal is circular green alone: Vehicular traffic facing the signal may proceed straight through or turn right or left unless another device at the place prohibits either or both such turns. Such vehicular traffic, including vehicles turning right or left, must yield the right-of-way to other vehicles and to pedestrians lawfully within the intersection or an adjacent crosswalk at the time the signal is exhibited."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_clear",
+      "target_law_id": "NRS-484B-307-2a",
+      "purpose": "Straight movement under sole circular green with no other user at exhibition",
+      "gap_ids": [
+        "no_accepted_original_green_straight_evidence"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": null,
+        "other_user_region_at_exhibition": "clear",
+        "other_user_lawful_presence": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A real Native map may have a composite traffic-light head, geometry that hides the circular aspect, or a participant route that fails to remain in camera view. Source readback and first physical replay must check phase, geometry and all four cameras.",
+        "fallback_policy": "A source-verified spawn-position or speed adjustment may be added for the same exact case only after a measured failure trigger; the current package has no tested fallback."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_vehicle_present",
+      "target_law_id": "NRS-484B-307-2a",
+      "purpose": "Other vehicle within surveyed intersection at exhibition; ego controlled to yield",
+      "gap_ids": [
+        "no_accepted_original_green_straight_evidence"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": "motor_vehicle",
+        "other_user_region_at_exhibition": "intersection",
+        "other_user_lawful_presence": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A real Native map may have a composite traffic-light head, geometry that hides the circular aspect, or a participant route that fails to remain in camera view. Source readback and first physical replay must check phase, geometry and all four cameras.",
+        "fallback_policy": "A source-verified spawn-position or speed adjustment may be added for the same exact case only after a measured failure trigger; the current package has no tested fallback."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_present",
+      "target_law_id": "NRS-484B-307-2a",
+      "purpose": "Pedestrian within adjacent surveyed crosswalk at exhibition; ego controlled to yield",
+      "gap_ids": [
+        "no_accepted_original_green_straight_evidence"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": "pedestrian",
+        "other_user_region_at_exhibition": "adjacent_crosswalk",
+        "other_user_lawful_presence": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A real Native map may have a composite traffic-light head, geometry that hides the circular aspect, or a participant route that fails to remain in camera view. Source readback and first physical replay must check phase, geometry and all four cameras.",
+        "fallback_policy": "A source-verified spawn-position or speed adjustment may be added for the same exact case only after a measured failure trigger; the current package has no tested fallback."
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_late",
+      "target_law_id": "NRS-484B-307-2a",
+      "purpose": "Pedestrian outside adjacent crosswalk at exhibition then enters later; retain temporal difference",
+      "gap_ids": [
+        "no_accepted_original_green_straight_evidence"
+      ],
+      "scenario_parameters": {
+        "signal_aspects": [
+          "circular_green"
+        ],
+        "maneuver": "straight",
+        "other_user_kind": "pedestrian",
+        "other_user_region_at_exhibition": "outside",
+        "other_user_lawful_presence": "unresolved_original_source_required"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A real Native map may have a composite traffic-light head, geometry that hides the circular aspect, or a participant route that fails to remain in camera view. Source readback and first physical replay must check phase, geometry and all four cameras.",
+        "fallback_policy": "A source-verified spawn-position or speed adjustment may be added for the same exact case only after a measured failure trigger; the current package has no tested fallback."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "intersection_vehicle_yield",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_clear",
+        "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_vehicle_present"
+      ],
+      "fixed_conditions": [
+        "same surveyed Native map, intersection and adjacent crosswalk polygons",
+        "same official signal head facing the ego approach and circular green alone",
+        "same straight ego route and capture duration",
+        "same camera profile and acquisition methods"
+      ],
+      "deliberate_differences": [
+        "no other user versus another vehicle within intersection at green exhibition"
+      ]
+    },
+    {
+      "comparison_id": "crosswalk_pedestrian_yield",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_clear",
+        "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_present"
+      ],
+      "fixed_conditions": [
+        "same surveyed Native map, intersection and adjacent crosswalk polygons",
+        "same official signal head facing the ego approach and circular green alone",
+        "same straight ego route and capture duration",
+        "same camera profile and acquisition methods"
+      ],
+      "deliberate_differences": [
+        "no other user versus a pedestrian within adjacent crosswalk at green exhibition"
+      ]
+    },
+    {
+      "comparison_id": "exhibition_time_qualification",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_present",
+        "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_late"
+      ],
+      "fixed_conditions": [
+        "same surveyed Native map, intersection and adjacent crosswalk polygons",
+        "same official signal head facing the ego approach and circular green alone",
+        "same straight ego route and capture duration",
+        "same camera profile and acquisition methods"
+      ],
+      "deliberate_differences": [
+        "pedestrian region at green exhibition; later entry preserved without presuming a legal verdict"
+      ]
+    }
+  ],
+  "observations": [
+    "official source-bound signal head, facing approach and sole circular-green aspects at every frame",
+    "ego original map route, body pose and intersection crossing",
+    "other vehicle/pedestrian identity, pose and intersection/adjacent-crosswalk region at first green exhibition and afterward",
+    "source of lawful presence, right-of-way and any other official device, retained unresolved pending original evidence",
+    "four-camera image evidence and physical realization, pending Native execution"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/assignment.json",
@@ -51,17 +195,27 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No accepted original recording or source-surveyed Native map/head packet is present in this worker export. Physical phase, route and camera visibility remain pending Native execution.",
+    "Canonical semantic proposals, exact offline/compatibility proofs, saved-only finalizer and independent delivery audit remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_original_green_straight_evidence",
+        "requirement": "Original official circular-green-alone signal, straight ego route, and source-positioned other users at exhibition",
+        "source": {
+          "path": "inputs/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/evidence.json",
+          "sha256": "801cd4220ac705090c669359da7bfd601efa9e4cbcbcb9fd9822006b2d0dd2f4"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory lists no accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "controlled_case_and_native_source_measurement_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,5 +234,6 @@
       ],
       "reason": "The straight-through task directly matches the permission and associated yielding duty."
     }
-  ]
+  ],
+  "source_observation_mapping": {}
 }

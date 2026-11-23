@@ -101,6 +101,43 @@ class CrossingAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "road ID"):
             control.bind_map(Map(), scene, lambda x, y: (x, y))
 
+    def test_mapped_waypoints_must_reach_declared_crossing_before_spawn(self):
+        class Waypoint:
+            def __init__(self, x, y):
+                self.road_id, self.lane_id, self.is_junction = 10, -1, x == 0
+                self.transform = type("Transform", (), {"location": type(
+                    "Location", (), {"x": x, "y": y})()})()
+                self.following = []
+
+            def next(self, distance):
+                return self.following
+
+        class Map:
+            def __init__(self):
+                self.nodes = {(x, 0): Waypoint(x, 0) for x in (-3, 0, 3)}
+                for x, next_x in ((-3, 0), (0, 3)):
+                    self.nodes[(x, 0)].following.append(self.nodes[(next_x, 0)])
+
+            def to_opendrive(self):
+                return "inspected map"
+
+            def get_waypoint(self, point, project_to_road=False):
+                return self.nodes.get(point)
+
+        scene = {
+            "crossing": {"crossing_id": "A-B-west", "map_source_sha256":
+                         hashlib.sha256(b"inspected map").hexdigest(),
+                         "bounds_xy_m": [-1, -1, 1, 1]},
+            "ego_highway": "A", "other_highway": "B",
+            "ego_approach_road_id": 10, "other_approach_road_id": 20,
+            "ego_route_xy_m": [[-3, 0], [0, 0], [3, 0]],
+            "other_route_xy_m": [[0, -3], [0, 0], [0, 3]],
+        }
+        mapped = Map()
+        mapped.nodes[(0, 0)].transform.location.y = 1.5
+        with self.assertRaisesRegex(ValueError, "mapped route does not traverse"):
+            control.bind_map(mapped, scene, lambda x, y: (x, y))
+
     def test_saved_trace_hash_and_missing_source(self):
         with TemporaryDirectory() as tmp:
             path = Path(tmp) / "trace.json"

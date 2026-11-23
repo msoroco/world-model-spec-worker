@@ -2,11 +2,30 @@
   "assignment_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver",
   "input_sha256": "8ebbe55581ca25b75430f208d4e31d643dd93f43f9df93b9723b0bb72eae0390",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "cpu_observables_draft",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-intersection-tests.log",
+      "sha256": "17403cab7acb0c45de38f7f2eb5ce89e8807f661a3f997b5cdfd0bea3e087701"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110969__NRS-484B-450-1c__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "9296c9674fd98ad66bd320223857489a92ea91ac01b71648282fd5cbe42399d7"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110969__NRS-484B-450-1c__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Nine exact cases and eight controlled comparisons drafted; source-sealed original-packet finalizer and independent fixed/difference comparison checker have eight passing CPU tests. Exact strict delivery gate remains partial because executable CARLA construction/controller, canonical semantic proposals and manifest, per-case offline/compatibility/saved-only receipts, and canonical delivery audit integration remain CPU work."
 }

@@ -2,11 +2,30 @@
   "assignment_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver",
   "input_sha256": "d0b28463b250a5ea0a6980c21da20a27580aa54714fc8dfac70b67fee6fd0e9f",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "controlled_case_and_native_measurement_draft",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-tests.log",
+      "sha256": "cad84bab31e58e02e751bdf996b7febd9a50f9b6674256bde41d59c590599134"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Four exact straight-green cases, three controlled comparisons, source-gated Native spawn/measurement and independent comparison audit have six passing CPU tests. Delivery remains partial: no source-surveyed actual Native intersection/head packet, exact execution bundles/manifest, finalizer and diagnostic recipes, semantic proposals, offline/positive-negative compatibility receipts, or independent delivery audit; strict gate correctly rejects partial status."
 }

@@ -48,6 +48,10 @@ class IntersectionGeometryTests(unittest.TestCase):
         corners = geometry.footprint(0, 0, 0, 4.5, 1.8)
         self.assertEqual(geometry.polygon_gap_to_boundary(corners, self.boundary), 0.0)
 
+    def test_rotated_body_outside_boundary_has_nonzero_gap(self):
+        corners = geometry.footprint(15, 15, 45, 4.5, 1.8)
+        self.assertGreater(geometry.polygon_gap_to_boundary(corners, self.boundary), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
