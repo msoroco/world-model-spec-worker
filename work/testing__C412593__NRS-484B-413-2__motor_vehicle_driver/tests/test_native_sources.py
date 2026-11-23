@@ -43,6 +43,7 @@ class NativeSourcesTests(unittest.TestCase):
                       "cell_id": "C412593", "law_id": "NRS-484B-413-2",
                       "actor": "motor_vehicle_driver", "rate_hz": 20,
                       "duration_s": 45, "required_atoms": ["sig.turn_indicator"],
+                      "requested_speed_mps": 4.0,
                       "case": {"case_id": runner.PREFIX + "right_other_at_300_ft",
                                "district_type": "other", "signal_target_ft": 300},
                       "cameras": plan()["cameras"]}
@@ -73,6 +74,36 @@ class NativeSourcesTests(unittest.TestCase):
         self.assertEqual(json.dumps(template, sort_keys=True), original)
         with self.assertRaisesRegex(ValueError, "Unsupported exact"):
             runner.make_case_bundle(runner.PREFIX + "missing", template)
+
+    def test_fallbacks_change_distinct_physical_knobs(self):
+        template = json.loads((runner.ROOT / "construction.json").read_text())
+        case = runner.PREFIX + "right_business_at_100_ft"
+        configs = {}
+        for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
+            bundle = runner.make_case_bundle(case, template, candidate)
+            configs[candidate] = json.loads(next(row["content"] for row in bundle["files"]
+                                                 if row["path"] == "config.json"))
+        invariant = ("cell_id", "law_id", "actor", "selected_case_id",
+                     "required_atoms", "source_packets", "rate_hz", "duration_s",
+                     "cameras", "case")
+        for candidate in ("fallback1", "fallback2", "fallback3"):
+            self.assertTrue(all(configs[candidate][key] == configs["primary"][key]
+                                for key in invariant))
+        self.assertEqual(configs["fallback1"]["requested_speed_mps"], 3.0)
+        self.assertEqual(configs["fallback2"]["blueprint_selection_index"], 1)
+        self.assertEqual(configs["fallback3"]["approach_start_m"], 5.0)
+        with self.assertRaisesRegex(ValueError, "Unsupported C412593 fallback"):
+            runner.make_case_bundle(case, template, "fallback4")
+        work = Path.cwd() / ".runtime-work"
+        work.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=work) as folder:
+            output = Path(folder)
+            route, _, _ = runner.materialize_draft_inputs(
+                output, case, "cpu-native-map", requested_speed_mps=3.0,
+                approach_start_m=5.0)
+            self.assertEqual(route["requested_speed_mps"], 3.0)
+            self.assertEqual(route["approach"][0][2], 5.0)
+            self.assertGreaterEqual(route["approach"][-1][2] - route["approach"][0][2], 100)
 
     def test_draft_inputs_cover_three_distinct_district_variants(self):
         work = Path.cwd() / ".runtime-work"

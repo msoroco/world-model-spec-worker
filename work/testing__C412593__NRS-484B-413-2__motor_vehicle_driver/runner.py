@@ -107,7 +107,8 @@ def draft_xodr(district):
     return ET.tostring(root, encoding="unicode") + "\n"
 
 
-def materialize_draft_inputs(output, case_id, native_map_id):
+def materialize_draft_inputs(output, case_id, native_map_id, *,
+                             requested_speed_mps=4.0, approach_start_m=0.0):
     """Write deterministic, source-hashed draft inputs under ignored attempt."""
     output = Path(output).resolve()
     if not output.is_relative_to(_repo() / ".runtime-work") or not output.is_dir():
@@ -116,6 +117,11 @@ def materialize_draft_inputs(output, case_id, native_map_id):
         raise ValueError("Unsupported exact draft case")
     if not native_map_id:
         raise ValueError("Native map readback required")
+    if (type(requested_speed_mps) not in (int, float) or
+            not 1 <= requested_speed_mps <= 12 or
+            type(approach_start_m) not in (int, float) or
+            not 0 <= approach_start_m <= 10):
+        raise ValueError("Draft speed/spawn station outside bounded plan")
     name = case_id[len(PREFIX):]
     district = _district(name)
     files = ("map.xodr", "district-source.txt", "zone-source.txt",
@@ -147,13 +153,13 @@ def materialize_draft_inputs(output, case_id, native_map_id):
                                      "minimum_centerline_clearance_m": 1.5,
                                      "maximum_route_distance_m": 6,
                                      "source": ref("zone-source.txt")}}
-    stations = lambda road, end, step: [[road, -1, min(index * step, end)]
-                                        for index in range(math.ceil(end / step) + 1)]
+    stations = lambda road, start, end, step: [[road, -1, min(start + index * step, end)]
+                                               for index in range(math.ceil((end - start) / step) + 1)]
     route = {"case_id": case_id, "map_path": "map.xodr", "map_sha256": map_sha,
-             "native_map_id": native_map_id, "requested_speed_mps": 4,
-             "approach": stations(APPROACH_ROAD, APPROACH_M, 2),
-             "connector": stations(CONNECTOR_ROAD, 5 * math.pi / 2, 0.5),
-             "outgoing": stations(OUTGOING_ROAD, 45, 2)}
+             "native_map_id": native_map_id, "requested_speed_mps": requested_speed_mps,
+             "approach": stations(APPROACH_ROAD, approach_start_m, APPROACH_M, 2),
+             "connector": stations(CONNECTOR_ROAD, 0, 5 * math.pi / 2, 0.5),
+             "outgoing": stations(OUTGOING_ROAD, 0, 45, 2)}
     poses = ((-50, -10, 42, 0, -80), (-85, -14, 8, 0, -15),
              (11, -9, 12, 150, -30), (1, 0, 1.65, 0, -6))
     from native_sources import SIZES
@@ -254,7 +260,7 @@ def _control(actor, waypoints, target_speed):
     return throttle, brake, max(-0.75, min(0.75, heading_error / 35))
 
 
-def make_case_bundle(case_id, template):
+def make_case_bundle(case_id, template, candidate_id="primary"):
     """Derive an exact-case construction without changing shared capture policy."""
     if not isinstance(case_id, str) or not case_id.startswith(PREFIX):
         raise ValueError("Exact C412593 case ID required")
@@ -273,6 +279,14 @@ def make_case_bundle(case_id, template):
     config["case"] = {"case_id": case_id, "district_type": _district(name),
                       "signal_target_ft": CASE_TARGET_FEET[name],
                       "physical_acceptance_claimed": False}
+    if candidate_id == "fallback1":
+        config["requested_speed_mps"] = 3.0
+    elif candidate_id == "fallback2":
+        config["blueprint_selection_index"] = 1
+    elif candidate_id == "fallback3":
+        config["approach_start_m"] = 5.0
+    elif candidate_id != "primary":
+        raise ValueError("Unsupported C412593 fallback")
     bundle["case_id"] = case_id
     bundle["measurement_plan"]["quantities"] = [
         "continuous right-indicator path length before original course change",
@@ -303,6 +317,13 @@ def check_construction(folder=None):
             config["case"].get("district_type") != _district(name) or
             config["case"].get("signal_target_ft") != CASE_TARGET_FEET[name]):
         raise ValueError("Materialized exact case district/target binding differs")
+    if (type(config.get("requested_speed_mps")) not in (int, float) or
+            not 1 <= config["requested_speed_mps"] <= 12 or
+            type(config.get("approach_start_m", 0)) not in (int, float) or
+            not 0 <= config.get("approach_start_m", 0) <= 10 or
+            type(config.get("blueprint_selection_index", 0)) is not int or
+            not 0 <= config.get("blueprint_selection_index", 0) <= 1):
+        raise ValueError("Materialized fallback engineering knob invalid")
     cameras = config.get("cameras")
     from native_sources import SIZES
     if not isinstance(cameras, list) or tuple(row.get("name") for row in cameras) != CAMERAS:
@@ -374,12 +395,15 @@ def capture(args):
         world = client.generate_opendrive_world(map_text)
         if draft_mode:
             route_plan, site_packet, camera_plan = materialize_draft_inputs(
-                output, args.case_id, world.get_map().name)
+                output, args.case_id, world.get_map().name,
+                requested_speed_mps=config["requested_speed_mps"],
+                approach_start_m=config.get("approach_start_m", 0))
             route_path, site_path, camera_path = (output / name for name in
                 ("route-plan.json", "site-packet.json", "camera-plan.json"))
         if (config.get("rate_hz") != camera_plan["rate_hz"] or
                 config.get("duration_s") != camera_plan["duration_s"] or
-                config.get("cameras") != camera_plan["cameras"]):
+                config.get("cameras") != camera_plan["cameras"] or
+                config.get("requested_speed_mps") != route_plan["requested_speed_mps"]):
             raise ValueError("Materialized exact four-camera capture profile differs")
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -392,9 +416,10 @@ def capture(args):
         connector = _waypoints(native_map, route_plan["connector"])
         outgoing = _waypoints(native_map, route_plan["outgoing"])
         blueprints = world.get_blueprint_library().filter("vehicle.*")
-        if not blueprints:
-            raise ValueError("No Native vehicle blueprint")
-        with spawn_right_turn_vehicle(world, blueprints[0], approach, outgoing,
+        blueprint_index = config.get("blueprint_selection_index", 0)
+        if len(blueprints) <= blueprint_index:
+            raise ValueError("Requested alternate Native vehicle blueprint unavailable")
+        with spawn_right_turn_vehicle(world, blueprints[blueprint_index], approach, outgoing,
                                       site_packet=site_packet, site_source_root=source_root) as built:
             actor = built["actor"]
             route = built["route"]
