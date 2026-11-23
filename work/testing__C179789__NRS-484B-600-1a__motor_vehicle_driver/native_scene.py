@@ -42,6 +42,8 @@ def validate(packet_path: Path, plan_path: Path, case_id: str) -> tuple[dict, di
         raise ValueError("reviewed Native source or identity missing")
     if packet.get("duration_frames") != 900 or packet.get("camera_profile") != "four-view":
         raise ValueError("fixed duration or four-view profile differs")
+    if packet.get("paved_road") is not True or not packet.get("travel_direction"):
+        raise ValueError("reviewed paved road or travel direction missing")
     _finite(packet.get("leader_speed_request_mps"), "leader speed request")
     entries = packet["cases"]
     for key, item in entries.items():

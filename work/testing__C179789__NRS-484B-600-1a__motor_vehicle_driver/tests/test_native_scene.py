@@ -43,6 +43,7 @@ def packet():
             "map_sha256": hashlib.sha256(MAP_TEXT.encode()).hexdigest(),
             "ego_blueprint_id": "vehicle.ego", "leader_blueprint_id": "vehicle.leader",
             "leader_speed_request_mps": 8.0,
+            "paved_road": True, "travel_direction": "forward",
             "duration_frames": 900, "camera_profile": "four-view", "cases": items}
 
 

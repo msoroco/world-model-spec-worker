@@ -45,8 +45,10 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str, control_facto
             abs(settings.fixed_delta_seconds - .05) > 1e-9):
         raise ValueError("rendered synchronous 20 Hz Native world required")
     attempt = _source_root(attempt)
-    if attempt.exists() and any(attempt.iterdir()):
+    if attempt.exists() and any(path.name != "raw" for path in attempt.iterdir()):
         raise ValueError("retain previous original Native attempt")
+    if (attempt / "raw").exists() and camera_rig.output_root != attempt / "raw":
+        raise ValueError("original camera output root differs from attempt")
     attempt.mkdir(parents=True, exist_ok=True)
     if frame_map_factory is None:
         from worker_exchange.native_output import FrameMap
