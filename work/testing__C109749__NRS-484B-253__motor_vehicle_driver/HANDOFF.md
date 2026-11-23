@@ -692,3 +692,7 @@ Eight unreferenced historical semantic authoring/validation helper scripts were 
 ## 2026-11-20 identical empty analysis-log consolidation
 
 Rebound 20 execution-manifest references from 20 duplicate zero-byte compatibility-analysis logs to the retained zero-byte `primary-compatibility-analysis.log`. The SHA-256 remains the empty-file digest; receipts and constructions were unchanged. Assignment-scoped `worker_check.py --complete` passes. Ready status was not changed.
+
+## 2026-11-23 returned-file cap and evidence preservation
+
+Eight unreferenced historical primary saved logs were embedded byte-for-byte with SHA-256 values in `retired-hazard-release-log-index.json` and their separate files retired. The canonical manifest/current result proof paths were unaffected. The C109749 assignment-scoped nonready complete checker passes after the consolidation. One unreferenced C158190 `view_speed_6` negative audit log was byte-identical to its retained `through_speed_3` copy and was retired. The returned tree is exactly 8,600 files. The C125714 fixture generator remains returned; its 28 synthetic classifier/lifecycle proof results are staged under ignored runtime work pending returned receipt capacity. Neither package was promoted to ready.

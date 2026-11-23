@@ -103,16 +103,20 @@ def saved_receipt(entry):
                 continue
             if sha(ROOT / claim['log']) != claim['sha256']:
                 raise ValueError('Recorded-only saved proof log changed')
-            matches.append(REPO / tokens[tokens.index('--output') + 1] / 'v0001/processing.json')
-    if len(matches) != 1:
-        raise ValueError('One primary recorded-only saved proof required')
-    path = matches[0]
-    receipt = read(path)
-    if (receipt.get('format') != 'worker-saved-processing' or receipt.get('passed') is not True
-            or receipt.get('recorded_only') is not True or receipt.get('case_id') != case_id
-            or receipt['analysis_revision']['construction_sha256'] != entry['construction_sha256']):
-        raise ValueError('Current selected recorded-only saved proof missing')
-    return path, receipt
+            output = REPO / tokens[tokens.index('--output') + 1]
+            matches.extend(sorted(output.glob('v*/processing.json')))
+    current = []
+    for path in matches:
+        receipt = read(path)
+        if (receipt.get('format') == 'worker-saved-processing' and receipt.get('passed') is True
+                and receipt.get('recorded_only') is True and receipt.get('case_id') == case_id
+                and receipt.get('analysis_revision', {}).get('construction_sha256')
+                == entry['construction_sha256']):
+            current.append((path, receipt))
+    if len(current) != 1:
+        raise ValueError('One current primary recorded-only saved proof required; found '
+                         + str(len(current)))
+    return current[0]
 
 
 def lifecycle(entry, output, saved_override=None):
