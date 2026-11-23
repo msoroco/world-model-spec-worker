@@ -339,3 +339,7 @@ Archived the four original offline logs for each of `source_verified_base`, `sou
 ## 2026-11-23 further offline-log compaction
 
 Archived and rebound the four original offline logs for `source_verified_slower_lead` into the package command-log archive with ignored byte-for-byte backup. The assignment-scoped complete delivery-ready check passed after compaction.
+
+## 2026-11-23 further returned-log compaction
+
+Archived and rebound four exact offline logs each for `source_verified_lead_brakes`, `source_verified_wet_surface`, `source_verified_following_ends`, and `source_verified_queued_traffic` into the package command-log archive, with ignored byte-for-byte backups. The assignment-scoped complete delivery-ready check passed after each wave. No construction or physical conclusion changed.
