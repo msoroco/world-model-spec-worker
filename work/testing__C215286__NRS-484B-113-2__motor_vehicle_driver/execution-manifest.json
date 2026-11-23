@@ -189,13 +189,17 @@
           "method": "source-bound original reverse history measurement",
           "evidence": "reverse_history.jsonl"
         }
+      },
+      "physical_preparation": {
+        "receipt": "over-physical-preparation.json",
+        "sha256": "0981e4d1cf93c9e91eda40e15879fcaff2fc13b9553b04272944c57908f987ce"
       }
     },
     {
       "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk",
       "kind": "delivery",
       "construction": "cases/reverse_stops_before_crosswalk-construction.json",
-      "construction_sha256": "036b51748405f27cea2a6c104dc77354de8c2a9dc8c6381ed042cb7802fa3153",
+      "construction_sha256": "b5a3d0a41a070177802b8eed947c8a69817cc38783eb5ee1d3f6d0774f0e49ef",
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
@@ -207,7 +211,7 @@
         {
           "id": "fallback1",
           "construction": "cases/reverse_short_fallback1-construction.json",
-          "construction_sha256": "8e6ae51a751237f050de3defadce5f1c7eca77b4769661a9c710903d59c9e2dd",
+          "construction_sha256": "7b2dcb3a9228780dc5e6e134c2ba7a41f32ae607e538b218d2ccc1918b189ee4",
           "trigger": {
             "source": "reverse_history.jsonl and crosswalk_context.json",
             "metric": "minimum original complete-body clearance from sourced crosswalk at settled stop",
@@ -217,31 +221,32 @@
             "site_packet.target_distances_m.short: 2.0 -> 1.0 m; over target and source identity fixed"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback1 --output .runtime-work/c215286-short-fallback1-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback1 --output .runtime-work/c215286-corrected-short-offline/fallback1",
             "exit_code": 0,
-            "construction_sha256": "8e6ae51a751237f050de3defadce5f1c7eca77b4769661a9c710903d59c9e2dd",
-            "log": "cases/short-fallback1-offline.log",
-            "log_sha256": "8449fa1d88484af67bfaf0c3d8eb245a0b6fa838cb7bf75f93c944e0eb8239c2"
+            "construction_sha256": "7b2dcb3a9228780dc5e6e134c2ba7a41f32ae607e538b218d2ccc1918b189ee4",
+            "log": "cases/corrected-short-offline.log",
+            "log_sha256": "866df31b2d9d4dc02a0d493534d666712897cad15c4f395cbcf02d75aa797aae"
           },
           "compatibility": {
-            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback1 --output .runtime-work/c215286-short-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback1 --output .runtime-work/c215286-corrected-short-compat-v4/fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "receipt": "cases/short-fallback1-compatibility-receipt.json",
-            "sha256": "1ed13149e6ce69f8d80ce2e3f889b1cf816cbf306787d80dca13f2d22f64d418",
+            "sha256": "0472d85e0263517a28dc7f58e755526cf1b5ef157678f2b5a809e950a7f0d9b3",
             "log": "compatibility.log",
-            "negative_log": "cases/short-fallback1-negative.log"
+            "negative_log": "cases/short-fallback1-negative.log",
+            "negative_log_sha256": "94e6ade410d37098dde8fb89ce360d2ad5a2e19dc0ff512c42dc6114fd07a16d"
           },
           "saved_processing": {
-            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-short-fallback1-compat-v1 --output .runtime-work/c215286-short-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-corrected-short-compat-v4/fallback1 --output .runtime-work/c215286-corrected-short-saved-v5/fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "receipt": "cases/short-fallback1-processing-receipt.json",
-            "sha256": "624276ef9416f80a24d750ddd5e1030410f2c13118d8b3417acd3ae52bd0b1bb",
+            "sha256": "0b9c9c273505698904a5aed87768443d2b3b8edff51f66a395c7c3a054457c6c",
             "log": "cases/short-fallback1-processing-receipt.json",
-            "log_sha256": "624276ef9416f80a24d750ddd5e1030410f2c13118d8b3417acd3ae52bd0b1bb"
+            "log_sha256": "0b9c9c273505698904a5aed87768443d2b3b8edff51f66a395c7c3a054457c6c"
           }
         },
         {
           "id": "fallback2",
           "construction": "cases/reverse_short_fallback2-construction.json",
-          "construction_sha256": "45a47d3fb7dcfdc11e1449915e541ff1157f7d9ca18bae2727ed66f81178c6f2",
+          "construction_sha256": "6fa1010ea1bfdb8ecb39985d4a495b70ee31ee9cf8a07255d68d0760651e685f",
           "trigger": {
             "source": "native-run-status.json and capture/manifest.json",
             "metric": "subject actor spawn and first original Native frame",
@@ -251,31 +256,32 @@
             "site_packet.vehicle_blueprint_id: vehicle.audi.tt -> vehicle.tesla.model3"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback2 --output .runtime-work/c215286-short-fallback2-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback2 --output .runtime-work/c215286-corrected-short-offline/fallback2",
             "exit_code": 0,
-            "construction_sha256": "45a47d3fb7dcfdc11e1449915e541ff1157f7d9ca18bae2727ed66f81178c6f2",
-            "log": "cases/short-fallback2-offline.log",
-            "log_sha256": "4e2657cf90782a1f12bdfd808d050604bc9e3f202e5c8ddaca68e4255139b0ed"
+            "construction_sha256": "6fa1010ea1bfdb8ecb39985d4a495b70ee31ee9cf8a07255d68d0760651e685f",
+            "log": "cases/corrected-short-offline.log",
+            "log_sha256": "866df31b2d9d4dc02a0d493534d666712897cad15c4f395cbcf02d75aa797aae"
           },
           "compatibility": {
-            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback2 --output .runtime-work/c215286-short-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback2 --output .runtime-work/c215286-corrected-short-compat-v4/fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "receipt": "cases/short-fallback2-compatibility-receipt.json",
-            "sha256": "e4bdefca14034cd69318e402e2fcbf56fc759888de2bd29b8e60d90ff1e1724b",
+            "sha256": "d62064fb0178e8358c4af9b7beb7f06696648690aa5c147be8d88186a5314ced",
             "log": "compatibility.log",
-            "negative_log": "cases/short-fallback2-negative.log"
+            "negative_log": "cases/short-fallback2-negative.log",
+            "negative_log_sha256": "8c4298d602b749ffa420479944f6a019afe1c540a87d4ccfe799ee7846b68e72"
           },
           "saved_processing": {
-            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-short-fallback2-compat-v1 --output .runtime-work/c215286-short-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-corrected-short-compat-v4/fallback2 --output .runtime-work/c215286-corrected-short-saved-v5/fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "receipt": "cases/short-fallback2-processing-receipt.json",
-            "sha256": "1e6a32d717ad1e4699334bf391d9cb6b063329d8d47a607cfa83939760a411c3",
+            "sha256": "e83ed9d72673a78d3f360f28a51c63d149e0765ee79f3a3ca598a9f2cbb844ca",
             "log": "cases/short-fallback2-processing-receipt.json",
-            "log_sha256": "1e6a32d717ad1e4699334bf391d9cb6b063329d8d47a607cfa83939760a411c3"
+            "log_sha256": "e83ed9d72673a78d3f360f28a51c63d149e0765ee79f3a3ca598a9f2cbb844ca"
           }
         },
         {
           "id": "fallback3",
           "construction": "cases/reverse_short_fallback3-construction.json",
-          "construction_sha256": "dc759035b3a73b9d7ea913efb821c3eb4007d31e7d59a6987f640c4a645c8f81",
+          "construction_sha256": "7e532d6d3dcc60a44d7e2381d3ce4a0681e448c9c5d85b92ce17eb59be40791c",
           "trigger": {
             "source": "overview.mkv, reference_corner.mkv and video_frames.jsonl",
             "metric": "complete body and sourced crosswalk boundary visible in original camera frames",
@@ -286,25 +292,26 @@
             "runner._camera_transforms reference corner offset: (8,8,8) -> (12,12,12) m"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback3 --output .runtime-work/c215286-short-fallback3-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback3 --output .runtime-work/c215286-corrected-short-offline/fallback3",
             "exit_code": 0,
-            "construction_sha256": "dc759035b3a73b9d7ea913efb821c3eb4007d31e7d59a6987f640c4a645c8f81",
-            "log": "cases/short-fallback3-offline.log",
-            "log_sha256": "88f3662556c45284b61b206f2d0ef58c7185a1f587bf2ea48752c792d1ca9fec"
+            "construction_sha256": "7e532d6d3dcc60a44d7e2381d3ce4a0681e448c9c5d85b92ce17eb59be40791c",
+            "log": "cases/corrected-short-offline.log",
+            "log_sha256": "866df31b2d9d4dc02a0d493534d666712897cad15c4f395cbcf02d75aa797aae"
           },
           "compatibility": {
-            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback3 --output .runtime-work/c215286-short-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate fallback3 --output .runtime-work/c215286-corrected-short-compat-v4/fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "receipt": "cases/short-fallback3-compatibility-receipt.json",
-            "sha256": "a399c54d62895456aa8be56eb68b87c257d59418a82112a848a8a37bcc8791b8",
+            "sha256": "9486fb0bf3aa39ea570521861b780d24453e47282668927de64e2701da5ccf87",
             "log": "compatibility.log",
-            "negative_log": "cases/short-fallback3-negative.log"
+            "negative_log": "cases/short-fallback3-negative.log",
+            "negative_log_sha256": "1fd11de175538c7394e8709de7c9ba4d8ad83b6063494b3a9cb7143194b583ff"
           },
           "saved_processing": {
-            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-short-fallback3-compat-v1 --output .runtime-work/c215286-short-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-corrected-short-compat-v4/fallback3 --output .runtime-work/c215286-corrected-short-saved-v5/fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "receipt": "cases/short-fallback3-processing-receipt.json",
-            "sha256": "cb6d111c20074ffe26bd027f8c6e8491f14114d6af30837650db11be896868c6",
+            "sha256": "7188ad188c29ebd446eb5164fdce069a006b4e5702346b39fb5e54a4872f278a",
             "log": "cases/short-fallback3-processing-receipt.json",
-            "log_sha256": "cb6d111c20074ffe26bd027f8c6e8491f14114d6af30837650db11be896868c6"
+            "log_sha256": "7188ad188c29ebd446eb5164fdce069a006b4e5702346b39fb5e54a4872f278a"
           }
         }
       ],
@@ -353,29 +360,33 @@
         }
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --output .runtime-work/c215286-offline-current/reverse_stops_before_crosswalk",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate primary --output .runtime-work/c215286-corrected-short-offline/primary",
         "exit_code": 0,
-        "construction_sha256": "036b51748405f27cea2a6c104dc77354de8c2a9dc8c6381ed042cb7802fa3153",
-        "log": "cpu-tests.log",
-        "log_sha256": "5958dd229a0eccf3f6e47ee0f52534d685a536eff1bbdb2ed1473614d26a40e4"
+        "construction_sha256": "b5a3d0a41a070177802b8eed947c8a69817cc38783eb5ee1d3f6d0774f0e49ef",
+        "log": "cases/corrected-short-offline.log",
+        "log_sha256": "866df31b2d9d4dc02a0d493534d666712897cad15c4f395cbcf02d75aa797aae"
       },
       "compatibility": {
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --output .runtime-work/c215286-short-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --candidate primary --output .runtime-work/c215286-corrected-short-compat-v4/primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "receipt": "cases/short-compatibility-receipt.json",
-        "sha256": "daab68fe5b9e24b5b0dfa9dca675ab18d2e000e500f4579b73e432005f8e63e7",
+        "sha256": "2d7134f842190242bd4cf65bceaff5ef1e8bb3154b1fe22010cbfdfccefdcde3",
         "log": "compatibility.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       "negative": {
         "log": "cases/short-negative-analysis.log",
-        "sha256": "9bb49165c87a936dbe044f41a26b0d41cc6ef6565c67a8ea6c3cbad6adcb0cab"
+        "sha256": "7024baa7f60da4d9e10a5333616034228a53ceb34b1a9bd9f8673382f9d82e8c"
       },
       "saved_processing": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-short-compat-v1 --output .runtime-work/c215286-short-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --attempt .runtime-work/c215286-corrected-short-compat-v4/primary --output .runtime-work/c215286-corrected-short-saved-v4/primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "receipt": "cases/short-processing-receipt.json",
-        "sha256": "911ecd447e9a26ecd007eebcf3470bd28278f3b5dcc05e3817353c41ee48ad93",
+        "sha256": "f4c7571c11706868a9bfb8d03ae06a15b92fece928b7733265f5f4fe3b83c4de",
         "log": "cases/short-processing-receipt.json",
-        "log_sha256": "911ecd447e9a26ecd007eebcf3470bd28278f3b5dcc05e3817353c41ee48ad93"
+        "log_sha256": "f4c7571c11706868a9bfb8d03ae06a15b92fece928b7733265f5f4fe3b83c4de"
+      },
+      "physical_preparation": {
+        "receipt": "short-physical-preparation.json",
+        "sha256": "e10ea573ecb1fda901b2a1a5d9a2d286502e956632ca4c1b0c9585e1cbfb6b4c"
       }
     }
   ],

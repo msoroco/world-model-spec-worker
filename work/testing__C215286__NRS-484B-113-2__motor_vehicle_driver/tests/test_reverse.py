@@ -152,6 +152,20 @@ class Tests(unittest.TestCase):
     self.assertEqual(missing['physical_checks']['maneuver']['status'],'unverified',case)
     self.assertIn('reverse_history.jsonl',missing['physical_checks']['maneuver']['missing_evidence'])
     self.assertFalse(missing['maneuver_completed'],case)
+ def test_short_constructions_bind_a_reachable_goal_before_crosswalk(self):
+  from worker_exchange.native_output import assess_physical
+  names=('reverse_stops_before_crosswalk','reverse_short_fallback1',
+         'reverse_short_fallback2','reverse_short_fallback3')
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root,False)
+   (root/'trace.jsonl').write_text('{}\n')
+   for name in names:
+    construction=json.loads((ROOT/'cases'/(name+'-construction.json')).read_text())
+    config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
+    (root/'config.json').write_text(json.dumps(config))
+    proof=assess_physical(root,config,[])
+    self.assertEqual(proof['physical_checks']['maneuver']['status'],'met',name)
+    self.assertTrue(proof['maneuver_completed'],name)
  def test_runner_static_and_site_preparation(self):
   config=json.loads((ROOT/'config.json').read_text())
   self.assertEqual(runner.validate_config(config)['rate_hz'],20)
