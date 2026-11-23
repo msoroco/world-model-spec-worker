@@ -34,14 +34,14 @@ def main():
     SCRATCH.mkdir(parents=True)
     for view in VIEWS:
         shutil.copyfile(MEDIA / (view + '.mkv'), SCRATCH / (view + '.mkv'))
-    native = [{'source_kind': 'original_native_observation',
+    native = [{'source_kind': 'synthetic_native_sample',
                'video_frame': index, 'native_frame': index + 2000,
                'time_s': index / 20, 'light_state_observed': 3}
               for index in range(40)]
     mapping = [{'video_frame': index, 'native_frame': index + 2000,
                 'carla_frame': index + 2000, 'time_s': index / 20}
                for index in range(40)]
-    review = [{'source_kind': 'calibrated_original_review',
+    review = [{'source_kind': 'synthetic_native_sample',
                'video_frame': index, 'native_frame': index + 2000,
                'time_s': index / 20} for index in range(40)]
     trace_path = SCRATCH / 'native-lighting-frames.jsonl'
@@ -54,7 +54,7 @@ def main():
     hashes = {view: sha(SCRATCH / (view + '.mkv')) for view in VIEWS}
     hashes[trace_path.name] = sha(trace_path)
     hashes[map_path.name] = sha(map_path)
-    context = {'source_kind': 'calibrated_original_review',
+    context = {'source_kind': 'synthetic_native_sample',
                'source_sha256': hashes, 'diagnostic_only': True}
     context_path.write_text(json.dumps(context, indent=2) + '\n')
     positive = bind(SCRATCH, 40)

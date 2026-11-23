@@ -1,4 +1,9 @@
-"""Independently audit C229398 saved sources; synthetic runs remain diagnostic."""
+"""Independently audit saved C229398 source joins before local acceptance.
+
+Fixture mode proves this CPU path without asserting original Native provenance.
+The normal path requires the current selected manifest and original acquisition;
+either path leaves pixel, physical, and legal decisions unresolved.
+"""
 import argparse
 import hashlib
 import json
@@ -23,20 +28,26 @@ def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines()]
 
 
-def audit(case_id, attempt, saved_path, reject_frame_join=False):
+def audit(case_id, attempt, saved_path, candidate='primary', fixture=False,
+          reject_frame_join=False):
     manifest = read(PACKAGE / 'execution-manifest.json')
     case = next((item for item in manifest['cases'] if item['case_id'] == case_id), None)
     if case is None:
         raise ValueError('Unselected case')
-    if digest(PACKAGE / case['construction']) != case['construction_sha256']:
+    selected = case if candidate == 'primary' else next(
+        (item for item in case['candidates'] if item['id'] == candidate), None)
+    if selected is None:
+        raise ValueError('Unselected fallback')
+    if digest(PACKAGE / selected['construction']) != selected['construction_sha256']:
         raise ValueError('Selected construction changed')
     selection = read(attempt / 'candidate-selection.json')
-    if (selection['case_id'] != case_id or selection['candidate_id'] != 'primary'
-            or selection['construction_sha256'] != case['construction_sha256']
-            or selection['manifest_sha256'] != digest(PACKAGE / 'draft-primary-manifest.json')):
+    if (selection['case_id'] != case_id or selection['candidate_id'] != candidate
+            or selection['construction_sha256'] != selected['construction_sha256']
+            or (not fixture and selection['manifest_sha256'] !=
+                digest(PACKAGE / 'execution-manifest.json'))):
         raise ValueError('Candidate selection differs')
     saved = read(saved_path)
-    if (saved.get('case_id') != case_id or saved.get('candidate_id') != 'primary'
+    if (saved.get('case_id') != case_id or saved.get('candidate_id') != candidate
             or saved.get('passed') is not True or saved.get('recorded_only') is not True
             or saved.get('originals_preserved') is not True
             or saved.get('missing_evidence') is not False
@@ -45,8 +56,8 @@ def audit(case_id, attempt, saved_path, reject_frame_join=False):
             or saved.get('physical_acceptance_claimed') is not False
             or saved.get('legal_acceptance_claimed') is not False):
         raise ValueError('Saved processing receipt incomplete')
-    if digest(saved_path) != case['saved_processing']['sha256']:
-        raise ValueError('Selected saved receipt changed')
+    if saved['native_revision']['construction_sha256'] != selected['construction_sha256']:
+        raise ValueError('Saved construction differs')
     hashes = saved['original_source_hashes']
     for name, expected in hashes.items():
         path = attempt / name
@@ -93,15 +104,23 @@ def audit(case_id, attempt, saved_path, reject_frame_join=False):
                              capture_output=True, text=True)
         if run.returncode or run.stderr.strip():
             raise ValueError('Full video decode failed: ' + video + ': ' + run.stderr[-300:])
-    if capture.get('synthetic_diagnostic') is not True or not all(
-            row.get('synthetic_diagnostic') is True for row in trace):
-        raise ValueError('This audit requires an explicitly synthetic fixture')
+    provenance = read(attempt / 'acquisition-provenance.json')
+    synthetic = (capture.get('synthetic_diagnostic') is True or
+                 provenance.get('diagnostic_fixture') is True or
+                 provenance.get('provenance_kind') == 'synthetic_fixture')
+    if fixture:
+        if not synthetic or not all(row.get('synthetic_diagnostic') is True for row in trace):
+            raise ValueError('Fixture mode requires explicitly synthetic sources')
+    elif synthetic or any(row.get('synthetic_diagnostic') is True for row in trace):
+        raise ValueError('Original Native audit rejects synthetic fixture')
     return {'format': 'c229398-independent-delivery-audit', 'case_id': case_id,
-            'candidate_id': 'primary', 'diagnostic_only': True, 'accepted': False,
-            'source_kind': 'synthetic_native_sample', 'frames_joined': 600,
+            'candidate_id': candidate, 'diagnostic_only': fixture, 'accepted': False,
+            'source_kind': 'synthetic_native_sample' if fixture else 'non_fixture_source_unverified_origin',
+            'frames_joined': 600,
             'participants_checked': list(PARTS), 'videos_fully_decoded': list(VIDEOS),
             'saved_receipt_sha256': digest(saved_path),
             'original_source_count': len(hashes),
+            'source_hashes_verified': True,
             'original_native_verified': False, 'actual_pixels_verified': False,
             'physical_completion_verified': False}
 
@@ -111,6 +130,9 @@ if __name__ == '__main__':
     parser.add_argument('--case', required=True)
     parser.add_argument('--attempt', type=Path, required=True)
     parser.add_argument('--saved', type=Path, required=True)
+    parser.add_argument('--candidate', default='primary')
+    parser.add_argument('--fixture', action='store_true')
     parser.add_argument('--reject-frame-join', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(audit(args.case, args.attempt, args.saved, args.reject_frame_join)))
+    print(json.dumps(audit(args.case, args.attempt, args.saved,
+                           args.candidate, args.fixture, args.reject_frame_join)))

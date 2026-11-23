@@ -50,7 +50,7 @@ def scenario(name, native, review, mapping, expected=None):
 
 def main():
     SCRATCH.mkdir(parents=True, exist_ok=True)
-    native = [{'source_kind': 'original_native_observation',
+    native = [{'source_kind': 'synthetic_native_sample',
                'video_frame': index, 'native_frame': 2000 + index,
                'time_s': index / 20, 'velocity_mps': [3.0, 0.0, 0.0],
                'light_state_observed': 3,

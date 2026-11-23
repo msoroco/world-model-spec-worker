@@ -22,8 +22,9 @@ def check(bundle):
     for key, filename in required.items():
         if cfg[key] != sha(bundle / filename):
             raise ValueError('Changed or missing source: ' + filename)
-    if (cfg['assignment_id'] != assignment['assignment_id'] != plan['assignment_id']
-            or cfg['case_id'] != cfg['assignment_id'] + '__witness_1'):
+    if (cfg['assignment_id'] != assignment['assignment_id'] or
+            cfg['assignment_id'] != plan['assignment_id'] or
+            cfg['case_id'] != cfg['assignment_id'] + '__witness_1'):
         raise ValueError('Assignment identity differs')
     if cfg['assignment_id'] != plan['assignment_id']:
         raise ValueError('Plan identity differs')
@@ -62,7 +63,8 @@ def check(bundle):
                 row['unobstructed_pavement_verified'] is False and
                 row['legal_verdict'] is None):
             raise ValueError('Requested frame differs: ' + str(i))
-    return {'case_id': cfg['case_id'], 'frames': 600, 'cameras': 4,
+    return {'case_id': cfg['case_id'], 'candidate_id': 'primary',
+            'frames': 600, 'cameras': 4,
             'source_bound': True, 'original_native_observed': False,
             'delivery_ready': False}
 

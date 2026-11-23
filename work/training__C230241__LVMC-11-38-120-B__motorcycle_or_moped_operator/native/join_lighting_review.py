@@ -41,9 +41,9 @@ def join(native_path, review_path, frame_map_path, output_path):
             'Expected 600 source, review and frame-map rows')
     output = []
     for index, (motion, observed, identity) in enumerate(zip(native, review, mapping)):
-        require(motion.get('source_kind') == 'original_native_observation' and
-                observed.get('source_kind') in
-                ('calibrated_original_review', 'synthetic_native_sample'),
+        require((motion.get('source_kind'), observed.get('source_kind')) in
+                (('original_native_observation', 'calibrated_original_review'),
+                 ('synthetic_native_sample', 'synthetic_native_sample')),
                 'Source kind missing or review mislabeled at ' + str(index))
         require(all(row.get('video_frame') == index for row in
                     (motion, observed, identity)) and

@@ -46,14 +46,14 @@ def main():
                         '-i', f'color=c={color}:s=64x64:r=20:d=30',
                         '-frames:v', str(FRAMES), '-c:v', 'ffv1',
                         str(SCRATCH / (view + '.mkv'))], check=True, timeout=180)
-    native = [{'source_kind': 'original_native_observation',
+    native = [{'source_kind': 'synthetic_native_sample',
                'video_frame': i, 'native_frame': 2000 + i, 'time_s': i / 20,
                'velocity_mps': [2.0, 0.0, 0.0], 'light_state_observed': 3}
               for i in range(FRAMES)]
     mapping = [{'video_frame': i, 'native_frame': 2000 + i,
                 'carla_frame': 2000 + i, 'time_s': i / 20}
                for i in range(FRAMES)]
-    review = [{'source_kind': 'calibrated_original_review',
+    review = [{'source_kind': 'synthetic_native_sample',
                'video_frame': i, 'native_frame': 2000 + i, 'time_s': i / 20,
                'utc_s': 1_000_000 + i / 20, 'headlamp_lit': True,
                'tail_lamp_lit': True, 'headlamp_white': True,
@@ -72,7 +72,7 @@ def main():
     hashes = {view: sha(SCRATCH / (view + '.mkv')) for view in VIEWS}
     hashes[trace_path.name] = sha(trace_path)
     hashes[map_path.name] = sha(map_path)
-    context = {'source_kind': 'calibrated_original_review',
+    context = {'source_kind': 'synthetic_native_sample',
                'source_sha256': hashes, 'diagnostic_only': True}
     context_path.write_text(json.dumps(context, indent=2) + '\n')
     measure_context = {'source_kind': 'synthetic_native_sample',
@@ -94,6 +94,21 @@ def main():
     assert counts['rear_below_500ft_frames'] == 0
     assert joined['joined_sha256'] == measured['source_sha256']
     checks = [{'case': '600-frame-positive', 'measurements': counts}]
+
+    context['diagnostic_only'] = False
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+    checks.append(reject('synthetic-review-as-original',
+                         lambda: bind(SCRATCH),
+                         'Review context source kind differs'))
+    context['diagnostic_only'] = True
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+    mixed_review = copy.deepcopy(review)
+    mixed_review[0]['source_kind'] = 'calibrated_original_review'
+    write_rows(review_path, mixed_review)
+    checks.append(reject('mixed-synthetic-and-original-row',
+                         lambda: bind(SCRATCH),
+                         'review source kind differs'))
+    write_rows(review_path, review)
 
     changed_review = copy.deepcopy(review)
     changed_review[300]['front_visible_ft'] = 299.0
@@ -117,6 +132,15 @@ def main():
     assert final_receipt['join']['joined_sha256'] == final_receipt['measurement']['source_sha256']
     checks.append({'case': 'saved-finalizer-positive',
                    'receipt_sha256': sha(final_receipt_path)})
+
+    mismatched_context = dict(measure_context,
+                              source_kind='calibrated_original_review')
+    measure_context_path.write_text(json.dumps(mismatched_context, indent=2) + '\n')
+    checks.append(reject('synthetic-measurement-as-original',
+                         lambda: finalize(SCRATCH, measure_context_path,
+                                          SCRATCH / 'mismatched-finalization'),
+                         'Measurement context source kind differs'))
+    measure_context_path.write_text(json.dumps(measure_context, indent=2) + '\n')
 
     bad_mapping = copy.deepcopy(mapping)
     bad_mapping[301]['native_frame'] += 1

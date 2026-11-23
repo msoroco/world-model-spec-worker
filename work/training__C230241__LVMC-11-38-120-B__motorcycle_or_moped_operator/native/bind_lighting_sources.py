@@ -52,8 +52,13 @@ def bind(directory, expected_frames=600):
                                            review, context)),
             'Original video, trace, frame map or independent review missing')
     facts = json.loads(context.read_text())
-    require(facts.get('source_kind') == 'calibrated_original_review',
-            'Review context must name original calibrated review')
+    diagnostic = facts.get('diagnostic_only') is True
+    expected_review_kind = ('synthetic_native_sample' if diagnostic
+                            else 'calibrated_original_review')
+    expected_motion_kind = ('synthetic_native_sample' if diagnostic
+                            else 'original_native_observation')
+    require(facts.get('source_kind') == expected_review_kind,
+            'Review context source kind differs from diagnostic/original mode')
     actual_hashes = {view: sha(path) for view, path in files.items()}
     actual_hashes['native-lighting-frames.jsonl'] = sha(trace)
     actual_hashes['video_frames.jsonl'] = sha(frame_map)
@@ -76,14 +81,15 @@ def bind(directory, expected_frames=600):
                 all(abs(row.get('time_s', -999) - index / 20) < 1e-6 for row in
                     (motion, identity, evidence)),
                 'Review frame identity differs at ' + str(index))
-        require(motion.get('source_kind') == 'original_native_observation' and
+        require(motion.get('source_kind') == expected_motion_kind and
                 'light_state_observed' in motion and
-                evidence.get('source_kind') == 'calibrated_original_review',
-                'Original light-state trace or calibrated review missing at ' + str(index))
+                evidence.get('source_kind') == expected_review_kind,
+                'Light-state trace or review source kind differs at ' + str(index))
     return {'format': 'c230241-original-video-review-binding-v1',
             'source_sha256': actual_hashes, 'review_sha256': sha(review),
             'review_context_sha256': sha(context), 'video_probes': media,
             'frames': expected_frames, 'source_integrity_verified': True,
+            'diagnostic_only': diagnostic,
             'physical_visibility_verified': False, 'legal_verdict_claimed': False}
 
 

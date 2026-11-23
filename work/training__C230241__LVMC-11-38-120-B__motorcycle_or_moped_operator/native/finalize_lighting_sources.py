@@ -15,6 +15,11 @@ def finalize(source_dir, measurement_context, output_dir):
     if output_dir.exists():
         raise ValueError('Choose a new output directory to preserve prior proof')
     binding = bind(source_dir, 600)
+    measurement_setup = json.loads(measurement_context.read_text())
+    expected_kind = ('synthetic_native_sample' if binding['diagnostic_only']
+                     else 'calibrated_original_review')
+    if measurement_setup.get('source_kind') != expected_kind:
+        raise ValueError('Measurement context source kind differs from bound sources')
     output_dir.mkdir(parents=True)
     joined_path = output_dir / 'joined-lighting.jsonl'
     joined = join(source_dir / 'native-lighting-frames.jsonl',
