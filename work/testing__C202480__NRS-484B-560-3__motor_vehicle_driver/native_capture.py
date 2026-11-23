@@ -23,12 +23,17 @@ def _finite(value, label):
 
 
 def _motion(actor):
-    location = actor.get_transform().location
+    transform = actor.get_transform()
+    location = transform.location
     velocity = actor.get_velocity()
+    extent = actor.bounding_box.extent
     return {"position_m": [_finite(getattr(location, axis), "position " + axis)
                            for axis in ("x", "y", "z")],
             "velocity_mps": [_finite(getattr(velocity, axis), "velocity " + axis)
                              for axis in ("x", "y", "z")],
+            "heading_deg": _finite(transform.rotation.yaw, "heading"),
+            "bbox_half_extent_m": [_finite(getattr(extent, axis), "bbox " + axis)
+                                   for axis in ("x", "y", "z")],
             "actor_id": actor.id}
 
 
@@ -40,7 +45,7 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str,
     attempt = Path(attempt).resolve()
     if ".runtime-work" not in attempt.parts:
         raise ValueError("original Native output must stay under .runtime-work")
-    if attempt.exists() and any(attempt.iterdir()):
+    if attempt.exists() and any(path.name != "raw" for path in attempt.iterdir()):
         raise ValueError("retain existing original Native attempt")
     settings = world.get_settings()
     if (settings.synchronous_mode is not True or settings.no_rendering_mode is not False or
@@ -80,6 +85,7 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str,
                        "authored_marked_lane_count": len(scene.packet["marked_lanes"]),
                        "authored_stop_line_x_m": scene.packet["stop_line_x_m"],
                        "authored_rail_line_x_m": scene.packet["rail_line_x_m"],
+                       "source_packet_sha256": scene.packet["source_packet_sha256"],
                        "camera_sources": cameras,
                        "physical_acceptance_claimed": False,
                        "legal_judgment": "unresolved"}

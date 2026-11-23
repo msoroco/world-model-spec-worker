@@ -12,10 +12,30 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 
 from native_camera import CameraRig
 from native_capture import capture
 from native_scene import create, inspect
+
+
+def retain_site_sources(attempt: Path, packet_path: Path, plan_path: Path,
+                        case_id: str) -> Path:
+    """Copy reviewed source bytes into the immutable original attempt."""
+    packet, _, _ = inspect(packet_path, plan_path, case_id)
+    destination = attempt / "site"
+    if destination.exists():
+        raise ValueError("retain previous original site packet")
+    destination.mkdir()
+    target = destination / "packet.json"
+    shutil.copyfile(packet_path, target)
+    for spec in packet["sources"].values():
+        relative = Path(spec["path"])
+        output = destination / relative
+        output.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(Path(packet_path).parent / relative, output)
+    inspect(target, plan_path, case_id)
+    return target
 
 
 def capture_original(attempt: Path, packet_path: Path, plan_path: Path,
@@ -73,9 +93,16 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path,
         except Exception as error:
             errors.append("world restoration: " + str(error))
     attempt.mkdir(parents=True, exist_ok=True)
+    retained_packet = None
+    if not errors:
+        try:
+            retained_packet = retain_site_sources(attempt, packet_path, plan_path, case_id)
+        except Exception as error:
+            errors.append("site retention: " + str(error))
     status = {"case_id": case_id, "capture": acquired,
               "restoration": restoration, "errors": errors,
               "site_packet_sha256": hashlib.sha256(Path(packet_path).read_bytes()).hexdigest(),
+              "retained_site_packet": "site/packet.json" if retained_packet else None,
               "physical_acceptance_claimed": False, "legal_judgment": "unresolved"}
     (attempt / "native-run-status.json").write_text(
         json.dumps(status, indent=2, sort_keys=True) + "\n", encoding="utf-8")

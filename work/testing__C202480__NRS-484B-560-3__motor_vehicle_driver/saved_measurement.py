@@ -1,0 +1,224 @@
+"""Saved-only crossing stop measurements from one closed, source-bound attempt.
+
+Engineering observations remain separate from whether NRS 484B.560(3) applies
+or was satisfied. A fixture or requested control never establishes compliance.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+
+from native_camera import VIEWS
+from native_scene import inspect
+
+
+def sha(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _document(path: Path) -> dict:
+    if not path.is_file():
+        raise ValueError("Missing required source: " + path.name)
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _rows(path: Path) -> list[dict]:
+    if not path.is_file():
+        raise ValueError("Missing required source: " + path.name)
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+
+
+def _motion(row: dict, name: str) -> tuple[float, float, float, float, float, float, int]:
+    subject = row.get(name)
+    if not isinstance(subject, dict):
+        raise ValueError("original " + name + " motion missing")
+    position, velocity = subject.get("position_m"), subject.get("velocity_mps")
+    extent, yaw, actor_id = (subject.get("bbox_half_extent_m"),
+                             subject.get("heading_deg"), subject.get("actor_id"))
+    if (not isinstance(position, list) or len(position) != 3 or
+            not isinstance(velocity, list) or len(velocity) != 3 or
+            not isinstance(extent, list) or len(extent) != 3 or
+            type(yaw) not in (int, float) or not math.isfinite(yaw) or
+            type(actor_id) is not int or actor_id < 0 or
+            any(type(value) not in (int, float) or not math.isfinite(value)
+                for value in position + velocity + extent) or
+            any(value <= 0 for value in extent)):
+        raise ValueError("original " + name + " motion invalid")
+    return (float(position[0]), float(position[1]),
+            math.dist(velocity, [0., 0., 0.]), float(extent[0]),
+            float(extent[1]), float(yaw), actor_id)
+
+
+def _heading_difference(yaw: float, direction: int) -> float:
+    intended = 0. if direction == 1 else 180.
+    return abs((yaw - intended + 180.) % 360. - 180.)
+
+
+def analyze(attempt: Path) -> tuple[dict, dict]:
+    attempt = Path(attempt).resolve()
+    status = _document(attempt / "native-run-status.json")
+    case_id = status.get("case_id")
+    if (status.get("errors") != [] or
+            status.get("capture", {}).get("frames") != 900 or
+            status.get("restoration", {}).get("restored") is not True or
+            status.get("retained_site_packet") != "site/packet.json"):
+        raise ValueError("closed original Native capture and restoration required")
+    packet_path = attempt / "site/packet.json"
+    packet, case, _ = inspect(packet_path, Path(__file__).resolve().parent / "case-plan.json",
+                              case_id)
+    source_hash = sha(packet_path)
+    if source_hash != status.get("site_packet_sha256"):
+        raise ValueError("retained original site packet hash differs")
+    trace = _rows(attempt / "trace.jsonl")
+    mapping = _rows(attempt / "video_frames.jsonl")
+    if len(trace) != 900 or len(mapping) != 900:
+        raise ValueError("original 900-frame capture duration differs")
+    receipt = _document(attempt / "media-receipt.json")
+    if (receipt.get("format") != "c202480-original-four-camera-media-v1" or
+            receipt.get("frames") != 900 or
+            receipt.get("source_packet_sha256") != source_hash or
+            receipt.get("trace_sha256") != sha(attempt / "trace.jsonl") or
+            receipt.get("frame_map_sha256") != sha(attempt / "video_frames.jsonl")):
+        raise ValueError("original media/source receipt differs")
+    videos = receipt.get("video_sha256")
+    if not isinstance(videos, dict) or set(videos) != {name for name, _, _ in VIEWS}:
+        raise ValueError("original four-view media receipt incomplete")
+    for name in videos:
+        video = attempt / (name + ".mkv")
+        if not video.is_file() or sha(video) != videos[name]:
+            raise ValueError("original four-view video bytes differ")
+    previous = None
+    stop_run = 0
+    first_stop = None
+    max_speed = 0.
+    aligned_queue_frames = 0
+    first_queue_alignment = None
+    stopped_right_offsets = []
+    actor_ids = None
+    direction = packet["approach_direction"]
+    right_y = packet["slots"][packet["rightmost_feasible_slot"]]["y_m"]
+    highway_low, highway_high = sorted((packet["highway_right_y_m"],
+                                        packet["highway_left_y_m"]))
+    for index, (row, mapped) in enumerate(zip(trace, mapping)):
+        frame, time_s = row.get("frame"), row.get("time_s")
+        if (row.get("case_id") != case_id or type(frame) is not int or
+                type(time_s) not in (int, float) or not math.isfinite(time_s) or
+                row.get("source_frame") != frame or
+                row.get("source_packet_sha256") != source_hash or
+                row.get("physical_acceptance_claimed") is not False or
+                (previous and (frame != previous[0] + 1 or
+                               not .049 <= time_s - previous[1] <= .051))):
+            raise ValueError("original Native trace identity or cadence differs")
+        previous = frame, time_s
+        cameras, hashes = row.get("camera_sources"), mapped.get("camera_source_sha256")
+        if (not isinstance(cameras, dict) or set(cameras) != set(videos) or
+                not isinstance(hashes, dict) or set(hashes) != set(videos) or
+                mapped.get("video_frame") != index or
+                mapped.get("carla_frame") != frame or
+                mapped.get("native_frame") != frame or
+                mapped.get("time_s") != time_s or
+                any(cameras[name].get("sha256") != hashes[name] for name in videos)):
+            raise ValueError("original four-camera frame map join differs")
+        x, y, speed, length, width, yaw, ego_id = _motion(row, "ego")
+        if _heading_difference(yaw, direction) > 20.:
+            raise ValueError("original ego heading differs from reviewed approach")
+        if not (highway_low < y - width and y + width < highway_high):
+            raise ValueError("original ego footprint leaves reviewed highway")
+        companion = None
+        if case["traffic_arrangement"] == "two_queues":
+            companion = _motion(row, "companion")
+            cx, cy, cspeed, clength, cwidth, cyaw, companion_id = companion
+            if (companion_id == ego_id or
+                    _heading_difference(cyaw, direction) > 20. or
+                    not (highway_low < cy - cwidth and cy + cwidth < highway_high)):
+                raise ValueError("original companion identity, heading or footprint differs")
+        elif row.get("companion") is not None:
+            raise ValueError("one-queue case has unexpected companion")
+        current_ids = (ego_id, companion[-1] if companion else None)
+        if actor_ids is None:
+            actor_ids = current_ids
+        elif current_ids != actor_ids:
+            raise ValueError("original actor identity changed across frames")
+        max_speed = max(max_speed, speed)
+        before_rail = packet["approach_direction"] * (packet["rail_line_x_m"] - x) > 0
+        if speed <= .1 and before_rail:
+            stop_run += 1
+            stopped_right_offsets.append(direction * (y - right_y))
+            if stop_run == 20 and first_stop is None:
+                first_stop = {"frame": frame,
+                              "ego_x_m": x,
+                              "ego_y_m": y,
+                              "ego_right_edge_clearance_m": abs(y - packet["highway_right_y_m"]) - width,
+                              "distance_before_stop_line_m": packet["approach_direction"] *
+                                                              (packet["stop_line_x_m"] - x)}
+        else:
+            stop_run = 0
+        if companion is not None:
+            separated = abs(y - cy) > width + cwidth + .1
+            longitudinal_overlap = abs(x - cx) <= length + clength
+            if (speed <= .1 and cspeed <= .1 and before_rail and
+                    direction * (packet["rail_line_x_m"] - cx) > 0 and
+                    separated and longitudinal_overlap):
+                aligned_queue_frames += 1
+                if first_queue_alignment is None:
+                    first_queue_alignment = {"frame": frame,
+                                             "lateral_center_separation_m": abs(y - cy),
+                                             "longitudinal_center_separation_m": abs(x - cx)}
+    observations = {"first_one_second_stop": first_stop,
+                    "maximum_ego_speed_mps": max_speed,
+                    "authored_marked_lane_count": len(packet["marked_lanes"]),
+                    "original_actor_ids": list(actor_ids),
+                    "first_two_queue_alignment": first_queue_alignment,
+                    "two_queue_aligned_frame_count": aligned_queue_frames,
+                    "minimum_stopped_lateral_offset_from_reviewed_rightmost_m":
+                        min(stopped_right_offsets) if stopped_right_offsets else None,
+                    "source_frame_count": 900}
+    measured = first_stop is not None
+    result = {"case_id": case_id, "maneuver_completed": False,
+              "realized_observables": observations,
+              "physical_checks": {"one_second_pre_rail_stationary_observation": {
+                  "status": "met" if measured else "not_met",
+                  "method": "at least 20 contiguous original 20 Hz frames at <=0.1 m/s before authored rail line",
+                  "sources": {"trace.jsonl": sha(attempt / "trace.jsonl"),
+                              "site/packet.json": source_hash}}},
+              "legal_judgment": "unresolved", "physical_acceptance_claimed": False,
+              "trace_reference": "trace.jsonl",
+              "video_frame_map_reference": "video_frames.jsonl",
+              "video_references": [name + ".mkv" for name in videos]}
+    report = {"format": "c202480-saved-crossing-analysis-v1",
+              "case_id": case_id, "measurements": {"crossing_stop_observation": {
+                  "method": "measure", "value": observations,
+                  "sources": {"trace.jsonl": sha(attempt / "trace.jsonl"),
+                              "site/packet.json": source_hash}}},
+              "media_receipt_sha256": sha(attempt / "media-receipt.json"),
+              "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
+    return report, result
+
+
+def finalize_attempt(attempt: Path, output: Path) -> dict:
+    attempt, output = Path(attempt).resolve(), Path(output).resolve()
+    if output != attempt / "analysis-report.json":
+        raise ValueError("saved analysis must stay beside original attempt")
+    if output.exists() or (attempt / "result.json").exists():
+        raise ValueError("retain previous saved analysis")
+    report, result = analyze(attempt)
+    (attempt / "result.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    return report
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(finalize_attempt(args.attempt, args.output), indent=2))

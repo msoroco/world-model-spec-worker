@@ -18,10 +18,13 @@ from native_capture import VIEWS, capture
 class Actor:
     def __init__(self, actor_id, x):
         self.id, self.x, self.controls = actor_id, x, []
+        self.bounding_box = types.SimpleNamespace(
+            extent=types.SimpleNamespace(x=2., y=.9, z=.7))
 
     def get_transform(self):
         point = types.SimpleNamespace(x=self.x, y=-2., z=0.)
-        return types.SimpleNamespace(location=point)
+        return types.SimpleNamespace(location=point,
+                                     rotation=types.SimpleNamespace(yaw=0.))
 
     def get_velocity(self):
         return types.SimpleNamespace(x=1., y=0., z=0.)
@@ -87,6 +90,7 @@ class NativeCaptureTests(unittest.TestCase):
         self.scene = types.SimpleNamespace(ego=self.ego, companion=self.companion,
                                            packet={"approach_direction": 1,
                                                    "stop_line_x_m": 0., "rail_line_x_m": 10.,
+                                                   "source_packet_sha256": "a" * 64,
                                                    "marked_lanes": [{"lane_id": 1}, {"lane_id": 2}]})
 
     def test_900_source_and_camera_joins(self):
@@ -102,6 +106,7 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertEqual(len(self.ego.controls), 900)
         self.assertEqual(len(self.companion.controls), 900)
         self.assertFalse(rows[-1]["physical_acceptance_claimed"])
+        self.assertEqual(rows[-1]["ego"]["bbox_half_extent_m"], [2., .9, .7])
 
     def test_missing_fourth_camera_rejected(self):
         with self.assertRaisesRegex(ValueError, "four camera frame sources missing"):

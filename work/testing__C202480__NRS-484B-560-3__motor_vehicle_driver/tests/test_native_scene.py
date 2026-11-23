@@ -14,6 +14,7 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 from native_scene import create, inspect
 from native_camera import VIEWS
+from runner import retain_site_sources
 
 
 class Actor:
@@ -178,6 +179,16 @@ class NativeSceneTests(unittest.TestCase):
         path.write_text(json.dumps(packet) + "\n")
         with self.assertRaisesRegex(ValueError, "marked highway lanes differ"):
             inspect(path, self.plan, case["case_id"])
+
+    def test_site_packet_and_source_bytes_retained_for_saved_processing(self):
+        case = self.cases[0]
+        path, _ = self.packet(case)
+        attempt = self.folder / "attempt"
+        attempt.mkdir()
+        retained = retain_site_sources(attempt, path, self.plan, case["case_id"])
+        self.assertEqual(retained, attempt / "site/packet.json")
+        (self.folder / "lane_markings.txt").write_text("changed after Native\n")
+        inspect(retained, self.plan, case["case_id"])
 
 
 if __name__ == "__main__":

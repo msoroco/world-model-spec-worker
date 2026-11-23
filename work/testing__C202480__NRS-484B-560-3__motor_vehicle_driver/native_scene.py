@@ -181,4 +181,6 @@ def create(world, packet_path: Path, plan_path: Path, case_id: str,
     expected = 2 if case["traffic_arrangement"] == "two_queues" else 1
     if len(spawned) != expected:
         raise ValueError("Native actor count differs")
+    packet = dict(packet)
+    packet["source_packet_sha256"] = hashlib.sha256(Path(packet_path).read_bytes()).hexdigest()
     return Scene(spawned[0], spawned[1] if expected == 2 else None, packet)

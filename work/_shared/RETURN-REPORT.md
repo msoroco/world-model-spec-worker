@@ -993,3 +993,11 @@ C179789 focused static check passed after physical and acquisition proof. Full s
 Five exact cases and four comparison isolations are planned for NRS 484B.560(3). New saved-only branch audit passes three CPU tests, including source rejection. Status remains partial while executable crossing/traffic construction and full source-bound proofs are worker-owned. See the assignment HANDOFF.md.
 
 C202480 focused static check passed after the branch plan and audit implementation (`cpu-static-check.log`). Full batch strict gate remains failed by the unchanged 233 partial results.
+
+### 2026-11-23 C202480 source-bound Native and saved processing checkpoint
+
+C202480 now has source-hashed crossing-site validation, live position/speed control, four-camera 900-frame acquisition, Native cleanup and site-source retention, raw-pixel FFV1 media processing, a closed-owner saved pipeline, and saved-only pre-rail stationary measurement that does not claim maneuver completion. The 25-test diagnostic CPU suite passes (`work/testing__C202480__NRS-484B-560-3__motor_vehicle_driver/cpu-source-finalizer-tests.log`); focused assignment `--complete` and pinned CPU preflight pass. The assignment remains partial because actual reviewed site authority/marking/right-side evidence, full manifest and physical-risk assessment, semantic proposals, offline/compatibility receipts, and independent delivery/comparison audits remain worker-owned preparation. Synthetic CPU fixtures make no real recording or legal claim. See the assignment HANDOFF and result for exact details.
+
+The full strict gate exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c202480-source-finalizer.log`). Continue the C202480 CPU work and the remaining partial assignments. No Git command was run.
+
+Returned-file scan after this checkpoint: 4,147 files, zero UTF-8, size, trailing-whitespace or conflict-marker issues. Current result counts are 233 partial and 9 ready. C202480 remains partial with 25 diagnostic CPU tests passed; no status was promoted without full CPU proofs.

@@ -87,6 +87,7 @@ class RunnerTests(unittest.TestCase):
              patch.object(runner, "inspect", return_value=({}, {}, b"")), \
              patch.object(runner, "create", return_value=Scene()), \
              patch.object(runner, "CameraRig", Rig), \
+             patch.object(runner, "retain_site_sources", return_value=attempt / "site/packet.json"), \
              patch.object(runner, "capture", capture):
             if failure:
                 with self.assertRaisesRegex(ValueError, "synthetic capture failure"):
