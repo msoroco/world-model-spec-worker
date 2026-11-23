@@ -68,7 +68,9 @@ def finalize(attempt, output):
     config = json.loads(config_path.read_text())
     if (config.get('case_id') != config.get('selected_case_id')
             or config.get('duration_s') != 30 or config.get('rate_hz') != HZ
-            or config.get('case') not in ('reference', 'contrast')):
+            or not isinstance(config.get('case'), dict)
+            or config['case'].get('case_id') != config.get('case_id')
+            or config['case'].get('name') not in ('reference', 'contrast')):
         raise ValueError('Exact saved case differs')
     provenance = json.loads(provenance_path.read_text())
     synthetic = provenance.get('provenance_kind') == 'synthetic_fixture'
@@ -90,6 +92,9 @@ def finalize(attempt, output):
     channel = channel_dir / 'speed_mps.jsonl'
     channel.write_text(''.join(json.dumps({'time_s': i / HZ, 'value': speed}) + '\n'
                                for i, speed in enumerate(measurement['speed_series_mps'])))
+    acceleration_channel = channel_dir / 'acceleration_mps2.jsonl'
+    acceleration_channel.write_text(''.join(json.dumps({'time_s': i / HZ, 'value': value}) + '\n'
+                                            for i, value in enumerate(measurement['acceleration_series_mps2'])))
     summary = {key: value for key, value in measurement.items()
                if not key.endswith('_series_mps') and not key.endswith('_series_mps2')}
     report = {'format': 'c229597-source-motion-analysis-v1',
@@ -120,8 +125,10 @@ def finalize(attempt, output):
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': json.loads((attempt / 'construction.json').read_text())['recording_description'],
         'recording_evidence': [{'name': 'ego_speed', 'unit': 'm/s',
-                                'reference': 'channels/speed_mps.jsonl'}],
-        'realized_observables': {'motion_summary': summary},
+                                'reference': 'channels/speed_mps.jsonl'},
+                               {'name': 'ego_acceleration', 'unit': 'm/s2',
+                                'reference': 'channels/acceleration_mps2.jsonl'}],
+        'realized_observables': {},
         'provenance_kind': 'synthetic_local_diagnostic' if synthetic else 'source_review_unverified',
         'accepted': False, 'legal_verdict_claimed': False,
     }

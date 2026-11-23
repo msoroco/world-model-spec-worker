@@ -22,7 +22,7 @@ def run(attempt, output):
 
 
 def main():
-    base = ROOT / '.runtime-work/c229597-motion-finalizer-v1'
+    base = ROOT / '.runtime-work/c229597-motion-finalizer-v5'
     if base.exists():
         raise ValueError('Use a fresh proof directory')
     positive = base / 'positive'
@@ -47,6 +47,10 @@ def main():
         trace.append({'frame': native, 'video_frame': index,
                       'native_frame': native, 'time_s': time_s,
                       'position_m': [index * .2, 0, 0],
+                      'position': {'x': index * .2, 'y': 0, 'z': 0},
+                      'heading_deg': 0.0, 'speed_mps': speed,
+                      'control': {'throttle': .28, 'brake': 0.,
+                                  'steer': 0., 'hand_brake': False},
                       'velocity_mps': [speed, 0, 0],
                       'acceleration_mps2': [.2, 0, 0]})
         mapping.append({'video_frame': index, 'carla_frame': native,

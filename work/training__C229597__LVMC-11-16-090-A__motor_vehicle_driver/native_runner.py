@@ -21,9 +21,11 @@ HZ = 20
 
 
 def check(config):
-    case = config.get('case')
+    case_record = config.get('case')
+    case = case_record.get('name') if isinstance(case_record, dict) else None
     candidate = config.get('candidate_id')
     if (case not in THROTTLES
+            or case_record.get('case_id') != PREFIX + case
             or config.get('case_id') != PREFIX + case
             or config.get('selected_case_id') != PREFIX + case
             or config.get('cell_id') != 'C229597'
@@ -48,7 +50,8 @@ def check(config):
     cameras = config.get('cameras')
     if (not isinstance(cameras, list)
             or [c.get('name') for c in cameras] != list(VIEWS)
-            or any(c.get('width') != 1280 or c.get('height') != 720
+            or any(c.get('width') != (1920 if c['name'] == 'overview' else 1280)
+                   or c.get('height') != (1080 if c['name'] == 'overview' else 720)
                    or c.get('fov_deg') != 90 for c in cameras)):
         raise ValueError('Four synchronized source cameras required')
     return {'case_id': PREFIX + case, 'candidate_id': candidate,
@@ -156,12 +159,20 @@ def execute(config, output, host, port):
                        'time_s': index / HZ,
                        'location_m': [pose.location.x, pose.location.y, pose.location.z],
                        'position_m': [pose.location.x, pose.location.y, pose.location.z],
+                       'position': {'x': pose.location.x, 'y': pose.location.y,
+                                    'z': pose.location.z},
+                       'heading_deg': pose.rotation.yaw,
+                       'speed_mps': (velocity.x ** 2 + velocity.y ** 2 +
+                                     velocity.z ** 2) ** 0.5,
                        'rotation_deg': [pose.rotation.pitch, pose.rotation.yaw,
                                         pose.rotation.roll],
                        'velocity_mps': [velocity.x, velocity.y, velocity.z],
                        'acceleration_mps2': [acceleration.x, acceleration.y,
                                             acceleration.z],
                        'vehicle_id': str(ego.id), 'phase': phase['name']}
+                row['control'] = {'throttle': phase['throttle'],
+                                  'brake': phase['brake'], 'steer': phase['steer'],
+                                  'hand_brake': False}
                 trace.write(json.dumps(row, allow_nan=False) + '\n')
         for view in VIEWS:
             subprocess.run(('ffmpeg', '-v', 'error', '-framerate', str(HZ),

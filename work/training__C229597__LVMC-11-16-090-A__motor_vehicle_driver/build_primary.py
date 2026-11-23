@@ -22,12 +22,13 @@ def write(path, data):
 config = {
     'case_id': CASE, 'selected_case_id': CASE, 'cell_id': 'C229597',
     'law_id': 'LVMC-11-16-090-A', 'actor': 'motor_vehicle_driver',
-    'case': 'reference', 'candidate_id': 'primary', 'spawn_point_index': 0,
+    'case': {'case_id': CASE, 'name': 'reference'}, 'candidate_id': 'primary', 'spawn_point_index': 0,
     'duration_s': 30, 'rate_hz': 20,
     'vehicle_blueprint': 'vehicle.tesla.model3',
     'required_atoms': ['kin.speed', 'kin.accel_longitudinal', 'kin.position'],
     'source_packets': [],
-    'cameras': [{'name': name, 'width': 1280, 'height': 720, 'fov_deg': 90}
+    'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
+                 'height': 1080 if name == 'overview' else 720, 'fov_deg': 90}
                 for name in ('overview', 'approach', 'reference_corner',
                              'driver_reference')],
     'control_phases': [
@@ -116,14 +117,14 @@ construction = {
         'channels': [
             {'name': 'ego_speed', 'unit': 'm/s', 'sampling_rate_hz': 20,
              'method': 'magnitude of original Native velocity vector',
-             'time_window': 'all 600 frames'},
+             'time_window': 'all 600 frames', 'reference_frame': 'Native world',
+             'uncertainty': '20 Hz frame bracket'},
             {'name': 'ego_acceleration', 'unit': 'm/s2', 'sampling_rate_hz': 20,
              'method': 'original Native acceleration vector',
-             'time_window': 'all 600 frames'},
+             'time_window': 'all 600 frames', 'reference_frame': 'Native world',
+             'uncertainty': '20 Hz frame bracket'},
         ],
-        'context_inputs': ['original route map and municipal jurisdiction review',
-                           'identified vehicle and controlling person',
-                           'four synchronized source camera streams'],
+        'context_inputs': [],
         'limitations': ['No numeric legal threshold or intent is inferred from throttle'],
     },
     'static_checks': ['exact case', '600 frames at 20 Hz',
@@ -138,7 +139,7 @@ for case in ('reference', 'contrast'):
         cfg = copy.deepcopy(config)
         cfg['case_id'] = ASSIGNMENT + '__' + case
         cfg['selected_case_id'] = cfg['case_id']
-        cfg['case'] = case
+        cfg['case'] = {'case_id': cfg['case_id'], 'name': case}
         cfg['candidate_id'] = candidate
         cfg['spawn_point_index'] = spawn
         if case == 'contrast':

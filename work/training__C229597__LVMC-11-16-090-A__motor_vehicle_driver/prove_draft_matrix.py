@@ -25,7 +25,7 @@ def main():
             construction = P / selected['construction']
             if sha(construction) != selected['construction_sha256']:
                 raise ValueError('Construction changed: ' + group + '/' + candidate)
-            destination = ROOT / '.runtime-work' / ('c229597-draft-v4-' + group + '-' + candidate)
+            destination = ROOT / '.runtime-work' / ('c229597-draft-v8-' + group + '-' + candidate)
             command = [sys.executable, str(ROOT / 'runtime.py'), 'offline',
                        '--manifest', str(MANIFEST), '--case', case['case_id'],
                        '--candidate', candidate, '--output', str(destination)]
