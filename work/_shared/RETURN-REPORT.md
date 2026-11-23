@@ -322,3 +322,11 @@ Both exact reverse-case primary synthetic attempts passed a new independent orig
 ## 2026-11-23 C215286(113-2) semantic stage proof
 
 The five-stage canonical semantic proposal chain now passes the pinned direct validator for the two existing reverse-crosswalk selected cases and an unselected baseline; the validation output is hash-bound in the package result. The current nine-frame primary attempts also reproduce the existing source-bound comparison receipt. C215286 stays **partial** pending reviewed real site sources and a 900-frame independent delivery audit. Pinned CPU preflight and assignment-scoped nonready check pass. Batch status remains 27 ready and 16 partial of 43.
+
+## 2026-11-23 C215286 full-duration synthetic pair
+
+Both selected reverse-crosswalk cases passed pinned positive/negative compatibility and independent source audits on 900-frame, 20 Hz authored CPU fixtures; the full-duration comparison passed and source/identity tamper negatives were rejected. The two returned diagnostic receipts state `delivery_ready=false`. Exact hashes and the reproducible staged-fixture builder are in the package proof log and handoff. C215286 remains **partial** pending reviewed district/crosswalk/marking sources, canonical delivery-acceptance bindings and shared GPU queue integration. No Native, actual-pixel, physical or legal acceptance is claimed. The batch remains 27 ready and 16 partial of 43.
+
+## 2026-11-23 C215286 exact-case delivery CPU boundary
+
+Both selected cases passed 900-frame independent source/measurement/camera CPU audits and rejected changed original frame maps. The exact `delivery_acceptance` contract now validates for each case, and the pinned execution manifest validator passes. The audit reports no Native source acceptance, actual-pixel review or physical acceptance. C215286 remains **partial** pending reviewed real-site sources, local Native auditor integration and batch queue work.

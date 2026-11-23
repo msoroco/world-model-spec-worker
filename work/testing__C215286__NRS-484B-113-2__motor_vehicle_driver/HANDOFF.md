@@ -121,3 +121,106 @@ Added `delivery_source_audit.py` and ran it against the two exact current primar
 ## 2026-11-23 canonical semantic stage construction
 
 Authored the complete five-stage CPU semantic proposal chain under `proposals/`: exact-law relevance, a plain prohibition template, direct cell binding, a neutral unselected baseline and the existing paired over-versus-before-crosswalk selected cases. The template preserves the law's intersection, crosswalk and street-corner wording; the selected cell's concrete comparison isolates its crosswalk alternative. Existing selected IDs and recording descriptions remain identical to those in their constructions. Direct pinned `worker_exchange.semantic_delivery.validate` exited 0 with `stage_count=5`, `selected_cases=2`, semantic-index SHA-256 `d36d825fca2aae369e3a25d060cf1f70c7ac813c968d53129a436755f7a8f14e`. Its returned command output is `semantic-proof.log` SHA-256 `0663debed8bbcf3f622f19a0ddce8f93375a695076edd4b0cf0a9750a7016fb0`, bound in `result.json`. The current exact over/short compatibility attempts also reran through the independent `comparison_audit.audit` and produced the same existing 9-frame diagnostic comparison receipt. Pinned CPU preflight and assignment-scoped nonready check pass. C215286 remains partial because the reviewed real district/crosswalk/marking sources and full-duration independent delivery audit are unfinished; no Native, physical or legal acceptance is claimed.
+
+## 2026-11-23 full-duration synthetic reverse pair
+
+Generated a 900-frame, 20 Hz source fixture for each selected case in ignored `.runtime-work/c215286-full-stage/`. The pinned `runtime.py compatibility` path passed positive and missing-source negative checks, Core conversion, render, and final decode for both. Each result's pinned physical checker reports setup, target, maneuver and attempt `met` for this authored synthetic trajectory. Independent `delivery_source_audit.py` passed on both 900-frame attempts, and `comparison_audit.audit` passed their controlled pair at 900 frames. Altered district sources, over-case frame map and comparison crosswalk identity were rejected. Exact hashes, commands and outcomes are in `delivery-diagnostic-proof.log`; returned `cases/over-delivery-diagnostic.json` and `cases/short-delivery-diagnostic.json` now contain the full-duration diagnostic receipts. The earlier nine-frame diagnostic hashes in this handoff are historical. These CPU fixture outcomes explicitly have `delivery_ready=false` and do not establish real district/marking sources, Native motion, actual camera pixels, physical acceptance or a legal conclusion. The assignment remains partial pending reviewed source construction, canonical delivery-acceptance binding, and shared queue integration.
+
+The following builder is preserved here because the returned file count is at the 8,600-file cap; run it from the repository root as `.venv-cpu/bin/python .runtime-work/build_c215286_full_fixture.py over` and `... short` after extracting the block to that ignored path. It stages copies of this assignment and changes only the staged diagnostic recipes.
+
+```python
+import copy, hashlib, json, shutil, sys
+from pathlib import Path
+repo=Path.cwd()
+aid='testing__C215286__NRS-484B-113-2__motor_vehicle_driver'
+stage=repo/'.runtime-work/c215286-full-stage'
+folder=stage/'work'/aid
+folder.parent.mkdir(parents=True,exist_ok=True)
+if not folder.exists(): shutil.copytree(repo/'work'/aid,folder)
+(stage/'.runtime-work').mkdir(exist_ok=True)
+kind=sys.argv[1] if len(sys.argv)>1 else 'over'
+relative='diagnostic.json' if kind=='over' else 'cases/reverse_stops_before_crosswalk-diagnostic.json'
+recipe_relative='diagnostic-recipe.json' if kind=='over' else 'cases/reverse_stops_before_crosswalk-recipe.json'
+src=json.loads((repo/'work'/aid/relative).read_text())
+files=src['files']
+rows=lambda name:[json.loads(s) for s in files[name].splitlines() if s.strip()]
+write=lambda name,items:files.__setitem__(name,''.join(json.dumps(item,separators=(',',':'))+'\n' for item in items))
+base={name:rows(name) for name in ['reverse_history.jsonl','video_frames.jsonl','trace.jsonl','capture/evidence.jsonl','capture/native/frames.jsonl']}
+for name,items in base.items():
+ for i in range(len(items),900):
+  row=copy.deepcopy(items[-1]); fid=100+i; t=round((i+1)/20,9)
+  if name=='reverse_history.jsonl': row.update(frame=fid,time_s=t,velocity_mps=[0,0])
+  elif name=='video_frames.jsonl': row.update(video_frame=i,carla_frame=fid,native_frame=fid,time_s=t)
+  elif name=='trace.jsonl': row.update(frame=fid,time_s=t,speed_mps=0,velocity_mps=[0,0,0],speed_mph=0)
+  elif name=='capture/evidence.jsonl':
+   row.update(original_frame=fid,replay_frame=fid,recording_time_s=t,replay_simulation_time_s=t)
+   row['ego']['speed_mps']=0
+   obs=row['original_observations'];obs.update(frame=fid,time_s=t)
+   obs['participants'][0].update(speed_mps=0,velocity_mps=[0,0,0])
+  else:
+   path=f'{fid:08d}.adapter.json';row.update(frame=fid,simulation_time=t,base=f'graphs/base/{path}',abstract=f'graphs/abstract/{path}',adapter_graph=f'graphs/base/{path}')
+  items.append(row)
+ write(name,items)
+orig=src['graphs'][-2:]
+for i in range(9,900):
+ fid=100+i;t=round((i+1)/20,9)
+ for graph in orig:
+  g=copy.deepcopy(graph);kind='base' if '/base/' in graph['path'] else 'abstract'
+  g['path']=f'capture/native/graphs/{kind}/{fid:08d}.adapter.json'
+  g['attributes'].update(frame=fid,simulation_time_s=t)
+  obs=g['attributes']['observed_evidence'];obs.update(frame=fid,time_s=t)
+  obs['participants'][0].update(speed_mps=0,velocity_mps=[0,0,0])
+  src['graphs'].append(g)
+for video in src['videos']:video['frames']=900
+manifest=json.loads(files['capture/manifest.json']);manifest['frames']=900
+manifest['sources']['trace.jsonl']=hashlib.sha256(files['trace.jsonl'].encode()).hexdigest()
+files['capture/manifest.json']=json.dumps(manifest,indent=2)+'\n'
+spec=folder/relative;spec.write_text(json.dumps(src,separators=(',',':'))+'\n')
+h=hashlib.sha256(spec.read_bytes()).hexdigest()
+recipe=json.loads((folder/recipe_relative).read_text())
+recipe['sources'][0]['sha256']=h;recipe['generator']['sha256']=h
+(folder/recipe_relative).write_text(json.dumps(recipe,indent=2)+'\n')
+print(json.dumps({'stage':str(stage),'spec_sha256':h,'spec_bytes':spec.stat().st_size,'graphs':len(src['graphs']),'frames':len(base['trace.jsonl'])}))
+```
+
+### Archived diagnostic transcript before file-cap reuse
+
+The exact nine-frame and full-duration diagnostic transcript formerly in `delivery-diagnostic-proof.log` is retained below; that path is reused for the canonical CPU delivery audit implementation.
+
+```text
+COMMAND /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_source_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-current-over-compat/primary --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/over-delivery-diagnostic.json
+EXIT 0
+{"case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk", "frames": 9, "software_checks_passed": true}
+
+RECEIPT work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/over-delivery-diagnostic.json
+SHA256 569793ac95691ba67d75acea8bfe9f3a03ddefa4c674449f4cff889d965b8248
+NEGATIVE over: Original source changed: district.txt
+COMMAND /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_source_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-corrected-short-compat-v4/primary --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/short-delivery-diagnostic.json
+EXIT 0
+{"case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk", "frames": 9, "software_checks_passed": true}
+
+RECEIPT work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/short-delivery-diagnostic.json
+SHA256 50955946d2ee797a159ef0d3a9b3a0932197b8c473203a6c4bb8515e334f9688
+NEGATIVE short: Original source changed: district.txt
+
+FULL-DURATION SYNTHETIC CPU CHECKPOINT 2026-11-23
+over: 900 original frames at 20 Hz; setup/target/maneuver/attempt statuses {"attempt": "met", "maneuver": "met", "setup": "met", "target": "met"}
+over compatibility.json sha256 5e82af8be1d2d4950d2968a7e12f7b328c97ec0c52aad8fa5c5fb502236778ca
+over result.json sha256 f6b9f5a5b826d8fd8ddaca18b57cd3daa221edfd432603cb5f84fcf66ef9727c
+over delivery diagnostic work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/over-delivery-diagnostic.json sha256 1fc8b79d980156ae0f97cb6f628570e6dd290f9434ad58be7d1b893a30a5c8de; delivery_ready=false
+short: 900 original frames at 20 Hz; setup/target/maneuver/attempt statuses {"attempt": "met", "maneuver": "met", "setup": "met", "target": "met"}
+short compatibility.json sha256 9cce89dbc453c83bd5406567f09425423514a6b4d1b300fc874ad208260fa996
+short result.json sha256 09f6035556627ec8cb8350cd60e518fa1c5149768f8146dea684b16d65d1d0f1
+short delivery diagnostic work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/short-delivery-diagnostic.json sha256 44791d55265b583ab96e9535dd117df20f37145ec3517880928cc984596ae8a4; delivery_ready=false
+full comparison receipt sha256 715431827b9d2de416b780b8474c92748025894d248870c2ab8d956e7d540f65; frame_count=900, physical_acceptance=unresolved
+over changed district: rejected Original source changed: district.txt
+over changed frame map: rejected Original source changed: video_frames.jsonl
+short changed district: rejected Original source changed: district.txt
+comparison changed crosswalk identity: rejected Site packet road/crosswalk identity differs
+Staged 900-frame specifications: over sha256 9b2e49a4d0d9c6824283844df899d4d345da851a41e7fffc00323ac55cb2f2e4; short sha256 fea41b84c529c69bdf40392eac5ab3ffd11aeaa27bf13a82c3158bc5acec2e95
+Commands: .venv-cpu/bin/python .runtime-work/build_c215286_full_fixture.py over|short (builder source embedded in HANDOFF.md); runtime.py compatibility --manifest .runtime-work/c215286-full-stage/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case <exact-case> --output .runtime-work/c215286-full-stage/.runtime-work/<kind>-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+```
+
+## 2026-11-23 exact-case delivery acceptance CPU boundary
+
+Added `delivery_audit.py` as an independent 900-frame source, measurement-contract and four-camera decode boundary. It rejects shorter source histories and uses `delivery_source_audit.py` to reject changed original source hashes. Each selected case passed its positive CPU audit; a hardlink-isolated changed original frame map was rejected with `Original source changed: video_frames.jsonl` (exit 1) for both. The exact four-run transcript is appended to `cpu-tests.log` (SHA-256 `fe89af39d69c029c8c562cc54e1aadf3d729c061df6497fa4810d3d47f3bae23`), and both `delivery_acceptance` entries bind script SHA-256 `25a0b366c865151265e756eff1d8cf3ee95d6fbdaee00ec8e564b4da63b3edb1`, the demo-test target, required independent checks and that log. Direct pinned `delivery_handoff.validate_case` passed for both, and `execution_manifest.validate` passed for the assignment. This remains a software diagnostic boundary: `native_source_accepted=false`, `actual_pixels_reviewed=false`, `physical_acceptance_claimed=false`. Real-site review, local Native auditor integration and shared queue work remain. The package status is partial.
