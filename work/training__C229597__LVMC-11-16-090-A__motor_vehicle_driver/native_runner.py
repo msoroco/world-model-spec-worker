@@ -82,10 +82,11 @@ def camera_transform(carla, name):
 
 def execute(config, output, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
 
     check(config)
     output = Path(output)
-    output.mkdir(parents=True, exist_ok=False)
+    output.mkdir(parents=True, exist_ok=True)
     client = carla.Client(host, port)
     client.set_timeout(15.0)
     world = client.get_world()
@@ -118,21 +119,14 @@ def execute(config, output, host, port):
             sensors[name] = sensor
             (output / name).mkdir()
             sensor.listen(lambda image, view=name: packets.put((view, image)))
-        metadata = {'case_id': config['case_id'],
-                    'candidate_id': config['candidate_id'],
-                    'frames': FRAMES, 'rate_hz': HZ,
-                    'map_name': world.get_map().name,
-                    'vehicle_id': str(ego.id), 'camera_views': list(VIEWS),
-                    'highway_status_verified': False,
-                    'exhibition_accepted': False}
-        (output / 'capture-manifest.json').write_text(json.dumps(metadata, indent=2) + '\n')
         (output / 'acquisition-provenance.json').write_text(json.dumps({
             'case_id': config['case_id'], 'provenance_kind': 'native',
             'diagnostic_fixture': False, 'map_name': world.get_map().name,
             'vehicle_id': str(ego.id), 'highway_status_verified': False,
             'exhibition_accepted': False}, indent=2) + '\n')
-        with (output / 'trace.jsonl').open('w') as trace, \
-                (output / 'video_frames.jsonl').open('w') as frame_map:
+        with PipelineCapture(client, ego, output, config['case_id'],
+                             required_observations=config['required_atoms']) as capture, \
+                (output / 'video_frames.jsonl').open('x') as frame_map:
             for index in range(FRAMES):
                 phase = phase_at(config, index)
                 ego.apply_control(carla.VehicleControl(throttle=phase['throttle'],
@@ -146,34 +140,15 @@ def execute(config, output, host, port):
                         continue
                     image.save_to_disk(str(output / view / f'{index:06d}.png'))
                     seen.add(view)
-                pose = ego.get_transform()
-                velocity = ego.get_velocity()
-                acceleration = ego.get_acceleration()
                 timestamp = world.get_snapshot().timestamp.elapsed_seconds
                 mapping = {'video_frame': index, 'carla_frame': frame_id,
                            'native_frame': frame_id, 'time_s': index / HZ,
                            'native_elapsed_s': timestamp}
                 frame_map.write(json.dumps(mapping, allow_nan=False) + '\n')
-                row = {'frame': frame_id, 'video_frame': index,
-                       'native_frame': frame_id,
-                       'time_s': index / HZ,
-                       'location_m': [pose.location.x, pose.location.y, pose.location.z],
-                       'position_m': [pose.location.x, pose.location.y, pose.location.z],
-                       'position': {'x': pose.location.x, 'y': pose.location.y,
-                                    'z': pose.location.z},
-                       'heading_deg': pose.rotation.yaw,
-                       'speed_mps': (velocity.x ** 2 + velocity.y ** 2 +
-                                     velocity.z ** 2) ** 0.5,
-                       'rotation_deg': [pose.rotation.pitch, pose.rotation.yaw,
-                                        pose.rotation.roll],
-                       'velocity_mps': [velocity.x, velocity.y, velocity.z],
-                       'acceleration_mps2': [acceleration.x, acceleration.y,
-                                            acceleration.z],
-                       'vehicle_id': str(ego.id), 'phase': phase['name']}
-                row['control'] = {'throttle': phase['throttle'],
-                                  'brake': phase['brake'], 'steer': phase['steer'],
-                                  'hand_brake': False}
-                trace.write(json.dumps(row, allow_nan=False) + '\n')
+                capture.capture(frame_id, index / HZ,
+                                extra={'video_frame': index,
+                                       'native_frame': frame_id,
+                                       'phase': phase['name']})
         for view in VIEWS:
             subprocess.run(('ffmpeg', '-v', 'error', '-framerate', str(HZ),
                             '-i', str(output / view / '%06d.png'),
@@ -190,7 +165,7 @@ def execute(config, output, host, port):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--output', type=Path)
+    parser.add_argument('--output-dir', '--output', dest='output', type=Path)
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
