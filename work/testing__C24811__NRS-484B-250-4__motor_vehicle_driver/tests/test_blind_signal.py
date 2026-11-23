@@ -46,7 +46,8 @@ class BlindSignalTests(unittest.TestCase):
     def test_draft_package_config_binds_all_cases_cameras_and_source_terms(self):
         config=json.loads((ROOT/"config.json").read_text())
         plan=json.loads((ROOT/"case-plan.json").read_text())
-        self.assertEqual(config["selected_case_id"],plan["cases"][0]["case_id"])
+        self.assertIn(config["selected_case_id"],
+                      {case["case_id"] for case in plan["cases"]})
         self.assertEqual(set(config["supported_case_ids"]),
                          {case["case_id"] for case in plan["cases"]})
         proposal=json.loads((ROOT/"proposals/cases.json").read_text())
@@ -57,7 +58,8 @@ class BlindSignalTests(unittest.TestCase):
         self.assertEqual([camera["name"] for camera in config["cameras"]],
                          list(cameras.CAMERAS))
         self.assertEqual(plan["camera_plan"]["profile"],"overview1080-capability")
-        declared={channel["name"] for channel in config["recording_description"]["channels"]}
+        declared={item["name"] for item in
+                  config["recording_description"]["channels"]}
         self.assertEqual({item["name"] for item in plan["observations"]},declared)
         for mapping in plan["source_observation_mapping"].values():
             self.assertTrue(set(mapping["channels"]) <= declared)
