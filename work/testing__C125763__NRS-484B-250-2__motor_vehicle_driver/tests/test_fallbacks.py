@@ -3,7 +3,6 @@ import unittest
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-CASES=('primary','right','separated','opposite')
 
 
 def files(construction):
@@ -12,10 +11,10 @@ def files(construction):
 
 class FallbackConstructionTests(unittest.TestCase):
     def test_distinct_physical_adjustments_preserve_case_variables(self):
-        for prefix in CASES:
-            with self.subTest(case=prefix):
-                manifest=json.loads((ROOT/(prefix+'-candidate-manifest.json')).read_text())
-                entry=manifest['cases'][0]
+        manifest=json.loads((ROOT/'execution-manifest.json').read_text())
+        self.assertEqual(len(manifest['cases']),4)
+        for entry in manifest['cases']:
+            with self.subTest(case=entry['case_id']):
                 primary=json.loads((ROOT/entry['construction']).read_text())
                 original=files(primary)
                 config=json.loads(original['config.json'])

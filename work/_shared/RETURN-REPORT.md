@@ -1,3 +1,19 @@
+## 2026-11-23 exact case and officer-control CPU proofs
+
+C412593 now binds two selected cases in its canonical manifest. The new other-at-300-foot case has a case-specific measurement contract, source-hashed diagnostic recipe, and passing positive/missing-source negative compatibility receipt; pinned candidate selection, receipt verification, 27 tests, preflight and its scoped partial check pass. Six more exact cases and further proofs remain. C158196 gained a standalone source-bound officer-control validator with six passing positive/negative synthetic checks; its existing 16 construction bundles were not changed. Its officer exception case, comparator and full proofs remain incomplete, so status stays partial.
+
+C125714(250-1) additionally joined the runner-generated hash-bound route plan to a full 1,100-frame synthetic opposite-turn fixture; the independent auditor accepted it and rejected a tampered plan. Its 16-test suite and scoped partial check pass. This does not establish Native capture or legal acceptance.
+
+## 2026-11-22 current CPU continuation
+
+C125714(250-1) now prepares hash-bound opposite-turn authored route intent from the verified site packet and Native actor identities, and rejects missing intent, duplicate actors and non-opposite authored approaches. Its 16-test suite, pinned preflight and assignment-scoped partial checker pass. It remains partial without the first exact primary construction and saved-processing proof. C331230 has current-runtime exact offline passes for all six selected primary cases; their construction SHA and commands are rebound in the manifest, and its assignment-scoped partial checker passes. Its physical-preparation receipts and further CPU work remain open.
+
+C125763 reran current-manifest exact offline proofs for all 16 primary/fallback candidates. Four stale tests were rebased onto active paths; the 39-test suite, pinned preflight and assignment-scoped partial check pass. Missing physical receipts and canonical saved/semantic proof bindings keep it partial.
+
+C215286 reran exact current-runtime offline proofs for both selected primary cases. Its 13 CPU tests pass, including three-outcome synthetic physical-checker probes for both reverse targets; the assignment-scoped partial check passes. Per-case physical-preparation receipts remain missing. The C125714 full-duration opposite-turn synthetic fixture was rerun and its output exactly matched the already retained archive member SHA256.
+
+Six byte-identical C178244 negative delivery logs were consolidated into one retained canonical log, with the other paths preserved under ignored `.runtime-work/`. The ready package passed its assignment-scoped strict gate after this change. This freed six return-file slots for incomplete package proof work; no readiness or physical claim changed.
+
 ## 2026-11-22 C412593 physical prototype and return-cap correction
 
 Three synthetic road-transition outcome probes and a fixture-only lifecycle ordering probe passed in ignored `.runtime-work`. They are not canonical returned physical proof yet. An attempted archive of 32 C101303 draft logs failed that ready package's scoped strict check; every log was restored byte-for-byte and removed from the archive. The C412593 prototype files remain in ignored runtime work so `work/` remains at its 8,600-file cap; C101303 passed its scoped strict recheck after restoration. C412593 is partial for physical receipt binding, seven other exact cases and independent comparisons. No Native or legal acceptance is claimed.

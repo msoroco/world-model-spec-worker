@@ -34,6 +34,17 @@ class Tests(unittest.TestCase):
             runner.turn_intent_sources(config,{**site,'other_approach':[20,0,0,0]},101,102)
         with self.assertRaisesRegex(ValueError,'Distinct Native'):
             runner.turn_intent_sources(config,site,101,101)
+        with tempfile.TemporaryDirectory() as directory:
+            source_root=Path(directory)
+            turn_fixture.make_source(source_root,'intends_left')
+            raw,record=runner.turn_intent_sources(config,site,1,2)
+            (source_root/'authored_route_plan.json').write_bytes(raw)
+            (source_root/'route_intent.json').write_text(json.dumps(record)+'\n')
+            observed=turns.audit_source(source_root,'intends_left',1100)
+            self.assertTrue(observed['subsection_1_exception_active'])
+            (source_root/'authored_route_plan.json').write_bytes(raw+b'changed\n')
+            with self.assertRaisesRegex(ValueError,'Authored route-plan source changed'):
+                turns.audit_source(source_root,'intends_left',1100)
 
     def test_runner_recognizes_all_selected_comparison_cases(self):
         plan=json.loads((ROOT/'case-plan.json').read_text())

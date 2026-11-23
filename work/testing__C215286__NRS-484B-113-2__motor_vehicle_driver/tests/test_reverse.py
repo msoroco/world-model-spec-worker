@@ -126,6 +126,32 @@ class Tests(unittest.TestCase):
    for row in rows:row.pop('velocity_mps')
    (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
    self.assertEqual(assess_physical(root,config,[])['physical_checks']['maneuver']['status'],'unverified')
+ def test_pinned_physical_outcomes_for_both_reverse_targets(self):
+  from worker_exchange.native_output import assess_physical
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp)
+   for case,goal,on_crosswalk in (('over',[10,0],True),('short',[14,0],False)):
+    self.fixture(root,on_crosswalk)
+    config={'law_id':'NRS-484B-113-2','cell_id':'C215286','rate_hz':20,
+            'duration_s':0.15,'motion_route_xy_m':[goal]}
+    (root/'config.json').write_text(json.dumps(config))
+    (root/'trace.jsonl').write_text('{}\n')
+    complete=assess_physical(root,config,[])
+    self.assertEqual(complete['physical_checks']['maneuver']['status'],'met',case)
+    self.assertTrue(complete['maneuver_completed'],case)
+    self.assertTrue(complete['realized_observables'],case)
+    self.assertIn('reverse_history.jsonl',complete['physical_checks']['maneuver']['sources'])
+    rows=[json.loads(s) for s in (root/'reverse_history.jsonl').read_text().splitlines()]
+    for row in rows:row['velocity_mps']=[1,0]
+    (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+    incomplete=assess_physical(root,config,[])
+    self.assertEqual(incomplete['physical_checks']['maneuver']['status'],'not_met',case)
+    self.assertFalse(incomplete['maneuver_completed'],case)
+    (root/'reverse_history.jsonl').unlink()
+    missing=assess_physical(root,config,[])
+    self.assertEqual(missing['physical_checks']['maneuver']['status'],'unverified',case)
+    self.assertIn('reverse_history.jsonl',missing['physical_checks']['maneuver']['missing_evidence'])
+    self.assertFalse(missing['maneuver_completed'],case)
  def test_runner_static_and_site_preparation(self):
   config=json.loads((ROOT/'config.json').read_text())
   self.assertEqual(runner.validate_config(config)['rate_hz'],20)

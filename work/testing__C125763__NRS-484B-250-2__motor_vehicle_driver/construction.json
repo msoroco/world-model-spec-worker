@@ -108,7 +108,7 @@
     },
     {
       "path": "tests/test_bundle.py",
-      "content": "import unittest\nfrom pathlib import Path\nfrom runner import load_config,ASSIGNMENT\nclass BundleTest(unittest.TestCase):\n def test_exact_selected_config_and_site(self):\n  config,site=load_config(str(Path(__file__).resolve().parents[1] / \"config.json\"))\n  self.assertEqual(config[\"selected_case_id\"],ASSIGNMENT+\"__yield_ego_left_near_time\")\n  self.assertEqual(site[\"review_status\"],\"reviewed_candidate\")\n"
+      "content": "import json\nimport unittest\nfrom pathlib import Path\nclass BundleTest(unittest.TestCase):\n def test_exact_selected_config_and_site(self):\n  root=Path(__file__).resolve().parents[1]\n  entry=json.loads((root/'execution-manifest.json').read_text())['cases'][0]\n  construction=json.loads((root/entry['construction']).read_text())\n  files={item['path']:item['content'] for item in construction['files']}\n  config=json.loads(files['config.json'])\n  site=json.loads(files['site.json'])\n  self.assertEqual(config['selected_case_id'],root.name+'__yield_ego_left_near_time')\n  self.assertEqual(site['review_status'],'reviewed_candidate')\n  self.assertEqual(len([name for name in files if name.startswith('review/')]),5)\n"
     }
   ],
   "static_checks": [

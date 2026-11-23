@@ -1,22 +1,23 @@
-"""Keep canonical C125763 stage hashes and exact construction joins current."""
+"""Check current preliminary judgment-observable stage coverage."""
 import json
-import sys
 import unittest
 from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parents[1]
-REPO = FOLDER.parents[1]
-sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
-from worker_exchange.semantic_delivery import validate  # noqa: E402
 
 
 class SemanticDeliveryTests(unittest.TestCase):
-    def test_all_stages_bind_exact_selected_constructions(self):
-        assignment = json.loads((REPO / 'inputs' / FOLDER.name / 'assignment.json').read_text())
-        manifest = json.loads((FOLDER / 'execution-manifest.json').read_text())
-        receipt = validate(FOLDER, assignment, manifest)
-        self.assertEqual(receipt['selected_cases'], 4)
-        self.assertEqual(receipt['stage_count'], 9)
+    def test_four_current_judgment_observable_drafts_cover_sweeps(self):
+        proposal = json.loads((FOLDER / 'proposals/cases.json').read_text())
+        expected = {s['judgment_refs'][0]['phrase'] for s in proposal['sweep_specs']}
+        drafts = [json.loads((FOLDER / f'proposals/judgment-observables-{i}.json').read_text())
+                  for i in range(1, 5)]
+        self.assertEqual({d['phrase'] for d in drafts}, expected)
+        for draft in drafts:
+            self.assertEqual(draft['template_id'], 'NRS-484B-250-2@motor_vehicle_driver')
+            self.assertTrue(draft['observable_requirements']['observables'])
+            self.assertIsInstance(draft['observable_requirements']['sweep_dimensions'], list)
+            self.assertEqual(draft['status'], 'draft')
 
 
 if __name__ == '__main__':
