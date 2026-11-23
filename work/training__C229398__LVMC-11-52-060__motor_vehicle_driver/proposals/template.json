@@ -1,0 +1,43 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "LVMC-11-52-060",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "commanded_projection_perpendicular_to_curb_ft",
+      "range_or_domain": "authored 14, 15 or 16 foot target; actual geometry requires Native verification"
+    },
+    {
+      "kind": "subject_behavior",
+      "name": "observed_projection_perpendicular_to_curb_ft",
+      "range_or_domain": "source-derived maximum over vehicle, load and trailer; unknown before original capture"
+    }
+  ],
+  "quote": "In no case shall any part of any vehicle, part of the load of such vehicle or trailer attached to such vehicle, project into the street more than fifteen feet measured on a line at right angles to the curb.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "description": "A vehicle, its load or attached trailer projects into the street from a curb.",
+      "source_clause": "any part of any vehicle, part of the load of such vehicle or trailer attached to such vehicle"
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [],
+    "obligation": {
+      "description": "Do not project more than fifteen feet into the street, measured at right angles to the curb.",
+      "numeric_conditions": [
+        {
+          "operator": ">",
+          "unit": "ft",
+          "value": 15,
+          "variable": "observed_projection_perpendicular_to_curb_ft"
+        }
+      ],
+      "source_clause": "project into the street more than fifteen feet measured on a line at right angles to the curb",
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Apply to the retained parked interval and its maximum full-part projection."
+    }
+  },
+  "template_id": "LVMC-11-52-060@motor_vehicle_driver"
+}

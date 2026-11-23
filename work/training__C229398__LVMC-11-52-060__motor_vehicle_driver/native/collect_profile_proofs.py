@@ -43,6 +43,9 @@ def collect(complete, tag):
             if any(camera.get('pose_strategy') != 'ego_attached_fixed_offset' or
                    camera.get('fov_deg') != 90 for camera in cameras):
                 raise ValueError('Camera strategy differs: ' + suffix + '/' + ident)
+            if tag == 'atoms' and config.get('required_atoms') != [
+                    'kin.extent', 'rel.occupies', 'kin.position']:
+                raise ValueError('Pinned Core atom selection differs: ' + suffix + '/' + ident)
             if not compatibility['passed'] or not processing['passed'] or not processing['recorded_only']:
                 raise ValueError('Diagnostic CPU proof failed: ' + suffix + '/' + ident)
             if (compatibility['case_id'] != entry['case_id'] or
@@ -60,6 +63,18 @@ def collect(complete, tag):
             proof_dir.mkdir(exist_ok=True)
             shutil.copyfile(positive, proof_dir / (tag + '-' + ident + '-positive.json'))
             shutil.copyfile(saved, proof_dir / (tag + '-' + ident + '-saved.json'))
+            feet = {'below_15_ft': 14, 'at_15_ft': 15, 'above_15_ft': 16}[suffix]
+            attempt = ROOT / '.runtime-work' / (
+                'c229398-compat-' + str(feet) + 'ft-' + tag + '-' + ident)
+            for source_name, target_name, expected in (
+                ('compatibility-analysis.log', tag + '-' + ident + '-analysis.log',
+                 compatibility['log_sha256']),
+                ('negative-analysis.log', tag + '-' + ident + '-negative-analysis.log',
+                 compatibility['negative_log_sha256'])):
+                source = attempt / source_name
+                if sha(source) != expected:
+                    raise ValueError('Missing or changed compatibility log: ' + suffix + '/' + ident)
+                shutil.copyfile(source, proof_dir / target_name)
             rows.append({'case_id': entry['case_id'], 'candidate_id': ident,
                          'construction_sha256': candidate['construction_sha256'],
                          'compatibility_receipt_sha256': sha(positive),
@@ -82,6 +97,6 @@ def collect(complete, tag):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--complete', action='store_true')
-    parser.add_argument('--tag', choices=('profile', 'camera'), default='profile')
+    parser.add_argument('--tag', choices=('profile', 'camera', 'atoms'), default='profile')
     args = parser.parse_args()
     collect(args.complete, args.tag)

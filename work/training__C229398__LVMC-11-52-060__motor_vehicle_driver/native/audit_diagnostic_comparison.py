@@ -37,8 +37,8 @@ def main():
         assert target == proof['requested_ft'] and abs(proof['measured_ft'] - target) < 0.01
         raw = PACKAGE / 'diagnostic-fixture' / suffix / 'sources/native-raw-actors.jsonl'
         assert sha(raw) == proof['raw_source_sha256']
-        positive_path = PACKAGE / 'diagnostic-fixture' / suffix / 'attempt-primary-camera.log'
-        saved_path = PACKAGE / 'diagnostic-fixture' / suffix / 'saved-primary-camera.log'
+        positive_path = PACKAGE / 'diagnostic-fixture' / suffix / 'attempt-primary-atoms.log'
+        saved_path = PACKAGE / 'diagnostic-fixture' / suffix / 'saved-primary-atoms.log'
         positive, saved = json.loads(positive_path.read_text()), json.loads(saved_path.read_text())
         assert positive['passed'] and saved['passed'] and saved['recorded_only']
         assert positive['case_id'] == saved['case_id'] == entry['case_id']

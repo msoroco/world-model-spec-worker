@@ -1,0 +1,509 @@
+{
+  "assignment_id": "training__C229398__LVMC-11-52-060__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "kin.extent": {
+          "entrypoint": "source_footprints.py",
+          "evidence": "native-raw-actors.jsonl, derived-source-footprints.jsonl",
+          "method": "derive rotated vehicle, load and trailer vertices from retained poses and extents"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl, native-raw-actors.jsonl",
+          "method": "retain frame-joined Native actor poses"
+        },
+        "maximum_projection_perpendicular_to_curb": {
+          "entrypoint": "projection_measure.py",
+          "evidence": "reviewed-curb.json, native-raw-actors.jsonl, derived-source-footprints.jsonl",
+          "method": "maximum of all 600 full-part curb-normal distances"
+        },
+        "rel.occupies": {
+          "entrypoint": "projection_measure.py",
+          "evidence": "reviewed-curb.json, derived-source-footprints.jsonl",
+          "method": "measure full-part streetward distance perpendicular to reviewed curb"
+        },
+        "ru.vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "native-raw-actors.jsonl, trace.jsonl",
+          "method": "retain Native vehicle and attachment actor inventory"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-curb-proposal.json, reviewed-curb.json",
+          "method": "read back Native map curb candidate for independent review"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Curb identity, rigid attachments and framing need Native review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "load_height_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/below_15_ft/proofs/camera-fallback1-analysis.log",
+            "negative_log": "diagnostic-fixture/below_15_ft/proofs/camera-fallback1-negative-analysis.log",
+            "receipt": "diagnostic-fixture/below_15_ft/proofs/camera-fallback1-positive.json",
+            "sha256": "a89e1359586ac05f959d5851592652e17b4676b1c11e4916c64257709e3a17b6"
+          },
+          "construction": "draft-primary/below_15_ft/fallback1/construction.json",
+          "construction_sha256": "c68a4dbd417bcba79f23d5ad533f352dc373d991701f72f0ac3a2b4d3a7b252e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__below_15_ft --candidate fallback1 --output .runtime-work/c229398-offline-v7-below_15_ft-fallback1",
+            "construction_sha256": "c68a4dbd417bcba79f23d5ad533f352dc373d991701f72f0ac3a2b4d3a7b252e",
+            "exit_code": 0,
+            "log": "draft-offline-logs/below_15_ft/fallback1.log",
+            "log_sha256": "001837f3390b25ae4975b49b64173f33b882885d0315b3cbef2224cbb81fa446"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        },
+        {
+          "changed_knobs": [
+            "trailer_rear_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/below_15_ft/proofs/camera-fallback2-analysis.log",
+            "negative_log": "diagnostic-fixture/below_15_ft/proofs/camera-fallback2-negative-analysis.log",
+            "receipt": "diagnostic-fixture/below_15_ft/proofs/camera-fallback2-positive.json",
+            "sha256": "099d37bc21c8b44fbcb0b264bc6c81ceede9c4bb63bf1cf1199e32ec0b15b807"
+          },
+          "construction": "draft-primary/below_15_ft/fallback2/construction.json",
+          "construction_sha256": "94859e7df35508720831b999668e3f288cb20640ed626ba3a954a7500a401364",
+          "id": "fallback2",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__below_15_ft --candidate fallback2 --output .runtime-work/c229398-offline-v7-below_15_ft-fallback2",
+            "construction_sha256": "94859e7df35508720831b999668e3f288cb20640ed626ba3a954a7500a401364",
+            "exit_code": 0,
+            "log": "draft-offline-logs/below_15_ft/fallback2.log",
+            "log_sha256": "a455cfbb4eb453c06ee3dd54221a8042fa1ac1456c5a8c2e5b6a989c1a379ed6"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_distance_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/below_15_ft/proofs/camera-fallback3-analysis.log",
+            "negative_log": "diagnostic-fixture/below_15_ft/proofs/camera-fallback3-negative-analysis.log",
+            "receipt": "diagnostic-fixture/below_15_ft/proofs/camera-fallback3-positive.json",
+            "sha256": "9d58aa3002a8ff419b2847ed9382a5a87e82d605ff8d04f9b796a8d3d2d1782d"
+          },
+          "construction": "draft-primary/below_15_ft/fallback3/construction.json",
+          "construction_sha256": "26bc95f12bec598cbf103a84622d554e71278c914cc9305d3ff57f62bb0edbe9",
+          "id": "fallback3",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__below_15_ft --candidate fallback3 --output .runtime-work/c229398-offline-v7-below_15_ft-fallback3",
+            "construction_sha256": "26bc95f12bec598cbf103a84622d554e71278c914cc9305d3ff57f62bb0edbe9",
+            "exit_code": 0,
+            "log": "draft-offline-logs/below_15_ft/fallback3.log",
+            "log_sha256": "93d8b1b63d7702b1910e709ca81f27939367ef317334e05a72ba54b82c8b23f8"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        }
+      ],
+      "case_id": "training__C229398__LVMC-11-52-060__motor_vehicle_driver__below_15_ft",
+      "compatibility": {
+        "log": "diagnostic-fixture/below_15_ft/proofs/camera-primary-analysis.log",
+        "negative_log": "diagnostic-fixture/below_15_ft/proofs/camera-primary-negative-analysis.log",
+        "receipt": "diagnostic-fixture/below_15_ft/proofs/camera-primary-positive.json",
+        "sha256": "9c564c6e0e76e3cc8975511112b6503fa7e902cab70cec59cd6b2984e2b07eda"
+      },
+      "construction": "draft-primary/below_15_ft/construction.json",
+      "construction_sha256": "439fd115d00eccdc309efeb46a278864c9232841f06c6f42ab303246f0a8748b",
+      "fixture_recipe": "work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/diagnostic-fixture/below_15_ft/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contracts/below_15_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_saved.py",
+        "output_schema": "c229398-saved-projection-analysis-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "diagnostic-fixture/below_15_ft/proofs/camera-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__below_15_ft --candidate primary --output .runtime-work/c229398-offline-v7-below_15_ft-primary",
+        "construction_sha256": "439fd115d00eccdc309efeb46a278864c9232841f06c6f42ab303246f0a8748b",
+        "exit_code": 0,
+        "log": "draft-offline-logs/below_15_ft/primary.log",
+        "log_sha256": "5b5e8a5de5aa36ac55cf4812b1ffd1f5815d9183eb795b0654a4de56e9e7c269"
+      },
+      "physical_preparation": {
+        "receipt": "diagnostic-fixture/below_15_ft/physical-proof/proof.json",
+        "sha256": "93fec7a33ed08d4a5df3d871f7f16e7184765ac7ed972915aad97f4101b4d421"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__below_15_ft --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic-fixture/below_15_ft/proofs/camera-primary-saved.json",
+        "test_log_sha256": "dc8adec34d428b4cd75eabd5775b93d2f0644214f3eecbe6ebb16e2c14bd5f6c"
+      },
+      "preparation_status": "selected_cpu_proofs_current_physical_unverified",
+      "saved_processing": {
+        "receipt": "diagnostic-fixture/below_15_ft/proofs/camera-primary-saved.json",
+        "sha256": "dc8adec34d428b4cd75eabd5775b93d2f0644214f3eecbe6ebb16e2c14bd5f6c"
+      }
+    },
+    {
+      "acquisition": {
+        "kin.extent": {
+          "entrypoint": "source_footprints.py",
+          "evidence": "native-raw-actors.jsonl, derived-source-footprints.jsonl",
+          "method": "derive rotated vehicle, load and trailer vertices from retained poses and extents"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl, native-raw-actors.jsonl",
+          "method": "retain frame-joined Native actor poses"
+        },
+        "maximum_projection_perpendicular_to_curb": {
+          "entrypoint": "projection_measure.py",
+          "evidence": "reviewed-curb.json, native-raw-actors.jsonl, derived-source-footprints.jsonl",
+          "method": "maximum of all 600 full-part curb-normal distances"
+        },
+        "rel.occupies": {
+          "entrypoint": "projection_measure.py",
+          "evidence": "reviewed-curb.json, derived-source-footprints.jsonl",
+          "method": "measure full-part streetward distance perpendicular to reviewed curb"
+        },
+        "ru.vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "native-raw-actors.jsonl, trace.jsonl",
+          "method": "retain Native vehicle and attachment actor inventory"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-curb-proposal.json, reviewed-curb.json",
+          "method": "read back Native map curb candidate for independent review"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Curb identity, rigid attachments and framing need Native review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "load_height_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/at_15_ft/proofs/camera-fallback1-analysis.log",
+            "negative_log": "diagnostic-fixture/at_15_ft/proofs/camera-fallback1-negative-analysis.log",
+            "receipt": "diagnostic-fixture/at_15_ft/proofs/camera-fallback1-positive.json",
+            "sha256": "2cda353587063d20b85115054405740405830873252b127e0bd955f934b06522"
+          },
+          "construction": "draft-primary/at_15_ft/fallback1/construction.json",
+          "construction_sha256": "0cab7e385c787ebf8a2f8e6a98fc7b03849e9952698c0edb27f6d75842f04a2f",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__at_15_ft --candidate fallback1 --output .runtime-work/c229398-offline-v7-at_15_ft-fallback1",
+            "construction_sha256": "0cab7e385c787ebf8a2f8e6a98fc7b03849e9952698c0edb27f6d75842f04a2f",
+            "exit_code": 0,
+            "log": "draft-offline-logs/at_15_ft/fallback1.log",
+            "log_sha256": "41d10a19c1574dda530fcf8ed2fdf9456028e9ef730a66e14c98382dabbd1325"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        },
+        {
+          "changed_knobs": [
+            "trailer_rear_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/at_15_ft/proofs/camera-fallback2-analysis.log",
+            "negative_log": "diagnostic-fixture/at_15_ft/proofs/camera-fallback2-negative-analysis.log",
+            "receipt": "diagnostic-fixture/at_15_ft/proofs/camera-fallback2-positive.json",
+            "sha256": "18e8ed7e4d37447b4a0b1f1c2826d5eb26b4d8cb3702d431a188c624f68564c6"
+          },
+          "construction": "draft-primary/at_15_ft/fallback2/construction.json",
+          "construction_sha256": "ecbcb822e0b987b6a14b4d2c16055d70a63928701f17f7a6e0eb030de40899c1",
+          "id": "fallback2",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__at_15_ft --candidate fallback2 --output .runtime-work/c229398-offline-v7-at_15_ft-fallback2",
+            "construction_sha256": "ecbcb822e0b987b6a14b4d2c16055d70a63928701f17f7a6e0eb030de40899c1",
+            "exit_code": 0,
+            "log": "draft-offline-logs/at_15_ft/fallback2.log",
+            "log_sha256": "2e64f1479e29ba64165b8b7db69e4cc8e7f47e6e795f84266f5d78b10b557ef9"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_distance_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/at_15_ft/proofs/camera-fallback3-analysis.log",
+            "negative_log": "diagnostic-fixture/at_15_ft/proofs/camera-fallback3-negative-analysis.log",
+            "receipt": "diagnostic-fixture/at_15_ft/proofs/camera-fallback3-positive.json",
+            "sha256": "bcea3c481063cd2f122e80de10e18ddcd2484caa0827c892ad1aba1abbec7215"
+          },
+          "construction": "draft-primary/at_15_ft/fallback3/construction.json",
+          "construction_sha256": "a6b5f302f4b7510e2b59823f2c7a0b3e2a1f8c8abc3c379575d301efac99d652",
+          "id": "fallback3",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__at_15_ft --candidate fallback3 --output .runtime-work/c229398-offline-v7-at_15_ft-fallback3",
+            "construction_sha256": "a6b5f302f4b7510e2b59823f2c7a0b3e2a1f8c8abc3c379575d301efac99d652",
+            "exit_code": 0,
+            "log": "draft-offline-logs/at_15_ft/fallback3.log",
+            "log_sha256": "dafe07e927a1dc6605e59bfd95d2ad4966027aa7c48e230fb6e5adf42bde6b5d"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        }
+      ],
+      "case_id": "training__C229398__LVMC-11-52-060__motor_vehicle_driver__at_15_ft",
+      "compatibility": {
+        "log": "diagnostic-fixture/at_15_ft/proofs/camera-primary-analysis.log",
+        "negative_log": "diagnostic-fixture/at_15_ft/proofs/camera-primary-negative-analysis.log",
+        "receipt": "diagnostic-fixture/at_15_ft/proofs/camera-primary-positive.json",
+        "sha256": "fcfa4b3095e068dcf4945d1216b9cd3adc1b8c3a9129be9e359daccf15dac193"
+      },
+      "construction": "draft-primary/at_15_ft/construction.json",
+      "construction_sha256": "c4b6c36562b744ecfbee3388d52cf128baef402402ee14a75fdc7ea19aa623ea",
+      "fixture_recipe": "work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/diagnostic-fixture/at_15_ft/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contracts/at_15_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_saved.py",
+        "output_schema": "c229398-saved-projection-analysis-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "diagnostic-fixture/at_15_ft/proofs/camera-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__at_15_ft --candidate primary --output .runtime-work/c229398-offline-v7-at_15_ft-primary",
+        "construction_sha256": "c4b6c36562b744ecfbee3388d52cf128baef402402ee14a75fdc7ea19aa623ea",
+        "exit_code": 0,
+        "log": "draft-offline-logs/at_15_ft/primary.log",
+        "log_sha256": "d788a30d9685419956bd4e87e91d15b987d3bbee9a7247eadf1d3a1b3b16abee"
+      },
+      "physical_preparation": {
+        "receipt": "diagnostic-fixture/at_15_ft/physical-proof/proof.json",
+        "sha256": "f958ff378bbe3c1ec2bc424f366ba0d8a4e6406c0cf1776da5254e9872fe06c6"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__at_15_ft --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic-fixture/at_15_ft/proofs/camera-primary-saved.json",
+        "test_log_sha256": "5b3ffd9342faa95272c63f0c2ee9f78dd4c238bbb95be1f072ee41a878f5ca8a"
+      },
+      "preparation_status": "selected_cpu_proofs_current_physical_unverified",
+      "saved_processing": {
+        "receipt": "diagnostic-fixture/at_15_ft/proofs/camera-primary-saved.json",
+        "sha256": "5b3ffd9342faa95272c63f0c2ee9f78dd4c238bbb95be1f072ee41a878f5ca8a"
+      }
+    },
+    {
+      "acquisition": {
+        "kin.extent": {
+          "entrypoint": "source_footprints.py",
+          "evidence": "native-raw-actors.jsonl, derived-source-footprints.jsonl",
+          "method": "derive rotated vehicle, load and trailer vertices from retained poses and extents"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl, native-raw-actors.jsonl",
+          "method": "retain frame-joined Native actor poses"
+        },
+        "maximum_projection_perpendicular_to_curb": {
+          "entrypoint": "projection_measure.py",
+          "evidence": "reviewed-curb.json, native-raw-actors.jsonl, derived-source-footprints.jsonl",
+          "method": "maximum of all 600 full-part curb-normal distances"
+        },
+        "rel.occupies": {
+          "entrypoint": "projection_measure.py",
+          "evidence": "reviewed-curb.json, derived-source-footprints.jsonl",
+          "method": "measure full-part streetward distance perpendicular to reviewed curb"
+        },
+        "ru.vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "native-raw-actors.jsonl, trace.jsonl",
+          "method": "retain Native vehicle and attachment actor inventory"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-curb-proposal.json, reviewed-curb.json",
+          "method": "read back Native map curb candidate for independent review"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Curb identity, rigid attachments and framing need Native review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "load_height_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/above_15_ft/proofs/camera-fallback1-analysis.log",
+            "negative_log": "diagnostic-fixture/above_15_ft/proofs/camera-fallback1-negative-analysis.log",
+            "receipt": "diagnostic-fixture/above_15_ft/proofs/camera-fallback1-positive.json",
+            "sha256": "c2555401e261ba56070e82799811c096ce542e1ae08a082fcc30d4cc9510073f"
+          },
+          "construction": "draft-primary/above_15_ft/fallback1/construction.json",
+          "construction_sha256": "134d95d4900d9c63b02c9ae465a29d77619e350435b655706a80352feb69b814",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__above_15_ft --candidate fallback1 --output .runtime-work/c229398-offline-v7-above_15_ft-fallback1",
+            "construction_sha256": "134d95d4900d9c63b02c9ae465a29d77619e350435b655706a80352feb69b814",
+            "exit_code": 0,
+            "log": "draft-offline-logs/above_15_ft/fallback1.log",
+            "log_sha256": "ea611a4d13b5de518ebe06e1a89059639575798759d39a72356adee011881e1f"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        },
+        {
+          "changed_knobs": [
+            "trailer_rear_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/above_15_ft/proofs/camera-fallback2-analysis.log",
+            "negative_log": "diagnostic-fixture/above_15_ft/proofs/camera-fallback2-negative-analysis.log",
+            "receipt": "diagnostic-fixture/above_15_ft/proofs/camera-fallback2-positive.json",
+            "sha256": "3bb7b0171caef07288af8ba73ecf5b26b94c09240f8e4fabf9e09652077b9cfc"
+          },
+          "construction": "draft-primary/above_15_ft/fallback2/construction.json",
+          "construction_sha256": "b61d61502245e4ff9844958394543f2c72ae7744860826c0497276dbba1e3567",
+          "id": "fallback2",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__above_15_ft --candidate fallback2 --output .runtime-work/c229398-offline-v7-above_15_ft-fallback2",
+            "construction_sha256": "b61d61502245e4ff9844958394543f2c72ae7744860826c0497276dbba1e3567",
+            "exit_code": 0,
+            "log": "draft-offline-logs/above_15_ft/fallback2.log",
+            "log_sha256": "801755a5f56ffa5c2f4a2b1fd9cf86b13567a56854884c63b8a52c5da9e217b0"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera_distance_m"
+          ],
+          "compatibility": {
+            "log": "diagnostic-fixture/above_15_ft/proofs/camera-fallback3-analysis.log",
+            "negative_log": "diagnostic-fixture/above_15_ft/proofs/camera-fallback3-negative-analysis.log",
+            "receipt": "diagnostic-fixture/above_15_ft/proofs/camera-fallback3-positive.json",
+            "sha256": "795c6751260bf6728615a12f7ee3c58c893ac773840fc25a8722121a992fd850"
+          },
+          "construction": "draft-primary/above_15_ft/fallback3/construction.json",
+          "construction_sha256": "19fe75dc0b7e071669b8b41570b20b0f4b7ca9770a034256a510fe8a1ad176df",
+          "id": "fallback3",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__above_15_ft --candidate fallback3 --output .runtime-work/c229398-offline-v7-above_15_ft-fallback3",
+            "construction_sha256": "19fe75dc0b7e071669b8b41570b20b0f4b7ca9770a034256a510fe8a1ad176df",
+            "exit_code": 0,
+            "log": "draft-offline-logs/above_15_ft/fallback3.log",
+            "log_sha256": "62cd3f89e0b7c5989a93707f1fa80b41fd0d66b48b63a9e8780a8ee175f049d0"
+          },
+          "trigger": {
+            "failure_condition": "Primary candidate misses the requested curb projection, attachment, or camera framing review",
+            "metric": "observed attachment geometry, projection or framing",
+            "source": "original Native capture report and four-camera review"
+          }
+        }
+      ],
+      "case_id": "training__C229398__LVMC-11-52-060__motor_vehicle_driver__above_15_ft",
+      "compatibility": {
+        "log": "diagnostic-fixture/above_15_ft/proofs/camera-primary-analysis.log",
+        "negative_log": "diagnostic-fixture/above_15_ft/proofs/camera-primary-negative-analysis.log",
+        "receipt": "diagnostic-fixture/above_15_ft/proofs/camera-primary-positive.json",
+        "sha256": "590a55a341bdd3699378c74f3319937a35cefcd17621bb2008bffa87ac567327"
+      },
+      "construction": "draft-primary/above_15_ft/construction.json",
+      "construction_sha256": "c9c3db7c590c17c5ba3a248eb8fa5977475600ea9000057648d897c640ba7aba",
+      "fixture_recipe": "work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/diagnostic-fixture/above_15_ft/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contracts/above_15_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_saved.py",
+        "output_schema": "c229398-saved-projection-analysis-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "diagnostic-fixture/above_15_ft/proofs/camera-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/draft-primary-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__above_15_ft --candidate primary --output .runtime-work/c229398-offline-v7-above_15_ft-primary",
+        "construction_sha256": "c9c3db7c590c17c5ba3a248eb8fa5977475600ea9000057648d897c640ba7aba",
+        "exit_code": 0,
+        "log": "draft-offline-logs/above_15_ft/primary.log",
+        "log_sha256": "9401be0dfeb3b115c110cd00865c5312243f7fcdbc04a6e34c5b4cea57161233"
+      },
+      "physical_preparation": {
+        "receipt": "diagnostic-fixture/above_15_ft/physical-proof/proof.json",
+        "sha256": "8b04d83f7276aa81d8aad43337b7e359f80089265912beec7b3d97978032c7fb"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229398__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case training__C229398__LVMC-11-52-060__motor_vehicle_driver__above_15_ft --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic-fixture/above_15_ft/proofs/camera-primary-saved.json",
+        "test_log_sha256": "e940b54f5988bab5029d5e4df4e6d9b04a761966aecad96da91da115b1268e4d"
+      },
+      "preparation_status": "selected_cpu_proofs_current_physical_unverified",
+      "saved_processing": {
+        "receipt": "diagnostic-fixture/above_15_ft/proofs/camera-primary-saved.json",
+        "sha256": "e940b54f5988bab5029d5e4df4e6d9b04a761966aecad96da91da115b1268e4d"
+      }
+    }
+  ],
+  "delivery_ready": false,
+  "format": "worker-execution-manifest",
+  "original_native_observed": false,
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "source_branch": "complete vehicle, load and attached-trailer projection",
+  "status": "selected_cpu_draft"
+}
