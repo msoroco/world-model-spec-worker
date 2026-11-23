@@ -22,3 +22,19 @@ Judgment range entries inventoried for this exact law and actor: 4. Bounds are t
 Judgment probe planning: `judgment-probe-plan.json` records source-hashed below/inside/above targets for 4 exact law/actor ranges. These are unmeasured construction targets. 2 ranges have a domain endpoint that makes an outside probe impossible; review each endpoint_limit and preserve the explicit limitation.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
+
+## 2026-11-22 nearest-view saved-source construction checkpoint
+
+`build_branch_plan.py` now binds all eight frozen comparison topics and eight unique reviewed case identities to source-hashed accepted metadata in `branch-plan.json`. Every physical-sufficiency decision remains unverified; the original video and trace bytes were not supplied in this export. The two nearest-view response alternatives are retained rather than adding a case ID.
+
+`nearest_view_measurement.py` is an executable saved-source processor. It requires reviewed proper-sign, no-stop-line, no-crosswalk (including sidewalk-derived), through-highway, viewpoint and no-officer/no-signal context; strictly ordered original samples; first observed view before intersection entry; and through-vehicle occupancy during crossing. It preserves the approach minimum speed, through-vehicle center station at first view, and the full participant history without treating engineering values as legal cutoffs. Its CLI hashes the source packet. Seven positive/negative CPU tests pass in `cpu-tests.log` (SHA-256 c804002379ff3544107d28189a228146e00dd9017da15cee0a040b89db067c83). Static assignment check exits 0.
+
+Next: bind the original Native map/sign/viewpoint and through-highway packet, implement the exact configuration-driven yield approach and source capture, then run pinned offline, compatibility, saved processing and independent delivery/comparison proofs. The current source inventory and synthetic measurement test do not establish legal, physical or pixel acceptance. Status remains partial. No Git command was run.
+
+Final strict batch check exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c158208-current.log`). A non-Git scan checked 3,840 returned UTF-8 files under `work/`: largest 1,628,889 bytes, zero size, whitespace or conflict-marker issues. C158208 remains partial. No Git command was run.
+
+## Paired response construction and latest gate
+
+`yield_control.py` is a CARLA-lazy, configuration-driven nearest-view engineering controller. The response and uninterrupted diagnostic constructions share approach geometry, target speed, governing sign, source-verified viewpoint and traffic observation; only conflict response differs. It requires observed through-vehicle occupancy and rejects unsourced viewpoint input. Four control tests plus seven saved-source/branch-plan tests pass in `cpu-tests.log` (SHA-256 59da31a5c235428306260dedf0279e5017b3d0ad21f23ffa379e16dec7efb18b). The branch plan names `observed_conflict_response` as its comparison variable. This controller has not yet been embedded in pinned Native bundles or run in CARLA.
+
+Current exact static check exits 0. Complete-batch strict check exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c158208-controller.log`). Keep status partial. Next worker-owned construction: source-bind actual Native sign/viewpoint/through-traffic geometry; embed the controller in exact bundles, run pinned offline and positive/negative compatibility, then prove original saved measurement, independent delivery and controlled comparison. No Git command was run.
