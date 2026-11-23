@@ -335,6 +335,62 @@ class NativeSourcesTests(unittest.TestCase):
             self.assertEqual(interrupted["measurement"]["turn_onset"][
                 "continuous_right_signal_distance_m"], 0.0)
 
+    def test_saved_finalizer_full_duration_sources_and_missing_camera(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            rows = []
+            frames = []
+            for index in range(900):
+                frame = index + 1
+                if index < 599:
+                    x = (-120.0 + index * 89.52 / 446 if index < 446 else
+                         -30.48 + (index - 446) * 30.48 / 153)
+                    y, heading, road = 0.0, 0.0, 412593
+                else:
+                    x, y = 0.0, -(index - 599) * 0.2
+                    heading = -10.0 if index == 599 else -90.0
+                    road = 412594 if index == 599 else 412595
+                rows.append({"frame": frame, "time_s": frame / 20,
+                             "ego_position_xy_m": [x, y], "ego_speed_mps": 4.0,
+                             "ego_heading_deg": heading, "ego_road_id": road,
+                             "ego_lane_id": -1, "right_indicator": index >= 446})
+                frames.append({"video_frame": index, "carla_frame": frame,
+                               "time_s": frame / 20})
+            (root / "drive_history.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in frames))
+            (root / "route_context.json").write_text(json.dumps({
+                "native_map_id": "synthetic-C412593", "approach_road_id": 412593,
+                "approach_lane_id": -1, "outgoing_road_id": 412595,
+                "outgoing_lane_id": -1, "native_route_source": "synthetic geometry",
+                "district_source": "synthetic district packet",
+                "district_type": "business", "turn_onset_frame": 600}))
+            for name in native.CAMERAS:
+                with native.ffv1_writer(root / (name + ".mkv"), (2, 2)) as write:
+                    for index in range(900):
+                        write(bytes([(index // 9) % 256, 0, 255, 255] * 4))
+            source_hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                             for p in root.iterdir()}
+            result = finalize(root)
+            self.assertEqual(result["frames"], 900)
+            self.assertEqual(set(result["original_cameras"]), set(native.CAMERAS))
+            self.assertAlmostEqual(result["measurement"]["turn_onset"][
+                "continuous_right_signal_distance_m"], 30.48)
+            self.assertTrue(result["measurement"]["observed_continuous_distance_meets_boundary"])
+            self.assertFalse(result["physical_acceptance_claimed"])
+            missing = root / "approach.mkv"
+            held = root / "approach.mkv.held"
+            missing.rename(held)
+            try:
+                with self.assertRaisesRegex(ValueError, "Missing original camera source: approach"):
+                    finalize(root)
+            finally:
+                held.rename(missing)
+            self.assertEqual(source_hashes,
+                             {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                              for p in root.iterdir()})
+
     def test_recorder_retains_four_synchronized_native_sources(self):
         work = Path.cwd() / ".runtime-work"
         work.mkdir(exist_ok=True)

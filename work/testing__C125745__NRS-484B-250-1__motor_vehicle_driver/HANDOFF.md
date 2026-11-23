@@ -1,3 +1,7 @@
+## 2026-11-22 C125745 semantic index repair and scoped strict pass
+
+The package already contained all canonical semantic stage proposals, but its `proposals/semantic-index.json` was absent. The two relevance stage files were byte-identical (SHA-256 `b0e08d66ef84ba1f0cc1f44f92f8d566304c48e7771df5ceba2113ce78d0c3f2`), so the new index binds both stage identities to the retained `relevance.json` and hashes every existing stage result. The redundant identical `relevance-batch.json` was removed to keep the returned file count at 8,600; its content is recoverable byte-for-byte from `relevance.json`. The assignment-scoped `--complete --require-delivery-ready` check now passes. This restores CPU preparation proof for the existing ready status; it does not establish Native physical or legal acceptance.
+
 # C125745 CPU handoff — NRS 484B.250(1)
 
 Status: **partial**. The frozen selected branch is other-first entry at the same statutory median-opening crossing; the assigned cell is controlled by a stop sign. Exact NRS 484B.250(1) excludes intersections controlled by official traffic-control devices except as provided in subsection 4. Consequently, other-first entry alone cannot be treated as a violation of this subsection in this cell. Frozen `evidence.json` has no accepted recordings; no reuse is claimed.
