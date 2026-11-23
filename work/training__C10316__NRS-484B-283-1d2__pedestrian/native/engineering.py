@@ -32,7 +32,7 @@ def candidate(suffix, ident):
                    'source': 'independent_original_display_pixel_audit', 'threshold': .95}
     return {'case_id': BASE + '__' + suffix, 'candidate_id': ident,
             'law_id': 'NRS-484B-283-1d2', 'cell_id': 'C10316', 'actor': 'pedestrian',
-            'duration_s': 12, 'rate_hz': 20, 'road_source': 'native/road.xodr',
+            'duration_s': 30, 'rate_hz': 20, 'road_source': 'native/road.xodr',
             'crosswalk_id': 'C10316-authored-alley-crosswalk',
             'comparison_variable': 'displayed_zero_time_s',
             'engineering': knobs, 'trigger': trigger,

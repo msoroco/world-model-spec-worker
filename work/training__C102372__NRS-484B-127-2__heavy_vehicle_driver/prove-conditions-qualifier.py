@@ -50,7 +50,7 @@ def write_case(event):
 
 
 def resign(root):
-    (root/'source-manifest.json').write_text(json.dumps({'format':'c102372-conditions-source-v1',
+    (root/'truck-source-manifest.json').write_text(json.dumps({'format':'c102372-conditions-source-v1',
         'sha256':{name:sha(root/name) for name in NAMES}},sort_keys=True)+'\n')
 
 

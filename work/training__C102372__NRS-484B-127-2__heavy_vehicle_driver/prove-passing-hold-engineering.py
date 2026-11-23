@@ -42,7 +42,7 @@ def write_case(candidate,kind='baseline'):
             'lead':{'actor_class':'truck_or_combination','road_id':1,'lane_id':-1,
                     'speed_mps':lead_speed,'body_xy_m':body(lead_x,-2.)}})
     (root/'native_samples.jsonl').write_text(''.join(json.dumps(row,sort_keys=True)+'\n' for row in rows))
-    (root/'source-manifest.json').write_text(json.dumps({
+    (root/'truck-source-manifest.json').write_text(json.dumps({
         'format':'c102372-passing-source-v1',
         'sha256':{name:sha(root/name) for name in NAMES}},sort_keys=True)+'\n')
     return root

@@ -16,7 +16,7 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def raw(name):
     root=OUT/name
-    manifest=json.loads((root/'source-manifest.json').read_text())
+    manifest=json.loads((root/'truck-source-manifest.json').read_text())
     if manifest['format']!='c102372-passing-source-v1' or \
        set(manifest['sha256'])!={'native_samples.jsonl','following_context.json','road.xodr'}:
         raise ValueError('Passing source manifest differs')

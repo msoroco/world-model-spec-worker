@@ -16,7 +16,7 @@ def rows(name):return [json.loads(line) for line in (SOURCE/name).read_text().sp
 
 
 def audit():
-    manifest=json.loads((SOURCE/'source-manifest.json').read_text())
+    manifest=json.loads((SOURCE/'truck-source-manifest.json').read_text())
     if manifest['format']!='c102372-passing-source-v1':
         raise ValueError('Passing source format differs')
     for name,value in manifest['sha256'].items():
@@ -84,7 +84,7 @@ def audit():
             math.isclose(measured['minimum_body_clearance_m'],clearance,abs_tol=1e-4) and
             math.isclose(measured['final_center_offset_m'],offsets[-1],abs_tol=1e-4)):
         raise ValueError('Passing saved measurement differs from independent raw audit')
-    for name in ('overview.mkv','ego_forward.mkv','lead_gap.mkv','crest_context.mkv'):
+    for name in ('overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'):
         decoded=subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffprobe'),'-v','error',
             '-count_frames','-select_streams','v:0','-show_entries','stream=nb_read_frames',
             '-of','default=noprint_wrappers=1:nokey=1',str(SOURCE/name)],

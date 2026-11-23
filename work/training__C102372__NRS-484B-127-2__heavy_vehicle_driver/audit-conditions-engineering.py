@@ -30,7 +30,7 @@ def arc_gap(row,profile):
 
 def raw(case,name):
     root=OUT/(case+'-'+name)
-    manifest=json.loads((root/'source-manifest.json').read_text())
+    manifest=json.loads((root/'truck-source-manifest.json').read_text())
     if manifest['format']!='c102372-conditions-source-v1' or \
        set(manifest['sha256'])!={'native_samples.jsonl','following_context.json','road.xodr'} or \
        any(sha(root/key)!=value for key,value in manifest['sha256'].items()):

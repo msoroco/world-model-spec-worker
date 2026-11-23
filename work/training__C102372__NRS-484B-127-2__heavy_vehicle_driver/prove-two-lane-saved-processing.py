@@ -30,7 +30,7 @@ def make_source(root):
     value['same_direction_lane_count']=2
     context.write_text(json.dumps(value,sort_keys=True)+'\n')
     names=('native_samples.jsonl','following_context.json','road.xodr')
-    (root/'source-manifest.json').write_text(json.dumps({
+    (root/'truck-source-manifest.json').write_text(json.dumps({
         'format':'c102372-truck-follow-source-v1',
         'sha256':{name:sha(root/name) for name in names}},sort_keys=True)+'\n')
     capture=root/'capture/manifest.json';manifest=json.loads(capture.read_text())

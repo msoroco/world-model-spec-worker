@@ -57,7 +57,7 @@ with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c102372-two-la
     measured=report['measurements']['truck_following_gap']['value']
     if abs(minimum-measured['min_surface_gap_m'])>.002 or measured['relation_to_500ft']!='below':
         raise AssertionError('Independent two-lane road-arc gap differs')
-    for name in ('overview','ego_forward','lead_gap','crest_context'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         p=subprocess.run(['ffprobe','-v','error','-count_frames','-select_streams','v:0',
             '-show_entries','stream=nb_read_frames','-of','default=noprint_wrappers=1:nokey=1',
             str(root/(name+'.mkv'))],capture_output=True,text=True,check=True)

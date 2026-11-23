@@ -89,14 +89,14 @@ def make(root,source=None,case=None,trigger=None,source_format='c102372-passing-
     write_rows(root/'trace.jsonl',trace)
     write_rows(root/'capture/evidence.jsonl',evidence)
     for name,rows in channels_data.items():write_rows(root/'channels'/(name+'.jsonl'),rows)
-    for name in ('following_context.json','road.xodr','source-manifest.json'):
+    for name in ('following_context.json','road.xodr','truck-source-manifest.json'):
         shutil.copyfile(source/name,root/name)
     context=root/'following_context.json'
     context_value=json.loads(context.read_text())
     context_value['conditions_permit']={
         'source':'synthetic_cpu_assertion','status':'not_physically_verified'}
     context.write_text(json.dumps(context_value,sort_keys=True)+'\n')
-    (root/'source-manifest.json').write_text(json.dumps({
+    (root/'truck-source-manifest.json').write_text(json.dumps({
         'format':source_format,'sha256':{name:sha(root/name)
         for name in ('native_samples.jsonl','following_context.json','road.xodr')}},sort_keys=True)+'\n')
     capture=json.loads((root/'capture/manifest.json').read_text())

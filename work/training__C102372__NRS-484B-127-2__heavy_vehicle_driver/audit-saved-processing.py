@@ -43,8 +43,8 @@ def audit():
         if any(row['native_frame']!=i or mapping[i]['carla_frame']!=row['carla_frame']
                for i,row in enumerate(native)):
             raise ValueError('Saved original truck frame mapping differs')
-        if any(frames(root/name)!=600 for name in ('overview.mkv','ego_forward.mkv',
-                                                  'lead_gap.mkv','crest_context.mkv')):
+        if any(frames(root/name)!=600 for name in ('overview.mkv','approach.mkv',
+                                                  'reference_corner.mkv','driver_reference.mkv')):
             raise ValueError('Original video frame decode differs')
         negative=SOURCE/(case+'-negative')
         try:finalize(negative,negative/'analysis-report.json')
@@ -54,13 +54,13 @@ def audit():
         source[case]={'relation':measured['relation_to_500ft'],
             'median_gap_m':measured['median_surface_gap_m'],
             'ego_x0_m':native[0]['ego']['center_xy_m'][0],
-            'ego_x479_m':native[-1]['ego']['center_xy_m'][0],
+            'ego_x599_m':native[-1]['ego']['center_xy_m'][0],
             'ego_speed_mps':native[0]['ego']['speed_mps'],
             'road_sha256':sha(root/'road.xodr')}
     a,b=source['probe_1'],source['probe_2']
     if (a['relation'],b['relation'])!=('above','below') or \
-            (a['ego_x0_m'],a['ego_x479_m'],a['ego_speed_mps'],a['road_sha256'])!=(
-             b['ego_x0_m'],b['ego_x479_m'],b['ego_speed_mps'],b['road_sha256']) or \
+            (a['ego_x0_m'],a['ego_x599_m'],a['ego_speed_mps'],a['road_sha256'])!=(
+             b['ego_x0_m'],b['ego_x599_m'],b['ego_speed_mps'],b['road_sha256']) or \
             not a['median_gap_m']>152.4>b['median_gap_m']:
         raise ValueError('Controlled same-road truck-gap pair differs')
     return {'passed':True,'cases':source,'physical_or_accepted_claim':False}

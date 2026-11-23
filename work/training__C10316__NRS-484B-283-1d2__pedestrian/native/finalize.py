@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 
 from measure_countdown import measure, sha
+from audit_display_frames import audit as audit_display_frames
 
 
 def required(folder, name):
@@ -88,9 +89,10 @@ def finalize(attempt, output):
         raise ValueError('Retain original countdown finalization; use a fresh attempt')
     config = json.loads(required(attempt, 'config.json').read_text())
     count = config['duration_s'] * config['rate_hz']
-    if count != 240:
-        raise ValueError('Full 12-second countdown window changed')
+    if count != 600:
+        raise ValueError('Full 30-second countdown window changed')
     joins = verify_original_joins(attempt, count)
+    display_integrity = audit_display_frames(attempt, count)
     analysis = report(attempt, config['case_id'])
     measured = analysis['measurements']['flashing_countdown_clearance']['value']
     context = json.loads(required(attempt, 'countdown-context.json').read_text())
@@ -134,7 +136,7 @@ def finalize(attempt, output):
                   'value': measured['displayed_zero']['time_interval_s'][1] - measured['full_body_clearance']['time_interval_s'][1],
                   'unit': 's',
                   'method': 'original synchronized event brackets',
-                  'time_window': 'entire original 12-second capture',
+                  'time_window': 'entire original 30-second capture',
                   'statistic': 'first full-body clearance versus first displayed zero',
                   'reference': 'countdown_samples.jsonl'}},
               'provenance_kind': 'synthetic_local_diagnostic' if not native else 'native_source_shape_unverified',
@@ -142,6 +144,7 @@ def finalize(attempt, output):
     validate_result(result)
     analysis.update(format='c10316-saved-countdown-analysis-v1', candidate_id=config['candidate_id'],
                     original_joins=joins, video_frames=videos,
+                    display_integrity=display_integrity,
                     scope='saved source joins and video decode; no physical signal or legal finding')
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + '\n')
     (attempt / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')

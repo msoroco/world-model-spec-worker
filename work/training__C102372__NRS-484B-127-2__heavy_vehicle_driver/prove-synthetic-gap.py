@@ -46,7 +46,7 @@ def write_case(case):
 
 def resign(folder):
     names = ('native_samples.jsonl', 'following_context.json', 'road.xodr')
-    (folder / 'source-manifest.json').write_text(json.dumps({
+    (folder / 'truck-source-manifest.json').write_text(json.dumps({
         'format': 'c102372-truck-follow-source-v1',
         'sha256': {name: measurement.sha(folder / name) for name in names}}, sort_keys=True)+'\n')
 

@@ -31,6 +31,16 @@ def repository():
 
 ROOT = repository()
 CASE = ROOT/'work'/AID
+CAMERA_SPECS = (('overview', 1920, 1080, 80, (70, -25, 35)),
+                ('approach', 1280, 720, 90, (18, -8, 8)),
+                ('reference_corner', 1280, 720, 90, (85, 8, 12)),
+                ('driver_reference', 1280, 720, 90, (0, 0, 0)))
+
+
+def lookahead_index(frame, frame_count, horizon=15):
+    if frame_count != 600 or not 0 <= frame < frame_count or horizon < 0:
+        raise ValueError('Native lookahead frame contract differs')
+    return min(frame_count-1, frame+horizon)
 
 
 def sha(path):
@@ -65,6 +75,13 @@ def check(bundle, distance, candidate):
     rows = [json.loads(line) for line in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
     if len(rows) != 600:
         raise ValueError('Passing request frame count differs')
+    if (tuple(name for name, *_ in CAMERA_SPECS) !=
+            ('overview', 'approach', 'reference_corner', 'driver_reference') or
+            [(w, h) for _, w, h, *_ in CAMERA_SPECS] !=
+            [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)] or
+            lookahead_index(480, len(rows)) != 495 or
+            lookahead_index(599, len(rows)) != 599):
+        raise ValueError('Four-camera or final-frame controller contract differs')
     for i, row in enumerate(rows):
         if (row.get('frame') != i or abs(row.get('time_s', -1)-i/20) > 1e-6 or
                 row.get('source_kind') != 'authored_native_request' or
@@ -182,17 +199,17 @@ def execute(bundle, distance, candidate, output, host, port):
             'oncoming_actor_id': oncoming.id,
             'highway_status_reviewed': False,
             'driver_eye_visibility_reviewed': False})
-        cameras = (('overview', 1920, 1080, 80, (70, -25, 35)),
-                   ('forward', 1280, 720, 90, (0, 0, 0)))
+        cameras = CAMERA_SPECS
         for name, width, height, fov, location in cameras:
             bp = library.find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
                                ('fov', fov), ('sensor_tick', 0)):
                 bp.set_attribute(key, str(value))
+            fixed = name != 'driver_reference'
             transform = (carla.Transform(carla.Location(x=location[0], y=location[1], z=location[2]),
-                                         carla.Rotation(yaw=0, pitch=-25)) if name == 'overview'
+                                         carla.Rotation(yaw=0, pitch=-25)) if fixed
                          else carla.Transform(carla.Location(x=1.0, y=0, z=1.4)))
-            sensor = world.spawn_actor(bp, transform, attach_to=None if name == 'overview' else ego)
+            sensor = world.spawn_actor(bp, transform, attach_to=None if fixed else ego)
             owned.append(sensor)
             camera_queues[name] = queue.Queue()
             logs[name] = (output/(name+'.encoder.log')).open('x')
@@ -208,7 +225,7 @@ def execute(bundle, distance, candidate, output, host, port):
         with (output/'native-raw-actors.jsonl').open('x') as observed, \
              (output/'video_frames.jsonl').open('x') as frame_map:
             for i, request in enumerate(requests):
-                lookahead = requests[min(479, i+15)]
+                lookahead = requests[lookahead_index(i, len(requests))]
                 target = lookahead['ego_center_xy_m']
                 command = steering(carla, ego, (target[0], -target[1]),
                                    request['ego_speed_mps'])
@@ -256,6 +273,22 @@ def execute(bundle, distance, candidate, output, host, port):
             except BaseException as exc:
                 error = error or {'encoder_error': str(exc)}
             logs[name].close()
+        if error is None and len(video) == len(CAMERA_SPECS):
+            try:
+                compose = subprocess.run([
+                    'ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n',
+                    '-i', str(output/'overview.mkv'),
+                    '-i', str(output/'approach.mkv'),
+                    '-i', str(output/'reference_corner.mkv'),
+                    '-i', str(output/'driver_reference.mkv'),
+                    '-filter_complex',
+                    'xstack=inputs=4:layout=960_0|0_1080|1280_1080|2560_1080:fill=black',
+                    '-an', '-c:v', 'ffv1', '-level', '1', str(output/'raw.mkv')],
+                    capture_output=True, text=True, timeout=900)
+                if compose.returncode != 0:
+                    raise RuntimeError('Four-camera composition failed: '+compose.stderr[-500:])
+            except BaseException as exc:
+                error = {'composition_error': str(exc)}
         for actor in reversed(owned):
             try:
                 if actor.type_id.startswith('sensor.') and actor.is_listening:

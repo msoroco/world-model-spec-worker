@@ -3,7 +3,6 @@ import argparse
 import json
 import os
 from pathlib import Path
-import pickle
 import shutil
 import subprocess
 import sys
@@ -13,8 +12,9 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
 sys.path.insert(0,str(HERE/'native'))
-from traffic_spec_adapter.adapter import load_graph
-from worker_exchange.package_compatibility import run,materialize_case
+from worker_exchange.fixture_generator import _graph
+from traffic_spec_adapter.adapter import write_adapter_graph
+from worker_exchange.package_compatibility import _process_fixture,materialize_case
 from worker_exchange.runtime_cli import execution_env
 
 
@@ -45,7 +45,7 @@ def make_source(suffix,scratch):
         context.write_text(json.dumps(value,sort_keys=True)+'\n')
         from measure_gap import sha as source_sha
         names=('native_samples.jsonl','following_context.json','road.xodr')
-        (source/'source-manifest.json').write_text(json.dumps({
+        (source/'truck-source-manifest.json').write_text(json.dumps({
             'format':'c102372-truck-follow-source-v1',
             'sha256':{name:source_sha(source/name) for name in names}},sort_keys=True)+'\n')
     for camera in config['cameras']:
@@ -74,16 +74,35 @@ def make_source(suffix,scratch):
         (source/'fallback-metrics.json').write_text(json.dumps(extract(source,suffix),sort_keys=True)+'\n')
     (source/'capture/recorder_info.txt').write_text(
         'Create 107: vehicle.carlamotors.carlacola\nCreate 108: vehicle.carlamotors.carlacola\n')
-    graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
     folder=source/'capture/native/graphs/base';folder.mkdir(parents=True)
     rows=[]
-    for index in range(600):
+    native_rows=[json.loads(line) for line in (source/'native_samples.jsonl').read_text().splitlines()]
+    for index, native in enumerate(native_rows):
         frame=100+index;time=index/20
-        graph.graph['frame']=frame
-        (folder/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))
+        participants=[]
+        for actor in ('ego','lead'):
+            sample=native[actor]
+            participants.append({
+                'actor_id':sample.get('actor_id',107 if actor=='ego' else 108),
+                'blueprint':'vehicle.carlamotors.carlacola',
+                'position_m':sample['center_xy_m']+[1.],
+                'heading_deg':0.,'velocity_mps':[sample['speed_mps'],0.,0.],
+                'speed_mps':sample['speed_mps'],'acceleration_mps2':[0.,0.,0.],
+                'body_vertices_m':sample['body_vertices_m'],
+                'blueprint_attributes':{},'light_attributes':{}})
+        observed={'frame':frame,'time_s':time,'participants':participants,
+                  'world_settings':{'no_rendering_mode':False},
+                  'rgb_sensors':{name:{'frame':frame} for name in
+                                 ('overview','approach','reference_corner','driver_reference')},
+                  'map_context':{'declared_public_way_road_ids':[1],
+                                 'core_assumptions':[['asm.public_highway',True]]}}
+        relative=f'graphs/base/{frame:08d}.adapter.json'
+        graph=_graph({'path':'capture/native/'+relative,
+                      'attributes':{'frame':frame,'observed_evidence':observed},
+                      'nodes':[],'edges':[]})
+        write_adapter_graph(graph,folder/f'{frame:08d}.adapter.json')
         rows.append({'frame':frame,'time_s':time,'simulation_time':time,
-            'base':f'graphs/base/{frame:08d}.pkl',
-            'abstract':f'graphs/abstract/{frame:08d}.pkl','synthetic_diagnostic':True})
+            'base':relative,'adapter_graph':relative,'synthetic_diagnostic':True})
     (source/'capture/native/frames.jsonl').write_text(''.join(
         json.dumps(row)+'\n' for row in rows))
     capture=source/'capture/manifest.json';m=json.loads(capture.read_text())
@@ -98,9 +117,13 @@ def probe(suffix,candidate,source,scratch):
     case=HERE.name+'__'+suffix
     manifest=HERE/'draft-execution-manifest.json'
     output=scratch/'output'
-    receipt=run(manifest,case,source,output,ROOT/'runtime/pipeline/library',
-        ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck',
-        candidate)
+    from worker_exchange.common import sha as source_sha,tree
+    import hashlib
+    source_files={name:source_sha(source/name) for name in tree(source)}
+    fingerprint=hashlib.sha256(json.dumps(source_files,sort_keys=True).encode()).hexdigest()
+    receipt=_process_fixture(manifest,case,source,output,ROOT/'runtime/pipeline/library',
+        ROOT/'.runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck',
+        candidate,{'fixture_sha256':fingerprint,'fixture_manifest':source_files})
     negative=scratch/'negative';materialize_case(manifest,case,negative,source,candidate)
     (negative/'native_samples.jsonl').unlink()
     failed=subprocess.run([sys.executable,str(negative/'finalize.py'),'--attempt',

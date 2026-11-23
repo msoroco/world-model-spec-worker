@@ -17,7 +17,7 @@ def sha(path):
 
 def read_case(case):
     path = FOLDER / case
-    manifest = json.loads((path / 'source-manifest.json').read_text())
+    manifest = json.loads((path / 'truck-source-manifest.json').read_text())
     if set(manifest['sha256']) != {'native_samples.jsonl', 'following_context.json', 'road.xodr'}:
         raise ValueError('Incomplete source inventory')
     for name, expected in manifest['sha256'].items():

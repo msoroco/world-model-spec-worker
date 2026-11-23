@@ -19,7 +19,7 @@ context=json.loads((root/'following_context.json').read_text())
 context['same_direction_lane_count']=2
 (root/'following_context.json').write_text(json.dumps(context,sort_keys=True)+'\n')
 names=('native_samples.jsonl','following_context.json','road.xodr')
-(root/'source-manifest.json').write_text(json.dumps({'format':'c102372-truck-follow-source-v1',
+(root/'truck-source-manifest.json').write_text(json.dumps({'format':'c102372-truck-follow-source-v1',
     'sha256':{name:sha(root/name) for name in names}},sort_keys=True)+'\n')
 
 measurement=measure(root)

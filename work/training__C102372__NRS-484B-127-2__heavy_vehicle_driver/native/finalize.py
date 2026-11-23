@@ -10,7 +10,7 @@ import subprocess
 from measure_gap import measure as measure_single_lane
 
 FRAMES=600
-VIDEOS=('overview.mkv','ego_forward.mkv','lead_gap.mkv','crest_context.mkv')
+VIDEOS=('overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv')
 ROWS=('native_samples.jsonl','trace.jsonl','capture/evidence.jsonl','video_frames.jsonl')
 
 
@@ -100,11 +100,29 @@ def finalize(attempt,output):
     videos={name:frames(require(attempt,name)) for name in VIDEOS}
     if any(count!=FRAMES for count in videos.values()):
         raise ValueError('Original four-view video frame count differs')
+    # The current saved path deliberately drops fixture-supplied derived channels.
+    # Rebuild every declared channel from the retained Native rows and frame map.
+    derived=attempt/'channels';derived.mkdir(exist_ok=True)
     recording=[]
     for channel in config['recording_description']['channels']:
         name=channel['name'];relative='channels/'+name+'.jsonl'
-        if len(rows(require(attempt,relative)))!=FRAMES:
-            raise ValueError('Original truck channel row count differs: '+name)
+        if name not in ('ego_body_pose','lead_body_pose','surface_gap_m',
+                        'body_clearance_m','camera_frame_join'):
+            raise ValueError('Unknown truck channel: '+name)
+        rebuilt=[]
+        for native,join in zip(groups['native_samples.jsonl'],groups['video_frames.jsonl']):
+            ego,lead=native['ego'],native['lead']
+            clearance=min(p[0] for p in lead['body_xy_m'])-max(p[0] for p in ego['body_xy_m'])
+            channel_value={'ego_body_pose':ego,'lead_body_pose':lead,
+                   'surface_gap_m':clearance,'body_clearance_m':clearance,
+                   'camera_frame_join':join}[name]
+            rebuilt.append({'time_s':join['time_s'],'value':channel_value})
+        target=attempt/relative
+        if target.exists():
+            if rows(target)!=rebuilt:
+                raise ValueError('Fixture-provided truck derived channel differs: '+name)
+        else:
+            target.write_text(''.join(json.dumps(row,allow_nan=False)+'\n' for row in rebuilt))
         recording.append({'name':name,'unit':channel['unit'],'reference':relative})
     recording.append({'name':'conditions_permit','unit':'structured',
                       'reference':'following_context.json'})

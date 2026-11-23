@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import pickle
+import copy
 import tempfile
 
 
@@ -14,6 +15,50 @@ ROOT = HERE.parents[1]
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def extend_to_600(fixture):
+    """Keep the already clear pedestrian stationary for a full diagnostic window."""
+    paths = ('steady-samples.jsonl', 'trace.jsonl', 'video_frames.jsonl',
+             'capture/evidence.jsonl', 'capture/native/frames.jsonl')
+    rows = {name: [json.loads(line) for line in (fixture / name).read_text().splitlines()]
+            for name in paths}
+    if any(len(values) != 240 for values in rows.values()):
+        raise ValueError('Expected retained 240-frame source before extension')
+    native_base = rows['capture/native/frames.jsonl'][-1]['base']
+    last_graph = pickle.loads((fixture / 'capture/native' / native_base).read_bytes())
+    for index in range(240, 600):
+        frame = 100 + index
+        time_s = round(index / 20, 5)
+        for name in paths:
+            row = copy.deepcopy(rows[name][-1])
+            if name == 'steady-samples.jsonl':
+                row.update(native_frame=frame, time_s=time_s)
+            elif name == 'trace.jsonl':
+                row.update(frame=frame, time_s=time_s, speed_mps=0, speed_mph=0)
+            elif name == 'video_frames.jsonl':
+                row.update(video_frame=index, native_frame=frame, carla_frame=frame,
+                           time_s=time_s)
+            elif name == 'capture/evidence.jsonl':
+                row.update(original_frame=frame, replay_frame=frame,
+                           recording_time_s=time_s, replay_simulation_time_s=time_s)
+                row['ego']['speed_mps'] = 0
+            else:
+                row.update(frame=frame, time_s=time_s, simulation_time=time_s,
+                           base=f'graphs/base/{frame:08d}.pkl',
+                           abstract=f'graphs/abstract/{frame:08d}.pkl')
+                graph = copy.deepcopy(last_graph)
+                graph.graph.update(frame=frame, simulation_time_s=time_s)
+                (fixture / 'capture/native' / row['base']).write_bytes(pickle.dumps(graph, protocol=4))
+            rows[name].append(row)
+    for name in paths:
+        (fixture / name).write_text(''.join(json.dumps(row, allow_nan=False) + '\n'
+                                                for row in rows[name]))
+    manifest_path = fixture / 'capture/manifest.json'
+    manifest = json.loads(manifest_path.read_text())
+    manifest['frames'] = 600
+    manifest['sources']['trace.jsonl'] = sha(fixture / 'trace.jsonl')
+    manifest_path.write_text(json.dumps(manifest) + '\n')
 
 
 def build(suffix='witness_1'):
@@ -26,6 +71,7 @@ def build(suffix='witness_1'):
     with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='c10316-d4-recipe-') as temp:
         fixture = Path(temp) / 'fixture'
         probe.fixture_at(fixture, suffix)
+        extend_to_600(fixture)
         evidence = [json.loads(line) for line in (fixture / 'capture/evidence.jsonl').read_text().splitlines()]
         for row in evidence:
             row['ego']['speed_provenance'] = 'synthetic_native_sample'
@@ -49,7 +95,7 @@ def build(suffix='witness_1'):
                                          for start, end, attrs in graph.edges(data=True)]})
             else:
                 files[relative] = path.read_text()
-        videos = [{'path': name + '.mkv', 'frames': 240, 'width': width, 'height': height,
+        videos = [{'path': name + '.mkv', 'frames': 600, 'width': width, 'height': height,
                    'fps': 20, 'color': 'black'}
                   for name, width, height in (('overview', 1920, 1080),
                                               ('approach', 1280, 720),
@@ -70,4 +116,7 @@ def build(suffix='witness_1'):
 
 
 if __name__ == '__main__':
-    print(json.dumps(build(), indent=2))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--suffix', choices=('witness_1', 'witness_2'), default='witness_1')
+    print(json.dumps(build(parser.parse_args().suffix), indent=2))

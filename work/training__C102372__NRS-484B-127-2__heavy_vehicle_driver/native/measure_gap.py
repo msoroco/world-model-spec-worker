@@ -51,7 +51,7 @@ def road_distance(x0, x1, profile):
 
 def measure(source_dir):
     source_dir = Path(source_dir)
-    manifest_path = source_dir / 'source-manifest.json'
+    manifest_path = source_dir / 'truck-source-manifest.json'
     if not manifest_path.is_file():
         raise ValueError('Missing original source manifest')
     manifest = json.loads(manifest_path.read_text())

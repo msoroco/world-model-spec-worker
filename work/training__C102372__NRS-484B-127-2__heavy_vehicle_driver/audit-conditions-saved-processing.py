@@ -38,7 +38,7 @@ def audit():
         root=OUT/(case+'-positive')
         config=json.loads((root/'config.json').read_text())
         context=json.loads((root/'following_context.json').read_text())
-        manifest=json.loads((root/'source-manifest.json').read_text())
+        manifest=json.loads((root/'truck-source-manifest.json').read_text())
         contract=json.loads((HERE/'native'/('measurement-contract-'+case+'.json')).read_text())
         result=json.loads((root/'result.json').read_text())
         report=json.loads((root/'analysis-report.json').read_text())
@@ -86,7 +86,7 @@ def audit():
            abs(value['minimum_surface_gap_m']-minimum)>.002 or \
            result['target_checks'][0]['matched'] is not True:
             raise ValueError('Conditions measured event/road arc differs')
-        for name in ('overview.mkv','ego_forward.mkv','lead_gap.mkv','crest_context.mkv'):
+        for name in ('overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'):
             decoded=subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffprobe'),'-v','error',
                 '-count_frames','-select_streams','v:0','-show_entries','stream=nb_read_frames',
                 '-of','default=noprint_wrappers=1:nokey=1',str(root/name)],

@@ -13,7 +13,7 @@ NAMES=('native_samples.jsonl','following_context.json','road.xodr')
 
 def measure(source_dir):
     root=Path(source_dir)
-    manifest=json.loads((root/'source-manifest.json').read_text())
+    manifest=json.loads((root/'truck-source-manifest.json').read_text())
     if manifest.get('format')!='c102372-passing-source-v1' or set(manifest.get('sha256',{}))!=set(NAMES):
         raise ValueError('Incomplete passing source manifest')
     for name in NAMES:

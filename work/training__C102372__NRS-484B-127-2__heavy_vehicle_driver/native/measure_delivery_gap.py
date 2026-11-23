@@ -24,7 +24,7 @@ def digest(path):
 
 def measure(source):
     source = Path(source)
-    manifest_path = source / 'source-manifest.json'
+    manifest_path = source / 'truck-source-manifest.json'
     if not manifest_path.is_file():
         raise ValueError('Missing original source manifest')
     manifest = json.loads(manifest_path.read_text())

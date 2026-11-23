@@ -20,7 +20,7 @@ synthetic=importlib.util.module_from_spec(spec);spec.loader.exec_module(syntheti
 
 
 def resign(root):
-    manifest=root/'source-manifest.json'
+    manifest=root/'truck-source-manifest.json'
     manifest.write_text(json.dumps({'format':'c102372-truck-follow-source-v1',
         'sha256':{name:sha(root/name) for name in
             ('native_samples.jsonl','following_context.json','road.xodr')}},sort_keys=True)+'\n')

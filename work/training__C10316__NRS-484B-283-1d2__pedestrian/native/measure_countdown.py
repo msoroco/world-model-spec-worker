@@ -10,7 +10,7 @@ from pathlib import Path
 from geometry import check as check_geometry
 
 RATE_HZ = 20
-FRAMES = 240
+FRAMES = 600
 
 
 def sha(path):
@@ -58,7 +58,7 @@ def measure(samples_path, context_path):
         raise ValueError('Native countdown needs map, original pixel, and frame provenance')
     rows = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
     if len(rows) != FRAMES:
-        raise ValueError('Full 240-frame countdown source required')
+        raise ValueError('Full 600-frame countdown source required')
     previous = None
     event_rows = []
     positive_lights = set()

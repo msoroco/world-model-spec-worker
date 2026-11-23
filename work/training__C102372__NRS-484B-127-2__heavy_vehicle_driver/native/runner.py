@@ -47,11 +47,11 @@ def cameras(candidate):
         {'name':'overview','width':1920,'height':1080,
          'fov_deg':plan['overview_fov_deg'],'xyz_m':[-16.,0.,plan['overview_height_m']],
          'yaw_deg':0.,'pitch_deg':-12.},
-        {'name':'ego_forward','width':1280,'height':720,'fov_deg':85.,
+        {'name':'approach','width':1280,'height':720,'fov_deg':85.,
          'xyz_m':[3.,0.,3.5],'yaw_deg':0.,'pitch_deg':-2.},
-        {'name':'lead_gap','width':1280,'height':720,'fov_deg':75.,
+        {'name':'reference_corner','width':1280,'height':720,'fov_deg':75.,
          'xyz_m':[-3.,0.,5.],'yaw_deg':0.,'pitch_deg':-5.},
-        {'name':'crest_context','width':1280,'height':720,'fov_deg':100.,
+        {'name':'driver_reference','width':1280,'height':720,'fov_deg':100.,
          'xyz_m':[-8.,0.,6.],'yaw_deg':0.,'pitch_deg':-8.},
     ]
 
@@ -329,7 +329,7 @@ def execute(config,output,host,port):
         if error is None:
             try:
                 sources=('native_samples.jsonl','following_context.json','road.xodr')
-                write_new(output/'source-manifest.json',{
+                write_new(output/'truck-source-manifest.json',{
                     'format':'c102372-conditions-source-v1' if conditions else
                              'c102372-passing-source-v1' if passing_family else
                              'c102372-truck-follow-source-v1',

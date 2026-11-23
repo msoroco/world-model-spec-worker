@@ -16,7 +16,7 @@ class CountdownOffline(unittest.TestCase):
     def test_exact_runner_preflight(self):
         config = json.loads((HERE / 'config.json').read_text())
         result = check_runner(config)
-        self.assertEqual(result['frames'], 240)
+        self.assertEqual(result['frames'], 600)
         self.assertEqual(len(result['cameras']), 4)
         self.assertFalse(result['native_imported'])
         self.assertFalse(result['physical_display_verified'])
@@ -30,7 +30,7 @@ class CountdownOffline(unittest.TestCase):
     def test_ordered_frame_schedules(self):
         config = json.loads((HERE / 'config.json').read_text())
         zero = candidate(config['case_suffix'], config['candidate_id'])['engineering']['countdown_zero_s']
-        states = [frame_state(i, zero) for i in range(240)]
+        states = [frame_state(i, zero) for i in range(600)]
         self.assertEqual(states[0]['displayed_countdown_s'], int(zero))
         self.assertEqual(next(i for i, state in enumerate(states) if state['displayed_countdown_s'] == 0), int(zero*20))
         self.assertEqual([state['display_illuminated'] for state in states[:20]],

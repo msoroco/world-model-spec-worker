@@ -14,7 +14,7 @@ from signal_clock import frame_state
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
-FRAMES = 240
+FRAMES = 600
 DEVICE_ID = 'C10316-authored-pedestrian-head-east'
 
 
@@ -41,7 +41,7 @@ def check(config):
         raise ValueError('Countdown case identity differs')
     if (config['cell_id'], config['law_id'], config['actor']) != ('C10316', 'NRS-484B-283-1d2', 'pedestrian'):
         raise ValueError('Frozen assignment identity differs')
-    if (config['duration_s'], config['rate_hz']) != (12, RATE_HZ):
+    if (config['duration_s'], config['rate_hz']) != (30, RATE_HZ):
         raise ValueError('Full countdown capture window differs')
     if [(x['name'], x['width'], x['height']) for x in camera_specs(plan)] != [
         (x['name'], x['width'], x['height']) for x in config['cameras']
@@ -76,6 +76,7 @@ def execute(config, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from scenario_pipeline.worker_exchange.native_output import FrameMap
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
 
     check(config)
@@ -148,7 +149,7 @@ def execute(config, output, host, port):
                                   visibility=False, required_observations=config.get('required_atoms', []))
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'countdown_samples.jsonl').open('x') as samples, \
-             (output / 'video_frames.jsonl').open('x') as frame_map:
+             FrameMap(output / 'video_frames.jsonl') as frame_map:
             for index in range(FRAMES):
                 # Native debug text is a construction probe, not an accepted physical
                 # pedestrian signal. Saved pixel and governance audits must reject it
@@ -191,8 +192,7 @@ def execute(config, output, host, port):
                     encoders[spec['name']].stdin.write(data)
                 observed['original_display_frame_sha256'] = pixels['display_close']
                 samples.write(json.dumps(observed, allow_nan=False) + '\n')
-                frame_map.write(json.dumps({'video_frame': index, 'native_frame': frame,
-                    'carla_frame': frame, 'time_s': time_s, 'source_rgb_sha256': pixels}) + '\n')
+                frame_map.append(frame, time_s, source_rgb_sha256=pixels)
                 frames += 1
         write_new(output / 'countdown-context.json', {
             'source_kind': 'native_observation', 'crosswalk_id': CROSSWALK_ID,
@@ -218,6 +218,20 @@ def execute(config, output, host, port):
             except BaseException as exc:
                 error = error or {'encoder_error': str(exc)}
             logs[name].close()
+        if error is None and frames == FRAMES and len(encoders) == 4:
+            try:
+                command = ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n']
+                for name in ('overview', 'approach', 'crosswalk_side', 'display_close'):
+                    command.extend(['-i', str(output / (name + '.mkv'))])
+                command.extend(['-filter_complex',
+                    '[0:v]scale=960:540[a];[1:v]scale=960:540[b];'
+                    '[2:v]scale=960:540[c];[3:v]scale=960:540[d];'
+                    '[a][b][c][d]xstack=inputs=4:layout=0_0|960_0|0_540|960_540[out]',
+                    '-map', '[out]', '-an', '-c:v', 'ffv1', '-level', '1',
+                    str(output / 'raw.mkv')])
+                subprocess.run(command, check=True, capture_output=True, timeout=600)
+            except BaseException as exc:
+                error = error or {'composed_video_error': str(exc)}
         for actor in reversed(owned):
             try:
                 if actor.type_id.startswith('sensor.') and actor.is_listening:

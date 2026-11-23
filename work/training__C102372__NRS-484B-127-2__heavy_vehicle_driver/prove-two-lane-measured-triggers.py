@@ -20,7 +20,7 @@ def write_rows(path,items):
 
 def refresh(root):
     names=('native_samples.jsonl','following_context.json','road.xodr')
-    (root/'source-manifest.json').write_text(json.dumps({
+    (root/'truck-source-manifest.json').write_text(json.dumps({
         'format':'c102372-truck-follow-source-v1',
         'sha256':{name:sha(root/name) for name in names}},sort_keys=True)+'\n')
     (root/'trigger-source-manifest.json').write_text(json.dumps({

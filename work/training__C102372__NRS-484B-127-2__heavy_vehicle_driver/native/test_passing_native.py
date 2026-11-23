@@ -23,7 +23,7 @@ class PassingNativeTests(unittest.TestCase):
             self.assertTrue(value['passed'])
             self.assertFalse(value['native_imported'])
             self.assertEqual(value['camera_names'],[
-                'overview','ego_forward','lead_gap','crest_context'])
+                'overview','approach','reference_corner','driver_reference'])
 
     def test_lateral_request_and_three_distinct_knobs(self):
         self.assertEqual(request('primary',0)['intended_lane_id'],-1)

@@ -84,7 +84,7 @@ def augment(root,case):
         'extraction_confirmed':True,'synthetic_diagnostic':True,'sources':{
             'native_samples.jsonl':sha(root/'native_samples.jsonl')}},sort_keys=True)+'\n')
     ffmpeg=ROOT/'.runtime-work/linux_arm64/ffmpeg'
-    for name in ('overview','ego_forward','lead_gap','crest_context'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         subprocess.run([str(ffmpeg),'-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=30','-frames:v','600',
             '-c:v','ffv1',str(root/(name+'.mkv'))],check=True,timeout=120)

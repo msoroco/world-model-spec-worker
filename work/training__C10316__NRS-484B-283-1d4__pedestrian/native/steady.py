@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 
 RATE_HZ = 20
-FRAMES = 240
+FRAMES = 600
 
 
 def signal_state(index, steady_start_s):
@@ -53,7 +53,7 @@ def measure(samples_path, context_path):
         raise ValueError('Native steady map or pixel provenance missing')
     rows = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
     if len(rows) != FRAMES:
-        raise ValueError('Full 240-frame steady source required')
+        raise ValueError('Full 600-frame steady source required')
     previous = None
     entry = steady = clearance = None
     progress_after_steady = []

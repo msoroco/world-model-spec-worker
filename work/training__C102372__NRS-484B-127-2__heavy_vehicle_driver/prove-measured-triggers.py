@@ -21,7 +21,7 @@ def write_rows(path,items):path.write_text(''.join(
 
 
 def refresh(root):
-    manifest=root/'source-manifest.json'
+    manifest=root/'truck-source-manifest.json'
     data=json.loads(manifest.read_text())
     for name in data['sha256']:data['sha256'][name]=sha(root/name)
     manifest.write_text(json.dumps(data,sort_keys=True)+'\n')
@@ -58,7 +58,7 @@ def main():
         baseline=check(first,'probe_1','fallback2',False)
         check(first,'probe_1','fallback3',False)
         original=(first/'native_samples.jsonl').read_bytes()
-        original_manifest=(first/'source-manifest.json').read_bytes()
+        original_manifest=(first/'truck-source-manifest.json').read_bytes()
         original_trigger=(first/'trigger-source-manifest.json').read_bytes()
         native=rows(first/'native_samples.jsonl')
         for index,row in enumerate(native):
@@ -70,7 +70,7 @@ def main():
         write_rows(first/'native_samples.jsonl',native);refresh(first)
         shorter=check(first,'probe_1','fallback2',True)
         (first/'native_samples.jsonl').write_bytes(original)
-        (first/'source-manifest.json').write_bytes(original_manifest)
+        (first/'truck-source-manifest.json').write_bytes(original_manifest)
         (first/'trigger-source-manifest.json').write_bytes(original_trigger)
         native=rows(first/'native_samples.jsonl')
         for row in native:row['overview_camera_pose']['yaw_deg']=60.

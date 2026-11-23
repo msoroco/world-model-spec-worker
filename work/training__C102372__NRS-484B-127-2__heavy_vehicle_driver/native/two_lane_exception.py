@@ -35,7 +35,7 @@ def geometry_check():
 
 def measure(root):
     root=Path(root)
-    manifest=json.loads((root/'source-manifest.json').read_text())
+    manifest=json.loads((root/'truck-source-manifest.json').read_text())
     names=('native_samples.jsonl','following_context.json','road.xodr')
     if manifest.get('format')!='c102372-truck-follow-source-v1' or set(
             manifest.get('sha256',{}))!=set(names):

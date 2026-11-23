@@ -39,7 +39,7 @@ def case(folder, zero_time_s):
     }
     (folder / 'countdown-context.json').write_text(json.dumps(context, indent=2) + '\n')
     rows = []
-    for i in range(240):
+    for i in range(600):
         time = round(i/20, 2)
         x = -4.5 + (8.14/8.0)*time
         y = -.65
@@ -107,7 +107,7 @@ def main():
     negatives.append(rejected(root, 'unbracketed_zero', broken, early_context, 'Countdown zero transition not bracketed'))
     broken = copy.deepcopy(early_rows)
     for row in broken:
-        delta = -4.5 + 5.0*row['time_s']/8.0 - row['pedestrian_xy_m'][0]
+        delta = -4.5 + 5.0*row['time_s']/30.0 - row['pedestrian_xy_m'][0]
         row['pedestrian_xy_m'][0] += delta
         for vertex in row['pedestrian_footprint_xy_m']: vertex[0] += delta
     negatives.append(rejected(root, 'no_clearance', broken, early_context, 'Crossing entry, full clearance, or displayed zero missing'))

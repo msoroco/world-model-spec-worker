@@ -16,7 +16,7 @@ class PriorEntryOffline(unittest.TestCase):
     def test_exact_runner_preflight(self):
         config = json.loads((HERE / 'config.json').read_text())
         result = check_runner(config)
-        self.assertEqual(result['frames'], 240)
+        self.assertEqual(result['frames'], 600)
         self.assertEqual(len(result['cameras']), 4)
         self.assertFalse(result['native_imported'])
         self.assertFalse(result['physical_display_verified'])
@@ -31,7 +31,7 @@ class PriorEntryOffline(unittest.TestCase):
         config = json.loads((HERE / 'config.json').read_text())
         plan = candidate(config['case_suffix'], config['candidate_id'])
         program = plan['engineering']['entry_program']
-        states = [signal_state(i, program) for i in range(240)]
+        states = [signal_state(i, program) for i in range(600)]
         self.assertEqual(states[0], ('walk', True))
         self.assertEqual(next(i for i, state in enumerate(states) if state[0] == 'dont_walk_steady'), 80)
         self.assertEqual(states[18][0], 'dont_walk_flashing' if config['case_suffix'] == 'exception_1_1' else 'walk')

@@ -23,7 +23,7 @@ def main():
     assert summary['runtime_manifest_sha256'] == manifest['runtime_manifest_sha256']
     assert len(summary['results']) == 8
     sources = ('runner.py', 'geometry.py', 'engineering.py', 'signal_clock.py',
-               'measure_countdown.py', 'finalize.py', 'road.xodr')
+               'measure_countdown.py', 'finalize.py', 'audit_display_frames.py', 'road.xodr')
     configs = {}
     seen = set()
     for case in manifest['cases']:
@@ -42,7 +42,7 @@ def main():
             config = json.loads(files['config.json'])
             assert config['case_id'] == case['case_id'] == config['selected_case_id']
             assert config['candidate_id'] == ident
-            assert (config['duration_s'], config['rate_hz']) == (12, 20)
+            assert (config['duration_s'], config['rate_hz']) == (30, 20)
             assert (config['law_id'], config['cell_id'], config['actor']) == ('NRS-484B-283-1d2', 'C10316', 'pedestrian')
             assert config['required_atoms'] == ['ru.pedestrian', 'kin.position', 'kin.heading', 'st.crosswalk', 'rel.occupies']
             assert len(config['cameras']) == 4

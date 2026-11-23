@@ -71,6 +71,42 @@ def steady_entry(folder):
     return measure(folder / 'steady-samples.jsonl', folder / 'steady-context.json')
 
 
+def derive_channels(folder, config):
+    """Rebuild adapter channels from retained source rows after source joins pass."""
+    folder = Path(folder)
+    samples = rows(folder, 'steady-samples.jsonl')
+    evidence = rows(folder, 'capture/evidence.jsonl')
+    mapping = rows(folder, 'video_frames.jsonl')
+    requested = {item['name'] for item in config['recording_description']['channels']}
+    expected = {'kin.position', 'kin.heading', 'rel.occupies',
+                'native_display_program', 'display_camera_frame_join'}
+    if requested != expected:
+        raise ValueError('Steady recording channel contract differs')
+    directory = folder / 'channels'
+    directory.mkdir(exist_ok=True)
+    if any(directory.iterdir()):
+        raise ValueError('Derived steady channels were supplied instead of rebuilt')
+    values = {name: [] for name in expected}
+    for sample, event, frame in zip(samples, evidence, mapping):
+        x, y = sample['pedestrian_xy_m']
+        row = {'kin.position': [x, y], 'kin.heading': [1, 0],
+               'rel.occupies': {'crosswalk_id': sample['crosswalk_id'],
+                                'original_footprint_xy_m': sample['pedestrian_footprint_xy_m']},
+               'native_display_program': {
+                   'indication': sample['indication'],
+                   'illuminated': sample['display_illuminated'],
+                   'steady_illuminated': sample['indication'] == 'dont_walk_steady'},
+               'display_camera_frame_join': frame}
+        if [round(v, 3) for v in event['ego']['position_m'][:2]] != [round(x, 3), round(y, 3)]:
+            raise ValueError('Derived steady position differs from original evidence')
+        for name in expected:
+            values[name].append({'time_s': sample['time_s'], 'value': row[name]})
+    for name, stream in values.items():
+        (directory / (name + '.jsonl')).write_text(''.join(
+            json.dumps(row, allow_nan=False) + '\n' for row in stream))
+    return {name: sha(directory / (name + '.jsonl')) for name in sorted(expected)}
+
+
 def report(folder, case_id):
     folder = Path(folder)
     value = steady_entry(folder)
@@ -88,9 +124,10 @@ def finalize(attempt, output):
         raise ValueError('Retain original steady finalization; use a fresh attempt')
     config = json.loads(required(attempt, 'config.json').read_text())
     count = config['duration_s'] * config['rate_hz']
-    if count != 240:
-        raise ValueError('Full 12-second steady window changed')
+    if count != 600:
+        raise ValueError('Full 30-second steady window changed')
     joins = verify_original_joins(attempt, count)
+    derived = derive_channels(attempt, config)
     analysis = report(attempt, config['case_id'])
     measured = analysis['measurements']['steady_entry_and_progress']['value']
     context = json.loads(required(attempt, 'steady-context.json').read_text())
@@ -137,7 +174,7 @@ def finalize(attempt, output):
                   'value': measured['steady_start']['time_interval_s'][1] - measured['first_entry']['time_interval_s'][1],
                   'unit': 's',
                   'method': 'original synchronized event brackets',
-                  'time_window': 'entire original 12-second capture',
+                  'time_window': 'entire original 30-second capture',
                   'statistic': 'first full-body entry versus first steady indication',
                   'reference': 'steady-samples.jsonl'}},
               'provenance_kind': 'synthetic_local_diagnostic' if not native else 'native_source_shape_unverified',
@@ -145,6 +182,7 @@ def finalize(attempt, output):
     validate_result(result)
     analysis.update(format='c10316-saved-steady-analysis-v1', candidate_id=config['candidate_id'],
                     original_joins=joins, video_frames=videos,
+                    derived_channel_sha256=derived,
                     scope='saved source joins and video decode; no physical signal or legal finding')
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + '\n')
     (attempt / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')

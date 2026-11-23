@@ -1,0 +1,69 @@
+{
+  "template_id": "NRS-484B-283-1d3@pedestrian",
+  "law_id": "NRS-484B-283-1d3",
+  "actor": "pedestrian",
+  "status": "draft",
+  "quote": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and steady.",
+  "structure": {
+    "activation": {
+      "condition": "A pedestrian faces a governing pedestrian signal flashing Don’t Walk or Wait without a countdown timer.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "conditional",
+      "description": "A pedestrian may not proceed to cross during the no-countdown flashing indication. A pedestrian who entered lawfully under subparagraph (1) may continue, but must reach a listed place of safety before the indication becomes steady.",
+      "source_clause": "“Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and steady.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source": "NRS 484B.287",
+        "status": "requires_independent_context_review"
+      },
+      {
+        "source": "NRS 484B.290",
+        "status": "requires_independent_context_review"
+      },
+      {
+        "source": "NRS 484B.350",
+        "status": "requires_independent_context_review"
+      },
+      {
+        "source": "NRS 484B.283(1)(d)(1)",
+        "status": "lawful_prior_entry_dependency"
+      }
+    ],
+    "timing": {
+      "description": "Distinguish first highway entry during Walk from new first entry during flashing; for a lawful prior entrant, compare full-body arrival at a listed safety place with onset of steady indication.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      "whether the actual display governs the pedestrian direction",
+      "whether prior entry was lawful under subparagraph (1)",
+      "whether a cited introductory exception applies",
+      "whether the destination is a listed place of safety"
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "flash_start_s",
+      "kind": "world_setup",
+      "range_or_domain": "requested 2.0 s versus 0.5 s; engineering setting only"
+    },
+    {
+      "name": "original_signal_history",
+      "kind": "source_observation",
+      "range_or_domain": "original governing pixels, native timestamps and countdown presence"
+    },
+    {
+      "name": "first_highway_entry",
+      "kind": "subject_behavior",
+      "range_or_domain": "first original full-body footprint contact with surveyed highway"
+    },
+    {
+      "name": "full_body_safety_arrival",
+      "kind": "subject_behavior",
+      "range_or_domain": "original footprint at curb, sidewalk, safety zone if present, or other reviewed safety place"
+    }
+  ]
+}

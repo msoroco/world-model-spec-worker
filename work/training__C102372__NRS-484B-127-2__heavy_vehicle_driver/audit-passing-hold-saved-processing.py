@@ -16,7 +16,7 @@ def rows(name):return [json.loads(line) for line in (SOURCE/name).read_text().sp
 
 
 def audit():
-    manifest=json.loads((SOURCE/'source-manifest.json').read_text())
+    manifest=json.loads((SOURCE/'truck-source-manifest.json').read_text())
     if manifest['format']!='c102372-passing-source-v1':
         raise ValueError('Hold source format differs')
     for name,value in manifest['sha256'].items():
@@ -91,7 +91,7 @@ def audit():
             raise ValueError('Hold/pass lead control differs')
     if native[200]['ego']['lane_id']==other[200]['ego']['lane_id']:
         raise ValueError('Hold/pass intervention did not change lane sequence')
-    for name in ('overview.mkv','ego_forward.mkv','lead_gap.mkv','crest_context.mkv'):
+    for name in ('overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'):
         decoded=subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffprobe'),'-v','error',
             '-count_frames','-select_streams','v:0','-show_entries','stream=nb_read_frames',
             '-of','default=noprint_wrappers=1:nokey=1',str(SOURCE/name)],

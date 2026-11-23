@@ -58,7 +58,7 @@ def write_case(case,candidate='primary',kind='baseline'):
             'obstacle':{'actor_class':'stopped_vehicle','lane_id':-1,
                         'body_xy_m':body(obstacle_x)} if event else None})
     (root/'native_samples.jsonl').write_text(''.join(json.dumps(row,sort_keys=True)+'\n' for row in rows))
-    (root/'source-manifest.json').write_text(json.dumps({
+    (root/'truck-source-manifest.json').write_text(json.dumps({
         'format':'c102372-conditions-source-v1',
         'sha256':{name:sha(root/name) for name in NAMES}},sort_keys=True)+'\n')
     return root

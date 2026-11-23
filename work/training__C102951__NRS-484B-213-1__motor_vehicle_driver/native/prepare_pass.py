@@ -11,6 +11,7 @@ from measure_pass import measure
 HERE = Path(__file__).resolve().parent
 REQUIRED = ('native-raw-actors.jsonl', 'native-map-readback.json',
             'video_frames.jsonl')
+ORIGINAL_CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -66,10 +67,21 @@ def prepare(raw_folder, review_path, output, config_path):
             config.get('candidate_id') == 'fallback3'):
         raise ValueError('Only completed-pass candidates use this processor')
     paths = {name: raw_folder/name for name in REQUIRED}
-    video = raw_folder/'forward.mkv' if (raw_folder/'forward.mkv').exists() else raw_folder/'forward-video-stub.txt'
-    paths['forward_video'] = video
     if any(not path.is_file() for path in paths.values()):
         raise ValueError('Raw actor, map or synchronized video source absent')
+    raw = [json.loads(line) for line in paths['native-raw-actors.jsonl'].read_text().splitlines()]
+    if len(raw) != 600:
+        raise ValueError('Raw actor frame coverage differs')
+    source_kind = raw[0].get('source_kind')
+    if source_kind == 'original_native':
+        paths.update({name+'_video': raw_folder/(name+'.mkv') for name in ORIGINAL_CAMERAS})
+        paths['primary_video'] = raw_folder/'raw.mkv'
+    elif source_kind == 'synthetic_cpu':
+        paths['forward_video'] = raw_folder/'forward-video-stub.txt'
+    else:
+        raise ValueError('Raw actor provenance differs')
+    if any(not path.is_file() for path in paths.values()):
+        raise ValueError('Four source cameras or required raw source absent')
     source_hashes = {name: sha(path) for name, path in paths.items()}
     review = json.loads(review_path.read_text())
     if (review.get('format') != 'c102951-sightline-review-v1' or
@@ -87,28 +99,30 @@ def prepare(raw_folder, review_path, output, config_path):
                  'overtaken_actor_id', 'oncoming_actor_id')) or
             map_info.get('highway_status_reviewed') is not False):
         raise ValueError('Native two-direction map readback differs')
-    raw = [json.loads(line) for line in paths['native-raw-actors.jsonl'].read_text().splitlines()]
     frames = [json.loads(line) for line in paths['video_frames.jsonl'].read_text().splitlines()]
     if len(raw) != 600 or len(frames) != 600:
         raise ValueError('Raw actor/video frame coverage differs')
-    source_kind = raw[0].get('source_kind')
     if source_kind not in ('synthetic_cpu', 'original_native') or review.get('source_kind') != source_kind:
         raise ValueError('Raw/review provenance differs')
     if source_kind == 'original_native':
-        if video.name != 'forward.mkv' or review.get('review_provenance') != 'human_frame_review':
-            raise ValueError('Original Native video or manual sightline review absent')
-        try:
-            probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames',
-                                    '-select_streams', 'v:0', '-show_entries',
-                                    'stream=codec_name,nb_read_frames', '-of', 'json',
-                                    str(video)], capture_output=True, text=True,
-                                   timeout=180, check=True)
-            streams = json.loads(probe.stdout)['streams']
-            if len(streams) != 1 or streams[0].get('codec_name') != 'ffv1' or int(
-                    streams[0].get('nb_read_frames', 0)) != 600:
-                raise ValueError('Original forward video codec or 600-frame coverage differs')
-        except (OSError, subprocess.CalledProcessError, KeyError, TypeError, json.JSONDecodeError) as error:
-            raise ValueError('Original forward FFV1 video could not be verified') from error
+        if review.get('review_provenance') != 'human_frame_review':
+            raise ValueError('Original Native manual sightline review absent')
+        for name in (*ORIGINAL_CAMERAS, 'primary'):
+            try:
+                probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames',
+                                        '-select_streams', 'v:0', '-show_entries',
+                                        'stream=codec_name,nb_read_frames,width,height', '-of', 'json',
+                                        str(paths[name+'_video'])], capture_output=True, text=True,
+                                       timeout=180, check=True)
+                streams = json.loads(probe.stdout)['streams']
+                expected_size = ((3840, 1800) if name == 'primary' else
+                                 (1920, 1080) if name == 'overview' else (1280, 720))
+                if (len(streams) != 1 or streams[0].get('codec_name') != 'ffv1' or
+                        int(streams[0].get('nb_read_frames', 0)) != 600 or
+                        (streams[0].get('width'), streams[0].get('height')) != expected_size):
+                    raise ValueError('Original source camera codec, size or 600-frame coverage differs: '+name)
+            except (OSError, subprocess.CalledProcessError, KeyError, TypeError, json.JSONDecodeError) as error:
+                raise ValueError('Original FFV1 camera could not be verified: '+name) from error
     elif review.get('review_provenance') != 'synthetic_cpu':
         raise ValueError('Synthetic review provenance differs')
     if config['distance_m'] not in (70, 120, 170):

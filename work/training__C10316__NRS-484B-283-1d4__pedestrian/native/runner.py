@@ -14,7 +14,7 @@ from steady import signal_state
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
-FRAMES = 240
+FRAMES = 600
 DEVICE_ID = 'C10316-authored-pedestrian-head-east'
 
 
@@ -41,7 +41,7 @@ def check(config):
         raise ValueError('Steady-indication case identity differs')
     if (config['cell_id'], config['law_id'], config['actor']) != ('C10316', 'NRS-484B-283-1d4', 'pedestrian'):
         raise ValueError('Frozen assignment identity differs')
-    if (config['duration_s'], config['rate_hz']) != (12, RATE_HZ):
+    if (config['duration_s'], config['rate_hz']) != (30, RATE_HZ):
         raise ValueError('Full steady capture window differs')
     if [(x['name'], x['width'], x['height']) for x in camera_specs(plan)] != [
         (x['name'], x['width'], x['height']) for x in config['cameras']
@@ -177,6 +177,8 @@ def execute(config, output, host, port):
                             'pedestrian_footprint_xy_m': footprint(walker),
                             'observed_walker_speed_mps': math.hypot(speed.x, speed.y),
                             'source_scope': 'Native pose plus requested debug display program; original pixel audit pending'}
+                if min(point[0] for point in observed['pedestrian_footprint_xy_m']) >= 3.5:
+                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(x=1), speed=0))
                 capture.capture(frame, time_s, extra={'steady_proposal': observed})
                 pixels = {}
                 for spec in camera_specs(plan):

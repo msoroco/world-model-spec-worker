@@ -29,7 +29,7 @@ def saved_receipt(manifest,entry,candidate):
         if (item['passed'] is not True or item['case']!=case or item['candidate']!=candidate
             or item['construction_sha256']!=ref['construction_sha256']
             or item['negative_exit_code']==0 or item['accepted_recording_claimed'] is not False
-            or receipt['format']!='worker-package-compatibility-v1'
+            or receipt['format']!='worker-package-compatibility'
             or receipt['case_id']!=case or receipt['candidate_id']!=candidate
             or receipt['construction_sha256']!=ref['construction_sha256']
             or receipt['runtime_manifest_sha256']!=manifest['runtime_manifest_sha256']

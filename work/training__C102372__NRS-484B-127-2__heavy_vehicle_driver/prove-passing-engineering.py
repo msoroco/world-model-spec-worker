@@ -38,7 +38,7 @@ def write_case(name,speed=None,label=None):
                     'lane_id':-1,'speed_mps':8,'body_xy_m':body(lead_x)}})
     (root/'native_samples.jsonl').write_text(''.join(json.dumps(row,sort_keys=True)+'\n'
                                                 for row in rows))
-    (root/'source-manifest.json').write_text(json.dumps({
+    (root/'truck-source-manifest.json').write_text(json.dumps({
         'format':'c102372-passing-source-v1','sha256':{key:sha(root/key)
         for key in NAMES}},sort_keys=True)+'\n')
     return root

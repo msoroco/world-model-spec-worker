@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def signal_state(index, entry_program):
-    if type(index) is not int or index < 0 or index >= 240:
+    if type(index) is not int or index < 0 or index >= 600:
         raise ValueError('Prior-entry signal frame outside capture')
     if entry_program not in ('walk', 'flashing_no_countdown'):
         raise ValueError('Prior-entry signal program invalid')
@@ -54,8 +54,8 @@ def measure(samples_path, context_path):
     ):
         raise ValueError('Native prior-entry map or pixel provenance missing')
     rows = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
-    if len(rows) != 240:
-        raise ValueError('Full 240-frame prior-entry source required')
+    if len(rows) != 600:
+        raise ValueError('Full 600-frame prior-entry source required')
     phase_rank = {'walk': 0, 'dont_walk_flashing': 1, 'dont_walk_steady': 2}
     first_entry = steady = clearance = None
     previous = None
@@ -135,7 +135,7 @@ def measure(samples_path, context_path):
                 'time_interval_s': [event[0]['time_s'], event[1]['time_s']]}
     return {'format': 'c10316-prior-entry-source-observation-v1',
             'source_sha256': {path.name: sha(path) for path in (samples_path, context_path, road)},
-            'source_kind': kind, 'original_frames': 240, 'rate_hz': 20,
+            'source_kind': kind, 'original_frames': 600, 'rate_hz': 20,
             'first_entry': bracket(first_entry), 'entry_indication': entry_indication,
             'steady_start': bracket(steady), 'full_body_clearance': bracket(clearance),
             'post_steady_crossing_samples': len(progress_after_steady),
