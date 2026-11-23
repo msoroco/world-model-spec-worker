@@ -4,6 +4,7 @@ All rows are synthetic software probes. This never reconstructs Native pixels.
 """
 import hashlib
 import json
+import argparse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -15,11 +16,15 @@ def sha(path):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--condition', choices=('condition_a', 'condition_b'), default='condition_a')
+    condition = parser.parse_args().condition
     summary = json.loads((HERE / 'saved-following-summary.json').read_text())
-    retained = Path(summary['records'][0]['retained_positive'])
+    record = next(row for row in summary['records'] if row['case_suffix'] == condition)
+    retained = Path(record['retained_positive'])
     if not retained.is_dir():
         raise ValueError('Retained original-source fixture unavailable; regenerate saved proof')
-    source_dir = HERE / 'current-fixture' / 'condition_a'
+    source_dir = HERE / 'current-fixture' / condition
     source_dir.mkdir(parents=True, exist_ok=True)
     source_names = ['native_samples.jsonl', 'following_context.json', 'trace.jsonl',
                     'capture/evidence.jsonl', 'capture/manifest.json',
@@ -60,7 +65,7 @@ def main():
                      'videos': [{'path': name+'.mkv', 'frames': 900,
                                  'width': width, 'height': height, 'fps': 20,
                                  'color': 'black'} for name, width, height in cameras]}
-    spec_path = HERE / 'current-fixture' / 'condition_a-generator.json'
+    spec_path = HERE / 'current-fixture' / (condition + '-generator.json')
     spec_path.write_text(json.dumps(specification, separators=(',', ':')) + '\n')
     if spec_path.stat().st_size > 2 * 1024 * 1024:
         raise ValueError('Generator specification exceeds returned-file limit')
@@ -70,9 +75,9 @@ def main():
                            'sha256': sha(source_dir / name)} for name in source_names],
               'generator': {'source': spec_path.relative_to(ROOT).as_posix(),
                             'sha256': sha(spec_path)}}
-    recipe_path = HERE / 'current-fixture' / 'condition_a-recipe.json'
+    recipe_path = HERE / 'current-fixture' / (condition + '-recipe.json')
     recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
-    print(json.dumps({'frames': len(samples), 'sources': len(source_names),
+    print(json.dumps({'condition': condition, 'frames': len(samples), 'sources': len(source_names),
                       'graphs': len(graphs), 'generator_bytes': spec_path.stat().st_size,
                       'recipe_sha256': sha(recipe_path)}, sort_keys=True))
 

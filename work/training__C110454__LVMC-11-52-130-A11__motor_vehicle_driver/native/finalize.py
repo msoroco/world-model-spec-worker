@@ -136,7 +136,7 @@ def finalize(attempt,output):
       'realized_observables':{'parked_footprint_distance_to_intersection':
           {'value':actual['nearest_parked_body_distance_m']/0.3048,'unit':'ft',
            'method':'nearest observed parked full-body sample to surveyed intersection boundary',
-           'time_window':'original 24 s / 480 frame attempt',
+           'time_window':f'original {config["duration_s"]} s / {requested_count} frame attempt',
            'statistic':'minimum sampled distance','reference':'native_parking_history.json'}},
       'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result

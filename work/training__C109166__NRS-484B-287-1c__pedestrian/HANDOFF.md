@@ -1,17 +1,25 @@
-# training__C109166__NRS-484B-287-1c__pedestrian
+# C109166 pedestrian crossing checkpoint
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, Native observation, physical acceptance, or legal verdict is claimed.
 
-## Source and scope
+## Source and comparison
 
-NRS 484B.287(1)(c): Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: Between adjacent intersections at which official traffic-control devices are in operation pedestrians shall not cross at any place except in a marked crosswalk.
+The current frozen NRS 484B.287(1)(c) text applies to crossing between adjacent intersections with official traffic-control devices in operation, except as provided in NRS 484B.290, and permits a marked crosswalk. The frozen cell is intersection / enter_road / traffic_control_device, actor pedestrian. The witness is pending review; the full-train membership has zero rows. The recovered summary is not statutory authority.
 
-Cell: intersection / enter_road / traffic_control_device; actor: pedestrian. Frozen witness count: 1. Membership rows: {'full-train': 0}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+The two `case-plan.json` definitions request marked-crosswalk and unmarked-midblock crossings. `native/crossing/request.py` binds to current assignment SHA-256 `2254705a424b298452a063dfb5d4f1f6d67754ab8b055d5cac789935e7252d07` and plan SHA-256 `6f0e6cb201c525afd05d718702178be731e185b6360a403aaa218b60b6b37c0c`. It builds two unselected 600-frame, 20-Hz, 30-second pedestrian requests. Their x=0 and x=100 intersections, x=40 marked crossing, x=60 unmarked crossing, and roadway boundary y=-4 are authored diagnostic markers, not measured Native map facts. Each requested crossing reaches y=-4 at frame 259 (13 seconds). All Native, official-device, marking and verdict fields remain false or null.
 
-## Proposed comparison
+## Current CPU evidence
 
-between adjacent intersections with operational official controls; pedestrian road crossing Vary only `crossing_location` (category) across ['marked_crosswalk', 'unmarked_midblock']. Record physical marking, adjacent control operating state, pedestrian footprint and roadway entry. The definitions are not selected recordings, and requested settings are not measured results.
+- `native/crossing/manifest.json`: SHA-256 `988567de56a016c27413da6302aa659bfbc7b809a1be045f0c85eb798071deed`.
+- `native/crossing/request-proof.json`: SHA-256 `8003aceeb9c6c30ae87c914eb7e0359b071e1f0608050d22664f6ed33fb43818`. `prove.py` passed 2 exact positives and rejected 8 law, track, status and duration tamper cases.
+- `native/crossing/comparison-audit.json`: SHA-256 `60fa15099acb9c2b2abf067e70abec5e0b65f6edb88375b2eb7f10e2bc8a9231`. `audit.py` compared all 600 frames; only requested x and crossing category differ.
+- `native/crossing/draft-execution-manifest.json`: SHA-256 `8942feaeae3e41bc72a984d35f868dd6941571033f605462abbc51ea4df50775`.
+- `native/crossing/pinned-runtime-proof.json`: SHA-256 `bfd3d4eb1540c946607a07f99ea16dcc8a300689fb5969034a1e0db2d5ee4141`. Both current `runtime.py offline` runs exited 0 with one exact test each and no simulation; hashed logs are under `.runtime-work/c109166-*-2/offline.log`.
 
-## Blockers and resumption
+Commands: `.venv-cpu/bin/python runtime.py preflight`; `.venv-cpu/bin/python native/crossing/request.py`; `.venv-cpu/bin/python native/crossing/prove.py`; `.venv-cpu/bin/python native/crossing/audit.py`; `.venv-cpu/bin/python native/crossing/build_runtime_offline.py`; `.venv-cpu/bin/python runtime.py offline --manifest native/crossing/draft-execution-manifest.json --case CASE_ID --output .runtime-work/c109166-LOCATION-2` (paths relative to this assignment for native scripts, repository root for runtime).
 
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Referenced NRS 484B.290 exception must be reviewed separately. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+## Required continuation
+
+Review NRS 484B.290's exception and map source observation terms to measured channels. Build executable CARLA geometry with two verified adjacent intersections, official traffic-control device identity and operating-state readback at roadway entry, physical marked crossing, pedestrian controller and footprint crossing, four synchronized cameras, measured frame identities and world restore. Build the source-only saved finalizer, primary and risk-justified fallback candidates, exact positive/negative compatibility and process-saved/render/decode proofs, semantic proposals and independent delivery/comparison audits. A requested coordinate cannot prove physical map adjacency, control operation, marking or legal compliance. Keep partial until the assignment-scoped strict gate passes.
+
+Final scoped checks: `.venv-cpu/bin/python worker_check.py --assignment training__C109166__NRS-484B-287-1c__pedestrian --complete` exited 0. The same command with `--require-delivery-ready` exited 1 on the expected partial-package acceptance condition. All returned files are below 2 MiB; whitespace and conflict-marker scan passed.

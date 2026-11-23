@@ -34,7 +34,7 @@ def check(config: dict) -> dict:
         raise ValueError('Case identity differs')
     if config.get('cell_id')!='C110919' or config.get('law_id')!='NRS-484B-307-3a':
         raise ValueError('Cell or law differs')
-    if config.get('rate_hz')!=20 or config.get('duration_s')!=24:
+    if config.get('rate_hz')!=20 or config.get('duration_s') not in (24,30):
         raise ValueError('Capture profile differs')
     if config.get('actor')!='motor_vehicle_driver':
         raise ValueError('Actor differs')
@@ -194,9 +194,10 @@ def execute(config: dict,output: Path,host: str,port: int):
                 stderr=encoder_logs[spec['name']])
         capture=PipelineCapture(client,ego,output,config['case_id'],visibility=False,
                                 required_observations=config.get('required_atoms',[]))
-        (output/'channels').mkdir()
-        for name in config['mandatory_channels']:
-            channels[name]=(output/'channels'/(name+'.jsonl')).open('x')
+        if config['duration_s']==24:
+            (output/'channels').mkdir()
+            for name in config['mandatory_channels']:
+                channels[name]=(output/'channels'/(name+'.jsonl')).open('x')
         start=world.get_snapshot().timestamp.elapsed_seconds
         yield_clear=0
         with (output/'native_samples.jsonl').open('x') as native_file, \
@@ -290,7 +291,8 @@ def execute(config: dict,output: Path,host: str,port: int):
                 frame_file.write(json.dumps({'video_frame':index,'native_frame':frame,
                                              'carla_frame':frame,'time_s':time_s})+'\n')
                 frames+=1
-        if frames!=480:raise RuntimeError('Incomplete original capture frame count')
+        if frames!=config['rate_hz']*config['duration_s']:
+            raise RuntimeError('Incomplete original capture frame count')
     except BaseException as exc:
         error={'type':type(exc).__name__,'message':str(exc),'traceback':traceback.format_exc()}
     finally:
@@ -314,7 +316,7 @@ def execute(config: dict,output: Path,host: str,port: int):
             except BaseException as exc:error=error or {'world_restore_error':str(exc)}
         write_new(output/'native-capture-report.json',{
             'case_id':config['case_id'],'candidate_id':config['candidate_id'],
-            'frames':frames,'expected_frames':480,'restoration':restored,
+            'frames':frames,'expected_frames':config['rate_hz']*config['duration_s'],'restoration':restored,
             'error':error,'accepted':False,
             'required_saved_checks':['actual signal state and governing direction',
                 'Native stop-line and crosswalk readback','original full body and walker conflict',

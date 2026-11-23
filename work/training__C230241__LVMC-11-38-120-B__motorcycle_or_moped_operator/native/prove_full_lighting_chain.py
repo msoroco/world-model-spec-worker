@@ -153,6 +153,17 @@ def main():
     context['source_sha256'][map_path.name] = sha(map_path)
     context_path.write_text(json.dumps(context, indent=2) + '\n')
 
+    damaged_video = SCRATCH / 'approach.mkv'
+    original_video = damaged_video.read_bytes()
+    damaged_video.write_bytes(original_video[:len(original_video) // 2])
+    context['source_sha256']['approach'] = sha(damaged_video)
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+    checks.append(reject('damaged-source-video', lambda: bind(SCRATCH),
+                         'source video'))
+    damaged_video.write_bytes(original_video)
+    context['source_sha256']['approach'] = sha(damaged_video)
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+
     (SCRATCH / 'approach.mkv').unlink()
     checks.append(reject('missing-source-video', lambda: bind(SCRATCH),
                          'Original video, trace, frame map or independent review missing'))

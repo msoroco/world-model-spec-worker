@@ -167,13 +167,24 @@ def video_frames(path: Path):
         raise ValueError('Source video decode failed: '+path.name)
     return int(completed.stdout.strip())
 
+def prepare_channels(attempt: Path, config: dict) -> dict:
+    """Rebuild 30-second channels from retained raw sources before saved processing."""
+    if config['rate_hz']*config['duration_s']!=600:
+        return {'mode':'legacy_24s_diagnostic'}
+    from derive_channels import derive
+    receipt=derive(attempt,attempt/'channels')
+    if set(receipt['channel_hashes'])!=set(config['mandatory_channels']):
+        raise ValueError('Derived mandatory channel set differs')
+    return {'mode':'raw_native_30s','source_hashes':receipt['source_hashes'],
+            'channel_hashes':receipt['channel_hashes']}
+
 def finalize(attempt: Path,output: Path):
     attempt=attempt.resolve();output=output.resolve()
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
     config=json.loads(source(attempt,'config.json').read_text())
     count=config['rate_hz']*config['duration_s']
-    if count!=480:raise ValueError('Exact 480-frame contract differs')
+    if count not in (480,600):raise ValueError('Exact frame contract differs')
     native,mapping,original=joins(attempt,count)
     geometry=json.loads(source(attempt,'road_geometry.json').read_text())
     signal=measure_signal(attempt,native,geometry)
@@ -189,6 +200,7 @@ def finalize(attempt: Path,output: Path):
         raise ValueError('Original source video frame count differs')
     expected=config['case_suffix']=='witness_1'
     observed=turn['value']['yielded_to_pedestrian']
+    derived=prepare_channels(attempt,config)
     recording=[]
     for channel in config['recording_description']['channels']:
         name=channel['name'];relative='channels/'+name+'.jsonl'
@@ -215,7 +227,7 @@ def finalize(attempt: Path,output: Path):
         'realized_observables':{'first_front_stop_line_crossing_frame':{
             'value':stop['value']['first_front_crossing_frame'],'unit':'frame',
             'method':'source-hashed sampled full-body stop-line crossing',
-            'time_window':'entire original 24 s attempt','statistic':'first',
+            'time_window':f'entire original {config["duration_s"]} s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
         'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
@@ -226,7 +238,7 @@ def finalize(attempt: Path,output: Path):
                             'right_turn_arrow_and_yield':permission,
                             'opposing_red_advisory':advisory,
                             'right_turn_arrow_witness':witness},
-            'original_joins':original,'video_frames':counts,
+            'original_joins':original,'video_frames':counts,'derived_channels':derived,
             'scope':'saved original Native sources and decoded original video; not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

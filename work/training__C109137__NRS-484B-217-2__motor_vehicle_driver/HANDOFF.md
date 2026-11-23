@@ -1,3 +1,9 @@
+## 2026-11-23 exact crossing candidate checkpoint
+
+The source-grounded adjoining-highway crossing intent (`probe_1`) now has a current-runtime manifest with one primary and two target-preserving fallback constructions: `native/zone/current-primary-intent-manifest.json` (SHA-256 `862fb6797cf76f36c25576ddc7f99d25f115b82f4350c8a4e0262aa1ddf935ac`). `fallback3` stops before the stripe, so it is retained as a safety abort request and excluded from the crossing fallback set. It cannot prove the planned crossing outcome.
+
+Current-runtime `runtime.py offline` passed for primary, slower-motion `fallback1`, and elevated-camera `fallback2`: nine exact package tests, simulation not started. The source-bound receipt is `native/zone/current-primary-intent-offline-proof.json` (SHA-256 `91aa1bc8b7b1c07fc2be89bfa48d8e6849cbca91fac24feba16310468e6d9382`). These are 600-frame, 20 Hz authored construction checks. Current positive/negative compatibility, selected saved processing, independent acceptance/comparison and the separate left-turn, subsection 3/4, and traffic-safety branches still require worker-owned CPU work. Status remains partial; no original Native pixels, legal designation, physical success or legal verdict is claimed.
+
 # C109137 current CPU continuation (2026-11-23)
 
 The canonical input now uses `law`, with SHA-256 `7af2a5e97c8c9e0ed830a9a27365e371975ad836d801190423fe5d2035ecb16a`; the exact law text and case-plan hash are checked by `native/zone/build.py` and `check.py`. The two unselected comparison cases and eight candidate bundles have 600 requests at 20 Hz (30 seconds). Adjoining road 218 extends 150 m so the 30-second requested trajectory remains on the authored road. `capture.py` declares overview, forward, stripe-side and rear FFV1 sources; `saved.py` requires all four for original media review. The separate diagnostic media proof exercises four 600-frame FFV1 positives and eight missing/short source negatives. No generated pixels are represented as original.
@@ -21,3 +27,7 @@ Exact copied request proof: 8 positives and 64 tamper negatives, including a con
 Measured fallback routing: an observed signal lead below 2 s calls for the slower request; reviewed stripe visibility below 90% calls for the elevated overview; missing prior signal, missing adjoining-lane entry or other traffic slowing below 1 m/s calls for a stop before the stripe and investigation. The synthetic fixture exercises all three predicates, including an observed delayed indicator and reduced reviewed-frame set. The original physical trigger values are unknown.
 
 Remaining worker-owned work: run and review original Native evidence; verify statutory zone and adjoining highway, appropriate prior turn signal and absence of impediment from oncoming and following traffic; separately cover or defensibly disposition subsections 3 and 4 and the left-turn alternative; construct accepted physical controlled comparisons and legal outcomes. Do not promote a branch or the assignment to `ready` until its CPU and original evidence support it. The strict full-train gate still fails while branches remain pending.
+
+## 2026-11-23 scoped gate record
+
+`runtime.py preflight` passed (log SHA-256 `2abe257b477fbb2006da285da8135f593890ff7e260871ec8992abda5b19bce6`). Assignment scoped `--complete` passed (log SHA-256 `9298543d750dd2412edcdacbc1319af7991c5d5dadfdda61a99745b4b127f610`). Assignment scoped strict exited 1 because partial/missing packages remain (log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`).

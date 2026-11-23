@@ -38,7 +38,17 @@ def probe(path):
     require(process.returncode == 0, 'Source video decode failed: ' + str(path))
     streams = json.loads(process.stdout).get('streams', [])
     require(len(streams) == 1, 'Expected one source video stream: ' + str(path))
-    return streams[0]
+    decoded = subprocess.run(
+        ['ffmpeg', '-nostdin', '-v', 'error', '-xerror', '-i', str(path),
+         '-map', '0:v:0', '-f', 'framemd5', '-'],
+        capture_output=True, timeout=300)
+    require(decoded.returncode == 0 and decoded.stdout.startswith(b'#format: frame checksums'),
+            'Source video full decode failed: ' + str(path))
+    frame_lines = [line for line in decoded.stdout.splitlines() if line and not line.startswith(b'#')]
+    require(len(frame_lines) == int(streams[0].get('nb_read_frames', '-1')),
+            'Source video decode count differs: ' + str(path))
+    return dict(streams[0], decoded_frames=len(frame_lines),
+                decoded_framemd5_sha256=hashlib.sha256(decoded.stdout).hexdigest())
 
 
 def bind(directory, expected_frames=600):
@@ -67,7 +77,8 @@ def bind(directory, expected_frames=600):
     media = {view: probe(path) for view, path in files.items()}
     require(all(item.get('codec_name') == 'ffv1' and
                 item.get('avg_frame_rate') == '20/1' and
-                item.get('nb_read_frames') == str(expected_frames)
+                item.get('nb_read_frames') == str(expected_frames) and
+                item.get('decoded_frames') == expected_frames
                 for item in media.values()),
             'Original source video count, rate or codec differs')
     native, mapping, observed = rows(trace), rows(frame_map), rows(review)

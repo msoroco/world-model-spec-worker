@@ -1,3 +1,12 @@
+## 2026-11-23 current runtime adapter graph checkpoint
+
+Status: partial. The current runtime manifest is `ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90`.
+The original diagnostic graph used `.pkl` paths and could not materialize on this runtime. I constructed `current-300-graph.json` (SHA-256 `fb4555635e2eab0c059b8feb70ca572bd9c1e03add5c8fd245e284d8b8e019b1`) with `.adapter.json` paths and a frame-level `adapter_graph` join. The source-hashed fixture recipe is `current-300-graph-recipe.json` (SHA-256 `516df09716a97daf36096ff3bf8e807cd836cb58e1b2cd078cce2aca3db4fec0`). The one-case reproof manifest is `current-300-graph-reproof-manifest.json` (SHA-256 `c24affb8fcd26aa9bc1428124312b21a34ebc5295bf16d776161a5cdb06767fc`).
+
+The 300 ft primary case fixture materialized under `.runtime-work/c104393-current-300-graph-fixture-v2`. Current-runtime compatibility passed for that case and candidate; returned receipt `current-graph-compat-primary-v2-receipt.json` has SHA-256 `62a4439e4f4731d799bf835992a3c688841500241af6dbd0f2ab2b0d5d42c662`. It records checks for Native validation, Lean decoder, actual analysis, rendering, required observations, final decode, and missing-source negative. Its scope is diagnostic software compatibility; no physical success or legal verdict is claimed. The compatibility log is `current-graph-compat-primary-v2.log` (SHA-256 `62a4439e4f4731d799bf835992a3c688841500241af6dbd0f2ab2b0d5d42c662`).
+
+Remaining: reprove other selected case/candidate constructions on the current adapter graph format, run current-runtime saved processing and comparison checks, then rerun assignment strict acceptance. Historical strict receipts elsewhere in this handoff predate the runtime refresh and do not establish current readiness.
+
 # training__C104393__NRS-484B-413-2__motor_vehicle_driver
 
 Status: partial. No selected delivery case, accepted recording or legal verdict is claimed. Prior blocker text below is historical; the current-runtime checkpoint follows it.
@@ -87,3 +96,7 @@ The root `construction.json`, `config.json`, `runner.py` and source modules now 
 The six casewise delivery contracts now cover both frozen training targets, `demo-train` and `full-train`. The canonical cases proposal declares an empty sweep list; `proposals/semantic-index.json` binds its current hash. Direct current semantic, candidate, physical fixture, delivery acceptance and selected execution checks pass in `current-selected-contracts.log`. The ready-only audit passes in `current-ready-audit.log`. The actual assignment-scoped strict command `worker_check.py --assignment training__C104393__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exits 0 in `current-scoped-strict.log` with `static_checks_passed: true`. `result.json` therefore reports `ready` and `readiness_kind: delivery_prepared`.
 
 This is CPU delivery preparation. `carla_executed` and `recordings_accepted` remain false. The first GPU command in `result.json` dispatches the exact 300-foot selected case through the canonical local delivery CLI; subsequent cases and fallbacks are bound in the selected manifest. Original Native behavior, pixels, physical completion, independent source review and legal judgments require the local execution and acceptance workflow. Shared batch queue/local integration and the full batch gate remain coordinated by the batch owner.
+
+## 2026-11-23 assignment check checkpoint
+
+Scoped `--complete` passed, log SHA-256 `ef02677b2686c92a34994066a496c0f75c4367712281b54da0578b3bff2574e2`. Scoped `--complete --require-delivery-ready` exited 1 on `Preparation acceptance failed: partial/missing packages remain`, log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`. Status remains partial.
