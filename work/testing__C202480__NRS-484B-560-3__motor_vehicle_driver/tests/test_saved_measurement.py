@@ -133,6 +133,35 @@ class SavedMeasurementTests(unittest.TestCase):
         self.assertFalse(result["physical_acceptance_claimed"])
         self.assertEqual(result["legal_judgment"], "unresolved")
 
+    def test_later_motion_cannot_complete_earlier_parked_stop(self):
+        path = self.attempt / "trace.jsonl"
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        for index, row in enumerate(rows[100:]):
+            row["ego"]["position_m"][0] = -3. + index * .07
+            row["ego"]["velocity_mps"] = [1.4, 0., 0.]
+            row["controls"]["ego"] = {"throttle": .3, "brake": 0.}
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        receipt_path = self.attempt / "media-receipt.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["trace_sha256"] = sha(path)
+        receipt_path.write_text(json.dumps(receipt))
+        _, result = analyze(self.attempt)
+        self.assertGreater(result["realized_observables"]["maximum_approach_displacement_m"], 2.)
+        self.assertEqual(result["realized_observables"]["first_one_second_stop"]["approach_displacement_before_stop_m"], 0.)
+        self.assertFalse(result["maneuver_completed"])
+
+    def test_hash_matched_teleport_cannot_complete_maneuver(self):
+        path = self.attempt / "trace.jsonl"
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        rows[100]["ego"]["position_m"][0] = -10.
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        receipt_path = self.attempt / "media-receipt.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["trace_sha256"] = sha(path)
+        receipt_path.write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, "motion discontinuity"):
+            analyze(self.attempt)
+
     def test_ego_outside_reviewed_highway_rejected_even_with_matching_receipt(self):
         path = self.attempt / "trace.jsonl"
         rows = [json.loads(line) for line in path.read_text().splitlines()]

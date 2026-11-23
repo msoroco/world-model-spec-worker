@@ -1,0 +1,1041 @@
+{
+  "cell_id": "C202480",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "purpose": "shared railroad-crossing construction reference",
+      "rationale": "Shared source-bound construction reference; no legal outcome.",
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "one_queue"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "rightmost_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__two_marked_single_right",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "purpose": "unqualified right-side reference",
+      "rationale": "Exact branch probe; stopping duty, right-side feasibility and formation judgment remain source-reviewed.",
+      "paired_probe_id": "crossing_branch_matrix",
+      "deliberate_differences": [
+        "marked_highway_lane_count",
+        "queue_arrangement",
+        "subject_lateral_target"
+      ],
+      "probe": {
+        "primary_variable": "subject_lateral_target",
+        "comparison_or_standard": "NRS 484B.560(3) exact branch matrix with separate saved measurements",
+        "target_value_or_branch": "two_marked_single_right"
+      },
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "one_queue"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "rightmost_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "When stopping is required at a railroad crossing",
+        "as far to the right of the highway as possible",
+        "form two lanes of traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__two_marked_parallel",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "purpose": "two-lane prohibition probe",
+      "rationale": "Exact branch probe; stopping duty, right-side feasibility and formation judgment remain source-reviewed.",
+      "paired_probe_id": "crossing_branch_matrix",
+      "deliberate_differences": [
+        "marked_highway_lane_count",
+        "queue_arrangement",
+        "subject_lateral_target"
+      ],
+      "probe": {
+        "primary_variable": "queue_arrangement",
+        "comparison_or_standard": "NRS 484B.560(3) exact branch matrix with separate saved measurements",
+        "target_value_or_branch": "two_marked_parallel"
+      },
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "two_queues"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "rightmost_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "When stopping is required at a railroad crossing",
+        "as far to the right of the highway as possible",
+        "form two lanes of traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__four_marked_parallel_right",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "purpose": "four-or-more-marked-lanes qualification probe",
+      "rationale": "Exact branch probe; stopping duty, right-side feasibility and formation judgment remain source-reviewed.",
+      "paired_probe_id": "crossing_branch_matrix",
+      "deliberate_differences": [
+        "marked_highway_lane_count",
+        "queue_arrangement",
+        "subject_lateral_target"
+      ],
+      "probe": {
+        "primary_variable": "marked_highway_lane_count",
+        "comparison_or_standard": "NRS 484B.560(3) exact branch matrix with separate saved measurements",
+        "target_value_or_branch": "four_marked_parallel_right"
+      },
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 4
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "two_queues"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "rightmost_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "When stopping is required at a railroad crossing",
+        "as far to the right of the highway as possible",
+        "form two lanes of traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__four_marked_parallel_left",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "purpose": "independent right-side duty probe within qualification",
+      "rationale": "Exact branch probe; stopping duty, right-side feasibility and formation judgment remain source-reviewed.",
+      "paired_probe_id": "crossing_branch_matrix",
+      "deliberate_differences": [
+        "marked_highway_lane_count",
+        "queue_arrangement",
+        "subject_lateral_target"
+      ],
+      "probe": {
+        "primary_variable": "marked_highway_lane_count",
+        "comparison_or_standard": "NRS 484B.560(3) exact branch matrix with separate saved measurements",
+        "target_value_or_branch": "four_marked_parallel_left"
+      },
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 4
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "two_queues"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "left_of_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "When stopping is required at a railroad crossing",
+        "as far to the right of the highway as possible",
+        "form two lanes of traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__two_marked_single_left",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "purpose": "independent right-side duty probe without two queues",
+      "rationale": "Exact branch probe; stopping duty, right-side feasibility and formation judgment remain source-reviewed.",
+      "paired_probe_id": "crossing_branch_matrix",
+      "deliberate_differences": [
+        "marked_highway_lane_count",
+        "queue_arrangement",
+        "subject_lateral_target"
+      ],
+      "probe": {
+        "primary_variable": "subject_lateral_target",
+        "comparison_or_standard": "NRS 484B.560(3) exact branch matrix with separate saved measurements",
+        "target_value_or_branch": "two_marked_single_left"
+      },
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "one_queue"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "left_of_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "When stopping is required at a railroad crossing",
+        "as far to the right of the highway as possible",
+        "form two lanes of traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C202480__NRS-484B-560-3__motor_vehicle_driver__five_marked_parallel_right",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "purpose": "strictly above the four-marked-lane qualification boundary",
+      "rationale": "Exact branch probe; stopping duty, right-side feasibility and formation judgment remain source-reviewed.",
+      "paired_probe_id": "crossing_branch_matrix",
+      "deliberate_differences": [
+        "marked_highway_lane_count",
+        "queue_arrangement",
+        "subject_lateral_target"
+      ],
+      "probe": {
+        "primary_variable": "marked_highway_lane_count",
+        "comparison_or_standard": "NRS 484B.560(3) exact branch matrix with separate saved measurements",
+        "target_value_or_branch": "five_marked_parallel_right"
+      },
+      "variable_assignments": {
+        "marked_highway_lane_count": {
+          "kind": "world_setup",
+          "value": 5
+        },
+        "queue_arrangement": {
+          "kind": "world_setup",
+          "value": "two_queues"
+        },
+        "subject_lateral_target": {
+          "kind": "controller",
+          "value": "rightmost_feasible"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 1.4,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crossing_stop_episode",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original Native trace joined to stop-line and device state",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "subject_body_footprint",
+            "unit": "metres in source map frame",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading and bounding box per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "lateral_offset_from_feasible_right",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "Saved source-bound geometry calculation from original footprint",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "traffic_body_arrangement",
+            "unit": "original frame sequence",
+            "sampling_rate_hz": 20,
+            "method": "Original ego and companion footprints and motion per frame",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "marked_highway_lane_count",
+            "unit": "count of source-reviewed marked lanes",
+            "sampling_rate_hz": 20,
+            "method": "Source-bound lane inventory joined to original attempt",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "crossing_sign_or_signal_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "road_edge_and_subject_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          },
+          {
+            "name": "queue_and_marking_views",
+            "unit": "original camera pixels",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view camera source pixels",
+            "time_window": "entire 45 s crossing attempt",
+            "reference_frame": "original CARLA frame and elapsed time",
+            "uncertainty": "original simulator sampling and later physical visibility review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crossing_authority",
+            "unit": "source-hashed official record",
+            "method": "Retained crossing authority document tied to map landmark and stop line"
+          },
+          {
+            "name": "highway_boundary",
+            "unit": "source-hashed roadway geometry",
+            "method": "Retained highway boundary and OpenDRIVE source"
+          },
+          {
+            "name": "rightmost_feasible_position",
+            "unit": "metres in source map frame",
+            "method": "Retained source-reviewed right-side constraints and slot coordinates"
+          },
+          {
+            "name": "lane_marking_inventory",
+            "unit": "source-hashed markings and map geometry",
+            "method": "Retained marking inventory and original OpenDRIVE"
+          }
+        ],
+        "limitations": [
+          "Actual crossing authority, road markings, feasible right-side constraints and visual feature visibility require independent review; no legal judgment is encoded."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "When stopping is required at a railroad crossing",
+        "as far to the right of the highway as possible",
+        "form two lanes of traffic"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "crossing_judgment_1",
+      "target_law_id": "NRS-484B-560-3",
+      "judgment_refs": [
+        {
+          "phrase": "When stopping is required at a railroad crossing",
+          "note": "Stopping duty and crossing authority require original source review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact judgment phrase requires source-reviewed physical coverage and no legal cutoff is invented.",
+      "missing_inputs": [
+        "Reviewed crossing site and physically feasible scalar sweep bounds for When stopping is required at a railroad crossing"
+      ]
+    },
+    {
+      "sweep_id": "crossing_judgment_2",
+      "target_law_id": "NRS-484B-560-3",
+      "judgment_refs": [
+        {
+          "phrase": "as far to the right of the highway as possible",
+          "note": "Highway boundary, vehicle footprint and physical feasibility require source review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact judgment phrase requires source-reviewed physical coverage and no legal cutoff is invented.",
+      "missing_inputs": [
+        "Reviewed crossing site and physically feasible scalar sweep bounds for as far to the right of the highway as possible"
+      ]
+    },
+    {
+      "sweep_id": "crossing_judgment_3",
+      "target_law_id": "NRS-484B-560-3",
+      "judgment_refs": [
+        {
+          "phrase": "form two lanes of traffic",
+          "note": "Vehicle arrangement and lane formation require original motion and contextual review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact judgment phrase requires source-reviewed physical coverage and no legal cutoff is invented.",
+      "missing_inputs": [
+        "Reviewed crossing site and physically feasible scalar sweep bounds for form two lanes of traffic"
+      ]
+    }
+  ],
+  "sweeps_expanded": false
+}

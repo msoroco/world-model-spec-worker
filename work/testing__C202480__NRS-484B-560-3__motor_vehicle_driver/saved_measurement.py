@@ -105,6 +105,7 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
     first_ego_x = None
     max_approach_displacement = 0.
     control_requested = False
+    previous_motion = None
     aligned_queue_frames = 0
     first_queue_alignment = None
     stopped_right_offsets = []
@@ -134,6 +135,16 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                 any(cameras[name].get("sha256") != hashes[name] for name in videos)):
             raise ValueError("original four-camera frame map join differs")
         x, y, speed, length, width, yaw, ego_id = _motion(row, "ego")
+        velocity = row["ego"]["velocity_mps"]
+        if previous_motion is not None:
+            px, py, pvx, pvy = previous_motion
+            dt = time_s - trace[index - 1]["time_s"]
+            expected_dx = (pvx + velocity[0]) * dt / 2
+            expected_dy = (pvy + velocity[1]) * dt / 2
+            if (abs((x - px) - expected_dx) > .25 or
+                    abs((y - py) - expected_dy) > .25):
+                raise ValueError("original ego motion discontinuity")
+        previous_motion = (x, y, velocity[0], velocity[1])
         if first_ego_x is None:
             first_ego_x = x
         max_approach_displacement = max(max_approach_displacement,
@@ -177,6 +188,9 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
             stopped_right_offsets.append(direction * (y - right_y))
             if stop_run == 20 and first_stop is None:
                 first_stop = {"frame": frame,
+                              "control_requested_before_stop": control_requested,
+                              "approach_displacement_before_stop_m":
+                                  direction * (x - first_ego_x),
                               "ego_x_m": x,
                               "ego_y_m": y,
                               "ego_right_edge_clearance_m": abs(y - packet["highway_right_y_m"]) - width,
@@ -207,8 +221,8 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                         min(stopped_right_offsets) if stopped_right_offsets else None,
                     "source_frame_count": 900}
     measured = first_stop is not None
-    completed = (measured and control_requested and
-                 max_approach_displacement >= 2. and
+    completed = (measured and first_stop["control_requested_before_stop"] and
+                 first_stop["approach_displacement_before_stop_m"] >= 2. and
                  (case["traffic_arrangement"] != "two_queues" or
                   aligned_queue_frames >= 20))
     result = {"case_id": case_id, "setup_confirmed": True,

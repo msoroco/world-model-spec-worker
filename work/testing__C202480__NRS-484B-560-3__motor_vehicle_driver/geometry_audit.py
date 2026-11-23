@@ -78,7 +78,8 @@ def audit(attempt: Path) -> dict:
             raise ValueError("original geometry row identity differs")
         x, y, speed, length, width = _actor(row, "ego")
         before_rail = direction * (packet["rail_line_x_m"] - x) > 0
-        if speed <= .1 and before_rail:
+        front_distance = direction * (packet["stop_line_x_m"] - x) - length
+        if speed <= .1 and before_rail and 0 <= front_distance <= 3.:
             stopped_offsets.append(direction * (y - right_y))
         if case["traffic_arrangement"] == "two_queues":
             cx, cy, cspeed, clength, cwidth = _actor(row, "companion")

@@ -1,0 +1,74 @@
+{
+  "template_id": "NRS-484B-560-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-560-3",
+  "actor": "motor_vehicle_driver",
+  "quote": "When stopping is required at a railroad crossing the driver shall keep as far to the right of the highway as possible and shall not form two lanes of traffic unless the highway is marked for four or more lanes of traffic.",
+  "structure": {
+    "law_id": "NRS-484B-560-3",
+    "activation": {
+      "condition": "A driver is required to stop at a railroad crossing.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Keep as far to the right of the highway as possible and avoid forming two lanes of traffic when the marked-highway qualification is absent.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "unless the highway is marked for four or more lanes of traffic.",
+        "trigger": "The highway is marked for four or more lanes of traffic.",
+        "effect": "The two-lane formation prohibition has a marked-highway qualification.",
+        "replacement_obligation": "The separate right-side duty remains in the exact text.",
+        "numeric_conditions": [
+          {
+            "variable": "marked_highway_lane_count",
+            "operator": ">=",
+            "value": 4,
+            "unit": "count"
+          }
+        ]
+      }
+    ],
+    "timing": {
+      "description": "Observe the subject and other traffic throughout the required crossing stop and approach in original frame order.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "When stopping is required at a railroad crossing",
+        "note": "Stopping duty and crossing authority require original source review."
+      },
+      {
+        "phrase": "as far to the right of the highway as possible",
+        "note": "Highway boundary, vehicle footprint and physical feasibility require source review."
+      },
+      {
+        "phrase": "form two lanes of traffic",
+        "note": "Vehicle arrangement and lane formation require original motion and contextual review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "marked_highway_lane_count",
+      "kind": "world_setup",
+      "range_or_domain": "two or four source-reviewed total marked highway lanes across both directions"
+    },
+    {
+      "name": "queue_arrangement",
+      "kind": "world_setup",
+      "range_or_domain": "one or two proposed stopped queues, with actual formation source-observed"
+    },
+    {
+      "name": "subject_lateral_target",
+      "kind": "controller",
+      "range_or_domain": "rightmost feasible slot or farther-left source-reviewed slot"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "nonnegative engineering speed in m/s; actual motion source-observed"
+    }
+  ]
+}

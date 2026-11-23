@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from geometry_audit import audit as audit_geometry
+from delivery_audit import audit as audit_delivery
 from native_media import finalize as finalize_media
 from owner_release import verify_release
 from saved_measurement import finalize_attempt
@@ -16,7 +17,8 @@ from source_decode import audit_four_sources
 def process(attempt: Path, *, media_finalizer=finalize_media,
             measurement_finalizer=finalize_attempt,
             geometry_auditor=audit_geometry,
-            source_decoder=audit_four_sources) -> dict:
+            source_decoder=audit_four_sources,
+            delivery_auditor=audit_delivery) -> dict:
     attempt = Path(attempt).resolve()
     root = Path(__file__).resolve().parents[2] / ".runtime-work"
     if root not in attempt.parents:
@@ -41,9 +43,14 @@ def process(attempt: Path, *, media_finalizer=finalize_media,
         raise ValueError("retain previous geometry audit")
     geometry = geometry_auditor(attempt)
     audit_path.write_text(json.dumps(geometry, indent=2) + "\n", encoding="utf-8")
+    delivery_path = attempt / "delivery-audit.json"
+    if delivery_path.exists():
+        raise ValueError("retain previous delivery audit")
+    delivery = delivery_auditor(attempt)
+    delivery_path.write_text(json.dumps(delivery, indent=2) + "\n", encoding="utf-8")
     return {"media_receipt": media, "source_decode": decoded,
             "saved_report": report,
-            "geometry_audit": geometry}
+            "geometry_audit": geometry, "delivery_audit": delivery}
 
 
 if __name__ == "__main__":

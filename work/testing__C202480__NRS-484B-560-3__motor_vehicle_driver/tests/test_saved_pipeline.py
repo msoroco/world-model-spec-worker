@@ -58,11 +58,16 @@ class SavedPipelineTests(unittest.TestCase):
             self.assertEqual(path, self.attempt)
             order.append("geometry")
             return {"physical_acceptance_claimed": False}
+        def delivery(path):
+            self.assertEqual(path, self.attempt)
+            self.assertTrue((path / "geometry-audit.json").is_file())
+            order.append("delivery")
+            return {"physical_acceptance_claimed": False}
         result = process(self.attempt, media_finalizer=media,
                          measurement_finalizer=measurement,
                          geometry_auditor=geometry,
-                         source_decoder=decode)
-        self.assertEqual(order, ["media", "decode", "analysis", "geometry"])
+                         source_decoder=decode, delivery_auditor=delivery)
+        self.assertEqual(order, ["media", "decode", "analysis", "geometry", "delivery"])
         self.assertEqual(result["saved_report"]["legal_judgment"], "unresolved")
         self.assertFalse(json.loads((self.attempt / "geometry-audit.json").read_text())
                          ["physical_acceptance_claimed"])

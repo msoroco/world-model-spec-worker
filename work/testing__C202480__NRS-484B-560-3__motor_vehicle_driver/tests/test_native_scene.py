@@ -135,7 +135,7 @@ class NativeSceneTests(unittest.TestCase):
         path.write_text(json.dumps(packet, indent=2) + "\n", encoding="utf-8")
         return path, packet
 
-    def test_all_five_cases_spawn_and_close_in_both_directions(self):
+    def test_all_six_cases_spawn_and_close_in_both_directions(self):
         for case in self.cases:
             for direction in (1, -1):
                 with self.subTest(case=case["case_id"], direction=direction):

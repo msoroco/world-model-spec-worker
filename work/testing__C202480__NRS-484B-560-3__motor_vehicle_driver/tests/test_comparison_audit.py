@@ -47,7 +47,7 @@ class ComparisonAuditTests(unittest.TestCase):
                 "minimum_stopped_lateral_offset_from_reviewed_rightmost_m":
                     3. if case["subject_lateral_plan"] == "left_of_feasible" else 0.}
 
-    def test_all_four_exact_pairs_check_fixed_and_changed_conditions(self):
+    def test_all_exact_pairs_check_fixed_and_changed_conditions(self):
         for item in self.plan["comparisons"]:
             with self.subTest(comparison=item["comparison_id"]):
                 left, right = self.pair(item)
@@ -78,6 +78,20 @@ class ComparisonAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fixed reviewed highway geometry differs"):
             compare(left, right, item["comparison_id"],
                     geometry_auditor=self.geometry)
+
+    def test_above_boundary_pair_rejects_missing_fifth_marked_lane(self):
+        item = next(c for c in self.plan["comparisons"]
+                    if c["comparison_id"] == "marked_lane_above_boundary")
+        left, right = self.pair(item)
+        packet_path = right / "site/packet.json"
+        packet = json.loads(packet_path.read_text())
+        packet["marked_lanes"] = packet["marked_lanes"][:4]
+        marking = right / "site/lane_markings.txt"
+        marking.write_text(json.dumps({"marked_lanes": packet["marked_lanes"]}))
+        packet["sources"]["lane_markings"]["sha256"] = hashlib.sha256(marking.read_bytes()).hexdigest()
+        packet_path.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError, "total marked highway lane count differs"):
+            compare(left, right, item["comparison_id"], geometry_auditor=self.geometry)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Independent postcapture isolation checks for the four planned comparisons.
+"""Independent postcapture isolation checks for the planned comparisons.
 
 The source-bound packets and original geometry audits establish observable
 differences only. They never decide whether the statute was satisfied.
@@ -45,7 +45,7 @@ def compare(left: Path, right: Path, comparison_id: str,
             a["cameras"] != b["cameras"] or
             a["vehicle_blueprints"]["ego"] != b["vehicle_blueprints"]["ego"]):
         raise ValueError("fixed crossing authority, approach or capture differs")
-    if comparison_id != "marked_lane_qualification" and (
+    if comparison_id not in ("marked_lane_qualification", "marked_lane_above_boundary") and (
             a["sources"]["opendrive"]["sha256"] !=
             b["sources"]["opendrive"]["sha256"] or
             a["marked_lanes"] != b["marked_lanes"] or
@@ -60,8 +60,10 @@ def compare(left: Path, right: Path, comparison_id: str,
                 ag["two_queue_aligned_frame_count"] != 0 or
                 bg["two_queue_aligned_frame_count"] < 20):
             raise ValueError("original queue arrangement contrast absent")
-    elif comparison_id == "marked_lane_qualification":
-        if (len(a["marked_lanes"]) != 2 or len(b["marked_lanes"]) < 4 or
+    elif comparison_id in ("marked_lane_qualification", "marked_lane_above_boundary"):
+        expected_lanes = ((2, 4) if comparison_id == "marked_lane_qualification"
+                          else (4, 5))
+        if ((len(a["marked_lanes"]), len(b["marked_lanes"])) != expected_lanes or
                 acase["traffic_arrangement"] != bcase["traffic_arrangement"] or
                 a["ego_slot"] != b["ego_slot"] or
                 min(ag["two_queue_aligned_frame_count"],
