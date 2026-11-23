@@ -64,7 +64,7 @@ def finalize(attempt, output):
     provenance_path = attempt / 'acquisition-provenance.json'
     for path in (config_path, trace_path, map_path, provenance_path):
         if not path.is_file():
-            raise ValueError('Missing required original source: ' + path.name)
+            raise ValueError('Missing required source: ' + path.name)
     config = json.loads(config_path.read_text())
     if (config.get('case_id') != config.get('selected_case_id')
             or config.get('duration_s') != 30 or config.get('rate_hz') != HZ

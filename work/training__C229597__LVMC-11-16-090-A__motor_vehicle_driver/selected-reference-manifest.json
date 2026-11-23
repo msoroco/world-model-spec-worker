@@ -1,0 +1,101 @@
+{
+  "assignment_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver",
+  "format": "worker-execution-manifest",
+  "status": "selected_reference_cpu_in_progress",
+  "cases": [
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "construction": "draft-primary/reference/primary/construction.json",
+      "construction_sha256": "0641793aa9f8a8683e694ceb344ad10f8e7ce8477678e962483272ea9e2b749d",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-primary/reference/fallback1/construction.json",
+          "construction_sha256": "f9b29148074333cbb4fede0cbb99b8ff0a025a401ebe5466fc90f8de8ae84024",
+          "changed_knobs": [
+            "spawn_point_index"
+          ],
+          "trigger": {
+            "source": "original Native route review",
+            "metric": "spawn availability and route geometry",
+            "failure_condition": "Primary spawn occupied or route unusable"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-primary/reference/fallback2/construction.json",
+          "construction_sha256": "df810d40e726ba208f154f7c5411779f729f922254be641905d5970051285f63",
+          "changed_knobs": [
+            "spawn_point_index"
+          ],
+          "trigger": {
+            "source": "original Native route review",
+            "metric": "spawn availability and route geometry",
+            "failure_condition": "Primary spawn occupied or route unusable"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-primary/reference/fallback3/construction.json",
+          "construction_sha256": "7c5e8b0dc388464555a6704da83b89328c8e47b168a640c7df677b3403c6cd14",
+          "changed_knobs": [
+            "spawn_point_index"
+          ],
+          "trigger": {
+            "source": "original Native route review",
+            "metric": "spawn availability and route geometry",
+            "failure_condition": "Primary spawn occupied or route unusable"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "measure_episode.py",
+        "output_schema": "c229597-source-motion-analysis-v1"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "measure_episode.py",
+          "evidence": "trace.jsonl, video_frames.jsonl",
+          "method": "magnitude of original Native velocity vector"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "measure_episode.py",
+          "evidence": "trace.jsonl, video_frames.jsonl",
+          "method": "source-joined original acceleration vector"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl, video_frames.jsonl",
+          "method": "retain original Native position and frame identity"
+        },
+        "ego_speed": {
+          "entrypoint": "measure_episode.py",
+          "evidence": "trace.jsonl, video_frames.jsonl",
+          "method": "derive speed channel from original velocity vectors"
+        },
+        "ego_acceleration": {
+          "entrypoint": "measure_episode.py",
+          "evidence": "trace.jsonl, video_frames.jsonl",
+          "method": "derive acceleration channel from original vectors"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Spawn, route and camera framing need Native review"
+      },
+      "measurement_contract": "selected-reference-measurement-contract.json",
+      "fixture_recipe": "work/training__C229597__LVMC-11-16-090-A__motor_vehicle_driver/selected-reference-recipe.json",
+      "compatibility": {
+        "receipt": "selected-proofs/reference/primary/compatibility.json",
+        "sha256": "7190604ee31d415aaeda00405cf5179318ba489de9f0542586f9e6128cb5e91c",
+        "log": "selected-proofs/reference/primary/analysis.log",
+        "negative_log": "selected-proofs/reference/primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/reference/primary/negative.log"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90"
+}
