@@ -20,6 +20,11 @@ def check() -> None:
         raise ValueError("law or cell binding differs")
     if config.get("capture_provenance") != "original Native samples required":
         raise ValueError("capture provenance requirement absent")
+    cameras = config.get("cameras", [])
+    if [(item.get("name"), item.get("width"), item.get("height")) for item in cameras] != [
+            ("overview", 1920, 1080), ("approach", 1280, 720),
+            ("reference_corner", 1280, 720), ("driver_reference", 1280, 720)]:
+        raise ValueError("four-view original capture plan differs")
     from tempfile import TemporaryDirectory
     from tests.test_source_bound_scene import fixture
     from source_bound_scene import sha

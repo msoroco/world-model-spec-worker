@@ -67,10 +67,11 @@ def build() -> dict:
     plan["observations"] = [{"name": name, "source_or_measurement": measurement,
                               "status": "source_review_or_original_capture_pending"}
                              for name, measurement in OBSERVATIONS.items()]
-    plan["source_observation_mapping"] = [{"term": name, "measurement": measurement,
-                                           "source_refs": [SOURCE],
-                                           "evidence": "frozen exact law; original site/trace evidence pending"}
-                                          for name, measurement in OBSERVATIONS.items()]
+    plan["source_observation_mapping"] = {}
+    plan["observation_evidence_mapping"] = [{"term": name, "measurement": measurement,
+                                             "source_refs": [SOURCE],
+                                             "evidence": "frozen exact law; original site/trace evidence pending"}
+                                            for name, measurement in OBSERVATIONS.items()]
     plan["requirement_dispositions"] = [{"requirement": plan["law_id"],
         "source": {"path": SOURCE, "sha256": next(ref["sha256"] for ref in plan["sources"]
                                                    if ref["path"] == SOURCE)},
@@ -78,6 +79,19 @@ def build() -> dict:
         "case_ids": [case["case_id"] for case in plan["cases"]],
         "evidence_or_gap": "No accepted exact recording; source-reviewed one-way lanes, signal, stop boundary and yielding histories pending."}]
     plan["selected_branch"] = "one_way_left_turn"
+    plan["camera_plan"] = {
+        "profile": "overview1080-capability", "duration_s": 30,
+        "composition": "synchronized_four_view_primary",
+        "coverage": [
+            {"view": "overview", "subject": "ego, receiving one-way road, signal and all participants",
+             "interval": "approach through full exit"},
+            {"view": "approach", "subject": "source-reviewed stop boundary and extreme-left approach lane",
+             "interval": "approach through boundary crossing"},
+            {"view": "reference_corner", "subject": "pedestrian and signal-directed traffic conflict paths",
+             "interval": "first conflict through clearing"},
+            {"view": "driver_reference", "subject": "ego-facing signal and turn entry",
+             "interval": "approach through receiving-road entry"}],
+        "status": "pose and physical pixel coverage require reviewed site and CARLA test"}
     plan["planning_status"] = "eight_isolated_draft_attempts_controller_cpu_tested"
     plan["runtime_uncertainties"] = [
         "Exact Native one-way approach/receiving lane directions, official signal and stop boundary require reviewed sources.",

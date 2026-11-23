@@ -1,0 +1,158 @@
+{
+  "assignment_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver",
+  "selected_case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear",
+  "law_id": "NRS-484B-307-8c",
+  "cell_id": "C153046",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed intersection overhead",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed stop boundary and leftmost lane",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed crosswalk and traffic conflict paths",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted signal and receiving road view",
+      "fov_deg": 90
+    }
+  ],
+  "capture_provenance": "original Native samples required",
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear",
+    "draft_variables": [
+      "complete_stop",
+      "extreme_left",
+      "one_way_left",
+      "no_conflict"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "official steady red alone",
+          "unit": "categorical state",
+          "sampling_rate_hz": 20,
+          "method": "source-reviewed signal identity and original per-frame signal state",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "antecedent stop location",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "source-reviewed stop line/crosswalk hierarchy and original front-body position",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "complete stop",
+          "unit": "m/s and s",
+          "sampling_rate_hz": 20,
+          "method": "original speed and stationary interval before entry",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "extreme left of one-way approach",
+          "unit": "m and lane identity",
+          "sampling_rate_hz": 20,
+          "method": "source-reviewed approach lane direction and original full-body lane placement",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "receiving one-way to left",
+          "unit": "m and direction vector",
+          "sampling_rate_hz": 20,
+          "method": "source-reviewed receiving lane directions and original route entry",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "pedestrian right-of-way",
+          "unit": "structured actor history",
+          "sampling_rate_hz": 20,
+          "method": "original pedestrian body/history and signal-directed movement",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "other traffic right-of-way",
+          "unit": "structured actor history",
+          "sampling_rate_hz": 20,
+          "method": "original other-vehicle body/history and signal-directed movement",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        },
+        {
+          "name": "yield response",
+          "unit": "structured motion and control history",
+          "sampling_rate_hz": 20,
+          "method": "original ego controls, body path, speed and entry ordering",
+          "time_window": "original approach through receiving-road exit",
+          "reference_frame": "Native world frame/time joined to four original cameras",
+          "uncertainty": "Original motion, aspect, participant right-of-way and pixels require physical review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_one_way_left_turn_site",
+          "unit": "source record",
+          "method": "SHA-256 retained OpenDRIVE and reviewed approach/receiving lane direction sources"
+        },
+        {
+          "name": "reviewed_signal_and_stop_hierarchy",
+          "unit": "source record",
+          "method": "SHA-256 retained official signal and stop-boundary records"
+        }
+      ],
+      "limitations": [
+        "A requested complete stop or yield does not establish its realized behavior.",
+        "The frozen law supplies no numeric yielding or stopping duration threshold.",
+        "Original camera pixels and source authority remain independently reviewable."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "original stop, entry, yield, and exit histories",
+    "status": "unverified"
+  },
+  "supported_case_ids": [
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__rolling_leftmost_clear",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_inner_lane_clear",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_two_way_receive",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_advance",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield",
+    "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_advance"
+  ]
+}

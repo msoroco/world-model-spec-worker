@@ -368,7 +368,58 @@
       "reason": "The fixed one-way-to-one-way left turn directly supports the left-turn branch."
     }
   ],
-  "source_observation_mapping": [
+  "source_observation_mapping": {},
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-307-8c",
+      "source": {
+        "path": "inputs/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/assignment.json",
+        "sha256": "e99f0b8b74a045dd63b24d3c46d21eff15a66339aaee8336ffc03d695405209f"
+      },
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__rolling_leftmost_clear",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_inner_lane_clear",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_two_way_receive",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_advance",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield",
+        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_advance"
+      ],
+      "evidence_or_gap": "No accepted exact recording; source-reviewed one-way lanes, signal, stop boundary and yielding histories pending."
+    }
+  ],
+  "selected_branch": "one_way_left_turn",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego, receiving one-way road, signal and all participants",
+        "interval": "approach through full exit"
+      },
+      {
+        "view": "approach",
+        "subject": "source-reviewed stop boundary and extreme-left approach lane",
+        "interval": "approach through boundary crossing"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian and signal-directed traffic conflict paths",
+        "interval": "first conflict through clearing"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego-facing signal and turn entry",
+        "interval": "approach through receiving-road entry"
+      }
+    ],
+    "status": "pose and physical pixel coverage require reviewed site and CARLA test"
+  },
+  "observation_evidence_mapping": [
     {
       "term": "official steady red alone",
       "measurement": "source-reviewed signal identity and original per-frame signal state",
@@ -433,27 +484,5 @@
       ],
       "evidence": "frozen exact law; original site/trace evidence pending"
     }
-  ],
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS-484B-307-8c",
-      "source": {
-        "path": "inputs/testing__C153046__NRS-484B-307-8c__motor_vehicle_driver/assignment.json",
-        "sha256": "e99f0b8b74a045dd63b24d3c46d21eff15a66339aaee8336ffc03d695405209f"
-      },
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_clear",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__rolling_leftmost_clear",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_inner_lane_clear",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_two_way_receive",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_pedestrian_advance",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_yield",
-        "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver__stopped_leftmost_traffic_advance"
-      ],
-      "evidence_or_gap": "No accepted exact recording; source-reviewed one-way lanes, signal, stop boundary and yielding histories pending."
-    }
-  ],
-  "selected_branch": "one_way_left_turn"
+  ]
 }

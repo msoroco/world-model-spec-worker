@@ -7,6 +7,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_case_plan import KINDS, OBSERVATIONS, PAIRS, build
+from recording_description import build as recording_description
 
 
 class PlanTests(unittest.TestCase):
@@ -25,12 +26,16 @@ class PlanTests(unittest.TestCase):
 
     def test_law_observations_and_uncertainty_retained(self):
         plan = build()
-        self.assertEqual({row["term"] for row in plan["source_observation_mapping"]},
+        self.assertEqual(plan["source_observation_mapping"], {})
+        self.assertEqual({row["term"] for row in plan["observation_evidence_mapping"]},
                          set(OBSERVATIONS))
         self.assertIn("must yield", plan["law_text"])
         self.assertEqual(plan["existing_evidence"], [])
         self.assertTrue(all(row["status"] == "source_review_or_original_capture_pending"
                             for row in plan["observations"]))
+        self.assertEqual({item["name"] for item in recording_description()["channels"]},
+                         set(OBSERVATIONS))
+        self.assertEqual(plan["camera_plan"]["profile"], "overview1080-capability")
 
 
 if __name__ == "__main__":

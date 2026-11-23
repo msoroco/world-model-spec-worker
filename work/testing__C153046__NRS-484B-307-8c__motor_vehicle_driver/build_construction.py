@@ -5,14 +5,20 @@ import hashlib
 import json
 from pathlib import Path
 
-from build_case_plan import AID, KINDS
+from build_case_plan import AID, KINDS, PAIRS
+from recording_description import build as recording_description
 
 ROOT = Path(__file__).resolve().parent
-SOURCES = ["runner.py", "native_runner.py", "native_frame.py", "red_left_turn_controller.py",
+SOURCES = ["runner.py", "native_runner.py", "native_frame.py", "saved_measurement.py",
+           "comparison_audit.py",
+           "red_left_turn_controller.py", "recording_description.py",
            "source_bound_scene.py", "build_case_plan.py", "case-plan.json",
            "tests/__init__.py", "tests/test_case_plan.py",
            "tests/test_red_left_turn_controller.py", "tests/test_source_bound_scene.py",
-           "tests/test_native_runner.py", "tests/test_native_frame.py"]
+           "tests/test_native_runner.py", "tests/test_native_frame.py",
+           "tests/test_saved_measurement.py", "tests/test_comparison_audit.py",
+           "independent/__init__.py", "independent/delivery_audit.py",
+           "tests/test_delivery_audit.py"]
 
 
 def digest(path: Path) -> str:
@@ -28,17 +34,51 @@ def build() -> dict:
         config = {"assignment_id": AID, "selected_case_id": case_id,
                   "law_id": "NRS-484B-307-8c", "cell_id": "C153046",
                   "actor": "motor_vehicle_driver", "rate_hz": 20, "duration_s": 30,
+                  "cameras": [
+                      {"name": name, "width": width, "height": height,
+                       "pose_strategy": strategy, "fov_deg": 90}
+                      for name, width, height, strategy in (
+                          ("overview", 1920, 1080, "fixed intersection overhead"),
+                          ("approach", 1280, 720, "fixed stop boundary and leftmost lane"),
+                          ("reference_corner", 1280, 720, "fixed crosswalk and traffic conflict paths"),
+                          ("driver_reference", 1280, 720, "ego mounted signal and receiving road view"))],
                   "capture_provenance": "original Native samples required",
                   "required_atoms": [], "source_packets": [],
-                  "case": {"case_id": case_id, "draft_variables": variables},
+                  "case": {"case_id": case_id, "draft_variables": variables,
+                           "recording_description": recording_description()},
                   "physical_completion": {"criterion": "original stop, entry, yield, and exit histories",
                                           "status": "unverified"}}
+        contract = {"format": "c153046-saved-measurement-draft", "case_id": case_id,
+                    "law_id": "NRS-484B-307-8c", "actor": "motor_vehicle_driver",
+                    "required_original_sources": ["reviewed site packet", "live OpenDRIVE bytes",
+                                                  "Native ego/participant body frame history",
+                                                  "Native signal actor/state frame history"],
+                    "metrics": ["stationary duration before boundary",
+                                "first full-body boundary crossing", "first approach lane",
+                                "left displacement", "pedestrian/traffic conflicts at crossing"],
+                    "requested_variables": dict(zip(("stop_request", "approach_position",
+                                                     "receiving_direction", "conflict_response_request"),
+                                                    variables)),
+                    "engineering_stop_tolerance_mps": 0.05,
+                    "engineering_stop_dwell_s": 0.5,
+                    "physical_acceptance_claimed": False, "legal_judgment": "unresolved"}
+        contract_path = folder / (suffix + "-measurement-contract.json")
+        contract_path.write_text(json.dumps(contract, indent=2) + "\n")
         files = [{"path": name, "content": (ROOT / name).read_text()} for name in SOURCES]
         files.append({"path": "config.json", "content": json.dumps(config, indent=2) + "\n"})
+        files.append({"path": "measurement-contract.json",
+                      "content": json.dumps(contract, indent=2) + "\n"})
         construction = {"case_id": case_id, "cell_id": "C153046",
                         "law_id": "NRS-484B-307-8c", "actor": "motor_vehicle_driver",
                         "entrypoint": "runner.py", "files": files,
-                        "recording_description": "Original one-way-left red-alone controlled attempt: " + suffix,
+                        "recording_description": recording_description(),
+                        "measurement_plan": {"entrypoint": "saved_measurement.py",
+                                             "sources": ["site.json", "trace.jsonl"],
+                                             "case_id": case_id},
+                        "static_checks": ["exact site packet hashes and lane/turn geometry",
+                                          "live OpenDRIVE and official signal actor match"],
+                        "termination_rules": ["30 s maximum original frame capture",
+                                              "stop on source or frame mismatch"],
                         "mechanisms": ["source-bound site geometry and live OpenDRIVE byte match",
                                        "Native world tick, signal and full participant body acquisition",
                                        "CARLA-lazy actor control application and text trace"],
@@ -48,11 +88,27 @@ def build() -> dict:
         cases.append({"case_id": case_id, "kind": "delivery",
                       "construction": str(path.relative_to(ROOT)),
                       "construction_sha256": digest(path),
+                      "measurement_contract": str(contract_path.relative_to(ROOT)),
+                      "measurement_procedure": {"entrypoint": "saved_measurement.py"},
+                      "delivery_acceptance_draft": {
+                          "case_id": case_id, "sets": ["full-test"],
+                          "checks": ["native_source", "all_participants", "time_join",
+                                     "full_video_decode", "actual_pixels", "physical_completion"],
+                          "script": "independent/delivery_audit.py",
+                          "script_sha256": digest(ROOT / "independent" / "delivery_audit.py"),
+                          "proof_status": "diagnostic_protocol_only_original_acceptance_pending"},
                       "candidate_risk": {"status": "unverified",
                                          "reason": "No reviewed site geometry yet; a concrete physical fallback trigger cannot be selected."},
                       "proof_status": "offline_pending_physical_and_compatibility"})
+    comparisons = [{"comparison_id": name,
+                    "case_ids": [AID + "__" + left, AID + "__" + right],
+                    "deliberate_differences": [difference],
+                    "independent_audit": "comparison_audit.py",
+                    "proof_status": "synthetic_positive_negative_cpu_protocol_passed"}
+                   for name, (left, right, difference) in PAIRS.items()]
     manifest = {"assignment_id": AID, "law_id": "NRS-484B-307-8c",
                 "cell_id": "C153046", "actor": "motor_vehicle_driver", "cases": cases,
+                "comparisons": comparisons,
                 "status": "partial draft; no Native source, recording or delivery acceptance"}
     (ROOT / "execution-manifest.draft.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
