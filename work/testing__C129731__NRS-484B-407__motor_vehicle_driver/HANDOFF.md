@@ -464,3 +464,7 @@ A fresh `worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehi
 ## 2026-11-22 physical CPU reproof
 
 Re-executed all 96 selected-case synthetic complete/incomplete/missing-motion and lifecycle fixture commands through the current `execution-manifest.json`. Every command exited zero, and every regenerated result matched its retained SHA-256. A 162,586-byte aggregate CPU log records each command, stdout, stderr, exit code and matching result hash; the 24 case receipts now bind that log and current replay commands. The execution manifest validator passes for all 24 cases. The assignment-scoped strict checker is running; ready status is contingent on its successful exit. No Native or physical acceptance is claimed.
+
+## 2026-11-22 scoped delivery-ready acceptance restored
+
+The full assignment-scoped `worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready` passed after all 96 physical CPU fixture outputs were reproduced and hash-matched, the 24 physical receipts were rebound to one aggregate reproof log, and 13 archived legacy branch test entries with absent logs were removed from `result.json`. The other 381 result-level CPU test logs remain hash-valid. `result.json` is ready with `delivery_prepared`; this is CPU package preparation, with Native/physical/legal acceptance still pending. The earlier partial correction above records the detected fault before repair.
