@@ -19,6 +19,33 @@ from native_capture import capture
 from native_scene import create, inspect
 
 
+def check_construction(config_path: Path, plan_path: Path, packet_path: Path | None = None) -> dict:
+    """Check the selected bundle without treating a fixture as a reviewed site."""
+    config = json.loads(Path(config_path).read_text(encoding="utf-8"))
+    plan = json.loads(Path(plan_path).read_text(encoding="utf-8"))
+    case_id = config.get("selected_case_id")
+    cases = [case for case in plan["cases"] if case["case_id"] == case_id]
+    if (len(cases) != 1 or config.get("assignment_id") != plan["assignment_id"] or
+            (config.get("law_id"), config.get("cell_id"), config.get("actor")) !=
+            (plan["law_id"], plan["cell_id"], plan["actor"]) or
+            set(config.get("supported_case_ids", [])) !=
+            {case["case_id"] for case in plan["cases"]}):
+        raise ValueError("selected exact case or frozen assignment identity differs")
+    if (config.get("rate_hz") != 20 or config.get("duration_s") != 45 or
+            [(camera.get("name"), camera.get("width"), camera.get("height"))
+             for camera in config.get("cameras", [])] !=
+            [("overview", 1920, 1080), ("approach", 1280, 720),
+             ("reference_corner", 1280, 720), ("driver_reference", 1280, 720)]):
+        raise ValueError("selected camera or duration contract differs")
+    if config.get("case") != cases[0]:
+        raise ValueError("selected case construction differs from case plan")
+    if packet_path is not None:
+        inspect(packet_path, plan_path, case_id)
+    return {"case_id": case_id, "construction_checked": True,
+            "reviewed_site_checked": packet_path is not None,
+            "physical_acceptance_claimed": False}
+
+
 def native_process_identity() -> dict:
     """Retain the Linux PID generation so later release rejects a live owner."""
     pid = os.getpid()
@@ -122,7 +149,8 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--site-packet", type=Path)
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--case-id")
@@ -133,10 +161,19 @@ def main():
     plan = args.plan or here / "case-plan.json"
     packet = args.site_packet or Path(os.environ.get(
         "SCENARIO_NATIVE_SITE_PACKET", str(here / "native-site-packet.json")))
+    if args.check:
+        print(json.dumps(check_construction(here / "config.json", plan,
+                                            packet if args.site_packet else None)))
+        return
+    if args.output_dir is None:
+        parser.error("--output-dir is required for Native capture")
     if not packet.is_file():
         parser.error("reviewed crossing native-site-packet.json is required")
     if not args.case_id:
         parser.error("exact case ID is required")
+    checked = check_construction(here / "config.json", plan)
+    if args.case_id != checked["case_id"]:
+        parser.error("capture case differs from selected exact construction")
     os.environ.setdefault("SCENARIO_PIPELINE_OUTPUT_ROOT", str(args.output_dir.resolve()))
     status = capture_original(args.output_dir, packet, plan, args.case_id,
                               host=args.host, port=args.port)

@@ -75,6 +75,8 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
             status.get("retained_site_packet") != "site/packet.json"):
         raise ValueError("closed original Native capture and restoration required")
     packet_path = attempt / "site/packet.json"
+    if not packet_path.is_file():
+        raise ValueError("Missing required source: site/packet.json")
     packet, case, _ = inspect(packet_path, Path(__file__).resolve().parent / "case-plan.json",
                               case_id)
     source_hash = sha(packet_path)
@@ -238,11 +240,35 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
               "trace_reference": "trace.jsonl",
               "video_frame_map_reference": "video_frames.jsonl",
               "video_references": [name + ".mkv" for name in videos]}
+    measurement_sources = {"trace.jsonl": sha(attempt / "trace.jsonl"),
+                           "site/packet.json": source_hash,
+                           "video_frames.jsonl": sha(attempt / "video_frames.jsonl")}
+    selected_measurements = {
+        "crossing_stop_observation": {
+            "stopping_required_context": packet["stopping_required_context"],
+            "governing_sign_landmark_id": packet["sign_landmark_id"],
+            "rail_crossing_map_ref": packet["rail_crossing_map_ref"],
+            "first_one_second_stop": first_stop,
+            "source_frame_count": 900},
+        "right_side_observation": {
+            "highway_right_y_m": packet["highway_right_y_m"],
+            "highway_left_y_m": packet["highway_left_y_m"],
+            "rightmost_feasible_slot": packet["rightmost_feasible_slot"],
+            "minimum_stopped_lateral_offset_m": observations[
+                "minimum_stopped_lateral_offset_from_reviewed_rightmost_m"]},
+        "two_lane_arrangement_observation": {
+            "planned_arrangement": case["traffic_arrangement"],
+            "first_two_queue_alignment": first_queue_alignment,
+            "two_queue_aligned_frame_count": aligned_queue_frames},
+        "marked_lane_qualification_observation": {
+            "total_marked_highway_lane_count": len(packet["marked_lanes"]),
+            "marked_lane_source_names": sorted(packet["sources"]),
+            "qualification_boundary_count": 4}}
     report = {"format": "c202480-saved-crossing-analysis-v1",
-              "case_id": case_id, "measurements": {"crossing_stop_observation": {
-                  "method": "measure", "value": observations,
-                  "sources": {"trace.jsonl": sha(attempt / "trace.jsonl"),
-                              "site/packet.json": source_hash}}},
+              "case_id": case_id,
+              "measurements": {key: {"method": "analyze", "value": value,
+                                     "sources": measurement_sources}
+                               for key, value in selected_measurements.items()},
               "media_receipt_sha256": sha(attempt / "media-receipt.json"),
               "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
     return report, result
