@@ -92,6 +92,7 @@ def build() -> dict:
         "status": "selected_required",
         "case_ids": list(cases),
         "method": "Measure original speed, traffic, roadway width, surface, weather and visibility; legal reasonableness remains unresolved.",
+        "evidence_or_gap": "Source law and frozen witness are identified; original Native measurements and legal judgment remain pending.",
     }]
     plan["observations"] = [
         {"name": "ego_speed_mps", "source": "original actor velocity at each Native frame", "unit": "m/s"},
