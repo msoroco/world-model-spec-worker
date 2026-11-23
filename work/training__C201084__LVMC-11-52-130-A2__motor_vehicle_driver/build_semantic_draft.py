@@ -1,4 +1,4 @@
-"""Write source-faithful draft semantic stages for seven CPU probes."""
+"""Write source-faithful draft semantic stages for eight CPU probes."""
 import hashlib
 import json
 from pathlib import Path
@@ -32,6 +32,7 @@ def build():
     near = json.loads((HERE/'draft-near_lead-fallback-manifest.json').read_text())['cases'][0]
     absent = json.loads((HERE/'draft-absent_lead-fallback-manifest.json').read_text())['cases'][0]
     device = json.loads((HERE/'draft-device-direction-fallback-manifest.json').read_text())['cases'][0]
+    officer = json.loads((HERE/'draft-officer-direction-fallback-manifest.json').read_text())['cases'][0]
     recording = json.loads((HERE/reference['construction']).read_text())['recording_description']
     assert recording == json.loads((HERE/contrast['construction']).read_text())['recording_description']
     conflict_recording = json.loads((HERE/conflict['construction']).read_text())['recording_description']
@@ -39,6 +40,7 @@ def build():
     near_recording = json.loads((HERE/near['construction']).read_text())['recording_description']
     absent_recording = json.loads((HERE/absent['construction']).read_text())['recording_description']
     device_recording = json.loads((HERE/device['construction']).read_text())['recording_description']
+    officer_recording = json.loads((HERE/officer['construction']).read_text())['recording_description']
     relevance = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'borderline_excluded': [], 'relevant_laws': [{
                      'law_id': LAW, 'applies_to': [ACTOR], 'confidence': 'medium',
@@ -57,8 +59,8 @@ def build():
          'An applicable source of law and the reason for the stop are not supplied by synthetic motion.',
          'ego_pose', 'Source pose locates the vehicle; applicable law must be reviewed independently.'),
         ('the directions of a police officer or a traffic control device',
-         'The fire-lane sign is not evidence of a police direction. The device probe retains light state, but applicability and necessity need original review.',
-         'ego_speed', 'Source speed locates the stop; the device probe adds source-joined light state, while direction applicability and response need original evidence.'),
+         'The fire-lane sign is not evidence of a police direction. Device and pedestrian-actor probes retain source state and pose; authority, applicability and necessity need original review.',
+         'ego_speed', 'Source speed locates the stop; device and actor probes add source-joined context, while authority, direction applicability and response need original evidence.'),
     ]
     template = {'status': 'draft', 'law_id': LAW, 'actor': ACTOR,
                 'template_id': TEMPLATE, 'quote': law_text, 'parameter_refs': [],
@@ -111,6 +113,9 @@ def build():
                      'used_by_laws': [LAW]},
                     {'name': 'traffic_control_device_state', 'kind': 'world_setup',
                      'range_or_domain': 'source-observed traffic-light state throughout the attempted stop',
+                     'used_by_laws': [LAW]},
+                    {'name': 'police_officer_actor_pose', 'kind': 'world_setup',
+                     'range_or_domain': 'source-observed pedestrian identity, pose and velocity; police authority unverified',
                      'used_by_laws': [LAW]}]}
     write(PROPOSALS/'bindings.json', bindings)
     cases = []
@@ -190,6 +195,22 @@ def build():
                       'traffic_control_device_state': {'kind': 'world_setup', 'value': 'source-observed traffic light'}},
                   'recording_description': device_recording,
                   'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
+    cases.append({'case_id': ASSIGNMENT+'__officer_direction',
+                  'target_law_id': LAW, 'target_type': 'judgment_sweep',
+                  'paired_probe_id': ASSIGNMENT+'__officer_direction_probe',
+                  'deliberate_differences': ['police_officer_actor_pose'],
+                  'probe': {'primary_variable': 'police_officer_actor_pose',
+                            'comparison_or_standard': 'saved per-frame pedestrian pose; police authority, direction applicability and necessity unresolved',
+                            'target_value_or_branch': {'police_officer_actor_pose': 'source-observed'}},
+                  'rationale': 'Retain a surveyed pedestrian actor during the authored-zone stop without a police-authority or legal conclusion.',
+                  'variable_assignments': {
+                      'requested_stop_destination': {'kind': 'controller', 'value': 'inside'},
+                      'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                      'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'absent'},
+                      'lead_traffic_presence': {'kind': 'controller', 'value': False},
+                      'police_officer_actor_pose': {'kind': 'world_setup', 'value': 'source-observed pedestrian'}},
+                  'recording_description': officer_recording,
+                  'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.insert(0, {'case_id': ASSIGNMENT+'__baseline', 'target_law_id': None,
                      'target_type': 'baseline', 'rationale': 'Common source-surveyed fire-lane context.',
                      'variable_assignments': {
@@ -205,6 +226,8 @@ def build():
              'value': suffix in ('conflict', 'clear', 'near_lead')})
         item['variable_assignments'].setdefault('traffic_control_device_state',
             {'kind': 'world_setup', 'value': 'not separately inventoried'})
+        item['variable_assignments'].setdefault('police_officer_actor_pose',
+            {'kind': 'world_setup', 'value': 'not separately inventoried'})
     canonical = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'cases': cases, 'sweeps_expanded': True,
                  'sweep_specs': [{'sweep_id': 'fire_lane_exception_scope_pending',
@@ -216,11 +239,11 @@ def build():
                                  'missing_inputs': ['Original City Fire Code designation and posting evidence',
                                                     'Original conflict causation review',
                                                     'Applicable-law direction source',
-                                                    'Police direction construction',
+                                                    'Original pedestrian authority and direction review',
                                                     'Original traffic-light applicability and stop-direction review',
                                                     'Attendance and public/private property source review']}],
                  'unselected_statutory_routes': ['conflict necessity', 'applicable-law compliance',
-                                                  'police direction', 'traffic-control device direction',
+                                                  'police direction applicability', 'traffic-control device direction',
                                                   'standing or parking', 'attendance and property contexts']}
     write(PROPOSALS/'canonical-cases.json', canonical)
     stages = {}
@@ -238,11 +261,11 @@ def build():
            'stages': stages})
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT, 'status': 'draft_semantic_validation_only',
-                'cases': [reference, contrast, conflict, clear, near, absent, device]}
+                'cases': [reference, contrast, conflict, clear, near, absent, device, officer]}
     write(HERE/'draft-semantic-manifest.json', manifest)
     return {'semantic_index_sha256': sha(PROPOSALS/'semantic-index.json'),
             'draft_manifest_sha256': sha(HERE/'draft-semantic-manifest.json'),
-            'selected_cpu_probe_cases': 7, 'unresolved_judgments': len(judgments)}
+            'selected_cpu_probe_cases': 8, 'unresolved_judgments': len(judgments)}
 
 
 if __name__ == '__main__':

@@ -69,6 +69,10 @@
           "kind": "controller",
           "value": false
         },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "shared survey"
@@ -158,6 +162,10 @@
           "kind": "controller",
           "value": false
         },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "inside"
@@ -246,6 +254,10 @@
         "lead_traffic_presence": {
           "kind": "controller",
           "value": false
+        },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
         },
         "requested_stop_destination": {
           "kind": "controller",
@@ -346,6 +358,10 @@
           "kind": "controller",
           "value": true
         },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "inside"
@@ -444,6 +460,10 @@
         "lead_traffic_presence": {
           "kind": "controller",
           "value": true
+        },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
         },
         "requested_stop_destination": {
           "kind": "controller",
@@ -544,6 +564,10 @@
           "kind": "controller",
           "value": true
         },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "x=30 m beyond authored zone"
@@ -643,6 +667,10 @@
           "kind": "controller",
           "value": false
         },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "x=30 m beyond authored zone"
@@ -740,6 +768,10 @@
           "kind": "controller",
           "value": false
         },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "inside"
@@ -747,6 +779,107 @@
         "traffic_control_device_state": {
           "kind": "world_setup",
           "value": "source-observed traffic light"
+        }
+      }
+    },
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction",
+      "deliberate_differences": [
+        "police_officer_actor_pose"
+      ],
+      "paired_probe_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction_probe",
+      "probe": {
+        "comparison_or_standard": "saved per-frame pedestrian pose; police authority, direction applicability and necessity unresolved",
+        "primary_variable": "police_officer_actor_pose",
+        "target_value_or_branch": {
+          "police_officer_actor_pose": "source-observed"
+        }
+      },
+      "rationale": "Retain a surveyed pedestrian actor during the authored-zone stop without a police-authority or legal conclusion.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m,deg"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "vehicle_stops_in_posted_fire_lane",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "live CARLA map and sign actor readback plus authored geometry",
+            "name": "original_map_sign_and_fire_lane_survey",
+            "reference_frame": "surveyed CARLA map",
+            "uncertainty": "Fire Code designation and visible sign text unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "saved original pedestrian pose and frame-map join",
+            "name": "officer_direction_context",
+            "reference_frame": "original CARLA actor and world frame",
+            "uncertainty": "Police authority, direction applicability and legal necessity require original review",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No legal or physical conclusion from authored geometry",
+          "Original pixels, posting and statutory exceptions need review",
+          "Pedestrian pose alone does not establish police authority or a direction to stop in the fire lane"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "designated and posted as a fire lane pursuant to the City's Fire Code",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device"
+      ],
+      "variable_assignments": {
+        "actual_stop_zone_relation": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "absent"
+        },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": false
+        },
+        "police_officer_actor_pose": {
+          "kind": "world_setup",
+          "value": "source-observed pedestrian"
+        },
+        "requested_stop_destination": {
+          "kind": "controller",
+          "value": "inside"
+        },
+        "traffic_control_device_state": {
+          "kind": "world_setup",
+          "value": "not separately inventoried"
         }
       }
     }
@@ -769,7 +902,7 @@
           "phrase": "in compliance with law"
         },
         {
-          "note": "The fire-lane sign is not evidence of a police direction. The device probe retains light state, but applicability and necessity need original review.",
+          "note": "The fire-lane sign is not evidence of a police direction. Device and pedestrian-actor probes retain source state and pose; authority, applicability and necessity need original review.",
           "phrase": "the directions of a police officer or a traffic control device"
         }
       ],
@@ -777,7 +910,7 @@
         "Original City Fire Code designation and posting evidence",
         "Original conflict causation review",
         "Applicable-law direction source",
-        "Police direction construction",
+        "Original pedestrian authority and direction review",
         "Original traffic-light applicability and stop-direction review",
         "Attendance and public/private property source review"
       ],
@@ -791,7 +924,7 @@
   "unselected_statutory_routes": [
     "conflict necessity",
     "applicable-law compliance",
-    "police direction",
+    "police direction applicability",
     "traffic-control device direction",
     "standing or parking",
     "attendance and property contexts"

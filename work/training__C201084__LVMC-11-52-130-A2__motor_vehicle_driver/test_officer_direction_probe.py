@@ -100,6 +100,38 @@ class OfficerProbeTests(unittest.TestCase):
             self.assertEqual(json.loads((attempt/result[
                 'officer_source_measurement']).read_text())['source_frames'], 600)
 
+    def test_fallback_tunings_reach_original_source_runner(self):
+        actor, world, survey = self.fixture()
+        here = Path(__file__).resolve().parent
+        for candidate in ('fallback1','fallback2','fallback3'):
+            construction = json.loads((here/('draft-officer-direction-'+candidate+
+                                              '-construction.json')).read_text())
+            config = json.loads(next(row['content'] for row in
+                                construction['files'] if row['path']=='config.json'))
+            expected = config['controller_tuning']
+            with tempfile.TemporaryDirectory() as tmp:
+                attempt = Path(tmp)
+                def reference_runner(client, carla, survey, case, path, *,
+                                     acquisition, controller_tuning):
+                    self.assertEqual(controller_tuning, expected)
+                    return acquisition(world, carla, None, None, None, {},
+                                       case, path)
+                def officer_capture(world, carla, ego, follower, sign, officer,
+                                    plan, path):
+                    self.assertIs(officer, actor)
+                    readback = plan['police_officer_readback']
+                    with (path/'video_frames.jsonl').open('x') as frames, \
+                         (path/'police-officer-actor.jsonl').open('x') as rows:
+                        for i in range(600):
+                            frames.write(json.dumps({'carla_frame': i})+'\n')
+                            rows.write(json.dumps(dict(sample_officer(
+                                actor, readback, i), video_frame=i))+'\n')
+                    return {}
+                run(None, None, survey, attempt,
+                    reference_runner=reference_runner,
+                    officer_capture=officer_capture,
+                    controller_tuning=expected)
+
 
 if __name__ == '__main__':
     unittest.main()
