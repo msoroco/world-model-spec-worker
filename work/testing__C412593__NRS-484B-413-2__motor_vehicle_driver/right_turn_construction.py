@@ -14,7 +14,7 @@ def _xy(waypoint):
     return (x, y)
 
 
-def verify_route(approach, outgoing, *, required_direct_approach_m=91.44,
+def verify_route(approach, outgoing, *, required_direct_approach_m=100.0,
                  max_step_m=5.0):
     """Check physical lane geometry; district class remains source-reviewed."""
     if len(approach) < 3 or len(outgoing) < 2:
@@ -54,7 +54,7 @@ def verify_route(approach, outgoing, *, required_direct_approach_m=91.44,
 
 @contextmanager
 def spawn_right_turn_vehicle(world, blueprint, approach, outgoing,
-                             *, required_direct_approach_m=91.44, site_packet=None, site_source_root=None):
+                             *, required_direct_approach_m=100.0, site_packet=None, site_source_root=None):
     route = verify_route(approach,outgoing,required_direct_approach_m=required_direct_approach_m)
     actor = world.try_spawn_actor(blueprint,approach[0].transform)
     if actor is None:

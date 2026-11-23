@@ -1,12 +1,14 @@
 """CPU checks of original Native source capture boundaries."""
 
 import importlib.util
+import hashlib
 import json
 import queue
 import subprocess
 import sys
 import tempfile
 import unittest
+from xml.etree import ElementTree as ET
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -18,6 +20,8 @@ SPEC.loader.exec_module(native)
 sys.path.insert(0, str(SOURCE.parent))
 from saved_finalizer import finalize
 from distance_control import DistanceController, remaining_approach_m
+import runner
+from site_context import validate_site
 
 
 def plan():
@@ -29,9 +33,76 @@ def plan():
 
 
 class NativeSourcesTests(unittest.TestCase):
+    def test_draft_inputs_cover_three_distinct_district_variants(self):
+        work = Path.cwd() / ".runtime-work"
+        work.mkdir(exist_ok=True)
+        hashes = []
+        with tempfile.TemporaryDirectory(dir=work) as folder:
+            for district, case_name in (("business", "right_business_at_100_ft"),
+                                        ("residential", "right_residential_at_100_ft"),
+                                        ("other", "right_other_at_300_ft")):
+                output = Path(folder) / district
+                output.mkdir()
+                case = runner.PREFIX + case_name
+                route, site, cameras = runner.materialize_draft_inputs(
+                    output, case, "cpu-native-map")
+                self.assertEqual(site["district"]["type"], district)
+                self.assertEqual(runner.check_inputs(case, route, site, cameras,
+                                                            source_root=output)["duration_s"], 45)
+                xml = ET.fromstring((output / "map.xodr").read_text())
+                names = [item.get("name") for item in xml.findall("./road/objects/object")]
+                self.assertIn("freight_loading_zone_sign", names)
+                self.assertIn("freight_loading_bay", names)
+                self.assertEqual(sum("frontage" in name for name in names),
+                                 0 if district == "other" else 6)
+                realized = {"native_map_id": "cpu-native-map",
+                            "approach_road_id": runner.APPROACH_ROAD,
+                            "approach_points_xy_m": [[-120, -1.8], [0, -1.8]],
+                            "outgoing_points_xy_m": [[3.2, -5], [3.2, -20]]}
+                self.assertFalse(validate_site(site, realized, output)["physical_acceptance_claimed"])
+                hashes.append(route["map_sha256"])
+        self.assertEqual(len(set(hashes)), 3)
+
+    def test_runner_binds_exact_case_map_site_and_four_cameras(self):
+        from unittest.mock import patch
+        case = runner.PREFIX + "right_other_at_300_ft"
+        with tempfile.TemporaryDirectory() as folder, patch.object(runner, "ROOT", Path(folder)):
+            root = Path(folder)
+            (root / "map.xodr").write_text("cpu-only source map\n")
+            digest = hashlib.sha256((root / "map.xodr").read_bytes()).hexdigest()
+            route = {"case_id": case, "map_path": "map.xodr", "map_sha256": digest,
+                     "native_map_id": "reviewed-map", "requested_speed_mps": 5,
+                     "approach": [[1, -1, s] for s in range(0, 101, 2)],
+                     "connector": [[2, -1, s] for s in (0, 1)],
+                     "outgoing": [[3, -1, s] for s in (0, 1)]}
+            site = {"native_map_id": "reviewed-map", "district": {"type": "other"}}
+            cameras = plan()
+            cameras["map_sha256"] = digest
+            self.assertFalse(runner.check_inputs(case, route, site, cameras)["simulation_started"])
+            route["approach"][10][2] += 6
+            with self.assertRaisesRegex(ValueError, "gap or reversal"):
+                runner.check_inputs(case, route, site, cameras)
+            route["approach"][10][2] -= 6
+            site["district"]["type"] = "business"
+            with self.assertRaisesRegex(ValueError, "district differs"):
+                runner.check_inputs(case, route, site, cameras)
+            site["district"]["type"] = "other"
+            (root / "map.xodr").write_text("changed\n")
+            with self.assertRaisesRegex(ValueError, "map hash differs"):
+                runner.check_inputs(case, route, site, cameras)
+
+    def test_runner_rejects_unmaterialized_capture_before_carla_import(self):
+        with tempfile.TemporaryDirectory() as folder:
+            args = SimpleNamespace(output_dir=folder, case_id=runner.PREFIX +
+                                   "right_business_at_100_ft")
+            with self.assertRaisesRegex(ValueError, "runtime.py"):
+                runner.capture(args)
+
     def test_distance_controller_uses_route_progress_and_native_readback(self):
         points = [[float(index), 0.0] for index in range(101)]
         self.assertAlmostEqual(remaining_approach_m(points, (69.52, 0)), 30.48)
+        with self.assertRaisesRegex(ValueError, "initial Off buffer"):
+            remaining_approach_m(points[:96], (0, 0))
         state = [4]
         position = [0.0]
         actor = SimpleNamespace(get_location=lambda: SimpleNamespace(x=position[0], y=0),
@@ -87,6 +158,7 @@ class NativeSourcesTests(unittest.TestCase):
         snapshot = SimpleNamespace(frame=10, timestamp=SimpleNamespace(elapsed_seconds=0.5))
         actor = SimpleNamespace(id=4, get_location=lambda: SimpleNamespace(x=2, y=3),
                                 get_velocity=lambda: SimpleNamespace(x=3, y=4),
+                                get_transform=lambda: SimpleNamespace(rotation=SimpleNamespace(yaw=0)),
                                 get_light_state=lambda: 2)
         carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
         row = native.source_row(snapshot, actor, carla)
@@ -113,6 +185,9 @@ class NativeSourcesTests(unittest.TestCase):
             for index, indicator in enumerate((False, True, True)):
                 rows.append({"frame": index + 1, "time_s": (index + 1) / 20,
                              "ego_position_xy_m": [index, 0], "ego_speed_mps": 5,
+                             "ego_heading_deg": (0, 0, -45)[index],
+                             "ego_road_id": (1, 1, 2)[index],
+                             "ego_lane_id": 1,
                              "right_indicator": indicator})
                 frame_map.append({"video_frame": index, "carla_frame": index + 1,
                                   "time_s": (index + 1) / 20})
@@ -130,6 +205,13 @@ class NativeSourcesTests(unittest.TestCase):
             output = finalize(root)
             self.assertEqual(output["frames"], 3)
             self.assertEqual(set(output["original_cameras"]), set(native.CAMERAS))
+            self.assertEqual(output["original_course"]["turn_onset_frame"], 3)
+            changed = [dict(row) for row in rows]
+            changed[-1]["ego_heading_deg"] = 45
+            (root / "drive_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in changed))
+            with self.assertRaisesRegex(ValueError, "No fully observed|Turn onset differs"):
+                finalize(root)
+            (root / "drive_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
             (root / "approach.mkv").unlink()
             with self.assertRaisesRegex(ValueError, "Missing original camera"):
                 finalize(root)
@@ -143,6 +225,7 @@ class NativeSourcesTests(unittest.TestCase):
             actor = SimpleNamespace(id=11,
                                     get_location=lambda: SimpleNamespace(x=1, y=2),
                                     get_velocity=lambda: SimpleNamespace(x=3, y=4),
+                                    get_transform=lambda: SimpleNamespace(rotation=SimpleNamespace(yaw=0)),
                                     get_light_state=lambda: 2)
             carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
             sizes = {name: (2, 2) for name in native.CAMERAS}

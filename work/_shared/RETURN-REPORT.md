@@ -177,3 +177,9 @@ C412593 remains **partial**. Added a four-camera 20 Hz Native source recorder wi
 
 Added the Native route-progress right-indicator controller for all eight planned cases, with 99/100/101-foot and 299/300/301-foot engineering targets, an explicit interruption interval, and route/indicator readback checks. The saved original sources determine the actual observed distance. All 18 C412593 CPU tests pass after correcting a floating boundary comparison; the assignment is still **partial** pending exact runner, complete case/fallback construction and proof matrix. Returned work remains below file-count and per-file-size caps.
 
+## 2026-11-22 C412593 Native runner integration checkpoint
+
+C412593 remains **partial**. Added a guarded Native runner that binds hashed map/site/route/camera inputs to one exact case, requires an ignored materialized attempt, and connects right-turn spawn, position-based indicator control, four retained original cameras, `PipelineCapture`, world restore and capture sealing. Saved finalization now checks turn onset and rightward completion against original heading and lane samples. A 100 m direct approach reserves an initial Off buffer for all 300-foot variants. All 20 CPU tests, CPU preflight and the assignment-scoped partial checker pass; no CARLA was run. Source packet construction, exact case/fallback bundles, current-runtime proof receipts, semantic proposals and independent audits remain worker-owned. Batch state is 24 ready, 19 partial; the full strict gate cannot pass until every package is ready.
+
+The refreshed runner check additionally rejects invalid station spacing/lane identity or a short approach and requires the materialized capture profile to match the source camera plan. The 20-test CPU log and hash were rebound after this change.
+

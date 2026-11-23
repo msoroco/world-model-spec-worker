@@ -975,3 +975,7 @@ C412593 now has `native_sources.py` for four synchronized original Native RGB ca
 
 `distance_control.py` now requests right indication from realized position projected onto the source approach for all eight planned distance/continuity cases, preserving Native light-state readback as evidence. Two new tests bring C412593 to 18 passing CPU tests. The original drive/camera sources and saved finalizer remain available for runner integration. Status **partial**; next build the exact runner and current-runtime selected/fallback bundles, then run all required CPU proofs and audits.
 
+## 2026-11-22 C412593 Native runner integration checkpoint
+
+`native_runner.py` now connects C412593's source-bound right-turn spawn, route-distance signal policy, four-camera FFV1 recorder, pinned runtime `PipelineCapture`, world restore and capture seal. It requires a materialized `.runtime-work` attempt and reviewed exact map/site/route/camera packets. Original heading and lane state are retained, and the saved finalizer rejects a wrong or source-inconsistent right turn. The approach minimum is 100 m to leave an initial Off buffer for 300-foot cases. All 20 C412593 CPU tests, CPU preflight and assignment-scoped partial checker pass; no CARLA execution. Status **partial**. Next worker-owned step is to author source packets and exact selected/fallback runtime bundles, then run the current-runtime proof matrix, semantic proposals and independent audits. Batch state remains 24 ready, 19 partial.
+

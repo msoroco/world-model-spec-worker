@@ -39,19 +39,25 @@ def source_camera_frame(queue, expected_frame):
     raise ValueError("Original camera frame join failed")
 
 
-def source_row(snapshot, actor, carla):
+def source_row(snapshot, actor, carla, waypoint=None):
     frame = snapshot.frame
     time_s = snapshot.timestamp.elapsed_seconds
     if type(frame) is not int or frame < 0:
         raise ValueError("Invalid Native snapshot frame")
     position = actor.get_location()
     velocity = actor.get_velocity()
+    heading = actor.get_transform().rotation.yaw
     state = actor.get_light_state()
-    return {"frame": frame, "time_s": _finite(time_s),
+    row = {"frame": frame, "time_s": _finite(time_s),
             "ego_position_xy_m": [_finite(position.x), _finite(position.y)],
             "ego_speed_mps": math.hypot(_finite(velocity.x), _finite(velocity.y)),
+            "ego_heading_deg": _finite(heading),
             "right_indicator": bool(state & carla.VehicleLightState.RightBlinker),
             "native_actor_id": actor.id}
+    if waypoint is not None:
+        row["ego_road_id"] = waypoint.road_id
+        row["ego_lane_id"] = waypoint.lane_id
+    return row
 
 
 def validate_plan(plan):
@@ -153,8 +159,8 @@ def source_recorder(output, sizes=None):
         frame_map = stack.enter_context((output / "video_frames.jsonl").open("x", buffering=1))
         prior = [-1, -math.inf]
         index = [0]
-        def append(snapshot, actor, carla, queues):
-            row = source_row(snapshot, actor, carla)
+        def append(snapshot, actor, carla, queues, waypoint=None):
+            row = source_row(snapshot, actor, carla, waypoint)
             if row["frame"] <= prior[0] or row["time_s"] <= prior[1]:
                 raise ValueError("Nonmonotone Native snapshot")
             if set(queues) != set(CAMERAS):

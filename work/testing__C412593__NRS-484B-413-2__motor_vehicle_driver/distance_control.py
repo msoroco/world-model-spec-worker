@@ -33,8 +33,8 @@ def remaining_approach_m(points, xy, *, max_lateral_m=3):
     if any(length <= 0 or length > 5 for length in lengths):
         raise ValueError("Contiguous approach centerline required")
     total = sum(lengths)
-    if total < 91.44:
-        raise ValueError("Approach too short for 300-foot alternative")
+    if total < 100:
+        raise ValueError("Approach lacks initial Off buffer for 300-foot alternative")
     candidates = []
     traveled = 0.0
     for a, b, length in zip(points, points[1:], lengths):
