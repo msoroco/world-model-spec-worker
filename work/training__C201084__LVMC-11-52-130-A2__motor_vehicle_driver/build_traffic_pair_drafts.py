@@ -1,4 +1,5 @@
 """Bind the common-controller lead-present/absent probes to draft CPU cases."""
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -97,6 +98,15 @@ def build(mode):
             'measurement_procedure': {'entrypoint': 'traffic_pair_finalize.py',
                                       'source_only': True}}]}
     write(HERE/('draft-'+mode+'-manifest.json'), manifest)
+    proposal = copy.deepcopy(next(row for row in plan['cases']
+                                  if row['case_id'] == case))
+    proposal['recording_description'] = config['recording_description']
+    proposal['variable_assignments'] = {}
+    proposals_path = HERE/'proposals/cases.json'
+    proposals = json.loads(proposals_path.read_text())
+    proposals['cases'] = [row for row in proposals['cases']
+                          if row['case_id'] != case] + [proposal]
+    write(proposals_path, proposals)
     return {'case_id': case, 'construction_sha256': sha(construction_path),
             'manifest_sha256': sha(HERE/('draft-'+mode+'-manifest.json'))}
 

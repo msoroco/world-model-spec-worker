@@ -1,4 +1,5 @@
 """Bind lead-traffic Native construction to an exact draft CPU case."""
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -110,6 +111,16 @@ class BundleTest(unittest.TestCase):
             'measurement_procedure': {'entrypoint': 'exception_finalize.py',
                                       'source_only': True}}]}
     write(HERE/'draft-conflict-manifest.json', manifest)
+    plan = json.loads((HERE/'case-plan.json').read_text())
+    proposal = copy.deepcopy(next(row for row in plan['cases']
+                                  if row['case_id'] == CASE))
+    proposal['recording_description'] = config['recording_description']
+    proposal['variable_assignments'] = {}
+    proposals_path = HERE/'proposals/cases.json'
+    proposals = json.loads(proposals_path.read_text())
+    proposals['cases'] = [row for row in proposals['cases']
+                          if row['case_id'] != CASE] + [proposal]
+    write(proposals_path, proposals)
     return {'case_id': CASE, 'construction_sha256': sha(construction_path),
             'manifest_sha256': sha(HERE/'draft-conflict-manifest.json')}
 
