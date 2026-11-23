@@ -87,11 +87,21 @@
     "uncovered": "All exact cases; evidence.json has zero accepted recordings."
   },
   "observations": [
-    "non-through-highway intersection and all-entrance sign obligations",
-    "ego stop sign governance, stop reference hierarchy and complete stop before entry",
-    "original-frame body occupancy of ego and other, other obligation status and arrival timing",
-    "officer/signal exception source state",
-    "approaching time-to-conflict and hazard context without invented legal cutoff"
+    {
+      "name": "ego_speed_and_stop_reference",
+      "mandatory": true,
+      "evidence": "original body and speed before signed entrance"
+    },
+    {
+      "name": "ego_and_other_intersection_occupancy",
+      "mandatory": true,
+      "evidence": "original body occupancy and clearance across intersection"
+    },
+    {
+      "name": "other_approach_history",
+      "mandatory": true,
+      "evidence": "original other approach and conflict interval"
+    }
   ],
   "sources": [
     {
@@ -180,5 +190,143 @@
       "source": "NRS 484B.257(2)",
       "status": "selected_required"
     }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete ego and other vehicle bodies, all signed entrances, intersection, and governing signal head where present",
+        "interval": "before approach through departure"
+      },
+      {
+        "view": "approach",
+        "subject": "ego stop sign face, body stop reference and entry",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other vehicle approach or absence, occupied intersection and signal-controlled conflict",
+        "interval": "before first entry through clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver forward scene, sign and signal control at the ego entrance",
+        "interval": "approach through departure"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Retained sign inventory and independent face/status review",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "Retained sign inventory for any yield sign or documented absence",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Source-reviewed affected entrance and sign face",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Map entrance/lane relation and original approach pose",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original speed and complete body position before reference",
+      "channels": [
+        "ego_speed_and_stop_reference"
+      ],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Source-reviewed reference point; line or crosswalk and otherwise intersection edge",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Map crosswalk inventory and original camera frames",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Original complete body entry history",
+      "channels": [
+        "ego_and_other_intersection_occupancy"
+      ],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Original ego and other body occupancy history",
+      "channels": [
+        "ego_and_other_intersection_occupancy"
+      ],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original other approach motion and conflict interval; no automatic legal hazard decision",
+      "channels": [
+        "other_approach_history"
+      ],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original ego and other trajectories for independent yielding review",
+      "channels": [
+        "ego_and_other_intersection_occupancy",
+        "other_approach_history"
+      ],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Officer control source review and original camera frames",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Dynamic signal head, affected lane and per-frame source state with independent governance review",
+      "channels": [],
+      "source_refs": [
+        "inputs/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "observation_intents": [
+    "non-through-highway intersection and all-entrance sign obligations",
+    "ego stop sign governance, stop reference hierarchy and complete stop before entry",
+    "original-frame body occupancy of ego and other, other obligation status and arrival timing",
+    "officer/signal exception source state",
+    "approaching time-to-conflict and hazard context without invented legal cutoff"
   ]
 }

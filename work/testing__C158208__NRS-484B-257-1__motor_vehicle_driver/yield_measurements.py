@@ -43,6 +43,12 @@ def analyze(root: Path) -> dict:
         raise ValueError("Nearest-view branch needs sourced absence of stop line and crosswalk")
     if context.get("police_control") is not False or context.get("traffic_signal_control") is not False:
         raise ValueError("Control exception not excluded by source context")
+    history, frames = _rows(root / "approach_history.jsonl"), _rows(root / "video_frames.jsonl")
+    if len(history) < 2 or len(history) != len(frames):
+        raise ValueError("Incomplete approach/frame history")
+    by_frame = {row.get("frame"): row for row in history}
+    if len(by_frame) != len(history):
+        raise ValueError("Duplicate original approach frame")
     samples = json.loads((root / "visibility_samples.json").read_text())
     if not isinstance(samples, list) or len(samples) < 2:
         raise ValueError("Insufficient approach visibility samples")
@@ -51,6 +57,11 @@ def analyze(root: Path) -> dict:
         distance = _finite(sample.get("distance_to_intersection_m"), "sight-sample distance")
         if distance < 0 or not sample.get("ray_source"):
             raise ValueError("Visibility sample lacks spatial ray evidence")
+        source_frame = sample.get("frame")
+        source = by_frame.get(source_frame)
+        if type(source_frame) is not int or source is None or abs(
+                _finite(source.get("distance_to_intersection_m"), "source distance") - distance) > 1e-6:
+            raise ValueError("Visibility sample lacks matching original approach frame")
         ids = sample.get("visible_through_vehicle_ids")
         if not isinstance(ids, list):
             raise ValueError("Missing through-traffic visibility result")
@@ -61,9 +72,6 @@ def analyze(root: Path) -> dict:
     if not visible:
         raise ValueError("No sourced view of through traffic")
     closest = min(visible, key=lambda sample: sample["distance_to_intersection_m"])
-    history, frames = _rows(root / "approach_history.jsonl"), _rows(root / "video_frames.jsonl")
-    if len(history) < 2 or len(history) != len(frames):
-        raise ValueError("Incomplete approach/frame history")
     previous = (-1, -math.inf)
     speed_samples = []
     for index, (row, frame) in enumerate(zip(history, frames)):

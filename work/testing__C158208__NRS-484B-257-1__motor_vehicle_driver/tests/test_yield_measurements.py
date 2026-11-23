@@ -36,14 +36,16 @@ class YieldTests(unittest.TestCase):
                    "no_stop_line": True, "no_near_crosswalk": True,
                    "police_control": False, "traffic_signal_control": False}
         (root / "road_context.json").write_text(json.dumps(context))
-        samples = [{"distance_to_intersection_m": 15, "visible_through_vehicle_ids": [], "ray_source": "native-ray-1"},
-                   {"distance_to_intersection_m": 8, "visible_through_vehicle_ids": [23], "ray_source": "native-ray-2"},
-                   {"distance_to_intersection_m": 3, "visible_through_vehicle_ids": [23], "ray_source": "native-ray-3"}]
+        samples = [{"frame": 100, "distance_to_intersection_m": 15, "visible_through_vehicle_ids": [], "ray_source": "native-ray-1"},
+                   {"frame": 101, "distance_to_intersection_m": 8, "visible_through_vehicle_ids": [23], "ray_source": "native-ray-2"},
+                   {"frame": 102, "distance_to_intersection_m": 3, "visible_through_vehicle_ids": [23], "ray_source": "native-ray-3"}]
         (root / "visibility_samples.json").write_text(json.dumps(samples))
         rows = [{"frame": 100, "time_s": 1.0, "road_id": 9, "lane_id": -1,
                  "ego_speed_mps": 4, "distance_to_intersection_m": 15},
                 {"frame": 101, "time_s": 1.05, "road_id": 9, "lane_id": -1,
-                 "ego_speed_mps": 2, "distance_to_intersection_m": 8}]
+                 "ego_speed_mps": 2, "distance_to_intersection_m": 8},
+                {"frame": 102, "time_s": 1.1, "road_id": 9, "lane_id": -1,
+                 "ego_speed_mps": 1, "distance_to_intersection_m": 3}]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]
         (root / "approach_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
@@ -55,7 +57,7 @@ class YieldTests(unittest.TestCase):
             self.fixture(root)
             report = measure.analyze(root)
             self.assertEqual(report["closest_sourced_visible_sample"]["distance_to_intersection_m"], 3)
-            self.assertEqual(report["minimum_observed_approach_speed_mps"], 2)
+            self.assertEqual(report["minimum_observed_approach_speed_mps"], 1)
             self.assertIn("unresolved", report["yield_judgment"])
 
     def test_rejects_marking_and_control_exceptions(self):
@@ -81,6 +83,12 @@ class YieldTests(unittest.TestCase):
             samples[1]["ray_source"] = ""
             (root / "visibility_samples.json").write_text(json.dumps(samples))
             with self.assertRaisesRegex(ValueError, "ray evidence"):
+                measure.analyze(root)
+            self.fixture(root)
+            samples = json.loads((root / "visibility_samples.json").read_text())
+            samples[2]["frame"] = 999
+            (root / "visibility_samples.json").write_text(json.dumps(samples))
+            with self.assertRaisesRegex(ValueError, "matching original approach frame"):
                 measure.analyze(root)
             self.fixture(root)
             frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]

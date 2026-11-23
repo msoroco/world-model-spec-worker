@@ -1,3 +1,7 @@
+## 2026-11-22 nearest-view source join checkpoint
+
+Every visibility sample now requires a matching original approach frame and exact distance; mismatched frames are rejected. Current CPU tests and scoped partial checker pass. The first selected case still needs its exact runner, four cameras and saved finalizer before fallback work.
+
 # C158208 CPU handoff — NRS 484B.257(1)
 
 Status: **partial**. The selected branch is a yield-sign approach with no stop line or near-side crosswalk, requiring the nearest point where the driver can view approaching traffic on the through highway. The frozen evidence inventory has zero accepted recordings; no reuse is claimed.
