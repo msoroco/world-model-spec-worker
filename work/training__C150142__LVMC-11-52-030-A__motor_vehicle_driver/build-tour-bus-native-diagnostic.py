@@ -2,14 +2,14 @@
 import hashlib
 import json
 from pathlib import Path
-import pickle
 import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
-from worker_exchange.fixture_generator import _GraphInput
+from worker_exchange.fixture_generator import _graph
+from traffic_spec_adapter.adapter import write_adapter_graph
 
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
@@ -95,15 +95,15 @@ def build(attempt):
                 'map_context': {'declared_public_way_road_ids': [150142],
                                 'core_assumptions': [['asm.public_highway', True]]},
             }
-            graph_rel = f'graphs/base/{frame:08d}.pkl'
+            graph_rel = f'graphs/base/{frame:08d}.adapter.json'
             item = {'path': 'capture/native/' + graph_rel,
                     'attributes': {'frame': frame, 'observed_evidence': observed},
                     'nodes': [], 'edges': []}
-            (graph_dir / f'{frame:08d}.pkl').write_bytes(
-                pickle.dumps(_GraphInput(item), protocol=4))
+            write_adapter_graph(_graph(item), graph_dir / f'{frame:08d}.adapter.json')
             frames.write(json.dumps({'frame': frame, 'time_s': time_s,
                                      'simulation_time': time_s,
-                                     'base': graph_rel}) + '\n')
+                                     'base': graph_rel,
+                                     'adapter_graph': graph_rel}) + '\n')
             evidence.write(json.dumps({
                 'original_frame': frame, 'replay_frame': frame,
                 'actor_id': bus['actor_id'], 'recording_time_s': time_s,
