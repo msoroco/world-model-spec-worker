@@ -124,6 +124,105 @@
       "physical_preparation": {
         "receipt": "physical-off_stop_earlier_and_occupied-receipt.json",
         "sha256": "79315e077ebbce363c8974e33bc39ab2097abb940cf8af2d27c391e8224a7b2b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "2337546641915a31e4983ccb9295eab728a886413cff39dab7a8ba9ba62a31e4",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "943019109c4281dc1ad1c491c0c6ef663ef4f45b020ae0ab41dc45c0d689f518",
+        "test_exit_code": 0,
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "558a1fd6a1c73bd50db95fe9779fea1ee0125c1b9e42fc1f92da56dfb907aed7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Synthetic CPU boundary; independent Native/pixel review remains pending"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture captures ego actor type and Native graph",
+          "evidence": "capture/native/graphs and source actor inventory"
+        },
+        "ru.subject": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture binds the subject actor to original Native frame graph",
+          "evidence": "capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture joins the authored crossing context to Native frame identity",
+          "evidence": "capture/native/graphs and junction_context.json"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture measures pinned incoming-lane virtual-observer sight rays",
+          "evidence": "capture/native graph sight-distance evidence and junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples original ego speed; saved_finalizer emits ego_speed channel",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "earlier_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct earlier vehicle speed; saved_finalizer emits earlier_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "occupant_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct occupant speed; saved_finalizer emits occupant_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "ego_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures original ego front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "earlier_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures earlier vehicle front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "occupant_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures occupant front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "governing_signal_states": {
+          "entrypoint": "native_runner.py",
+          "method": "read back all governing Native heads at each snapshot before source_row",
+          "evidence": "vehicle_signal_history.jsonl signal_states and four original camera streams"
+        }
       }
     },
     {
@@ -247,6 +346,105 @@
       "physical_preparation": {
         "receipt": "physical-off_stop_earlier_only-receipt.json",
         "sha256": "fb2e64789fcdd44fc619cc0657463a87c09bde1798deff0a9b63ce16efd21c15"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "2337546641915a31e4983ccb9295eab728a886413cff39dab7a8ba9ba62a31e4",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "943019109c4281dc1ad1c491c0c6ef663ef4f45b020ae0ab41dc45c0d689f518",
+        "test_exit_code": 0,
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_only --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "558a1fd6a1c73bd50db95fe9779fea1ee0125c1b9e42fc1f92da56dfb907aed7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Synthetic CPU boundary; independent Native/pixel review remains pending"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture captures ego actor type and Native graph",
+          "evidence": "capture/native/graphs and source actor inventory"
+        },
+        "ru.subject": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture binds the subject actor to original Native frame graph",
+          "evidence": "capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture joins the authored crossing context to Native frame identity",
+          "evidence": "capture/native/graphs and junction_context.json"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture measures pinned incoming-lane virtual-observer sight rays",
+          "evidence": "capture/native graph sight-distance evidence and junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples original ego speed; saved_finalizer emits ego_speed channel",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "earlier_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct earlier vehicle speed; saved_finalizer emits earlier_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "occupant_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct occupant speed; saved_finalizer emits occupant_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "ego_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures original ego front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "earlier_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures earlier vehicle front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "occupant_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures occupant front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "governing_signal_states": {
+          "entrypoint": "native_runner.py",
+          "method": "read back all governing Native heads at each snapshot before source_row",
+          "evidence": "vehicle_signal_history.jsonl signal_states and four original camera streams"
+        }
       }
     },
     {
@@ -370,6 +568,105 @@
       "physical_preparation": {
         "receipt": "physical-off_stop_occupant_only-receipt.json",
         "sha256": "1f08696a62399c723ed79ad4dc9f16281b8107b619dcaa4165481afbe9140e78"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "2337546641915a31e4983ccb9295eab728a886413cff39dab7a8ba9ba62a31e4",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "943019109c4281dc1ad1c491c0c6ef663ef4f45b020ae0ab41dc45c0d689f518",
+        "test_exit_code": 0,
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_occupant_only --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "558a1fd6a1c73bd50db95fe9779fea1ee0125c1b9e42fc1f92da56dfb907aed7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Synthetic CPU boundary; independent Native/pixel review remains pending"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture captures ego actor type and Native graph",
+          "evidence": "capture/native/graphs and source actor inventory"
+        },
+        "ru.subject": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture binds the subject actor to original Native frame graph",
+          "evidence": "capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture joins the authored crossing context to Native frame identity",
+          "evidence": "capture/native/graphs and junction_context.json"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture measures pinned incoming-lane virtual-observer sight rays",
+          "evidence": "capture/native graph sight-distance evidence and junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples original ego speed; saved_finalizer emits ego_speed channel",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "earlier_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct earlier vehicle speed; saved_finalizer emits earlier_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "occupant_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct occupant speed; saved_finalizer emits occupant_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "ego_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures original ego front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "earlier_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures earlier vehicle front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "occupant_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures occupant front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "governing_signal_states": {
+          "entrypoint": "native_runner.py",
+          "method": "read back all governing Native heads at each snapshot before source_row",
+          "evidence": "vehicle_signal_history.jsonl signal_states and four original camera streams"
+        }
       }
     },
     {
@@ -493,6 +790,105 @@
       "physical_preparation": {
         "receipt": "physical-off_no_full_halt-receipt.json",
         "sha256": "2ae619b6c18071fa237c2203f71ec3dec4a4f39a068297d327526eb9698a20d4"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "2337546641915a31e4983ccb9295eab728a886413cff39dab7a8ba9ba62a31e4",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "943019109c4281dc1ad1c491c0c6ef663ef4f45b020ae0ab41dc45c0d689f518",
+        "test_exit_code": 0,
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_no_full_halt --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "558a1fd6a1c73bd50db95fe9779fea1ee0125c1b9e42fc1f92da56dfb907aed7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Synthetic CPU boundary; independent Native/pixel review remains pending"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture captures ego actor type and Native graph",
+          "evidence": "capture/native/graphs and source actor inventory"
+        },
+        "ru.subject": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture binds the subject actor to original Native frame graph",
+          "evidence": "capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture joins the authored crossing context to Native frame identity",
+          "evidence": "capture/native/graphs and junction_context.json"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture measures pinned incoming-lane virtual-observer sight rays",
+          "evidence": "capture/native graph sight-distance evidence and junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples original ego speed; saved_finalizer emits ego_speed channel",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "earlier_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct earlier vehicle speed; saved_finalizer emits earlier_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "occupant_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct occupant speed; saved_finalizer emits occupant_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "ego_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures original ego front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "earlier_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures earlier vehicle front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "occupant_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures occupant front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "governing_signal_states": {
+          "entrypoint": "native_runner.py",
+          "method": "read back all governing Native heads at each snapshot before source_row",
+          "evidence": "vehicle_signal_history.jsonl signal_states and four original camera streams"
+        }
       }
     },
     {
@@ -616,6 +1012,105 @@
       "physical_preparation": {
         "receipt": "physical-operative_signal-receipt.json",
         "sha256": "bdaacd9917d64d36dd88858a10a9ec7f019f47766c9822d757209b9634cd81d9"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "2337546641915a31e4983ccb9295eab728a886413cff39dab7a8ba9ba62a31e4",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "943019109c4281dc1ad1c491c0c6ef663ef4f45b020ae0ab41dc45c0d689f518",
+        "test_exit_code": 0,
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__operative_signal --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "558a1fd6a1c73bd50db95fe9779fea1ee0125c1b9e42fc1f92da56dfb907aed7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Synthetic CPU boundary; independent Native/pixel review remains pending"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture.capture at every Native snapshot",
+          "evidence": "capture/native/frames.jsonl and original trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture captures ego actor type and Native graph",
+          "evidence": "capture/native/graphs and source actor inventory"
+        },
+        "ru.subject": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture binds the subject actor to original Native frame graph",
+          "evidence": "capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture joins the authored crossing context to Native frame identity",
+          "evidence": "capture/native/graphs and junction_context.json"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_runner.py",
+          "method": "PipelineCapture measures pinned incoming-lane virtual-observer sight rays",
+          "evidence": "capture/native graph sight-distance evidence and junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples original ego speed; saved_finalizer emits ego_speed channel",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "earlier_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct earlier vehicle speed; saved_finalizer emits earlier_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "occupant_speed": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row samples distinct occupant speed; saved_finalizer emits occupant_speed",
+          "evidence": "vehicle_signal_history.jsonl and video_frames.jsonl"
+        },
+        "ego_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures original ego front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "earlier_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures earlier vehicle front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "occupant_stop_line_distance": {
+          "entrypoint": "three_vehicle_sources.py",
+          "method": "source_row measures occupant front-to-line signed distance",
+          "evidence": "vehicle_signal_history.jsonl and junction_context.json"
+        },
+        "governing_signal_states": {
+          "entrypoint": "native_runner.py",
+          "method": "read back all governing Native heads at each snapshot before source_row",
+          "evidence": "vehicle_signal_history.jsonl signal_states and four original camera streams"
+        }
       }
     }
   ]

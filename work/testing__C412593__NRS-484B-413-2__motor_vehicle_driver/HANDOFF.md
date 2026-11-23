@@ -1,3 +1,11 @@
+## 2026-11-22 C412593 Native site binding
+
+The `spawn_right_turn_vehicle` context now binds a source-reviewed district/freight-zone packet to the realized Native route map and waypoint geometry when supplied, and destroys the spawned actor even when the zone intrudes and validation raises. A new integration test covers the accepted adjacent zone and reject-and-cleanup path. All ten C412593 CPU tests and the scoped partial checker pass. The exact runner still needs to require this packet on every case, then capture four original cameras and run the full saved pipeline; C412593 remains partial.
+
+## 2026-11-22 C412593 source-bound site construction
+
+Added `site_context.py` and four CPU tests for source-hashed district frontage/building-use review and a separately sourced freight-loading-zone designation, polygon, map identity, route clearance and adjacency. The tests reject a changed source, intruding or unrelated zone, mismatched map and missing designation; they use synthetic textual sources and claim no real district or physical zone. Existing right-turn spawn and original-frame indicator-distance tests still pass, for nine CPU tests total. `runtime.py preflight` passes with Lean 4.28.0 and no simulation. C412593 stays partial; the next construction step is to bind this site packet to the Native route and implement four-camera capture and saved finalization.
+
 # C412593 CPU handoff — NRS 484B.413(2)
 
 Status: **partial**. This fixed cell is paved road, right turn, freight loading zone. The frozen witness relocates residential and other-area right-turn alternatives from C378304, whose layout fixes business district. The exact law requires continuous signaling over the final 100 feet in a business or residential district and 300 feet elsewhere, regardless of weather. The frozen evidence inventory has zero accepted recordings; no reuse is claimed.
@@ -17,3 +25,11 @@ Resume commands:
 Pinned CPU preflight and repository tests pass. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The complete strict gate next reports missing result `testing__C109705__NRS-484B-400-2a__motor_vehicle_driver` in `strict-gate.log`. This is unfinished worker preparation, not an external dependency.
+## 2026-11-22 original Native source and saved finalizer checkpoint
+
+Added `native_sources.py`: a 20 Hz four-camera RGB sensor plan, exact CARLA-frame queue joins, original BGRA to FFV1 recording, and synchronized `drive_history.jsonl`/`video_frames.jsonl` from snapshot position, velocity and right-blinker readback. `source_recorder` requires fresh ignored `.runtime-work` output. Added `saved_finalizer.py`, which reruns the original-path continuous-distance measurement and checks all four retained FFV1 streams with `ffprobe`, frame counts and SHA-256 hashes. Six new CPU tests exercise source plan rejection, skipped frames, original state, FFV1 encode/decode, saved-source missing-camera rejection and a four-stream recorder round trip. All 16 assignment CPU tests, `runtime.py preflight` and assignment-scoped partial check pass. This is a source pipeline component, not an exact-case runtime attempt: the case runner must still require the site packet and attach these sensors to the realized turn, then construct all selected/fallback bundles and run the full exact proof matrix. Status remains **partial**; no Native, physical or legal acceptance is claimed.
+
+## 2026-11-22 route-progress indicator controller
+
+Added `distance_control.py`: it projects realized vehicle position onto the verified 300-foot-plus direct approach, requests the right blinker at the eight case-specific 99/100/101- and 299/300/301-foot engineering targets, inserts an observed Off gap in the interruption case, and rejects off-route or reversed motion and failed light-state readback. Floating boundary tolerance is numerical only; the retained original trace remains the authority for measured distance. Two new CPU tests cover boundary request/readback and interrupted On/Off/On. All 18 C412593 CPU tests pass. Exact runner and proof matrix remain pending; status is **partial**.
+

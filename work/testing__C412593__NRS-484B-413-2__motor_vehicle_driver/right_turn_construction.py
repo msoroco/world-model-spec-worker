@@ -3,6 +3,8 @@
 from contextlib import contextmanager
 import math
 
+from site_context import validate_site
+
 
 def _xy(waypoint):
     point = waypoint.transform.location
@@ -45,12 +47,14 @@ def verify_route(approach, outgoing, *, required_direct_approach_m=91.44,
     return {"approach_road_id":first.road_id,"approach_lane_id":first.lane_id,
             "outgoing_road_id":outgoing[0].road_id,"outgoing_lane_id":outgoing[0].lane_id,
             "direct_approach_m":length,"turn_angle_degrees":angle,
-            "approach_waypoints":approach,"outgoing_waypoints":outgoing}
+            "approach_waypoints":approach,"outgoing_waypoints":outgoing,
+            "approach_points_xy_m":[list(p) for p in points],
+            "outgoing_points_xy_m":[list(p) for p in departure]}
 
 
 @contextmanager
 def spawn_right_turn_vehicle(world, blueprint, approach, outgoing,
-                             *, required_direct_approach_m=91.44):
+                             *, required_direct_approach_m=91.44, site_packet=None, site_source_root=None):
     route = verify_route(approach,outgoing,required_direct_approach_m=required_direct_approach_m)
     actor = world.try_spawn_actor(blueprint,approach[0].transform)
     if actor is None:
@@ -60,6 +64,13 @@ def spawn_right_turn_vehicle(world, blueprint, approach, outgoing,
         if waypoint is None or (waypoint.road_id,waypoint.lane_id) != (
                 route["approach_road_id"],route["approach_lane_id"]):
             raise ValueError("Spawned vehicle outside sourced right-turn approach")
-        yield {"actor":actor,"route":route}
+        site = None
+        if site_packet is not None:
+            if site_source_root is None:
+                raise ValueError("Source root required for district/freight-zone packet")
+            native_map = world.get_map()
+            route["native_map_id"] = getattr(native_map,"name",None)
+            site = validate_site(site_packet,route,site_source_root)
+        yield {"actor":actor,"route":route,"site_context":site}
     finally:
         actor.destroy()

@@ -1,3 +1,19 @@
+## 2026-11-22 checkpoint state
+
+Batch state is **24 ready, 19 partial**. C24811 passed its assignment-scoped strict delivery-ready gate twice; C412593 passed its scoped partial check after ten CPU tests. The full batch strict gate remains pending because nineteen assignments are partial. Returned work has 8,594 files, none above the per-file cap, and the changed text checked here has no trailing whitespace or conflict markers. Nine small historical archives were consolidated byte-exactly into `work/_shared/archived-small-archives-20261122.json`; all constituent paths and SHA-256 digests remain recoverable. Earlier archived-script scoped strict checks passed for C109749, C158190 and C129731. No frozen inputs, runtime or batch file was edited, and no Git command was run.
+
+## 2026-11-22 C412593 Native site binding
+
+The `spawn_right_turn_vehicle` context now binds a source-reviewed district/freight-zone packet to the realized Native route map and waypoint geometry when supplied, and destroys the spawned actor even when the zone intrudes and validation raises. A new integration test covers the accepted adjacent zone and reject-and-cleanup path. All ten C412593 CPU tests and the scoped partial checker pass. The exact runner still needs to require this packet on every case, then capture four original cameras and run the full saved pipeline; C412593 remains partial.
+
+## 2026-11-22 C412593 source-bound site construction
+
+Added `site_context.py` and four CPU tests for source-hashed district frontage/building-use review and a separately sourced freight-loading-zone designation, polygon, map identity, route clearance and adjacency. The tests reject a changed source, intruding or unrelated zone, mismatched map and missing designation; they use synthetic textual sources and claim no real district or physical zone. Existing right-turn spawn and original-frame indicator-distance tests still pass, for nine CPU tests total. `runtime.py preflight` passes with Lean 4.28.0 and no simulation. C412593 stays partial; the next construction step is to bind this site packet to the Native route and implement four-camera capture and saved finalization.
+
+## 2026-11-22 C24811 scoped strict delivery-ready pass
+
+C24811 is **ready for local GPU preparation** after `.venv-cpu/bin/python worker_check.py --assignment testing__C24811__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` passed. The final scoped failure was an absent acquisition inventory; all fourteen required atoms/channels now map to the existing Native capture or recorded-source implementation, with source evidence named in the execution manifest. Exact offline, compatibility, saved-processing, physical diagnostic, semantic, delivery acceptance, and independent comparison CPU proofs all pass against current construction hashes. This status does not assert Native motion, physical sightlines, pixels, legal compliance, or recording acceptance.
+
 ## 2026-11-22 C24811 semantic chain and exact reproof
 
 I authored a source-backed relevance/template/binding chain and twelve value-free judgment observation proposals, plus a neutral shared baseline and explicit probe metadata for the five selected cases. `semantic_delivery.validate` passes with 17 stage records and five selected cases. Because the proposal content is embedded in every exact construction, I rebound and reran all twenty offline bundles, the five-case/fifteen-fallback synthetic saved proof, twenty physical diagnostic fixture/lifecycle commands, and all twenty positive/negative compatibility checks. `execution_manifest.validate` and the assignment-scoped partial checker pass. C24811 remains **partial** pending worker-owned positive/negative delivery acceptance and independent delivery/comparison audits; Native, physical and legal acceptance are not claimed.
@@ -153,3 +169,11 @@ C24811 remains **partial**. Authored a canonical draft runner, five-case config,
 ## 2026-11-22 C24811 saved-primary proof
 
 C24811 remains **partial**. Implemented Native occluder candidate selection at the map-bound blind corner: each realized actor footprint must intersect both approach sight rays and clear both travel corridors by at least 4 m; rejected actors are destroyed and the selected blueprint/geometry is retained in source context. Added the five-case canonical draft proposal. The selected primary passed full saved finalization on an explicitly synthetic four-camera CPU fixture, with a negative test rejecting synthetic acquisition paired to a Native seal. The source/result retain `synthetic_fixture` and no physical acceptance claim. Twenty unit tests, preflight, runner check and scoped partial check pass. Exact primary offline/compatibility and independent audits, 15 risk-triggered fallbacks, and execution manifest remain worker-owned. Batch is 23 ready and 20 partial; the global strict gate has not passed.
+## 2026-11-22 C412593 original-source capture checkpoint
+
+C412593 remains **partial**. Added a four-camera 20 Hz Native source recorder with exact snapshot/frame joins, retained right-blinker and vehicle-position history, lossless FFV1 streams, and a saved finalizer that probes all four streams and measures continuous signal distance from the retained source history. Six new CPU tests include an actual four-stream encode/decode round trip and missing-camera rejection. All 16 C412593 tests, CPU preflight, and its assignment-scoped partial check pass. Exact-case runner/bundles, three fallback constructions per selected case, semantic proposals, offline/compatibility/saved-processing receipts and independent audits remain worker-owned. Batch state is 24 ready, 19 partial; the full strict gate cannot pass yet.
+
+## 2026-11-22 C412593 route-progress controller checkpoint
+
+Added the Native route-progress right-indicator controller for all eight planned cases, with 99/100/101-foot and 299/300/301-foot engineering targets, an explicit interruption interval, and route/indicator readback checks. The saved original sources determine the actual observed distance. All 18 C412593 CPU tests pass after correcting a floating boundary comparison; the assignment is still **partial** pending exact runner, complete case/fallback construction and proof matrix. Returned work remains below file-count and per-file-size caps.
+

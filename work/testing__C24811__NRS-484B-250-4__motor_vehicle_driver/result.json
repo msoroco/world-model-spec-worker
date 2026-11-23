@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
   "input_sha256": "87f2e2a4be86e119fbff7478909a0ca5be07d5519867aec7624fe7a6a065299a",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -142,10 +142,23 @@
       "exit_code": 0,
       "log": "primary-compatibility-analysis.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/delivery_acceptance.py --all --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied --mode positive",
+      "exit_code": 0,
+      "log": "delivery-acceptance-positive.log",
+      "sha256": "943019109c4281dc1ad1c491c0c6ef663ef4f45b020ae0ab41dc45c0d689f518"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-comparison-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/comparison_audit.py --root .runtime-work/c24811-saved-semantic-refresh --selftest > work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/comparison-audit-proof.log",
+      "exit_code": 0,
+      "log": "comparison-audit-proof.log",
+      "sha256": "2bf8f99638d1deee8121167b08ee599fc05768cedce63ff74cb8afe4454d4e2b"
     }
   ],
   "remaining_gpu_checks": [
     "Actual complete inoperability of installed uncovered heads, sight obstruction and viewpoint, stopped/occupying vehicle timing, camera visibility and cautious motion."
   ],
-  "reason": "Five selected cases and fifteen fallbacks pass current exact offline, synthetic saved-processing, positive/negative compatibility, and selected physical diagnostic fixture/lifecycle checks. The 17-stage validated semantic chain has a shared neutral baseline and twelve value-free judgment observation contracts; the current execution manifest and scoped partial check pass. Case-specific delivery acceptance CPU tests and independent delivery/comparison audits remain worker-owned. Native, physical and legal acceptance remain unclaimed."
+  "reason": "Assignment-scoped strict delivery-ready gate passed after 20 exact offline bundles, five-case/fifteen-fallback saved processing, 20 positive/negative compatibility checks, 20 selected physical diagnostic fixture/lifecycle commands, 17 validated semantic stage records, five delivery acceptance positive/negative CPU contracts, and three source-bound comparison audits. This is CPU preparation only; Native, physical, pixel, and legal acceptance remain unclaimed.",
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__off_stop_earlier_and_occupied --job $JOB_ID --db $DB --run $RUN --assignment testing__C24811__NRS-484B-250-4__motor_vehicle_driver"
 }

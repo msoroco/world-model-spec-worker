@@ -1,0 +1,169 @@
+"""CPU checks of original Native source capture boundaries."""
+
+import importlib.util
+import json
+import queue
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+
+
+SOURCE = Path(__file__).resolve().parents[1] / "native_sources.py"
+SPEC = importlib.util.spec_from_file_location("c412593_native_sources", SOURCE)
+native = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(native)
+sys.path.insert(0, str(SOURCE.parent))
+from saved_finalizer import finalize
+from distance_control import DistanceController, remaining_approach_m
+
+
+def plan():
+    return {"rate_hz": 20, "duration_s": 10,
+            "cameras": [{"name": name, "width": size[0], "height": size[1],
+                         "fov_deg": 90, "pose": {key: 1 for key in
+                                                ("x", "y", "z", "yaw", "pitch")}}
+                        for name, size in native.SIZES.items()]}
+
+
+class NativeSourcesTests(unittest.TestCase):
+    def test_distance_controller_uses_route_progress_and_native_readback(self):
+        points = [[float(index), 0.0] for index in range(101)]
+        self.assertAlmostEqual(remaining_approach_m(points, (69.52, 0)), 30.48)
+        state = [4]
+        position = [0.0]
+        actor = SimpleNamespace(get_location=lambda: SimpleNamespace(x=position[0], y=0),
+                                get_light_state=lambda: state[0],
+                                set_light_state=lambda value: state.__setitem__(0, value))
+        light_type = SimpleNamespace(RightBlinker=2)
+        control = DistanceController("right_business_at_100_ft", points)
+        self.assertFalse(control.step(actor, light_type)["requested_right_indicator"])
+        position[0] = 69.52
+        self.assertTrue(control.step(actor, light_type)["readback_right_indicator"])
+        self.assertEqual(state[0], 6)
+        position[0] = 65
+        with self.assertRaisesRegex(ValueError, "reversed"):
+            control.step(actor, light_type)
+
+    def test_interrupted_schedule_has_observed_off_gap(self):
+        points = [[float(index), 0.0] for index in range(101)]
+        state = [0]
+        position = [0.0]
+        actor = SimpleNamespace(get_location=lambda: SimpleNamespace(x=position[0], y=0),
+                                get_light_state=lambda: state[0],
+                                set_light_state=lambda value: state.__setitem__(0, value))
+        control = DistanceController("right_interrupted", points)
+        light_type = SimpleNamespace(RightBlinker=2)
+        observed = []
+        for x in (0, 70, 84, 87):
+            position[0] = x
+            observed.append(control.step(actor, light_type)["readback_right_indicator"])
+        self.assertEqual(observed, [False, True, False, True])
+        with self.assertRaisesRegex(ValueError, "departed"):
+            remaining_approach_m(points, (50, 10))
+
+    def test_plan_requires_all_four_correct_views(self):
+        self.assertEqual(native.validate_plan(plan())["frames_planned"], 200)
+        missing = plan()
+        missing["cameras"].pop()
+        with self.assertRaisesRegex(ValueError, "Four named"):
+            native.validate_plan(missing)
+        wrong = plan()
+        wrong["cameras"][0]["width"] -= 1
+        with self.assertRaisesRegex(ValueError, "dimensions"):
+            native.validate_plan(wrong)
+
+    def test_frame_join_rejects_skipped_source(self):
+        frames = queue.Queue()
+        frames.put(SimpleNamespace(frame=7, raw_data=b"abcd"))
+        self.assertEqual(native.source_camera_frame(frames, 7), b"abcd")
+        frames.put(SimpleNamespace(frame=9, raw_data=b"abcd"))
+        with self.assertRaisesRegex(ValueError, "skipped"):
+            native.source_camera_frame(frames, 8)
+
+    def test_native_state_row_has_original_indicator_and_position(self):
+        snapshot = SimpleNamespace(frame=10, timestamp=SimpleNamespace(elapsed_seconds=0.5))
+        actor = SimpleNamespace(id=4, get_location=lambda: SimpleNamespace(x=2, y=3),
+                                get_velocity=lambda: SimpleNamespace(x=3, y=4),
+                                get_light_state=lambda: 2)
+        carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
+        row = native.source_row(snapshot, actor, carla)
+        self.assertEqual((row["ego_position_xy_m"], row["ego_speed_mps"], row["right_indicator"]),
+                         ([2.0, 3.0], 5.0, True))
+
+    def test_ffv1_encodes_original_bgra_frame(self):
+        with tempfile.TemporaryDirectory() as folder:
+            video = Path(folder) / "original.mkv"
+            with native.ffv1_writer(video, (2, 2)) as write:
+                write(bytes([0, 0, 255, 255] * 4))
+            probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                                    "-show_entries", "stream=codec_name,width,height",
+                                    "-of", "json", str(video)], check=True,
+                                   capture_output=True, text=True)
+            stream = json.loads(probe.stdout)["streams"][0]
+            self.assertEqual(stream, {"codec_name": "ffv1", "width": 2, "height": 2})
+
+    def test_saved_finalizer_requires_all_original_frames(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            rows = []
+            frame_map = []
+            for index, indicator in enumerate((False, True, True)):
+                rows.append({"frame": index + 1, "time_s": (index + 1) / 20,
+                             "ego_position_xy_m": [index, 0], "ego_speed_mps": 5,
+                             "right_indicator": indicator})
+                frame_map.append({"video_frame": index, "carla_frame": index + 1,
+                                  "time_s": (index + 1) / 20})
+            (root / "drive_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frame_map))
+            (root / "route_context.json").write_text(json.dumps({
+                "native_map_id": "cpu-example", "approach_road_id": 1, "approach_lane_id": 1,
+                "outgoing_road_id": 2, "outgoing_lane_id": 1,
+                "native_route_source": "cpu-example", "district_source": "cpu-example",
+                "district_type": "business", "turn_onset_frame": 3}))
+            for name in native.CAMERAS:
+                with native.ffv1_writer(root / (name + ".mkv"), (2, 2)) as write:
+                    for _ in range(3):
+                        write(bytes([0, 0, 255, 255] * 4))
+            output = finalize(root)
+            self.assertEqual(output["frames"], 3)
+            self.assertEqual(set(output["original_cameras"]), set(native.CAMERAS))
+            (root / "approach.mkv").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing original camera"):
+                finalize(root)
+
+    def test_recorder_retains_four_synchronized_native_sources(self):
+        work = Path.cwd() / ".runtime-work"
+        work.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=work) as folder:
+            root = Path(folder)
+            (root / "construction.json").write_text("{}\n")
+            actor = SimpleNamespace(id=11,
+                                    get_location=lambda: SimpleNamespace(x=1, y=2),
+                                    get_velocity=lambda: SimpleNamespace(x=3, y=4),
+                                    get_light_state=lambda: 2)
+            carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
+            sizes = {name: (2, 2) for name in native.CAMERAS}
+            with native.source_recorder(root, sizes) as append:
+                for index in range(3):
+                    snapshot = SimpleNamespace(frame=index + 1,
+                                               timestamp=SimpleNamespace(elapsed_seconds=(index + 1) / 20))
+                    queues = {name: queue.Queue() for name in native.CAMERAS}
+                    for item in queues.values():
+                        item.put(SimpleNamespace(frame=index + 1,
+                                                 raw_data=bytes([0, 0, 255, 255] * 4)))
+                    append(snapshot, actor, carla, queues)
+            rows = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            self.assertEqual([row["carla_frame"] for row in rows], [1, 2, 3])
+            for name in native.CAMERAS:
+                self.assertEqual(int(subprocess.run(
+                    ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+                     "-show_entries", "stream=nb_read_frames", "-of", "csv=p=0",
+                     str(root / (name + ".mkv"))], check=True,
+                    capture_output=True, text=True).stdout.strip()), 3)
+
+
+if __name__ == "__main__":
+    unittest.main()

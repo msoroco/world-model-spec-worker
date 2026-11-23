@@ -1,3 +1,15 @@
+## 2026-11-22 C412593 Native site binding
+
+The `spawn_right_turn_vehicle` context now binds a source-reviewed district/freight-zone packet to the realized Native route map and waypoint geometry when supplied, and destroys the spawned actor even when the zone intrudes and validation raises. A new integration test covers the accepted adjacent zone and reject-and-cleanup path. All ten C412593 CPU tests and the scoped partial checker pass. The exact runner still needs to require this packet on every case, then capture four original cameras and run the full saved pipeline; C412593 remains partial.
+
+## 2026-11-22 C412593 source-bound site construction
+
+Added `site_context.py` and four CPU tests for source-hashed district frontage/building-use review and a separately sourced freight-loading-zone designation, polygon, map identity, route clearance and adjacency. The tests reject a changed source, intruding or unrelated zone, mismatched map and missing designation; they use synthetic textual sources and claim no real district or physical zone. Existing right-turn spawn and original-frame indicator-distance tests still pass, for nine CPU tests total. `runtime.py preflight` passes with Lean 4.28.0 and no simulation. C412593 stays partial; the next construction step is to bind this site packet to the Native route and implement four-camera capture and saved finalization.
+
+## 2026-11-22 C24811 scoped strict delivery-ready pass
+
+C24811 is **ready for local GPU preparation** after `.venv-cpu/bin/python worker_check.py --assignment testing__C24811__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` passed. The final scoped failure was an absent acquisition inventory; all fourteen required atoms/channels now map to the existing Native capture or recorded-source implementation, with source evidence named in the execution manifest. Exact offline, compatibility, saved-processing, physical diagnostic, semantic, delivery acceptance, and independent comparison CPU proofs all pass against current construction hashes. This status does not assert Native motion, physical sightlines, pixels, legal compliance, or recording acceptance.
+
 ## 2026-11-22 C24811 semantic chain and exact reproof
 
 I authored a source-backed relevance/template/binding chain and twelve value-free judgment observation proposals, plus a neutral shared baseline and explicit probe metadata for the five selected cases. `semantic_delivery.validate` passes with 17 stage records and five selected cases. Because the proposal content is embedded in every exact construction, I rebound and reran all twenty offline bundles, the five-case/fifteen-fallback synthetic saved proof, twenty physical diagnostic fixture/lifecycle commands, and all twenty positive/negative compatibility checks. `execution_manifest.validate` and the assignment-scoped partial checker pass. C24811 remains **partial** pending worker-owned positive/negative delivery acceptance and independent delivery/comparison audits; Native, physical and legal acceptance are not claimed.
@@ -955,3 +967,11 @@ C24811 now has a canonical draft `runner.py`, source-mapped `config.json`, full 
 ## 2026-11-22 C24811 Native candidate and saved primary
 
 C24811 remains partial. Its Native occluder candidate now uses a map-bound blind-corner placement and selects available vehicle blueprints by realized two-ray obstruction and corridor clearance, cleaning rejected actors. The selected primary passed a complete saved-processing CPU fixture with four decoded FFV1 streams and explicit synthetic provenance; mixed Native/synthetic provenance was rejected. A five-case draft proposal was added. Twenty unit tests, runtime preflight, runner check and scoped partial check pass. Exact offline/compatibility, independent audits, fifteen fallback constructions and execution manifest remain. Batch stays 23 ready/20 partial.
+## 2026-11-22 C412593 original-source capture checkpoint
+
+C412593 now has `native_sources.py` for four synchronized original Native RGB cameras and a retained position/right-indicator frame history, plus `saved_finalizer.py` for four-stream FFV1 decode/frame-count/hash validation and original-history signal-distance measurement. Six new CPU tests pass, including a real four-video recorder round trip; all 16 assignment tests, CPU preflight and the scoped partial checker pass. Status remains **partial**. Next worker-owned construction: an exact runner requiring the source-reviewed site packet, complete selected/fallback bundles and current runtime offline/compatibility/saved proofs, then semantic and independent audits. Batch state: 24 ready, 19 partial. No Native or legal acceptance claimed.
+
+## 2026-11-22 C412593 route-progress controller checkpoint
+
+`distance_control.py` now requests right indication from realized position projected onto the source approach for all eight planned distance/continuity cases, preserving Native light-state readback as evidence. Two new tests bring C412593 to 18 passing CPU tests. The original drive/camera sources and saved finalizer remain available for runner integration. Status **partial**; next build the exact runner and current-runtime selected/fallback bundles, then run all required CPU proofs and audits.
+
