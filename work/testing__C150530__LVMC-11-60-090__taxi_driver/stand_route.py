@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parent
 CASES = {
     "near_stand": {"stand_x": -55.0, "leave_x": -48.0},
     "far_stand": {"stand_x": -75.0, "leave_x": -68.0},
+    "near_stand_straight": {"stand_x": -55.0, "leave_x": -48.0},
 }
 
 
@@ -42,7 +43,9 @@ def make(case: str) -> dict:
         "posted_notice": {"point": [position["stand_x"] + 10.0, -3.5],
                           "meaning": "right turn at first street intersection",
                           "installation_provenance": "requires original source"},
-        "intended_route": ["approach", "first_junction_right", "south_exit"],
+        "intended_route": (["approach", "first_junction_straight", "east_exit"]
+                           if case == "near_stand_straight" else
+                           ["approach", "first_junction_right", "south_exit"]),
     }
 
 
@@ -78,8 +81,11 @@ def inspect(layout: dict) -> None:
         raise ValueError("stand, departure, notice and intersection order differs")
     if stand["center"][1] >= departure["point"][1]:
         raise ValueError("stand must be curbward of driving lane")
-    if layout["intended_route"] != ["approach", "first_junction_right", "south_exit"]:
-        raise ValueError("assigned right turn route differs")
+    expected_route = (["approach", "first_junction_straight", "east_exit"]
+                      if layout.get("case") == "near_stand_straight" else
+                      ["approach", "first_junction_right", "south_exit"])
+    if layout["intended_route"] != expected_route:
+        raise ValueError("case-selected first intersection route differs")
 
 
 def write_candidates() -> None:

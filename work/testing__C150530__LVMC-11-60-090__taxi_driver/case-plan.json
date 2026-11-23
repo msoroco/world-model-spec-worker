@@ -80,6 +80,34 @@
       "camera_component": "taxi_cameras.py",
       "native_tick_component": "taxi_capture_ticks.py",
       "native_entrypoint": "taxi_runner.py"
+    },
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight",
+      "law_id": "LVMC-11-60-090",
+      "case_status": "cpu_straight_route_candidate_only",
+      "layout": "candidates/near_stand_straight.json",
+      "intended_maneuver": "straight through first street intersection despite posted right-turn notice",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "CPU topology confirms the straight connection; actual Native traversal and sign visibility remain untested.",
+        "candidates": []
+      },
+      "candidate_xodr": "candidates/near_stand_straight.xodr",
+      "topology_receipt": "candidates/near_stand_straight.topology.json",
+      "native_component": "taxi_native_motion.py",
+      "saved_finalizer": "turn_trace_finalizer.py",
+      "native_trace_writer": "native_trace_capture.py",
+      "reviewed_context_template": "reviewed-context.template.json",
+      "source_binding_status": "original_sources_missing; CPU fixture path tested",
+      "camera_component": "taxi_cameras.py",
+      "native_tick_component": "taxi_capture_ticks.py",
+      "native_entrypoint": "taxi_runner.py"
     }
   ],
   "comparisons": [
@@ -99,6 +127,22 @@
       ],
       "status": "geometry_candidate_only",
       "candidate_audit": "candidates/comparison-audit.json"
+    },
+    {
+      "comparison_id": "posted_right_turn_vs_straight_attempt",
+      "case_ids": [
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight"
+      ],
+      "fixed_conditions": [
+        "same near designated-stand candidate, departure point, sign position and notice meaning",
+        "same one-way approach, first junction, cab source guards and camera/duration contract"
+      ],
+      "deliberate_differences": [
+        "commanded route through the first junction: right/south versus straight/east"
+      ],
+      "status": "source-join-audit-implemented; original attempts pending",
+      "cpu_audit": "turn_pair_audit.py"
     }
   ],
   "observations": [
@@ -164,7 +208,8 @@
   "runtime_uncertainties": [
     "The reviewed-context template is intentionally incomplete: no genuine original cab licence, designated-stand, sign, jurisdiction or designation-provisions records have been retained.",
     "The Native runner, four source camera encoder component, synchronous tick loop, trace seal and saved finalizer pass CPU fakes/fixtures; no actual CARLA map import, trajectory or camera video was processed.",
-    "Video composition, canonical semantic proposals, pinned offline/positive-negative compatibility, process-saved, independent delivery/video/comparison audits and local integration remain worker-owned CPU work."
+    "Video composition, canonical semantic proposals, pinned offline/positive-negative compatibility, process-saved, independent delivery/video/comparison audits and local integration remain worker-owned CPU work.",
+    "Straight-through non-right-turn case is a CPU construction candidate; original source guards and physical attempt remain unverified."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -242,7 +287,8 @@
       "status": "selected_required",
       "case_ids": [
         "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
-        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight"
       ],
       "evidence_or_gap": "G1 and G2: no original licence, designation or designation-provisions source bound"
     },
@@ -253,7 +299,8 @@
       "status": "selected_required",
       "case_ids": [
         "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
-        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight"
       ],
       "evidence_or_gap": "G3: no original installation or actual sign pixels bound"
     },
@@ -264,7 +311,8 @@
       "status": "selected_required",
       "case_ids": [
         "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
-        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight"
       ],
       "evidence_or_gap": "G4: original Native trajectory and street identity unverified"
     }

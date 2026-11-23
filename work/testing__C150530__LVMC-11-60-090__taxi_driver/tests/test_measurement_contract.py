@@ -10,13 +10,13 @@ from build_measurement_contract import build
 
 
 class MeasurementContractTest(unittest.TestCase):
-    def test_both_cases_and_all_selected_requirements_are_source_bound(self):
+    def test_three_cases_and_all_selected_requirements_are_source_bound(self):
         contract = build()
-        self.assertEqual(len(contract["cases"]), 2)
+        self.assertEqual(len(contract["cases"]), 3)
         self.assertEqual([item["disposition_index"] for item in contract["selected_requirements"]],
                          [0, 1, 2])
         self.assertEqual({item["case_id"].rsplit("__", 1)[-1] for item in contract["cases"]},
-                         {"near_stand", "far_stand"})
+                         {"near_stand", "far_stand", "near_stand_straight"})
         for case in contract["cases"]:
             self.assertEqual(hashlib.sha256((ROOT / case["candidate_map"]).read_bytes()).hexdigest(),
                              case["candidate_map_sha256"])

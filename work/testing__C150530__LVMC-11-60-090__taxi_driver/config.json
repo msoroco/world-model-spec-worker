@@ -1,0 +1,159 @@
+{
+  "assignment_id": "testing__C150530__LVMC-11-60-090__taxi_driver",
+  "selected_case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+  "supported_case_ids": [
+    "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+    "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+    "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand_straight"
+  ],
+  "law_id": "LVMC-11-60-090",
+  "cell_id": "C150530",
+  "actor": "taxi_driver",
+  "rate_hz": 20,
+  "duration_s": 35.0,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed stand-to-junction overhead",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed stand and posted-notice view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed first-junction view",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted forward view",
+      "fov_deg": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz cab pose, heading, speed, road and lane identity.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        },
+        {
+          "name": "controller_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz throttle, brake, steer and target waypoint.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz Native frame/time to all camera frames.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        },
+        {
+          "name": "overview_rgb",
+          "unit": "RGB frame",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz stand-to-junction overhead RGB frames.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        },
+        {
+          "name": "approach_rgb",
+          "unit": "RGB frame",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz stand and posted-notice RGB frames.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        },
+        {
+          "name": "reference_corner_rgb",
+          "unit": "RGB frame",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz junction and receiving-road RGB frames.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        },
+        {
+          "name": "driver_reference_rgb",
+          "unit": "RGB frame",
+          "sampling_rate_hz": 20,
+          "method": "Original 20 Hz cab-forward RGB frames.",
+          "time_window": "full original stand departure through first-junction attempt",
+          "reference_frame": "original CARLA world frame and synchronized 20 Hz time",
+          "uncertainty": "20 Hz sample spacing; geometry and pixel visibility require physical review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "cab_license",
+          "unit": "source-hashed record",
+          "method": "Retained original cab licensing source and review."
+        },
+        {
+          "name": "stand_designation",
+          "unit": "source-hashed record",
+          "method": "Retained original stand designation source and review."
+        },
+        {
+          "name": "stand_marking",
+          "unit": "source-hashed record",
+          "method": "Retained original stand marking source and review."
+        },
+        {
+          "name": "posted_notice",
+          "unit": "source-hashed record",
+          "method": "Retained original posted right-turn notice source and review."
+        },
+        {
+          "name": "jurisdiction",
+          "unit": "source-hashed record",
+          "method": "Retained original jurisdiction source and review."
+        },
+        {
+          "name": "designation_provisions",
+          "unit": "source-hashed record",
+          "method": "Retained original referenced designation provisions and applicability review."
+        }
+      ],
+      "limitations": [
+        "Original documentary context and Native camera pixels remain unverified.",
+        "Measured turn geometry is an engineering observation, not a legal verdict."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "first_junction_exit",
+    "motion_source": "original-trace.jsonl",
+    "minimum_samples": 4,
+    "engineering_tolerances_not_legal": true
+  },
+  "documentary_status": "genuine original context packets still required"
+}

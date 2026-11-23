@@ -100,6 +100,34 @@ class SavedNativeTraceTest(unittest.TestCase):
         self.assertEqual((result["first_junction_road_id"], result["receiving_road_id"]), (110, 11))
         self.assertGreater(result["first_intersection_exit_frame"], result["stand_departure_frame"])
 
+    def test_straight_attempt_yields_non_right_turn_measurement(self):
+        self.case = "near_stand_straight"
+        layout = make(self.case)
+        self.layout.write_text(json.dumps(layout))
+        self.map.write_bytes(build(self.case))
+        self.context["case_id"] = ASSIGNMENT + "__" + self.case
+        self.context["map_sha256"] = hashlib.sha256(self.map.read_bytes()).hexdigest()
+        self.context_packet.write_text(json.dumps(self.context))
+        points = route_points(layout)
+        first_junction = points.index((-4, -1.75))
+        self.rows = [{"frame": 0, "time_s": 0.0, "x_m": points[0][0],
+                      "y_m": points[0][1], "yaw_deg": 0.0,
+                      "road_id": 10, "lane_id": -1}]
+        for segment, (start, end) in enumerate(zip(points, points[1:]), 1):
+            pieces = math.ceil(math.dist(start, end) / 0.5)
+            road = 10 if segment <= first_junction else (120 if segment == first_junction + 1 else 12)
+            for part in range(1, pieces + 1):
+                ratio = part / pieces
+                number = len(self.rows)
+                self.rows.append({"frame": number, "time_s": round(number / 20, 4),
+                                  "x_m": start[0] + ratio * (end[0] - start[0]),
+                                  "y_m": start[1] + ratio * (end[1] - start[1]),
+                                  "yaw_deg": 0.0, "road_id": road, "lane_id": -1})
+        self.write_sources()
+        result = self.measured()
+        self.assertFalse(result["engineering_right_turn_observed"])
+        self.assertEqual((result["first_junction_road_id"], result["receiving_road_id"]), (120, 12))
+
     def test_saved_finalizer_cli_writes_source_joined_measurement(self):
         output = self.root / "measurement.json"
         script = Path(__file__).resolve().parents[1] / "turn_trace_finalizer.py"

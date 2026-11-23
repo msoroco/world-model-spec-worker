@@ -79,6 +79,19 @@ class NativeMotionTest(unittest.TestCase):
                 self.assertEqual(points[-4], (-1.75, -4))
                 self.assertLess(points[0][1], points[1][1])
 
+    def test_straight_attempt_reuses_near_stand_and_commands_east_exit(self):
+        near = make("near_stand")
+        straight = make("near_stand_straight")
+        self.assertEqual(straight["stand"], near["stand"])
+        self.assertEqual(straight["departure"], near["departure"])
+        self.assertEqual(straight["posted_notice"], near["posted_notice"])
+        self.assertEqual(build("near_stand_straight"), build("near_stand"))
+        points = route_points(straight)
+        self.assertEqual(points[-1], (42, -1.75))
+        self.assertTrue(all(abs(y + 1.75) < 1e-8 for x, y in points[1:]))
+        controller = RouteController(straight)
+        self.assertEqual(controller.points[-1], (42, -1.75))
+
     def test_spawn_checks_exact_native_map_and_curb_position(self):
         data = build("near_stand")
         world = FakeWorld(data)

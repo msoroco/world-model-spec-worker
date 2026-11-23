@@ -10,14 +10,16 @@ import hashlib
 import json
 from pathlib import Path
 
+from recording_description import build as recording_description
+
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 ASSIGNMENT = "testing__C150530__LVMC-11-60-090__taxi_driver"
-CASES = ("near_stand", "far_stand")
+CASES = ("near_stand", "far_stand", "near_stand_straight")
 CODE = ("stand_route.py", "candidate_opendrive.py", "reviewed_context.py",
         "native_trace_capture.py", "turn_trace_finalizer.py", "taxi_native_motion.py",
         "taxi_cameras.py", "taxi_capture_ticks.py", "saved_turn_check.py",
-        "delivery_audit.py", "four_view_composition.py")
+        "delivery_audit.py", "four_view_composition.py", "turn_pair_audit.py")
 
 
 def sha(path: Path) -> str:
@@ -57,13 +59,7 @@ def build(case: str) -> dict:
     return {
         "law_id": "LVMC-11-60-090", "cell_id": "C150530", "actor": "taxi_driver",
         "case_id": case_id, "entrypoint": "runner.py", "files": files,
-        "recording_description": {
-            "purpose": "Record a source-reviewed cab leaving a designated stand and its first street-intersection turn",
-            "channels": ["original 20 Hz Native pose/road/lane and controller history",
-                         "four original synchronized 20 Hz RGB camera streams",
-                         "reviewed stand, licence, notice, jurisdiction and provision sources"],
-            "limitation": "Documentary context and physical camera visibility remain unverified",
-        },
+        "recording_description": recording_description(),
         "status": "draft_offline_bundle; not delivery-ready",
     }
 

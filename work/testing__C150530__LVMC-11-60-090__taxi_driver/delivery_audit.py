@@ -39,7 +39,7 @@ def audit_source_chain(attempt: Path, case: str, map_path: Path,
                        layout_path: Path) -> dict:
     """Reject stale seals, missing streams, and partial/misaligned acquisition."""
     root = Path(attempt).resolve()
-    if case not in ("near_stand", "far_stand") or not root.is_dir():
+    if case not in ("near_stand", "far_stand", "near_stand_straight") or not root.is_dir():
         raise ValueError("unknown case or missing attempt")
     trace = _source(root, "original-trace.jsonl")
     trace_seal = _source(root, "original-trace-seal.json")
@@ -129,7 +129,7 @@ def verify_decode_receipt(source_audit: dict, attempt: Path, receipt: Path,
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", type=Path, required=True)
-    parser.add_argument("--case", choices=("near_stand", "far_stand"), required=True)
+    parser.add_argument("--case", choices=("near_stand", "far_stand", "near_stand_straight"), required=True)
     parser.add_argument("--map", type=Path, required=True)
     parser.add_argument("--layout", type=Path, required=True)
     parser.add_argument("--decode-receipt", type=Path, required=True)

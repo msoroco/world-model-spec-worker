@@ -17,7 +17,7 @@ class ExactBundleTest(unittest.TestCase):
         config = json.loads((ROOT / "config.json").read_text())
         selected = config["selected_case_id"]
         case = selected.rsplit("__", 1)[-1]
-        self.assertIn(case, ("near_stand", "far_stand"))
+        self.assertIn(case, ("near_stand", "far_stand", "near_stand_straight"))
         check_materialized_bundle(ROOT, case)
         layout = json.loads((ROOT / "candidates" / (case + ".json")).read_text())
         inspect_route(layout)

@@ -33,7 +33,7 @@ def record() -> dict:
             raise ValueError("exact materialized bundle tests incomplete")
         proof = {"case_id": entry["case_id"],
                  "construction_sha256": entry["construction_sha256"],
-                 "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/" + ASSIGNMENT + "/execution-manifest.draft.json --case " + entry["case_id"] + " --output .runtime-work/c150530-offline-draft-" + case + "-20261122-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+                 "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/" + ASSIGNMENT + "/execution-manifest.draft.json --case " + entry["case_id"] + " --output .runtime-work/c150530-offline-draft-" + case + "-20261122-v7 --python \"$PWD/.venv-cpu/bin/python\"",
                  "exit_code": 0,
                  "command_log": (folder / "pinned-command.log").relative_to(ROOT).as_posix(),
                  "command_log_sha256": sha(command_log),

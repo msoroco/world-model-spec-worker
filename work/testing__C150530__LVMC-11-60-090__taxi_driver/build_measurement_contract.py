@@ -15,7 +15,7 @@ def _sha(path: Path) -> str:
 
 def build() -> dict:
     cases = []
-    for suffix in ("near_stand", "far_stand"):
+    for suffix in ("near_stand", "far_stand", "near_stand_straight"):
         map_path = ROOT / "candidates" / (suffix + ".xodr")
         cases.append({"case_id": ASSIGNMENT + "__" + suffix,
                       "candidate_map": "candidates/" + suffix + ".xodr",
@@ -25,7 +25,8 @@ def build() -> dict:
             ("reviewed_context.py", "native_trace_capture.py",
              "turn_trace_finalizer.py", "taxi_native_motion.py", "taxi_cameras.py",
              "taxi_capture_ticks.py", "taxi_runner.py", "delivery_audit.py",
-             "measured_comparison_audit.py", "four_view_composition.py")}
+             "measured_comparison_audit.py", "turn_pair_audit.py",
+             "four_view_composition.py")}
     return {
         "format": "c150530-partial-measurement-contract-v1",
         "assignment_id": ASSIGNMENT,

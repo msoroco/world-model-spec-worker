@@ -21,10 +21,13 @@ def route_points(layout: dict) -> list[tuple[float, float]]:
     points.extend((x, -1.75) for x in (departure_x + 6, -30, -12, -4)
                   if departure_x + 1 < x < -4)
     points.append((-4, -1.75))
-    for step in range(1, 13):
-        angle = math.pi * step / 24
-        points.append((-4 + 2.25 * math.sin(angle), -4 + 2.25 * math.cos(angle)))
-    points.extend([(-1.75, -8), (-1.75, -20), (-1.75, -35)])
+    if layout["case"] == "near_stand_straight":
+        points.extend([(4, -1.75), (15, -1.75), (30, -1.75), (42, -1.75)])
+    else:
+        for step in range(1, 13):
+            angle = math.pi * step / 24
+            points.append((-4 + 2.25 * math.sin(angle), -4 + 2.25 * math.cos(angle)))
+        points.extend([(-1.75, -8), (-1.75, -20), (-1.75, -35)])
     if any(math.dist(a, b) < 1e-8 for a, b in zip(points, points[1:])):
         raise ValueError("route has duplicate consecutive waypoints")
     return points

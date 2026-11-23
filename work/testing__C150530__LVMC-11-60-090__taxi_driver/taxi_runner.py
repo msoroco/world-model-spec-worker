@@ -20,6 +20,7 @@ from taxi_cameras import CameraCapture, NAMES
 from taxi_capture_ticks import capture_ticks
 from taxi_native_motion import spawn_taxi, validate_native_map
 from native_trace_capture import TraceCapture
+from four_view_composition import compose as compose_four_views
 
 ASSIGNMENT = "testing__C150530__LVMC-11-60-090__taxi_driver"
 
@@ -162,6 +163,9 @@ def run_native(output: Path, packet: Path, case: str, *, host="127.0.0.1",
                  errors=[], encoder_exit_codes=codes,
                  context={"case_id": ASSIGNMENT + "__" + case,
                           "original_trace_seal": "original-trace-seal.json"})
+    composition = compose_four_views(output)
+    captured["composition_receipt"] = "four-view-composition.json"
+    captured["primary_video_sha256"] = composition["primary_sha256"]
     return captured
 
 
