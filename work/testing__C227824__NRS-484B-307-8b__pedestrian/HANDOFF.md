@@ -1,6 +1,6 @@
 # testing__C227824__NRS-484B-307-8b__pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction checkpoint. Six cases and five comparisons are planned; no recording or physical acceptance is claimed.
 
 Exact law: NRS 484B.307(8)(b) — Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].
 Assigned branch(es): pedestrian_highway_entry.
@@ -12,7 +12,7 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 
 1. Source-review the exact public highway extent, official signal governance and NRS 484B.283 permission conditions against a candidate map. The authored geometry alone cannot establish public dedication, lawful device authority or actual pixel visibility.
 2. Build exact, source-hashed Native scenes for the six planned variants in `case-plan.json`, with one traffic signal facing the pedestrian and an independently inventoried other device. Bind the entire highway boundary, not only the traveled roadway edge. Use `walker_control.request` for requested entry or waiting and retain original walker body vertices, signal state, device indications, countdown, four video sources and canonical frame joins.
-3. Connect `entry_measurement.measure_entry` to a saved-only finalizer, then implement semantic proposals, independent delivery/comparison audits, exact offline and positive/negative compatibility proofs for every case. Add a measured-trigger fallback only if a concrete physical risk calls for an alternate construction.
+3. Connect the saved-source `saved_entry.build_report` to canonical Native result finalization, then implement semantic proposals, independent delivery audits, exact offline and positive/negative compatibility proofs for every case. Add a measured-trigger fallback only if a concrete physical risk calls for an alternate construction.
 4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C227824__NRS-484B-307-8b__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
 
 ## 2026-11-23 CPU construction checkpoint
@@ -26,6 +26,12 @@ The exact law prohibits new highway entry while facing a steady red signal alone
 `.venv-cpu/bin/python -m unittest discover -s work/testing__C227824__NRS-484B-307-8b__pedestrian/tests -v` passed 12 tests; retained log and SHA are in `result.json`. The tests exercise boundary contact, separate device snapshots, countdown ordering, missing sources, entry direction, waiting, invalid requests, accepted fixed-condition comparison pairs, and rejection of changed boundaries or missing entry/device evidence. `comparison_audit.py` independently checks fixed source identity, the facing red at first entry, movement or separate device isolation, and rejects absent original-frame evidence; it makes no legal or physical acceptance claim. `.venv-cpu/bin/python worker_check.py --assignment testing__C227824__NRS-484B-307-8b__pedestrian --complete` passed as a truthful partial checkpoint. No exact Native construction bundle or source-bound compatibility proof is claimed, so status remains partial.
 
 The focused strict gate and complete-batch strict gate both exited 1 at `Preparation acceptance failed: partial/missing packages remain`; logs are `.runtime-work/c227824-strict.log` and `.runtime-work/full-strict-c227824.log`. The top-level CPU unittest suite passed 3 tests. Resume by binding the six cases to an exact map and acquisition sources, then completing source-bound saved processing and proofs; do not promote this checkpoint to ready on the strength of these focused tests.
+
+## 2026-11-23 saved-source continuation
+
+`saved_entry.py` now reads the exited attempt's source-hashed scene, body, signal, device, video-frame and four-camera join packets, plus the four declared video files. It rejects missing or changed source hashes, incomplete packet groups, frame/time or case mismatches, and absent camera joins before calling `entry_measurement.measure_entry`. Synthetic fixtures are explicitly labeled; the resulting report leaves `actual_pixels_verified`, `physical_acceptance_claimed` and `legal_verdict_claimed` false. This is saved-source measurement, not canonical Native result finalization or a decoded-video audit.
+
+The focused suite now passes 16 tests, including positive source joins and rejection of changed hashes, missing devices and misaligned camera frames. `cpu-tests.log` and the current SHA are bound in `result.json`. `.venv-cpu/bin/python runtime.py preflight`, the focused partial `worker_check --complete` and the repository 3-test suite pass. The complete-batch strict gate was rerun after this edit and exits 1 at `Preparation acceptance failed: partial/missing packages remain`; its retained log is `.runtime-work/full-strict-c227824-saved.log`. The initial test attempt used a temporary path one directory above the workspace and failed read-only; the fixture path was repaired to the repository's `.runtime-work/`, and the full suite passed. No output was written under `runtime/`.
 
 ## Proven checks and dependency boundary
 
