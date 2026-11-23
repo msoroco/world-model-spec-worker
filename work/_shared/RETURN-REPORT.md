@@ -4,6 +4,10 @@
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
 
+## 2026-11-23 C230241 lighting source measurement checkpoint
+
+C230241 remains partial with zero selected cases. A new source-bound lighting measurement tool checks the exact 300 ft front and 500 ft rear thresholds, lamp colours, equipment placement, motion, the half-hour night window and low-visibility activation over 600 joined 20 Hz frames. Twelve synthetic diagnostic boundary and rejection cases pass; the receipt is `work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/lighting-measurement-proof.json` (SHA-256 `2e8e33786522620a6435ad678da4498d0295ca3c8bf5043b0fafe0770c59f14b`). Pinned CPU preflight and assignment-scoped static complete exit 0. Original Native measurements, exact selected construction and candidate offline/compatibility/saved proofs, semantic delivery and independent audits remain worker-owned CPU work. No ready promotion or physical/legal acceptance is claimed. Inventory remains 17 ready / 236 partial; the complete strict gate is still unpassed. No frozen input, runtime or batch edit and no Git command.
+
 ## 2026-11-22 C111331 pinned-runtime CPU closure and batch gate
 
 C111331 is ready / delivery_prepared: two selected signal-entry cases and eight current exact offline, positive/negative compatibility and recorded-only saved chains pass, with eight independent four-camera/source audits, two physical/lifecycle CPU fixture sets, two positive/negative delivery audits, one controlled diagnostic comparison with four negatives, semantic validation, direct frozen validators, seven native tests and an assignment-scoped strict gate exit 0. Its canonical manifest binds the pinned runtime; see C111331 HANDOFF and `current-runtime-scoped-strict.log`. Original Native signal/body motion, pixels, physical/legal acceptance and canonical recording membership are unclaimed. Batch is 9 ready / 244 partial; the next incomplete assignment is C111662.
