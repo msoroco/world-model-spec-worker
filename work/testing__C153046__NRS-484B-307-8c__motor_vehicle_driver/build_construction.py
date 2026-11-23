@@ -48,8 +48,12 @@ def build() -> dict:
                   "required_atoms": [], "source_packets": [],
                   "case": {"case_id": case_id, "draft_variables": variables,
                            "recording_description": recording_description()},
-                  "physical_completion": {"criterion": "original stop, entry, yield, and exit histories",
-                                          "status": "unverified"}}
+                  "physical_completion": {"criterion": "turn", "motion_source": "trace.jsonl",
+                                          "position_key": "native_frame.ego.location_xyz_m",
+                                          "heading_key": "heading_deg", "turn_degrees": 90,
+                                          "turn_tolerance_deg": 20, "turn_sign": 1,
+                                          "minimum_progress_m": 1.0,
+                                          "completion_goal_method": "Engineering left-turn event from joined original position and heading samples; legal yielding remains separate."}}
         dispositions = json.loads((ROOT / "case-plan.json").read_text())["requirement_dispositions"]
         selected = [(index, row) for index, row in enumerate(dispositions)
                     if row["status"] == "selected_required" and
