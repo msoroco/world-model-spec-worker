@@ -7,7 +7,7 @@ from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
-REQUIRED = ('native_frame', 'time_s', 'utc_s', 'speed_mps', 'headlamp_lit',
+REQUIRED = ('video_frame', 'native_frame', 'time_s', 'utc_s', 'speed_mps', 'headlamp_lit',
             'tail_lamp_lit', 'headlamp_white', 'tail_lamp_red',
             'front_visible_ft', 'rear_visible_ft', 'discernible_500ft')
 
@@ -25,12 +25,15 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def measure(source, context):
-    source, context = Path(source), Path(context)
-    require(source.is_file() and context.is_file(), 'Original lighting source or context missing')
+def measure(source, context, frame_map):
+    source, context, frame_map = Path(source), Path(context), Path(frame_map)
+    require(source.is_file() and context.is_file() and frame_map.is_file(),
+            'Original lighting source, context or frame map missing')
     rows = [json.loads(line) for line in source.read_text().splitlines()]
+    identities = [json.loads(line) for line in frame_map.read_text().splitlines()]
     setup = json.loads(context.read_text())
-    require(len(rows) == FRAMES, 'Expected 600 original lighting frames')
+    require(len(rows) == FRAMES and len(identities) == FRAMES,
+            'Expected 600 original lighting frames and identities')
     require(setup.get('vehicle_class_source') and setup.get('clock_source') and
             setup.get('range_calibration_source') and
             setup.get('visibility_review_source'), 'Source provenance incomplete')
@@ -51,9 +54,20 @@ def measure(source, context):
     for index, row in enumerate(rows):
         require(all(key in row for key in REQUIRED),
                 'Original lighting frame missing field at ' + str(index))
-        require(row['native_frame'] == index and finite(row['time_s']) and
+        mapping = identities[index]
+        require(row['video_frame'] == index and
+                type(row['native_frame']) is int and
+                row['native_frame'] == mapping.get('native_frame') ==
+                mapping.get('carla_frame') and
+                mapping.get('video_frame') == index and
+                finite(mapping.get('time_s')) and
+                abs(mapping['time_s'] - index / RATE_HZ) < 1e-6 and
+                finite(row['time_s']) and
                 abs(row['time_s'] - index / RATE_HZ) < 1e-6,
                 'Original lighting frame join differs at ' + str(index))
+        if index:
+            require(row['native_frame'] > rows[index - 1]['native_frame'],
+                    'Original lighting Native frames must increase')
         for key in ('utc_s', 'speed_mps', 'front_visible_ft', 'rear_visible_ft'):
             require(finite(row[key]), 'Nonfinite lighting measurement at ' + str(index))
         require(row['speed_mps'] >= 0 and row['front_visible_ft'] >= 0 and
@@ -81,6 +95,7 @@ def measure(source, context):
     return {'format': 'c230241-source-lighting-measurement-v1',
             'source_kind': setup.get('source_kind', 'unreviewed_original'),
             'source_sha256': sha(source), 'context_sha256': sha(context),
+            'frame_map_sha256': sha(frame_map),
             'frames': FRAMES, 'rate_hz': RATE_HZ, 'duration_s': FRAMES / RATE_HZ,
             'measurements': counts, 'statutory_front_ft': 300,
             'statutory_rear_ft': 500, 'sunset_offset_s': 1800,
@@ -95,9 +110,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--source', required=True)
     parser.add_argument('--context', required=True)
+    parser.add_argument('--frame-map', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = measure(args.source, args.context)
+    result = measure(args.source, args.context, args.frame_map)
     Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'frames': result['frames'], 'measurements': result['measurements']}))
 

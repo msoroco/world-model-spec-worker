@@ -21,15 +21,20 @@ def write_case(name, rows, context):
     directory.mkdir(parents=True, exist_ok=True)
     source = directory / 'source.jsonl'
     setup = directory / 'context.json'
+    frame_map = directory / 'video_frames.jsonl'
     source.write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
     setup.write_text(json.dumps(context, sort_keys=True, indent=2) + '\n')
-    return source, setup
+    frame_map.write_text(''.join(json.dumps({
+        'video_frame': index, 'native_frame': 1000 + index,
+        'carla_frame': 1000 + index, 'time_s': index / 20},
+        sort_keys=True) + '\n' for index in range(600)))
+    return source, setup, frame_map
 
 
 def run_case(name, rows, context, expected, error=None):
-    source, setup = write_case(name, rows, context)
+    source, setup, frame_map = write_case(name, rows, context)
     try:
-        result = measure(source, setup)
+        result = measure(source, setup, frame_map)
         if error:
             raise AssertionError(name + ' unexpectedly passed')
         for key, value in expected.items():
@@ -39,12 +44,15 @@ def run_case(name, rows, context, expected, error=None):
         assert result['physical_visibility_verified'] is False
         assert result['legal_verdict_claimed'] is False
         return {'case': name, 'passed': True, 'source_sha256': digest(source),
-                'context_sha256': digest(setup), 'observed': expected}
+                'context_sha256': digest(setup),
+                'frame_map_sha256': digest(frame_map), 'observed': expected}
     except ValueError as exc:
         if error is None or error not in str(exc):
             raise
         return {'case': name, 'passed': True, 'source_sha256': digest(source),
-                'context_sha256': digest(setup), 'expected_rejection': str(exc)}
+                'context_sha256': digest(setup),
+                'frame_map_sha256': digest(frame_map),
+                'expected_rejection': str(exc)}
 
 
 def main():
@@ -57,7 +65,8 @@ def main():
                'vehicle_covered': True, 'headlamp_count': 1,
                'tail_lamp_rear_mounted': True,
                'sunset_utc_s': 10000, 'next_sunrise_utc_s': 50000}
-    rows = [{'native_frame': index, 'time_s': index / 20,
+    rows = [{'video_frame': index, 'native_frame': 1000 + index,
+             'time_s': index / 20,
              'utc_s': 11801 + index / 20, 'speed_mps': 3.0,
              'headlamp_lit': True, 'tail_lamp_lit': True,
              'headlamp_white': True, 'tail_lamp_red': True,

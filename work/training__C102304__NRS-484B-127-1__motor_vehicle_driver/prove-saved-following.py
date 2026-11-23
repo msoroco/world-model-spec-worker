@@ -28,13 +28,13 @@ def write_rows(path, rows):
 
 def source_hashes(folder):
     return {str(path.relative_to(folder)): sha(path) for path in folder.rglob('*')
-            if path.is_file() and path.name not in ('result.json','analysis-report.json')}
+            if path.is_file() and path.name not in ('result.json','analysis-report.json')
+            and 'channels' not in path.relative_to(folder).parts}
 
 
-def make_base(destination, suffix, env, full_resolution=False):
+def make_base(destination, suffix, env, full_resolution=False, emit_videos=True):
     destination.mkdir()
     (destination/'capture/native').mkdir(parents=True)
-    (destination/'channels').mkdir()
     construction = json.loads((HERE/'draft-candidates'/suffix/'primary/construction.json').read_text())
     config = json.loads(next(item['content'] for item in construction['files'] if item['path'] == 'config.json'))
     (destination/'config.json').write_text(json.dumps(config)+'\n')
@@ -43,7 +43,6 @@ def make_base(destination, suffix, env, full_resolution=False):
     shutil.copy2(source/'following_context.json', destination/'following_context.json')
     samples = [json.loads(line) for line in (destination/'native_samples.jsonl').read_text().splitlines()]
     trace, evidence, mapping, native_frames = [], [], [], []
-    channel_values = {item['name']: [] for item in config['recording_description']['channels']}
     for i, item in enumerate(samples):
         frame, time = 100+i, item['time_s']
         ego, lead = item['ego'], item['lead']
@@ -73,21 +72,10 @@ def make_base(destination, suffix, env, full_resolution=False):
                               'base': f'graphs/base/{frame:08d}.pkl',
                               'abstract': f'graphs/abstract/{frame:08d}.pkl',
                               'synthetic_diagnostic': True})
-        gap = min(p[0] for p in lead['native_body_xy_m'])-max(p[0] for p in ego['native_body_xy_m'])
-        values = {'kin.speed': {'ego_mps': ego['speed_mps'], 'lead_mps': lead['speed_mps']},
-                  'st.lane': {'ego': [1,-1], 'lead': [1,-1]},
-                  'rel.surface_gap': {'longitudinal_bumper_gap_m': gap},
-                  'rel.ahead_behind_in_lane': {'ego_behind_lead': True, 'same_lane': True},
-                  'native_body_pose_control': item,
-                  'camera_frame_join': mapping[-1]}
-        for name in channel_values:
-            channel_values[name].append({'time_s': time, 'value': values[name]})
     write_rows(destination/'native_samples.jsonl', samples)
     for name, records in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                           ('video_frames.jsonl',mapping),('capture/native/frames.jsonl',native_frames)]:
         write_rows(destination/name, records)
-    for name, records in channel_values.items():
-        write_rows(destination/'channels'/(name+'.jsonl'), records)
     (destination/'road.xodr').write_text(open_drive())
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
     (destination/'capture/manifest.json').write_text(json.dumps({
@@ -95,12 +83,13 @@ def make_base(destination, suffix, env, full_resolution=False):
         'sources': {'trace.jsonl': sha(destination/'trace.jsonl'),
                     'road.xodr': sha(destination/'road.xodr')},
         'synthetic_diagnostic': True})+'\n')
-    for camera in config['cameras']:
-        size = f"{camera['width']}x{camera['height']}" if full_resolution else '32x32'
-        subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=45',
-            '-frames:v','900','-c:v','ffv1',str(destination/(camera['name']+'.mkv'))],
-            check=True,env=env,timeout=120)
+    if emit_videos:
+        for camera in config['cameras']:
+            size = f"{camera['width']}x{camera['height']}" if full_resolution else '32x32'
+            subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
+                '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=45',
+                '-frames:v','900','-c:v','ffv1',str(destination/(camera['name']+'.mkv'))],
+                check=True,env=env,timeout=120)
     return construction, config
 
 
@@ -118,8 +107,9 @@ def main():
         for suffix in ('condition_a','condition_b'):
             base = scratch/(suffix+'-base')
             construction, config = make_base(base, suffix, env)
-            positive, missing, wrong = (scratch/(suffix+label) for label in ('-positive','-missing','-wrong-lane'))
-            for destination in (positive, missing, wrong):
+            positive, missing, wrong, shadow = (scratch/(suffix+label) for label in
+                ('-positive','-missing','-wrong-lane','-derived-shadow'))
+            for destination in (positive, missing, wrong, shadow):
                 shutil.copytree(base, destination)
             before = source_hashes(positive)
             command = [sys.executable,str(HERE/'native/finalize.py'),
@@ -144,26 +134,31 @@ def main():
             rows = [json.loads(line) for line in (wrong/'native_samples.jsonl').read_text().splitlines()]
             rows[10]['lead']['native_lane_id'] = 1
             write_rows(wrong/'native_samples.jsonl', rows)
+            (shadow/'channels').mkdir()
+            (shadow/'channels/kin.speed.jsonl').write_text('{"fixture_derived":true}\n')
             negative_errors = []
             for folder, expected in ((missing,'Missing required source: native_samples.jsonl'),
-                                     (wrong,'Original following lane differs')):
+                                     (wrong,'Original following lane differs'),
+                                     (shadow,'Derived channel directory supplied before analysis')):
                 failure = subprocess.run([sys.executable,str(HERE/'native/finalize.py'),
                     '--attempt',str(folder),'--output',str(folder/'analysis-report.json')],
                     env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
                 if failure.returncode == 0 or expected not in failure.stdout:
                     raise RuntimeError('Saved negative did not reject: '+failure.stdout)
                 negative_errors.append(expected)
-            for name, folder in (('positive',positive),('missing',missing),('wrong-lane',wrong)):
+            for name, folder in (('positive',positive),('missing',missing),
+                                 ('wrong-lane',wrong),('derived-shadow',shadow)):
                 shutil.copytree(folder,retained/(suffix+'-'+name))
             records.append({'case_id': result['case_id'], 'case_suffix': suffix,
                             'frames': 900, 'positive_exit_code': 0,
-                            'negative_exit_codes': [1,1], 'negative_errors': negative_errors,
+                            'negative_exit_codes': [1,1,1], 'negative_errors': negative_errors,
                             'measured_gap_m': report['measurements']['moving_following_interval']['value']['median_bumper_gap_m'],
                             'video_sources_decoded': 4, 'source_unchanged': True,
                             'native_attempt_validator_passed': True, 'rebuild_required': True,
                             'retained_positive': str(retained/(suffix+'-positive')),
                             'retained_missing': str(retained/(suffix+'-missing')),
                             'retained_wrong_lane': str(retained/(suffix+'-wrong-lane')),
+                            'retained_derived_shadow': str(retained/(suffix+'-derived-shadow')),
                             'original_source_hashes': before,
                             'analysis_report_sha256': sha(positive/'analysis-report.json'),
                             'result_sha256': sha(positive/'result.json'),
@@ -172,7 +167,7 @@ def main():
         'format':'c102304-retained-synthetic-saved-proof-v1',
         'retained_root':str(retained), 'records':records},indent=2)+'\n')
     print(json.dumps({'cases':len(records),'frames_per_case':900,'video_sources_per_case':4,
-                      'negative_rejections':4,'accepted_recordings':0},sort_keys=True))
+                      'negative_rejections':6,'accepted_recordings':0},sort_keys=True))
 
 
 if __name__ == '__main__':

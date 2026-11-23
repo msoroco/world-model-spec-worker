@@ -20,7 +20,8 @@ def rows(path):
 
 def source_hashes(folder):
     return {str(path.relative_to(folder)):sha(path) for path in folder.rglob('*')
-            if path.is_file() and path.name not in ('result.json','analysis-report.json')}
+            if path.is_file() and path.name not in ('result.json','analysis-report.json')
+            and 'channels' not in path.relative_to(folder).parts}
 
 
 def inspect(record):
@@ -64,15 +65,23 @@ def inspect(record):
     assert result['provenance_kind'] == 'synthetic_local_diagnostic'
     assert report['original_joins']['frames'] == 900
     assert set(report['video_frames'].values()) == {900}
+    assert set(report['derived_channels']) == {
+        'kin.speed', 'st.lane', 'rel.surface_gap', 'rel.ahead_behind_in_lane',
+        'native_body_pose_control', 'camera_frame_join'}
+    for name, digest in report['derived_channels'].items():
+        channel = root/'channels'/(name+'.jsonl')
+        assert sha(channel) == digest and len(rows(channel)) == 900
     for camera in ('overview','approach','reference_corner','driver_reference'):
         probe = subprocess.run(['ffprobe','-v','error','-count_frames','-select_streams','v:0',
             '-show_entries','stream=nb_read_frames','-of','default=noprint_wrappers=1:nokey=1',
             str(root/(camera+'.mkv'))],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=120)
         assert probe.returncode == 0 and probe.stdout.strip() == '900'
     missing, wrong = Path(record['retained_missing']), Path(record['retained_wrong_lane'])
+    shadow = Path(record['retained_derived_shadow'])
     assert not (missing/'native_samples.jsonl').exists()
     assert rows(wrong/'native_samples.jsonl')[10]['lead']['native_lane_id'] == 1
-    assert not (missing/'result.json').exists() and not (wrong/'result.json').exists()
+    assert rows(shadow/'channels/kin.speed.jsonl') == [{'fixture_derived': True}]
+    assert all(not (folder/'result.json').exists() for folder in (missing,wrong,shadow))
     return samples, json.loads((root/'following_context.json').read_text()), result
 
 
@@ -92,7 +101,7 @@ def main():
         for pa,pb in zip(a['lead']['native_body_xy_m'],b['lead']['native_body_xy_m']):
             assert abs(pb[0]-pa[0]-15)<1e-9 and pa[1] == pb[1]
     print(json.dumps({'audit':'pass','paired_frames':900,'source_videos':8,
-                      'exact_source_hashes':True,'negative_fixtures':4,
+                      'exact_source_hashes':True,'negative_fixtures':6,
                       'accepted_recordings':0},sort_keys=True))
 
 

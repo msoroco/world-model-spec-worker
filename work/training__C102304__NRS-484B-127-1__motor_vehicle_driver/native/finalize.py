@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 import subprocess
 
-from measure_following import measure, sha
+from measure_following import body_projections, measure, sha
 
 
 def moving_following_interval(folder):
@@ -88,6 +88,52 @@ def video_frames(path):
     return int(probe.stdout.strip())
 
 
+def rebuild_channels(folder, config):
+    """Reconstruct derived observations from joined original Native sources."""
+    folder = Path(folder)
+    destination = folder/'channels'
+    if destination.exists():
+        raise ValueError('Derived channel directory supplied before analysis')
+    names = {item['name'] for item in config['recording_description']['channels']}
+    expected = {'kin.speed', 'st.lane', 'rel.surface_gap',
+                'rel.ahead_behind_in_lane', 'native_body_pose_control',
+                'camera_frame_join'}
+    if names != expected:
+        raise ValueError('Following channel contract changed')
+    samples = rows(folder, 'native_samples.jsonl')
+    mappings = rows(folder, 'video_frames.jsonl')
+    if len(samples) != 900 or len(mappings) != 900:
+        raise ValueError('Full original source required for derived channels')
+    channels = {name: [] for name in names}
+    for sample, mapping in zip(samples, mappings):
+        if sample['native_frame'] != mapping['native_frame'] or abs(sample['time_s']-mapping['time_s']) > 1e-4:
+            raise ValueError('Original channel source join differs')
+        ego, lead = sample['ego'], sample['lead']
+        forward = ego['native_forward_xy']
+        _, front_ego, left_ego, right_ego = body_projections(ego['native_body_xy_m'], forward, 'ego')
+        rear_lead, _, left_lead, right_lead = body_projections(lead['native_body_xy_m'], forward, 'lead')
+        same_lane = (ego['native_road_id'] == lead['native_road_id'] and
+                     ego['native_lane_id'] == lead['native_lane_id'])
+        gap = rear_lead-front_ego
+        values = {
+            'kin.speed': {'ego_mps': ego['speed_mps'], 'lead_mps': lead['speed_mps']},
+            'st.lane': {'ego': [ego['native_road_id'], ego['native_lane_id']],
+                        'lead': [lead['native_road_id'], lead['native_lane_id']]},
+            'rel.surface_gap': {'longitudinal_bumper_gap_m': gap},
+            'rel.ahead_behind_in_lane': {
+                'ego_behind_lead': gap > 0,
+                'same_lane': same_lane and min(right_ego, right_lead) > max(left_ego, left_lead)},
+            'native_body_pose_control': sample,
+            'camera_frame_join': mapping,
+        }
+        for name, value in values.items():
+            channels[name].append(json.dumps({'time_s': sample['time_s'], 'value': value}, allow_nan=False)+'\n')
+    destination.mkdir()
+    for name, lines in channels.items():
+        (destination/(name+'.jsonl')).write_text(''.join(lines))
+    return {name: sha(destination/(name+'.jsonl')) for name in sorted(names)}
+
+
 def finalize(attempt, output):
     from worker_exchange.native_output import validate_result
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
@@ -106,6 +152,7 @@ def finalize(attempt, output):
     video_counts = {name: video_frames(attempt/name) for name in videos}
     if set(video_counts.values()) != {count}:
         raise ValueError('Source camera frame count differs')
+    derived_channels = rebuild_channels(attempt, config)
     evidence = []
     for channel in config['recording_description']['channels']:
         reference = 'channels/'+channel['name']+'.jsonl'
@@ -147,7 +194,7 @@ def finalize(attempt, output):
     validate_result(result)
     report.update(format='c102304-saved-following-analysis-v1',
                   candidate_id=config['candidate_id'], original_joins=joins,
-                  video_frames=video_counts,
+                  video_frames=video_counts, derived_channels=derived_channels,
                   scope='saved original-source joins and video decode; no public-highway or legal finding')
     output.write_text(json.dumps(report, indent=2, allow_nan=False)+'\n')
     (attempt/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n')
