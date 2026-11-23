@@ -23,15 +23,19 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def audit(comparison_id, mutate_camera=False):
+def audit(comparison_id, mutate_camera=False, attempt_map=None):
     plan = json.loads((HERE / "case-plan.json").read_text())
     comparison = next(c for c in plan["comparisons"] if c["comparison_id"] == comparison_id)
     rows = []
     for case_id in comparison["case_ids"]:
         short = case_id.split("__")[-1]
-        folder = ROOT / (short + "-compat-primary")
-        if short == "right_business_at_100_ft":
-            folder = ROOT / "compat-primary"
+        if attempt_map is None:
+            folder = ROOT / (short + "-compat-primary")
+            if short == "right_business_at_100_ft":
+                folder = ROOT / "compat-primary"
+        else:
+            require(case_id in attempt_map, "Comparison attempt map omits case: " + case_id)
+            folder = Path(attempt_map[case_id]).resolve()
         config = json.loads((folder / "config.json").read_text())
         report = json.loads((folder / "analysis-report.json").read_text())
         context = json.loads((folder / "route_context.json").read_text())
@@ -88,9 +92,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--comparison", choices=("business_signal_distance", "other_signal_distance", "continuity"), required=True)
     parser.add_argument("--mutate-camera", action="store_true")
+    parser.add_argument("--attempt-map", help="JSON map from exact case IDs to current compatibility attempts")
     parser.add_argument("--output")
     args = parser.parse_args()
-    result = audit(args.comparison, args.mutate_camera)
+    attempt_map = json.loads(Path(args.attempt_map).read_text()) if args.attempt_map else None
+    result = audit(args.comparison, args.mutate_camera, attempt_map)
     if args.output:
         Path(args.output).write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, sort_keys=True))
