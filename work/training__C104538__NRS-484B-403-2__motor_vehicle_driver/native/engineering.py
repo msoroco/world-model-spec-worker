@@ -21,7 +21,7 @@ def parameters(case_suffix,candidate_id):
             'sign_camera_xyz_m':[-12,11,6] if candidate_id=='fallback3' else [-12,9,5],
             'four_camera_views_required':True,
             'law_id':'NRS-484B-403-2','cell_id':'C104538',
-            'actor':'motor_vehicle_driver','duration_s':24,'rate_hz':20,
+            'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20,
             'selected':False}
 
 

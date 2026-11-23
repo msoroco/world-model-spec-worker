@@ -21,7 +21,7 @@ def run():
         review=folder/'sign-review.json';video=folder/'approach-video-fixture.txt'
         receipt=json.loads((folder/'measurement.json').read_text())
         actual=measure(source,mapping,review,video)
-        if actual!=receipt or len(rows(source))!=480 or len(rows(mapping))!=480:
+        if actual!=receipt or len(rows(source))!=600 or len(rows(mapping))!=600:
             raise ValueError('Saved receipt or frame count mismatch: '+name)
         if receipt['source_hashes']!={p.name:sha(p) for p in (source,mapping,review,video,folder/'pixel_review.jsonl')}:
             raise ValueError('Source hash mismatch: '+name)
@@ -44,7 +44,7 @@ def run():
         else:raise AssertionError('Changed video accepted')
     finally:
         video.write_bytes(original)
-    return {'passed':True,'frames_per_case':480,'controlled_pair':True,
+    return {'passed':True,'frames_per_case':600,'controlled_pair':True,
             'changed_video_rejected':True,'original_sources_restored':sha(video)==right[2]['source_hashes']['approach-video-fixture.txt'],
             'native_executed':False,'accepted':False}
 

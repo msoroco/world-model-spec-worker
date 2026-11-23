@@ -31,11 +31,12 @@ def audit():
             receipt=package['receipt']
             if (receipt['format'],receipt['case_id'],receipt['candidate_id'],
                 receipt['construction_sha256'],receipt['runtime_manifest_sha256'])!=(
-                'worker-package-compatibility-v1',case,candidate,
+                'worker-package-compatibility',case,candidate,
                 ref['construction_sha256'],manifest['runtime_manifest_sha256']):
                 raise ValueError('Exact C102372 portable identity differs')
             checks={'actual_analysis','native_validation','mandatory_observations',
-                'lean_decoder','render','final_decode','acquisition_unchanged'}
+                'lean_decoder','render','final_decode','acquisition_unchanged',
+                'derived_outputs_rebuilt','four_camera_sources'}
             if receipt['passed'] is not True or not checks<=set(receipt['checks']):
                 raise ValueError('Pinned portable check set incomplete')
             if fixture_hash is None:fixture_hash=receipt['fixture_sha256']

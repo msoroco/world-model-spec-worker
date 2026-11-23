@@ -50,7 +50,7 @@ def check(case_suffix, candidate_id):
         raise ValueError('Overview resolution changed')
     if cameras[2]['xyz_m'] != engineering['sign_camera_xyz_m']:
         raise ValueError('Sign camera differs from candidate engineering')
-    if engineering['rate_hz'] != RATE_HZ or engineering['duration_s'] != 24:
+    if engineering['rate_hz'] != RATE_HZ or engineering['duration_s'] != 30:
         raise ValueError('Native timebase differs from measured contract')
     PathController(engineering['native_route_xy_m'], 2.8, 35,
                    target_speed_mps=engineering['target_speed_mps'],
@@ -245,7 +245,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         with (output / 'native_samples.jsonl').open('x') as native_file, \
              (output / 'video_frames.jsonl').open('x') as frame_file, \
              (output / 'body_history.jsonl').open('x') as body_file:
-            for index in range(480):
+            for index in range(600):
                 before = ego.get_transform()
                 speed = observed_speed_mps(ego)
                 command = controller.step(position_xy_m=(before.location.x, before.location.y),
@@ -308,7 +308,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     encoders[spec['name']].stdin.write(rgb.tobytes())
                 frame_file.write(json.dumps(frame_identity) + '\n')
                 frames += 1
-        if frames != 480:
+        if frames != 600:
             raise RuntimeError('Original capture frame count incomplete')
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
@@ -348,7 +348,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 restored = restore(client, saved)
             except BaseException as exc:
                 error = error or {'world_restore_error': str(exc)}
-        if error is None and frames == 480:
+        if error is None and frames == 600:
             try:
                 sources = {name: output / (name + '.mkv') for name in
                     ('overview','approach','sign_reference','driver_reference')}
@@ -357,7 +357,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 _write_json_new(output / 'four-view-receipt.json', composed)
             except BaseException as exc:
                 error = {'four_view_composition_error': str(exc)}
-        if error is None and frames == 480:
+        if error is None and frames == 600:
             try:
                 seal_capture(output, frames=frames, restoration=restored, errors=[],
                     encoder_exit_codes=encoder_exit_codes,
@@ -367,7 +367,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 error = {'capture_seal_error': str(exc)}
         _write_json_new(output / 'native-capture-report.json', {
             'case_suffix': case_suffix, 'candidate_id': candidate_id,
-            'frames': frames, 'expected_frames': 480,
+            'frames': frames, 'expected_frames': 600,
             'encoder_exit_codes': encoder_exit_codes, 'restoration': restored,
             'error': error, 'accepted': False,
             'original_pixel_review': 'pending', 'official_sign_review': 'pending',

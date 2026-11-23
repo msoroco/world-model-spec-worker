@@ -66,11 +66,11 @@ def video_frames(path):
     return int(completed.stdout.strip())
 
 
-def measure_case_sources(attempt):
+def measure_case_sources(attempt, expected_frames):
     attempt=Path(attempt)
     source=attempt/'native_parking_history.json'
     if not source.is_file():raise ValueError('Missing required source: native_parking_history.json')
-    result=measure(source,sha(source))
+    result=measure(source,sha(source),expected_frames)
     return {'value':result,'method':'measure_case_sources',
             'sources':{'native_parking_history.json':sha(source)}}
 
@@ -85,7 +85,7 @@ def finalize(attempt,output):
     if abs(requested_count-count)>1e-6 or count<2:
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
-    measured=measure_case_sources(attempt)
+    measured=measure_case_sources(attempt,count)
     videos=[f'{name}.mkv' for name in ('overview','approach','intersection','parking')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):

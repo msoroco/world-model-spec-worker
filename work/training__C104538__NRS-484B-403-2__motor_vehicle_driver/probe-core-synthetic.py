@@ -33,7 +33,7 @@ def make_attempt(destination,suffix,candidate='primary'):
         shutil.copyfile(source/name,destination/name)
     samples=rows(destination/'native_samples.jsonl')
     mapping=rows(destination/'video_frames.jsonl')
-    if len(samples)!=480 or len(mapping)!=480:raise ValueError('Synthetic original sources incomplete')
+    if len(samples)!=600 or len(mapping)!=600:raise ValueError('Synthetic original sources incomplete')
     trace=[];evidence=[];history=[];frames=[]
     graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
     graph_dir=destination/'capture/native/graphs/base';graph_dir.mkdir(parents=True)
@@ -67,7 +67,7 @@ def make_attempt(destination,suffix,candidate='primary'):
     (destination/'road.xodr').write_text(open_drive())
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
     (destination/'capture/manifest.json').write_text(json.dumps({
-        'extraction_confirmed':True,'frames':480,
+        'extraction_confirmed':True,'frames':600,
         'sources':{'road.xodr':sha(destination/'road.xodr'),
                    'trace.jsonl':sha(destination/'trace.jsonl')},
         'synthetic_diagnostic':True}))
@@ -92,8 +92,8 @@ def make_attempt(destination,suffix,candidate='primary'):
     shutil.copytree(destination/'channels',destination/'source_channels')
     for name in ('overview','approach','sign_reference','driver_reference'):
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=24',
-            '-frames:v','480','-c:v','ffv1',str(destination/(name+'.mkv'))],
+            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=30',
+            '-frames:v','600','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=120)
     review=json.loads((source/'sign-review.json').read_text())
     review['video_sha256']=sha(destination/'approach.mkv')
@@ -114,7 +114,7 @@ def main():
         ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck')
     config=json.loads((attempt/'config.json').read_text())
     video=render(attempt,attempt/'converted',config['case'])
-    decoded=audit(video['video'],480,mapping_sha256=video['frame_map_sha256'],
+    decoded=audit(video['video'],600,mapping_sha256=video['frame_map_sha256'],
                   receipt=attempt/'final-decode.json')
     print(json.dumps({'scratch':str(scratch),'case':args.case,'candidate':args.candidate,
         'core':core,'render_frames':video['frames'],'final_decode_passed':decoded['passed'],

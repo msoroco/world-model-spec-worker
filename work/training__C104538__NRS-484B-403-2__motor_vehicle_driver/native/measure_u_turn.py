@@ -30,8 +30,8 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
     samples=[json.loads(line) for line in paths[0].read_text().splitlines() if line.strip()]
     mapping=[json.loads(line) for line in paths[1].read_text().splitlines() if line.strip()]
     review=json.loads(paths[2].read_text())
-    if len(samples)!=480 or len(mapping)!=480:
-        raise ValueError('Expected 480 joined original frames')
+    if len(samples)!=600 or len(mapping)!=600:
+        raise ValueError('Expected 600 joined original frames')
     if (review.get('source_kind')!='original_camera_sign_review'
         or review.get('native_samples_sha256')!=sha(paths[0])
         or review.get('frame_map_sha256')!=sha(paths[1])
@@ -85,7 +85,7 @@ def measure(samples_path, frame_map_path, sign_review_path, video_path):
                   all(inside[i] for i in range(reversal+1) if abs(angles[i])>=math.radians(20)) and
                   samples[-1].get('native_lane_id')==opposing)
     return {'format':'signed-u-turn-original-frame-measurement-v1',
-            'samples':480,'applicable_no_u_turn_device_reviewed':True,
+            'samples':600,'applicable_no_u_turn_device_reviewed':True,
             'u_turn_within_governed_region_observed':observed,
             'reversal_native_frame':frames[reversal] if reversal is not None else None,
             'maximum_heading_change_deg':max(abs(math.degrees(a)) for a in angles),

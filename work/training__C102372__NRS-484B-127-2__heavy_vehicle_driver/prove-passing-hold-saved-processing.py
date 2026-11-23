@@ -36,6 +36,7 @@ def main():
     negative=OUT/'passing_hold-negative'
     if negative.exists():shutil.rmtree(negative)
     shutil.copytree(positive,negative)
+    shutil.rmtree(positive/'channels',ignore_errors=True)
     report=finalize(positive,positive/'analysis-report.json')
     contract=json.loads((HERE/'native/measurement-contract-passing_hold.json').read_text())
     verify_report(contract,report,positive)

@@ -1,4 +1,4 @@
-"""Synthetic 480-frame positive, controlled straight and source rejection tests."""
+"""Synthetic 600-frame positive, controlled straight and source rejection tests."""
 import json
 import math
 from pathlib import Path
@@ -19,14 +19,14 @@ class UTurnMeasurementTests(unittest.TestCase):
         self.review=self.root/'sign-review.json'
         self.pixel_review=self.root/'pixel_review.jsonl'
         self.video=self.root/'approach-video-fixture.txt'
-        self.video.write_bytes(b'synthetic 480-frame camera placeholder')
+        self.video.write_bytes(b'synthetic 600-frame camera placeholder')
 
     def write(self, turn=True, governed=True):
         samples=[];mapping=[]
         route=native_route('witness_2' if turn else 'witness_1')
-        for i in range(480):
+        for i in range(600):
             frame=100+i;time=(i+1)/20
-            station=round(i*(len(route)-1)/479)
+            station=round(i*(len(route)-1)/599)
             x,y=route[station]
             before=route[max(0,station-2)];after=route[min(len(route)-1,station+2)]
             angle=math.atan2(after[1]-before[1],after[0]-before[0])

@@ -45,6 +45,7 @@ def main():
     os.environ['PATH']=str(ROOT/'.runtime-work/linux_arm64')+os.pathsep+os.environ.get('PATH','')
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c102372-two-lane-saved-') as temporary:
         root=make_source(Path(temporary)/'positive')
+        shutil.rmtree(root/'channels',ignore_errors=True)
         report=finalize(root,root/'analysis-report.json')
         contract=json.loads((HERE/'native/measurement-contract-two_lane_exception.json').read_text())
         values=verify_report(contract,report,root)

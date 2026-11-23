@@ -20,11 +20,13 @@ def sha(path):
     return digest.hexdigest()
 
 
-def audit(proof_path, output_path):
+def audit(proof_path, output_path, attempt_path):
     proof_path = Path(proof_path).resolve()
     output_path = Path(output_path).resolve()
+    attempt_path = Path(attempt_path).resolve()
     assert proof_path.parent == ROOT
     assert REPO / '.runtime-work' in output_path.parents
+    assert REPO / '.runtime-work' in attempt_path.parents
     proof = read(proof_path)
     manifest_path = ROOT / 'execution-manifest.json'
     entry = next(item for item in read(manifest_path)['cases']
@@ -40,6 +42,14 @@ def audit(proof_path, output_path):
     selection = read(positive / 'candidate-selection.json')
     assert selection['candidate_id'] == proof['candidate_id']
     assert selection['construction_sha256'] == candidate['construction_sha256']
+    source_selection = read(attempt_path / 'candidate-selection.json')
+    for key in ('case_id', 'candidate_id', 'construction_sha256', 'manifest_sha256'):
+        assert source_selection[key] == selection[key]
+    for source in ('acquisition-provenance.json', 'native-passenger-actors.jsonl',
+                   'native-raw-actors.jsonl', 'video_frames.jsonl',
+                   'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
+                   'driver_reference.mkv'):
+        assert sha(attempt_path / source) == sha(positive / source)
     assert proof['positive_analysis_sha256'] == sha(positive / 'finalize_selected.py')
     required = {'acquisition_unchanged', 'actual_analysis', 'derived_outputs_rebuilt',
                 'final_decode', 'four_camera_sources', 'lean_decoder',
@@ -75,5 +85,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--proof', required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--attempt', required=True)
     args = parser.parse_args()
-    print(json.dumps(audit(args.proof, args.output), indent=2))
+    print(json.dumps(audit(args.proof, args.output, args.attempt), indent=2))

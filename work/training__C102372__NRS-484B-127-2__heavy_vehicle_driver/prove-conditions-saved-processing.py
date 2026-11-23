@@ -42,6 +42,7 @@ def main():
         negative=OUT/(case+'-negative')
         if negative.exists():shutil.rmtree(negative)
         shutil.copytree(positive,negative)
+        shutil.rmtree(positive/'channels',ignore_errors=True)
         report=finalize(positive,positive/'analysis-report.json')
         contract=json.loads((HERE/'native'/('measurement-contract-'+case+'.json')).read_text())
         verify_report(contract,report,positive)

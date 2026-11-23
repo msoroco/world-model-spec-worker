@@ -30,7 +30,7 @@ def run():
             fixture.doCleanups()
     if receipts['straight']['u_turn_within_governed_region_observed'] or not receipts['u_turn']['u_turn_within_governed_region_observed']:
         raise AssertionError('Controlled synthetic pair failed')
-    return {'passed':True,'cases':list(receipts),'frames_per_case':480,
+    return {'passed':True,'cases':list(receipts),'frames_per_case':600,
             'scope':'synthetic saved source and measurement only; no Native CARLA or legal verdict'}
 
 

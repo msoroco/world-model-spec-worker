@@ -22,8 +22,8 @@ def verify(samples, mapping, review, video, marks):
     approach = [index for index, sample in enumerate(native)
                 if -35 <= float(sample['native_center_xy_m'][0]) <= -10]
     total = packet.get('approach_frames')
-    if (len(native) != 480 or len(frames) != 480 or type(total) is not int or
-        not 20 <= total <= 480 or len(labels) != total or len(approach) != total):
+    if (len(native) != 600 or len(frames) != 600 or type(total) is not int or
+        not 20 <= total <= 600 or len(labels) != total or len(approach) != total):
         raise ValueError('Pixel review coverage incomplete')
     if (packet.get('native_samples_sha256') != sha(paths[0]) or
         packet.get('frame_map_sha256') != sha(paths[1]) or

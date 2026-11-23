@@ -35,7 +35,7 @@ def _original_joins(root):
     trace=_rows(root/'trace.jsonl')
     evidence=_rows(root/'capture/evidence.jsonl')
     history=_rows(root/'body_history.jsonl')
-    if not all(len(rows)==480 for rows in (samples,mapping,trace,evidence,history)):
+    if not all(len(rows)==600 for rows in (samples,mapping,trace,evidence,history)):
         raise ValueError('Original Native/Core frame counts differ')
     for index,(n,m,t,e,b) in enumerate(zip(samples,mapping,trace,evidence,history)):
         frame=n['native_frame'];time=n['time_s']
@@ -51,13 +51,13 @@ def _original_joins(root):
         if len(native)!=4 or native!=captured or captured!=retained:
             raise ValueError('Original Native/Core full body differs')
     manifest=json.loads((root/'capture/manifest.json').read_text())
-    if not manifest.get('extraction_confirmed') or manifest.get('frames')!=480:
+    if not manifest.get('extraction_confirmed') or manifest.get('frames')!=600:
         raise ValueError('Original capture extraction incomplete')
     videos=[f'{name}.mkv' for name in ('overview','approach','sign_reference','driver_reference')]
     counts={name:_video_frames(root/name) for name in videos}
-    if any(count!=480 for count in counts.values()):
+    if any(count!=600 for count in counts.values()):
         raise ValueError('Original camera frame count differs')
-    return {'frames':480,'video_frames':counts,
+    return {'frames':600,'video_frames':counts,
             'source_hashes':{name:_sha(root/name) for name in
                 ('trace.jsonl','capture/evidence.jsonl','body_history.jsonl',
                  'video_frames.jsonl','capture/manifest.json')}}
@@ -94,7 +94,7 @@ def _native_result(root, measured, joined):
         'setup_confirmed':source_reviewed,
         'behavior_attempted':True,
         'maneuver_completed':(observed if expected else samples[-1]['native_center_xy_m'][0]>=10),
-        'termination_reason':'full 480 original frames retained',
+        'termination_reason':'full 600 original frames retained',
         'physical_failure_flags':([] if source_reviewed else ['original_pixel_sign_review_unverified'])+
             ([] if observed is expected else ['requested_movement_not_measured']),
         'trace_reference':'trace.jsonl',

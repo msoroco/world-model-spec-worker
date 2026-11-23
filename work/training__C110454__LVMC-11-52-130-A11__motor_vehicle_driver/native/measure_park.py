@@ -9,15 +9,17 @@ from pathlib import Path
 FIFTEEN_FEET_M = 4.572
 
 
-def measure(source: Path, expected_sha256: str) -> dict:
+def measure(source: Path, expected_sha256: str, expected_frames: int = 480) -> dict:
+    if type(expected_frames) is not int or expected_frames < 40:
+        raise ValueError("Invalid required Native frame count")
     if hashlib.sha256(source.read_bytes()).hexdigest() != expected_sha256:
         raise ValueError("Original Native source hash differs")
     packet = json.loads(source.read_text())
     if packet.get("source_kind") != "native_frame_schema" or packet.get("intersection_boundary_source") != "native_map_readback":
         raise ValueError("Original Native map boundary source is absent")
     frames = packet.get("frames")
-    if not isinstance(frames, list) or len(frames) != 480:
-        raise ValueError("Need complete 480-frame Native source")
+    if not isinstance(frames, list) or len(frames) != expected_frames:
+        raise ValueError(f"Need complete {expected_frames}-frame Native source")
     boundary = packet.get("intersection_entry_boundary_x_m")
     if not isinstance(boundary, (int,float)) or not math.isfinite(boundary):
         raise ValueError("Missing surveyed intersection boundary")
@@ -44,7 +46,7 @@ def measure(source: Path, expected_sha256: str) -> dict:
         raise ValueError("Parked body extends into intersection")
     relation=("boundary_unresolved" if abs(min(distances)-FIFTEEN_FEET_M)<.05 else
               "within_15_ft" if min(distances)<FIFTEEN_FEET_M else "outside_15_ft")
-    return {"source_sha256":expected_sha256,"rest_frames":len(resting),
+    return {"source_sha256":expected_sha256,"source_frames":expected_frames,"rest_frames":len(resting),
             "nearest_parked_body_distance_m":min(distances),
             "sampled_relation":relation,
             "threshold_m":FIFTEEN_FEET_M,"lawful_conflict_or_direction_exception_proven":False,

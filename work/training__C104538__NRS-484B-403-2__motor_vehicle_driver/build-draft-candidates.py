@@ -34,7 +34,7 @@ def recording_description():
         'camera_frame_join': 'Every original camera frame joined to Native frame and time',
     }
     return {'channels': [{'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
-             'method': method, 'time_window': 'entire 24 s / 480 frame attempt',
+             'method': method, 'time_window': 'entire 30 s / 600 frame attempt',
              'reference_frame': 'Native map and original video frame',
              'uncertainty': '50 ms samples, finite body/map precision, original pixel review pending'}
              for name, method in methods.items()],
@@ -59,7 +59,7 @@ def build():
                       'failure_condition': 'Source-measured error >0.35 m',
                       'changed_knobs': ['target_speed_mps 5.0 to 3.5']},
         'fallback2': {'metric': 'requested_movement_completed',
-                      'failure_condition': 'Source-measured requested movement incomplete by frame 480',
+                      'failure_condition': 'Source-measured requested movement incomplete by frame 600',
                       'changed_knobs': ['lookahead_m 4.0 to 5.5']},
         'fallback3': {'metric': 'sign_and_body_visible_fraction',
                       'failure_condition': 'Source-reviewed visibility <0.95',
@@ -80,7 +80,7 @@ def build():
                 'supported_case_ids': [case_id], 'case_suffix': suffix,
                 'candidate_id': candidate, 'cell_id': 'C104538',
                 'law_id': 'NRS-484B-403-2', 'actor': 'motor_vehicle_driver',
-                'rate_hz': 20, 'duration_s': 24,
+                'rate_hz': 20, 'duration_s': 30,
                 'required_atoms': ['dev.regulatory_sign', 'dev.governs', 'dev.position',
                                    'drv.u_turn', 'kin.heading', 'rel.occupies'],
                 'source_packets': [], 'mandatory_channels': [],
@@ -101,7 +101,7 @@ def build():
                 'recording_description': recording,
                 'static_checks': ['authored map/route', 'controller/camera preflight',
                                   'source-bound synthetic measurement'],
-                'termination_rules': ['480 original frames', 'failure retained on capture/restoration error'],
+                'termination_rules': ['600 original frames', 'failure retained on capture/restoration error'],
                 'mechanisms': ['authored hill-crest and proposed sign',
                                'observed-pose path controller', 'four FFV1 original cameras'],
                 'status': 'unselected_cpu_draft'}

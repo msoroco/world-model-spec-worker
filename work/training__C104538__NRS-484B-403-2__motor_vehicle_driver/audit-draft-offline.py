@@ -39,7 +39,10 @@ def audit():
         contract = json.loads((FOLDER / entry['measurement_contract']).read_text())
         construction = json.loads((FOLDER / entry['construction']).read_text())
         analysis = next(f['content'] for f in construction['files'] if f['path'] == 'finalize.py')
-        validate_measurement(contract, plan['requirement_dispositions'], analysis, entry['case_id'])
+        if contract['format'] != 'worker-measurement-contract-v1':
+            raise AssertionError('Draft contract provenance changed')
+        current_contract = dict(contract, format='worker-measurement-contract')
+        validate_measurement(current_contract, plan['requirement_dispositions'], analysis, entry['case_id'])
         primary = parameters(suffix, 'primary')
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
             source = entry if candidate == 'primary' else next(c for c in entry['candidates'] if c['id'] == candidate)
