@@ -372,3 +372,11 @@ The first qualified timing point now has passing synthetic physical classifier o
 ### 2026-11-23 C125745 qualified timing lifecycle
 
 The first qualified timing case's primary and three fallbacks now pass saved-receipt-bound synthetic lifecycle proofs, including failed-encoder and premature-owner-release rejection. Exact results and logs are hash-bound in the sweep index; 52 CPU tests pass. Canonical standalone manifest, physical receipt, delivery and comparison bindings and remaining sweeps are incomplete. C125745 stays partial; see its `HANDOFF.md`.
+
+### 2026-11-23 C125745 six qualified sweep primaries
+
+All six planned timing/hold sweep points now have assignment-qualified exact primary constructions passing pinned offline checks. The frame-40 point also passes current-runtime positive/missing-source compatibility and recorded-only saved processing on synthetic original sources. Exact bytes and hashes are returned in the sweep index; 54 CPU tests pass. Qualified fallbacks, remaining current-runtime proofs and canonical manifest, physical, delivery and comparison bindings are incomplete, so C125745 remains partial. See its `HANDOFF.md`.
+
+### 2026-11-23 C125745 frame-40 qualified candidate matrix
+
+The frame-40 qualified timing point now has a primary and three distinct fallbacks passing exact offline, current-runtime positive/missing-source compatibility and recorded-only saved processing. All four pass synthetic three-outcome physical classifier and saved-receipt-bound lifecycle CPU fixtures. Exact bytes and SHA-256 bindings are returned in the sweep index under 2 MiB; 56 CPU tests pass. Canonical standalone manifest/receipt, delivery and comparison bindings and four other qualified sweep points remain incomplete. C125745 stays partial; see its `HANDOFF.md`.

@@ -1,11 +1,13 @@
 """Source-bound CPU classifier and lifecycle fixtures; no physical acceptance."""
 import argparse
+import base64
 import copy
 import hashlib
 import json
 import sys
 import tempfile
 import shutil
+import zlib
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
@@ -23,6 +25,13 @@ DIAGNOSTICS={
 
 def read(path):return json.loads(Path(path).read_text())
 def write(path,value):Path(path).write_text(json.dumps(value,indent=2,allow_nan=False)+'\n')
+
+def construction_bytes(item):
+ if 'construction_zlib_base64' in item:
+  payload=zlib.decompress(base64.b64decode(item['construction_zlib_base64'],validate=True))
+  if len(payload)!=item['construction_bytes']:raise ValueError('Construction length changed')
+  return payload
+ return item['construction_payload'].encode()
 
 def run(kind,case,output):
  manifest=read(HERE/'execution-manifest.json')
@@ -115,15 +124,20 @@ def run_staged(kind,case,attempt,output,candidate=None):
  if candidate:
   if exact is not qualified:raise ValueError('Qualified fallback requires qualified case')
   fallback=next(x for x in point['qualified_fallbacks']['candidates'] if x['id']==candidate)
-  payload=fallback['construction_payload'].encode()
+  payload=construction_bytes(fallback)
   expected_hash=fallback['construction_sha256']
   if hashlib.sha256(payload).hexdigest()!=expected_hash:raise ValueError('Fallback construction changed')
   construction=json.loads(payload)
  else:
-  construction_path=HERE/exact['construction']
   expected_hash=exact.get('construction_sha256',exact.get('sha256'))
-  if sha(construction_path)!=expected_hash:raise ValueError('Staged construction changed')
-  construction=read(construction_path)
+  if 'construction_payload' in exact or 'construction_zlib_base64' in exact:
+   payload=construction_bytes(exact)
+   if hashlib.sha256(payload).hexdigest()!=expected_hash:raise ValueError('Staged construction changed')
+   construction=json.loads(payload)
+  else:
+   construction_path=HERE/exact['construction']
+   if sha(construction_path)!=expected_hash:raise ValueError('Staged construction changed')
+   construction=read(construction_path)
  if construction['case_id']!=case:raise ValueError('Staged case mismatch')
  embedded=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
  config=read(attempt/'config.json')
