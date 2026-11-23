@@ -7,6 +7,7 @@ import math
 import subprocess
 from pathlib import Path
 
+from distance_control import CASE_TARGET_FEET
 from native_sources import CAMERAS, RATE_HZ, SIZES
 from turn_signal_measurements import analyze
 
@@ -111,6 +112,16 @@ def measure_continuous_right_signal(report):
             "legal_judgment": "unresolved"}
 
 
+def measure_original_turn_course(report):
+    """Identify the sourced right-turn transition and its recorded district class."""
+    course = report["original_course"]
+    return {"turn_onset_frame": course["turn_onset_frame"],
+            "final_heading_change_degrees": course["final_heading_change_degrees"],
+            "outgoing_road_id": course["outgoing_road_id"],
+            "district_type": report["measurement"]["district_type"],
+            "physical_and_legal_review": "unresolved"}
+
+
 def finalize_attempt(attempt, output):
     """Write derived saved outputs once; preserve every acquired source byte."""
     from worker_exchange.native_output import physical_result, write_result
@@ -126,8 +137,9 @@ def finalize_attempt(attempt, output):
             raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     case_id = config.get("selected_case_id")
-    if (not isinstance(case_id, str) or not case_id.startswith(
-            "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_") or
+    prefix = "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__"
+    if (not isinstance(case_id, str) or not case_id.startswith(prefix) or
+            case_id[len(prefix):] not in CASE_TARGET_FEET or
             config.get("cell_id") != "C412593" or
             config.get("law_id") != "NRS-484B-413-2" or
             config.get("actor") != "motor_vehicle_driver" or
@@ -160,8 +172,8 @@ def finalize_attempt(attempt, output):
                          config["recording_description"]["channels"] if item["name"] == name),
                          "reference": relative})
     target = {"target": "continuous original right signal before sourced right turn",
-              "requested": observed["required_distance_m"],
-              "measured": observed["continuous_distance_m"],
+              "requested": True,
+              "measured": observed["observed_distance_meets_boundary"],
               "method": "saved original-frame lamp state and sampled travel distance",
               "tolerance": 0, "matched": observed["observed_distance_meets_boundary"],
               "physical_cause_confirmed": False,
@@ -186,6 +198,10 @@ def finalize_attempt(attempt, output):
                 "case_id": case_id,
                 "measurements": {"right_turn_signal_distance": {
                     "method": "measure_continuous_right_signal", "value": observed,
+                    "sources": report_sources},
+                    "right_turn_course": {
+                    "method": "measure_original_turn_course",
+                    "value": measure_original_turn_course(report),
                     "sources": report_sources}},
                 "source_report": report, "source_hashes": sources,
                 "physical_checks": result["physical_checks"],

@@ -46,12 +46,18 @@ def source_row(snapshot, actor, carla, waypoint=None):
         raise ValueError("Invalid Native snapshot frame")
     position = actor.get_location()
     velocity = actor.get_velocity()
-    heading = actor.get_transform().rotation.yaw
+    transform = actor.get_transform()
+    heading = transform.rotation.yaw
+    vertices = actor.bounding_box.get_world_vertices(transform)
+    if len(vertices) < 4:
+        raise ValueError("Complete original Native body geometry required")
     state = actor.get_light_state()
     row = {"frame": frame, "time_s": _finite(time_s),
             "ego_position_xy_m": [_finite(position.x), _finite(position.y)],
             "ego_speed_mps": math.hypot(_finite(velocity.x), _finite(velocity.y)),
             "ego_heading_deg": _finite(heading),
+            "body_vertices_m": [[_finite(vertex.x), _finite(vertex.y)]
+                                for vertex in vertices],
             "right_indicator": bool(state & carla.VehicleLightState.RightBlinker),
             "native_actor_id": actor.id}
     if waypoint is not None:

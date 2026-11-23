@@ -324,6 +324,11 @@ def check_construction(folder=None):
             type(config.get("blueprint_selection_index", 0)) is not int or
             not 0 <= config.get("blueprint_selection_index", 0) <= 1):
         raise ValueError("Materialized fallback engineering knob invalid")
+    if config.get("physical_completion") != {
+            "criterion": "road_transition", "motion_source": "drive_history.jsonl",
+            "body_key": "body_vertices_m", "road_key": "ego_road_id",
+            "destination_road": OUTGOING_ROAD, "minimum_progress_m": 0.25}:
+        raise ValueError("Exact source-bound right-turn physical criterion required")
     cameras = config.get("cameras")
     from native_sources import SIZES
     if not isinstance(cameras, list) or tuple(row.get("name") for row in cameras) != CAMERAS:

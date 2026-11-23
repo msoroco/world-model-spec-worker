@@ -44,6 +44,10 @@ class NativeSourcesTests(unittest.TestCase):
                       "actor": "motor_vehicle_driver", "rate_hz": 20,
                       "duration_s": 45, "required_atoms": ["sig.turn_indicator"],
                       "requested_speed_mps": 4.0,
+                      "physical_completion": {"criterion": "road_transition",
+                          "motion_source": "drive_history.jsonl", "body_key": "body_vertices_m",
+                          "road_key": "ego_road_id", "destination_road": runner.OUTGOING_ROAD,
+                          "minimum_progress_m": 0.25},
                       "case": {"case_id": runner.PREFIX + "right_other_at_300_ft",
                                "district_type": "other", "signal_target_ft": 300},
                       "cameras": plan()["cameras"]}
@@ -52,6 +56,11 @@ class NativeSourcesTests(unittest.TestCase):
             config["cameras"][0]["width"] = 640
             (root / "config.json").write_text(json.dumps(config))
             with self.assertRaisesRegex(ValueError, "camera dimensions"):
+                runner.check_construction(root)
+            config["cameras"][0]["width"] = 1920
+            config["physical_completion"]["destination_road"] = 3
+            (root / "config.json").write_text(json.dumps(config))
+            with self.assertRaisesRegex(ValueError, "physical criterion"):
                 runner.check_construction(root)
 
     def test_all_selected_case_bundles_bind_district_and_signal_target(self):
@@ -228,14 +237,31 @@ class NativeSourcesTests(unittest.TestCase):
 
     def test_native_state_row_has_original_indicator_and_position(self):
         snapshot = SimpleNamespace(frame=10, timestamp=SimpleNamespace(elapsed_seconds=0.5))
+        corners = [SimpleNamespace(x=x, y=y) for x, y in
+                   ((1, 2), (3, 2), (3, 4), (1, 4))]
         actor = SimpleNamespace(id=4, get_location=lambda: SimpleNamespace(x=2, y=3),
                                 get_velocity=lambda: SimpleNamespace(x=3, y=4),
                                 get_transform=lambda: SimpleNamespace(rotation=SimpleNamespace(yaw=0)),
-                                get_light_state=lambda: 2)
+                                get_light_state=lambda: 2,
+                                bounding_box=SimpleNamespace(get_world_vertices=lambda _: corners))
         carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
         row = native.source_row(snapshot, actor, carla)
         self.assertEqual((row["ego_position_xy_m"], row["ego_speed_mps"], row["right_indicator"]),
                          ([2.0, 3.0], 5.0, True))
+        self.assertEqual(row["body_vertices_m"], [[1.0, 2.0], [3.0, 2.0],
+                                                   [3.0, 4.0], [1.0, 4.0]])
+
+    def test_native_state_rejects_incomplete_body_vertices(self):
+        snapshot = SimpleNamespace(frame=10, timestamp=SimpleNamespace(elapsed_seconds=0.5))
+        actor = SimpleNamespace(id=4, get_location=lambda: SimpleNamespace(x=2, y=3),
+                                get_velocity=lambda: SimpleNamespace(x=3, y=4),
+                                get_transform=lambda: SimpleNamespace(rotation=SimpleNamespace(yaw=0)),
+                                get_light_state=lambda: 2,
+                                bounding_box=SimpleNamespace(get_world_vertices=lambda _:
+                                    [SimpleNamespace(x=i, y=0) for i in range(3)]))
+        carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
+        with self.assertRaisesRegex(ValueError, "Complete original Native body geometry"):
+            native.source_row(snapshot, actor, carla)
 
     def test_ffv1_encodes_original_bgra_frame(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -420,7 +446,10 @@ class NativeSourcesTests(unittest.TestCase):
                                     get_location=lambda: SimpleNamespace(x=1, y=2),
                                     get_velocity=lambda: SimpleNamespace(x=3, y=4),
                                     get_transform=lambda: SimpleNamespace(rotation=SimpleNamespace(yaw=0)),
-                                    get_light_state=lambda: 2)
+                                    get_light_state=lambda: 2,
+                                    bounding_box=SimpleNamespace(get_world_vertices=lambda _:
+                                        [SimpleNamespace(x=x, y=y) for x, y in
+                                         ((0, 1), (2, 1), (2, 3), (0, 3))]))
             carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
             sizes = {name: (2, 2) for name in native.CAMERAS}
             prior_cwd = Path.cwd()
@@ -447,5 +476,69 @@ class NativeSourcesTests(unittest.TestCase):
                     capture_output=True, text=True).stdout.strip()), 3)
 
 
-if __name__ == "__main__":
-    unittest.main()
+
+# Original signal-distance boundary tests retained from the former test module.
+import importlib.util
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+
+spec = importlib.util.spec_from_file_location("turn_signal_measurements", Path(__file__).resolve().parents[1] / "turn_signal_measurements.py")
+measure = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(measure)
+
+
+class TurnSignalTests(unittest.TestCase):
+    def fixture(self, root, distance, district="business", interrupted=False):
+        context = {"native_map_id": "TownX", "approach_road_id": 1,
+                   "approach_lane_id": -1, "outgoing_road_id": 2,
+                   "outgoing_lane_id": -1, "native_route_source": "native-lane-links",
+                   "district_source": "source-reviewed-map-context",
+                   "district_type": district, "turn_onset_frame": 104}
+        (root / "route_context.json").write_text(json.dumps(context))
+        x = [-1, 0, distance / 2, distance * .75, distance]
+        indicators = [False, True, not interrupted, True, True]
+        rows = [{"frame": 100+i, "time_s": 1+i*.05,
+                 "ego_position_xy_m": [point, 0], "ego_speed_mps": 5,
+                 "right_indicator": indicators[i]}
+                for i, point in enumerate(x)]
+        frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
+                  for i, row in enumerate(rows)]
+        (root / "drive_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+        (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
+
+    def test_100_foot_below_at_above_and_300_foot_area(self):
+        for distance, expected in ((30.47, False), (30.48, True), (30.49, True)):
+            with tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                self.fixture(root, distance)
+                result = measure.analyze(root)
+                self.assertAlmostEqual(result["turn_onset"]["continuous_right_signal_distance_m"], distance)
+                self.assertEqual(result["observed_continuous_distance_meets_boundary"], expected)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48, district="other")
+            self.assertAlmostEqual(measure.analyze(root)["required_distance_m"], 91.44)
+        for distance, expected in ((91.43, False), (91.44, True), (91.45, True)):
+            with tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                self.fixture(root, distance, district="other")
+                result = measure.analyze(root)
+                self.assertEqual(result["observed_continuous_distance_meets_boundary"], expected)
+
+    def test_interruption_resets_distance_and_stale_join_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48, interrupted=True)
+            result = measure.analyze(root)
+            self.assertLess(result["turn_onset"]["continuous_right_signal_distance_m"], 30.48)
+            self.fixture(root, 30.48)
+            frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            frames[3]["carla_frame"] = 999
+            (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
+            with self.assertRaisesRegex(ValueError, "frame join"):
+                measure.analyze(root)
+
+
