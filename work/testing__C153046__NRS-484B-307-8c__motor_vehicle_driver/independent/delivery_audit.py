@@ -27,7 +27,7 @@ CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
           "actual_pixels", "physical_completion")
 VIEWS = {"overview", "approach", "reference_corner", "driver_reference"}
 CAMERAS = {name + ".mkv" for name in VIEWS}
-SOURCES = {"site.json", "trace.jsonl", "frame-map.jsonl", "raw.mkv", *CAMERAS}
+SOURCES = {"site.json", "trace.jsonl", "video_frames.jsonl", "raw.mkv", *CAMERAS}
 
 
 def sha(path: Path) -> str:
@@ -54,7 +54,7 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
         if not path.is_relative_to(attempt) or not path.is_file() or sha(path) != digest:
             raise ValueError("sealed original source changed: " + name)
     trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines() if line.strip()]
-    mapping = [json.loads(line) for line in (attempt / "frame-map.jsonl").read_text().splitlines() if line.strip()]
+    mapping = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines() if line.strip()]
     measurement = read(attempt / "measurement.json")
     if (len(trace) < 2 or len(mapping) != len(trace) or
             measurement.get("case_id") != case_id or
@@ -65,7 +65,7 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
         raise ValueError("source-bound measurement missing or stale")
     for index, (row, frame) in enumerate(zip(trace, mapping)):
         native = row.get("native_frame", {})
-        if (frame.get("video_frame") != index or frame.get("native_frame") != native.get("frame") or
+        if (frame.get("video_frame") != index or frame.get("carla_frame") != native.get("frame") or
                 abs(frame.get("time_s", -1) - native.get("time_s", -2)) > 1e-6):
             raise ValueError("original video/frame/trace time join differs")
     physical = read(attempt / "result.json")
@@ -83,14 +83,14 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
             not auditor.is_file() or decode.get("auditor_sha256") != sha(auditor) or
             (not diagnostic and auditor.resolve() != PINNED_MEDIA.resolve()) or
             decode.get("video_sha256") != sha(attempt / "raw.mkv") or
-            decode.get("mapping_sha256") != sha(attempt / "frame-map.jsonl") or
+            decode.get("mapping_sha256") != sha(attempt / "video_frames.jsonl") or
             decode.get("frames") != len(trace) or
             decode.get("checks", {}).get("frame_count") != "all-decoded-frames"):
         raise ValueError("full video decode receipt missing or stale")
-    composition = read(attempt / "composition.json")
+    composition = read(attempt / "four-view-receipt.json")
     if (composition.get("format") != "synchronized-four-view" or
             composition.get("frames") != len(trace) or
-            composition.get("frame_map_sha256") != sha(attempt / "frame-map.jsonl") or
+            composition.get("frame_map_sha256") != sha(attempt / "video_frames.jsonl") or
             composition.get("primary_sha256") != sha(attempt / "raw.mkv") or
             composition.get("sources") != {name.removesuffix(".mkv"): sha(attempt / name)
                                           for name in CAMERAS}):
@@ -104,7 +104,7 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
     if (pixels.get("format") != "worker-original-pixel-review" or
             pixels.get("case_id") != case_id or pixels.get("diagnostic_fixture") is not diagnostic or
             not pixels.get("reviewer") or pixels.get("video_sha256") != sha(attempt / "raw.mkv") or
-            pixels.get("frame_map_sha256") != sha(attempt / "frame-map.jsonl") or
+            pixels.get("frame_map_sha256") != sha(attempt / "video_frames.jsonl") or
             pixels.get("measurement_sha256") != sha(attempt / "measurement.json")):
         raise ValueError("original pixel review missing or stale")
     for key in required:
@@ -118,7 +118,7 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
             "passed": True, "case_id": case_id, "checks": {key: True for key in CHECKS},
             "frames": len(trace), "video": "raw.mkv", "video_sha256": sha(attempt / "raw.mkv"),
             "trace": "trace.jsonl", "trace_sha256": sha(attempt / "trace.jsonl"),
-            "frame_map_sha256": sha(attempt / "frame-map.jsonl"),
+            "frame_map_sha256": sha(attempt / "video_frames.jsonl"),
             "source_result_sha256": sha(attempt / "result.json"),
             "source_decode_receipt_path": str((attempt / "source-decode.json").resolve()),
             "source_decode_receipt_sha256": sha(attempt / "source-decode.json"),

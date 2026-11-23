@@ -17,9 +17,9 @@ def attempt(root, suffix):
     site,trace,case_id,rows=protocol(root,suffix=suffix)
     measurement=root/"measurement.json"
     measurement.write_text(json.dumps(measure(site,trace,case_id)))
-    mapping=root/"frame-map.jsonl"
+    mapping=root/"video_frames.jsonl"
     mapping.write_text("".join(json.dumps({"video_frame":index,
-             "native_frame":row["native_frame"]["frame"],
+             "carla_frame":row["native_frame"]["frame"],
              "time_s":row["native_frame"]["time_s"]})+"\n"
              for index,row in enumerate(rows)))
     (root/"raw.mkv").write_text("synthetic protocol composed video\n")
@@ -35,7 +35,7 @@ def attempt(root, suffix):
        "auditor_sha256":sha(PINNED_MEDIA),"video_sha256":sha(root/"raw.mkv"),
        "mapping_sha256":sha(mapping),"frames":len(rows),
        "checks":{"frame_count":"all-decoded-frames"}}))
-    (root/"composition.json").write_text(json.dumps({"format":"synchronized-four-view",
+    (root/"four-view-receipt.json").write_text(json.dumps({"format":"synchronized-four-view",
        "frames":len(rows),"frame_map_sha256":sha(mapping),
        "primary_sha256":sha(root/"raw.mkv"),
        "sources":{name.removesuffix(".mkv"):sha(root/name) for name in CAMERAS}}))
@@ -51,7 +51,7 @@ def attempt(root, suffix):
     (root/"source-seal.json").write_text(json.dumps({"case_id":case_id,
        "diagnostic_fixture":True,"provenance_kind":"native",
        "source_hashes":{name:sha(root/name) for name in
-                        {"site.json","trace.jsonl","frame-map.jsonl","raw.mkv",*CAMERAS}}}))
+                        {"site.json","trace.jsonl","video_frames.jsonl","raw.mkv",*CAMERAS}}}))
     return case_id
 
 
@@ -84,13 +84,13 @@ class DeliveryAuditTests(unittest.TestCase):
                 verify(case_id,root,allow_diagnostic=True)
             root=Path(temp)/"third"
             case_id=attempt(root,"stopped_leftmost_clear")
-            mapping=json.loads((root/"frame-map.jsonl").read_text().splitlines()[0])
-            mapping["native_frame"]=99
-            lines=(root/"frame-map.jsonl").read_text().splitlines()
+            mapping=json.loads((root/"video_frames.jsonl").read_text().splitlines()[0])
+            mapping["carla_frame"]=99
+            lines=(root/"video_frames.jsonl").read_text().splitlines()
             lines[0]=json.dumps(mapping)
-            (root/"frame-map.jsonl").write_text("\n".join(lines)+"\n")
+            (root/"video_frames.jsonl").write_text("\n".join(lines)+"\n")
             seal=json.loads((root/"source-seal.json").read_text())
-            seal["source_hashes"]["frame-map.jsonl"]=sha(root/"frame-map.jsonl")
+            seal["source_hashes"]["video_frames.jsonl"]=sha(root/"video_frames.jsonl")
             (root/"source-seal.json").write_text(json.dumps(seal))
             with self.assertRaisesRegex(ValueError,"time join differs"):
                 verify(case_id,root,allow_diagnostic=True)

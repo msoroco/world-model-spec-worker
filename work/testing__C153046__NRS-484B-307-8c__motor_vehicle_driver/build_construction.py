@@ -9,13 +9,15 @@ from build_case_plan import AID, KINDS, PAIRS
 from recording_description import build as recording_description
 
 ROOT = Path(__file__).resolve().parent
-SOURCES = ["runner.py", "native_runner.py", "native_frame.py", "saved_measurement.py",
+SOURCES = ["runner.py", "native_runner.py", "native_frame.py", "native_setup.py", "native_camera.py",
+           "native_media.py", "saved_measurement.py",
            "comparison_audit.py",
            "red_left_turn_controller.py", "recording_description.py",
            "source_bound_scene.py", "build_case_plan.py", "case-plan.json",
            "tests/__init__.py", "tests/test_case_plan.py",
            "tests/test_red_left_turn_controller.py", "tests/test_source_bound_scene.py",
            "tests/test_native_runner.py", "tests/test_native_frame.py",
+           "tests/test_native_camera.py", "tests/test_native_media.py", "tests/test_native_setup.py",
            "tests/test_saved_measurement.py", "tests/test_comparison_audit.py",
            "independent/__init__.py", "independent/delivery_audit.py",
            "tests/test_delivery_audit.py"]
@@ -73,14 +75,17 @@ def build() -> dict:
                         "entrypoint": "runner.py", "files": files,
                         "recording_description": recording_description(),
                         "measurement_plan": {"entrypoint": "saved_measurement.py",
-                                             "sources": ["site.json", "trace.jsonl"],
+                                             "media_finalizer": "native_media.py",
+                                             "sources": ["site.json", "trace.jsonl", "video_frames.jsonl",
+                                                         "overview.mkv", "approach.mkv",
+                                                         "reference_corner.mkv", "driver_reference.mkv"],
                                              "case_id": case_id},
                         "static_checks": ["exact site packet hashes and lane/turn geometry",
                                           "live OpenDRIVE and official signal actor match"],
                         "termination_rules": ["30 s maximum original frame capture",
                                               "stop on source or frame mismatch"],
                         "mechanisms": ["source-bound site geometry and live OpenDRIVE byte match",
-                                       "Native world tick, signal and full participant body acquisition",
+                                       "source-cited Native participant spawn, world tick, signal, body and four-camera acquisition",
                                        "CARLA-lazy actor control application and text trace"],
                         "status": "partial: CPU protocol; reviewed site and physical proof pending"}
         path = folder / (suffix + ".json")

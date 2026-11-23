@@ -43,6 +43,7 @@ def run(actor, observations, *, packet_path: Path, case_suffix: str,
                       "junction_exited": observation.junction_exited,
                       "requested_phase": row["phase"], "control_request": request,
                       "original_sample_claim": native_frame is not None,
+                      "frame": native_frame["frame"] if native_frame is not None else None,
                       "native_frame": native_frame, "physical_realization_claimed": False}
             stream.write(json.dumps(sample, sort_keys=True) + "\n")
             count += 1
@@ -56,7 +57,7 @@ def run(actor, observations, *, packet_path: Path, case_suffix: str,
 
 def run_carla(world, ego, signal_actor, pedestrians, traffic, *, packet_path: Path,
               case_suffix: str, output_path: Path, count: int, observation_from_frame,
-              control_factory=None) -> dict:
+              control_factory=None, camera_rig=None) -> dict:
     """Tick Native world, capture full bodies, then request case control."""
     scene = verify_live_site(world, packet_path, case_suffix, signal_actor)
     if control_factory is None:
@@ -66,6 +67,11 @@ def run_carla(world, ego, signal_actor, pedestrians, traffic, *, packet_path: Pa
 
     def observations():
         for frame in capture_frames(world, ego, signal_actor, pedestrians, traffic, count=count):
+            if camera_rig is not None:
+                if (camera_rig.scene["source_packet_sha256"] != scene["source_packet_sha256"] or
+                        camera_rig.scene["case_id"] != scene["case_id"]):
+                    raise ValueError("camera rig uses another reviewed site packet")
+                frame["original_cameras"] = camera_rig.await_frame(frame["frame"], frame["time_s"])
             latest["frame"] = frame
             observation = observation_from_frame(frame, scene)
             if not isinstance(observation, Observation):
