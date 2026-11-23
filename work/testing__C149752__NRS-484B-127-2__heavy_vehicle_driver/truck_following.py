@@ -69,6 +69,12 @@ def planned_construction(case: Case, lane_source: dict, blueprint_source: dict) 
     require(lane_source.get("highway_public") is True, "public highway source required")
     lanes = lane_source.get("available_same_direction_lanes")
     require(type(lanes) is int and lanes == case.available_same_direction_lanes, "available lane count mismatch")
+    road_lanes = lane_source.get("driving_lanes")
+    require(isinstance(road_lanes, list) and road_lanes, "Native driving lane inventory required")
+    observed_lanes = sum(1 for lane in road_lanes if
+                         lane.get("available") is True and lane.get("connected") is True and
+                         finite_number(lane.get("direction_dot"), "lane direction") > 0)
+    require(observed_lanes == lanes, "Native lane geometry disagrees with count")
     require(lane_source.get("straight_connected_route") is True, "connected straight route required")
     require(lane_source.get("opposing_pass_lane") is True or not case.passing, "passing lane source required")
     require(blueprint_source.get("source_kind") == "native_blueprint_readback", "Native blueprint readback required")
@@ -78,6 +84,8 @@ def planned_construction(case: Case, lane_source: dict, blueprint_source: dict) 
     require(abs(lead_width - case.lead_width_target_m) < 0.04, "lead width target mismatch")
     for identity in ("subject", "lead"):
         require(blueprint_source.get(f"{identity}_vehicle_class") in ("truck", "combination"), f"{identity} truck class required")
+        require(isinstance(blueprint_source.get(f"{identity}_blueprint_id"), str) and
+                blueprint_source[f"{identity}_blueprint_id"], f"{identity} Native blueprint ID required")
     require(case.gap_target_m > 0, "positive gap required")
     return {
         "subject": {"identity": "subject", "vehicle_class": blueprint_source["subject_vehicle_class"], "spawn_s_m": 0.0},
@@ -91,6 +99,27 @@ def planned_construction(case: Case, lane_source: dict, blueprint_source: dict) 
         "physical_risk": {"status": "physical" if case.passing else "none",
                           "reason": "Opposing-lane pass and return may fail on the selected map" if case.passing else "No identified special motion risk"},
     }
+
+
+def execute_case(adapter, case: Case, lane_source: dict, blueprint_source: dict) -> dict:
+    """Execute only source-validated spawn and controller calls on an injected Native adapter.
+
+    The adapter owns CARLA world state and must snapshot/restore outside this
+    function. No CARLA import or simulation happens in CPU tests.
+    """
+    plan = planned_construction(case, lane_source, blueprint_source)
+    subject = adapter.spawn_vehicle(plan["subject"], blueprint_source["subject_blueprint_id"])
+    lead = adapter.spawn_vehicle(plan["lead"], blueprint_source["lead_blueprint_id"])
+    adapter.configure_following(subject, lead, plan["controller"])
+    if case.passing:
+        adapter.configure_pass_phase(subject, lead, plan["controller"]["pass_after_s"])
+    if case.entering_vehicle:
+        entrant_id = blueprint_source.get("entrant_blueprint_id")
+        require(isinstance(entrant_id, str) and entrant_id, "entering vehicle blueprint source required")
+        entrant = adapter.spawn_entrant(entrant_id, plan["controller"]["entry_after_s"])
+    else:
+        entrant = None
+    return {"subject": subject, "lead": lead, "entrant": entrant, "capture_frames": plan["recording"]["frames"]}
 
 
 def _body_interval(body: dict, identity: str) -> tuple[float, float]:
@@ -121,6 +150,7 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         require(frame.get("frame") == index, "original frame index discontinuity")
         time_s = finite_number(frame.get("time_s"), "original time")
         require(previous_t is None or time_s > previous_t, "original time discontinuity")
+        require(abs(time_s - index / 20) < 0.002, "original 20 Hz time mapping required")
         previous_t = time_s
         bodies = frame.get("bodies")
         require(isinstance(bodies, list), "complete Native body inventory required")
@@ -144,6 +174,15 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         require(lane_source.get("highway_public") is True, "public highway not established")
         same = lane_source.get("available_same_direction_lanes")
         require(type(same) is int and same >= 1, "available same-direction lane count required")
+        driving_lanes = lane_source.get("driving_lanes")
+        require(isinstance(driving_lanes, list) and driving_lanes, "Native driving lane inventory required")
+        lane_ids = [item.get("lane_id") for item in driving_lanes]
+        require(all(isinstance(item, str) and item for item in lane_ids) and len(set(lane_ids)) == len(lane_ids),
+                "unique Native driving lane identities required")
+        measured_same = sum(1 for item in driving_lanes if
+                            item.get("available") is True and item.get("connected") is True and
+                            finite_number(item.get("direction_dot"), "lane direction") > 0)
+        require(measured_same == same, "available lane count disagrees with Native lane geometry")
         lanes.append(same)
         phase = frame.get("pass_phase", "following")
         require(phase in ("following", "opposing", "ahead", "returned"), "unknown pass phase")
@@ -151,7 +190,8 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         for identity, body in by_id.items():
             if identity in ("subject", "lead"):
                 continue
-            if body.get("complete_body_between_trucks") is True:
+            other_min, other_max = _body_interval(body, identity)
+            if other_min > subject_max and other_max < lead_min:
                 entries.add(identity)
     require(gaps, "steady 14..20s gap window missing")
     completed_pass = False
@@ -184,3 +224,20 @@ def audit_sealed_capture(path: Path, seal: dict, case_id: str, expected_frames: 
     result = audit_original_frames(packet, case_id=case_id, expected_frames=expected_frames)
     result["original_source_sha256"] = seal["source_sha256"]
     return result
+
+
+def audit_comparison(left: dict, right: dict, *, fixed_fields: tuple[str, ...], varied_field: str) -> dict:
+    """Reject missing source bindings and drift in measured fixed conditions."""
+    for name, result in (("left", left), ("right", right)):
+        require(result.get("original_source_sha256") and len(result["original_source_sha256"]) == 64,
+                f"{name}: original source seal required")
+        require(result.get("original_frame_count") == 900, f"{name}: complete original frames required")
+        require(result.get("legal_judgment") == "unresolved", f"{name}: legal verdict must remain unresolved")
+    require(left.get("case_id") != right.get("case_id"), "distinct exact cases required")
+    for field in fixed_fields:
+        require(field in left and field in right, f"fixed field missing: {field}")
+        require(left[field] == right[field], f"fixed condition drift: {field}")
+    require(varied_field in left and varied_field in right, "varied field missing")
+    require(left[varied_field] != right[varied_field], f"declared difference not observed: {varied_field}")
+    return {"case_ids": [left["case_id"], right["case_id"]], "fixed_fields_checked": list(fixed_fields),
+            "varied_field_checked": varied_field, "legal_judgment": "unresolved"}

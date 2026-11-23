@@ -1,6 +1,9 @@
 import copy
 import importlib.util
+import hashlib
+import json
 import pathlib
+import tempfile
 import unittest
 
 
@@ -8,6 +11,9 @@ MODULE = pathlib.Path(__file__).resolve().parents[1] / "roundabout.py"
 SPEC = importlib.util.spec_from_file_location("roundabout", MODULE)
 ROUNDABOUT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ROUNDABOUT)
+RUN_SPEC = importlib.util.spec_from_file_location("roundabout_runner", MODULE.with_name("runner.py"))
+RUNNER = importlib.util.module_from_spec(RUN_SPEC)
+RUN_SPEC.loader.exec_module(RUNNER)
 
 
 def topology_source():
@@ -37,10 +43,60 @@ def history(lane_id, case_id):
                        "lane_id": lane_id, "actor_id": "ego-17", "heading_x": -1, "heading_y": 0})
     return {"source_kind": "sealed_native_original_history", "case_id": case_id,
             "map_id": "test-map", "map_sha256": "a"*64, "actor_role": "motor_vehicle_driver",
-            "actor_id": "ego-17", "intended_departure": "opposite_direction", "frames": frames}
+            "actor_id": "ego-17", "intended_departure": "opposite_direction",
+            "vehicle_blueprint": "vehicle.test", "entry_id": "south-entry", "exit_id": "north-exit",
+            "controller_sha256": "b"*64, "weather_sha256": "c"*64,
+            "camera_plan_sha256": "d"*64, "frames": frames}
 
 
 class TestRoundabout(unittest.TestCase):
+    def test_sealed_source_hash_required(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "map.json"
+            path.write_text(json.dumps(topology_source()))
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            self.assertEqual(ROUNDABOUT.load_sealed_json(path, digest)["map_id"], "test-map")
+            with self.assertRaisesRegex(ROUNDABOUT.SourceError, "source hash mismatch"):
+                ROUNDABOUT.load_sealed_json(path, "0"*64)
+
+    def test_runner_constructs_and_cleans_up(self):
+        class Adapter:
+            def __init__(self):
+                self.controls = []
+                self.destroyed = False
+                self.lane_id = "lane-inner"
+
+            def readback_map(self):
+                return topology_source()
+
+            def spawn_motor_vehicle(self, position):
+                self.spawned_at = position
+                return "ego-17"
+
+            def actor_state(self, actor):
+                return {"x": -5, "y": -2, "heading_x": 1, "heading_y": 0}
+
+            def step(self, actor, control):
+                i = len(self.controls)
+                self.controls.append(control)
+                section = "entry" if i < 200 else "ring" if i <= 600 else "exit"
+                return {"frame": i, "time_s": round(i*0.05, 4), "section": section,
+                        "lane_id": self.lane_id, "actor_id": actor, "heading_x": -1, "heading_y": 0}
+
+            def seal(self, case_id, topology, frames):
+                value = history(self.lane_id, case_id)
+                value["frames"] = frames
+                return value
+
+            def destroy(self, actor):
+                self.destroyed = True
+
+        adapter = Adapter()
+        result = RUNNER.execute(adapter, "left-case", "left")
+        self.assertEqual(len(adapter.controls), 900)
+        self.assertTrue(adapter.destroyed)
+        self.assertTrue(result["requested_lane_observed"])
+
     def test_both_allocated_lanes_and_comparison(self):
         source = topology_source()
         left = ROUNDABOUT.verify_topology(source, "left")
@@ -99,6 +155,17 @@ class TestRoundabout(unittest.TestCase):
             frame["section"] = "ring"
         with self.assertRaisesRegex(ROUNDABOUT.SourceError, "traversal absent"):
             ROUNDABOUT.verify_original_history(wrong, lane, "left-case")
+
+    def test_comparison_rejects_changed_controller(self):
+        source = topology_source()
+        left = ROUNDABOUT.verify_topology(source, "left")
+        outer = ROUNDABOUT.verify_topology(source, "outer")
+        a = ROUNDABOUT.verify_original_history(history("lane-inner", "left-case"), left, "left-case")
+        changed = history("lane-outer", "outer-case")
+        changed["controller_sha256"] = "e"*64
+        b = ROUNDABOUT.verify_original_history(changed, outer, "outer-case")
+        with self.assertRaisesRegex(ROUNDABOUT.SourceError, "fixed conditions"):
+            ROUNDABOUT.compare(a, b)
 
 
 if __name__ == "__main__":

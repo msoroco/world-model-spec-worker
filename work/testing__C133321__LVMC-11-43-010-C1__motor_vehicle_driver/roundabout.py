@@ -131,3 +131,23 @@ def load_sealed_json(path: str | Path, expected_sha256: str) -> dict:
     value = json.loads(payload)
     _require(isinstance(value, dict), "source object required")
     return value
+
+
+def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser(description="Audit an original Native roundabout history")
+    parser.add_argument("--map", required=True)
+    parser.add_argument("--map-sha256", required=True)
+    parser.add_argument("--history", required=True)
+    parser.add_argument("--history-sha256", required=True)
+    parser.add_argument("--case", required=True)
+    parser.add_argument("--lane-role", choices=("left", "outer"), required=True)
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
+    topo = verify_topology(load_sealed_json(args.map, args.map_sha256), args.lane_role)
+    measured = verify_original_history(load_sealed_json(args.history, args.history_sha256), topo, args.case)
+    Path(args.output).write_text(json.dumps(measured, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    main()

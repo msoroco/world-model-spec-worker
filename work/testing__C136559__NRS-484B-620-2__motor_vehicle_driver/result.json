@@ -2,11 +2,30 @@
   "assignment_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver",
   "input_sha256": "a87c3eb7bfb42cd9b760466e45beafe03d59edea0c8287dd09a379af0bbcb801",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "executable_cpu_checkpoint",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C136559__NRS-484B-620-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "2ede21ce5ec92a2406aa22a0388320c166742e90b118183873933fc4b37fc5de"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-620-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static-check.log",
+      "sha256": "9112e4915f42ba668e9d968766763324124a16eecb929c74e2f539d6ca3d74c9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-620-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Six exact case definitions and five controlled comparisons, source-gated construction, original-frame measurement, sealed saved capture and comparison audits have CPU tests. Exact runtime bundles, per-case offline/positive/negative compatibility, semantic proposals, manifest/post-capture receipts and independent delivery proofs remain CPU work. Strict gate rejects truthful partial status."
 }
