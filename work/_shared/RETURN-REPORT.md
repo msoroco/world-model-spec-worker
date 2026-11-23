@@ -221,3 +221,12 @@ Current long saved proof rose from 20 to 24 of 64. C150142 remains partial: 40 l
 
 Pinned preflight exited 0 (ignored log SHA-256 `fd2e7d5e21e20a25d98e9b3bb237dad4e0373ac919033e3d1ac393d3fa93fb01`); assignment static complete exited 0 (ignored log SHA-256 `e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a`). This static check is not scoped strict readiness.
 
+
+## 2026-11-23 C150142 RTC bus and limousine at-boundary long saved continuation
+
+C150142 selected `rtc_bus_at` and `limo_at` primary plus three distinct fallbacks each passed current-manifest 36,121-frame pinned recorded-only saved processing and independent selected-construction audits. Bounded receipts are bound in `current-rtc-bus-at-long-saved-index.json` (SHA-256 `56ecc020d273811424885cb9e7962275b999618f628a3bce8b7c1b1265930f51`) and `current-limo-at-long-saved-index.json` (SHA-256 `a5c57acfc015e10c7e00021bcb7ec8bd97f33b95a7d3cd6bac8ef8cc70f986d9`). For each fresh attempt, checked composition reuse verified all four synthetic source camera bytes, the exact frame map, prior original-source hashes and a full prior saved receipt. Each pinned run had one fresh camera decode, three verified reused source receipts, JSON graph/Core conversion, Lean, full review decode, original preservation and no missing evidence.
+
+Current long saved proof rose from 24 to 32 of 64. C150142 remains partial: the other 32 long saved candidates, all 64 official pinned recipe-bound positive/negative long compatibility chains, final independent delivery/comparison and integration audits, and assignment-scoped strict readiness remain worker-owned CPU tasks. The full batch gate has not passed. These synthetic diagnostics establish no original Native observation or physical/legal acceptance. No frozen input, runtime or batch file was edited, and no Git command was run.
+
+Pinned preflight exited 0 (ignored log SHA-256 `4de7920cfc2f3addc4788cc9641f38751ea18e093889557cce1b31773f38af89`); assignment static complete exited 0 (ignored log SHA-256 `e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a`). This static check is not scoped strict readiness.
+
