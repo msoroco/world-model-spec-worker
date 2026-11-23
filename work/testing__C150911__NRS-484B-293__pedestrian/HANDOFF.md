@@ -1,22 +1,19 @@
 # testing__C150911__NRS-484B-293__pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction and source audit; no delivery readiness claim.
 
-Exact law: NRS 484B.293 — Pedestrians shall move whenever practicable upon the right half of crosswalks.
-Assigned branch(es): Crosswalk passage during one-way-road travel.
-Cell: C150911 (one_way_road, travel, crosswalk); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Exact source: NRS 484B.293, “Pedestrians shall move whenever practicable upon the right half of crosswalks.” Frozen assignment and witness index 393 select a pedestrian crossing a one-way road at C150911. The frozen accepted-evidence inventory has zero recordings. The witness is conditional and requires actual crosswalk qualification, access, signals, direction, available passage space, obstacles and participants. The crosswalk must be independently qualified by Native readback. No judgment range or statutory numeric boundary is supplied; practicability remains unresolved without a legal cutoff.
 
-## Next CPU actions
+## Coverage and construction
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150911__NRS-484B-293__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now defines five exact cases: `forward_right`, `forward_left`, `reverse_right`, `reverse_left`, and `forward_right_obstructed`, each prefixed by this assignment ID. It defines four controlled comparisons: `forward_half`, `reverse_half`, `directional_right`, and `right_half_obstruction`. The obstruction changes available right-half passage context, not a legal result. Opposing passage directions swap the geometric right half. No baseline recording or existing-evidence reuse is claimed.
 
-## Proven checks and dependency boundary
+`crosswalk_delivery.py` validates required map/crosswalk/access/signal/obstacle/participant source bindings, Native crosswalk qualification and pedestrian access, computes waypoints for either direction and half, calls a lazy pedestrian spawn/route adapter, and cleans up a failed route. Its original-frame measurement requires consecutive 20 Hz frames and synchronized obstacle/participant streams, records crossing station, direction-relative right lateral position, crosswalk occupancy, available right width and participants, and leaves practicability unresolved. Its comparison audit checks fixed source identities and full original frame continuity. `proposals/cases.json` is a draft coverage proposal, not a complete semantic delivery set.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+`delivery_audit.py` independently rejects missing/stale Native result, frame map, four camera sources, incomplete original trace, missing obstacle/participant joins, absent passage, unsafe source paths, and an unsupported legal verdict. Its synthetic tests establish software behavior only; they do not prove readable pixels or physical motion. Physical risk for each exact case is recorded in the plan: Native pedestrian spawn/path tracking and four-view visibility may fail. No fallback is authored without a measured site-specific trigger.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Proof and next CPU work
+
+Run `.venv-cpu/bin/python -m unittest discover -s work/testing__C150911__NRS-484B-293__pedestrian/tests -v`; the passing output and SHA256 are in `cpu-tests.log` and `result.json`. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150911__NRS-484B-293__pedestrian --complete` for the static checkpoint, then the same command with `--require-delivery-ready` for the strict gate. The latter must remain failing while status is partial.
+
+Next: bind `validate_site` to actual Native crosswalk/map and signal readback, obtain source-hashed crosswalk candidates and obstacle geometry, author exact case configs/construction/manifest and canonical semantic proposals, then run every exact offline and source-bound positive/negative compatibility check. Implement a saved-only process-saved fixture with all four decoded views and compare audits bound to sealed original packets. Reread the law and contracts before strict promotion. Actual CARLA passage, realized obstacles/participants and pixel visibility are later physical checks, not a substitute for the missing CPU package.

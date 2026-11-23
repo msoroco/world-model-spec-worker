@@ -2,11 +2,30 @@
   "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
   "input_sha256": "950d1205ad349125a78f82cd231a38035778b12766846136a493db3eb47182f6",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "partial_exact_case_and_measurement_draft",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "f99afbc481d9e383344daed37c95ba090ba91909079009963cf95375613fe5e6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-307-6a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static-check.log",
+      "sha256": "154d605aa856e5dcc8e4c76775342706ed575ded07bfa80b9d9f46cb68d2062d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-307-6a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Seven exact cases and six controlled comparisons now planned; source-gated construction facade, original 20 Hz phase/entry measurement, and independent comparison rejection tests pass. Actual CARLA adapter/controller and source binding, per-case offline and positive/negative compatibility receipts, semantic proposals, saved-only finalization, delivery audits, fallback construction/proofs, and original accepted-evidence trace/video review remain CPU work. The strict assignment gate rejects truthful partial status."
 }

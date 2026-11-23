@@ -24,9 +24,206 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle may overtake and pass another vehicle upon the right only under conditions permitting such movement in safety."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+      "target_law_id": "NRS-484B-210-2",
+      "target_type": "unresolved_judgment_observation",
+      "branch": "Right-side overtaking and passing; safety conditions unresolved",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "draft_variables": {
+        "world_setup": {
+          "layout": "paved_road",
+          "maneuver": "overtake_right",
+          "control": "other_vehicle",
+          "same_direction_right_lane": true,
+          "pavement_and_shoulders": "source-verified Native map"
+        },
+        "controller": {
+          "variant": "open_gap",
+          "requested_ego_and_target_speeds": "source-bound controls",
+          "requested_initial_body_gap": "source-bound controls"
+        },
+        "subject_behavior": {
+          "actual_right_pass": null,
+          "approach_ttc_s": null,
+          "lateral_body_clearance_m": null,
+          "conflict_body_distance_m": null
+        }
+      },
+      "intended_observation": "right-lane pass with measured approach space and no constructed crossing actor",
+      "source_measurement": "right_pass.py construct/spawn_native/measure on sealed Native map and original 20 Hz actor history",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "reason": "Right-lane clearance, target tracking, and for the crossing variant conflict actor timing can fail in Native motion; original map and actor readback must be checked."
+      },
+      "physical_acceptance_claimed": false,
+      "legal_outcome": "unresolved",
+      "preparation_status": "case_and_measurement_cpu_draft"
+    },
+    {
+      "case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__close_gap",
+      "target_law_id": "NRS-484B-210-2",
+      "target_type": "unresolved_judgment_observation",
+      "branch": "Right-side overtaking and passing; safety conditions unresolved",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "draft_variables": {
+        "world_setup": {
+          "layout": "paved_road",
+          "maneuver": "overtake_right",
+          "control": "other_vehicle",
+          "same_direction_right_lane": true,
+          "pavement_and_shoulders": "source-verified Native map"
+        },
+        "controller": {
+          "variant": "close_gap",
+          "requested_ego_and_target_speeds": "source-bound controls",
+          "requested_initial_body_gap": "source-bound controls"
+        },
+        "subject_behavior": {
+          "actual_right_pass": null,
+          "approach_ttc_s": null,
+          "lateral_body_clearance_m": null,
+          "conflict_body_distance_m": null
+        }
+      },
+      "intended_observation": "same pass with reduced initial body gap, measured over the original maneuver",
+      "source_measurement": "right_pass.py construct/spawn_native/measure on sealed Native map and original 20 Hz actor history",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "reason": "Right-lane clearance, target tracking, and for the crossing variant conflict actor timing can fail in Native motion; original map and actor readback must be checked."
+      },
+      "physical_acceptance_claimed": false,
+      "legal_outcome": "unresolved",
+      "preparation_status": "case_and_measurement_cpu_draft"
+    },
+    {
+      "case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__cross_traffic",
+      "target_law_id": "NRS-484B-210-2",
+      "target_type": "unresolved_judgment_observation",
+      "branch": "Right-side overtaking and passing; safety conditions unresolved",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "draft_variables": {
+        "world_setup": {
+          "layout": "paved_road",
+          "maneuver": "overtake_right",
+          "control": "other_vehicle",
+          "same_direction_right_lane": true,
+          "pavement_and_shoulders": "source-verified Native map"
+        },
+        "controller": {
+          "variant": "cross_traffic",
+          "requested_ego_and_target_speeds": "source-bound controls",
+          "requested_initial_body_gap": "source-bound controls"
+        },
+        "subject_behavior": {
+          "actual_right_pass": null,
+          "approach_ttc_s": null,
+          "lateral_body_clearance_m": null,
+          "conflict_body_distance_m": null
+        }
+      },
+      "intended_observation": "same right pass with a source-pose crossing actor whose body proximity is measured",
+      "source_measurement": "right_pass.py construct/spawn_native/measure on sealed Native map and original 20 Hz actor history",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "reason": "Right-lane clearance, target tracking, and for the crossing variant conflict actor timing can fail in Native motion; original map and actor readback must be checked."
+      },
+      "physical_acceptance_claimed": false,
+      "legal_outcome": "unresolved",
+      "preparation_status": "case_and_measurement_cpu_draft"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_space",
+      "case_ids": [
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__close_gap"
+      ],
+      "fixed_conditions": [
+        "same paved road and verified lane directions",
+        "same ego and target actor blueprints",
+        "same four-camera profile and duration",
+        "same right-pass route and controller gains"
+      ],
+      "deliberate_differences": [
+        "requested initial longitudinal body gap and measured approach gap/TTC"
+      ]
+    },
+    {
+      "comparison_id": "crossing_actor_proximity",
+      "case_ids": [
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__cross_traffic"
+      ],
+      "fixed_conditions": [
+        "same paved road and verified lane directions",
+        "same ego and target actor blueprints",
+        "same four-camera profile and duration",
+        "same right-pass route and controller gains"
+      ],
+      "deliberate_differences": [
+        "source-pose crossing actor and measured closest body separation"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "qualifying_vehicles_and_driver",
+      "mandatory": true,
+      "source": "Native actor spawn/readback",
+      "method": "Distinct ego and target identities, vehicle types, control owner"
+    },
+    {
+      "name": "right_lane_and_pavement",
+      "mandatory": true,
+      "source": "original Native map geometry",
+      "method": "Right same-direction lane, paved boundaries and no shoulder use at surveyed cross sections"
+    },
+    {
+      "name": "whole_right_pass",
+      "mandatory": true,
+      "source": "original Native actor history",
+      "method": "Continuous 20 Hz behind, alongside on right, ahead body envelopes"
+    },
+    {
+      "name": "approach_space",
+      "mandatory": true,
+      "source": "original Native actor history",
+      "method": "Original body-gap and closing-time histories without legal cutoff"
+    },
+    {
+      "name": "lateral_space",
+      "mandatory": true,
+      "source": "original Native actor history",
+      "method": "Body-to-body lateral clearance during overlap"
+    },
+    {
+      "name": "conflict_space",
+      "mandatory": true,
+      "source": "original Native actor history",
+      "method": "Conflict actor original body distance, when constructed"
+    },
+    {
+      "name": "motion_context",
+      "mandatory": true,
+      "source": "original Native actor history",
+      "method": "Actual speed, braking and steering histories for safety review"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C178759__NRS-484B-210-2__motor_vehicle_driver/assignment.json",
@@ -51,17 +248,36 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual CARLA motion, camera visibility and safety-condition judgment remain unverified.",
+    "Canonical semantic proposals, exact offline/compatibility receipts, saved-only process receipt, and delivery audit remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed the zero-entry frozen accepted-recording inventory and exact source text; no existing case can establish the right-pass or safety-condition history.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "G1",
+        "requirement": "Qualifying ego and target vehicles with actual overtaking on the right",
+        "source": "NRS 484B.210(2), exact text",
+        "why_existing_insufficient": "Frozen accepted inventory contains zero recordings for this assignment."
+      },
+      {
+        "id": "G2",
+        "requirement": "Full maneuver pavement, lateral clearance, approach space and motion histories",
+        "source": "NRS 484B.210(2), exact text",
+        "why_existing_insufficient": "Frozen accepted inventory contains zero recordings for this assignment."
+      },
+      {
+        "id": "G3",
+        "requirement": "Conditions permitting movement in safety, including constructed conflict context without a legal cutoff",
+        "source": "NRS 484B.210(2), exact text",
+        "why_existing_insufficient": "Frozen accepted inventory contains zero recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "case_and_measurement_cpu_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

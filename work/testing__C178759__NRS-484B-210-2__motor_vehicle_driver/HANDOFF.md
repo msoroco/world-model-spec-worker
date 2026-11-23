@@ -1,22 +1,25 @@
 # testing__C178759__NRS-484B-210-2__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction and measurement. Exact static check passes; strict delivery readiness does not.
 
-Exact law: NRS 484B.210(2) — The driver of a vehicle may overtake and pass another vehicle upon the right only under conditions permitting such movement in safety.
-Assigned branch(es): Right-side overtaking and passing; unresolved safety condition..
-Cell: C178759 (paved_road, overtake_right, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Exact law: NRS 484B.210(2), right-side overtaking only under conditions permitting movement in safety. The word safety has no authored numerical cutoff or legal verdict here. Frozen accepted evidence inventory contains zero recordings. The exported judgment-range file has no NRS-484B-210-2 entry.
 
-## Next CPU actions
+## Case and source coverage
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C178759__NRS-484B-210-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+- `case-plan.json` names exact `__open_gap`, `__close_gap`, and `__cross_traffic` cases, controlled `approach_space` and `crossing_actor_proximity` comparisons, three source-based evidence gaps and mandatory map, actor, body, speed and conflict observations. All three cases have concrete physical-risk assessments.
+- `right_pass.py` checks original Native paved-road cross sections every at most 5 m across both approach and exit, verifies a distinct same-direction right lane, rejects shoulder use and bodies outside pavement, and requires a sourced crossing actor pose for the conflict case. Its lazy `spawn_native` instantiates both vehicles (plus the conflict actor when relevant), reads actor identity/transform, and cleans up a failed partial spawn.
+- `measure` requires original 20 Hz frame/time continuity and actor identities, measured body envelopes on pavement, actual same-direction ego overtaking speed, and observed behind/alongside/ahead phases with the ego on the right. It retains minimum approach gap and TTC, lateral body clearance and closest conflict-body separation as physical facts only. `finalize_sealed` verifies source SHA; `audit_comparison` rejects missing sources, changed fixed conditions and absent deliberate measured difference.
+- Actual passing, conflict trajectory and visual visibility remain to be checked on an original Native capture. The small fake objects in the tests establish software behavior only.
 
-## Proven checks and dependency boundary
+## Checks
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `.venv-cpu/bin/python runtime.py preflight`: passed with pinned Lean/lake and CPU runtime.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178759__NRS-484B-210-2__motor_vehicle_driver/tests -v`: 8 passed; `cpu-tests.log` SHA256 `706556ee51b6200bf9ba01d43b669187a6fc12919ad2c14d5dca4bb5dcf769be`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C178759__NRS-484B-210-2__motor_vehicle_driver --complete`: passed; `cpu-static-check.log` SHA256 `41003b27e11328b86c88a1529b619d93cb97dfd057554476503f922b61a69b89`.
+- Same exact command plus `--require-delivery-ready`: exit 1, `Preparation acceptance failed: partial/missing packages remain`; `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Next CPU work
+
+1. Bind each exact case to a CARLA-capable primary bundle with config, runner, construction hash, source packets, camera/duration plan, measurement contract and diagnostic recipe. Recheck source map and crossing actor geometry on the chosen Native route.
+2. Author source-preserving canonical semantic proposals and index, plus the execution manifest with justified fallback only if a measurable physical trigger requires one.
+3. Run exact offline and positive/negative compatibility proofs for each case; implement and test `process-saved` finalization, independent delivery acceptance and comparison audits, then rerun the exact strict gate. Keep the unresolved judgment unlabeled.

@@ -1,22 +1,30 @@
 # testing__C215286__NRS-484B-113-2__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction and audit; no delivery-ready claim.
 
-Exact law: NRS 484B.113(2) — The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.
-Assigned branch(es): on or over a crosswalk.
-Cell: C215286 (residence_district, reverse, crosswalk); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 1. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Exact assigned branch: NRS 484B.113(2), backing on or over a crosswalk, C215286 motor vehicle driver. The statute also names intersection and street corner, but this assignment fixes the crosswalk branch. There is no statutory numeric threshold or judgment range for this assignment. A physical body-boundary contact probe is an engineering geometry probe, not a legal cutoff.
+
+## Coverage and accepted evidence
+
+`case-plan.json` names exact `reverse_clear`, `reverse_tangent`, and `reverse_overlap` cases. It links clear/contact and clear/overlap comparisons with fixed map, marking, vehicle, driver, capture rate and reverse condition. The one frozen accepted marked-crosswalk recording is preserved and reviewed in `evidence_review`; its exported metadata reports acceptance and 700 frames, while original trace and video are absent. Its body-crosswalk relation and comparison isolation cannot be inferred from metadata, so it is not counted as full branch coverage.
+
+## Implemented CPU construction and proof
+
+`crosswalk_delivery.py` validates an original map hash, crosswalk polygon/source, vehicle blueprint, driver/district sources, spawn transform source and nondegenerate reverse route. It lazily spawns the ego through an injected Native world and checks map and blueprint readback. It issues reverse/hold control, measures 20 Hz original-frame body polygon versus crosswalk polygon with velocity and reverse gear, and audits an expected physical relation only while backing. Its comparison audit requires two distinct original sources, a common map/crosswalk source and frame window, and an observed relation change. It returns no legal verdict.
+
+`.venv-cpu/bin/python -m unittest discover -s work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/tests -v` passed 10 tests. `cpu-tests.log` SHA256: df04aeaa8fe4ca85d3d0f4c18422cf146f6877564a46d95d73fcc5756e4d3564. Exact static check `.venv-cpu/bin/python worker_check.py --assignment testing__C215286__NRS-484B-113-2__motor_vehicle_driver --complete` passed; log `assignment-check.log`.
 
 ## Next CPU actions
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C215286__NRS-484B-113-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+1. Export a source-hashed original C215286 marked-crosswalk polygon, district and reverse route packet; bind exact construction for all three cases and assess whether a tested fallback is needed for edge contact.
+2. Author the exact execution manifest, canonical stage proposals, full original-frame finalizer, four-camera capture profile and source-specific diagnostic recipes.
+3. Run exact offline and positive/negative compatibility proofs for each case and any candidate, then test `runtime.py process-saved` with independent full-video, source-decode, delivery and comparison audits.
+4. Rerun the exact strict assignment gate. Actual CARLA motion and camera visibility remain later physical checks, separate from the unfinished CPU package.
 
-## Proven checks and dependency boundary
+## Exact offline construction bundles
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+`execution-manifest.json` binds all three exact inline constructions under `cases/`. Each bundle has `runner.py`, `scene.json` and two exact-case tests. `runtime.py offline` passed for `reverse_clear`, `reverse_tangent`, and `reverse_overlap` with receipts in `cpu-offline-*.log`; these check software identity and materialization only. The Native execution path in `runner.py` intentionally fails until original C215286 source packet and complete capture/finalization code are bound. No compatibility or delivery readiness is claimed.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
+- `cpu-offline-reverse_clear.log` SHA256: `11133046e26ff39bfd368df7bedaf429c166289dac27cb401e3ee42764aa601c`.
+- `cpu-offline-reverse_tangent.log` SHA256: `f693ce34611c8f70445abf3b6b8c74cc04c8cb04506a532740d187144088097a`.
+- `cpu-offline-reverse_overlap.log` SHA256: `3cf275f77dd70acae3575a05094fc87e4a6f0dd61a6edd83027d62e780ba03e2`.

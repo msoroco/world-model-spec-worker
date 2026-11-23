@@ -1,0 +1,38 @@
+{
+  "law_id": "NRS-484B-113-2",
+  "cell_id": "C215286",
+  "actor": "motor_vehicle_driver",
+  "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "source": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/runner.py",
+      "content": "\"\"\"Exact crosswalk case preflight; Native capture remains a separate deliverable.\"\"\"\n\nimport argparse\nimport json\nfrom pathlib import Path\n\n\nTARGETS = {\"reverse_clear\": \"disjoint\", \"reverse_tangent\": \"contact\",\n           \"reverse_overlap\": \"overlap\"}\n\n\ndef check(scene):\n    if scene.get(\"law_id\") != \"NRS-484B-113-2\" or scene.get(\"cell_id\") != \"C215286\":\n        raise ValueError(\"wrong frozen law or cell\")\n    if scene.get(\"actor\") != \"motor_vehicle_driver\":\n        raise ValueError(\"wrong frozen actor\")\n    case = scene.get(\"case_id\", \"\").split(\"__\")[-1]\n    if TARGETS.get(case) != scene.get(\"target_physical_relation\"):\n        raise ValueError(\"wrong exact case target\")\n    if scene.get(\"fps\") != 20 or scene.get(\"camera_names\") != [\n            \"approach\", \"crossing\", \"overhead\", \"reference_corner\"]:\n        raise ValueError(\"missing common capture plan\")\n    return {\"case_id\": scene[\"case_id\"], \"target\": TARGETS[case],\n            \"native_source_packet_required\": True, \"physical_realization\": \"pending\"}\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    parser.add_argument(\"--output-dir\")\n    parser.add_argument(\"--host\")\n    parser.add_argument(\"--port\")\n    args = parser.parse_args()\n    scene = json.loads(Path(\"scene.json\").read_text())\n    result = check(scene)\n    if args.check:\n        print(json.dumps(result))\n    else:\n        raise RuntimeError(\"Native source packet/capture binding unfinished for \" + result[\"case_id\"])\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    },
+    {
+      "path": "scene.json",
+      "content": "{\n  \"assignment_id\": \"testing__C215286__NRS-484B-113-2__motor_vehicle_driver\",\n  \"law_id\": \"NRS-484B-113-2\",\n  \"cell_id\": \"C215286\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"case_id\": \"testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap\",\n  \"target_physical_relation\": \"overlap\",\n  \"fps\": 20,\n  \"camera_names\": [\n    \"approach\",\n    \"crossing\",\n    \"overhead\",\n    \"reference_corner\"\n  ],\n  \"required_original_sources\": [\n    \"map SHA-256\",\n    \"marked-crosswalk polygon and source\",\n    \"vehicle actor and body polygon\",\n    \"reverse gear and 20 Hz velocity history\"\n  ]\n}\n"
+    },
+    {
+      "path": "tests/test_bundle.py",
+      "content": "import json\nimport unittest\nfrom runner import check\nfrom pathlib import Path\nclass BundleTest(unittest.TestCase):\n    def test_exact_case(self):\n        scene=json.loads(Path(\"scene.json\").read_text())\n        self.assertTrue(check(scene)[\"native_source_packet_required\"])\n    def test_reject_wrong_target(self):\n        scene=json.loads(Path(\"scene.json\").read_text())\n        scene[\"target_physical_relation\"]=\"invalid\"\n        with self.assertRaises(ValueError): check(scene)\n"
+    }
+  ],
+  "recording_description": "Source-bound reverse overlap marked-crosswalk body relation; no legal verdict",
+  "measurement_plan": [
+    "original body-crosswalk polygon relation during observed reverse motion at 20 Hz"
+  ],
+  "static_checks": [
+    "exact law, cell, actor and case",
+    "four cameras and 20 Hz",
+    "original source packet required before Native capture"
+  ],
+  "termination_rules": [
+    "stop only after planned duration or physical abort, with original source feedback"
+  ],
+  "mechanisms": [
+    "reverse vehicle control against original marked-crosswalk geometry"
+  ],
+  "source_kind": "source_packet_required"
+}

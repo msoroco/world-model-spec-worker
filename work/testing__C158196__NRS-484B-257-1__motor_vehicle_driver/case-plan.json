@@ -20,9 +20,207 @@
   "topic_inventory": {
     "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+      "kind": "delivery",
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "recording_description": "Yield-sign approach, no stop line/crosswalk, through vehicle occupies intersection; ego slows/holds at source-confirmed nearest-view point",
+      "engineering_policy": "hold_for_observed_traffic",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "source_requirements": [
+        "Native map and sign readback",
+        "Native signal/officer governance",
+        "original 20 Hz ego/through body history",
+        "Native raycast/viewpoint",
+        "four synchronized cameras"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue",
+      "kind": "delivery",
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "recording_description": "Same governing yield sign, nearest-view geometry and occupied through vehicle; ego continues as diagnostic contrast",
+      "engineering_policy": "continue_through_observed_traffic",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "source_requirements": [
+        "Native map and sign readback",
+        "Native signal/officer governance",
+        "original 20 Hz ego/through body history",
+        "Native raycast/viewpoint",
+        "four synchronized cameras"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear",
+      "kind": "delivery",
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "recording_description": "Same governing yield sign and nearest-view geometry; no through vehicle occupies the crossing interval",
+      "engineering_policy": "continue_after_clear_observation",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "source_requirements": [
+        "Native map and sign readback",
+        "Native signal/officer governance",
+        "original 20 Hz ego/through body history",
+        "Native raycast/viewpoint",
+        "four synchronized cameras"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception",
+      "kind": "delivery",
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "recording_description": "Same cell with traffic-control signal actually governing approach; yield-sign subsection exception applicability probe",
+      "engineering_policy": "observe_signal_governance",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "source_requirements": [
+        "Native map and sign readback",
+        "Native signal/officer governance",
+        "original 20 Hz ego/through body history",
+        "Native raycast/viewpoint",
+        "four synchronized cameras"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "nearest_view_conflict_response",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue"
+      ],
+      "fixed_conditions": [
+        "C158196 one-way-to-two-way layout",
+        "proper yield sign governs",
+        "no stop line or near-side crosswalk including sidewalk-derived",
+        "signal and officer do not control",
+        "through traffic occupies crossing interval",
+        "same camera and 20 Hz duration contract"
+      ],
+      "deliberate_differences": [
+        "ego engineering conflict response policy"
+      ]
+    },
+    {
+      "comparison_id": "nearest_view_traffic_occupancy",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear"
+      ],
+      "fixed_conditions": [
+        "C158196 layout",
+        "yield sign governs",
+        "no stop line or near-side crosswalk",
+        "signal and officer do not control",
+        "same ego continuation policy",
+        "same camera and 20 Hz duration contract"
+      ],
+      "deliberate_differences": [
+        "observed through-vehicle occupancy during crossing"
+      ]
+    },
+    {
+      "comparison_id": "governing_signal_exception",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception"
+      ],
+      "fixed_conditions": [
+        "C158196 layout",
+        "same ego approach route",
+        "same camera and 20 Hz duration contract"
+      ],
+      "deliberate_differences": [
+        "actual traffic-control signal governance and yield-sign applicability"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "governing_yield_sign",
+      "source": "Native device readback and pixels",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "no_marked_stop_line",
+      "source": "Native map survey and pixels",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "no_near_side_crosswalk",
+      "source": "Native crosswalk/sidewalk survey and pixels",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "no_officer_or_signal_control",
+      "source": "Native control readback and camera views",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "nearest_view_location",
+      "source": "Native raycast from ego body and retained site survey",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "through_traffic_presence",
+      "source": "original 20 Hz through-vehicle body history",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "slowed_or_stopped",
+      "source": "original 20 Hz ego speed and displacement",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "across_or_within_history",
+      "source": "original 20 Hz body/intersection overlap",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "source_required"
+    },
+    {
+      "name": "immediate_hazard",
+      "source": "full original speed/position/sight histories",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "unresolved_judgment"
+    },
+    {
+      "name": "yield_right_of_way",
+      "source": "full original speed/position/sight histories",
+      "measurement": "nearest_view.py original-tick source packet",
+      "legal_status": "unresolved_judgment"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
@@ -63,7 +261,7 @@
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. The two existing cases are active_control/passive_control by ID, but no exported original bytes or review-context describe physical sign, line/crosswalk, sightline, or signal state; neither is reused as proof of the requested nearest-view branch.",
     "facts": [
       {
         "recording_id": "ca2cc773ae1e02b012a48dac490497ab3aafdb7b007bfda3e93bfa84a12d7526",
@@ -146,7 +344,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_case_construction_and_source_measurement",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json",

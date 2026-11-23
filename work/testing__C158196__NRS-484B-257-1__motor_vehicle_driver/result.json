@@ -2,11 +2,54 @@
   "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "9d804a3458eaf04ca6c3572860bd4e7e3389d43dfbbf4ac504cd9d9e6064c238",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "source_bound_construction_draft",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "76a253a051214f8c325f10efd9835eae9e9e96962a3b75ab592a82a84766d410"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-draft-build.log",
+      "sha256": "daac068935f90e35573e089c5b9ef49ce653477e58eb7492fb042ab8e83f01f5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold --output .runtime-work/c158196-offline-nearest_view_hold-v2",
+      "exit_code": 0,
+      "log": "cpu-offline-nearest_view_hold.log",
+      "sha256": "dcb6b48338425d2fea01230366d488151f9759a5f6aa0c1bc913c7a68f58ee3f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue --output .runtime-work/c158196-offline-nearest_view_continue-v2",
+      "exit_code": 0,
+      "log": "cpu-offline-nearest_view_continue.log",
+      "sha256": "2ee50f93bdfadff9b2a05c5830f69303998989cd19a449c82a38615638c48bf3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear --output .runtime-work/c158196-offline-nearest_view_clear-v2",
+      "exit_code": 0,
+      "log": "cpu-offline-nearest_view_clear.log",
+      "sha256": "3371f8996f787a65ac8edb34877da7a89ec5fcd50fb5fa4e143d90ce5e3bb359"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --output .runtime-work/c158196-offline-active_signal_exception-v2",
+      "exit_code": 0,
+      "log": "cpu-offline-active_signal_exception.log",
+      "sha256": "dbf10bc8a1ca987497ec023ca494e252713c5cf62e984cf545e4b31c7307c3fc"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/prove_source_analysis.py",
+      "exit_code": 0,
+      "log": "cpu-source-proof.log",
+      "sha256": "467149252a3ca63f7598abd6d8cab002d90919f9c5cea143fedd7762e5d745ee"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Four exact diagnostic bundles pass pinned offline construction checks; 14 focused tests and positive/missing-source synthetic analysis pass. Native sign/signal, line/crosswalk, viewpoint, through-highway and camera source packets are not available in the frozen export, so these diagnostic bundles refuse live capture. The genuine Native runner, selected requirement contracts, semantic proposals, pinned positive/negative compatibility, saved-only processing, and independent delivery/comparison audits remain worker-owned CPU work. Existing accepted metadata does not prove this branch."
 }

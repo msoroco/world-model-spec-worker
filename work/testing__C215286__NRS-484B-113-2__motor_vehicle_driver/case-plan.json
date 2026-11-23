@@ -24,9 +24,106 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
+      "target_physical_relation": "disjoint",
+      "description": "Reverse while all original body corners remain outside the marked crosswalk",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Reverse path near a marked-crosswalk edge may not realize the requested relation because CARLA body extents and map marking geometry vary; source packet and original frame measurements must resolve this before fallback selection."
+      },
+      "candidates": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "f747dc22ccc063ceaeed5d464678ac3745b74e3a4f26b3e4348deae5853af489"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent",
+      "target_physical_relation": "contact",
+      "description": "Reverse with measured body-to-crosswalk boundary contact",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Reverse path near a marked-crosswalk edge may not realize the requested relation because CARLA body extents and map marking geometry vary; source packet and original frame measurements must resolve this before fallback selection."
+      },
+      "candidates": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "f747dc22ccc063ceaeed5d464678ac3745b74e3a4f26b3e4348deae5853af489"
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap",
+      "target_physical_relation": "overlap",
+      "description": "Reverse with positive-area body overlap of the marked crosswalk",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Reverse path near a marked-crosswalk edge may not realize the requested relation because CARLA body extents and map marking geometry vary; source packet and original frame measurements must resolve this before fallback selection."
+      },
+      "candidates": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "f747dc22ccc063ceaeed5d464678ac3745b74e3a4f26b3e4348deae5853af489"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "reverse_contact_vs_clear",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent"
+      ],
+      "fixed_conditions": [
+        "C215286 map",
+        "marked crosswalk",
+        "vehicle blueprint and driver",
+        "20 Hz capture",
+        "reverse gear and measurement window"
+      ],
+      "deliberate_differences": [
+        "source-selected reverse path relative to crosswalk edge; target disjoint versus contact"
+      ]
+    },
+    {
+      "comparison_id": "reverse_overlap_vs_clear",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap"
+      ],
+      "fixed_conditions": [
+        "C215286 map",
+        "marked crosswalk",
+        "vehicle blueprint and driver",
+        "20 Hz capture",
+        "reverse gear and measurement window"
+      ],
+      "deliberate_differences": [
+        "source-selected reverse path relative to crosswalk edge; target disjoint versus overlap"
+      ]
+    }
+  ],
+  "observations": [
+    "Original map identity and crosswalk polygon with source references",
+    "Original 20 Hz vehicle body footprint, velocity, forward vector and reverse gear",
+    "Framewise disjoint/contact/overlap relation while backing; no legal verdict"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
@@ -65,8 +162,9 @@
     "e22d5dba7af61833c4090e2b261f307f2449cb816e5be9cea13f7bcc432da259"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Accepted recording has only exported metadata; original trace/video are absent, so its exact body-crosswalk overlap cannot be verified here.",
+    "Native crosswalk source polygon and route packet must be exported from original map before runtime.py offline/compatibility proofs.",
+    "Exact manifest, canonical stage proposals, finalizer and saved-only process path remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -101,7 +199,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_construction_and_audit",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
