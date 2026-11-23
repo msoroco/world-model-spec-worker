@@ -809,8 +809,14 @@ class SweepConstructionTests(unittest.TestCase):
         index = read('sweep-constructions/index.json')
         root = HERE.parent
         for candidate_id in ('fallback1', 'fallback2', 'fallback3'):
-            archive_path = root / '_shared' / f'c125745-sweep-{candidate_id}-proofs-2026-11-23.json'
+            archive_id = 'fallback2' if candidate_id == 'fallback3' else candidate_id
+            archive_path = root / '_shared' / f'c125745-sweep-{archive_id}-proofs-2026-11-23.json'
             archive = json.loads(archive_path.read_text())
+            if candidate_id == 'fallback3':
+                nested = archive['fallback3_archive']
+                self.assertEqual(nested['source_filename'],
+                                 'c125745-sweep-fallback3-proofs-2026-11-23.json')
+                archive = nested['payload']
             for row in index['constructions']:
                 with self.subTest(case=row['case_id'], candidate=candidate_id):
                     fallback = row[candidate_id]

@@ -1,3 +1,7 @@
+## 2026-11-23 unbound proposal observables archived
+
+Four unbound `proposals/judgment-observables-{1,2,3,4}.json` files were preserved byte-exactly, with original paths and SHA256, in `work/_shared/c125763-unbound-judgment-observables-20261123.json` (archive SHA256 `644b7a7092200e27a231529f0bb1ff6f4f909f169957e308e8f3b6e67c625492`). No active JSON, Python, or Markdown file referenced them. The assignment-scoped nonready complete check passed after archival. Status remains partial.
+
 ## 2026-11-22 relevance-stage file consolidation
 
 The `proposals/relevance-batch.json` bytes were exactly identical to retained `proposals/relevance.json`, and this partial package has no semantic index or active JSON/Python reference to the redundant path. The duplicate path was removed to keep the return at the 8,600-file cap; its content can be reproduced byte-for-byte from `relevance.json`. The scoped partial checker still passes. The canonical semantic index and remaining preparation work are unfinished, so status stays **partial**.

@@ -1,3 +1,7 @@
+## 2026-11-23 historical unbound artifact archival
+
+The unbound historical `officer-draft-archive.json` was retained byte-exactly in `work/_shared/c158196-saved-command-logs-20261123.json` (SHA256 `1c49cff1ce19b5aea3738d5e0dc5cde0482e092503cac019de4f9afcfdd40237`) to free a return-file slot. Its original path, SHA256, and base64 bytes are preserved. The assignment-scoped nonready complete check passed after archival. Status remains partial.
+
 # C158196 CPU handoff — NRS 484B.257(1)
 
 Status: **partial**. The frozen branch label names yield-sign nearest-view, while this bound cell fixes a traffic light. The witness assigns the active-signal exception here because C158208 fixes a yield sign. This package observes whether a signal actually controls ego traffic at entry; it does not claim to cover nearest-view yield behavior. The frozen evidence inventory has zero accepted recordings.
