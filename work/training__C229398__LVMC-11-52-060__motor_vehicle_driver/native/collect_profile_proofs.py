@@ -14,7 +14,7 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def collect(complete):
+def collect(complete, tag):
     manifest = json.loads(MANIFEST.read_text())
     rows = []
     for entry in manifest['cases']:
@@ -24,14 +24,25 @@ def collect(complete):
                            'construction_sha256': entry['construction_sha256']},
                           *entry['candidates']]:
             ident = candidate['id']
-            positive = folder / ('attempt-' + ident + '-profile.log')
-            saved = folder / ('saved-' + ident + '-profile.log')
+            positive = folder / ('attempt-' + ident + '-' + tag + '.log')
+            saved = folder / ('saved-' + ident + '-' + tag + '.log')
             if not positive.is_file() or not saved.is_file() or not positive.stat().st_size or not saved.stat().st_size:
                 if complete:
                     raise ValueError('Missing current diagnostic receipt: ' + suffix + '/' + ident)
                 continue
             compatibility = json.loads(positive.read_text())
             processing = json.loads(saved.read_text())
+            construction = json.loads((PACKAGE / candidate['construction']).read_text())
+            config = json.loads(next(item['content'] for item in construction['files']
+                                     if item['path'] == 'config.json'))
+            cameras = config['cameras']
+            if [(camera['name'], camera['width'], camera['height']) for camera in cameras] != [
+                ('overview', 1920, 1080), ('approach', 1280, 720),
+                ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]:
+                raise ValueError('Camera dimensions differ: ' + suffix + '/' + ident)
+            if any(camera.get('pose_strategy') != 'ego_attached_fixed_offset' or
+                   camera.get('fov_deg') != 90 for camera in cameras):
+                raise ValueError('Camera strategy differs: ' + suffix + '/' + ident)
             if not compatibility['passed'] or not processing['passed'] or not processing['recorded_only']:
                 raise ValueError('Diagnostic CPU proof failed: ' + suffix + '/' + ident)
             if (compatibility['case_id'] != entry['case_id'] or
@@ -39,13 +50,16 @@ def collect(complete):
                 compatibility['candidate_id'] != ident or processing['candidate_id'] != ident or
                 compatibility['construction_sha256'] != candidate['construction_sha256'] or
                 sha(PACKAGE / candidate['construction']) != candidate['construction_sha256'] or
+                compatibility['runtime_manifest_sha256'] != manifest['runtime_manifest_sha256'] or
+                compatibility['fixture_recipe_sha256'] != sha(ROOT / entry['fixture_recipe']) or
                 compatibility['negative_removed'] != 'reviewed-curb.json' or
-                not compatibility['negative_log_sha256']):
+                not compatibility['negative_log_sha256'] or
+                not processing['originals_preserved']):
                 raise ValueError('Diagnostic binding mismatch: ' + suffix + '/' + ident)
             proof_dir = folder / 'proofs'
             proof_dir.mkdir(exist_ok=True)
-            shutil.copyfile(positive, proof_dir / ('profile-' + ident + '-positive.json'))
-            shutil.copyfile(saved, proof_dir / ('profile-' + ident + '-saved.json'))
+            shutil.copyfile(positive, proof_dir / (tag + '-' + ident + '-positive.json'))
+            shutil.copyfile(saved, proof_dir / (tag + '-' + ident + '-saved.json'))
             rows.append({'case_id': entry['case_id'], 'candidate_id': ident,
                          'construction_sha256': candidate['construction_sha256'],
                          'compatibility_receipt_sha256': sha(positive),
@@ -53,12 +67,12 @@ def collect(complete):
                          'fixture_recipe_sha256': sha(ROOT / entry['fixture_recipe'])})
     if complete and len(rows) != 12:
         raise ValueError('Expected all twelve diagnostic candidate chains')
-    checkpoint = {'format': 'c229398-current-profile-checkpoint-v1',
+    checkpoint = {'format': 'c229398-current-' + tag + '-checkpoint-v1',
                   'manifest_sha256': sha(MANIFEST), 'candidate_chains_passed': len(rows),
                   'complete': len(rows) == 12, 'diagnostic_only': True,
                   'delivery_selected': False, 'original_native_observed': False,
                   'candidates': rows}
-    output = PACKAGE / 'diagnostic-fixture' / 'profile-checkpoint.json'
+    output = PACKAGE / 'diagnostic-fixture' / (tag + '-checkpoint.json')
     output.write_text(json.dumps(checkpoint, indent=2, sort_keys=True) + '\n')
     print(json.dumps({'candidate_chains_passed': len(rows),
                       'manifest_sha256': checkpoint['manifest_sha256'],
@@ -68,4 +82,6 @@ def collect(complete):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--complete', action='store_true')
-    collect(parser.parse_args().complete)
+    parser.add_argument('--tag', choices=('profile', 'camera'), default='profile')
+    args = parser.parse_args()
+    collect(args.complete, args.tag)

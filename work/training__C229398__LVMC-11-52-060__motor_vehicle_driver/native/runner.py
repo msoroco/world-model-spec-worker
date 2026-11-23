@@ -46,7 +46,9 @@ def check(config):
     cameras = config.get('cameras')
     if (not isinstance(cameras, list) or [x.get('name') for x in cameras] != list(VIEWS)
             or [(x.get('width'), x.get('height')) for x in cameras]
-            != [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)]):
+            != [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)]
+            or any(x.get('pose_strategy') != 'ego_attached_fixed_offset'
+                   or x.get('fov_deg') != 90 for x in cameras)):
         raise ValueError('Four source cameras required')
     if (config.get('vehicle_blueprint') != 'vehicle.tesla.model3'
             or config.get('load_filter') != 'static.prop.*'
@@ -176,7 +178,7 @@ def execute(config, output, host, port):
             name, width, height = camera['name'], camera['width'], camera['height']
             bp = library.find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
-                               ('fov', 90), ('sensor_tick', 0)):
+                ('fov', camera['fov_deg']), ('sensor_tick', 0)):
                 bp.set_attribute(key, str(value))
             offsets = {'overview': (-config['camera_distance_m'], 0, 9),
                        'approach': (-6, 5, 4),

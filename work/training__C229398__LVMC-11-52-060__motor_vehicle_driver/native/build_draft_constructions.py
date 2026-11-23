@@ -75,7 +75,8 @@ def build():
             'camera_distance_m': 12,
             'load_height_m': 2.4, 'trailer_rear_m': -5,
             'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
-                         'height': 1080 if name == 'overview' else 720}
+                         'height': 1080 if name == 'overview' else 720,
+                         'pose_strategy': 'ego_attached_fixed_offset', 'fov_deg': 90}
                         for name in ('overview', 'approach', 'reference_corner',
                                      'driver_reference')],
         }
