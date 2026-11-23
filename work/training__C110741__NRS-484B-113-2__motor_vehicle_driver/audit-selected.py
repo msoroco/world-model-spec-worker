@@ -31,9 +31,9 @@ def delivery(case,negative):
   if item is None or sha(HERE.parent.parent/item['source'])!=item['sha256']:raise ValueError('Retained source hash differs: '+name)
  proof_path=HERE/e['compatibility']['receipt']
  proof=read(proof_path)
- report_path=HERE/f'update162-{l}-primary-report.json'
+ report_path=HERE/f'current-cutover-{l}-primary-report.json'
  report=read(report_path)
- decode=read(HERE/f'update162-{l}-primary-decode.json')
+ decode=read(HERE/f'current-cutover-{l}-primary-decode.json')
  if (sha(proof_path)!=e['compatibility']['sha256'] or
      proof.get('construction_sha256')!=e['construction_sha256'] or
      proof.get('case_id')!=case or proof.get('passed') is not True or

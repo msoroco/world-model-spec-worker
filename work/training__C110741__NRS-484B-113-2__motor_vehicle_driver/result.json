@@ -1,9 +1,9 @@
 {
   "applied_update": 16,
   "assignment_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver",
-  "candidate_plans_proven": 0,
+  "candidate_plans_proven": 8,
   "cases_selected": 2,
-  "comparison_audits_passed": 0,
+  "comparison_audits_passed": 1,
   "counts": {
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0,
@@ -23,6 +23,20 @@
     "source_topics": 5,
     "v2_diagnostic_bundles": 8
   },
+  "current_cutover_cpu": {
+    "binding_index": "current-cutover-proof/binding-index.json",
+    "binding_index_sha256": "0f9b64896a6c146998ea621ba440986bbfd09d0b58131206c8d1171ca3a6d00a",
+    "comparison_positive_and_negative_passed": 1,
+    "delivery_positive_and_negative_passed": 2,
+    "exact_candidate_chains_passed": 8,
+    "execution_manifest_sha256": "49ebeafb0e14739cc167721e1278daddcde38df8d68fc5195ab214bb217d3f52",
+    "original_native_observed": false,
+    "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+    "scoped_strict_gate_passed": true,
+    "scoped_strict_log": "current-cutover-strict-ready.log",
+    "scoped_strict_log_sha256": "e810ad3d45857b43e5283e6ba9f7c5c10e8217257838617abd8b68bce60749a0",
+    "synthetic_cpu_only": true
+  },
   "current_update162_cpu": {
     "compatibility_candidates_passed": 8,
     "manifest_sha256": "36c4c1a0cd83f86e2e3589806fd458677eed7fc41640f0811de0af61481bd49b",
@@ -35,24 +49,19 @@
   },
   "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C110741__NRS-484B-113-2__motor_vehicle_driver --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "f136d04c1fff8f465aaeea71e5f5c32c936f46788ed9c6bacd2d91147d9fdf4f",
-  "readiness_kind": "reproof_pending",
-  "reason": "Selected execution manifest binds runtime 5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3 but batch pins ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90; prior CPU receipts and strict pass are historical. Reprove exact selected candidates and audits under the pinned runtime before restoring ready.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Current pinned runtime: both exact selected cases and all six distinct fallbacks passed offline, positive and negative compatibility, recorded-only saved processing, independent synthetic delivery and comparison audits, and the actual assignment-scoped strict CPU gate. Native observation and acceptance remain for the local operator.",
   "remaining_gpu_checks": [
     "Actual reverse motion and body overlap against Native crosswalk geometry",
     "Original camera pixels, visibility, and independent physical acceptance"
   ],
   "runtime_cutover_checkpoint": {
     "current_runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
-    "execution_manifest_sha256": "36c4c1a0cd83f86e2e3589806fd458677eed7fc41640f0811de0af61481bd49b",
-    "next_cpu_action": "Rebind exact selected manifest and regenerate current-runtime offline, positive/negative compatibility, recorded-only saved, physical, delivery and comparison proofs; rerun assignment-scoped strict gate.",
-    "previous_candidate_plans_proven": null,
-    "previous_comparison_audits_passed": null,
-    "previous_ready_reason": null,
-    "previous_runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
-    "previous_strict_gate": null,
-    "status": "selected_proofs_historical_reproof_pending"
+    "execution_manifest_sha256": "49ebeafb0e14739cc167721e1278daddcde38df8d68fc5195ab214bb217d3f52",
+    "next_cpu_action": "Continue next incomplete batch assignment; Native capture and physical acceptance remain local GPU work.",
+    "status": "current_runtime_scoped_strict_passed"
   },
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/draft-execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --output .runtime-work/c110741-current-offline-a --candidate primary",
@@ -437,6 +446,168 @@
       "exit_code": 0,
       "log": "update162-preflight.log",
       "sha256": "0853744d06c541bf873da10740885e571f710413961c5d10b99bdbbf5fabd0a7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/current-cutover-staging.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --candidate primary --output .runtime-work/c110741-cutover/condition_a/primary/offline-v2 --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/primary/offline.log",
+      "sha256": "0f6fb06e35cbd2653bb6d002531efd9d12f43192a901bb25e0f9274527ba0b65"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/current-cutover-staging.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --candidate primary --output .runtime-work/c110741-cutover/condition_a/primary/compatibility --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/primary/compatibility.log",
+      "sha256": "f65ce69bb88afd0404d2fccd7db5aa39754ae28ada6b521a56571f54d8d233e9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/current-cutover-staging.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --attempt .runtime-work/c110741-cutover/condition_a/primary/compatibility --output .runtime-work/c110741-cutover/condition_a/primary/saved --library runtime/pipeline/library --validator .runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/primary/saved.log",
+      "sha256": "9ea37147b914eefd2fd0a7d1818fad1beeec9fcd6360cdc24a3edaabc2a15d58"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback1/offline.log",
+      "sha256": "b108f991a40436f1e4a279b911f6dd772ac5eef2d886f99ecf7bd84feb413b84"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback1/compatibility.log",
+      "sha256": "b232622c506af584c7f812cc316f2db2e9d07377a0fa862055a6872394b370f8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback1/saved.log",
+      "sha256": "84642e51dce2d6b7993db163a93b12d438fb12e86ec0578086fd8d770b65ffdc"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback2/offline.log",
+      "sha256": "ad48197118ef2e08468596f02c124d32dfea15253b591e9820348549fb7bbdf7"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback2/compatibility.log",
+      "sha256": "7699f3796a0bf93750b03873ad13e609a181a3e3afc58bb626b0f634d841ff4c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback2/saved.log",
+      "sha256": "edfa2187bc695210805ae05ceb1eda7a09a8926798dd4c08817c9c3d4922e9ea"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback3/offline.log",
+      "sha256": "5af128b58cd46a271994e4b1b064067e84faa7d4d2dc90249276801db19c44da"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback3/compatibility.log",
+      "sha256": "7a5e588e61430f949c2c7003ac6b42ff80213d2380ca2f2ff86fb15b0c60dfc5"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_a/fallback3/saved.log",
+      "sha256": "ca8974d0dcfa5788dde276f277b593a62e378e5cf0b0cc3ba36ac21acd7de0a4"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/primary/offline.log",
+      "sha256": "57ecb84c9a6f173f377fd7d3ee5a37f5fa7a64cfe36eb3f0a25b7519224c98dd"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/primary/compatibility.log",
+      "sha256": "1472ef1498cc156c22afd69e9d01d6b2c98db865770080baf3aac7326c46978b"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/primary/saved.log",
+      "sha256": "dd825e45c1028965f3f41d5d0d2b29b1ed4b87f6a1baf7ce915dd65bd2600e7a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback1/offline.log",
+      "sha256": "4f59389a0258260e5b44393f0eaa1f5c34f0ab3c35d9f9c8f0fba2e2692c8465"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback1/compatibility.log",
+      "sha256": "a6c6cbe1dd3e6f0689aa84af5e80f554e67fee200c6d208723fc135beff264f8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback1/saved.log",
+      "sha256": "4cd343dd7e000bd9735761e832456e43770f35b8567b3d94a01ebd148444f9a6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback2/offline.log",
+      "sha256": "c7ea0dc23555a5d417c2b7612b4c84ff5fcbafbeee8cb16394b42ee9243ec1e9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback2/compatibility.log",
+      "sha256": "bcab7561adea1576991a46683a0aa254a0cefbd5f9021fc33680ebc2bc37a9f8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback2/saved.log",
+      "sha256": "ba44d54840cd299ed5e9e562a408b481678e1a937d0af6fba7bc45fff1869677"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback3/offline.log",
+      "sha256": "ba36e29534d6541869036345bea23818450a83563e74dfcc45f7b8552f0c5089"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback3/compatibility.log",
+      "sha256": "d25024f90c3f9d58d6233b5676288d56e6675e20209ed5da411497296a8d72d1"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/reprove-current-cutover.py",
+      "exit_code": 0,
+      "log": "current-cutover-proof/condition_b/fallback3/saved.log",
+      "sha256": "8a661a640314f6af73793f114231f02677ff0f5fe55775e55447722170ea9eaf"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/audit-selected.py delivery --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a",
+      "exit_code": 0,
+      "log": "current-cutover-delivery-a-positive.log",
+      "sha256": "6283af8f8149c832f3d602991232abb0a4c048287aad03cd329b7bc56d797443"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/audit-selected.py delivery --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b",
+      "exit_code": 0,
+      "log": "current-cutover-delivery-b-positive.log",
+      "sha256": "09f145b66d825c4fdffa351a1bcb1c9083bd30c7d7ecc6be1628c8d466adcfdf"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/audit-selected.py comparison",
+      "exit_code": 0,
+      "log": "current-cutover-comparison-positive.log",
+      "sha256": "214619dde941fc25e42952e3699590352dd324b165cf44e1990fb484e5c3db7c"
     }
   ]
 }
