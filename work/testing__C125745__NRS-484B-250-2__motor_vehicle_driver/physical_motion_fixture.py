@@ -121,7 +121,7 @@ def run(kind,case,output):
   return {'case_id':case,'fixture':kind,'maneuver_status':expected,'diagnostic_fixture':True,
       'source_hashes':check['sources']}
 
-def run_staged(kind,case,attempt,output,candidate=None):
+def run_staged(kind,case,attempt,output,candidate=None,canonical_saved_receipt=None):
  """Exercise a staged sweep's source-bound CPU classifier; no Native claim."""
  index=read(HERE/'sweep-constructions/index.json')
  point=next(x for x in index['constructions']
@@ -165,6 +165,17 @@ def run_staged(kind,case,attempt,output,candidate=None):
    payload=proof_text(saved,'receipt').encode()
    if hashlib.sha256(payload).hexdigest()!=saved['receipt_sha256']:
     raise ValueError('Qualified saved receipt changed')
+   saved_sha=saved['receipt_sha256']
+   if canonical_saved_receipt:
+    manifest_entry=next(e for e in read(HERE/'execution-manifest.json')['cases'] if e['case_id']==case)
+    manifest_candidate=next(c for c in manifest_entry['candidates'] if c['id']==candidate)
+    bound=manifest_candidate['post_capture']
+    if HERE/bound['test_log']!=canonical_saved_receipt.resolve():
+     raise ValueError('Canonical saved receipt path differs from manifest')
+    payload=canonical_saved_receipt.read_bytes()
+    saved_sha=hashlib.sha256(payload).hexdigest()
+    if saved_sha!=bound['test_log_sha256']:
+     raise ValueError('Canonical saved receipt hash differs from manifest')
    saved_data=json.loads(payload)
    if (saved_data.get('passed') is not True or saved_data.get('recorded_only') is not True or
        saved_data.get('case_id')!=case or saved_data.get('candidate_id')!=(candidate or 'primary') or
@@ -194,7 +205,7 @@ def run_staged(kind,case,attempt,output,candidate=None):
    result={'case_id':case,'candidate_id':candidate or 'primary','events':events,
            'diagnostic_fixture':True,'captured_frames':frames,
            'failed_encoder_rejected':True,'premature_release_rejected':True,
-           'saved_processing_receipt_sha256':saved['receipt_sha256']}
+           'saved_processing_receipt_sha256':saved_sha}
    write(output,result)
    return result
   motion=fixture/'crossing_history.jsonl'
@@ -219,5 +230,6 @@ if __name__=='__main__':
  p.add_argument('--case',required=True);p.add_argument('--output',required=True,type=Path)
  p.add_argument('--staged-attempt',type=Path)
  p.add_argument('--candidate',choices=('fallback1','fallback2','fallback3'))
+ p.add_argument('--canonical-saved-receipt',type=Path)
  a=p.parse_args();a.output.parent.mkdir(parents=True,exist_ok=True)
- print(json.dumps(run_staged(a.kind,a.case,a.staged_attempt,a.output,a.candidate) if a.staged_attempt else run(a.kind,a.case,a.output),sort_keys=True))
+ print(json.dumps(run_staged(a.kind,a.case,a.staged_attempt,a.output,a.candidate,a.canonical_saved_receipt) if a.staged_attempt else run(a.kind,a.case,a.output),sort_keys=True))
