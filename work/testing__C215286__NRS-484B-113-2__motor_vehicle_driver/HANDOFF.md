@@ -12,7 +12,7 @@ Exact assigned branch: NRS 484B.113(2), backing on or over a crosswalk, C215286 
 
 `crosswalk_delivery.py` validates an original map hash, crosswalk polygon/source, vehicle blueprint, driver/district sources, spawn transform source and nondegenerate reverse route. It lazily spawns the ego through an injected Native world and checks map and blueprint readback. It issues reverse/hold control, measures 20 Hz original-frame body polygon versus crosswalk polygon with velocity and reverse gear, and audits an expected physical relation only while backing. Its comparison audit requires two distinct original sources, a common map/crosswalk source and frame window, and an observed relation change. It returns no legal verdict.
 
-`.venv-cpu/bin/python -m unittest discover -s work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/tests -v` passed 10 tests. `cpu-tests.log` SHA256: df04aeaa8fe4ca85d3d0f4c18422cf146f6877564a46d95d73fcc5756e4d3564. Exact static check `.venv-cpu/bin/python worker_check.py --assignment testing__C215286__NRS-484B-113-2__motor_vehicle_driver --complete` passed; log `assignment-check.log`.
+`.venv-cpu/bin/python -m unittest discover -s work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/tests -v` passed 12 tests. `cpu-tests.log` SHA256: c1216526e41ef083fb3b6659c3166b0718b582596bc093d96734986f88d39c52. Exact static check `.venv-cpu/bin/python worker_check.py --assignment testing__C215286__NRS-484B-113-2__motor_vehicle_driver --complete` passed; log `assignment-check.log`.
 
 ## Next CPU actions
 
@@ -28,3 +28,7 @@ Exact assigned branch: NRS 484B.113(2), backing on or over a crosswalk, C215286 
 - `cpu-offline-reverse_clear.log` SHA256: `11133046e26ff39bfd368df7bedaf429c166289dac27cb401e3ee42764aa601c`.
 - `cpu-offline-reverse_tangent.log` SHA256: `f693ce34611c8f70445abf3b6b8c74cc04c8cb04506a532740d187144088097a`.
 - `cpu-offline-reverse_overlap.log` SHA256: `3cf275f77dd70acae3575a05094fc87e4a6f0dd61a6edd83027d62e780ba03e2`.
+
+## Saved-source finalizer increment
+
+`analyze_source.py` reads a reviewed original map packet and `channels/reverse-body-crosswalk.jsonl`, checks the frame-file SHA256 and exact polygon equality, then emits physical measurement and unresolved legal judgment. The focused suite now has 12 passing tests including removal of the required frame source and changed bytes. This is a source-bound component test, not the full `runtime.py compatibility` gate; Native-shaped four-camera diagnostic, canonical proposal/measurement contract and complete process-saved outputs remain to author.

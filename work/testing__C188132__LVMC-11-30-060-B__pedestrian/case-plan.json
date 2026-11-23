@@ -24,9 +24,130 @@
   "topic_inventory": {
     "exact-text": "Any pedestrian crossing a roadway at a point where a pedestrian tunnel or overhead pedestrian crossing has been provided shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
+      "target_law_id": "LVMC-11-30-060-B",
+      "target_type": "controlled_attempt",
+      "construction": "scene-yield_before_vehicle.json",
+      "gap_ids": [
+        "overpass-original-crossing"
+      ],
+      "map_source": "candidate-overpass.xodr",
+      "map_source_sha256": "d44882d4fb88ab0eeeb4742a52d8437d71562341a36b08096a00b0aefbbfe7b2",
+      "preparation_status": "candidate_geometry_and_original_source_audits_cpu_tested",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Elevated OpenDRIVE sidewalk deck may lack Native bridge rendering or pedestrian access; actual body and cameras must confirm the structure",
+        "trigger": "Native deck/approach readback or original deck pixels fail independent inspection",
+        "fallback_construction": null
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
+      "target_law_id": "LVMC-11-30-060-B",
+      "target_type": "controlled_attempt",
+      "construction": "scene-enter_ahead_of_vehicle.json",
+      "gap_ids": [
+        "overpass-original-crossing"
+      ],
+      "map_source": "candidate-overpass.xodr",
+      "map_source_sha256": "d44882d4fb88ab0eeeb4742a52d8437d71562341a36b08096a00b0aefbbfe7b2",
+      "preparation_status": "candidate_geometry_and_original_source_audits_cpu_tested",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Elevated OpenDRIVE sidewalk deck may lack Native bridge rendering or pedestrian access; actual body and cameras must confirm the structure",
+        "trigger": "Native deck/approach readback or original deck pixels fail independent inspection",
+        "fallback_construction": null
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition",
+      "target_law_id": "LVMC-11-30-060-B",
+      "target_type": "exception_probe",
+      "construction": "scene-designated_prohibition.json",
+      "gap_ids": [
+        "overpass-original-crossing"
+      ],
+      "map_source": "candidate-overpass.xodr",
+      "map_source_sha256": "d44882d4fb88ab0eeeb4742a52d8437d71562341a36b08096a00b0aefbbfe7b2",
+      "preparation_status": "candidate_geometry_and_original_source_audits_cpu_tested",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Elevated OpenDRIVE sidewalk deck may lack Native bridge rendering or pedestrian access; actual body and cameras must confirm the structure",
+        "trigger": "Native deck/approach readback or original deck pixels fail independent inspection",
+        "fallback_construction": null
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entry_timing",
+      "case_ids": [
+        "testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
+        "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle"
+      ],
+      "fixed_conditions": [
+        "same source-hashed surface and elevated deck",
+        "same pedestrian route and speed",
+        "same vehicle route and speed",
+        "same prohibition context absent",
+        "same 20 Hz 900 frame acquisition"
+      ],
+      "deliberate_differences": [
+        "pedestrian hold request until vehicle passes"
+      ],
+      "audit": "overpass_source.audit_pair",
+      "status": "source_bound_diagnostic_cpu_tested_native_pending",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "designated_exception",
+      "case_ids": [
+        "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
+        "testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition"
+      ],
+      "fixed_conditions": [
+        "same source-hashed surface and elevated deck",
+        "same pedestrian and vehicle route and controller",
+        "same 20 Hz 900 frame acquisition"
+      ],
+      "deliberate_differences": [
+        "authored designated-place prohibition status under LVMC 11.30.070(B)"
+      ],
+      "audit": "overpass_source.audit_pair",
+      "status": "source_bound_diagnostic_cpu_tested_native_pending",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "observations": [
+    {
+      "name": "provided_overhead_crossing",
+      "source": "candidate-overpass.xodr elevated sidewalk deck; actual Native geometry and pixels pending",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_crossing_location_and_history",
+      "source": "original 900 frame Native pedestrian xyz history at 20 Hz",
+      "mandatory": true
+    },
+    {
+      "name": "all_vehicles_upon_roadway",
+      "source": "original Native vehicle identity, xyz and velocity history; all-participant inventory still needed",
+      "mandatory": true
+    },
+    {
+      "name": "designated_place_exception",
+      "source": "authored business-district context and LVMC 11.30.070(B) source; municipal applicability still to review",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C188132__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -51,17 +172,29 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "The candidate OpenDRIVE deck is elevated but its access ramps/stairs, Native structural rendering and status as a provided usable pedestrian crossing are unverified.",
+    "A single instrumented vehicle does not by itself establish all vehicles upon the roadway; Native all-participant inventory and cameras remain required.",
+    "The second statutory alternative, pedestrian tunnel, is not constructed in this fixed overpass cell; lead must review candidate-cell allocation for that branch.",
+    "Canonical stage proposals, exact inline bundles, compatibility, four-video decode, process-saved, and independent delivery audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed frozen evidence.json (zero accepted recordings), exact municipal text and witness. No membership or prior recording can establish overpass crossing, roadway vehicles, or designated-place exception. Source candidate and diagnostic histories remain engineering artifacts.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "overpass-original-crossing",
+        "requirement": "Original pedestrian crosses roadway at a point with a provided overhead pedestrian crossing, with roadway vehicles and 11.30.070 prohibition status established",
+        "source": {
+          "path": "inputs/testing__C188132__LVMC-11-30-060-B__pedestrian/assignment.json",
+          "sha256": "9ac29c5bcb1f54ee777e3b5b12b76f74e7f68deddcc6a72c6d86c636fb6207e1"
+        },
+        "why_existing_insufficient": "Frozen accepted recording inventory is empty; no original crossing, physical structure, vehicle histories or exception context is available."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "three_exact_candidate_overpass_cases_two_source_bound_diagnostic_comparison_audits_cpu_tested_canonical_delivery_partial",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

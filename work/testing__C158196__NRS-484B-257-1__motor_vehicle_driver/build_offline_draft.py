@@ -66,6 +66,7 @@ if __name__ == "__main__":
 TEST = '''import unittest
 from unittest.mock import patch
 import runner
+from native_observation import derive
 
 
 class BundleTests(unittest.TestCase):
@@ -77,6 +78,22 @@ class BundleTests(unittest.TestCase):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
             with self.assertRaisesRegex(ValueError, "capture is refused"):
                 runner.main()
+
+    def test_original_body_and_ray_adapter(self):
+        geometry = {"ego_route_origin_xy_m": [0, 0], "ego_route_axis_xy": [1, 0],
+                    "through_route_origin_xy_m": [0, 0], "through_route_axis_xy": [0, 1],
+                    "intersection_polygon_xy_m": [[4, -2], [8, -2], [8, 2], [4, 2]]}
+        raw = {"frame": 100, "time_s": 5.0,
+               "ego_body_xy_m": [[1, -.5], [2, -.5], [2, .5], [1, .5]],
+               "through_body_xy_m": [[5, -.5], [6, -.5], [6, .5], [5, .5]],
+               "ego_velocity_xy_mps": [3, 0], "through_center_xy_m": [5.5, 0],
+               "native_view_raycast": {"source": "native_raycast", "occluded": False,
+                                       "origin_xy_m": [1.5, 0], "target_xy_m": [5.5, 0]},
+               "yield_sign_readback": True, "signal_controlling": False,
+               "officer_controlling": False}
+        result = derive(raw, geometry)
+        self.assertTrue(result["through_occupied"])
+        self.assertEqual(result["ego_front_station_m"], 2.0)
 
 
 if __name__ == "__main__":
@@ -113,6 +130,7 @@ def build() -> dict:
         files = {"runner.py": RUNNER,
                  "construction.py": (HERE / "construction.py").read_text(),
                  "nearest_view.py": (HERE / "nearest_view.py").read_text(),
+                 "native_observation.py": (HERE / "native_observation.py").read_text(),
                  "config.json": json.dumps(config, indent=2) + "\n",
                  "scene.json": json.dumps(scene, indent=2) + "\n",
                  "frozen-assignment.json": raw.decode("utf-8"),

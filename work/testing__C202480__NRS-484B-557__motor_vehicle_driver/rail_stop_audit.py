@@ -29,6 +29,7 @@ def audit_saved_file(packet_path: Path) -> dict[str, Any]:
     sources = packet.get("sources")
     if not isinstance(sources, dict):
         raise ValueError("sources must bind the original capture files")
+    paths = {}
     for key in REQUIRED_SOURCES:
         binding = sources.get(key)
         if not isinstance(binding, dict):
@@ -36,6 +37,9 @@ def audit_saved_file(packet_path: Path) -> dict[str, Any]:
         relative = Path(binding.get("path", ""))
         if relative.is_absolute() or ".." in relative.parts or not relative.parts:
             raise ValueError(f"unsafe source path: {key}")
+        paths[key] = relative
+    for key, relative in paths.items():
+        binding = sources[key]
         source_path = packet_path.parent / relative
         if not source_path.is_file():
             raise ValueError(f"missing source file: {key}")

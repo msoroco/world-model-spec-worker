@@ -2,11 +2,30 @@
   "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "d016fa0e3e1bb665756b4270d0ba9f3495e35bf6a0a3c95bd0a2a7acaa14f6f4",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "source_bound_measurement_checkpoint",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "09a54b989d4dd0fc61809e0bc827d82a35d47b97465daad1a78cd9748e0d1166"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static-check.log",
+      "sha256": "f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "After CPU delivery readiness: actual CARLA motion, original signal readback, course-change onset, district frontage, full-duration four-camera decode and visibility"
+  ],
+  "reason": "Frozen C178244 is left_turn while selected branch is business-district right-turn; six accepted entries are left-turn metadata only. CPU source-bound signal-distance and comparison audit pass 16 tests, but exact right-turn construction, original source proofs, semantic proposals, manifest and delivery receipts are not complete. Strict assignment check exits 1 at truthful partial status."
 }

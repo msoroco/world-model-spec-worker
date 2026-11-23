@@ -12,6 +12,9 @@ spec.loader.exec_module(nearest_view)
 construction_spec = importlib.util.spec_from_file_location("construction_c158196", MODULE.parents[0] / "construction.py")
 construction = importlib.util.module_from_spec(construction_spec)
 construction_spec.loader.exec_module(construction)
+native_spec = importlib.util.spec_from_file_location("native_observation_c158196", MODULE.parents[0] / "native_observation.py")
+native_observation = importlib.util.module_from_spec(native_spec)
+native_spec.loader.exec_module(native_observation)
 
 
 def packet():
@@ -43,6 +46,21 @@ def site():
             "intersection_entry_station_m": 4.0,
             "map_hash": "a" * 64, "device_hash": "b" * 64,
             "raycast_hash": "c" * 64, "camera_plan_hash": "d" * 64}
+
+
+def native_tick():
+    geometry = {"ego_route_origin_xy_m": [0, 0], "ego_route_axis_xy": [1, 0],
+                "through_route_origin_xy_m": [0, 0], "through_route_axis_xy": [0, 1],
+                "intersection_polygon_xy_m": [[4, -2], [8, -2], [8, 2], [4, 2]]}
+    raw = {"frame": 100, "time_s": 5.0,
+           "ego_body_xy_m": [[1, -0.5], [2, -0.5], [2, 0.5], [1, 0.5]],
+           "through_body_xy_m": [[5, -0.5], [6, -0.5], [6, 0.5], [5, 0.5]],
+           "ego_velocity_xy_mps": [3, 0], "through_center_xy_m": [5.5, 0],
+           "native_view_raycast": {"source": "native_raycast", "occluded": False,
+                                   "origin_xy_m": [1.5, 0], "target_xy_m": [5.5, 0]},
+           "yield_sign_readback": True, "signal_controlling": False,
+           "officer_controlling": False}
+    return raw, geometry
 
 
 class NearestViewTests(unittest.TestCase):
@@ -149,6 +167,27 @@ class NearestViewTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             with self.assertRaisesRegex(ValueError, "escapes attempt"):
                 nearest_view.verify_source_bytes(value, Path(temporary))
+
+    def test_native_original_body_derivation(self):
+        raw, geometry = native_tick()
+        measured = native_observation.derive(raw, geometry)
+        self.assertEqual(measured["ego_front_station_m"], 2.0)
+        self.assertEqual(measured["through_center_station_m"], 0.0)
+        self.assertTrue(measured["view_clear"])
+        self.assertTrue(measured["through_occupied"])
+        self.assertFalse(measured["ego_within_intersection"])
+
+    def test_native_raycast_must_bind_bodies(self):
+        raw, geometry = native_tick()
+        raw["native_view_raycast"]["target_xy_m"] = [20, 20]
+        with self.assertRaisesRegex(ValueError, "endpoint differs"):
+            native_observation.derive(raw, geometry)
+
+    def test_native_signal_exception_rejected(self):
+        raw, geometry = native_tick()
+        raw["signal_controlling"] = True
+        with self.assertRaisesRegex(ValueError, "controlling exception"):
+            native_observation.derive(raw, geometry)
 
 
 if __name__ == "__main__":

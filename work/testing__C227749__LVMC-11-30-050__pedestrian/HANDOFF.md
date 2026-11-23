@@ -1,22 +1,23 @@
 # testing__C227749__LVMC-11-30-050__pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: **partial**. No physical crossing or legal verdict has been established. Exact law: LVMC 11.30.050. Frozen accepted evidence inventory is empty; the witness is conditional and unverified.
 
-Exact law: LVMC 11.30.050 — No pedestrian shall cross a roadway at any place other than by a route at right angles to the curb or by the shortest route to the opposite curb except in a crosswalk.
-Assigned branch(es): Crossing outside a crosswalk; disjunctive route alternatives.
-Cell: C227749 (road, cross_road, crosswalk); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Coverage and construction checkpoint
 
-## Next CPU actions
+`case-plan.json` now has five exact authored cases: `outside_right_angle`, `outside_shortest_endpoint`, `outside_neither`, `outside_endpoint_detour`, and `inside_crosswalk_oblique`, with three controlled comparisons. The two outside-crosswalk alternatives are disjunctive: either a right-angle route or the shortest route to a finite opposite curb. The outside detours probe neither, and the matching oblique route with an authored crosswalk polygon probes the exception. No statutory numeric tolerance or legal conclusion is assigned. The case source and Native map facts remain to be verified.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C227749__LVMC-11-30-050__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`cases/*/scene.json` has explicit finite starting/opposite curbs, complete route, authored crosswalk polygon, control context, and separate provenance notes. `crossing_geometry.py` computes route length, curb angle, nearest opposite-curb point and excess path length, checks polygon overlap, and measures original Native walker histories. `native_controller.py` lazily spawns the pedestrian with readback and requests waypoint motion without claiming the actor followed it. `delivery_audit.py` independently rejects missing original walker frames, non-20 Hz cadence, missing camera joins and missing four-camera source declarations. `comparison_audit.py` rejects undeclared changes between planned pair scenes. These audits are structural CPU code; they do not decode actual video or establish physical visibility.
 
-## Proven checks and dependency boundary
+## CPU proof
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C227749__LVMC-11-30-050__pedestrian/tests -v` passes 19 tests; retained log `cpu-tests.log` SHA256 0215763b5d21118448a314d83090bc659a943302afcfe8aa4d56d1af0361a3ad.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C227749__LVMC-11-30-050__pedestrian/prove_geometry.py` passes all five authored route targets; retained `geometry-proof.log` SHA256 586843cf048d190719b70cfdd5830694557a624877563396566afae931719393. This proves authored geometry only.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C227749__LVMC-11-30-050__pedestrian --complete` and the same command with `--require-delivery-ready` are rerun below. Strict readiness remains dependent on the unfinished package; do not promote status.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Exact next CPU work
+
+1. Bind curbs, marked and unmarked crosswalks, roadway extent, municipal jurisdiction/public use and governing devices to original map/site source packets. Replace authored planning geometry only after preserving exact case and comparison intentions. The cell is `plausible_ungrounded`; map suitability remains unverified.
+2. Finish the 20 Hz, four-camera Native runner using the shared capture, original body vertices, frame map, sealed acquisition, failure preservation and world restore. Test fake CARLA creation and original-source joins. Include physical risk triggers and at most two tested engineering fallbacks where needed.
+3. Add canonical semantic stage proposals, exact per-case construction/config/measurement bundles, source-hashed diagnostics, offline and positive/negative compatibility checks, saved-only finalization, full independent delivery audit and exact comparison proof receipts. Run exact assignment strict check until it passes.
+
+Remaining GPU checks after CPU preparation: actual walker motion, source geometry and controls, full video visibility, realized path and physical completion. These do not excuse the CPU work above.

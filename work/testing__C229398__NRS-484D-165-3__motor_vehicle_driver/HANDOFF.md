@@ -1,22 +1,29 @@
 # testing__C229398__NRS-484D-165-3__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Exact static check passes; strict delivery gate fails on partial status. No accepted recordings are available for reuse.
 
-Exact law: NRS 484D.165(3); with 484D.165(1) — Whenever a vehicle is parked or stopped upon the traveled portion of a highway or shoulder adjacent thereto, whether attended or unattended during the times mentioned in NRS 484D.100 [NRS-484D-100-1], and there is insufficient light to reveal any person or object within a distance of 1,000 feet upon such highway or roadway, such vehicle shall display lighted lamps meeting the requirements of subsection 1 [(1) appended below]. Every vehicle shall be equipped with one or more lamps which, when lighted, shall display a white or amber light visible from a distance of 500 feet to the front of the vehicle, and one or more lamps which, when lighted, shall display a red light visible from a distance of 500 feet to the rear of the vehicle. The location of such lamps shall be such that at least one such lamp is installed as near as practicable to the side of the vehicle which is closest to passing traffic.
-Assigned branch(es): Parked vehicle at a curb.
-Cell: C229398 (road, park, curb); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Coverage and source review
 
-## Next CPU actions
+The exact NRS 484D.165(3) text incorporates subsection (1) lamp properties and references the times in NRS 484D.100(1). The source-hashed witness is conditional: C229398 curb parking may intersect traveled roadway or adjacent shoulder, but site, timing, illumination and visibility facts must be measured. `case-plan.json` maps six exact cases: `dark_lamps_on`, `dark_lamps_off`, `dark_attended`, `dark_traveled`, `sufficient_light`, and `outside_referenced_time`. It has five controlled comparisons: lamp activation, attendance, placement, 1,000-foot revelation precondition and referenced time. All six are planned new captures; there are zero frozen accepted recordings. The 1,000 and 500 foot distances are statutory observation stations, not invented photometric cutoffs.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C229398__NRS-484D-165-3__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## Implemented CPU construction and proof
 
-## Proven checks and dependency boundary
+`execution-manifest.json` binds six exact inline bundles under `construction-*.json`; each materializes its own `runner.py`, source checker, exact `config.json` and focused bundle test. All six exact `runtime.py offline` checks pass (`proof-*.log`), with generated trees kept under `.runtime-work/`. The Native runner currently requires a source site packet and explicitly rejects capture until the four-camera acquisition is implemented. `finalize_original.py` joins a saved site packet, 900-frame original history, frame map, four camera seals and case identity; its positive/negative test rejects a stale original history. `parked_lamps.py` verifies source-sealed highway, curb boundaries, traffic side, referenced time, lamp installation, map identity and 1,000/500 foot station locations before Native spawn. Its lazy `construct` spawns a vehicle at a source-specified shoulder or traveled transform, applies the parking brake, sets lamps and reads back Native lamp state. Its `measure` requires 900 contiguous original frames at 20 Hz with parking, lamp, light, time, station and source-camera records. It records unknown photometric observations without assigning a legal verdict. `audit_saved_capture` independently checks sealed original frame-map and four named camera sources; `audit_comparison` checks exact members, original evidence, site identity and declared differences.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+Eleven focused CPU tests pass, including Native fake construction of both placements, all six original-frame variants, negative missing source, lamp state, frame-gap and camera cases, and both lamp/time comparison isolation checks. Synthetic receipts are software fixtures only.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Exact commands and logs
+
+- `.venv-cpu/bin/python runtime.py preflight` — pass; `cpu-preflight.log`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests -v` — 11 tests pass; `cpu-tests.log`.
+- Six case-specific `.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case EXACT_CASE --output .runtime-work/c229398-offline-v3-CASE --python ABSOLUTE_VENV_PYTHON` checks — all pass; `proof-*.log`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C229398__NRS-484D-165-3__motor_vehicle_driver --complete` — pass; `cpu-static-check.log`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C229398__NRS-484D-165-3__motor_vehicle_driver --complete --require-delivery-ready` — fails at partial/missing packages; `cpu-strict-check.log`.
+
+## Next CPU work
+
+1. Finish Native capture in `runner.py`: source site packet, four actual synchronized cameras, 900 original frames, frame map and sealed packet. Add required semantic stage proposals and selected-requirement mappings; integrate `finalize_original.py` with the pinned process-saved interface.
+2. Provide each exact case a source-hashed diagnostic recipe and positive/negative `runtime.py compatibility`, then CPU-test `runtime.py process-saved` and independent video decoding. The six exact offline checks already pass. Test any physical-risk fallback construction before listing it.
+3. Review original law and referenced timing text again, resolve site documentation and implementation gaps, then rerun the exact strict gate. Physical CARLA visibility, lamp color/readability and capture quality remain later GPU checks.
+
+No input, runtime, batch or shared files were edited; no Git command was run.

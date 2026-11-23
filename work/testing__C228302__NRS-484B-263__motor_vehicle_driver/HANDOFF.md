@@ -1,22 +1,25 @@
 # testing__C228302__NRS-484B-263__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Exact static check passed; strict delivery readiness failed because this package remains partial. No accepted recording exists for this assignment, and no legal judgment has been made.
 
-Exact law: NRS 484B.263 — The driver of a vehicle about to enter or exit a controlled-access highway shall yield the right-of-way to all vehicles approaching on the highway whose proximity constitutes an immediate hazard and shall continue to yield the right-of-way to that traffic until the driver may proceed with reasonable safety.
-Assigned branch(es): exit_controlled_access_highway_on_general_road_layout.
-Cell: C228302 (road, exit_road, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Source and branch review
+
+- NRS 484B.263 requires an exiting driver to yield to **all** approaching highway vehicles whose proximity constitutes an immediate hazard, and to continue yielding until reasonable safety. The assigned C228302 branch is exit only; the entering alternative is outside its fixed maneuver.
+- A controlled-access highway requires sourced public dedication/access and an authority restriction determination. Map appearance alone is insufficient. `controlled_access_exit.py:validate_site` requires these sources and runtime map/connection readback.
+- `case-plan.json` records zero accepted evidence, three source gaps, all five exact cases and four comparisons. No statutory numeric boundary or judgment training range is supplied; headway values are physical probes, not legal cutoffs.
+
+## Implemented CPU work
+
+- `controlled_access_exit.py` implements source-gated construction with a real exit route, one or two approaching highway vehicles, policy controller requests, cleanup on failure, 900 original-frame 20 Hz measurement, all-actor identity checks and comparison isolation. Controller requests and measured conduct remain distinct.
+- `finalize_saved.py` remeasures saved original rows and rejects stale hashes or altered measurements. `saved_audit.py` independently rejects missing sealed Native sources, truncated or misaligned original frames, missing four-camera full decodes and pixels, stale measurement sources, absent exit entry or unsupported legal labels.
+- `tests/` has 16 passing tests, including positive and negative source, construction, original-frame and audit paths. `cpu-tests.log` SHA256 `8daaed445b06b045d9a1393f4690e434f1e38f992fb4914f3480a2e027598d10`.
+- Exact `.venv-cpu/bin/python worker_check.py --assignment testing__C228302__NRS-484B-263__motor_vehicle_driver --complete` passed; see `static-check.log` SHA256 `1b55098fd9792e7794c1a54b42a3a5a73b192bc2679ad51cdc098e60d14ac6eb`. Exact strict command with `--require-delivery-ready` failed at partial-package acceptance; see `strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
 ## Next CPU actions
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C228302__NRS-484B-263__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+1. Bind original map authority/dedication/access sources and map exit geometry into executable per-case config, construction hashes and 20 Hz four-camera capture; implement a controller that requests each policy without substituting teleports or labels.
+2. Write canonical semantic proposals and `semantic-index.json`; add selected-requirement measurement contracts and exact execution manifest entries. Assess physical risk per case and add tested fallback construction only where a concrete trigger supports one.
+3. Produce source-hashed case-specific diagnostics, exact offline and positive/negative compatibility proofs for every case/candidate, saved-only `process-saved` receipts and delivery audit positive/negative receipts. Test feedback and independent comparison audits on sealed original packets.
+4. Rerun focused tests and both exact check commands, then update `result.json`. Keep status partial until the strict check passes.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Pinned preflight `.venv-cpu/bin/python runtime.py preflight` passed this turn. Do not claim physical verification from synthetic packets.

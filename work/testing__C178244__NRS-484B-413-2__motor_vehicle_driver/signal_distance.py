@@ -1,0 +1,159 @@
+"""Original-frame measurement for NRS 484B.413(2) signal coverage.
+
+This module reports physical observations. It does not decide district status or
+make a legal finding. Input must be a sealed Native history with source readback.
+"""
+
+from __future__ import annotations
+
+import argparse
+from hashlib import sha256
+import json
+from math import hypot, isfinite
+from pathlib import Path
+
+
+FPS = 20
+METRES_PER_FOOT = 0.3048
+DISTANCES_FT = {"business": 100, "residential": 100, "other": 300}
+
+
+class EvidenceError(ValueError):
+    pass
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise EvidenceError(message)
+
+
+def verify_source_bindings(packet: dict, source_root: Path) -> list[str]:
+    """Verify the five input files against a sealed source inventory."""
+    root = source_root.resolve()
+    sources = packet.get("source_files")
+    require(isinstance(sources, dict), "missing source-file inventory")
+    required = ("sealed_result", "frame_map", "light_readback", "turn_onset", "district_context")
+    for name in required:
+        entry = sources.get(name)
+        require(isinstance(entry, dict), f"missing {name} source")
+        rel = entry.get("path")
+        require(isinstance(rel, str) and rel, f"missing {name} path")
+        path = (root / rel).resolve()
+        require(path.is_relative_to(root), f"source escapes root: {name}")
+        require(path.is_file(), f"missing source file: {name}")
+        digest = sha256(path.read_bytes()).hexdigest()
+        require(digest == entry.get("sha256"), f"stale source hash: {name}")
+    require(sources["sealed_result"]["sha256"] == packet.get("sealed_result_sha256"),
+            "sealed result binding mismatch")
+    require(sources["frame_map"]["sha256"] == packet.get("frame_map_sha256"),
+            "frame map binding mismatch")
+    light = json.loads((root / sources["light_readback"]["path"]).read_text())
+    onset = json.loads((root / sources["turn_onset"]["path"]).read_text())
+    district = json.loads((root / sources["district_context"]["path"]).read_text())
+    require(light.get("samples") == packet.get("samples"), "light/position samples disagree with source")
+    require(onset.get("turn_onset_frame") == packet.get("turn_onset_frame"), "turn onset disagrees with source")
+    for key in ("district_class", "district_source", "weather"):
+        require(district.get(key) == packet.get(key), f"{key} disagrees with source")
+    return list(required)
+
+
+def measure(packet: dict) -> dict:
+    """Measure continuous observed signal length before observed course change.
+
+    Samples cover frame zero through the turn-onset frame without gaps. Position
+    is the original Native world position in metres; signal is a vehicle-light
+    readback, not a controller command. The independently observed turn onset is
+    bound to its original frame and source path. Context classification remains
+    explicitly sourced and unresolved by this physical measurement.
+    """
+    require(packet.get("format") == "original-signal-history-v1", "history format")
+    require(packet.get("fps") == FPS, "history must use 20 Hz")
+    require(packet.get("sealed_result_sha256"), "missing sealed result hash")
+    require(packet.get("frame_map_sha256"), "missing original frame map hash")
+    require(packet.get("signal_source") == "vehicle_light_state_readback", "signal must be observed readback")
+    require(packet.get("position_source") == "native_actor_transform", "position must be original Native transform")
+    require(packet.get("turn_onset_source"), "missing independent turn-onset source")
+    district = packet.get("district_class")
+    require(district in DISTANCES_FT, "district class must be sourced")
+    require(packet.get("district_source"), "missing district-class source")
+    direction = packet.get("turn_direction")
+    require(direction in ("left", "right"), "turn direction")
+    samples = packet.get("samples")
+    require(isinstance(samples, list) and len(samples) >= 3, "missing samples")
+    onset = packet.get("turn_onset_frame")
+    require(isinstance(onset, int) and onset >= 2, "missing observed turn onset")
+    require(onset < len(samples), "turn onset outside samples")
+    for i, s in enumerate(samples):
+        require(s.get("frame") == i, "nonconsecutive original frames")
+        require(s.get("time_s") is not None and abs(s["time_s"] - i / FPS) <= 0.001,
+                "frame time disagrees with 20 Hz")
+        require(s.get("light_source") == "vehicle_light_state_readback", "command substituted for light readback")
+        require(s.get("signal") in ("left", "right", "off"), "missing signal readback")
+        for key in ("x_m", "y_m"):
+            require(isinstance(s.get(key), (int, float)) and isfinite(s[key]), "invalid Native position")
+    # A signal in the turn direction must remain observed at every sample of the
+    # continuous final interval. The last interruption fixes its start.
+    start = onset
+    while start > 0 and samples[start - 1]["signal"] == direction:
+        start -= 1
+    require(samples[onset]["signal"] == direction, "signal absent at turn onset")
+    length_m = sum(
+        hypot(samples[i]["x_m"] - samples[i - 1]["x_m"],
+              samples[i]["y_m"] - samples[i - 1]["y_m"])
+        for i in range(start + 1, onset + 1)
+    )
+    return {
+        "continuous_start_frame": start,
+        "turn_onset_frame": onset,
+        "continuous_distance_m": length_m,
+        "continuous_distance_ft": length_m / METRES_PER_FOOT,
+        "statutory_reference_ft": DISTANCES_FT[district],
+        "district_class": district,
+        "turn_direction": direction,
+        "weather": packet.get("weather"),
+        "sealed_result_sha256": packet["sealed_result_sha256"],
+        "frame_map_sha256": packet["frame_map_sha256"],
+        "interpretation": "physical measurement only; legal applicability unresolved",
+    }
+
+
+def audit_comparison(left: dict, right: dict, declared_difference: str) -> dict:
+    """Reject a purported distance comparison with changed context or capture."""
+    require(declared_difference == "signal_activation_distance", "unsupported comparison difference")
+    fixed = ("district_class", "district_source", "turn_direction", "route_sha256",
+             "map_sha256", "weather", "camera_plan_sha256", "duration_frames",
+             "ego_blueprint", "other_vehicle_plan_sha256")
+    for key in fixed:
+        require(left.get(key) is not None and right.get(key) is not None, f"missing fixed condition: {key}")
+        require(left[key] == right[key], f"changed fixed condition: {key}")
+    require(left.get("case_id") != right.get("case_id"), "comparison repeats one case")
+    a, b = measure(left), measure(right)
+    require(abs(a["continuous_distance_m"] - b["continuous_distance_m"]) > 0.01,
+            "declared signal-distance difference not measured")
+    return {"case_ids": [left["case_id"], right["case_id"]],
+            "distances_ft": [a["continuous_distance_ft"], b["continuous_distance_ft"]],
+            "fixed_conditions_checked": list(fixed), "interpretation": "physical comparison only"}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Audit sealed original signal histories")
+    parser.add_argument("--packet", type=Path, required=True)
+    parser.add_argument("--source-root", type=Path, required=True)
+    parser.add_argument("--compare", type=Path)
+    args = parser.parse_args()
+    left = json.loads(args.packet.read_text())
+    left_sources = verify_source_bindings(left, args.source_root)
+    if args.compare:
+        right = json.loads(args.compare.read_text())
+        right_sources = verify_source_bindings(right, args.source_root)
+        value = audit_comparison(left, right, "signal_activation_distance")
+        value["verified_source_files"] = {"left": left_sources, "right": right_sources}
+    else:
+        value = measure(left)
+        value["verified_source_files"] = left_sources
+    print(json.dumps(value, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
