@@ -1,0 +1,41 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver",
+  "selected_case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_over_100_ft",
+  "requirements": [
+    {
+      "requirement": "Original ordinary-driver right-turn course change on the highway, with sourced district class",
+      "source": "NRS 484B.413(2); inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+      "output_key": "right_turn_course",
+      "method": "measure_original_turn_course",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "video_frames.jsonl",
+        "route_context.json"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "Continuous right intention signal over the applicable last 100 feet in business/residential districts or 300 feet elsewhere, regardless of weather",
+      "source": "NRS 484B.413(2); inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+      "output_key": "right_turn_signal_distance",
+      "method": "measure_continuous_right_signal",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "video_frames.jsonl",
+        "route_context.json"
+      ],
+      "disposition_index": 1
+    }
+  ],
+  "negative": {
+    "remove": [
+      "drive_history.jsonl"
+    ],
+    "error_contains": "Missing required source: drive_history.jsonl"
+  }
+}
