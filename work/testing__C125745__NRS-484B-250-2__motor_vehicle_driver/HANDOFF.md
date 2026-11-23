@@ -1,3 +1,9 @@
+## 2026-11-23 C125745 hold0 fallback1 standalone binding
+
+The hold0 sweep `c125745-2-0000` fallback1 positive/negative compatibility and recorded-only saved-processing proof was restored byte-for-byte from the returned archive and bound as standalone receipt/log files in `execution-manifest.json`. Its receipt selects fallback1 and the exact construction SHA256; the saved result preserves originals and passes a 135-frame time join. All 40 canonical case/candidate offline checks passed against current manifest SHA256 `037c41614b685dea7c14e1b49dbd213bdea04ded7bea389b6fa4fb662ec49680`. The 63-test package suite passed (`cpu-tests.log` SHA256 `1be32b71d43321fabf4cbe2934d7ea1b29d456b48693d72f55ed99461d98a067`); pinned preflight and the scoped nonready check passed.
+
+C125745 remains **partial**. The archived hold0 fallback2/3 and frame32 fallback1/2/3 proofs still need standalone bindings; other timing fallbacks and physical, delivery, comparison and judgment-sweep CPU work remain. No Native physical or legal acceptance is asserted.
+
 ## 2026-11-23 C125745 frame32 fallback CPU proof checkpoint
 
 All three exact fallbacks for `c125745-1-0000` passed current canonical-manifest positive and missing-source negative compatibility and recorded-only saved processing. Receipt candidate/construction hashes match the selected fallbacks; the saved runs preserved originals and passed 135-frame time joins. Twelve generated proof artifacts are losslessly retained with byte lengths and SHA256 hashes in `work/_shared/c125745-frame32-fallback-canonical-proofs-20261123.json` (SHA256 `88f35272ced1202d09163becbba8c4a511605bff09f36da08559012a5c02fa84`). Archive round-trip verification, pinned preflight and the scoped nonready package check pass. The canonical manifest still needs standalone receipt/log bindings for these fallbacks; it remains at SHA256 `26c99c054b9cd6d310e0f0b2b83016ceadc5a54d4d53b497ec7af727f195d731`, for which 40/40 offline checks passed earlier.
