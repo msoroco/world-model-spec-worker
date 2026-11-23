@@ -696,3 +696,7 @@ Rebound 20 execution-manifest references from 20 duplicate zero-byte compatibili
 ## 2026-11-23 returned-file cap and evidence preservation
 
 Eight unreferenced historical primary saved logs were embedded byte-for-byte with SHA-256 values in `retired-hazard-release-log-index.json` and their separate files retired. The canonical manifest/current result proof paths were unaffected. The C109749 assignment-scoped nonready complete checker passes after the consolidation. One unreferenced C158190 `view_speed_6` negative audit log was byte-identical to its retained `through_speed_3` copy and was retired. The returned tree is exactly 8,600 files. The C125714 fixture generator remains returned; its 28 synthetic classifier/lifecycle proof results are staged under ignored runtime work pending returned receipt capacity. Neither package was promoted to ready.
+
+## 2026-11-23 unbound proof preservation
+
+Six historical proof files without current JSON path references were preserved byte for byte in `work/_shared/c109749-unbound-proof-files-20261123.json` (SHA256 `f80fc2b29458055706ff927ec7eab5cb55a3e87173fe18450803bc15f3cf3e14`). Each entry records its original path and SHA256. The assignment-scoped strict delivery-ready gate passed after archival; C109749 remains ready.

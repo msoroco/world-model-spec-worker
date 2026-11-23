@@ -468,3 +468,7 @@ Re-executed all 96 selected-case synthetic complete/incomplete/missing-motion an
 ## 2026-11-22 scoped delivery-ready acceptance restored
 
 The full assignment-scoped `worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready` passed after all 96 physical CPU fixture outputs were reproduced and hash-matched, the 24 physical receipts were rebound to one aggregate reproof log, and 13 archived legacy branch test entries with absent logs were removed from `result.json`. The other 381 result-level CPU test logs remain hash-valid. `result.json` is ready with `delivery_prepared`; this is CPU package preparation, with Native/physical/legal acceptance still pending. The earlier partial correction above records the detected fault before repair.
+
+## 2026-11-23 unbound proof preservation
+
+Seven historical proof files without current JSON path references were preserved byte for byte in `work/_shared/c129731-unbound-proof-files-20261123.json` (SHA256 `3fd7e4e3375bdeaf6c37306484d71b124540a49258b3d90cbc3d5472b5dc0692`). Each entry records its original path and SHA256. The assignment-scoped strict delivery-ready gate passed after archival; C129731 remains ready.
