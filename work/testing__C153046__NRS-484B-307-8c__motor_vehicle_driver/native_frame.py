@@ -64,11 +64,14 @@ def capture_tick(world, ego, signal_actor, pedestrians, traffic, *, expected_fra
             "origin": "native_world_snapshot", "legal_judgment": "unresolved"}
 
 
-def capture_frames(world, ego, signal_actor, pedestrians, traffic, *, count: int):
+def capture_frames(world, ego, signal_actor, pedestrians, traffic, *, count: int,
+                   before_tick=None):
     if type(count) is not int or count <= 0:
         raise ValueError("positive original frame count required")
     last_time = None
-    for _ in range(count):
+    for index in range(count):
+        if before_tick is not None:
+            before_tick(index)
         frame = world.tick()
         sample = capture_tick(world, ego, signal_actor, pedestrians, traffic,
                               expected_frame=frame)

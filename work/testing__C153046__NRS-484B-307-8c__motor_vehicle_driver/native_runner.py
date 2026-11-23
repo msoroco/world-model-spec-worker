@@ -45,6 +45,12 @@ def run(actor, observations, *, packet_path: Path, case_suffix: str,
                       "original_sample_claim": native_frame is not None,
                       "frame": native_frame["frame"] if native_frame is not None else None,
                       "native_frame": native_frame, "physical_realization_claimed": False}
+            if native_frame is not None:
+                ego = native_frame["ego"]
+                position = ego["location_xyz_m"]
+                sample["position"] = {"x": position[0], "y": position[1], "z": position[2]}
+                sample["heading_deg"] = ego["heading_deg"]
+                sample["speed_mps"] = observation.speed_m_s
             stream.write(json.dumps(sample, sort_keys=True) + "\n")
             count += 1
     if count == 0:
@@ -57,7 +63,7 @@ def run(actor, observations, *, packet_path: Path, case_suffix: str,
 
 def run_carla(world, ego, signal_actor, pedestrians, traffic, *, packet_path: Path,
               case_suffix: str, output_path: Path, count: int, observation_from_frame,
-              control_factory=None, camera_rig=None) -> dict:
+              control_factory=None, camera_rig=None, before_tick=None) -> dict:
     """Tick Native world, capture full bodies, then request case control."""
     scene = verify_live_site(world, packet_path, case_suffix, signal_actor)
     if control_factory is None:
@@ -66,7 +72,8 @@ def run_carla(world, ego, signal_actor, pedestrians, traffic, *, packet_path: Pa
     latest = {}
 
     def observations():
-        for frame in capture_frames(world, ego, signal_actor, pedestrians, traffic, count=count):
+        for frame in capture_frames(world, ego, signal_actor, pedestrians, traffic,
+                                    count=count, before_tick=before_tick):
             if camera_rig is not None:
                 if (camera_rig.scene["source_packet_sha256"] != scene["source_packet_sha256"] or
                         camera_rig.scene["case_id"] != scene["case_id"]):
@@ -84,3 +91,22 @@ def run_carla(world, ego, signal_actor, pedestrians, traffic, *, packet_path: Pa
     return run(ego, observations(), packet_path=packet_path, case_suffix=case_suffix,
                control_factory=control_factory, output_path=output_path,
                original_evidence=lambda _: latest["frame"])
+
+
+def run_carla_with_plan(world, ego, signal_actor, pedestrians, traffic, *, packet_path: Path,
+                        case_suffix: str, output_path: Path, count: int,
+                        control_factory=None, camera_rig=None, before_tick=None) -> dict:
+    """Use reviewed conflict geometry to adapt each original Native frame."""
+    from native_observation import plan, from_frame
+    scene, observation_plan = plan(packet_path, case_suffix)
+
+    def observe(frame, live_scene):
+        if live_scene["source_packet_sha256"] != scene["source_packet_sha256"]:
+            raise ValueError("reviewed observation plan differs from live site")
+        return from_frame(frame, live_scene, observation_plan)
+
+    return run_carla(world, ego, signal_actor, pedestrians, traffic,
+                     packet_path=packet_path, case_suffix=case_suffix,
+                     output_path=output_path, count=count,
+                     observation_from_frame=observe, control_factory=control_factory,
+                     camera_rig=camera_rig, before_tick=before_tick)
