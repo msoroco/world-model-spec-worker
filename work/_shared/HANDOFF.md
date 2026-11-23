@@ -913,3 +913,15 @@ C158208 NRS 484B.257(1) is CPU delivery ready: all five primaries, fifteen fallb
 ## 2026-11-22 C178244 scoped strict gate passed
 
 C178244 NRS 484B.413(2) is CPU delivery ready. Seven selected primaries and 21 fallbacks, seven physical/lifecycle synthetic fixture sets, seven positive and seven negative independent source audits, and the five-stage semantic chain pass. The interrupted-case absolute source paths were corrected and reproofed. The root construction carries separate planning metadata while the first selected case binds an unchanged source copy. The scoped strict gate returns `static_checks_passed: true`. Batch count is 23 ready, 20 partial. Next in batch order is C24811 NRS 484B.250(4). Reversible duplicate archives preserve file-cap headroom. No Native, physical, district or legal acceptance claimed.
+
+## 2026-11-22 C24811 authored blind-junction checkpoint
+
+C24811 stays partial. Its authored map copy is SHA-bound to the same-law C24757 construction candidate. `blind_site.py` verifies junction, both lane-governed heads, marked stop-line objects, sight-ray intersections and 8.2 m/11.8 m planned occluder corridor clearance. Realized occluder footprint helper now rejects corridor intrusion, with cleanup. Six CPU tests and scoped partial check pass. Continue synchronized three-vehicle controllers, source capture/finalizer and all exact delivery proofs. Native, camera and physical acceptance are unclaimed. See assignment HANDOFF for source and limits.
+
+## 2026-11-22 C24811 exact-case measurement continuation
+
+C24811 remains partial. Source analysis now handles Off and explicit operative indications, checks each of five exact cases against distinct stop/earlier/occupant observations, and rejects cross-case mismatch. Native Off control preserves each original frozen state. Eight CPU tests, runtime preflight and scoped partial check pass. Next: build synchronized three-vehicle runner and four-camera saved capture, then fallbacks and audits. No Native or physical acceptance claimed.
+
+## 2026-11-22 C24811 three-vehicle route/source checkpoint
+
+C24811 stays partial. Authored-map-bound route candidate has ego plus distinct earlier and occupant actors, 32 m shared-lane spawn spacing and measured release conditions. Native source-row builder captures three complete bodies and two observed head states. Twelve CPU tests, runtime preflight and scoped partial check pass. Continue with synchronized Native runner, raw cameras, saved finalizer, fallbacks and exact proofs. No motion or physical acceptance claimed. See assignment HANDOFF.

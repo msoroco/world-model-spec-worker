@@ -1,4 +1,4 @@
-"""Original-frame observations for a wholly inoperative signal and three vehicles.
+"""Original-frame observations for inoperative and operative signal cases.
 
 Native Off, actual installed/uncovered status, and timing are retained separately;
 this reports no legal conclusion about cautious proceeding or yielding.
@@ -37,8 +37,10 @@ def _body(actor):
     return MultiPoint(points).convex_hull
 
 
-def analyze(root: Path):
+def analyze(root: Path, expected_signal_state="Off"):
     root = Path(root)
+    if expected_signal_state not in ("Off", "Green", "Yellow", "Red"):
+        raise ValueError("Explicit governing signal state required")
     hashes = {}
     for name in REQUIRED:
         path = root/name
@@ -80,9 +82,11 @@ def analyze(root: Path):
         if frame.get("video_frame") != i or frame.get("carla_frame") != fid or frame.get("time_s") != time:
             raise ValueError("Original frame join failed")
         states = row.get("signal_states")
-        if not isinstance(states, dict) or set(states) != {str(v) for v in ids} or any(v != "Off" for v in states.values()):
-            raise ValueError("All governing heads must be observed Off at every original frame")
-        sample = {"frame": fid, "time_s": time, "all_heads_off": True}
+        if not isinstance(states, dict) or set(states) != {str(v) for v in ids} or any(v != expected_signal_state for v in states.values()):
+            raise ValueError("All governing heads must be observed " + expected_signal_state + " at every original frame")
+        sample = {"frame": fid, "time_s": time,
+                  "governing_signal_state": expected_signal_state,
+                  "all_heads_off": expected_signal_state == "Off"}
         for role in first_stop:
             actor = row.get(role)
             if not isinstance(actor, dict) or actor.get("intersection_id") != ctx["intersection_id"]:
@@ -108,10 +112,46 @@ def analyze(root: Path):
     occupant_inside_at_ego_entry = bool(first_entry["ego"] and any(
         s["frame"] == first_entry["ego"]["frame"] and s["occupant"]["body_in_intersection"]
         for s in samples))
-    return {"format": "worker-blind-inoperative-signal-observations", "sources": hashes,
+    return {"format": "worker-blind-signal-observations", "sources": hashes,
+            "expected_governing_signal_state": expected_signal_state,
             "signal_head_ids": ids, "first_full_halt": first_stop, "first_body_entry": first_entry,
             "ego_stopped_before_entry_observed": ego_stop_before_entry,
             "distinct_other_stopped_earlier_observed": earlier_stop_precedes_ego,
             "distinct_occupant_inside_at_ego_entry_observed": occupant_inside_at_ego_entry,
             "samples": samples, "cautious_proceeding_judgment": "unresolved",
             "yield_judgment": "unresolved", "legal_conclusion": "unresolved"}
+
+
+CASE_EXPECTATIONS = {
+    "off_stop_earlier_and_occupied": ("Off", True, True, True),
+    "off_stop_earlier_only": ("Off", True, True, False),
+    "off_stop_occupant_only": ("Off", True, False, True),
+    "off_no_full_halt": ("Off", False, True, True),
+    "operative_signal": (None, True, True, True),
+}
+
+
+def analyze_exact_case(root: Path, case_id: str, operative_state=None):
+    """Check branch-specific observations without assigning a legal verdict."""
+    prefix = "testing__C24811__NRS-484B-250-4__motor_vehicle_driver__"
+    if not isinstance(case_id, str) or not case_id.startswith(prefix):
+        raise ValueError("Exact C24811 case ID required")
+    name = case_id[len(prefix):]
+    if name not in CASE_EXPECTATIONS:
+        raise ValueError("Unsupported C24811 case")
+    state, stopped, earlier, occupied = CASE_EXPECTATIONS[name]
+    if state is None:
+        if operative_state not in ("Green", "Yellow", "Red"):
+            raise ValueError("Explicit operative indication required")
+        state = operative_state
+    elif operative_state is not None:
+        raise ValueError("Operative indication applies only to operative case")
+    result = analyze(root, expected_signal_state=state)
+    observed = (result["ego_stopped_before_entry_observed"],
+                result["distinct_other_stopped_earlier_observed"],
+                result["distinct_occupant_inside_at_ego_entry_observed"])
+    if observed != (stopped, earlier, occupied):
+        raise ValueError("Original-frame histories do not satisfy exact case: " + name)
+    result["exact_case_id"] = case_id
+    result["case_observations_passed"] = True
+    return result

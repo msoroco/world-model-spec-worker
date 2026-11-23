@@ -1,0 +1,44 @@
+{
+  "format": "c24811-three-vehicle-route-candidate-v1",
+  "map_sha256": "36a15c42ccc9ce63623021d8935b094a308aa43fe3f1e4056207b513487d9e41",
+  "rate_hz": 20,
+  "vehicles": {
+    "ego": {
+      "spawn_road_lane_s": [158190, -1, 28],
+      "target_xy_m": [[-15, -1.8], [20, -1.8]],
+      "stop_line_s_m": 68,
+      "stop_line_point_xy_m": [-12, -1.8],
+      "upstream_normal_xy": [-1, 0],
+      "target_speed_mps": 3,
+      "release_after": ["observed_ego_halt", "observed_occupant_entry", "minimum_body_separation"]
+    },
+    "earlier": {
+      "spawn_road_lane_s": [158194, -1, 42],
+      "target_xy_m": [[1.8, -15], [1.8, 20]],
+      "stop_line_s_m": 68,
+      "stop_line_point_xy_m": [1.8, -12],
+      "upstream_normal_xy": [0, -1],
+      "target_speed_mps": 3,
+      "release_after": ["observed_earlier_halt", "scheduled_frame"]
+    },
+    "occupant": {
+      "spawn_road_lane_s": [158194, -1, 10],
+      "target_xy_m": [[1.8, -15], [1.8, 20]],
+      "stop_line_s_m": 68,
+      "stop_line_point_xy_m": [1.8, -12],
+      "upstream_normal_xy": [0, -1],
+      "target_speed_mps": 3,
+      "release_after": ["observed_earlier_clearance", "observed_occupant_halt"]
+    }
+  },
+  "minimum_spawn_spacing_m": 15,
+  "minimum_ego_occupant_body_separation_m": 4,
+  "case_controls": {
+    "off_stop_earlier_and_occupied": {"signal": "Off", "ego_stop": "full_halt", "earlier_stop": "full_halt", "occupant_entry": "required"},
+    "off_stop_earlier_only": {"signal": "Off", "ego_stop": "full_halt", "earlier_stop": "full_halt", "occupant_entry": "hold_before_entry"},
+    "off_stop_occupant_only": {"signal": "Off", "ego_stop": "full_halt", "earlier_stop": "no_prior_halt", "occupant_entry": "required"},
+    "off_no_full_halt": {"signal": "Off", "ego_stop": "rolling", "earlier_stop": "full_halt", "occupant_entry": "required"},
+    "operative_signal": {"signal": "explicit_operative_indication", "ego_stop": "full_halt", "earlier_stop": "full_halt", "occupant_entry": "required"}
+  },
+  "status": "planned_native_routes_and_feedback_conditions_not_motion_proof"
+}

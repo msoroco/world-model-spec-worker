@@ -24,23 +24,34 @@ def find_entrance_lights(world, entrance_road_lanes):
 
 @contextmanager
 def request_all_off(world, lights, traffic_light_state):
+    with request_all_state(world, lights, traffic_light_state.Off) as selected:
+        yield selected
+
+
+@contextmanager
+def request_all_state(world, lights, desired_state):
     if len(lights) < 2:
         raise ValueError("All entrance lights required")
+    if desired_state is None:
+        raise ValueError("Explicit Native signal state required")
     original = []
     try:
         for light in lights:
-            original.append((light, light.get_state()))
+            frozen = light.is_frozen() if callable(getattr(light, "is_frozen", None)) else False
+            original.append((light, light.get_state(), frozen))
             light.freeze(True)
-            light.set_state(traffic_light_state.Off)
+            light.set_state(desired_state)
         world.tick()
-        if any(light.get_state() != traffic_light_state.Off for light in lights):
-            raise ValueError("Native Off readback failed")
+        if any(light.get_state() != desired_state for light in lights):
+            raise ValueError("Native signal-state readback failed")
         yield lights
     finally:
-        for light, state in reversed(original):
+        for light, state, frozen in reversed(original):
             light.set_state(state)
-            light.freeze(False)
+            light.freeze(frozen)
         if original:
             world.tick()
-            if any(light.get_state() != state for light, state in original):
+            if any(light.get_state() != state or
+                   (callable(getattr(light, "is_frozen", None)) and light.is_frozen() != frozen)
+                   for light, state, frozen in original):
                 raise ValueError("Native signal restoration readback failed")
