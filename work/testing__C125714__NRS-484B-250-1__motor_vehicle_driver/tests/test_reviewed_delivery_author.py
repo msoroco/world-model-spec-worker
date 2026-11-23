@@ -139,6 +139,48 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "distinct roadway_id"):
                 check_comparison_isolation(scenes)
 
+    def test_rejects_packet_and_source_aliases_before_bundling(self):
+        with TemporaryDirectory() as source:
+            fixture(source)
+            folder = Path(source) / "precedence"
+            scene_path = folder / "scene.json"
+            scene = json.loads(scene_path.read_text())
+            packet_path = folder / "reviewed-context.json"
+            alias = folder / "packet-alias.json"
+            alias.symlink_to(packet_path.name)
+            scene["reviewed_context_source"] = alias.name
+            scene_path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, "packet cannot be a symlink"):
+                source_files(scene_path)
+            alias.unlink()
+
+            scene["reviewed_context_source"] = "../precedence/reviewed-context.json"
+            scene_path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, "packet must be case relative"):
+                source_files(scene_path)
+
+            scene["reviewed_context_source"] = packet_path.name
+            scene_path.write_text(json.dumps(scene))
+            packet = json.loads(packet_path.read_text())
+            descriptor = packet["law_context"]["device_inventory_source"]
+            original = folder / descriptor["source_path"]
+            source_alias = folder / "source-alias.txt"
+            source_alias.symlink_to(original.name)
+            descriptor["source_path"] = source_alias.name
+            packet_path.write_text(json.dumps(packet))
+            scene["reviewed_context_sha256"] = sha(packet_path)
+            scene_path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, "review source cannot be a symlink"):
+                source_files(scene_path)
+
+            source_alias.unlink()
+            descriptor["source_path"] = "../precedence/" + original.name
+            packet_path.write_text(json.dumps(packet))
+            scene["reviewed_context_sha256"] = sha(packet_path)
+            scene_path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, "source path must be packet relative"):
+                source_files(scene_path)
+
 
 if __name__ == "__main__":
     unittest.main()

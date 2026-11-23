@@ -8,11 +8,27 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_capture import CameraBank, reviewed_context
+from native_capture import CameraBank, retain_review_sources, reviewed_context
 from native_driver import apply_other
 
 
 class SourceAndCameraTests(unittest.TestCase):
+    def test_reviewed_source_symlink_cannot_escape_packet_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            packet_dir = root / "packet"
+            packet_dir.mkdir()
+            outside = root / "outside.txt"
+            outside.write_text("external source")
+            link = packet_dir / "public.txt"
+            link.symlink_to(outside)
+            descriptor = {"source_path": link.name,
+                          "source_sha256": hashlib.sha256(outside.read_bytes()).hexdigest(),
+                          "reviewer": "fixture", "source_citation": "fixture only"}
+            with self.assertRaisesRegex(ValueError, "original bytes or provenance"):
+                retain_review_sources(packet_dir / "packet.json",
+                                      {"public_access_source": descriptor}, root / "attempt")
+
     def test_reviewed_context_bound_to_live_map_and_retained_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -44,6 +60,11 @@ class SourceAndCameraTests(unittest.TestCase):
                 def get_map(self): return Map()
             self.assertEqual(reviewed_context(scene, output, World())["crossing"], crossing)
             self.assertEqual((output / "reviewed-context.json").read_bytes(), source.read_bytes())
+            linked_packet = root / "packet-link.json"
+            linked_packet.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                reviewed_context({**scene, "reviewed_context_source": str(linked_packet)},
+                                 output, World())
             for key, description in descriptions.items():
                 self.assertEqual(hashlib.sha256((output / "context_sources" /
                                                 (key + ".bin")).read_bytes()).hexdigest(),

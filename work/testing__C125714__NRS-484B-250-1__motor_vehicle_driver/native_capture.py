@@ -41,7 +41,9 @@ def retain_review_sources(packet_path, law, output):
                 Path(relative).is_absolute() or ".." in Path(relative).parts):
             raise ValueError("reviewed " + key + " source path invalid")
         source = packet_path.parent / relative
-        if (not source.is_file() or sha(source) != item.get("source_sha256") or
+        if (source.is_symlink() or
+                not source.resolve().is_relative_to(packet_path.parent.resolve()) or
+                not source.is_file() or sha(source) != item.get("source_sha256") or
                 not item.get("reviewer") or not item.get("source_citation")):
             raise ValueError("reviewed " + key + " original bytes or provenance missing")
         target = output / destination
@@ -58,6 +60,8 @@ def retain_review_sources(packet_path, law, output):
 def reviewed_context(scene, output, world):
     """Retain a separately inspected packet; never infer legal scope from a route."""
     source = Path(scene["reviewed_context_source"])
+    if source.is_symlink() or not source.is_file():
+        raise ValueError("reviewed context packet is missing or a symlink")
     if sha(source) != scene["reviewed_context_sha256"]:
         raise ValueError("reviewed context source hash differs")
     packet = json.loads(source.read_text())

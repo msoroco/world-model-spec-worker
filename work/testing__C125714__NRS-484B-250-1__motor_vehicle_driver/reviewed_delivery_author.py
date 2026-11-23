@@ -36,9 +36,13 @@ def write_json(path, value):
 
 
 def safe_relative(base, relative):
-    if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
+    if (not isinstance(relative, str) or not relative or Path(relative).is_absolute()
+            or ".." in Path(relative).parts):
         raise ValueError("source path must be packet relative")
-    result = (base / relative).resolve()
+    source = base / relative
+    if source.is_symlink():
+        raise ValueError("review source cannot be a symlink")
+    result = source.resolve()
     if not result.is_relative_to(base.resolve()) or not result.is_file():
         raise ValueError("review source missing or escapes packet directory")
     return result
@@ -47,6 +51,11 @@ def safe_relative(base, relative):
 def source_files(scene_path):
     scene_path = Path(scene_path)
     scene = check_scene(json.loads(scene_path.read_text()))
+    packet_source = Path(scene["reviewed_context_source"])
+    if packet_source.is_absolute() or ".." in packet_source.parts:
+        raise ValueError("reviewed packet must be case relative")
+    if (scene_path.parent / packet_source).is_symlink():
+        raise ValueError("reviewed packet cannot be a symlink")
     packet_path = resolve_reviewed_source(scene, scene_path)
     packet = json.loads(packet_path.read_text())
     if scene.get("diagnostic_only") is not False or packet.get("diagnostic_only") is not False:
@@ -56,6 +65,8 @@ def source_files(scene_path):
     files = {"scene.json": scene_path.read_text(),
              "config.json": json.dumps(config(scene), indent=2, ensure_ascii=False) + "\n"}
     packet_rel = packet_path.relative_to(scene_path.parent.resolve()).as_posix()
+    if packet_rel in files or packet_rel in CODE or packet_rel == "reviewed-map.xodr":
+        raise ValueError("reviewed packet path collides with construction file")
     files[packet_rel] = packet_path.read_text()
     for key in SOURCE_KEYS:
         descriptor = packet["law_context"].get(key)
