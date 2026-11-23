@@ -32,7 +32,7 @@
             "exit_code": 0,
             "construction_sha256": "2087c3e33445e0d94cc9e5b970abc7d5ac522a6f4065991d3012c4ff9653034d",
             "log": "command-log-archive.json",
-            "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+            "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
             "log_member": "precedence-fallback1-current-offline.log",
             "original_log_sha256": "1648363066466d1bfb86d15f05297694f06f034a375f8f421c4bbd471cfb39e4"
           },
@@ -41,6 +41,80 @@
             "sha256": "c384da97e80902a14910163d4c0602911f4a231cbfc5a783c568b57417794746",
             "log": "cases/source_verified_precedence/fallback1/positive.log",
             "negative_log": "cases/source_verified_precedence/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/source_verified_precedence/fallback2/construction.json",
+          "construction_sha256": "7547ffe422795922997fab18f508a5b4a02a3f57509b594246c74479f9014e0f",
+          "trigger": {
+            "source": "Original reference-corner camera frames and capture frame joins",
+            "metric": "complete visible body bounds during both original body entries",
+            "failure_condition": "Reference-corner camera loses either full body at crossing entry"
+          },
+          "changed_knobs": [
+            "reference-corner camera pose (10,10,10,225,-30,0) to (13,12,12,224,-35,0)",
+            "overview camera height 25 to 28 m"
+          ],
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c125714-precedence-fallback2/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence --candidate fallback2 --output .runtime-work/c125714-precedence-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "7547ffe422795922997fab18f508a5b4a02a3f57509b594246c74479f9014e0f",
+            "log": "command-log-archive.json",
+            "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
+            "log_member": "precedence-fallback2-offline.log",
+            "original_log_sha256": "a62363dac5558d63c0f1f830e521e6bff180d073d2acbbb2b5f8a123be12c362"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_precedence/fallback2/compatibility.json",
+            "sha256": "c2cc1c87a24f0c8046da32888ace60512f7166445f949967d0dabe958891a8c3",
+            "log": "cases/source_verified_precedence/fallback2/positive.log",
+            "negative_log": "cases/source_verified_precedence/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c125714-precedence-fallback2/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence --attempt .runtime-work/c125714-precedence-fallback2/compatibility --output .runtime-work/c125714-precedence-fallback2/saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "command-log-archive.json",
+            "log_sha256": "8fc8c3ac8f67895226f9303cc41e05389eba7df3800485674f5d4cbe96299631",
+            "log_member": "precedence-fallback2-saved.log",
+            "original_log_sha256": "047cbb1edbc8033614df68e5c4a80fa2a451ded5cd498ec0055f0cd65cc76e7b"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/source_verified_precedence/fallback3/construction.json",
+          "construction_sha256": "22ca7918af1a910788d415c97ba624a8ff0c5a972d55aabc424a9e3ffcad3b8f",
+          "trigger": {
+            "source": "Original crossing_history.jsonl and video_frames.jsonl body-entry joins",
+            "metric": "other body entry precedes ego body entry by a positive measured interval",
+            "failure_condition": "Primary scheduled release gives nonpositive precedence interval in original source frames"
+          },
+          "changed_knobs": [
+            "ego release frame 150 to 170 at 20 Hz",
+            "other release frame 50 to 45 at 20 Hz"
+          ],
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c125714-precedence-fallback3/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence --candidate fallback3 --output .runtime-work/c125714-precedence-fallback3/offline",
+            "exit_code": 0,
+            "construction_sha256": "22ca7918af1a910788d415c97ba624a8ff0c5a972d55aabc424a9e3ffcad3b8f",
+            "log": "command-log-archive.json",
+            "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
+            "log_member": "precedence-fallback3-offline.log",
+            "original_log_sha256": "3d744a94eeea19a978a766c3f3500863ff0f543cebe52ba2eac2e1d49edb0f54"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_precedence/fallback3/compatibility.json",
+            "sha256": "2f3e2726f8cc42574c3389bcf539f4d40b661988804a3876db1442698510b68c",
+            "log": "cases/source_verified_precedence/fallback3/positive.log",
+            "negative_log": "cases/source_verified_precedence/fallback3/negative.log"
+          },
+          "saved_processing": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c125714-precedence-fallback3/pipeline\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__source_verified_precedence --attempt .runtime-work/c125714-precedence-fallback3/compatibility --output .runtime-work/c125714-precedence-fallback3/saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "command-log-archive.json",
+            "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
+            "log_member": "precedence-fallback3-saved.log",
+            "original_log_sha256": "c42bfad6c90b1b0f8c797b89ffc64034346ef6a4dca557e096a6e073c9482b42"
           }
         }
       ],
@@ -127,7 +201,7 @@
         "exit_code": 0,
         "construction_sha256": "5c5bc8a30d9dd8d353e19935f72b33efd956fa44441f33141feb488dc1cb776f",
         "log": "command-log-archive.json",
-        "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+        "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
         "log_member": "advance-current-offline.log",
         "original_log_sha256": "abd068f3cb19d6797a16869ab457fca286de907ccef2edc00f669a5903005d6b"
       },
@@ -207,7 +281,7 @@
         "exit_code": 0,
         "construction_sha256": "982d943d81fcba6fbeaab6b3bc0700dc933e9aa27272b4d366a5f06352c70f69",
         "log": "command-log-archive.json",
-        "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+        "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
         "log_member": "other-later-current-offline.log",
         "original_log_sha256": "befddb20589b9a0adcf5f39b528ac7362afbb26ef874548652954103393eec21"
       },
@@ -287,7 +361,7 @@
         "exit_code": 0,
         "construction_sha256": "286d84a5310481b2eab9d62d736da563984775d65f46a44d16840da0c37f15f3",
         "log": "command-log-archive.json",
-        "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+        "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
         "log_member": "opposite-straight-current-offline.log",
         "original_log_sha256": "ffc7de515d9de7d09124aa8531f20272ea8a3d3a906d05809e3627f148668897"
       },
@@ -367,7 +441,7 @@
         "exit_code": 0,
         "construction_sha256": "403881ac637abd50c3bfdedafcf002f85b72cc2c0866e453242ec955ec4bb0cd",
         "log": "command-log-archive.json",
-        "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+        "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
         "log_member": "opposite-intends-left-current-offline.log",
         "original_log_sha256": "f965e0d0657d7d7cd28f86952006c1d8ef5b125e73f07491a4d881fd14fc655a"
       },
@@ -447,7 +521,7 @@
         "exit_code": 0,
         "construction_sha256": "afaf23e3736488e4eb4e37e8fd7a4a2c8ccba71d21de8b0cd8d5f14aa93809af",
         "log": "command-log-archive.json",
-        "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+        "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
         "log_member": "opposite-makes-left-current-offline.log",
         "original_log_sha256": "30777c2710c4829cdd79a79d7f341787e0c71d6b8f9aaad04b805c17389302f6"
       },
@@ -527,9 +601,69 @@
         "exit_code": 0,
         "construction_sha256": "0ee402da337133185cde2ba46e54b982b4d479f127e48118ddec23323a292a14",
         "log": "command-log-archive.json",
-        "log_sha256": "ba5f2631d5c2eb2097f505f2f14fa204c62af19742acb5246b48d3658629b8eb",
+        "log_sha256": "f7a3f9d7af4670417d7657d614a0924756defacbef19b75d913a86b0d35d1421",
         "log_member": "wide-same-current-offline.log",
         "original_log_sha256": "d5b6d7b4b93fcd9fc751033e5e338e33b61ddf8cc08ab4bc3ab4e408413ab7bf"
+      },
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-wide-same-crossing-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "st.intersection": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "rel.bearing": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native original frame capture and saved derivation",
+          "evidence": "capture/native/frames.jsonl, trace.jsonl, and four-camera frame joins"
+        },
+        "yield_control": {
+          "entrypoint": "route_control.py",
+          "method": "Original controller frame joined to crossing body history",
+          "evidence": "controller_history.jsonl and crossing_history.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/source_verified_wide_same_crossing/compatibility.json",
+        "sha256": "a8db79571ab21d0bef3046bf153fd11a835160cb9b86686a0fba561258e05e94",
+        "log": "cases/source_verified_wide_same_crossing/positive.log"
+      },
+      "negative": {
+        "log": "cases/source_verified_wide_same_crossing/negative.log"
       }
     }
   ]

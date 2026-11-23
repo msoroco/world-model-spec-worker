@@ -274,3 +274,7 @@ Archived eight exact offline logs for `source_verified_other_right_earlier` and 
 ## 2026-11-23 opposite-straight offline log compaction
 
 Archived the four exact offline logs for `source_verified_opposite_straight` and rebound all affected manifest, result, and physical receipt hashes. New `command-log-archive.json` SHA256 is `e2f07929ea90bc9ce6c7bad9d8aba1899a41cace493d709c1650d2e139ee8963`. The assignment-scoped complete delivery-ready check passed after compaction.
+
+## 2026-11-23 opposite-intends-left offline log compaction
+
+Archived four exact offline logs for `source_verified_opposite_intends_left` and rebound execution manifest, result tests, and physical receipt hashes. New `command-log-archive.json` SHA256: `41667ba2a92fa26e370a42989481a84d5e19c9f8aa1a29ff610a48f9baa688c1`. The assignment-scoped complete delivery-ready check passed after compaction.
