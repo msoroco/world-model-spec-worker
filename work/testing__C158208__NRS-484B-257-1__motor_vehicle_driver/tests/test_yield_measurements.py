@@ -36,10 +36,18 @@ class YieldTests(unittest.TestCase):
                    "no_stop_line": True, "no_near_crosswalk": True,
                    "police_control": False, "traffic_signal_control": False}
         (root / "road_context.json").write_text(json.dumps(context))
-        samples = [{"frame": 100, "distance_to_intersection_m": 15, "visible_through_vehicle_ids": [], "ray_source": "native-ray-1"},
-                   {"frame": 101, "distance_to_intersection_m": 8, "visible_through_vehicle_ids": [23], "ray_source": "native-ray-2"},
-                   {"frame": 102, "distance_to_intersection_m": 3, "visible_through_vehicle_ids": [23], "ray_source": "native-ray-3"}]
+        samples = [{"frame": frame, "distance_to_intersection_m": distance,
+                    "through_highway_visible": True,
+                    "visible_through_vehicle_ids": ids, "ray_source": "visibility_rays.jsonl"}
+                   for frame, distance, ids in ((100, 15, []), (101, 8, [23]),
+                                                (102, 3, [23]))]
         (root / "visibility_samples.json").write_text(json.dumps(samples))
+        rays = [{"frame": row["frame"], "distance_to_intersection_m": row["distance_to_intersection_m"],
+                 "observer_m": [-20, 1.8, 1.5], "target_m": [1.8, 0, 1.5],
+                 "blockers": [], "clear": True,
+                 "visible_through_vehicle_ids": row["visible_through_vehicle_ids"]}
+                for row in samples]
+        (root / "visibility_rays.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rays))
         rows = [{"frame": 100, "time_s": 1.0, "road_id": 9, "lane_id": -1,
                  "ego_speed_mps": 4, "distance_to_intersection_m": 15},
                 {"frame": 101, "time_s": 1.05, "road_id": 9, "lane_id": -1,
@@ -48,6 +56,7 @@ class YieldTests(unittest.TestCase):
                  "ego_speed_mps": 1, "distance_to_intersection_m": 3}]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]
+        frames.append({"video_frame": 3, "carla_frame": 103, "time_s": 1.15})
         (root / "approach_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
         (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
 
@@ -57,6 +66,8 @@ class YieldTests(unittest.TestCase):
             self.fixture(root)
             report = measure.analyze(root)
             self.assertEqual(report["closest_sourced_visible_sample"]["distance_to_intersection_m"], 3)
+            self.assertEqual(report["closest_sourced_visible_sample"]["frame"], 102)
+            self.assertEqual(report["speed_at_closest_view_mps"], 1)
             self.assertEqual(report["minimum_observed_approach_speed_mps"], 1)
             self.assertIn("unresolved", report["yield_judgment"])
 
@@ -82,19 +93,19 @@ class YieldTests(unittest.TestCase):
             samples = json.loads((root / "visibility_samples.json").read_text())
             samples[1]["ray_source"] = ""
             (root / "visibility_samples.json").write_text(json.dumps(samples))
-            with self.assertRaisesRegex(ValueError, "ray evidence"):
+            with self.assertRaisesRegex(ValueError, "spatial ray evidence"):
                 measure.analyze(root)
             self.fixture(root)
             samples = json.loads((root / "visibility_samples.json").read_text())
             samples[2]["frame"] = 999
             (root / "visibility_samples.json").write_text(json.dumps(samples))
-            with self.assertRaisesRegex(ValueError, "matching original approach frame"):
+            with self.assertRaisesRegex(ValueError, "complete original ray"):
                 measure.analyze(root)
             self.fixture(root)
             frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
             frames[1]["carla_frame"] = 999
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
-            with self.assertRaisesRegex(ValueError, "frame join"):
+            with self.assertRaisesRegex(ValueError, "camera frame map"):
                 measure.analyze(root)
 
 
