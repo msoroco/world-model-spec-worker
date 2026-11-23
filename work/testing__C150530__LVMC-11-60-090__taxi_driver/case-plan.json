@@ -43,7 +43,12 @@
         "candidates": []
       },
       "candidate_xodr": "candidates/near_stand.xodr",
-      "topology_receipt": "candidates/near_stand.topology.json"
+      "topology_receipt": "candidates/near_stand.topology.json",
+      "native_component": "taxi_native_motion.py",
+      "saved_finalizer": "turn_trace_finalizer.py",
+      "native_trace_writer": "native_trace_capture.py",
+      "reviewed_context_template": "reviewed-context.template.json",
+      "source_binding_status": "original_sources_missing; CPU fixture path tested"
     },
     {
       "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
@@ -63,7 +68,12 @@
         "candidates": []
       },
       "candidate_xodr": "candidates/far_stand.xodr",
-      "topology_receipt": "candidates/far_stand.topology.json"
+      "topology_receipt": "candidates/far_stand.topology.json",
+      "native_component": "taxi_native_motion.py",
+      "saved_finalizer": "turn_trace_finalizer.py",
+      "native_trace_writer": "native_trace_capture.py",
+      "reviewed_context_template": "reviewed-context.template.json",
+      "source_binding_status": "original_sources_missing; CPU fixture path tested"
     }
   ],
   "comparisons": [
@@ -146,9 +156,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Candidate route has not been loaded by Native/CARLA or bound to an original map; designated stand and sign installation need original provenance.",
-    "saved_turn_check.py verifies source-file hashes and event ordering on CPU fixtures; no original trace or sensor evidence has been processed.",
-    "Native construction/controller, exact finalizer, semantic proposals, source-bound compatibility, delivery and comparison audits remain CPU work."
+    "The reviewed-context template is intentionally incomplete: no original cab licence, designated-stand, sign, jurisdiction or designation-provisions records have been retained.",
+    "The Native trace writer, seal and saved finalizer pass CPU fixture proofs, including the CLI and negative missing/stale/gapped-source tests; no original CARLA trace or camera video was processed.",
+    "Complete four-view Native runner, canonical semantic proposals, pinned offline/positive-negative compatibility, process-saved, independent delivery/video/comparison audits and local integration remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -194,7 +204,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_cpu_route_and_measurement_candidate",
+  "planning_status": "partial_cpu_source_join_and_trace_chain",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -216,5 +226,43 @@
       ],
       "reason": "A one-way approach can connect the stand to a first street intersection with a supported right-turn exit."
     }
-  ]
+  ],
+  "selected_branch": "Posted requirement after designated-stand departure",
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "cab leaves a stand designated under the referenced Section",
+      "source": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+      ],
+      "evidence_or_gap": "G1 and G2: no original licence, designation or designation-provisions source bound"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "a sign is posted giving notice of the right-turn requirement",
+      "source": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+      ],
+      "evidence_or_gap": "G3: no original installation or actual sign pixels bound"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "right-hand turn at the first street intersection after stand departure",
+      "source": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+      ],
+      "evidence_or_gap": "G4: original Native trajectory and street identity unverified"
+    }
+  ],
+  "measurement_contract": "measurement-contract.json",
+  "source_observation_mapping": {}
 }

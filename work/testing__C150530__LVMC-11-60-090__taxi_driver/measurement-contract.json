@@ -1,0 +1,90 @@
+{
+  "format": "c150530-partial-measurement-contract-v1",
+  "assignment_id": "testing__C150530__LVMC-11-60-090__taxi_driver",
+  "law_id": "LVMC-11-60-090",
+  "law_source": {
+    "path": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+    "sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9"
+  },
+  "cases": [
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+      "candidate_map": "candidates/near_stand.xodr",
+      "candidate_map_sha256": "0a22a7784d89ee1a0c13e165e84c4a782a3bdb5a0dacaa766c285045ec6cfa60",
+      "candidate_layout": "candidates/near_stand.json"
+    },
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+      "candidate_map": "candidates/far_stand.xodr",
+      "candidate_map_sha256": "19afe5c815f95505147b6d88384c35a1532e051ac1ec867fd43a7fd698ef6909",
+      "candidate_layout": "candidates/far_stand.json"
+    }
+  ],
+  "source_files_per_attempt": [
+    "original-trace.jsonl",
+    "original-trace-seal.json",
+    "reviewed-context.json",
+    "reviewed_sources/"
+  ],
+  "code": {
+    "reviewed_context.py": {
+      "path": "reviewed_context.py",
+      "sha256": "3ba03755d52fff71e95fe7ee2b7927bd2a9f7dd42e979e088bb795f23d78d42c"
+    },
+    "native_trace_capture.py": {
+      "path": "native_trace_capture.py",
+      "sha256": "edbb2125d6fbf2f58210a5805deddce31350318c137d66582c8b609dcb45d4d1"
+    },
+    "turn_trace_finalizer.py": {
+      "path": "turn_trace_finalizer.py",
+      "sha256": "9fc26cf284f3ffdf503f244bdf34bfad99268e77ae1964f5d9dde059cfacdfb1"
+    },
+    "taxi_native_motion.py": {
+      "path": "taxi_native_motion.py",
+      "sha256": "c904f618c7ab3952ae86d07ad42e101ce6457d2a87a63147e78e9c7f39f79349"
+    }
+  },
+  "selected_requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "cab and qualifying designated stand",
+      "context_sources": [
+        "cab_license",
+        "stand_designation",
+        "stand_marking",
+        "designation_provisions",
+        "jurisdiction"
+      ],
+      "measurement_outputs": [
+        "stand_departure_frame"
+      ],
+      "unresolved_review": "original document authority and designation applicability"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "posted notice of right-turn requirement",
+      "context_sources": [
+        "posted_notice"
+      ],
+      "measurement_outputs": [
+        "context_source_joins"
+      ],
+      "unresolved_review": "original sign installation and actual camera pixels"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "right turn at first street intersection after departure",
+      "context_sources": [
+        "jurisdiction"
+      ],
+      "measurement_outputs": [
+        "first_intersection_entry_frame",
+        "first_intersection_exit_frame",
+        "turn_angle_deg",
+        "engineering_right_turn_observed"
+      ],
+      "unresolved_review": "actual Native motion, street identity and physical completion"
+    }
+  ],
+  "status": "partial_cpu_component; no original source packet or pinned process-saved proof"
+}
