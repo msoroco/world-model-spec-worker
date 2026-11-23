@@ -28,7 +28,7 @@ def write_case(candidate,kind='baseline'):
         'opposing_traffic_source':'synthetic_empty'},sort_keys=True)+'\n')
     k=construction(candidate)['knobs'];rows=[];lead_x=248.
     ego_x=210. if kind!='short_gap' else 218.
-    for frame in range(480):
+    for frame in range(600):
         t=frame/20
         if kind=='speed_mismatch' and 200<=frame<220:lead_speed=6.
         else:lead_speed=k['lead_speed_mps']

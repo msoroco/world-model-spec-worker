@@ -11,7 +11,7 @@ def config(candidate):
     return {'case_id':ASSIGNMENT+'__two_lane_exception',
             'case_suffix':'two_lane_exception','candidate_id':candidate,
             'law_id':'NRS-484B-127-2','cell_id':'C102372','actor':'heavy_vehicle_driver',
-            'rate_hz':20,'duration_s':24,'knobs':plan_for('two_lane_exception',candidate)['knobs'],
+            'rate_hz':20,'duration_s':30,'knobs':plan_for('two_lane_exception',candidate)['knobs'],
             'cameras':[{key:camera[key] for key in ('name','width','height')}
                        for camera in cameras(candidate)],'recording_description':{'channels':[
                 {'name':name} for name in ('ego_body_pose','lead_body_pose',

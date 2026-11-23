@@ -45,7 +45,7 @@ def check(bundle, distance, candidate):
     expected = {'case_id': AID+'__'+str(distance), 'candidate_id': candidate,
                 'distance_m': distance, 'cell_id': 'C102951',
                 'law_id': 'NRS-484B-213-1', 'actor': 'motor_vehicle_driver',
-                'rate_hz': 20, 'duration_s': 24,
+                'rate_hz': 20, 'duration_s': 30,
                 'status': 'unselected_native_request'}
     if config.get('format') != 'c102951-native-request-v1' or any(
             config.get(key) != value for key, value in expected.items()):
@@ -63,7 +63,7 @@ def check(bundle, distance, candidate):
     if lanes != {-1: 'driving', 0: 'none', 1: 'driving'}:
         raise ValueError('Two opposing Native lanes absent')
     rows = [json.loads(line) for line in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
-    if len(rows) != 480:
+    if len(rows) != 600:
         raise ValueError('Passing request frame count differs')
     for i, row in enumerate(rows):
         if (row.get('frame') != i or abs(row.get('time_s', -1)-i/20) > 1e-6 or
@@ -74,7 +74,7 @@ def check(bundle, distance, candidate):
                 row.get('sightline_assumed_visible') is not True):
             raise ValueError('Passing request frame or provenance differs')
     return {'passed': True, 'case_id': expected['case_id'],
-            'candidate_id': candidate, 'requested_frames': 480,
+            'candidate_id': candidate, 'requested_frames': 600,
             'carla_imported': False, 'original_native_observed': False,
             'physical_or_legal_outcome_claimed': False}
 
@@ -183,16 +183,19 @@ def execute(bundle, distance, candidate, output, host, port):
             'highway_status_reviewed': False,
             'driver_eye_visibility_reviewed': False})
         cameras = (('overview', 1920, 1080, 80, (70, -25, 35)),
-                   ('forward', 1280, 720, 90, (0, 0, 0)))
+                   ('approach', 1280, 720, 90, (18, -8, 8)),
+                   ('reference_corner', 1280, 720, 90, (85, 8, 12)),
+                   ('driver_reference', 1280, 720, 90, (0, 0, 0)))
         for name, width, height, fov, location in cameras:
             bp = library.find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
                                ('fov', fov), ('sensor_tick', 0)):
                 bp.set_attribute(key, str(value))
+            fixed = name != 'driver_reference'
             transform = (carla.Transform(carla.Location(x=location[0], y=location[1], z=location[2]),
-                                         carla.Rotation(yaw=0, pitch=-25)) if name == 'overview'
+                                         carla.Rotation(yaw=0, pitch=-25)) if fixed
                          else carla.Transform(carla.Location(x=1.0, y=0, z=1.4)))
-            sensor = world.spawn_actor(bp, transform, attach_to=None if name == 'overview' else ego)
+            sensor = world.spawn_actor(bp, transform, attach_to=None if fixed else ego)
             owned.append(sensor)
             camera_queues[name] = queue.Queue()
             logs[name] = (output/(name+'.encoder.log')).open('x')
@@ -208,7 +211,7 @@ def execute(bundle, distance, candidate, output, host, port):
         with (output/'native-raw-actors.jsonl').open('x') as observed, \
              (output/'video_frames.jsonl').open('x') as frame_map:
             for i, request in enumerate(requests):
-                lookahead = requests[min(479, i+15)]
+                lookahead = requests[min(len(requests)-1, i+15)]
                 target = lookahead['ego_center_xy_m']
                 command = steering(carla, ego, (target[0], -target[1]),
                                    request['ego_speed_mps'])
@@ -271,7 +274,7 @@ def execute(bundle, distance, candidate, output, host, port):
         write_new(output/'native-capture-report.json', {
             'case_id': AID+'__'+str(distance), 'candidate_id': candidate,
             'bundle_config_sha256': sha(bundle/'config.json'),
-            'requested_frames': 480, 'observed_frames': frames,
+            'requested_frames': 600, 'observed_frames': frames,
             'restoration': restored, 'error': error, 'accepted': False,
             'highway_status_reviewed': False,
             'driver_eye_visibility_reviewed': False,

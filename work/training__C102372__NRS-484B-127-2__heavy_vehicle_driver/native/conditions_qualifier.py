@@ -30,7 +30,7 @@ def measure(source_dir):
             context.get('event') not in ('steady','lead_brake_with_obstacle'):
         raise ValueError('Conditions context differs')
     rows=[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
-    if len(rows)!=480:raise ValueError('Full conditions frame source absent')
+    if len(rows)!=600:raise ValueError('Full conditions frame source absent')
     gaps=[];surface_gaps=[];lead_speeds=[];ego_speeds=[];obstacle_frames=0
     for index,row in enumerate(rows):
         if row.get('native_frame')!=index or abs(row.get('time_s',-1)-index/20)>.002:
@@ -62,14 +62,14 @@ def measure(source_dir):
     lead_drop=lead_speeds[160]-lead_speeds[200]
     ego_drop=ego_speeds[180]-ego_speeds[260]
     compression=surface_gaps[0]-min(surface_gaps)
-    event=obstacle_frames==480 and lead_drop>=7.9 and ego_drop>=7.9 and \
+    event=obstacle_frames==600 and lead_drop>=7.9 and ego_drop>=7.9 and \
           min(surface_gaps)<GAP_LIMIT_M-.1 and surface_gaps[0]>GAP_LIMIT_M+.1 and \
           all(abs(speed-8)<.01 for speed in lead_speeds[:160]+ego_speeds[:180])
     if (context['event']=='lead_brake_with_obstacle')!=event:
         raise ValueError('Conditions event differs from measured source')
     if context['event']=='steady' and (obstacle_frames or min(surface_gaps)<GAP_LIMIT_M+.1):
         raise ValueError('Steady conditions source differs')
-    return {'format':'c102372-conditions-diagnostic-v1','frames':480,
+    return {'format':'c102372-conditions-diagnostic-v1','frames':600,
             'lead_braking_gap_compression_observed':event,
             'initial_horizontal_gap_m':round(gaps[0],4),
             'minimum_horizontal_gap_m':round(min(gaps),4),

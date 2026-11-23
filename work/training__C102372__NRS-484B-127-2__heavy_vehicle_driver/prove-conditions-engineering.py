@@ -29,7 +29,7 @@ def write_case(case,candidate='primary',kind='baseline'):
         'event':'lead_brake_with_obstacle' if event else 'steady'},sort_keys=True)+'\n')
     k=construction(case,candidate)['knobs'];rows=[]
     lead_x=187.+k['initial_horizontal_gap_m']-155.;ego_x=20.
-    for frame in range(480):
+    for frame in range(600):
         t=frame/20
         if event:
             if t<=8:lead_x=187+k['initial_horizontal_gap_m']-155+8*t;lead_speed=8.

@@ -45,12 +45,12 @@ def make_variants():
 
 def compare(paths):
     datasets = {name: rows(folder/'native-observed.jsonl') for name, folder in paths.items()}
-    if set(datasets) != {'none', 'oncoming', 'overtaken', 'both'} or any(len(data) != 480 for data in datasets.values()):
+    if set(datasets) != {'none', 'oncoming', 'overtaken', 'both'} or any(len(data) != 600 for data in datasets.values()):
         raise ValueError('Response factorial coverage differs')
     road_hashes = {sha(folder/'road-readback.json') for folder in paths.values()}
     if len(road_hashes) != 1:
         raise ValueError('Response factorial road differs')
-    for i in range(480):
+    for i in range(600):
         base = datasets['none'][i]
         for variant, data in datasets.items():
             row = data[i]

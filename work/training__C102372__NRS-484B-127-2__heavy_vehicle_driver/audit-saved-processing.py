@@ -38,12 +38,12 @@ def audit():
             raise ValueError('Saved truck gap differs from independent source recomputation')
         verify_report(contract,report,root)
         native=rows(root/'native_samples.jsonl');mapping=rows(root/'video_frames.jsonl')
-        if len(native)!=480 or len(mapping)!=480:
+        if len(native)!=600 or len(mapping)!=600:
             raise ValueError('Saved frame count differs')
         if any(row['native_frame']!=i or mapping[i]['carla_frame']!=row['carla_frame']
                for i,row in enumerate(native)):
             raise ValueError('Saved original truck frame mapping differs')
-        if any(frames(root/name)!=480 for name in ('overview.mkv','ego_forward.mkv',
+        if any(frames(root/name)!=600 for name in ('overview.mkv','ego_forward.mkv',
                                                   'lead_gap.mkv','crest_context.mkv')):
             raise ValueError('Original video frame decode differs')
         negative=SOURCE/(case+'-negative')

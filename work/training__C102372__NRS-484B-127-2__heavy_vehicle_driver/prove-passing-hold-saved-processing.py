@@ -50,7 +50,7 @@ def main():
     except ValueError as error:
         if 'Missing required source: native_samples.jsonl' not in str(error):raise
     else:raise AssertionError('Missing hold Native source accepted')
-    return {'passed':True,'case_id':ASSIGNMENT+'__'+CASE,'frames':480,
+    return {'passed':True,'case_id':ASSIGNMENT+'__'+CASE,'frames':600,
             'video_frames':report['video_frames'],
             'minimum_body_clearance_m':measured['minimum_body_clearance_m'],
             'source_sha256':sha(positive/'native_samples.jsonl'),

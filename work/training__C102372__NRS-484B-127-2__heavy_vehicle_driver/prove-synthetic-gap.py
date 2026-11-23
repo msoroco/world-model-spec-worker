@@ -1,4 +1,4 @@
-"""Generate source-hashed 480-frame CPU diagnostics and adversarial negatives."""
+"""Generate source-hashed 600-frame CPU diagnostics and adversarial negatives."""
 import importlib.util
 import json
 from pathlib import Path
@@ -75,7 +75,7 @@ def main():
         samples.write_text('\n'.join(original.splitlines()[:-1])+'\n')
         must_reject(folder, 'Original source missing or changed')
         resign(folder)
-        must_reject(folder, 'Full 480-frame original source required')
+        must_reject(folder, 'Full 600-frame original source required')
         samples.write_text(original)
         context = folder / 'following_context.json'
         original_context = context.read_text()

@@ -15,7 +15,7 @@ roots={key:fixture.write_case(key=='pass') for key in ('hold','pass')}
 values={key:measure(root) for key,root in roots.items()}
 rows={key:[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
       for key,root in roots.items()}
-if any(len(sample)!=480 for sample in rows.values()):raise AssertionError('Frame count')
+if any(len(sample)!=600 for sample in rows.values()):raise AssertionError('Frame count')
 for index,(hold,passing) in enumerate(zip(rows['hold'],rows['pass'])):
     if any(hold['lead'][key]!=passing['lead'][key] for key in ('body_xy_m','speed_mps','lane_id')):
         raise AssertionError('Lead actor changed across controlled pair')
@@ -35,5 +35,5 @@ if opposing!=values['pass']['opposing_lane_frames'] or opposing<200:
     raise AssertionError('Independent opposing-lane exposure differs')
 if values['hold']['passing_sequence_observed'] or not values['pass']['passing_sequence_observed']:
     raise AssertionError('Passing classification differs')
-print(json.dumps({'passed':True,'frames_per_case':480,'lead_trace_fixed':True,
+print(json.dumps({'passed':True,'frames_per_case':600,'lead_trace_fixed':True,
     'opposing_lane_frames':opposing,'physical_or_legal_verdict_claim':False},sort_keys=True))

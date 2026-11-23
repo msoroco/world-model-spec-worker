@@ -44,7 +44,7 @@ def measure(folder,expected_hashes=None):
             road.get('source_kind') not in ('synthetic_cpu','original_native')):
         raise ValueError('Two-lane two-way road readback differs')
     rows=[json.loads(line) for line in paths['native-observed.jsonl'].read_text().splitlines() if line.strip()]
-    if len(rows)!=480:raise ValueError('Pass frame count differs')
+    if len(rows)!=600:raise ValueError('Pass frame count differs')
     kind=road['source_kind'];entry=[];full_left=[];abreast=[];return_frames=[];gap=[];clear=[];visible=[]
     first_native=rows[0].get('native_frame');first_time=rows[0].get('time_s')
     if type(first_native) is not int or not number(first_time):raise ValueError('First Native frame/time invalid')
@@ -78,12 +78,12 @@ def measure(folder,expected_hashes=None):
     if not entry or not abreast or not return_frames or not full_left:
         raise ValueError('Saved pass entry, abreast or return absent')
     start=entry[0];finish=return_frames[0]
-    if start>=abreast[0] or abreast[-1]>=finish or finish>=480:
+    if start>=abreast[0] or abreast[-1]>=finish or finish>=600:
         raise ValueError('Saved pass event order differs')
     entry_row=rows[start]
     entry_ego=body_bounds(entry_row,'ego',kind)
     entry_oncoming=body_bounds(entry_row,'oncoming',kind)
-    return {'format':'c102951-saved-pass-measurement-v1','source_kind':kind,'frames':480,
+    return {'format':'c102951-saved-pass-measurement-v1','source_kind':kind,'frames':600,
             'first_left_of_center_frame':start,'first_full_left_frame':full_left[0],
             'first_abreast_frame':abreast[0],'first_return_after_pass_frame':finish,
             'left_of_center_frames':len(entry),

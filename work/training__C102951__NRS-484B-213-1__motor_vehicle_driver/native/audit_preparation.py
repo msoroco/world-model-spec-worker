@@ -98,7 +98,7 @@ def audit():
         raw = load_rows(raw_folder/'native-raw-actors.jsonl')
         frames = load_rows(raw_folder/'video_frames.jsonl')
         saved = load_rows(output/'native-observed.jsonl')
-        if not (len(raw) == len(frames) == len(saved) == 480):
+        if not (len(raw) == len(frames) == len(saved) == 600):
             raise ValueError('Prepared frame coverage differs')
         first_entry = None
         for i, (actor_row, frame, row, sight) in enumerate(zip(raw, frames, saved, review['rows'])):

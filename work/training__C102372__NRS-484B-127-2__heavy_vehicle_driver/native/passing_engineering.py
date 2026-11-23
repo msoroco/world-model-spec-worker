@@ -13,7 +13,7 @@ ASSIGNMENT='training__C102372__NRS-484B-127-2__heavy_vehicle_driver'
 CANDIDATES=('primary','fallback1','fallback2','fallback3')
 BASE={'ego_speed_mps':12.,'lead_speed_mps':8.,'opposing_center_y_m':2.,
       'enter_start_s':2.,'enter_end_s':4.,'return_start_s':16.,
-      'return_end_s':18.,'rate_hz':20,'duration_s':24}
+      'return_end_s':18.,'rate_hz':20,'duration_s':30}
 CHANGES={
     'primary':{},
     'fallback1':{'ego_speed_mps':12.5},
@@ -23,11 +23,11 @@ CHANGES={
 }
 TRIGGERS={
     'fallback1':{'metric':'final_center_offset_m','op':'<','threshold':50.,
-                 'source':'480 source-hashed original Native truck body centers and frame times'},
+                 'source':'600 source-hashed original Native truck body centers and frame times'},
     'fallback2':{'metric':'minimum_body_clearance_m','op':'<','threshold':1.5,
-                 'source':'480 source-hashed original Native 80-inch truck body footprints'},
+                 'source':'600 source-hashed original Native 80-inch truck body footprints'},
     'fallback3':{'metric':'opposing_lane_frames','op':'<','threshold':300,
-                 'source':'480 source-hashed original Native lane/body frame joins'},
+                 'source':'600 source-hashed original Native lane/body frame joins'},
 }
 
 
@@ -45,7 +45,7 @@ def construction(candidate):
 
 def request(candidate,frame):
     """Return 20 Hz speed/lateral requests; a saved original trace must verify them."""
-    if not isinstance(frame,int) or not 0<=frame<480:
+    if not isinstance(frame,int) or not 0<=frame<600:
         raise ValueError('Full passing frame index required')
     k=construction(candidate)['knobs'];t=frame/k['rate_hz'];y0=-2.;y1=k['opposing_center_y_m']
     if t<k['enter_start_s']:y=y0
@@ -72,14 +72,14 @@ def check():
         raise ValueError('Passing fallback triggers repeat')
     for name in CANDIDATES:
         k=variants[name]['knobs']
-        if not (k['rate_hz']==20 and k['duration_s']==24 and
+        if not (k['rate_hz']==20 and k['duration_s']==30 and
                 0<k['enter_start_s']<k['enter_end_s']<
-                k['return_start_s']<k['return_end_s']<24 and
+                k['return_start_s']<k['return_end_s']<30 and
                 1.3<k['opposing_center_y_m']<2.7 and
                 0<k['lead_speed_mps']<k['ego_speed_mps']):
             raise ValueError('Passing trajectory timing or lane differs')
         if request(name,0)['intended_lane_id']!=-1 or \
-           request(name,479)['intended_lane_id']!=-1 or \
+           request(name,599)['intended_lane_id']!=-1 or \
            request(name,200)['intended_lane_id']!=1:
             raise ValueError('Passing trajectory does not depart and return')
     return {'passed':True,'case_id':ASSIGNMENT+'__'+CASE,

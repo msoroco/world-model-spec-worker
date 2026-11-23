@@ -1,4 +1,4 @@
-"""480-frame synthetic positive and removed-source saved finalizer proof."""
+"""600-frame synthetic positive and removed-source saved finalizer proof."""
 import importlib.util
 import json
 import os
@@ -80,13 +80,13 @@ def augment(root,case):
     write_rows(root/'video_frames.jsonl',mapping)
     for name,values in channel_rows.items():write_rows(root/'channels'/(name+'.jsonl'),values)
     synthetic.resign(root)
-    (root/'capture/manifest.json').write_text(json.dumps({'frames':480,
+    (root/'capture/manifest.json').write_text(json.dumps({'frames':600,
         'extraction_confirmed':True,'synthetic_diagnostic':True,'sources':{
             'native_samples.jsonl':sha(root/'native_samples.jsonl')}},sort_keys=True)+'\n')
     ffmpeg=ROOT/'.runtime-work/linux_arm64/ffmpeg'
     for name in ('overview','ego_forward','lead_gap','crest_context'):
         subprocess.run([str(ffmpeg),'-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=24','-frames:v','480',
+            '-f','lavfi','-i','color=c=black:s=32x32:r=20:d=30','-frames:v','600',
             '-c:v','ffv1',str(root/(name+'.mkv'))],check=True,timeout=120)
     (root/'camera_context.json').write_text(json.dumps({'name':'overview',
         'width':32,'height':32,'fov_deg':90.,

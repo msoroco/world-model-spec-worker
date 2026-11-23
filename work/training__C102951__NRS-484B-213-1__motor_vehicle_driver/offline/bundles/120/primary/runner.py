@@ -45,7 +45,7 @@ def check(bundle, distance, candidate):
     expected = {'case_id': AID+'__'+str(distance), 'candidate_id': candidate,
                 'distance_m': distance, 'cell_id': 'C102951',
                 'law_id': 'NRS-484B-213-1', 'actor': 'motor_vehicle_driver',
-                'rate_hz': 20, 'duration_s': 24,
+                'rate_hz': 20, 'duration_s': 30,
                 'status': 'unselected_native_request'}
     if config.get('format') != 'c102951-native-request-v1' or any(
             config.get(key) != value for key, value in expected.items()):
@@ -63,7 +63,7 @@ def check(bundle, distance, candidate):
     if lanes != {-1: 'driving', 0: 'none', 1: 'driving'}:
         raise ValueError('Two opposing Native lanes absent')
     rows = [json.loads(line) for line in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
-    if len(rows) != 480:
+    if len(rows) != 600:
         raise ValueError('Passing request frame count differs')
     for i, row in enumerate(rows):
         if (row.get('frame') != i or abs(row.get('time_s', -1)-i/20) > 1e-6 or
@@ -74,7 +74,7 @@ def check(bundle, distance, candidate):
                 row.get('sightline_assumed_visible') is not True):
             raise ValueError('Passing request frame or provenance differs')
     return {'passed': True, 'case_id': expected['case_id'],
-            'candidate_id': candidate, 'requested_frames': 480,
+            'candidate_id': candidate, 'requested_frames': 600,
             'carla_imported': False, 'original_native_observed': False,
             'physical_or_legal_outcome_claimed': False}
 
@@ -271,7 +271,7 @@ def execute(bundle, distance, candidate, output, host, port):
         write_new(output/'native-capture-report.json', {
             'case_id': AID+'__'+str(distance), 'candidate_id': candidate,
             'bundle_config_sha256': sha(bundle/'config.json'),
-            'requested_frames': 480, 'observed_frames': frames,
+            'requested_frames': 600, 'observed_frames': frames,
             'restoration': restored, 'error': error, 'accepted': False,
             'highway_status_reviewed': False,
             'driver_eye_visibility_reviewed': False,

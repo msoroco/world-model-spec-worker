@@ -32,7 +32,7 @@ def check():
            'same_direction_lane_count','road_variant','authored_road_sha256')
     if any(any(value[key]!=variants['primary'][key] for key in fixed) for value in variants.values()):
         raise ValueError('Two-lane candidate changes statutory mechanism')
-    if any(value['knobs']['rate_hz']!=20 or value['knobs']['duration_s']!=24 or
+    if any(value['knobs']['rate_hz']!=20 or value['knobs']['duration_s']!=30 or
            value['target_gap_m']!=140 for value in variants.values()):
         raise ValueError('Two-lane candidate timing or gap differs')
     hashes={candidate:hashlib.sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()

@@ -16,7 +16,7 @@ roots={key:fixture.write_case(key=='lead_brake') for key in ('steady','lead_brak
 values={key:measure(root) for key,root in roots.items()}
 rows={key:[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
       for key,root in roots.items()}
-if any(len(sample)!=480 for sample in rows.values()):raise AssertionError('Frame count')
+if any(len(sample)!=600 for sample in rows.values()):raise AssertionError('Frame count')
 for index in range(161):
     steady=rows['steady'][index];brake=rows['lead_brake'][index]
     for actor in ('ego','lead'):
@@ -56,7 +56,7 @@ if rows['lead_brake'][160]['lead']['speed_mps']!=8 or \
     raise AssertionError('Independent braking timing differs')
 if values['lead_brake']['physical_conditions_permit_verified'] or values['lead_brake']['legal_verdict_claimed']:
     raise AssertionError('Physical or legal verdict claimed')
-print(json.dumps({'passed':True,'frames_per_case':480,'pre_event_truck_trace_fixed':True,
+print(json.dumps({'passed':True,'frames_per_case':600,'pre_event_truck_trace_fixed':True,
                   'steady_horizontal_gap_m':155,'braking_min_horizontal_gap_m':139,
                   'braking_min_surface_gap_m':round(independent_surface_min,4),
                   'physical_or_legal_verdict_claim':False},sort_keys=True))

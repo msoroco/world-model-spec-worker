@@ -19,7 +19,7 @@ with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c102372-two-la
     double=fixture.make_source(Path(temporary)/'double')
     a=[json.loads(line) for line in (single/'native_samples.jsonl').read_text().splitlines()]
     b=[json.loads(line) for line in (double/'native_samples.jsonl').read_text().splitlines()]
-    if len(a)!=480 or len(b)!=480 or a!=b:
+    if len(a)!=600 or len(b)!=600 or a!=b:
         raise AssertionError('Controlled truck traces changed with lane count')
     first=measure_single(single);second=measure_two(double)
     if first['relation_to_500ft']!='below' or second['relation_to_500ft']!='below' or \
@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c102372-two-la
     if [item.get('id') for item in lanes_a]!=['-1'] or \
             [item.get('id') for item in lanes_b]!=['-1','-2']:
         raise AssertionError('Two-lane comparison treatment differs')
-    print(json.dumps({'passed':True,'frames':480,'truck_traces_identical':True,
+    print(json.dumps({'passed':True,'frames':600,'truck_traces_identical':True,
         'single_direction_lanes':1,'double_direction_lanes':2,
         'minimum_surface_gap_m':first['min_surface_gap_m'],
         'physical_or_legal_verdict_claim':False},sort_keys=True))

@@ -30,8 +30,8 @@ def read_case(case):
     if [row['s'] for row in grades] != [0, 100, 150, 200] or grades[2]['a'] != 4:
         raise ValueError('Hill-crest source differs')
     context = json.loads((path / 'following_context.json').read_text())
-    if len(rows) != 480 or context['same_direction_lane_count'] != 1 or context['overtaking'] is not False:
-        raise ValueError('Wrong 480-frame single-lane context')
+    if len(rows) != 600 or context['same_direction_lane_count'] != 1 or context['overtaking'] is not False:
+        raise ValueError('Wrong 600-frame single-lane context')
     gaps = []
     road_gaps = []
     held = []
@@ -73,7 +73,7 @@ def main():
         raise ValueError('500-foot sides differ')
     if not all(a <= b < a+.5 for record in (one, two) for a, b in zip(record[0], record[1])):
         raise ValueError('Road distance does not follow hill crest')
-    print(json.dumps({'passed': True, 'frames_per_case': 480, 'gaps_m': CASES,
+    print(json.dumps({'passed': True, 'frames_per_case': 600, 'gaps_m': CASES,
                       'threshold_m': THRESHOLD_M, 'held_inputs': True,
                       'physical_observation_claimed': False}, sort_keys=True))
 

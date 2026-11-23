@@ -1,4 +1,4 @@
-"""Full 480-frame source edits cross all three two-lane fallback thresholds."""
+"""Full 600-frame source edits cross all three two-lane fallback thresholds."""
 import json
 import os
 from pathlib import Path
@@ -66,8 +66,8 @@ def main():
         camera.write_text(json.dumps(data,sort_keys=True)+'\n')
         (root/'overview.mkv').unlink()
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-                        '-f','lavfi','-i','color=c=black:s=640x360:r=20:d=24',
-                        '-frames:v','480','-c:v','ffv1',str(root/'overview.mkv')],
+                        '-f','lavfi','-i','color=c=black:s=640x360:r=20:d=30',
+                        '-frames:v','600','-c:v','ffv1',str(root/'overview.mkv')],
                        check=True,timeout=120)
         refresh(root)
         baseline=check(root,'fallback1',True)
@@ -92,7 +92,7 @@ def main():
         except ValueError as error:
             if 'Trigger source missing or changed' not in str(error):raise
         else:raise AssertionError('Changed camera source accepted')
-        return {'passed':True,'case':'two_lane_exception','frames':480,
+        return {'passed':True,'case':'two_lane_exception','frames':600,
             'fallback1':{'positive_gap_m':baseline['min_surface_gap_m'],
                          'negative_gap_m':wider['min_surface_gap_m']},
             'fallback2':{'negative_shortfall_m':baseline['max_gap_shortfall_m'],

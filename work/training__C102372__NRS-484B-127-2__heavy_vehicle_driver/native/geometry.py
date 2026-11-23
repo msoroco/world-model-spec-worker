@@ -3,7 +3,7 @@ import json
 import xml.etree.ElementTree as ET
 
 RATE_HZ = 20
-FRAMES = 480
+FRAMES = 600
 ROAD_LENGTH_M = 650.0
 LANE_WIDTH_M = 4.0
 LANE_Y_M = -2.0

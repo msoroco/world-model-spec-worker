@@ -12,7 +12,7 @@ def config(case,candidate):
     return {'case_id':'training__C102372__NRS-484B-127-2__heavy_vehicle_driver__'+case,
             'case_suffix':case,'candidate_id':candidate,
             'law_id':'NRS-484B-127-2','cell_id':'C102372','actor':'heavy_vehicle_driver',
-            'rate_hz':20,'duration_s':24,'knobs':parameters(case,candidate)['knobs'],
+            'rate_hz':20,'duration_s':30,'knobs':parameters(case,candidate)['knobs'],
             'cameras':[{key:camera[key] for key in ('name','width','height')}
                        for camera in cameras(candidate)],'recording_description':{'channels':[
                 {'name':name} for name in ('ego_body_pose','lead_body_pose',

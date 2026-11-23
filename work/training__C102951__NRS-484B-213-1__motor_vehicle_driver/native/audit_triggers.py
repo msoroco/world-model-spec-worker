@@ -14,7 +14,7 @@ def sha(path):
 def recompute(folder):
     rows = [json.loads(line) for line in (folder/'native-observed.jsonl').read_text().splitlines()]
     road = json.loads((folder/'road-readback.json').read_text())
-    if (len(rows) != 480 or road['lane_count'] != 2 or road['travel_directions'] != 2 or
+    if (len(rows) != 600 or road['lane_count'] != 2 or road['travel_directions'] != 2 or
             road['centerline_y_m'] != 0 or road['source_kind'] != 'synthetic_cpu'):
         raise ValueError('Saved trigger road or frame count differs')
     left = []
@@ -78,7 +78,7 @@ def audit():
         raise ValueError('Trigger negative coverage differs')
     receipt = {'format': 'c102951-independent-trigger-audit-v1',
                'assignment_id': AID, 'proof_sha256': sha(HERE/'trigger-proof.json'),
-               'saved_rows_recomputed': 4800, 'fixture_decisions_checked': 10,
+               'saved_rows_recomputed': 6000, 'fixture_decisions_checked': 10,
                'negative_controls_checked': 3,
                'original_native_observed': False, 'delivery_ready': False}
     (HERE/'trigger-audit.json').write_text(json.dumps(receipt, indent=2)+'\n')

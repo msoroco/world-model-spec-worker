@@ -7,7 +7,7 @@ import subprocess
 
 from check import check
 
-FRAMES = 480
+FRAMES = 600
 RATE = 20
 
 
@@ -23,18 +23,19 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def verify_media(path):
+def verify_media(path, dimensions):
     if not path.is_file():
         raise ValueError("Original FFV1 camera missing: " + path.name)
     probe = subprocess.run(
         ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-         "-show_entries", "stream=codec_name,nb_read_frames",
+         "-show_entries", "stream=codec_name,nb_read_frames,width,height",
          "-of", "json", str(path)], capture_output=True, text=True, timeout=120)
     if probe.returncode:
         raise ValueError("Original FFV1 camera unreadable: " + path.name)
     streams = json.loads(probe.stdout).get("streams", [])
     if len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or \
-            streams[0].get("nb_read_frames") != str(FRAMES):
+            streams[0].get("nb_read_frames") != str(FRAMES) or \
+            [streams[0].get("width"), streams[0].get("height")] != dimensions:
         raise ValueError("Original FFV1 camera frame contract: " + path.name)
     return sha(path)
 
@@ -47,7 +48,7 @@ def process(bundle, raw, video, review, *, synthetic=False):
     requests = read_rows(bundle / "requested-tracks.jsonl")
     visual = json.loads(Path(review).read_text())
     if len(raw_rows) != FRAMES or len(video_rows) != FRAMES or len(requests) != FRAMES:
-        raise ValueError("480 source frames required")
+        raise ValueError("600 source frames required")
     if visual.get("source_kind") != ("synthetic_fixture" if synthetic else "original_native_review"):
         raise ValueError("Review source kind mismatch")
     if visual.get("case_id") != cfg["case_id"] or visual.get("candidate_id") != cfg["candidate_id"]:
@@ -58,8 +59,10 @@ def process(bundle, raw, video, review, *, synthetic=False):
         if Path(video).parent != source_dir:
             raise ValueError("Original video join source directory differs")
         media_hashes = {}
-        for name in ("overview.mkv", "rider_forward.mkv", "officer_side.mkv"):
-            media_hashes[name] = verify_media(source_dir / name)
+        for stem, dimensions in cfg["camera_sources"].items():
+            name = stem + ".mkv"
+            media_hashes[name] = verify_media(source_dir / name, dimensions)
+        media_hashes["raw.mkv"] = verify_media(source_dir / "raw.mkv", [3840, 1800])
         map_path = source_dir / "native-map-readback.json"
         report_path = source_dir / "native-capture-report.json"
         if not map_path.is_file():
@@ -84,6 +87,7 @@ def process(bundle, raw, video, review, *, synthetic=False):
                 report.get("config_sha256") != sha(bundle / "config.json") or
                 report.get("requested_frames") != FRAMES or
                 report.get("observed_frames") != FRAMES or
+                report.get("composite_raw_sha256") != media_hashes["raw.mkv"] or
                 report.get("error") is not None or
                 report.get("accepted") is not False or
                 report.get("delivery_ready") is not False):

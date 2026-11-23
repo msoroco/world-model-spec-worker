@@ -1,4 +1,4 @@
-"""Full 480-frame synthetic saved processing for both conditions cases."""
+"""Full 600-frame synthetic saved processing for both conditions cases."""
 from __future__ import annotations
 import importlib.util
 import json
@@ -55,7 +55,7 @@ def main():
         except ValueError as error:
             if 'Missing required source: native_samples.jsonl' not in str(error):raise
         else:raise AssertionError('Missing conditions Native source accepted')
-        results[case]={'frames':480,'video_frames':report['video_frames'],
+        results[case]={'frames':600,'video_frames':report['video_frames'],
                        'measured_event':measured['lead_braking_gap_compression_observed'],
                        'minimum_surface_gap_m':measured['minimum_surface_gap_m'],
                        'source_sha256':sha(positive/'native_samples.jsonl')}

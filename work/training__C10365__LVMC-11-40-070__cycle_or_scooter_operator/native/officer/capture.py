@@ -15,6 +15,8 @@ import traceback
 from build import FRAMES
 from check import check
 
+COMPOSE_LAYOUT = "xstack=inputs=4:layout=960_0|0_1080|1280_1080|2560_1080"
+
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -120,10 +122,11 @@ def capture(bundle, output, host, port):
             raise RuntimeError("Officer-stage walker spawn failed")
         owned.append(officer)
         elevated = cfg["camera_policy"] == "elevated"
-        specs = (("overview", 1280, 720, 90 if elevated else 80,
+        specs = (("overview", 1920, 1080, 90 if elevated else 80,
                   (48, -16, 45 if elevated else 25), -70 if elevated else -55),
                  ("rider_forward", 1280, 720, 90, (1, 0, 1.5), 0),
-                 ("officer_side", 1280, 720, 75, (42, -12, 4), -15))
+                 ("officer_side", 1280, 720, 75, (42, -12, 4), -15),
+                 ("device_side", 1280, 720, 75, (56, -11, 5), -20))
         for name, width, height, fov, xyz, pitch in specs:
             bp = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),
@@ -215,6 +218,18 @@ def capture(bundle, output, host, port):
             except BaseException as exc:
                 error = error or {"encoder_error": str(exc)}
             logs[name].close()
+        if error is None and frames == FRAMES:
+            composite = subprocess.run(
+                ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
+                 "-i", str(output / "overview.mkv"),
+                 "-i", str(output / "rider_forward.mkv"),
+                 "-i", str(output / "officer_side.mkv"),
+                 "-i", str(output / "device_side.mkv"),
+                 "-filter_complex", COMPOSE_LAYOUT,
+                 "-an", "-c:v", "ffv1", str(output / "raw.mkv")],
+                capture_output=True, text=True, timeout=600)
+            if composite.returncode:
+                error = {"compose_error": composite.stderr[-2000:]}
         for actor in reversed(owned):
             try:
                 if actor.type_id.startswith("sensor.") and actor.is_listening:
@@ -231,6 +246,7 @@ def capture(bundle, output, host, port):
             "case_id": checked["case_id"], "candidate_id": checked["candidate_id"],
             "config_sha256": sha(bundle / "config.json"), "requested_frames": FRAMES,
             "observed_frames": frames, "restoration": restored, "error": error,
+            "composite_raw_sha256": sha(output / "raw.mkv") if (output / "raw.mkv").is_file() else None,
             "stop_landmark_readback": landmark_readback,
             "officer_role_verified": False, "officer_direction_observed": None,
             "official_device_verified": False, "legal_verdict": None,

@@ -8,7 +8,7 @@ class ConditionsNativeTests(unittest.TestCase):
     def config(self,case,candidate):
         return {'case_id':ASSIGNMENT+'__'+case,'case_suffix':case,
             'candidate_id':candidate,'law_id':'NRS-484B-127-2','cell_id':'C102372',
-            'actor':'heavy_vehicle_driver','rate_hz':20,'duration_s':24,
+            'actor':'heavy_vehicle_driver','rate_hz':20,'duration_s':30,
             'knobs':construction(case,candidate)['knobs'],
             'cameras':[{key:camera[key] for key in ('name','width','height')}
                        for camera in cameras(candidate)],

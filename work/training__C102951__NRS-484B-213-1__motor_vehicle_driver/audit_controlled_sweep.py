@@ -22,7 +22,7 @@ def audit():
     if proof['source_sha256']!={str(d):sha(p) for d,p in zip(DISTANCES,paths)}:
         raise ValueError('Controlled sweep source hash differs')
     groups=[[json.loads(line) for line in p.read_text().splitlines()] for p in paths]
-    if any(len(group)!=480 for group in groups):raise ValueError('Controlled sweep row count differs')
+    if any(len(group)!=600 for group in groups):raise ValueError('Controlled sweep row count differs')
     for i,triplet in enumerate(zip(*groups)):
         if any(r['frame']!=i or r['native_frame']!=1000+i for r in triplet):
             raise ValueError('Controlled sweep frame identity differs')
@@ -37,7 +37,7 @@ def audit():
     for group in groups:
         entry=next(i for i,r in enumerate(group) if r['ego_y_m']+.9>0)
         passed=False;returned=None;nonpositive=None
-        for i in range(entry,480):
+        for i in range(entry,600):
             r=group[i]
             if r['ego_x_m']-2.2>r['overtaken_x_m']+2.2:passed=True
             if nonpositive is None and round(r['oncoming_x_m']-r['ego_x_m']-4.4,3)<=0:nonpositive=i
@@ -49,7 +49,7 @@ def audit():
     if proof['metric']!=metric or len({pair[1] for pair in entries})!=1 or metric['first_nonpositive_pre_return_gap_frames'][2] is not None:
         raise ValueError('Controlled sweep event metric differs')
     result={'format':'c102951-independent-controlled-sweep-audit-v1',
-            'saved_rows_checked':1440,'negative_count':4,
+            'saved_rows_checked':1800,'negative_count':4,
             'proof_sha256':sha(path),'accepted_comparison':False,'delivery_ready':False}
     (CASE/'controlled-sweep-audit.json').write_text(json.dumps(result,indent=2)+'\n')
     return result

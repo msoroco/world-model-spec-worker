@@ -1,4 +1,4 @@
-"""Independent raw-source audit of the 480-frame two-lane saved finalizer."""
+"""Independent raw-source audit of the 600-frame two-lane saved finalizer."""
 import importlib.util
 import json
 import math
@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c102372-two-la
         raise AssertionError('Capture/road source hash differs')
     rows={name:[json.loads(line) for line in (root/name).read_text().splitlines()]
           for name in ('native_samples.jsonl','trace.jsonl','capture/evidence.jsonl','video_frames.jsonl')}
-    if any(len(group)!=480 for group in rows.values()):raise AssertionError('Full saved joins absent')
+    if any(len(group)!=600 for group in rows.values()):raise AssertionError('Full saved joins absent')
     for index,(native,trace,evidence,join) in enumerate(zip(*rows.values())):
         frame=native['carla_frame']
         if (native['native_frame'],trace['frame'],evidence['original_frame'],
@@ -61,8 +61,8 @@ with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c102372-two-la
         p=subprocess.run(['ffprobe','-v','error','-count_frames','-select_streams','v:0',
             '-show_entries','stream=nb_read_frames','-of','default=noprint_wrappers=1:nokey=1',
             str(root/(name+'.mkv'))],capture_output=True,text=True,check=True)
-        if p.stdout.strip()!='480':raise AssertionError('Independent video frame count differs')
+        if p.stdout.strip()!='600':raise AssertionError('Independent video frame count differs')
     if result['accepted'] or result['provenance_kind']!='synthetic_cpu' or result['legal_verdict_claimed']:
         raise AssertionError('Two-lane saved result claims physical acceptance')
-    print(json.dumps({'passed':True,'frames':480,'four_videos_decoded':True,
+    print(json.dumps({'passed':True,'frames':600,'four_videos_decoded':True,
         'minimum_surface_gap_m':round(minimum,6),'physical_or_accepted_claim':False},sort_keys=True))

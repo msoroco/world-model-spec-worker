@@ -1,4 +1,4 @@
-"""Full 480-frame synthetic saved Native/Core/video finalization for two lanes."""
+"""Full 600-frame synthetic saved Native/Core/video finalization for two lanes."""
 import json
 import os
 from pathlib import Path
@@ -60,7 +60,7 @@ def main():
         except ValueError as error:
             if 'Missing required source: native_samples.jsonl' not in str(error):raise
         else:raise AssertionError('Missing two-lane source accepted')
-        return {'passed':True,'case_id':CASE,'frames':480,'same_direction_lane_count':2,
+        return {'passed':True,'case_id':CASE,'frames':600,'same_direction_lane_count':2,
             'minimum_surface_gap_m':measured['min_surface_gap_m'],
             'contract_value_and_sources_verified':True,'missing_source_rejected':True,
             'physical_or_accepted_claim':False}

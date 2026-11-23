@@ -10,7 +10,7 @@ class PassingNativeTests(unittest.TestCase):
         return {'case_id':case,'case_suffix':'passing_overtake',
             'candidate_id':candidate,'law_id':'NRS-484B-127-2',
             'cell_id':'C102372','actor':'heavy_vehicle_driver',
-            'rate_hz':20,'duration_s':24,'knobs':construction(candidate)['knobs'],
+            'rate_hz':20,'duration_s':30,'knobs':construction(candidate)['knobs'],
             'cameras':[{key:camera[key] for key in ('name','width','height')}
                        for camera in cameras(candidate)],
             'recording_description':{'channels':[{'name':name} for name in
@@ -28,7 +28,7 @@ class PassingNativeTests(unittest.TestCase):
     def test_lateral_request_and_three_distinct_knobs(self):
         self.assertEqual(request('primary',0)['intended_lane_id'],-1)
         self.assertEqual(request('primary',200)['intended_lane_id'],1)
-        self.assertEqual(request('primary',479)['intended_lane_id'],-1)
+        self.assertEqual(request('primary',599)['intended_lane_id'],-1)
         self.assertGreater(request('fallback1',200)['ego_speed_mps'],
                            request('primary',200)['ego_speed_mps'])
         self.assertGreater(request('fallback2',200)['ego_target_y_m'],

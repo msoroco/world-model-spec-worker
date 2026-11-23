@@ -34,7 +34,7 @@ def recording(suffix):
         methods.pop('surface_gap_m')
         methods['body_clearance_m']=('m','Original truck-body clearance in the passing sequence')
     return {'channels':[{'name':name,'unit':unit,'sampling_rate_hz':20,
-        'method':method,'time_window':'full original 24 s / 480-frame attempt',
+        'method':method,'time_window':'full original 30 s / 600-frame attempt',
         'reference_frame':'Native hill-crest road, actor body and original frame',
         'uncertainty':'50 ms sampling; physical conditions and pixels require later review'}
         for name,(unit,method) in methods.items()],
@@ -79,7 +79,7 @@ def build():
             'measurement_procedure':{'entrypoint':'finalize.py',
                                      'output_schema':'c102372-saved-analysis-v1'},
             'candidate_risk':{'status':'physical',
-                'reason':'Original truck width, 480-frame control, road readback, camera and conditions unobserved'},
+                'reason':'Original truck width, 600-frame control, road readback, camera and conditions unobserved'},
             'candidates':[]}
         proposal['cases'].append({'case_id':case_id,'target_type':case['target_type'],
                                   'recording_description':description})
@@ -89,7 +89,7 @@ def build():
                 'supported_case_ids':[case_id],'case_suffix':suffix,
                 'candidate_id':candidate,'law_id':'NRS-484B-127-2',
                 'cell_id':'C102372','actor':'heavy_vehicle_driver',
-                'rate_hz':20,'duration_s':24,'case':{'case_id':case_id},
+                'rate_hz':20,'duration_s':30,'case':{'case_id':case_id},
                 'knobs':knobs,'cameras':[{key:camera[key] for key in
                     ('name','width','height')} for camera in cameras(candidate)],
                 'required_atoms':['ru.truck','st.lane','rel.surface_gap',
@@ -104,9 +104,9 @@ def build():
                 'measurement_plan':{'method':'Original full-body truck road-arc gap, width and lane context',
                     'status':'source_bound_cpu_draft'},
                 'static_checks':['authored hill-crest and directional lanes',
-                    'two 80-inch Native truck body readbacks','480-frame joined four-view capture',
+                    'two 80-inch Native truck body readbacks','600-frame joined four-view capture',
                     'three distinct fallback control and camera knobs'],
-                'termination_rules':['480 original 20 Hz frames',
+                'termination_rules':['600 original 20 Hz frames',
                     'retain failed capture/restoration report'],
                 'mechanisms':['same-cell hill-crest truck following',
                     'source-bound body width and road-arc gap','four original camera views'],

@@ -35,7 +35,7 @@ def audit():
         if hashes != fixture['source_hashes'] or hashes != fixture['measurement']['source_hashes']:
             raise ValueError('Response source hash differs')
         rows = [json.loads(line) for line in (folder/'native-observed.jsonl').read_text().splitlines()]
-        if len(rows) != 480 or any(row['frame'] != i or abs(row['time_s']-(i+1)/20) > 1e-6
+        if len(rows) != 600 or any(row['frame'] != i or abs(row['time_s']-(i+1)/20) > 1e-6
                                    for i, row in enumerate(rows)):
             raise ValueError('Response row frame or time differs')
         start = fixture['measurement']['pass_entry_frame']
@@ -100,7 +100,7 @@ def audit():
                 raise ValueError('Independent negative replay accepted '+mutation)
     receipt = {'format': 'c102951-independent-response-audit-v1',
                'assignment_id': HERE.parent.name, 'proof_sha256': sha(proof_path),
-               'fixtures_recomputed': measured, 'saved_rows_recomputed': 1920,
+               'fixtures_recomputed': measured, 'saved_rows_recomputed': 2400,
                'negative_controls_replayed': controls, 'original_native_observed': False,
                'delivery_ready': False}
     (HERE/'response-audit.json').write_text(json.dumps(receipt, indent=2)+'\n')

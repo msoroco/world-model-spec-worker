@@ -52,7 +52,7 @@ def make_source(suffix,scratch):
         name=camera['name'];path=source/(name+'.mkv');path.unlink()
         size=f"{camera['width']}x{camera['height']}"
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24','-frames:v','480',
+            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=30','-frames:v','600',
             '-c:v','ffv1',str(path)],check=True,timeout=120)
     camera_context=source/'camera_context.json'
     camera_data=json.loads(camera_context.read_text())
@@ -77,7 +77,7 @@ def make_source(suffix,scratch):
     graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
     folder=source/'capture/native/graphs/base';folder.mkdir(parents=True)
     rows=[]
-    for index in range(480):
+    for index in range(600):
         frame=100+index;time=index/20
         graph.graph['frame']=frame
         (folder/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))

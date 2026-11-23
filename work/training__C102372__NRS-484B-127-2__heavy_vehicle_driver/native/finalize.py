@@ -1,4 +1,4 @@
-"""Saved-only 480-frame truck-following analysis; never accepts a recording."""
+"""Saved-only 600-frame truck-following analysis; never accepts a recording."""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -9,7 +9,7 @@ import subprocess
 
 from measure_gap import measure as measure_single_lane
 
-FRAMES=480
+FRAMES=600
 VIDEOS=('overview.mkv','ego_forward.mkv','lead_gap.mkv','crest_context.mkv')
 ROWS=('native_samples.jsonl','trace.jsonl','capture/evidence.jsonl','video_frames.jsonl')
 
@@ -65,7 +65,7 @@ def finalize(attempt,output):
         raise ValueError('Exact truck-follow case identity differs')
     manifest=json.loads(require(attempt,'capture/manifest.json').read_text())
     if manifest.get('frames')!=FRAMES or manifest.get('extraction_confirmed') is not True:
-        raise ValueError('Complete original 480-frame extraction absent')
+        raise ValueError('Complete original 600-frame extraction absent')
     require(attempt,'native_samples.jsonl')
     value=measure(attempt,suffix)
     groups={name:rows(require(attempt,name)) for name in ROWS}
@@ -129,7 +129,7 @@ def finalize(attempt,output):
             'tolerance':0,'matched':matched,'physical_cause_confirmed':False,
             'cause_evidence':['native_samples.jsonl','road.xodr','following_context.json']}],
         'setup_confirmed':True,'behavior_attempted':True,'maneuver_completed':True,
-        'termination_reason':'full saved 24 s diagnostic','trace_reference':'trace.jsonl',
+        'termination_reason':'full saved 30 s diagnostic','trace_reference':'trace.jsonl',
         'video_references':list(VIDEOS),'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':config['recording_description'],'recording_evidence':recording,
         'physical_failure_flags':['conditions_permit_and_obstacle_pixels_require_independent_review'] if conditions else
@@ -142,7 +142,7 @@ def finalize(attempt,output):
                     value['minimum_body_clearance_m'] if passing_family else value['min_surface_gap_m'],
             'unit':'m','method':'source-hashed truck road-arc surface gap' if conditions else
                               'source-hashed truck body clearance' if passing_family else
-                              'source-hashed road-arc body gap','time_window':'saved 24 s',
+                              'source-hashed road-arc body gap','time_window':'saved 30 s',
             'statistic':'minimum','reference':'native_samples.jsonl'}},
         'provenance_kind':'native' if json.loads((attempt/'following_context.json').read_text())[
             'source_kind']=='native_observation' else 'synthetic_cpu',

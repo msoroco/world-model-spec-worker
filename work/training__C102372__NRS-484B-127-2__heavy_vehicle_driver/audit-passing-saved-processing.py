@@ -1,4 +1,4 @@
-"""Independent raw-source audit of the passing 480-frame saved fixture."""
+"""Independent raw-source audit of the passing 600-frame saved fixture."""
 from __future__ import annotations
 import hashlib
 import json
@@ -43,8 +43,8 @@ def audit():
         raise ValueError('Passing case/scope differs')
     native,trace,evidence,join=(rows(name) for name in (
         'native_samples.jsonl','trace.jsonl','capture/evidence.jsonl','video_frames.jsonl'))
-    if any(len(group)!=480 for group in (native,trace,evidence,join)):
-        raise ValueError('Passing 480-frame join incomplete')
+    if any(len(group)!=600 for group in (native,trace,evidence,join)):
+        raise ValueError('Passing 600-frame join incomplete')
     lanes=[];offsets=[];clearance=math.inf;last_carla=-1
     for i,(n,t,e,j) in enumerate(zip(native,trace,evidence,join)):
         frame=j['carla_frame']
@@ -89,10 +89,10 @@ def audit():
             '-count_frames','-select_streams','v:0','-show_entries','stream=nb_read_frames',
             '-of','default=noprint_wrappers=1:nokey=1',str(SOURCE/name)],
             capture_output=True,text=True,timeout=120)
-        if decoded.returncode or decoded.stdout.strip()!='480' or \
-           report['video_frames'][name]!=480:
+        if decoded.returncode or decoded.stdout.strip()!='600' or \
+           report['video_frames'][name]!=600:
             raise ValueError('Passing video decode/proof differs')
-    return {'passed':True,'frames':480,'opposing_lane_frames':sum(lane==1 for lane in lanes),
+    return {'passed':True,'frames':600,'opposing_lane_frames':sum(lane==1 for lane in lanes),
             'minimum_body_clearance_m':round(clearance,4),
             'final_center_offset_m':round(offsets[-1],4),
             'source_sha256':sha(SOURCE/'native_samples.jsonl'),

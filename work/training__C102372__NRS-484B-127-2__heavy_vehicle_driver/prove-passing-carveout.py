@@ -1,4 +1,4 @@
-"""Two controlled 480-frame source-bound CPU passing diagnostics and negatives."""
+"""Two controlled 600-frame source-bound CPU passing diagnostics and negatives."""
 import json
 from pathlib import Path
 import shutil
@@ -23,7 +23,7 @@ def write_case(passing):
              'passing_attempt':passing,'opposing_traffic_source':'synthetic_empty'}
     (root/'following_context.json').write_text(json.dumps(context,sort_keys=True)+'\n')
     rows=[]
-    for frame in range(480):
+    for frame in range(600):
         t=frame/20
         lead_x=248+8*t
         ego_x=210+(12 if passing else 8)*t

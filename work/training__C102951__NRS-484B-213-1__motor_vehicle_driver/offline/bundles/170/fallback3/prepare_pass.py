@@ -74,7 +74,7 @@ def prepare(raw_folder, review_path, output, config_path):
     review = json.loads(review_path.read_text())
     if (review.get('format') != 'c102951-sightline-review-v1' or
             review.get('source_hashes') != source_hashes or
-            not isinstance(review.get('rows'), list) or len(review['rows']) != 480):
+            not isinstance(review.get('rows'), list) or len(review['rows']) != 600):
         raise ValueError('Sightline review source binding or coverage differs')
     map_info = json.loads(paths['native-map-readback.json'].read_text())
     if (map_info.get('road_sha256') != config.get('road_sha256') or
@@ -89,7 +89,7 @@ def prepare(raw_folder, review_path, output, config_path):
         raise ValueError('Native two-direction map readback differs')
     raw = [json.loads(line) for line in paths['native-raw-actors.jsonl'].read_text().splitlines()]
     frames = [json.loads(line) for line in paths['video_frames.jsonl'].read_text().splitlines()]
-    if len(raw) != 480 or len(frames) != 480:
+    if len(raw) != 600 or len(frames) != 600:
         raise ValueError('Raw actor/video frame coverage differs')
     source_kind = raw[0].get('source_kind')
     if source_kind not in ('synthetic_cpu', 'original_native') or review.get('source_kind') != source_kind:
@@ -105,8 +105,8 @@ def prepare(raw_folder, review_path, output, config_path):
                                    timeout=180, check=True)
             streams = json.loads(probe.stdout)['streams']
             if len(streams) != 1 or streams[0].get('codec_name') != 'ffv1' or int(
-                    streams[0].get('nb_read_frames', 0)) != 480:
-                raise ValueError('Original forward video codec or 480-frame coverage differs')
+                    streams[0].get('nb_read_frames', 0)) != 600:
+                raise ValueError('Original forward video codec or 600-frame coverage differs')
         except (OSError, subprocess.CalledProcessError, KeyError, TypeError, json.JSONDecodeError) as error:
             raise ValueError('Original forward FFV1 video could not be verified') from error
     elif review.get('review_provenance') != 'synthetic_cpu':

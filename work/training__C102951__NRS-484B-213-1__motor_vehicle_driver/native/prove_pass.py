@@ -30,10 +30,10 @@ def fixture(distance):
           'centerline_y_m':0,'crest_profile':'authored_synthetic_probe',
           'highway_status_reviewed':False,'source_kind':'synthetic_cpu'}
     (folder/'road-readback.json').write_text(json.dumps(road,indent=2)+'\n')
-    entry=next(i for i in range(480) if lateral(i)+.9>0)
+    entry=next(i for i in range(600) if lateral(i)+.9>0)
     oncoming_at_zero=.8*entry+4.4+distance+.6*entry
     rows=[]
-    for i in range(480):
+    for i in range(600):
         rows.append({'frame':i,'native_frame':1000+i,'time_s':round(.05+i/20,4),
                      'source_kind':'synthetic_cpu','ego_blueprint':'vehicle.tesla.model3',
                      'ego_x_m':round(.8*i,4),'ego_y_m':round(lateral(i),4),'ego_speed_mps':16,

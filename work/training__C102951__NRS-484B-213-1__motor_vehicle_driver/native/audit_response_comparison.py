@@ -39,10 +39,10 @@ def audit():
     if sources != proof['sources'] or len({item['road-readback.json'] for item in sources.values()}) != 1:
         raise ValueError('Response factorial source or road differs')
     groups = {name: load(folder/'native-observed.jsonl') for name, folder in paths.items()}
-    if any(len(data) != 480 for data in groups.values()):
+    if any(len(data) != 600 for data in groups.values()):
         raise ValueError('Response factorial saved row count differs')
     excluded = {actor+'_'+suffix for actor in ACTORS for suffix in ('speed_mps', 'x_m')}
-    for i in range(480):
+    for i in range(600):
         base, both = groups['none'][i], groups['both'][i]
         if base['frame'] != i or abs(base['time_s']-(i+1)/20) > 1e-6:
             raise ValueError('Response factorial time/frame identity differs')
@@ -99,7 +99,7 @@ def audit():
             else:
                 raise ValueError('Independent response control accepted '+mutation)
     receipt = {'format': 'c102951-independent-response-factorial-audit-v1',
-               'proof_sha256': sha(proof_path), 'saved_rows_checked': 1920,
+               'proof_sha256': sha(proof_path), 'saved_rows_checked': 2400,
                'negative_controls_replayed': replayed,
                'original_native_observed': False, 'accepted_comparison': False,
                'delivery_ready': False}

@@ -26,7 +26,7 @@ def raw(name):
        context['passing_attempt'] is not False:
         raise ValueError('Hold source context differs')
     rows=[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
-    if len(rows)!=480:raise ValueError('Hold raw frame count differs')
+    if len(rows)!=600:raise ValueError('Hold raw frame count differs')
     clearance=math.inf;speed_diff=0;lane_error=0
     for i,row in enumerate(rows):
         if row['native_frame']!=i or abs(row['time_s']-i/20)>.001 or \

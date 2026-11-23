@@ -64,14 +64,14 @@ def extract(root,case):
         measurement=measure(root)
         target_gap=TARGET_GAP_M[case]
     native=rows(root/'native_samples.jsonl');mapping=rows(root/'video_frames.jsonl')
-    if len(native)!=480 or len(mapping)!=480:raise ValueError('Full 480-frame trigger join required')
+    if len(native)!=600 or len(mapping)!=600:raise ValueError('Full 600-frame trigger join required')
     camera=json.loads((root/'camera_context.json').read_text())
     if camera.get('name')!='overview' or camera.get('source_kind') not in (
             'synthetic_cpu_camera_emulation','original_native_camera_readback'):
         raise ValueError('Overview camera readback absent')
     for key in ('width','height','fov_deg'):
         if type(camera.get(key)) not in (int,float):raise ValueError('Overview calibration absent')
-    if decoded_video(root/'overview.mkv')!=(camera['width'],camera['height'],480):
+    if decoded_video(root/'overview.mkv')!=(camera['width'],camera['height'],600):
         raise ValueError('Original overview dimensions or frame count differ')
     road=ET.parse(root/'road.xodr').getroot().find('road')
     profile=road.findall('elevationProfile/elevation')

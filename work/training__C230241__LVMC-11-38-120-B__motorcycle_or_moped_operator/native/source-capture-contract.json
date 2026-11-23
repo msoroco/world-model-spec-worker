@@ -1,0 +1,58 @@
+{
+  "format": "c230241-native-lighting-source-contract-v1",
+  "case_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__reference",
+  "selection_status": "draft_not_selected",
+  "native_runner": "native/native_runner.py",
+  "rate_hz": 20,
+  "frames": 600,
+  "duration_s": 30,
+  "raw_native_sources": [
+    "native-lighting-frames.jsonl",
+    "video_frames.jsonl",
+    "native-lighting-context.json",
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv",
+    "raw.mkv"
+  ],
+  "independent_review_source": "lighting-review.jsonl",
+  "review_context_source": "lighting-review-context.json",
+  "review_required_fields": [
+    "video_frame",
+    "native_frame",
+    "time_s",
+    "utc_s",
+    "headlamp_lit",
+    "tail_lamp_lit",
+    "headlamp_white",
+    "tail_lamp_red",
+    "front_visible_ft",
+    "rear_visible_ft",
+    "discernible_500ft"
+  ],
+  "review_context_required_fields": [
+    "vehicle_class_source",
+    "clock_source",
+    "range_calibration_source",
+    "visibility_review_source",
+    "vehicle_covered",
+    "headlamp_count",
+    "tail_lamp_rear_mounted",
+    "sunset_utc_s",
+    "next_sunrise_utc_s",
+    "source_sha256"
+  ],
+  "joining_script": "native/join_lighting_review.py",
+  "measurement_script": "native/measure_lighting.py",
+  "source_rule": "Original Native motion and frame map are immutable; independently source lamp appearance, calibrated forward/rear range, civil clock and 500ft discernibility. Requested light state or sun altitude alone cannot populate observed review fields.",
+  "physical_visibility_verified": false,
+  "legal_verdict": null,
+  "next_cpu_work": [
+    "Acquire and bind all four decoded 600-frame original camera streams and Native trace to calibrated review",
+    "Complete selected exact construction and actual saved-processing positive/missing-source proofs",
+    "Build controlled contrast and candidate fallbacks with independent audits"
+  ],
+  "source_binding_script": "native/bind_lighting_sources.py",
+  "source_binding_proof": "native/source-binding-proof.json"
+}

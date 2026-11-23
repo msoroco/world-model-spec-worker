@@ -33,18 +33,18 @@ def audit():
         raise ValueError('Authored request claims observed or ready status')
     tree = ET.parse(road)
     roads = tree.findall('.//road')
-    if len(roads) != 1 or roads[0].attrib['id'] != '1' or float(roads[0].attrib['length']) != 800:
+    if len(roads) != 1 or roads[0].attrib['id'] != '1' or float(roads[0].attrib['length']) != 900:
         raise ValueError('Two-way road envelope differs')
     geometry = tree.find('.//planView/geometry')
-    if float(geometry.attrib['x']) != -200 or float(geometry.attrib['length']) != 800:
+    if float(geometry.attrib['x']) != -300 or float(geometry.attrib['length']) != 900:
         raise ValueError('Road geometry does not contain all traffic')
     lanes = {int(l.attrib['id']): l.attrib['type'] for l in tree.findall('.//lane')}
     if lanes != {-1: 'driving', 0: 'none', 1: 'driving'}:
         raise ValueError('Exactly two opposing driving lanes required')
     pieces = tree.findall('.//elevationProfile/elevation')
-    if [float(p.attrib['s']) for p in pieces] != [0, 200, 350, 500]:
+    if [float(p.attrib['s']) for p in pieces] != [0, 300, 450, 600]:
         raise ValueError('Crest profile stations differ')
-    if abs(elevation(pieces[1], 350)-1.5) > 1e-6 or abs(elevation(pieces[2], 500)) > 1e-6:
+    if abs(elevation(pieces[1], 450)-1.5) > 1e-6 or abs(elevation(pieces[2], 600)) > 1e-6:
         raise ValueError('Authored crest discontinuity')
     entries = manifest['entries']
     if len(entries) != 12 or {(e['case_id'], e['candidate_id']) for e in entries} != {
@@ -69,8 +69,8 @@ def audit():
         if policies[entry['candidate_id']] != policy:
             raise ValueError('Policy changes between sweep probes')
         rows = [json.loads(line) for line in track.read_text().splitlines()]
-        if len(rows) != 480:
-            raise ValueError('24-second Native request incomplete')
+        if len(rows) != 600:
+            raise ValueError('30-second Native request incomplete')
         for i, row in enumerate(rows):
             if (row['frame'] != i or abs(row['time_s']-i/20) > 1e-6 or
                     row['source_kind'] != 'authored_native_request' or
@@ -82,7 +82,7 @@ def audit():
             x, y = row['ego_center_xy_m']
             ox, oy = row['overtaken_center_xy_m']
             ax, ay = row['oncoming_center_xy_m']
-            if (not all(math.isfinite(v) and -200 <= v <= 600 for v in (x, ox, ax)) or
+            if (not all(math.isfinite(v) and -300 <= v <= 600 for v in (x, ox, ax)) or
                     oy != -1.75 or ay != 1.75 or not -1.75 <= y <= 1.75 or
                     row['overtaken_speed_mps'] != 8 or row['oncoming_speed_mps'] != 12 or
                     row['ego_speed_mps'] != policy['ego_speed_mps']):
@@ -108,7 +108,7 @@ def audit():
                'assignment_id': AID, 'road_sha256': sha(road),
                'manifest_sha256': sha(HERE/'drafts/manifest.json'),
                'case_count': 3, 'candidate_count_per_case': 4,
-               'request_frame_rows': 5760,
+               'request_frame_rows': 7200,
                'original_native_observed': False,
                'physical_or_legal_result_claimed': False,
                'delivery_ready': False}

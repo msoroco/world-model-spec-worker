@@ -1,4 +1,4 @@
-"""Full 480-frame synthetic saved-processing proof for planned passing case."""
+"""Full 600-frame synthetic saved-processing proof for planned passing case."""
 from __future__ import annotations
 import importlib.util
 import json
@@ -124,7 +124,7 @@ def main():
     except ValueError as error:
         if 'Missing required source: native_samples.jsonl' not in str(error):raise
     else:raise AssertionError('Missing passing Native source accepted')
-    return {'passed':True,'case_id':ASSIGNMENT+'__'+CASE,'frames':480,
+    return {'passed':True,'case_id':ASSIGNMENT+'__'+CASE,'frames':600,
             'video_frames':report['video_frames'],
             'minimum_body_clearance_m':result['measured_values']['truck_passing_sequence'][
                 'minimum_body_clearance_m'],

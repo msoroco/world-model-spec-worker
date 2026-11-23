@@ -8,7 +8,7 @@ import statistics
 import xml.etree.ElementTree as ET
 
 RATE_HZ = 20
-FRAMES = 480
+FRAMES = 600
 WIDTH_MIN_M = 80 * 0.0254
 GAP_LIMIT_M = 500 * 0.3048
 
@@ -88,7 +88,7 @@ def measure(source_dir):
         raise ValueError('Missing conditions-permit source status')
     rows = [json.loads(line) for line in (source_dir / 'native_samples.jsonl').read_text().splitlines() if line.strip()]
     if len(rows) != FRAMES:
-        raise ValueError('Full 480-frame original source required')
+        raise ValueError('Full 600-frame original source required')
     gaps = []
     road_gaps = []
     for index, row in enumerate(rows):

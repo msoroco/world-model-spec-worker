@@ -28,7 +28,7 @@ right=road.findall('lanes/laneSection/right/lane')
 if [(int(l.get('id')),float(l.find('width').get('a'))) for l in right]!=[(-1,4.0),(-2,4.0)]:
     raise AssertionError('Independent road lane readback differs')
 rows=[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
-if len(rows)!=480 or [row['native_frame'] for row in rows]!=list(range(480)):
+if len(rows)!=600 or [row['native_frame'] for row in rows]!=list(range(600)):
     raise AssertionError('Independent frame continuity differs')
 gaps=[]
 for row in rows:

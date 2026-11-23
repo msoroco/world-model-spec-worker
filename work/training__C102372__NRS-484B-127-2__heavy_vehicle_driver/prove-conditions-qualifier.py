@@ -1,4 +1,4 @@
-"""Source-hashed 480-frame lead-braking controlled pair and adversarial negatives."""
+"""Source-hashed 600-frame lead-braking controlled pair and adversarial negatives."""
 import json
 from pathlib import Path
 import shutil
@@ -23,7 +23,7 @@ def write_case(event):
              'event':'lead_brake_with_obstacle' if event else 'steady'}
     (root/'following_context.json').write_text(json.dumps(context,sort_keys=True)+'\n')
     rows=[]
-    for frame in range(480):
+    for frame in range(600):
         t=frame/20
         if event:
             if t<=8:lead_x,lead_speed=187+8*t,8

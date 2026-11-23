@@ -33,7 +33,7 @@ def audit():
         if d not in cache:
             actor=CASE/'native/saved-fixtures'/str(d)/'native-observed.jsonl'
             rows=[json.loads(line) for line in actor.read_text().splitlines()]
-            if len(rows)!=480:raise ValueError('Passing saved row count differs')
+            if len(rows)!=600:raise ValueError('Passing saved row count differs')
             entry=next(i for i,r in enumerate(rows) if r['ego_y_m']+.9>0)
             passed=False;returned=None;nonpositive=None
             for i,r in enumerate(rows):
@@ -41,12 +41,12 @@ def audit():
                 if i>=entry and returned is None and round(r['oncoming_x_m']-r['ego_x_m']-4.4,3)<=0:nonpositive=i if nonpositive is None else nonpositive
                 if passed and r['ego_y_m']+.9<=0:returned=i;break
             cache[d]=(sha(actor),round(rows[entry]['oncoming_x_m']-rows[entry]['ego_x_m']-4.4,3),nonpositive,returned)
-            rows_checked+=480
+            rows_checked+=600
         if (row['saved_actor_sha256'],row['synthetic_entry_gap_m'],row['synthetic_first_nonpositive_gap_frame'],row['synthetic_return_frame'])!=cache[d]:
             raise ValueError('Passing statutory saved metric differs')
         if row['synthetic_oncoming_speed_drop_mps']!=0 or row['synthetic_overtaken_speed_drop_mps']!=0:
             raise ValueError('Constant-speed saved response differs')
-    if seen!=expected or rows_checked!=1440:raise ValueError('Passing statutory coverage incomplete')
+    if seen!=expected or rows_checked!=1800:raise ValueError('Passing statutory coverage incomplete')
     result={'format':'c102951-independent-statutory-audit-v1','topics':2,'rows':6,
             'saved_rows_checked':rows_checked,'review_sha256':sha(path),
             'legal_coverage_ready':False,'delivery_ready':False}

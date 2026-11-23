@@ -6,7 +6,7 @@ CANDIDATES=('primary','fallback1','fallback2','fallback3')
 TARGET_GAP_M={'probe_1':165.,'probe_2':140.}
 BASE={'ego_target_speed_mps':8.,'lead_target_speed_mps':8.,
       'gap_controller_gain_per_s':.35,'overview_fov_deg':90.,
-      'overview_height_m':7.,'rate_hz':20,'duration_s':24}
+      'overview_height_m':7.,'rate_hz':20,'duration_s':30}
 CHANGES={
     'primary':{},
     'fallback1':{'ego_target_speed_mps':7.5},
@@ -15,7 +15,7 @@ CHANGES={
 }
 TRIGGERS={
     'fallback1':{'metric':'min_surface_gap_m','op':'<','threshold':152.4,
-        'source':'original full-body truck footprints, Native road elevation and 480-frame source hashes'},
+        'source':'original full-body truck footprints, Native road elevation and 600-frame source hashes'},
     'fallback2':{'metric':'max_gap_shortfall_m','op':'>','threshold':2.,
         'source':'original full-body truck footprints and target gap over joined Native frames'},
     'fallback3':{'metric':'min_projected_truck_frame_margin_px','op':'<','threshold':40.,

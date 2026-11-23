@@ -9,7 +9,7 @@ CANDIDATES=('primary','fallback1','fallback2','fallback3')
 BASE={'ego_speed_mps':8.,'lead_speed_mps':8.,'initial_horizontal_gap_m':155.,
       'gap_gain':.25,'ego_brake_start_s':9.,'ego_brake_stop_s':13.,
       'lead_brake_start_s':8.,'lead_brake_stop_s':10.,
-      'obstacle_x_m':285.,'rate_hz':20,'duration_s':24}
+      'obstacle_x_m':285.,'rate_hz':20,'duration_s':30}
 CHANGES={
     'conditions_steady':{
         'primary':{},'fallback1':{'initial_horizontal_gap_m':160.},
@@ -21,18 +21,18 @@ CHANGES={
 TRIGGERS={
     'conditions_steady':{
         'fallback1':{'metric':'minimum_surface_gap_m','op':'<','threshold':160.,
-                     'source':'480 source-hashed Native truck bodies and hill-crest road surface'},
+                     'source':'600 source-hashed Native truck bodies and hill-crest road surface'},
         'fallback2':{'metric':'surface_gap_compression_m','op':'>','threshold':1.,
-                     'source':'480 source-hashed Native body/road-arc gap samples'},
+                     'source':'600 source-hashed Native body/road-arc gap samples'},
         'fallback3':{'metric':'maximum_speed_difference_mps','op':'>','threshold':1.,
-                     'source':'480 source-hashed Native ego/lead velocity readbacks'}},
+                     'source':'600 source-hashed Native ego/lead velocity readbacks'}},
     'conditions_lead_brake':{
         'fallback1':{'metric':'minimum_surface_gap_m','op':'<','threshold':142.,
-                     'source':'480 source-hashed Native truck bodies and hill-crest road surface'},
+                     'source':'600 source-hashed Native truck bodies and hill-crest road surface'},
         'fallback2':{'metric':'surface_gap_compression_m','op':'>','threshold':15.,
-                     'source':'480 source-hashed Native body/road-arc gap samples'},
+                     'source':'600 source-hashed Native body/road-arc gap samples'},
         'fallback3':{'metric':'minimum_lead_obstacle_clearance_m','op':'<','threshold':20.,
-                     'source':'480 source-hashed Native lead and stopped-obstacle body footprints'}},
+                     'source':'600 source-hashed Native lead and stopped-obstacle body footprints'}},
 }
 
 
@@ -49,7 +49,7 @@ def construction(case,candidate):
 
 
 def request(case,candidate,frame):
-    if not isinstance(frame,int) or not 0<=frame<480:
+    if not isinstance(frame,int) or not 0<=frame<600:
         raise ValueError('Full conditions frame index required')
     k=construction(case,candidate)['knobs'];t=frame/20
     if case=='conditions_steady':
@@ -81,7 +81,7 @@ def check():
             raise ValueError('Conditions candidates/triggers repeat')
         for candidate,v in variants.items():
             k=v['knobs']
-            if not (k['rate_hz']==20 and k['duration_s']==24 and
+            if not (k['rate_hz']==20 and k['duration_s']==30 and
                     k['initial_horizontal_gap_m']>=155 and
                     0<k['ego_speed_mps']<=8 and 0<k['lead_speed_mps']<=8 and
                     0<k['gap_gain']<=.5 and

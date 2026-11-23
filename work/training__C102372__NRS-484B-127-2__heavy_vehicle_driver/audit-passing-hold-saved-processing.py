@@ -1,4 +1,4 @@
-"""Independent raw 480-frame audit of the no-passing saved control."""
+"""Independent raw 600-frame audit of the no-passing saved control."""
 from __future__ import annotations
 import hashlib
 import json
@@ -40,7 +40,7 @@ def audit():
         raise ValueError('Hold source/scope differs')
     native,trace,evidence,join=(rows(name) for name in (
         'native_samples.jsonl','trace.jsonl','capture/evidence.jsonl','video_frames.jsonl'))
-    if any(len(group)!=480 for group in (native,trace,evidence,join)):
+    if any(len(group)!=600 for group in (native,trace,evidence,join)):
         raise ValueError('Hold frame join incomplete')
     clearance=math.inf;last_frame=-1
     for i,(n,t,e,j) in enumerate(zip(native,trace,evidence,join)):
@@ -79,7 +79,7 @@ def audit():
     passing=ROOT/'.runtime-work/c102372-passing-saved/passing_overtake-positive'
     other=[json.loads(line) for line in (passing/'native_samples.jsonl').read_text().splitlines()]
     other_result=json.loads((passing/'result.json').read_text())
-    if len(other)!=480 or other_result['measured_values']['truck_passing_sequence'][
+    if len(other)!=600 or other_result['measured_values']['truck_passing_sequence'][
             'passing_sequence_observed'] is not True:
         raise ValueError('Controlled passing partner absent')
     if native[0]['ego']['center_xy_m']!=other[0]['ego']['center_xy_m']:
@@ -96,11 +96,11 @@ def audit():
             '-count_frames','-select_streams','v:0','-show_entries','stream=nb_read_frames',
             '-of','default=noprint_wrappers=1:nokey=1',str(SOURCE/name)],
             capture_output=True,text=True,timeout=120)
-        if decoded.returncode or decoded.stdout.strip()!='480' or report['video_frames'][name]!=480:
+        if decoded.returncode or decoded.stdout.strip()!='600' or report['video_frames'][name]!=600:
             raise ValueError('Hold source video decode differs')
-    return {'passed':True,'frames':480,'minimum_body_clearance_m':round(clearance,4),
+    return {'passed':True,'frames':600,'minimum_body_clearance_m':round(clearance,4),
             'passing_sequence_observed':False,'source_sha256':sha(SOURCE/'native_samples.jsonl'),
-            'controlled_lead_frames':480,'physical_or_accepted_claim':False}
+            'controlled_lead_frames':600,'physical_or_accepted_claim':False}
 
 
 if __name__=='__main__':print(json.dumps(audit(),sort_keys=True))

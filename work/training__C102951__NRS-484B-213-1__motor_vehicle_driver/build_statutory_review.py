@@ -23,7 +23,7 @@ def build():
     response_by_distance={item['distance_m']:item['measurement'] for item in responses['fixtures']
                           if item['variant']=='constant_speed'}
     topics=source['topics']
-    if (source['original_assignment_id']!=AID or source['law']['text']!=assignment['law_record']['text'] or
+    if (source['original_assignment_id']!=AID or source['law']['text']!=assignment['law']['text'] or
             set(topics)!={'text-0','reviewed-scope-0'} or
             {row['requirement'] for row in plan['requirement_dispositions']}!=set(topics) or
             len(proof['positives'])!=3):

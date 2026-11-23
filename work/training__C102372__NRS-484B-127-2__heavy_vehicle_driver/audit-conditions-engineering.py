@@ -40,7 +40,7 @@ def raw(case,name):
        context['source_kind']!='synthetic_cpu_fixture':
         raise ValueError('Conditions trigger context differs')
     rows=[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
-    if len(rows)!=480:raise ValueError('Conditions trigger frame count differs')
+    if len(rows)!=600:raise ValueError('Conditions trigger frame count differs')
     profile=ET.parse(root/'road.xodr').getroot().find('road').findall('elevationProfile/elevation')
     gaps=[];speed=0;obstacle=math.inf
     for i,row in enumerate(rows):

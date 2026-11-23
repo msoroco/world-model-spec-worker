@@ -37,7 +37,7 @@ def audit():
                   'highway_status_reviewed':False,'source_kind':'synthetic_cpu'}:
             raise ValueError('Pass road readback differs')
         rows=[json.loads(line) for line in actor_path.read_text().splitlines()]
-        if len(rows)!=480:raise ValueError('Pass actor row count differs')
+        if len(rows)!=600:raise ValueError('Pass actor row count differs')
         left=[];full=[];abreast=[];returned=[];gaps=[];eyes=[]
         passed=False
         for i,row in enumerate(rows):
@@ -62,7 +62,7 @@ def audit():
         if not left or not full or not abreast or not returned:raise ValueError('Pass event absent')
         metric=positives[distance]
         expected={'format':'c102951-saved-pass-measurement-v1','source_kind':'synthetic_cpu',
-                  'frames':480,'first_left_of_center_frame':left[0],
+                  'frames':600,'first_left_of_center_frame':left[0],
                   'first_full_left_frame':full[0],'first_abreast_frame':abreast[0],
                   'first_return_after_pass_frame':returned[0],
                   'left_of_center_frames':len(left),
@@ -81,7 +81,7 @@ def audit():
         events[str(distance)]={'entry':left[0],'abreast':abreast[0],
                                'return':returned[0],
                                'first_nonpositive_gap':expected['first_nonpositive_pre_return_oncoming_gap_frame']}
-    if total!=1440:raise ValueError('Pass audit row coverage differs')
+    if total!=1800:raise ValueError('Pass audit row coverage differs')
     result={'format':'c102951-independent-saved-pass-audit-v1',
             'probe_count':3,'negative_count':18,'saved_rows_checked':total,
             'events':events,'proof_sha256':sha(proof_path),

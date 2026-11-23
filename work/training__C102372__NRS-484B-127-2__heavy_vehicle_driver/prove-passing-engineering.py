@@ -1,4 +1,4 @@
-"""Synthetic 480-frame measured triggers for four passing Native requests."""
+"""Synthetic 600-frame measured triggers for four passing Native requests."""
 from __future__ import annotations
 import json
 from pathlib import Path
@@ -27,7 +27,7 @@ def write_case(name,speed=None,label=None):
         'source_kind':'synthetic_cpu_fixture','same_direction_lane_count':1,
         'passing_attempt':True,'opposing_traffic_source':'synthetic_empty'},sort_keys=True)+'\n')
     rows=[]
-    for frame in range(480):
+    for frame in range(600):
         value=request(name,frame);t=value['time_s'];ego_speed=speed or value['ego_speed_mps']
         x=210+ego_speed*t;y=value['ego_target_y_m'];lead_x=248+8*t
         rows.append({'native_frame':frame,'time_s':t,'opposing_lane_actors':[],

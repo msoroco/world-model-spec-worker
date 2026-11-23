@@ -19,7 +19,7 @@ def check(bundle):
     p = json.loads((bundle / "case-plan.json").read_text())
     suffix = cfg["case_id"].split("__")[-1]
     candidate = cfg["candidate_id"]
-    law = a["law_record"]["text"]
+    law = a["law"]["text"]
     if (suffix not in CASES or candidate not in POLICIES or
             sha(bundle / "assignment-source.json") != ASSIGNMENT_SHA or
             cfg["assignment_id"] != a["assignment_id"] or
@@ -48,6 +48,10 @@ def check(bundle):
     policy = POLICIES[candidate]
     if (cfg["format"] != "c10365-officer-native-request-v1" or
             cfg["rate_hz"] != RATE or cfg["frames"] != FRAMES or
+            cfg.get("camera_sources") != {"overview": [1920, 1080],
+                                          "rider_forward": [1280, 720],
+                                          "officer_side": [1280, 720],
+                                          "device_side": [1280, 720]} or
             cfg["device_id"] != "3651" or cfg["device_station_x_m"] != DEVICE_X or
             cfg["rider_blueprint"] != "vehicle.bh.crossbike" or
             cfg["officer_blueprint_filter"] != "walker.pedestrian.*" or

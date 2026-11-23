@@ -58,7 +58,7 @@ def audit():
             raise ValueError('Conditions context or scope differs')
         native,trace,evidence,join=(rows(root,name) for name in (
             'native_samples.jsonl','trace.jsonl','capture/evidence.jsonl','video_frames.jsonl'))
-        if any(len(group)!=480 for group in (native,trace,evidence,join)):
+        if any(len(group)!=600 for group in (native,trace,evidence,join)):
             raise ValueError('Conditions full saved join absent')
         profile=ET.parse(root/'road.xodr').getroot().find('road').findall('elevationProfile/elevation')
         minimum=math.inf;last=-1
@@ -91,7 +91,7 @@ def audit():
                 '-count_frames','-select_streams','v:0','-show_entries','stream=nb_read_frames',
                 '-of','default=noprint_wrappers=1:nokey=1',str(root/name)],
                 capture_output=True,text=True,timeout=120)
-            if decoded.returncode or decoded.stdout.strip()!='480' or report['video_frames'][name]!=480:
+            if decoded.returncode or decoded.stdout.strip()!='600' or report['video_frames'][name]!=600:
                 raise ValueError('Conditions video decode differs')
         pair[case]=native
         checked[case]={'event':target,'minimum_surface_gap_m':round(minimum,4),
@@ -108,7 +108,7 @@ def audit():
        brake[160]['lead']['speed_mps']!=8 or brake[200]['lead']['speed_mps']!=0 or \
        brake[180]['ego']['speed_mps']!=8 or brake[260]['ego']['speed_mps']!=0:
         raise ValueError('Conditions controlled braking event differs')
-    return {'passed':True,'frames_per_case':480,'pre_event_fixed_frames':161,
+    return {'passed':True,'frames_per_case':600,'pre_event_fixed_frames':161,
             'cases':checked,'physical_or_accepted_claim':False}
 
 

@@ -196,6 +196,19 @@ def execute(config, output, host, port):
                                       str(output / (view + '.mkv'))], timeout=300)
             encoder_codes[view] = encoded.returncode
             require(encoded.returncode == 0, view + ' encoder failed')
+        inputs = [item for view in VIEWS for item in
+                  ('-i', str(output / (view + '.mkv')))]
+        layout = ('[0:v]scale=960:540[v0];[1:v]scale=960:540[v1];'
+                  '[2:v]scale=960:540[v2];[3:v]scale=960:540[v3];'
+                  '[v0][v1][v2][v3]xstack=inputs=4:'
+                  'layout=0_0|960_0|0_540|960_540[out]')
+        composed = subprocess.run(
+            ['ffmpeg', '-nostdin', '-v', 'error', *inputs,
+             '-filter_complex', layout, '-map', '[out]',
+             '-frames:v', str(FRAMES), '-c:v', 'ffv1',
+             str(output / 'raw.mkv')], timeout=900)
+        encoder_codes['raw'] = composed.returncode
+        require(composed.returncode == 0, 'Composed primary video encoder failed')
         (output / 'native-lighting-context.json').write_text(json.dumps({
             'source_kind': 'original_native_observation',
             'vehicle_blueprint': config['vehicle_blueprint'],

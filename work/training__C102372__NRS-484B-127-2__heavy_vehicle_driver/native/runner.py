@@ -66,7 +66,7 @@ def check(config):
     if candidate not in CANDIDATES or config.get('knobs')!=plan_for(case,candidate)['knobs']:
         raise ValueError('Exact truck candidate knobs differ')
     if config.get('rate_hz')!=RATE_HZ or config.get('duration_s')!=FRAMES/RATE_HZ:
-        raise ValueError('Full 480-frame Native window differs')
+        raise ValueError('Full 600-frame Native window differs')
     expected=cameras(candidate)
     identities=[{key:camera[key] for key in ('name','width','height')} for camera in expected]
     if config.get('cameras')!=identities:

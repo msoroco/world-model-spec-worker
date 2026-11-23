@@ -21,15 +21,15 @@ POLICIES = {
 }
 ROAD = '''<?xml version="1.0" standalone="yes"?>
 <OpenDRIVE>
-  <header revMajor="1" revMinor="4" name="C102951-two-way-crest" version="1.00" date="2026-11-08" north="0" south="0" east="600" west="-200" vendor="worker"/>
-  <road name="C102951 two-lane two-direction hill crest" length="800" id="1" junction="-1">
+  <header revMajor="1" revMinor="4" name="C102951-two-way-crest" version="1.00" date="2026-11-08" north="0" south="0" east="600" west="-300" vendor="worker"/>
+  <road name="C102951 two-lane two-direction hill crest" length="900" id="1" junction="-1">
     <link/><type s="0" type="rural"><speed max="35" unit="mph"/></type>
-    <planView><geometry s="0" x="-200" y="0" hdg="0" length="800"><line/></geometry></planView>
+    <planView><geometry s="0" x="-300" y="0" hdg="0" length="900"><line/></geometry></planView>
     <elevationProfile>
       <elevation s="0" a="0" b="0" c="0" d="0"/>
-      <elevation s="200" a="0" b="0" c="0.0002" d="-0.000000888888888889"/>
-      <elevation s="350" a="1.5" b="0" c="-0.0002" d="0.000000888888888889"/>
-      <elevation s="500" a="0" b="0" c="0" d="0"/>
+      <elevation s="300" a="0" b="0" c="0.0002" d="-0.000000888888888889"/>
+      <elevation s="450" a="1.5" b="0" c="-0.0002" d="0.000000888888888889"/>
+      <elevation s="600" a="0" b="0" c="0" d="0"/>
     </elevationProfile>
     <lanes><laneOffset s="0" a="0" b="0" c="0" d="0"/><laneSection s="0">
       <left><lane id="1" type="driving" level="false"><link/><width sOffset="0" a="3.5" b="0" c="0" d="0"/><roadMark sOffset="0" type="solid" color="white" width="0.12"/></lane></left>
@@ -60,10 +60,10 @@ def lateral(frame, policy):
 
 
 def requests(distance, policy):
-    entry = next(i for i in range(480) if lateral(i, policy)+.9 > 0)
+    entry = next(i for i in range(600) if lateral(i, policy)+.9 > 0)
     ego_entry_x = 10 + policy['ego_speed_mps']*entry/20
     oncoming_zero_x = ego_entry_x + 4.4 + distance + 12*entry/20
-    for i in range(480):
+    for i in range(600):
         t = i/20
         yield {'frame': i, 'time_s': round(t, 4),
                'source_kind': 'authored_native_request',
@@ -103,7 +103,7 @@ def build():
                       'case_id': AID+'__'+str(distance), 'distance_m': distance,
                       'candidate_id': candidate, 'cell_id': 'C102951',
                       'law_id': 'NRS-484B-213-1', 'actor': 'motor_vehicle_driver',
-                      'rate_hz': 20, 'duration_s': 24, 'policy': policy,
+                      'rate_hz': 20, 'duration_s': 30, 'policy': policy,
                       'assignment_sha256': sha(source_path),
                       'case_plan_sha256': sha(plan_path), 'road_sha256': sha(road),
                       'tracks_sha256': sha(tracks), 'status': 'unselected_native_request'}

@@ -98,7 +98,7 @@ def audit():
         if lanes != {-1: 'driving', 0: 'none', 1: 'driving'}:
             raise ValueError('Copied road lane geometry differs')
         result = run(folder, distance, candidate)
-        if result.returncode != 0 or json.loads(result.stdout)['requested_frames'] != 480:
+        if result.returncode != 0 or json.loads(result.stdout)['requested_frames'] != 600:
             raise ValueError('Copied runner CPU check failed')
         checks += 1
         with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:

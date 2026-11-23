@@ -19,7 +19,7 @@ def fixed(row):
 
 def compare(paths):
     all_rows=[rows(path) for path in paths]
-    if any(len(group)!=480 for group in all_rows):raise ValueError('Sweep frame count differs')
+    if any(len(group)!=600 for group in all_rows):raise ValueError('Sweep frame count differs')
     for i,group in enumerate(zip(*all_rows)):
         if len({fixed(row) for row in group})!=1 or any(row['frame']!=i for row in group):
             raise ValueError('Sweep fixed actor context differs')

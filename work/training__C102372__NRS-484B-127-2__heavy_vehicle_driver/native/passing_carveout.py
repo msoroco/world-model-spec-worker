@@ -32,7 +32,7 @@ def measure(source_dir):
             context.get('opposing_traffic_source') not in ('synthetic_empty','original_observation'):
         raise ValueError('Passing context differs')
     rows=[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
-    if len(rows)!=480:raise ValueError('Full passing frame source absent')
+    if len(rows)!=600:raise ValueError('Full passing frame source absent')
     offsets=[];lane_ids=[];min_clearance=math.inf
     for index,row in enumerate(rows):
         if row.get('native_frame')!=index or abs(row.get('time_s',-1)-index/20)>.002:
@@ -65,7 +65,7 @@ def measure(source_dir):
             any(abs(offsets[i])<12 and lane_ids[i]==1 for i in range(80,400)))
     if context['passing_attempt']!=passed:
         raise ValueError('Passing sequence differs from context')
-    return {'format':'c102372-passing-diagnostic-v1','frames':480,
+    return {'format':'c102372-passing-diagnostic-v1','frames':600,
             'passing_sequence_observed':passed,
             'initial_center_offset_m':round(offsets[0],4),
             'final_center_offset_m':round(offsets[-1],4),

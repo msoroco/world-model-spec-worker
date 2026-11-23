@@ -61,7 +61,7 @@ def measure(root):
             context.get('lane_id')!=-1 or context.get('overtaking') is not False:
         raise ValueError('Two-lane source context differs')
     rows=[json.loads(line) for line in (root/'native_samples.jsonl').read_text().splitlines()]
-    if len(rows)!=480:raise ValueError('Full two-lane frame source absent')
+    if len(rows)!=600:raise ValueError('Full two-lane frame source absent')
     gaps=[];surface_gaps=[]
     for index,row in enumerate(rows):
         if row.get('native_frame')!=index or abs(row.get('time_s',-1)-index/20)>.002:
@@ -82,7 +82,7 @@ def measure(root):
         surface_gaps.append(road_distance(max(x for x,_ in e),min(x for x,_ in l),profile))
     relation='below' if max(surface_gaps)<500*.3048-.1 else 'boundary_unresolved'
     return {'format':'c102372-two-lane-exception-diagnostic-v1',
-        'frames':480,'same_direction_lane_count':2,
+        'frames':600,'same_direction_lane_count':2,
         'minimum_horizontal_body_gap_m':round(min(gaps),5),
         'min_surface_gap_m':round(min(surface_gaps),6),
         'max_surface_gap_m':round(max(surface_gaps),6),
