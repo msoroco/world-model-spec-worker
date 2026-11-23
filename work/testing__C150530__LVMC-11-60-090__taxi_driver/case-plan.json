@@ -24,9 +24,104 @@
   "topic_inventory": {
     "exact-text": "Any cab, upon leaving any stand designated in accordance with the provisions of this Section, shall execute a right-hand turn, when a sign is posted giving notice of this requirement, at the first street intersection after it leaves such stand."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+      "law_id": "LVMC-11-60-090",
+      "case_status": "cpu_route_candidate_only",
+      "layout": "candidates/near_stand.json",
+      "intended_maneuver": "right turn at first street intersection",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "CPU topology checks found no case-specific physical failure; Native curb departure and visibility remain untested and will be assessed after an original attempt.",
+        "candidates": []
+      },
+      "candidate_xodr": "candidates/near_stand.xodr",
+      "topology_receipt": "candidates/near_stand.topology.json"
+    },
+    {
+      "case_id": "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand",
+      "law_id": "LVMC-11-60-090",
+      "case_status": "cpu_route_candidate_only",
+      "layout": "candidates/far_stand.json",
+      "intended_maneuver": "right turn at first street intersection",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "CPU topology checks found no case-specific physical failure; Native curb departure and visibility remain untested and will be assessed after an original attempt.",
+        "candidates": []
+      },
+      "candidate_xodr": "candidates/far_stand.xodr",
+      "topology_receipt": "candidates/far_stand.topology.json"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stand_to_first_intersection_distance",
+      "case_ids": [
+        "testing__C150530__LVMC-11-60-090__taxi_driver__near_stand",
+        "testing__C150530__LVMC-11-60-090__taxi_driver__far_stand"
+      ],
+      "fixed_conditions": [
+        "same assigned law, actor, one-way right-turn cell and posted-notice meaning",
+        "same approach, first-junction and south exit topology",
+        "same planned right-turn controller policy and camera/duration contract once authored"
+      ],
+      "deliberate_differences": [
+        "stand center and departure point move 20 metres upstream together; no legal distance threshold asserted"
+      ],
+      "status": "geometry_candidate_only",
+      "candidate_audit": "candidates/comparison-audit.json"
+    }
+  ],
+  "observations": [
+    {
+      "name": "stand_departure",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    },
+    {
+      "name": "first_intersection_entry",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    },
+    {
+      "name": "first_intersection_exit",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    },
+    {
+      "name": "posted_notice",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    },
+    {
+      "name": "stand_designation",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    },
+    {
+      "name": "cab_license",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    },
+    {
+      "name": "jurisdiction",
+      "mandatory": true,
+      "source": "saved original trace and documented source record required"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
@@ -51,17 +146,55 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Candidate route has not been loaded by Native/CARLA or bound to an original map; designated stand and sign installation need original provenance.",
+    "saved_turn_check.py verifies source-file hashes and event ordering on CPU fixtures; no original trace or sensor evidence has been processed.",
+    "Native construction/controller, exact finalizer, semantic proposals, source-bound compatibility, delivery and comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "G1",
+        "requirement": "qualifying cab and licensing",
+        "source": {
+          "path": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+          "sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9"
+        },
+        "why_existing_insufficient": "No accepted recording is listed for this assignment; original documentary and motion evidence are still required."
+      },
+      {
+        "id": "G2",
+        "requirement": "designated curb-adjacent stand provenance",
+        "source": {
+          "path": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+          "sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9"
+        },
+        "why_existing_insufficient": "No accepted recording is listed for this assignment; original documentary and motion evidence are still required."
+      },
+      {
+        "id": "G3",
+        "requirement": "posted notice and jurisdiction",
+        "source": {
+          "path": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+          "sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9"
+        },
+        "why_existing_insufficient": "No accepted recording is listed for this assignment; original documentary and motion evidence are still required."
+      },
+      {
+        "id": "G4",
+        "requirement": "first post-departure street intersection and right-turn trajectory",
+        "source": {
+          "path": "inputs/testing__C150530__LVMC-11-60-090__taxi_driver/assignment.json",
+          "sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9"
+        },
+        "why_existing_insufficient": "No accepted recording is listed for this assignment; original documentary and motion evidence are still required."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_route_and_measurement_candidate",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

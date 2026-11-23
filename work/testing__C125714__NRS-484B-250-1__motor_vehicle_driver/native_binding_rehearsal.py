@@ -103,9 +103,12 @@ class CarlaStandIn:
 def rehearse(root):
     root = Path(root)
     source = (root / "connected-median-candidate.xodr").read_text()
+    from connected_map_candidate import inspect
+    geometry = inspect(root / "connected-median-candidate.xodr")
     scenes = [root / "scene.json", *sorted((root / "cases").glob("*/scene.json"))]
     screened = preflight(root / "connected-median-candidate.xodr", scenes)
-    if hashlib.sha256(source.encode()).hexdigest() != screened["map_sha256"]:
+    if (hashlib.sha256(source.encode()).hexdigest() != screened["map_sha256"] or
+            geometry["map_sha256"] != screened["map_sha256"]):
         raise ValueError("screened source bytes changed")
     outcomes = {}
     for path in scenes:

@@ -128,6 +128,26 @@ def inspect(path):
     arc = roads[140].find("./planView/geometry/arc")
     if arc is None or float(arc.get("curvature", "nan")) != 0.25:
         raise ValueError("opposite left junction arc differs")
+    def lane_ends(road):
+        geometry = road.find("./planView/geometry")
+        x, y, heading, length = (float(geometry.get(key)) for key in
+                                 ("x", "y", "hdg", "length"))
+        primitive = geometry.find("arc")
+        curvature = float(primitive.get("curvature")) if primitive is not None else 0.0
+        final_heading = heading + curvature * length
+        if curvature:
+            finish = (x + (math.sin(final_heading) - math.sin(heading)) / curvature,
+                      y + (math.cos(heading) - math.cos(final_heading)) / curvature)
+        else:
+            finish = (x + length * math.cos(heading), y + length * math.sin(heading))
+        start = (x + 1.75 * math.sin(heading), y - 1.75 * math.cos(heading))
+        end = (finish[0] + 1.75 * math.sin(final_heading),
+               finish[1] - 1.75 * math.cos(final_heading))
+        return start, end
+    for label, route in ROUTES.items():
+        for first, second in zip(route, route[1:]):
+            if math.dist(lane_ends(roads[first])[1], lane_ends(roads[second])[0]) > 0.01:
+                raise ValueError(f"{label} driving lane endpoints are discontinuous")
     return {"format": "c125714-candidate-topology", "map_sha256": hashlib.sha256(data).hexdigest(),
             "route_road_ids": ROUTES, "junction_connection_count": len(connections),
             "review_status": "CPU XML connectivity only; Native map loading and legal context unverified"}

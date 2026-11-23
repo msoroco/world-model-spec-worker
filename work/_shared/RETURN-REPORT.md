@@ -544,3 +544,23 @@ Resume the worker-owned source-bound work by reviewing a specific Native one-way
 ### Current strict gate and returned-file hygiene
 
 `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 at `ValueError: Preparation acceptance failed: partial/missing packages remain`. This reflects the truthful partial C150041 package and other partial/missing batch packages; it is not a dependency or package-index failure. A non-Git file inspection checked 3,172 returned UTF-8 files under `work/`, including all 52 C150041 test-log hashes: zero oversize, trailing whitespace, conflict-marker, UTF-8 or hash issues; largest file is 1,226,018 bytes and `RETURN-REPORT.md` is 133,101 bytes.
+
+## 2026-11-22 connected-road endpoint guard
+
+The authored `connected-median-candidate.xodr` already has the correct opposite-left quarter-circle connector. `connected_map_candidate.inspect()` now verifies that each linked driving lane's computed OpenDRIVE endpoint meets the next lane's start within 0.01 m for all four declared routes. A connector can no longer pass merely because its XML road/junction links and arc curvature look correct. `native_binding_rehearsal.rehearse()` now invokes that geometry check before its route-anchor and fake Native spawn checks. The authored map bytes were not changed. `tests/test_connected_map_candidate.py` includes a negative with the same link and curvature but a shortened/displaced connector, and it rejects it.
+
+The full assignment suite passes 70 tests with one diagnostic-root skip under `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125714-current-test-runtime`; `cpu-tests.log` SHA-256 `28a05b74c5c9af2438dc891e395788b8f49f9f9aa99184fbe82f4ed6f6b209f2` is updated in `result.json`. This is a CPU geometry and binding rehearsal, not a reviewed public-roadway or Native motion finding. C125714 remains partial. Resume the reviewed public-highway, crossing, device, driver and subsection-4 source binding, then construct and prove the exact nondiagnostic primary/fallback delivery cases and five measured comparison audits as already described in this handoff. No Git command was run.
+
+### Current gate and return check
+
+Exact C125714 static `worker_check.py --assignment testing__C125714__NRS-484B-250-1__motor_vehicle_driver --complete` exits 0. The complete-batch strict gate exits 1 at `Preparation acceptance failed: partial/missing packages remain`; C125714 and C150041 remain truthful partial packages. A non-Git scan of 3,172 returned UTF-8 files found zero oversize, trailing-whitespace, conflict-marker or recorded C125714/C150041 test-log hash issues; largest file is 1,226,018 bytes and `RETURN-REPORT.md` is 135,163 bytes. No Git command was run.
+
+## 2026-11-22 fixed red-X map authoring guard
+
+`candidate_map_contract.py` now verifies the single straight 90 m route geometry, zero lane offset and constant 3.6 m width of both right-hand driving lanes, in addition to the existing road ID and one-way lane checks. `build_candidate_map.py` and `build_constructions.py` call this guard. Four new tests reject a varying-width lane, shifted lane offset and changed heading, and accept the retained candidate. This changes the worker's CPU authoring gate, not the eight already embedded Native constructions: rebuilding `execution-manifest.json` retained all eight exact construction SHA-256 hashes and prior offline/compatibility receipts.
+
+The full C147332 suite passes 25 tests; `cpu-tests.log` SHA-256 `61e45a0db729f8151369b4dc0ac3b58cad4195a5a7db3871950c17c1e8e9ca53` is updated in `result.json`. Exact static `worker_check.py --assignment testing__C147332__NRS-484B-307-12b__bus_driver --complete` exits 0. C147332 remains partial: the official red-X device and public-highway sources must still be reviewed and bound to Native delivery, followed by sealed delivery and comparison proofs and global queue integration. The authored map check does not establish official device status, actual Native import or physical bus motion. No Git command was run.
+
+## 2026-11-22 final gate after three assignment changes
+
+The complete-batch `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 at `ValueError: Preparation acceptance failed: partial/missing packages remain`. Exact static checks exit 0 for C125714, C147332 and C150041. A non-Git scan of 3,174 returned UTF-8 files found zero oversize, trailing-whitespace, conflict-marker or recorded test-log hash issues for these three assignments; largest file is 1,226,018 bytes and `RETURN-REPORT.md` was 137,045 bytes before this note. All three remain partial, with their next source-bound construction and proof actions in their HANDOFF.md files. No Git command was run.

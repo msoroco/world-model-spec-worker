@@ -82,6 +82,16 @@ class ConnectedMapCandidateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "ego lane connection differs"):
                 inspect(path)
 
+    def test_linked_but_displaced_left_connector_rejected(self):
+        root = ET.parse(ROOT / "connected-median-candidate.xodr").getroot()
+        geometry = root.find("./road[@id='140']/planView/geometry")
+        geometry.set("length", "6.0")
+        with TemporaryDirectory() as folder:
+            path = Path(folder) / "displaced.xodr"
+            path.write_bytes(ET.tostring(root))
+            with self.assertRaisesRegex(ValueError, "driving lane endpoints are discontinuous"):
+                inspect(path)
+
 
 if __name__ == "__main__":
     unittest.main()

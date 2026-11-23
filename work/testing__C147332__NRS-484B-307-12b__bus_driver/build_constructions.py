@@ -8,6 +8,7 @@ from pathlib import Path
 
 from bus_route import ROUTES
 from native_construction import check_scene
+from candidate_map_contract import check_fixed_map
 
 
 ROOT = Path(__file__).resolve().parent
@@ -48,6 +49,7 @@ def recording_description():
 
 
 def build():
+    check_fixed_map(ROOT / "candidate-red-x-road.xodr")
     cases = []
     dispositions = json.loads((ROOT / "case-plan.json").read_text())["requirement_dispositions"]
     previous_path = ROOT / "execution-manifest.json"
