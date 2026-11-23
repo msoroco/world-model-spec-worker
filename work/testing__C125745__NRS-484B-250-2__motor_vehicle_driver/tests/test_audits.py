@@ -14,7 +14,7 @@ from finalizer import finalize
 from runner import ASSIGNMENT
 from audit_delivery import audit as audit_delivery
 from audit_comparisons import audit_pair,audit as audit_comparisons
-from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context
+from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context,audit_turn_trajectory,audit_turn_diagnostic
 
 
 def _write_rows(path,rows):
@@ -60,6 +60,36 @@ def build_attempt(root,variant='left',map_name=None):
 
 
 class AuditTests(unittest.TestCase):
+    def test_opposite_turn_trajectory_requires_observed_exit(self):
+        diagnostic=json.loads((ROOT/'fourth-diagnostic.json').read_text())
+        files=diagnostic['files']
+        context=json.loads(files['junction_context.json'])
+        crossing=[json.loads(line) for line in files['crossing_history.jsonl'].splitlines()]
+        controls=[json.loads(line) for line in files['controller_history.jsonl'].splitlines()]
+        frames=[json.loads(line) for line in files['video_frames.jsonl'].splitlines()]
+        report=audit_turn_trajectory(context,crossing,controls,frames)
+        self.assertEqual(report['trajectory_status'],'unverified')
+        bound=audit_turn_diagnostic(ROOT/'fourth-diagnostic.json')
+        self.assertEqual(bound['trajectory_status'],'unverified')
+        self.assertEqual(len(bound['source_sha256']),4)
+        self.assertIsNone(report['exit_frame'])
+        self.assertFalse(report['physical_acceptance_claimed'])
+        for y,expected in [(-12,'met'),(12,'not_met')]:
+            body=copy.deepcopy(crossing[-1]);body['frame']=103;body['time_s']=1.15
+            body['other']['body_vertices_xy_m']=[[14,y-1],[14,y+1],[16,y+1],[16,y-1]]
+            control=copy.deepcopy(controls[-1]);control['frame']=103;control['time_s']=1.15
+            frame={'video_frame':3,'carla_frame':103,'time_s':1.15}
+            outcome=audit_turn_trajectory(context,crossing+[body],controls+[control],frames+[frame])
+            self.assertEqual(outcome['trajectory_status'],expected)
+            self.assertEqual(outcome['exit_frame'],103)
+            self.assertFalse(outcome['legal_acceptance_claimed'])
+        changed=copy.deepcopy(controls);changed[1]['other_left_turn_intended']=False
+        with self.assertRaisesRegex(ValueError,'Recorded left-turn intent'):
+            audit_turn_trajectory(context,crossing,changed,frames)
+        changed=copy.deepcopy(frames);changed[1]['carla_frame']=999
+        with self.assertRaisesRegex(ValueError,'Original frame/time join'):
+            audit_turn_trajectory(context,crossing,controls,changed)
+
     def test_device_context_receipts_require_fixed_sign_sources_and_open_review(self):
         names={
             'stop_ego_left_near_time':'primary-compatibility-receipt-v3.json',

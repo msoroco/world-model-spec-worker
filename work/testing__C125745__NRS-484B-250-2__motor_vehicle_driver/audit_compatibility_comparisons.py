@@ -5,6 +5,8 @@ Native recordings with all planned frames and original camera pixels.
 """
 import hashlib
 import json
+import math
+import sys
 from pathlib import Path
 from shapely.geometry import Polygon
 
@@ -150,6 +152,86 @@ def audit_opposite_context(receipts):
             'legal_acceptance_claimed': False, 'delivery_ready': False}
 
 
+def audit_turn_trajectory(context, crossing, controls, frames):
+    """Classify observed other-body exit geometry, separately from turn intent."""
+    require(context.get('approach_relation') == 'opposite_directions',
+            'Opposite approach source required')
+    forward = context.get('other_approach_forward_xy')
+    require(isinstance(forward, list) and len(forward) == 2 and
+            all(isinstance(v, (int, float)) and math.isfinite(v) for v in forward)
+            and math.hypot(*forward) > 0, 'Valid source approach vector required')
+    polygon = Polygon(context['intersection_polygon_xy_m'])
+    require(polygon.is_valid and polygon.area > 0, 'Valid source crossing required')
+    require(len(crossing) == len(controls) == len(frames) and len(crossing) >= 2,
+            'Complete original source join required')
+    positions = []
+    inside = []
+    previous_frame = -1
+    previous_time = float('-inf')
+    for i, (body, control, frame_map) in enumerate(zip(crossing, controls, frames)):
+        frame, time_s = body['frame'], body['time_s']
+        require(frame > previous_frame and time_s > previous_time and
+                control['frame'] == frame and frame_map['carla_frame'] == frame and
+                frame_map['video_frame'] == i and
+                abs(control['time_s'] - time_s) < 1e-9 and
+                abs(frame_map['time_s'] - time_s) < 1e-9,
+                'Original frame/time join changed')
+        require(body.get('other_left_turn_intended') is True and
+                control.get('other_left_turn_intended') is True,
+                'Recorded left-turn intent required')
+        vertices = body['other']['body_vertices_xy_m']
+        require(len(vertices) >= 3 and all(len(v) == 2 and
+                all(isinstance(x, (int, float)) and math.isfinite(x) for x in v)
+                for v in vertices), 'Valid other-body source required')
+        shape = Polygon(vertices)
+        require(shape.is_valid and shape.area > 0, 'Valid other-body polygon required')
+        positions.append((shape.centroid.x, shape.centroid.y))
+        inside.append(shape.intersects(polygon))
+        previous_frame, previous_time = frame, time_s
+    entry = next((i for i, value in enumerate(inside) if value), None)
+    require(entry is not None, 'Observed other-body crossing entry required')
+    exit_index = next((i for i in range(entry + 1, len(inside)) if not inside[i]), None)
+    status = 'unverified'
+    signed_turn_deg = None
+    if exit_index is not None:
+        start = positions[entry]
+        end = positions[exit_index]
+        dx, dy = end[0] - start[0], end[1] - start[1]
+        require(math.hypot(dx, dy) > 0, 'Observed exit displacement required')
+        signed_turn_deg = math.degrees(math.atan2(
+            forward[0] * dy - forward[1] * dx,
+            forward[0] * dx + forward[1] * dy))
+        # A geometric diagnostic tolerance, never a statutory turn threshold.
+        status = 'met' if signed_turn_deg > 30 else 'not_met'
+    return {'format': 'worker-c125745-turn-trajectory-cpu-audit',
+            'trajectory_status': status, 'intent_recorded': True,
+            'entry_frame': crossing[entry]['frame'],
+            'exit_frame': crossing[exit_index]['frame'] if exit_index is not None else None,
+            'signed_turn_deg': signed_turn_deg,
+            'scope': 'synthetic original-shaped body geometry; 30-degree diagnostic tolerance',
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
+            'delivery_ready': False}
+
+
+def audit_turn_diagnostic(path):
+    """Bind a trajectory finding to the retained diagnostic's exact source bytes."""
+    diagnostic = read(path)
+    recipe = read(path.with_name(path.stem + '-recipe.json'))
+    require(recipe['generator']['sha256'] == sha(path),
+            'Turn diagnostic hash differs from recipe')
+    files = diagnostic['files']
+    names = ('junction_context.json', 'crossing_history.jsonl',
+             'controller_history.jsonl', 'video_frames.jsonl')
+    require(all(name in files for name in names), 'Missing original turn source')
+    context = json.loads(files[names[0]])
+    rows = [[json.loads(line) for line in files[name].splitlines()] for name in names[1:]]
+    result = audit_turn_trajectory(context, *rows)
+    result['diagnostic_sha256'] = sha(path)
+    result['source_sha256'] = {
+        name: hashlib.sha256(files[name].encode()).hexdigest() for name in names}
+    return result
+
+
 def audit_device_context(receipts):
     """Check source-backed device identity across selected alternatives."""
     require(set(receipts) == set(DEVICE_CASES), 'Exact device-context receipt set required')
@@ -263,4 +345,8 @@ def audit():
 
 
 if __name__ == '__main__':
-    print(json.dumps(audit(), indent=2))
+    if len(sys.argv) == 3 and sys.argv[1] == '--turn-diagnostic':
+        print(json.dumps(audit_turn_diagnostic(Path(sys.argv[2])), indent=2))
+    else:
+        require(len(sys.argv) == 1, 'Usage: audit_compatibility_comparisons.py [--turn-diagnostic PATH]')
+        print(json.dumps(audit(), indent=2))
