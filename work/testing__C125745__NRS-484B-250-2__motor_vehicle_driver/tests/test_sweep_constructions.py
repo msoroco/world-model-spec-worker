@@ -99,15 +99,15 @@ class SweepConstructionTests(unittest.TestCase):
                     self.assertEqual(hashlib.sha256(log.encode()).hexdigest(),
                                      offline['log_sha256'])
                     self.assertIn('Ran 1 test', log)
-                    if 'offline' in bound:
-                        standalone = bound['offline']
-                        self.assertEqual(standalone['construction_sha256'],
-                                         offline['construction_sha256'])
-                        self.assertEqual(standalone['command'], offline['command'])
-                        self.assertEqual(standalone['exit_code'], 0)
-                        self.assertEqual(standalone['log_sha256'],
-                                         offline['log_sha256'])
-                        self.assertEqual((HERE / standalone['log']).read_text(), log)
+                    self.assertIn('offline', bound)
+                    standalone = bound['offline']
+                    self.assertEqual(standalone['construction_sha256'],
+                                     offline['construction_sha256'])
+                    self.assertEqual(standalone['command'], offline['command'])
+                    self.assertEqual(standalone['exit_code'], 0)
+                    self.assertEqual(standalone['log_sha256'],
+                                     offline['log_sha256'])
+                    self.assertEqual((HERE / standalone['log']).read_text(), log)
                     old = row if name == 'primary' else row[name]
                     historical = historical_bytes(old)
                     self.assertEqual(hashlib.sha256(historical).hexdigest(),

@@ -419,3 +419,13 @@ Implemented an independent source-joined trajectory classifier for the opposite-
 ### 2026-11-23 C125745 frame-32 standalone offline bindings
 
 Bound the frame-32 sweep primary, fallback1 and fallback3 in the canonical manifest to their exact existing returned offline log; the 63-test suite verifies the construction, command and log bytes. A fresh pinned primary offline run, preflight and scoped nonready check pass. Other sweep candidate receipts remain incomplete and C125745 stays partial. See its `HANDOFF.md`.
+
+### 2026-11-23 C125745 canonical offline sweep completion
+
+All six timing/hold sweep primaries and 18 fallbacks have ten standalone returned offline logs and exact manifest bindings. A fresh pinned current-manifest `runtime.py offline` rerun passed 24/24; the 63-test suite, preflight and scoped nonready check pass. Twenty-five unreferenced C412593 historical logs were preserved byte-exactly in `c412593-unbound-fallback-logs-20261123.json` to free file slots. C125745 remains partial pending current per-case compatibility, saved, physical, delivery, comparison and judgment-sweep work. See its `HANDOFF.md`.
+
+C412593 passed its assignment-scoped strict delivery-ready check after the historical-log archival. The returned `work/` contains 8,585 files; size and whitespace/marker scans pass.
+
+### 2026-11-23 C125745 frame-32 canonical source and saved proof
+
+The qualified frame-32 sweep primary now has a standalone exact-case measurement contract, source diagnostic recipe, current-runtime positive/negative compatibility receipt and recorded-only saved-processing receipt. Saved processing preserved originals and joined 135 frames with no missing evidence. After binding, all 40 canonical offline case/candidate commands passed against manifest SHA256 `5c093409df4593f201c43281d4cb99689faf7863fd5e08ba437be7f43640f3fc`; the 63-test suite, preflight and scoped nonready check pass. See C125745 `HANDOFF.md` and `case-plan.json.frame32_primary_current_cpu_proof`. C125745 remains partial pending the remaining exact-case and judgment-sweep proofs. No Native physical, original-pixel or legal acceptance is claimed.

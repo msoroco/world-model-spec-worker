@@ -240,3 +240,9 @@ Added explicit four-view camera pose strategies to the 32 exact primary/fallback
 The returned execution manifest, constructions, compatibility receipts, saved receipts, physical receipts and delivery bindings were refreshed to the current hashes. Historical and current logs were preserved as indexed archives in existing returned log files to keep the return at 8,600 files. Three old candidate positive-log files were retired byte-exactly into the positive archive, freeing slots for three previously absent first-case fallback saved receipts. `case-plan.json.observations` now names the four mandatory captured channels and marks uncaptured context review as planned and unverified. Direct execution-manifest, semantic, delivery and package-compatibility validators all passed. All 194 returned result test-log hashes match.
 
 The actual command `.venv-cpu/bin/python worker_check.py --assignment testing__C412593__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`; `result.json` is **ready** with `delivery_prepared` readiness. These are synthetic CPU diagnostic proofs only. Native motion, actual camera pixels, physical completion and statutory legal judgment remain for later review.
+
+## 2026-11-23 unbound historical log return consolidation
+
+Twenty-five historical `cases/right_*-fallback*-positive/negative.log` files had no references in returned JSON, Python, Markdown, text or log files. Their original paths, SHA256 values and exact bytes are preserved in `work/_shared/c412593-unbound-fallback-logs-20261123.json` (SHA256 `8c29061ea34dfa76fa3db177913373b81b29df93536513caf65858a624b87571`). Active manifest and proof paths were not changed. Restore a historical log from its archive record if needed for an old workflow.
+
+The assignment-scoped strict `worker_check.py --complete --require-delivery-ready` passed after this archival; C412593 remains ready.
