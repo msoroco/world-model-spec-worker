@@ -24,9 +24,132 @@
   "topic_inventory": {
     "exact-text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A downward-pointing green arrow means that a driver facing the signal may drive in any lane over which the green signal is shown."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "scenario": "Bus fully in a lane with its own downward green arrow, driving",
+      "preparation_status": "engineering_scene_and_measurement_cpu_proven_bundle_pending",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead signal provenance",
+        "signal-to-lane mapping",
+        "bus-facing direction",
+        "original full bus footprint",
+        "original signal/body/camera frame-time join"
+      ],
+      "measurement_module": "green_lane_measurement.py",
+      "physical_risk": "Bus footprint and overhead arrow may not fit in the same camera view; inspect full body and signal-to-lane mapping in original frames.",
+      "scene_draft": "cases/green_selected_drive/scene.json"
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "scenario": "Same bus travel in an adjacent lane without a green arrow over it",
+      "preparation_status": "engineering_scene_and_measurement_cpu_proven_bundle_pending",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead signal provenance",
+        "signal-to-lane mapping",
+        "bus-facing direction",
+        "original full bus footprint",
+        "original signal/body/camera frame-time join"
+      ],
+      "measurement_module": "green_lane_measurement.py",
+      "physical_risk": "Bus footprint and overhead arrow may not fit in the same camera view; inspect full body and signal-to-lane mapping in original frames.",
+      "scene_draft": "cases/adjacent_dark_drive/scene.json"
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "scenario": "Same adjacent-lane bus travel with an additional downward green arrow over that lane",
+      "preparation_status": "engineering_scene_and_measurement_cpu_proven_bundle_pending",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead signal provenance",
+        "signal-to-lane mapping",
+        "bus-facing direction",
+        "original full bus footprint",
+        "original signal/body/camera frame-time join"
+      ],
+      "measurement_module": "green_lane_measurement.py",
+      "physical_risk": "Bus footprint and overhead arrow may not fit in the same camera view; inspect full body and signal-to-lane mapping in original frames.",
+      "scene_draft": "cases/second_green_drive/scene.json"
+    },
+    {
+      "case_id": "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand",
+      "target_law_id": "NRS-484B-307-12a",
+      "target_type": "permission_probe",
+      "scenario": "Bus fully in green-arrow lane, stationary to test permission without a duty",
+      "preparation_status": "engineering_scene_and_measurement_cpu_proven_bundle_pending",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "source_requirements": [
+        "highway status",
+        "official overhead signal provenance",
+        "signal-to-lane mapping",
+        "bus-facing direction",
+        "original full bus footprint",
+        "original signal/body/camera frame-time join"
+      ],
+      "measurement_module": "green_lane_measurement.py",
+      "physical_risk": "Bus footprint and overhead arrow may not fit in the same camera view; inspect full body and signal-to-lane mapping in original frames.",
+      "scene_draft": "cases/green_selected_stand/scene.json"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "second_lane_green_indication",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12a__bus_driver__adjacent_dark_drive",
+        "testing__C147332__NRS-484B-307-12a__bus_driver__second_green_drive"
+      ],
+      "fixed_conditions": [
+        "same one-way highway and mapped lanes",
+        "same bus route and original body motion",
+        "same first green arrow and official-device source",
+        "same camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "second-lane indication changes from dark to downward green arrow"
+      ],
+      "measurement_procedure": "green_lane_measurement.compare_green_indication",
+      "status": "measurement_cpu_proven_construction_pending"
+    },
+    {
+      "comparison_id": "green_permission_without_motion",
+      "case_ids": [
+        "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_drive",
+        "testing__C147332__NRS-484B-307-12a__bus_driver__green_selected_stand"
+      ],
+      "fixed_conditions": [
+        "same one-way highway and mapped lanes",
+        "same bus starting lane",
+        "same downward green arrow, facing direction and official-device source",
+        "same camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "bus longitudinal motion versus stationary body under the green arrow"
+      ],
+      "measurement_procedure": "green_lane_measurement.compare_permission_without_motion",
+      "status": "measurement_cpu_proven_construction_pending"
+    }
+  ],
+  "observations": [
+    "Original full bus footprint fits in a mapped lane",
+    "Individual overhead arrow symbol, facing direction and governed lane are observed on each original frame",
+    "Bus movement measured separately from green-arrow permission",
+    "Highway and official-device source hashes retained"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C147332__NRS-484B-307-12a__bus_driver/assignment.json",
@@ -51,8 +174,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original highway and official signal provenance require reviewed sources.",
+    "Native bus motion, overhead-arrow visibility and same-frame camera coverage require later CARLA review.",
+    "Exact constructions, semantic proposals, compatibility, physical CPU receipts and independent delivery audits remain worker-owned CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +185,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "four_exact_engineering_scenes_and_measurement_cpu_proven_bundle_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

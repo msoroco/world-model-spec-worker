@@ -137,6 +137,13 @@ class CrossingAuditTests(unittest.TestCase):
         self.assertFalse(result["other_cleared_before_ego_entry"])
         self.assertEqual(result["legal_judgment"], "unresolved")
 
+    def test_reentry_cannot_be_counted_as_final_clearance(self):
+        t = trace()
+        t["other_samples"][5]["body_vertices_xy_m"] = [
+            [-.2, -.2], [.2, -.2], [.2, .2], [-.2, .2]]
+        with self.assertRaisesRegex(ValueError, "reentered the crossing"):
+            audit.measure(t)
+
     def test_reverse_order(self):
         result = audit.measure(trace(other_frames=(4, 5, 6, 7), ego_frames=(1, 2, 3, 4)))
         self.assertFalse(result["other_entered_before_ego"])

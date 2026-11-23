@@ -67,6 +67,8 @@ def _first_entry(samples, rect):
         if previous_frame >= 0 and frame != previous_frame + 1:
             raise ValueError("gap in original frame history")
         now_inside = _body_overlaps(sample["body_vertices_xy_m"], rect)
+        if now_inside and exit_frame is not None:
+            raise ValueError("original body reentered the crossing after first exit")
         if now_inside and not previous_inside and entry is None:
             if previous_frame < 0:
                 raise ValueError("first sample already in crossing; entry unobserved")
