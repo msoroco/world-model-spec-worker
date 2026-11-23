@@ -27,6 +27,8 @@ def main():
             raise ValueError("case belongs to another assignment")
         positive = Path("independent") / (suffix + "-positive.log")
         negative = Path("independent") / (suffix + "-negative.log")
+        if "diagnostic protocol positive and six negatives passed; no original acceptance" not in (ROOT / positive).read_text():
+            raise ValueError("positive proof did not exercise maneuver source binding")
         if "original pixel review missing or stale" not in (ROOT / negative).read_text():
             raise ValueError("negative proof did not reject stale original pixels")
         command = ("PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/" + ROOT.name +

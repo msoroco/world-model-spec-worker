@@ -92,9 +92,30 @@ class CameraCapture:
 
 def _footprint(bus):
     vertices = bus.bounding_box.get_world_vertices(bus.get_transform())
-    xs, ys = [v.x for v in vertices], [v.y for v in vertices]
-    return [[min(xs), min(ys)], [max(xs), min(ys)],
-            [max(xs), max(ys)], [min(xs), max(ys)]]
+    if len(vertices) == 8 and all(hasattr(vertex, "z") for vertex in vertices):
+        vertices = sorted(vertices, key=lambda vertex: vertex.z)[:4]
+    points = {(float(v.x), float(v.y)) for v in vertices}
+    if len(points) < 3 or any(not math.isfinite(value) for point in points for value in point):
+        raise ValueError("observed bus footprint lacks finite planar vertices")
+    ordered = sorted(points)
+
+    def cross(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    lower = []
+    for point in ordered:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    upper = []
+    for point in reversed(ordered):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    hull = lower[:-1] + upper[:-1]
+    if len(hull) != 4:
+        raise ValueError("observed bus footprint is not a four-corner body")
+    return [list(point) for point in hull]
 
 
 def _retain_review(packet_path, output):

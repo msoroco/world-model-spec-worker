@@ -13,6 +13,7 @@ from delivery_audit import (CHECKS, OBSERVATIONS, ROOT, SOURCE, sha,
 def fixture(attempt: Path, case_id: str):
     (attempt / "traffic_spec").mkdir()
     for name in ("ego-body-history.jsonl", "other-body-history.jsonl",
+                 "intersection-context.json",
                  "road.xodr", *SOURCE.CAMERAS):
         (attempt / name).write_text("synthetic CPU protocol bytes: " + name + "\n")
     (attempt / "original-trace.jsonl").write_text("synthetic motion\n")
@@ -27,10 +28,13 @@ def fixture(attempt: Path, case_id: str):
     (attempt / "capture-seal.json").write_text(json.dumps({"sources": {
         name: sha(attempt / name) for name in ("construction.json", "config.json")}}))
     names = ("ego-body-history.jsonl", "other-body-history.jsonl",
+             "intersection-context.json",
              "road.xodr", "video_frames.jsonl", *SOURCE.CAMERAS)
     source = {"diagnostic_fixture": False,
               "source_hashes": {name: sha(attempt / name) for name in names}}
-    binding = {"original-trace.jsonl": sha(attempt / "original-trace.jsonl")}
+    binding = {name: sha(attempt / name) for name in
+               ("original-trace.jsonl", "ego-body-history.jsonl",
+                "intersection-context.json", "video_frames.jsonl")}
     physical = {"case_id": case_id, "provenance_kind": "native",
                 "diagnostic_fixture": False, "setup_confirmed": True,
                 "maneuver_completed": True, "physical_checks": {
@@ -93,6 +97,16 @@ def main() -> None:
         audit = verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
         if audit["checks"] != {name: True for name in CHECKS}:
             raise AssertionError("required acceptance check omitted")
+        del physical["physical_checks"]["maneuver"]["sources"]["ego-body-history.jsonl"]
+        try:
+            verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
+        except ValueError as error:
+            if str(error) != "physical maneuver lacks sealed crossing source bindings":
+                raise
+        else:
+            raise AssertionError("maneuver detached from original ego body accepted")
+        physical["physical_checks"]["maneuver"]["sources"]["ego-body-history.jsonl"] = (
+            source["source_hashes"]["ego-body-history.jsonl"])
         pixels["observations"]["other"]["visible"] = False
         try:
             verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
@@ -119,7 +133,7 @@ def main() -> None:
                 raise
         else:
             raise AssertionError("changed physical source accepted")
-        print(args.case_id + ": diagnostic protocol positive and three negatives passed; no original acceptance")
+        print(args.case_id + ": diagnostic protocol positive and six negatives passed; no original acceptance")
 
 
 if __name__ == "__main__":

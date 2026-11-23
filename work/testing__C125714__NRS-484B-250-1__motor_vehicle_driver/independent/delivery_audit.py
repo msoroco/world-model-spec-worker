@@ -19,6 +19,8 @@ SUFFIXES = ("precedence", "advance", "other_later", "opposite_straight",
             "opposite_intends_left", "opposite_makes_left", "wide_same_crossing")
 CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
           "actual_pixels", "physical_completion")
+MANEUVER_SOURCES = {"ego-body-history.jsonl", "intersection-context.json",
+                    "video_frames.jsonl"}
 OBSERVATIONS = ("ego", "other", "crossing", "device_context", "maneuver")
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -57,7 +59,8 @@ def verify_inputs(case_id: str, source: dict, physical: dict, pixels: dict,
         raise ValueError("unknown exact case")
     if source.get("diagnostic_fixture") is not False or not {
             "ego-body-history.jsonl", "other-body-history.jsonl", "video_frames.jsonl",
-            "road.xodr", *SOURCE.CAMERAS} <= set(source.get("source_hashes", {})):
+            "road.xodr", "intersection-context.json",
+            *SOURCE.CAMERAS} <= set(source.get("source_hashes", {})):
         raise ValueError("original Native participants and cameras unverified")
     for name, digest in source["source_hashes"].items():
         if sha(attempt / name) != digest:
@@ -79,6 +82,11 @@ def verify_inputs(case_id: str, source: dict, physical: dict, pixels: dict,
             path = (attempt / name).resolve()
             if not path.is_relative_to(attempt) or not path.is_file() or sha(path) != digest:
                 raise ValueError("physical completion source changed: " + name)
+    maneuver_sources = physical_checks["maneuver"].get("sources", {})
+    if (not MANEUVER_SOURCES <= set(maneuver_sources) or
+            any(maneuver_sources[name] != source["source_hashes"][name]
+                for name in MANEUVER_SOURCES)):
+        raise ValueError("physical maneuver lacks sealed crossing source bindings")
     video = attempt / "raw.mkv"
     mapping = attempt / "video_frames.jsonl"
     trace = attempt / "traffic_spec" / "trace.json"

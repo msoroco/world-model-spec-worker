@@ -40,6 +40,35 @@ class RedXLaneMeasurement(unittest.TestCase):
             def get_transform(self): return object()
         self.assertEqual(_footprint(Bus()), [[1, -7], [8, -7], [8, -3], [1, -3]])
 
+    def test_rotated_bus_retains_oriented_corners(self):
+        class Point:
+            def __init__(self, x, y): self.x, self.y = x, y
+        class Bounds:
+            def get_world_vertices(self, transform):
+                corners = [Point(-2, 0), Point(0, -2), Point(2, 0), Point(0, 2)]
+                return corners + corners
+        class Bus:
+            bounding_box = Bounds()
+            def get_transform(self): return object()
+        self.assertEqual(_footprint(Bus()), [[-2.0, 0.0], [0.0, -2.0],
+                                              [2.0, 0.0], [0.0, 2.0]])
+
+    def test_pitched_bus_uses_lower_four_body_corners(self):
+        class Point:
+            def __init__(self, x, y, z): self.x, self.y, self.z = x, y, z
+        class Bounds:
+            def get_world_vertices(self, transform):
+                lower = [Point(-2, 0, 0.1), Point(0, -2, 0.2),
+                         Point(2, 0, 0.3), Point(0, 2, 0.4)]
+                upper = [Point(-3, -3, 2.1), Point(3, -3, 2.2),
+                         Point(3, 3, 2.3), Point(-3, 3, 2.4)]
+                return upper + lower
+        class Bus:
+            bounding_box = Bounds()
+            def get_transform(self): return object()
+        self.assertEqual(_footprint(Bus()), [[-2.0, 0.0], [0.0, -2.0],
+                                              [2.0, 0.0], [0.0, 2.0]])
+
     def test_native_packet_retains_original_review_source_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
