@@ -13,6 +13,7 @@ m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 
 class SavedMeasurementTests(unittest.TestCase):
     def fixture(self,root):
+        (root/'acquisition-provenance.json').write_text(json.dumps({'provenance_kind':'synthetic_fixture','diagnostic_fixture':True}))
         scene=json.loads((ROOT/'cases'/'outside_right_angle'/'scene.json').read_text())
         (root/'scene.json').write_text(json.dumps(scene))
         rows=[{'frame':i+100,'time_s':i*.05,'source':'original_native','actor_id':7,
@@ -23,8 +24,7 @@ class SavedMeasurementTests(unittest.TestCase):
         (root/'camera-frame-joins.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in joins))
         for name in ('overview','approach','reference_corner','driver_reference'):
             (root/(name+'.mkv')).write_bytes(('synthetic source '+name).encode())
-        index={name:{'kind':'original_native','sha256':hashlib.sha256((root/name).read_bytes()).hexdigest()} for name in m.REQUIRED}
-        index['_diagnostic_fixture']=True
+        index={name:{'kind':'diagnostic_fixture','sha256':hashlib.sha256((root/name).read_bytes()).hexdigest()} for name in m.REQUIRED}
         (root/'acquisition.json').write_text(json.dumps(index))
         return index
 

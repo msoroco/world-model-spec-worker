@@ -43,9 +43,20 @@ class ComparisonTests(unittest.TestCase):
         first = packet('left_crest_obstructed')
         second = packet('left_one_way_obstructed')
         second['lane_allocation'] = 'one_way'
+        second['one_way_authority_source_ref'] = 'original signed authority packet'
+        second['one_way_authority_sha256'] = 'a' * 64
         self.assertTrue(audit_module.audit('one_way_exception', first, second, ASSIGNMENT)['passed'])
         first['lane_allocation'] = 'one_way'
+        first['one_way_authority_source_ref'] = second['one_way_authority_source_ref']
+        first['one_way_authority_sha256'] = second['one_way_authority_sha256']
         with self.assertRaisesRegex(ValueError, 'missing deliberate difference'):
+            audit_module.audit('one_way_exception', first, second, ASSIGNMENT)
+
+    def test_one_way_exception_rejects_unsourced_flag(self):
+        first = packet('left_crest_obstructed')
+        second = packet('left_one_way_obstructed')
+        second['lane_allocation'] = 'one_way'
+        with self.assertRaisesRegex(ValueError, 'authority source'):
             audit_module.audit('one_way_exception', first, second, ASSIGNMENT)
 
 

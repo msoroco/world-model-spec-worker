@@ -1,23 +1,28 @@
 # testing__C227749__LVMC-11-30-050__pedestrian
 
-Status: **partial**. No physical crossing or legal verdict has been established. Exact law: LVMC 11.30.050. Frozen accepted evidence inventory is empty; the witness is conditional and unverified.
+Status: **partial**. Exact law LVMC 11.30.050; frozen accepted evidence is empty. Conditional witness and authored geometry do not establish a physical crossing or legal verdict.
 
-## Coverage and construction checkpoint
+## Built exact CPU package
 
-`case-plan.json` now has five exact authored cases: `outside_right_angle`, `outside_shortest_endpoint`, `outside_neither`, `outside_endpoint_detour`, and `inside_crosswalk_oblique`, with three controlled comparisons. The two outside-crosswalk alternatives are disjunctive: either a right-angle route or the shortest route to a finite opposite curb. The outside detours probe neither, and the matching oblique route with an authored crosswalk polygon probes the exception. No statutory numeric tolerance or legal conclusion is assigned. The case source and Native map facts remain to be verified.
+Five case scenes and constructions cover outside right angle, outside shortest endpoint, outside neither, outside endpoint detour, and inside crosswalk oblique. Three controlled comparisons are in `case-plan.json`. The source-hashed `candidate-crossing.xodr` is a straight authored road; it has no verified curb or crosswalk physical surface and does not establish jurisdiction. `proposals/cases.json` contains draft case semantics.
 
-`cases/*/scene.json` has explicit finite starting/opposite curbs, complete route, authored crosswalk polygon, control context, and separate provenance notes. `crossing_geometry.py` computes route length, curb angle, nearest opposite-curb point and excess path length, checks polygon overlap, and measures original Native walker histories. `native_controller.py` lazily spawns the pedestrian with readback and requests waypoint motion without claiming the actor followed it. `delivery_audit.py` independently rejects missing original walker frames, non-20 Hz cadence, missing camera joins and missing four-camera source declarations. `comparison_audit.py` rejects undeclared changes between planned pair scenes. These audits are structural CPU code; they do not decode actual video or establish physical visibility.
+The Native runner is bundled for every case. It has a lazy walker controller and readback, 400 planned 20 Hz frames, original walker bounding-box history, four synchronized RGB cameras encoded losslessly, a pipeline graph/trace recorder, frame joins, source hashes, capture seal and world restoration. `runner.py --check` is CPU only. The saved-only `analysis.py`, `saved_measurement.py`, `delivery_audit.py`, and `comparison_audit.py` preserve source identity, reject missing source/frames/joins, and report route geometry without a legal classification. Native CARLA execution has not been observed.
 
-## CPU proof
+## Proof receipts
 
-- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C227749__LVMC-11-30-050__pedestrian/tests -v` passes 19 tests; retained log `cpu-tests.log` SHA256 0215763b5d21118448a314d83090bc659a943302afcfe8aa4d56d1af0361a3ad.
-- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C227749__LVMC-11-30-050__pedestrian/prove_geometry.py` passes all five authored route targets; retained `geometry-proof.log` SHA256 586843cf048d190719b70cfdd5830694557a624877563396566afae931719393. This proves authored geometry only.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C227749__LVMC-11-30-050__pedestrian --complete` and the same command with `--require-delivery-ready` are rerun below. Strict readiness remains dependent on the unfinished package; do not promote status.
+`proof-index.json` binds all five current construction and fixture recipe hashes to retained logs and compatibility receipts. All five current bundles passed pinned exact `runtime.py offline` and pinned `runtime.py compatibility`, including positive analysis and `negative_case_source`, final video decode, Lean decoder, four camera sources and Native result validation. The compatibility source is explicitly a **synthetic diagnostic fixture** and proves software shape only. The five `cases/*/primary-compatibility.json` receipts are retained.
 
-## Exact next CPU work
+- `proof-index.json` SHA256 `1d3f7149590ba6e1a8ff25726dc28b22430725e73fa19817656d7881695f7fb0`.
+- `cpu-tests.log`: 21 tests passed; SHA256 `49c2179951e49fecb0f59956cfa8fb7ab6ea2df8d07c339a5c62e49245bcb45c`.
+- `geometry-proof.log`: five authored geometry targets passed; SHA256 `586843cf048d190719b70cfdd5830694557a624877563396566afae931719393`.
+- `saved-measurement-proof.log`: five 201-frame synthetic positive and missing-source negative cases passed; SHA256 `d2b812a344060e8b7c4fb1f1646f781d440e70e1f0c8f320450f6c9e909ddf4c`.
+- Exact assignment `worker_check.py --complete` passed; SHA256 `09d44601237b8b7333c5b6848edb441b03b12cbcca3962a82873a211db607cf1`.
+- Exact assignment `worker_check.py --complete --require-delivery-ready` failed because status remains partial; SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
-1. Bind curbs, marked and unmarked crosswalks, roadway extent, municipal jurisdiction/public use and governing devices to original map/site source packets. Replace authored planning geometry only after preserving exact case and comparison intentions. The cell is `plausible_ungrounded`; map suitability remains unverified.
-2. Finish the 20 Hz, four-camera Native runner using the shared capture, original body vertices, frame map, sealed acquisition, failure preservation and world restore. Test fake CARLA creation and original-source joins. Include physical risk triggers and at most two tested engineering fallbacks where needed.
-3. Add canonical semantic stage proposals, exact per-case construction/config/measurement bundles, source-hashed diagnostics, offline and positive/negative compatibility checks, saved-only finalization, full independent delivery audit and exact comparison proof receipts. Run exact assignment strict check until it passes.
+## Remaining worker CPU construction and source proof
 
-Remaining GPU checks after CPU preparation: actual walker motion, source geometry and controls, full video visibility, realized path and physical completion. These do not excuse the CPU work above.
+1. Obtain and hash source packets for actual curb endpoints, roadway, crosswalk presence/bounds, public-way jurisdiction and relevant control context. Reconcile all five case scenes with those facts; authored OpenDRIVE and diagnostic fixture do not supply them.
+2. Build physical crosswalk surface/metadata where needed and add explicit source/readback checks to the Native runner. Exercise walker spawn/control, map reserialization, original graph capture, four-camera visibility and world restoration against a real caller-owned CARLA endpoint. Retain a failed attempt when any readback or capture check fails.
+3. Complete canonical semantic stage proposals, at most two tested engineering fallbacks per risk, exact execution manifest, and independent full saved video/body/context/comparison audits against actual Native attempts. Promote only after exact strict delivery gate passes.
+
+Remaining GPU/Native checks are actual route realization, pedestrian body/curb crossing, camera visibility and full physical completion. No present result claims them.

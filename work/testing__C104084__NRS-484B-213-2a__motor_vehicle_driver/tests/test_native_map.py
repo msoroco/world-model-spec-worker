@@ -59,6 +59,18 @@ class NativeMapTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'terminates'):
             native.bind_two_way_crest(bad, object())
 
+    def test_one_way_topology_keeps_authority_unproven(self):
+        result = native.bind_one_way_crest(world(opposite=False), object())
+        self.assertTrue(result['grade_proxy']['sampled_grade_blocks_proxy_ray'])
+        self.assertEqual(result['same_direction_lane'][5]['travel_direction'], 'increasing_s')
+        self.assertIn('original one-way authority source', result['context_requirements'])
+
+    def test_one_way_rejects_opposing_or_flat_grade(self):
+        with self.assertRaisesRegex(ValueError, 'not same direction'):
+            native.bind_one_way_crest(world(), object())
+        with self.assertRaisesRegex(ValueError, 'does not obstruct'):
+            native.bind_one_way_crest(world(crest=False, opposite=False), object())
+
 
 if __name__ == '__main__':
     unittest.main()

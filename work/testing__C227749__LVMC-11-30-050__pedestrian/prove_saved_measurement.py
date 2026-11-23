@@ -29,6 +29,7 @@ def path_at(route, fraction):
     return list(points[-1])
 
 def fixture(root,scene):
+    (root/'acquisition-provenance.json').write_text(json.dumps({'provenance_kind':'synthetic_fixture','diagnostic_fixture':True})+'\n')
     (root/'scene.json').write_text(json.dumps(scene)+'\n')
     rows=[];joins=[]
     for i in range(201):
@@ -40,8 +41,7 @@ def fixture(root,scene):
     (root/'camera-frame-joins.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in joins))
     for name in CAMERAS:
         (root/(name+'.mkv')).write_bytes(('FAKE DIAGNOSTIC CAMERA BYTES '+name).encode())
-    index={name:{'kind':'original_native','sha256':sha(root/name)} for name in REQUIRED}
-    index['_diagnostic_fixture']=True
+    index={name:{'kind':'diagnostic_fixture','sha256':sha(root/name)} for name in REQUIRED}
     (root/'acquisition.json').write_text(json.dumps(index)+'\n')
 
 

@@ -1,0 +1,86 @@
+{
+  "law_id": "NRS-484B-450-1e",
+  "cell_id": "C214977",
+  "actor": "motor_vehicle_driver",
+  "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "source": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/runner.py",
+      "content": "\"\"\"Exact C214977 crosswalk case entrypoint; local Native adapter remains required.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\n\nROOT = Path(__file__).resolve().parent\n\ndef load_config():\n    c = json.loads((ROOT/'config.json').read_text())\n    assert (c['law_id'], c['cell_id'], c['actor']) == ('NRS-484B-450-1e','C214977','motor_vehicle_driver')\n    assert c['selected_case_id'] == c['case']['case_id']\n    assert c['rate_hz'] == 20 and c['duration_s'] == 45\n    assert [v['name'] for v in c['cameras']] == ['overview','approach','reference_corner','driver_reference']\n    assert c['case']['action'] in ('stop','stand','park')\n    assert c['case']['destination'] in ('on','off')\n    return c\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--check', action='store_true')\n    parser.add_argument('--output-dir')\n    parser.add_argument('--host')\n    parser.add_argument('--port')\n    a = parser.parse_args()\n    c = load_config()\n    if a.check:\n        print(json.dumps({'case_id':c['selected_case_id'],'identity_checked':True,'capture_profile_checked':True,'simulation_started':False}))\n        return\n    raise RuntimeError('Native CARLA adapter and saved capture integration are not implemented; do not execute this draft bundle')\n\nif __name__ == '__main__': main()\n"
+    },
+    {
+      "path": "crosswalk.py",
+      "source": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/crosswalk.py",
+      "content": "\"\"\"Source-bound crosswalk parking construction and original-history observations.\"\"\"\nfrom __future__ import annotations\nimport hashlib\nimport json\nimport math\nfrom pathlib import Path\n\nclass SourceError(ValueError):\n    pass\n\ndef require(ok, message):\n    if not ok:\n        raise SourceError(message)\n\ndef sealed_json(ref, root):\n    root = Path(root).resolve()\n    path = (root / ref['path']).resolve()\n    require(path.is_relative_to(root), 'source escapes root')\n    raw = path.read_bytes()\n    require(hashlib.sha256(raw).hexdigest() == ref['sha256'], 'source hash mismatch')\n    return json.loads(raw)\n\ndef inside(point, polygon):\n    x, y = point\n    hit = False\n    for a, b in zip(polygon, polygon[1:] + polygon[:1]):\n        x1, y1 = a\n        x2, y2 = b\n        if (y1 > y) != (y2 > y) and x < (x2-x1)*(y-y1)/(y2-y1)+x1:\n            hit = not hit\n    return hit\n\ndef validate_site(site):\n    require(site['cell_id'] == 'C214977' and site['layout'] == 'residence_district', 'wrong cell')\n    require(site['map_name'] and site['highway_source'] and site['frontage_source'], 'road or residence source missing')\n    require(site['crosswalk_source'] and site['marking_status_source'] and site['signal_governance_source'], 'crosswalk context missing')\n    require(len(site['crosswalk_polygon']) >= 3 and len(site['parking_route']) >= 2, 'crosswalk or parking route missing')\n    for p in site['crosswalk_polygon'] + site['parking_route']:\n        require(len(p) == 2 and all(math.isfinite(float(v)) for v in p), 'invalid geometry')\n    return site\n\ndef construct(adapter, site_ref, vehicle_ref, case, root):\n    site = validate_site(sealed_json(site_ref, root))\n    vehicle = sealed_json(vehicle_ref, root)\n    require(vehicle['blueprint'] and vehicle['driver_source'], 'vehicle or driver source missing')\n    require(case['action'] in {'stop', 'stand', 'park'}, 'unknown action')\n    require(case['exception'] in {'none', 'traffic_conflict', 'law', 'police_direction', 'device_direction'}, 'unknown exception')\n    readback = adapter.verify_crosswalk(site)\n    require(readback['map_name'] == site['map_name'] and readback['crosswalk_polygon'] == site['crosswalk_polygon'], 'Native crosswalk readback mismatch')\n    ego = adapter.spawn_vehicle(vehicle, site['parking_route'][0])\n    require(ego['actor_id'] and ego['blueprint'] == vehicle['blueprint'], 'Native ego readback mismatch')\n    adapter.configure_route(ego['actor_id'], site['parking_route'], case['destination'], case['action'])\n    adapter.configure_exception(ego['actor_id'], case['exception'])\n    return {'case_id': case['case_id'], 'subject_id': ego['actor_id'], 'map_name': site['map_name']}\n\ndef footprint_relation(corners, polygon):\n    require(len(corners) == 4, 'body corners missing')\n    count = sum(inside(p, polygon) for p in corners)\n    # A crossing edge can overlap the crosswalk even when all corners lie outside.\n    edges = list(zip(corners, corners[1:] + corners[:1]))\n    def orient(a,b,c): return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])\n    def crosses(a,b,c,d):\n        return orient(a,b,c)*orient(a,b,d) <= 0 and orient(c,d,a)*orient(c,d,b) <= 0\n    edge_cross = any(crosses(a,b,c,d) for a,b in edges for c,d in zip(polygon, polygon[1:] + polygon[:1]))\n    contained = count == 4\n    overlap = bool(count or edge_cross or all(inside(p, corners) for p in polygon))\n    return {'overlap': overlap, 'contained': contained, 'corners_inside': count}\n\ndef measure(rows, expected):\n    require(len(rows) == expected['frame_count'] and len(rows) >= 2, 'frame count mismatch')\n    active = []\n    for i, row in enumerate(rows):\n        require(row['frame'] == expected['first_frame'] + i, 'frame gap')\n        require(row['case_id'] == expected['case_id'] and row['subject_id'] == expected['subject_id'], 'case or actor mismatch')\n        require(math.isfinite(row['time_s']) and (i == 0 or abs(row['time_s']-rows[i-1]['time_s']-0.05) <= 0.001), 'not contiguous 20 Hz')\n        require(math.isfinite(row['speed_mps']) and row['speed_mps'] >= 0, 'invalid speed')\n        require(row['halt_activity'] in {'stop','stand','park','travel'}, 'activity missing')\n        require(all(isinstance(row[k], bool) for k in ('traffic_conflict','law_direction','police_direction','device_direction')), 'exception source missing')\n        require(row['crosswalk_id'] == expected['crosswalk_id'] and row['marking_status'] == expected['marking_status'], 'crosswalk context mismatch')\n        relation = footprint_relation(row['body_corners_xy'], expected['crosswalk_polygon'])\n        if row['halt_activity'] == expected['action'] and row['speed_mps'] < 0.1:\n            active.append((i, relation, any(row[k] for k in ('traffic_conflict','law_direction','police_direction','device_direction'))))\n    return {'case_id': expected['case_id'], 'frame_count': len(rows), 'halt_frames': len(active),\n            'halt_overlapping_crosswalk_frames': sum(r['overlap'] for _,r,_ in active),\n            'halt_contained_crosswalk_frames': sum(r['contained'] for _,r,_ in active),\n            'halt_with_exception_source_frames': sum(e for _,_,e in active),\n            'first_time_s': rows[0]['time_s'], 'last_time_s': rows[-1]['time_s'], 'legal_judgment': None}\n\ndef audit_saved(attempt, root):\n    require(attempt['source_format'] == 'native_original' and attempt['fps'] == 20 and attempt['frame_count'] == 900, 'capture profile mismatch')\n    require(set(attempt['cameras']) == {'front','rear','left','right'}, 'four-camera source missing')\n    rows = sealed_json(attempt['actor_rows'], root)\n    mapping = sealed_json(attempt['frame_map'], root)\n    require(len(mapping) == 900, 'frame map incomplete')\n    require(all(mapping[i]['frame'] == rows[i]['frame'] and mapping[i]['time_s'] == rows[i]['time_s'] for i in range(900)), 'frame map join mismatch')\n    for ref in attempt['cameras'].values():\n        require(ref['frame_count'] == 900 and ref['fps'] == 20, 'camera profile mismatch')\n        path = (Path(root).resolve()/ref['path']).resolve()\n        require(path.is_relative_to(Path(root).resolve()), 'camera escapes root')\n        require(hashlib.sha256(path.read_bytes()).hexdigest() == ref['sha256'], 'camera hash mismatch')\n    return {'format':'crosswalk-original-source-audit', 'measurement':measure(rows, attempt['expected']),\n            'full_video_decode':'pending_pinned_media_auditor', 'actual_pixels':'pending_physical_review'}\n\ndef audit_comparison(left, right, fixed_keys, changed_keys):\n    require(left['case_id'] != right['case_id'], 'same case')\n    require(all(left[k] == right[k] for k in fixed_keys), 'fixed condition changed')\n    require(all(left[k] != right[k] for k in changed_keys), 'declared difference absent')\n    return {'case_ids':[left['case_id'],right['case_id']], 'fixed_checked':list(fixed_keys), 'differences_checked':list(changed_keys)}\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"law_id\": \"NRS-484B-450-1e\",\n  \"cell_id\": \"C214977\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"selected_case_id\": \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict\",\n  \"case\": {\n    \"case_id\": \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict\",\n    \"action\": \"stop\",\n    \"destination\": \"on\",\n    \"exception\": \"traffic_conflict\"\n  },\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"rate_hz\": 20,\n  \"duration_s\": 45,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"crosswalk_footprint_and_approach\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"crosswalk_footprint_and_approach\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"crosswalk_footprint_and_approach\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"crosswalk_footprint_and_approach\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"supported_case_ids\": [\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_on\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_off\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_on\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stand_on\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_law\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_police\",\n    \"testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_device\"\n  ]\n}\n"
+    },
+    {
+      "path": "tests/test_bundle.py",
+      "content": "import json\nfrom pathlib import Path\nimport unittest\nclass BundleTest(unittest.TestCase):\n def test_exact_identity(self):\n  c=json.loads((Path(__file__).resolve().parents[1]/\"config.json\").read_text())\n  self.assertEqual(c[\"case\"][\"case_id\"],c[\"selected_case_id\"])\n  self.assertEqual(c[\"rate_hz\"],20)\n  self.assertEqual(len(c[\"cameras\"]),4)\n"
+    }
+  ],
+  "measurement_plan": {
+    "original_frame_rate_hz": 20,
+    "source": "native original actor rows and crosswalk map polygon",
+    "outputs": [
+      "halt_overlapping_crosswalk_frames",
+      "halt_with_exception_source_frames"
+    ]
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "crosswalk_geometry",
+        "sampling_rate_hz": 20,
+        "method": "native map polygon and markings"
+      },
+      {
+        "name": "ego_body_footprint",
+        "sampling_rate_hz": 20,
+        "method": "original body corners"
+      },
+      {
+        "name": "actual_halt_activity",
+        "sampling_rate_hz": 20,
+        "method": "speed and stop/stand/park activity"
+      },
+      {
+        "name": "exception_sources",
+        "sampling_rate_hz": 20,
+        "method": "traffic conflict/law/police/device original context"
+      },
+      {
+        "name": "camera_sources",
+        "sampling_rate_hz": 20,
+        "method": "four synchronized source videos"
+      }
+    ],
+    "duration_s": 45,
+    "cameras": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "limitations": [
+      "Real body visibility and crosswalk marking status remain for original physical review."
+    ]
+  },
+  "static_checks": [
+    "source hash",
+    "Native crosswalk readback",
+    "20 Hz original frames"
+  ],
+  "termination_rules": [
+    "45 seconds or explicit source-bound failure"
+  ],
+  "mechanisms": [
+    "driven parking route",
+    "Native crosswalk geometry and body footprint"
+  ]
+}

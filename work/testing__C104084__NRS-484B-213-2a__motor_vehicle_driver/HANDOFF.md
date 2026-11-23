@@ -72,3 +72,11 @@ assignment tests pass in the refreshed `cpu-tests.log`. These checks are a
 source-gated map-selection implementation; a real CARLA map and actual vehicle
 rays have not been exercised on this CPU host. The one-way case still needs a
 separate original topology binder and is not certified by this two-way binder.
+
+### One-way exception construction follow-up
+
+`native_map.bind_one_way_crest` now follows an original Native ego lane and a distinct adjacent same-direction lane across the grade. It rejects absent, opposite-heading, changing-lane and flat topology and returns sampled crest-proxy blockers while retaining explicit original public-highway and one-way-authority source requirements. Map topology is only a construction selector, not proof of the subsection 3 legal designation. `comparison_audit.py` rejects a one-way exception packet without an original authority source reference and SHA256. Twelve CPU tests pass in `cpu-tests.log`; the SHA256 is in `result.json`.
+
+Next CPU work: bind an actual original Native map and original highway/one-way authority source; implement exact case capture/controllers, finalizers, diagnostic recipes and positive/negative compatibility, saved-only delivery audits and semantic proposals. The curve alternative still needs the batch lead to bind a compatible curve cell. Actual CARLA raycasts, motion and pixels remain later physical checks.
+
+The refreshed assignment static check (`.venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete`) exited 0 in `assignment-check.log`. The exact strict check with `--require-delivery-ready` exited 1 in `strict-gate.log` with `Preparation acceptance failed: partial/missing packages remain`; the package correctly retains `status: partial` until the remaining CPU deliverables and their proofs pass.

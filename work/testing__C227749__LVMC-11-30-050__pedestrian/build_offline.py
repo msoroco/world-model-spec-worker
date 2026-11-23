@@ -10,8 +10,8 @@ CAMERAS=[{'name':name,'width':1920 if name=='overview' else 1280,
           'height':1080 if name=='overview' else 720,'fov_deg':75,
           'pose_strategy':'complete pedestrian crossing and both curbs'}
          for name in ('overview','approach','reference_corner','driver_reference')]
-COMMON=['runner.py','crossing_geometry.py','native_controller.py','delivery_audit.py',
-        'saved_measurement.py','comparison_audit.py']
+COMMON=['runner.py','crossing_geometry.py','native_controller.py','native_capture.py','walker_pipeline_capture.py','delivery_audit.py',
+        'saved_measurement.py','comparison_audit.py','analysis.py']
 
 def dump(p,obj): p.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n')
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -38,7 +38,8 @@ def build():
                            'limitations':['Authored scene is an engineering target; original map and site context pending.']}}}
         dump(directory/'config.json',config)
         files=[{'path':name,'source':str((ROOT/name).relative_to(ROOT.parents[1])),'content':(ROOT/name).read_text()} for name in COMMON]
-        files += [{'path':'scene.json','source':str((directory/'scene.json').relative_to(ROOT.parents[1])),'content':(directory/'scene.json').read_text()},
+        files += [{'path':'candidate-crossing.xodr','source':str((ROOT/'candidate-crossing.xodr').relative_to(ROOT.parents[1])),'content':(ROOT/'candidate-crossing.xodr').read_text()},
+                  {'path':'scene.json','source':str((directory/'scene.json').relative_to(ROOT.parents[1])),'content':(directory/'scene.json').read_text()},
                   {'path':'config.json','source':str((directory/'config.json').relative_to(ROOT.parents[1])),'content':(directory/'config.json').read_text()},
                   {'path':'tests/test_offline.py','source':str((ROOT/'offline_test.py').relative_to(ROOT.parents[1])),'content':(ROOT/'offline_test.py').read_text()}]
         construction={'law_id':plan['law_id'],'cell_id':plan['cell_id'],'actor':'pedestrian',
@@ -52,7 +53,8 @@ def build():
         entries.append({'case_id':case_id,'construction':str(dest.relative_to(ROOT)),
                         'construction_sha256':sha(dest),'candidates':[],
                         'measurement_contract':str((directory/'measurement-contract.json').relative_to(ROOT)),
-                        'measurement_procedure':{'entrypoint':'saved_measurement.py'}})
+                        'measurement_procedure':{'entrypoint':'analysis.py'},
+                        'fixture_recipe':str((directory/'fixture-recipe.json').relative_to(ROOT.parents[1]))})
     manifest={'format':'c227749-draft-offline-manifest','assignment_id':plan['assignment_id'],
               'runtime_manifest_sha256':RUNTIME,'cases':entries,
               'limitations':'Offline authored geometry only; Native map, semantic and compatibility proofs pending.'}

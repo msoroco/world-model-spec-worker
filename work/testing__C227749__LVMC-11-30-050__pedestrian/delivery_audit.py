@@ -10,11 +10,11 @@ from crossing_geometry import measure_original_history, point
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
-def audit_saved(scene, walker_rows, frame_joins, camera_sources):
+def audit_saved(scene, walker_rows, frame_joins, camera_sources, *, expected_camera_kind='original_native'):
     if set(camera_sources) != set(CAMERAS):
         raise ValueError('four exact camera sources required')
     for name, source in camera_sources.items():
-        if not isinstance(source, dict) or source.get('kind') != 'original_native' or not source.get('sha256'):
+        if not isinstance(source, dict) or source.get('kind') != expected_camera_kind or not source.get('sha256'):
             raise ValueError(f'{name}: original camera hash required')
     measured = measure_original_history(walker_rows, scene)
     frames = [row['frame'] for row in walker_rows]
@@ -32,8 +32,12 @@ def audit_saved(scene, walker_rows, frame_joins, camera_sources):
             raise ValueError('camera and walker original frame join mismatch')
         if set(join.get('cameras', {})) != set(CAMERAS):
             raise ValueError('four camera frame joins required')
-        if any(type(index) is not int or index < 0 for index in join['cameras'].values()):
-            raise ValueError('invalid camera frame index')
+        for value in join['cameras'].values():
+            if isinstance(value, dict):
+                if value.get('frame') != row['frame']:
+                    raise ValueError('invalid camera original frame')
+            elif type(value) is not int or value < 0:
+                raise ValueError('invalid camera frame index')
     measured['audit_kind'] = 'saved_source_structure'
     measured['physical_visibility'] = 'unconfirmed'
     return measured

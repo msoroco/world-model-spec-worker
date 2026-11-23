@@ -4,6 +4,7 @@ This checker verifies recorded packet isolation only. It does not adjudicate the
 statutory hazard-distance phrase or certify physical capture quality.
 """
 import json
+import re
 from pathlib import Path
 
 REQUIRED = ('case_id', 'source_ref', 'law_id', 'actor', 'map_source', 'camera_profile',
@@ -45,6 +46,11 @@ def audit(comparison_id, first, second, assignment_id):
             raise ValueError('law or actor drift')
         if packet['lane_allocation'] not in ('two_way', 'one_way') or type(packet['ego_left_side_observed']) is not bool or type(packet['sampled_grade_blocks_proxy_ray']) is not bool:
             raise ValueError('invalid observed lane or body state')
+        if packet['lane_allocation'] == 'one_way':
+            authority = packet.get('one_way_authority_source_ref')
+            digest = packet.get('one_way_authority_sha256')
+            if not isinstance(authority, str) or not authority or not isinstance(digest, str) or not re.fullmatch(r'[0-9a-f]{64}', digest):
+                raise ValueError('one-way exception lacks original authority source and SHA256')
     for field in spec['fixed']:
         if first[field] != second[field]:
             raise ValueError(f'confounded fixed condition: {field}')
