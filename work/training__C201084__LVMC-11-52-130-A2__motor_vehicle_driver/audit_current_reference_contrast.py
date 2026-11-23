@@ -28,6 +28,8 @@ def bind_case(case, attempt):
     event = read(event_path)
     context_path = HERE / ('current-' + case + '-context-binding.json')
     context = read(context_path)
+    posting_path = HERE / ('current-' + case + '-posting-binding.json')
+    posting = read(posting_path)
     runtime_sha = sha(RUNTIME_MANIFEST)
     case_id = HERE.name + '__' + case
     construction_sha = entry['construction_sha256']
@@ -81,6 +83,20 @@ def bind_case(case, attempt):
         require(sha(attempt / (camera + '.mkv')) == digest and
                 saved['original_source_hashes'].get(camera + '.mkv') == digest,
                 'Current comparison context camera differs: ' + case + '/' + camera)
+    require(posting['case'] == case and
+            posting['event_evidence_sha256'] == sha(event_path) and
+            posting['diagnostic_fixture'] is True and
+            posting['posting_review'] is None and
+            posting['original_posting_review_bound'] is False and
+            posting['sign_text_verified'] is False and
+            posting['fire_code_designation_verified'] is False and
+            posting['legal_applicability_verified'] is False and
+            posting['physical_or_legal_completion_claimed'] is False,
+            'Current comparison posting review overclaims: ' + case)
+    for camera, digest in posting['camera_source_sha256'].items():
+        require(sha(attempt / (camera + '.mkv')) == digest and
+                saved['original_source_hashes'].get(camera + '.mkv') == digest,
+                'Current comparison posting camera differs: ' + case + '/' + camera)
     return {
         'manifest_sha256': sha(manifest_path),
         'construction_sha256': construction_sha,
@@ -89,6 +105,7 @@ def bind_case(case, attempt):
         'saved_receipt_sha256': sha(Path(str(prefix) + 'saved-receipt.json')),
         'event_evidence_sha256': sha(event_path),
         'context_binding_sha256': sha(context_path),
+        'posting_binding_sha256': sha(posting_path),
         'source_sha256': event['source_sha256'],
     }
 
