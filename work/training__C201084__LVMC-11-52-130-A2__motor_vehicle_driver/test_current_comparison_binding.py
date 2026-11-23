@@ -33,6 +33,20 @@ class CurrentComparisonBindingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source/saved binding differs'):
                 binding.bind_case('reference', ATTEMPT)
 
+    def test_rejects_unverified_posting_claim(self):
+        original = binding.read
+
+        def altered(path):
+            value = original(path)
+            if str(path).endswith('current-reference-posting-binding.json'):
+                value = copy.deepcopy(value)
+                value['fire_code_designation_verified'] = True
+            return value
+
+        with patch.object(binding, 'read', side_effect=altered):
+            with self.assertRaisesRegex(ValueError, 'posting review overclaims'):
+                binding.bind_case('reference', ATTEMPT)
+
 
 if __name__ == '__main__':
     unittest.main()

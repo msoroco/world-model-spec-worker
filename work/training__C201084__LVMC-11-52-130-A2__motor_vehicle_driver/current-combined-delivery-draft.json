@@ -1,0 +1,562 @@
+{
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-reference-fallback1-construction.json",
+          "construction_sha256": "02d218b9bb0cbf7b59c5e53b65ff84008f0b815cba316ddbcbd37edc30ffde4c",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-reference-fallback2-construction.json",
+          "construction_sha256": "46c53a0a1f9f2c506ffe45b6f441c67cbf571a2d866d24765a25f790d7035fa7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-reference-fallback3-construction.json",
+          "construction_sha256": "d451c5f3d06255bfb61641ea31b66a60be5f9acc04afa61a1b0afc75fa3c645a",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+      "construction": "draft-reference-construction.json",
+      "construction_sha256": "e7edbbf0071967570f919f48a778ec96890a691c7cb165a7d92a2fd518140542",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-reference-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-contrast-fallback1-construction.json",
+          "construction_sha256": "29945ecf17fed801ee5288c9fa541d095b3823dbc35ea5f430172bf1b1bf7168",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-contrast-fallback2-construction.json",
+          "construction_sha256": "f66f51fd09b972dff9721e7a651a5e71cf149cd06791dce46b2b13b802a5c63a",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero disjoint sample in the 600-frame capture",
+            "metric": "near-zero samples disjoint from the authored zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-contrast-fallback3-construction.json",
+          "construction_sha256": "b0cf2eab1a0428825479e4c9ed2f7f12e8a8752c105377db177f5c06275d95fb",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+      "construction": "draft-contrast-construction.json",
+      "construction_sha256": "89681b9bb347a19a572fcc769029042b12b13dc7b28e0a35bf0839697cd2e948",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-contrast-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-contrast-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Lead gap, closing speed and approach speed are separately observed Native motion risks; select alternatives only from source-measured failures.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "stop_gap_m: 6.0 -> 8.0"
+          ],
+          "construction": "draft-conflict-fallback1-construction.json",
+          "construction_sha256": "ced5e1bd8e67f56a4bdfa48edcc3f2fcb15a73d458a26ff52bdbe17f355d49f4",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "gap drops below 6 m while ego speed exceeds 0.05 m/s",
+            "metric": "lead longitudinal gap before near-zero ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 3.0 -> 2.0"
+          ],
+          "construction": "draft-conflict-fallback2-construction.json",
+          "construction_sha256": "c1eb2486d4b8f5d5109647e1d5083198d2b44f1788168edcaeafd6fbfc7cb61d",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained longitudinal gap",
+            "metric": "closing speed and lead gap over the approach",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_throttle: 0.28 -> 0.18"
+          ],
+          "construction": "draft-conflict-fallback3-construction.json",
+          "construction_sha256": "7c467f322a8149be9556674c5ad02c2736ef710e8754df5f4e31393018f727f4",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s before the first brake request",
+            "metric": "ego speed before first saved brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "construction": "draft-conflict-construction.json",
+      "construction_sha256": "534263d7024a90346be92b1c306d79dc9f736b28c3ad4e7ce010ad92409157a0",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-conflict-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-conflict-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "exception_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Lead gap, closing speed and approach speed are separately observed Native motion risks; select alternatives only from source-measured failures.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "stop_gap_m: 6.0 -> 8.0"
+          ],
+          "construction": "draft-clear-fallback1-construction.json",
+          "construction_sha256": "5936cc9c869935d52f3dc1c0ea565b274c53603d37641b71f0b811d7f4fd1c2f",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "gap drops below 6 m while ego speed exceeds 0.05 m/s",
+            "metric": "lead longitudinal gap before near-zero ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 3.0 -> 2.0"
+          ],
+          "construction": "draft-clear-fallback2-construction.json",
+          "construction_sha256": "179dc3ca9824e63f7260c02b0c799c38c90f78c332b40ab74d5961181154e1dd",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained longitudinal gap",
+            "metric": "closing speed and lead gap over the approach",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_throttle: 0.28 -> 0.18"
+          ],
+          "construction": "draft-clear-fallback3-construction.json",
+          "construction_sha256": "4b7709ecaf92ed71e8f6b60d1c344b76162cea673014252968435efa6e244b93",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s before the first brake request",
+            "metric": "ego speed before first saved brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+      "construction": "draft-clear-construction.json",
+      "construction_sha256": "ded6e0bb701c9dc739ebb410679b02a919d676d5ca18570e59cecc6fedf52424",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-clear-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-clear-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "clear_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Destination settling and lead-relative closure need separate source-measured alternative controls.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lead_stop_gap_m: 8.0"
+          ],
+          "construction": "draft-near_lead-fallback1-construction.json",
+          "construction_sha256": "7f67038744c6f3f9b42229ba5505500da40601c47b2f82d79649c18b68104878",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "gap falls below 6 m while ego remains moving",
+            "metric": "lead longitudinal gap before near-zero speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "lead_deceleration_mps2: 2.0"
+          ],
+          "construction": "draft-near_lead-fallback2-construction.json",
+          "construction_sha256": "e96f216d0229e741838fb9a177d3447d423e0dae7ff070ed86cabd1acfbc273e",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained gap",
+            "metric": "lead-relative closing speed and gap",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_mps: 3.0"
+          ],
+          "construction": "draft-near_lead-fallback3-construction.json",
+          "construction_sha256": "79b6a5b4ea8f8122c9f859e0dbcd9d8cd888a05247e9a6e1ca2643b227f2705b",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s on approach",
+            "metric": "ego speed before the first lead brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+      "construction": "draft-near_lead-construction.json",
+      "construction_sha256": "bce41bd1394f70095d3ab01dba4f90c2f9a487b2d08b2997b106f5075acfbbf8",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-near_lead-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-near_lead-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "traffic_pair_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Destination settling and lead-relative closure need separate source-measured alternative controls.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "destination_deceleration_mps2: 3.0"
+          ],
+          "construction": "draft-absent_lead-fallback1-construction.json",
+          "construction_sha256": "f9cb554ac8709bbee78c1fcf3bfd4e743b49fa6d024d0eb718a53019285cefde",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed destination",
+            "metric": "remaining destination distance and ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_mps: 3.0"
+          ],
+          "construction": "draft-absent_lead-fallback2-construction.json",
+          "construction_sha256": "1d81bf8d928c6b72190ff09d699745ae681eaa4e77c105ab18bce5dabc5c7af3",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "ego approaches faster than a stable stop allows",
+            "metric": "ego speed on approach to destination",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 1.2"
+          ],
+          "construction": "draft-absent_lead-fallback3-construction.json",
+          "construction_sha256": "fe53951246a979cd4c3377a514b22ec561d13b12231a60336c1e3b5d472e75d4",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego does not settle within the nominal 0.8 m radius",
+            "metric": "distance to destination at near-zero speed",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead",
+      "construction": "draft-absent_lead-construction.json",
+      "construction_sha256": "375e5c4a327bae8a37b858e0a62a0457b776d88a0eb4a0176e8b6d046fb4310a",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-absent_lead-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-absent_lead-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "traffic_pair_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient stopped samples and follower closing remain distinct risks while the device source is held fixed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-device-direction-fallback1-construction.json",
+          "construction_sha256": "ee83adeb160aed48e24d1c625db7b494c183b998739352a80a5b8c2a66c02e11",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-device-direction-fallback2-construction.json",
+          "construction_sha256": "067755ecfdbb6101f3a93a731ef4ee4844cd26e21c8535bb9d5f87d48eb881a7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-device-direction-fallback3-construction.json",
+          "construction_sha256": "2b728c6032ecd2ebf317fa97c899aec0bac067345f32988b7efcd67336403ba2",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction",
+      "construction": "draft-device-direction-construction.json",
+      "construction_sha256": "09aa4bf3463cea3d07859845fb8386a001dc4fdd74a2eefd61e305537ae1bcf5",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-device-direction-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-device-direction-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "device_direction_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    },
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient stopped samples and follower closing remain distinct risks while the pedestrian actor source is held fixed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-officer-direction-fallback1-construction.json",
+          "construction_sha256": "3220f4e4520b617ffb684c99824847aac17f6eb573b2577eb1a7f00191e9c8a3",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-officer-direction-fallback2-construction.json",
+          "construction_sha256": "6303bccda5c288dfa4a7d02e1ed32e72c4a3cdbd186bb8480bc3f0e0e16fd3bf",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-officer-direction-fallback3-construction.json",
+          "construction_sha256": "34350294e64f9c80384b7a756e836cba1b2aad494ae51ffbff5b6b300b8a49f3",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__officer_direction",
+      "construction": "draft-officer-direction-construction.json",
+      "construction_sha256": "982a6e7739fad919b90278a787fa84e57776df14237ec619a464255c07adf9a2",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-officer-direction-diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "draft-officer-direction-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_direction_finalize.py",
+        "source_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "preparation_status": "draft_combined_manifest_requires_reproof"
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "source_bindings": {
+    "absent_lead": {
+      "fixture_recipe_sha256": "29cddb5d362c6596ef5676e75d10cca2960419a59f047c26762fb6af1fbb630d",
+      "manifest_sha256": "ec8521aa3330fdbc2c63217cac5bad2b81c1044346827f2ecdbeab463f177695",
+      "measurement_contract_sha256": "0a5e34f4f4b29974beafa75dc56e761ad8e89025828f3afbe04fbd957f39baa7"
+    },
+    "clear": {
+      "fixture_recipe_sha256": "87606a29a35ea7e3c06165bf515627607f7aa627cf9f665aefb0ae0a0c5f6dbe",
+      "manifest_sha256": "81bc98d563aec15bb7e7cecef5bf10c99d250bc38f83fcea4045cc92ea8c4d6c",
+      "measurement_contract_sha256": "9d82a3af8966fd895fee7487bc43fdebbb224f26b5a02d6af70e572f05a5ab19"
+    },
+    "conflict": {
+      "fixture_recipe_sha256": "f4d091c909ce546faa3d5fd380a8912a6193bdf9369e307873ef8a000233b304",
+      "manifest_sha256": "b0f297e109567862fcd252f1e5d3552cca9e5d2acea5bf52c363bd263762c720",
+      "measurement_contract_sha256": "bd5dcd80e120db62e7389b85a1f6bed5ce78bd9afc8dc6dd5c206aea89654621"
+    },
+    "contrast": {
+      "fixture_recipe_sha256": "4ebca7ade6fc349983eb0dbfa436d07a24367d9e2b3098f38efaa4f5ad307744",
+      "manifest_sha256": "f36cccb23927b0ef715e458bcc5bcdab76512a259a84bfd50dda7445df874fa6",
+      "measurement_contract_sha256": "3b96e50537ff4780b0ef01e4b2f3b8f89fea4674a08613cd1127f2e08d7c14aa"
+    },
+    "device-direction": {
+      "fixture_recipe_sha256": "cab018bd1d2a810e9eab8732da471fa95a9840c85f7e7e8abe6ad47cd42817a0",
+      "manifest_sha256": "688dc3ccd7a6de0a9d1989ce38d8c30da0a0a4dbae696c83a488d459b6d7fe13",
+      "measurement_contract_sha256": "a48b66bf7dbd5a9609c3ddc2e88b948b9f09bfc6382e244db52f9c476794c146"
+    },
+    "near_lead": {
+      "fixture_recipe_sha256": "b665828b82888f69b8d7e677f6a2f2649d2f94a3fea58b6f7b22fa310d2bbce4",
+      "manifest_sha256": "a48212f0407e4943ad4ac5ea6c15c497e46eb7c6b9d50e53538eac54bbb3ad63",
+      "measurement_contract_sha256": "575c7ba917c3c57813845ed8c268faad29f3b6fcecf5fa342a41081e3498c412"
+    },
+    "officer-direction": {
+      "fixture_recipe_sha256": "eb9585f4bc0ff6d2e26636d8df0b7d5f1541a39229244164b1d71e12e14c8947",
+      "manifest_sha256": "18f9377ed8f5f4bc9aa6fdf84cb211145e8a3c6813c761719af0612ca9e5d947",
+      "measurement_contract_sha256": "395399e126378749abe6d2b3fbb09fc20367612c5d0609f5e2dbdfcbb5643070"
+    },
+    "reference": {
+      "fixture_recipe_sha256": "037855492894e31074b321a234596d190b41e5073b9a67c44f7d212421995701",
+      "manifest_sha256": "28f37282cab7ed2fe8f44e37586726fe60877cfd6f2d18695ab6db5ee2395909",
+      "measurement_contract_sha256": "9a9ae5a0bc0c76885b99684447a7d1cfdf4315c69f9ffff94209028a5c33bcba"
+    }
+  },
+  "status": "draft_combined_requires_current_manifest_cpu_proofs"
+}
