@@ -141,7 +141,9 @@ def ffv1_writer(path, size):
 def source_recorder(output, sizes=None):
     """Write one frame map and drive history alongside four lossless streams."""
     output = Path(output).resolve()
-    if not output.is_relative_to(Path.cwd().resolve() / ".runtime-work"):
+    repo = next((parent for parent in Path(__file__).resolve().parents
+                 if (parent / "batch.json").is_file() and (parent / "runtime.py").is_file()), None)
+    if repo is None or not output.is_relative_to(repo / ".runtime-work"):
         raise ValueError("Native source output must be ignored runtime work")
     if not output.is_dir():
         raise ValueError("Materialized Native attempt directory required")

@@ -3,6 +3,7 @@
 import importlib.util
 import hashlib
 import json
+import os
 import queue
 import subprocess
 import sys
@@ -33,6 +34,46 @@ def plan():
 
 
 class NativeSourcesTests(unittest.TestCase):
+    def test_materialized_runner_check_uses_pinned_exact_identity(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "construction.json").write_text("{}\n")
+            config = {"selected_case_id": runner.PREFIX + "right_other_at_300_ft",
+                      "supported_case_ids": [runner.PREFIX + "right_other_at_300_ft"],
+                      "cell_id": "C412593", "law_id": "NRS-484B-413-2",
+                      "actor": "motor_vehicle_driver", "rate_hz": 20,
+                      "duration_s": 45, "required_atoms": ["sig.turn_indicator"],
+                      "case": {"case_id": runner.PREFIX + "right_other_at_300_ft",
+                               "district_type": "other", "signal_target_ft": 300},
+                      "cameras": plan()["cameras"]}
+            (root / "config.json").write_text(json.dumps(config))
+            self.assertTrue(runner.check_construction(root)["cpu_check_passed"])
+            config["cameras"][0]["width"] = 640
+            (root / "config.json").write_text(json.dumps(config))
+            with self.assertRaisesRegex(ValueError, "camera dimensions"):
+                runner.check_construction(root)
+
+    def test_all_selected_case_bundles_bind_district_and_signal_target(self):
+        template = json.loads((runner.ROOT / "construction.json").read_text())
+        original = json.dumps(template, sort_keys=True)
+        hashes = set()
+        for name, target in runner.CASE_TARGET_FEET.items():
+            case_id = runner.PREFIX + name
+            bundle = runner.make_case_bundle(case_id, template)
+            config = json.loads(next(row["content"] for row in bundle["files"]
+                                     if row["path"] == "config.json"))
+            self.assertEqual(bundle["case_id"], case_id)
+            self.assertEqual(config["case"]["case_id"], case_id)
+            self.assertEqual(config["case"]["district_type"], runner._district(name))
+            self.assertEqual(config["case"]["signal_target_ft"], target)
+            self.assertEqual(set(config["supported_case_ids"]),
+                             {runner.PREFIX + item for item in runner.CASE_TARGET_FEET})
+            hashes.add(hashlib.sha256(json.dumps(bundle, sort_keys=True).encode()).hexdigest())
+        self.assertEqual(len(hashes), len(runner.CASE_TARGET_FEET))
+        self.assertEqual(json.dumps(template, sort_keys=True), original)
+        with self.assertRaisesRegex(ValueError, "Unsupported exact"):
+            runner.make_case_bundle(runner.PREFIX + "missing", template)
+
     def test_draft_inputs_cover_three_distinct_district_variants(self):
         work = Path.cwd() / ".runtime-work"
         work.mkdir(exist_ok=True)
@@ -216,6 +257,53 @@ class NativeSourcesTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Missing original camera"):
                 finalize(root)
 
+    def test_saved_finalizer_measures_exact_business_boundary(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            positions = (-10.0, 0.0, 30.48, 32.0)
+            rows = []
+            frames = []
+            for index, x in enumerate(positions):
+                frame = index + 1
+                rows.append({"frame": frame, "time_s": frame / 20,
+                             "ego_position_xy_m": [x, 0.0], "ego_speed_mps": 5.0,
+                             "ego_heading_deg": (0, 0, -10, -90)[index],
+                             "ego_road_id": (1, 1, 1, 2)[index], "ego_lane_id": -1,
+                             "right_indicator": index > 0})
+                frames.append({"video_frame": index, "carla_frame": frame,
+                               "time_s": frame / 20})
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in frames))
+            (root / "route_context.json").write_text(json.dumps({
+                "native_map_id": "cpu-example", "approach_road_id": 1,
+                "approach_lane_id": -1, "outgoing_road_id": 2,
+                "outgoing_lane_id": -1, "native_route_source": "cpu-example",
+                "district_source": "cpu-example", "district_type": "business",
+                "turn_onset_frame": 3}))
+            for name in native.CAMERAS:
+                with native.ffv1_writer(root / (name + ".mkv"), (2, 2)) as write:
+                    for _ in rows:
+                        write(bytes([0, 0, 255, 255] * 4))
+            for onset_x, meets in ((30.479, False), (30.48, True),
+                                   (30.481, True)):
+                rows[2]["ego_position_xy_m"] = [onset_x, 0.0]
+                (root / "drive_history.jsonl").write_text(
+                    "".join(json.dumps(row) + "\n" for row in rows))
+                result = finalize(root)
+                self.assertEqual(result["measurement"]["observed_continuous_distance_meets_boundary"],
+                                 meets)
+                self.assertAlmostEqual(
+                    result["measurement"]["turn_onset"]["continuous_right_signal_distance_m"],
+                    onset_x)
+                self.assertFalse(result["physical_acceptance_claimed"])
+            rows[1]["right_indicator"] = False
+            (root / "drive_history.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            interrupted = finalize(root)
+            self.assertFalse(interrupted["measurement"]["observed_continuous_distance_meets_boundary"])
+            self.assertEqual(interrupted["measurement"]["turn_onset"][
+                "continuous_right_signal_distance_m"], 0.0)
+
     def test_recorder_retains_four_synchronized_native_sources(self):
         work = Path.cwd() / ".runtime-work"
         work.mkdir(exist_ok=True)
@@ -229,15 +317,20 @@ class NativeSourcesTests(unittest.TestCase):
                                     get_light_state=lambda: 2)
             carla = SimpleNamespace(VehicleLightState=SimpleNamespace(RightBlinker=2))
             sizes = {name: (2, 2) for name in native.CAMERAS}
-            with native.source_recorder(root, sizes) as append:
-                for index in range(3):
-                    snapshot = SimpleNamespace(frame=index + 1,
-                                               timestamp=SimpleNamespace(elapsed_seconds=(index + 1) / 20))
-                    queues = {name: queue.Queue() for name in native.CAMERAS}
-                    for item in queues.values():
-                        item.put(SimpleNamespace(frame=index + 1,
-                                                 raw_data=bytes([0, 0, 255, 255] * 4)))
-                    append(snapshot, actor, carla, queues)
+            prior_cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                with native.source_recorder(root, sizes) as append:
+                    for index in range(3):
+                        snapshot = SimpleNamespace(frame=index + 1,
+                                                   timestamp=SimpleNamespace(elapsed_seconds=(index + 1) / 20))
+                        queues = {name: queue.Queue() for name in native.CAMERAS}
+                        for item in queues.values():
+                            item.put(SimpleNamespace(frame=index + 1,
+                                                     raw_data=bytes([0, 0, 255, 255] * 4)))
+                        append(snapshot, actor, carla, queues)
+            finally:
+                os.chdir(prior_cwd)
             rows = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
             self.assertEqual([row["carla_frame"] for row in rows], [1, 2, 3])
             for name in native.CAMERAS:

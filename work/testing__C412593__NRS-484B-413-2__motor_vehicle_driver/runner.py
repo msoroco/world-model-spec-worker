@@ -254,6 +254,74 @@ def _control(actor, waypoints, target_speed):
     return throttle, brake, max(-0.75, min(0.75, heading_error / 35))
 
 
+def make_case_bundle(case_id, template):
+    """Derive an exact-case construction without changing shared capture policy."""
+    if not isinstance(case_id, str) or not case_id.startswith(PREFIX):
+        raise ValueError("Exact C412593 case ID required")
+    name = case_id[len(PREFIX):]
+    if name not in CASE_TARGET_FEET:
+        raise ValueError("Unsupported exact C412593 case")
+    if template.get("entrypoint") != "runner.py" or template.get("cell_id") != "C412593":
+        raise ValueError("C412593 construction template required")
+    bundle = json.loads(json.dumps(template))
+    configs = [row for row in bundle.get("files", []) if row.get("path") == "config.json"]
+    if len(configs) != 1:
+        raise ValueError("Exactly one source config required")
+    config = json.loads(configs[0]["content"])
+    config["selected_case_id"] = case_id
+    config["supported_case_ids"] = [PREFIX + item for item in CASE_TARGET_FEET]
+    config["case"] = {"case_id": case_id, "district_type": _district(name),
+                      "signal_target_ft": CASE_TARGET_FEET[name],
+                      "physical_acceptance_claimed": False}
+    bundle["case_id"] = case_id
+    bundle["measurement_plan"]["quantities"] = [
+        "continuous right-indicator path length before original course change",
+        ("300-foot other-area boundary" if _district(name) == "other"
+         else "100-foot business/residential boundary")]
+    configs[0]["content"] = json.dumps(config, indent=2) + "\n"
+    return bundle
+
+
+def check_construction(folder=None):
+    """Offline runtime entry point: validate materialized exact inputs only."""
+    folder = Path(ROOT if folder is None else folder)
+    if not (folder / "construction.json").is_file() or not (folder / "config.json").is_file():
+        raise ValueError("Materialized exact construction/config required")
+    config = json.loads((folder / "config.json").read_text())
+    case_id = config.get("selected_case_id")
+    if (not isinstance(case_id, str) or not case_id.startswith(PREFIX) or
+            case_id[len(PREFIX):] not in CASE_TARGET_FEET or
+            config.get("cell_id") != "C412593" or
+            config.get("law_id") != "NRS-484B-413-2" or
+            config.get("actor") != "motor_vehicle_driver" or
+            config.get("rate_hz") != 20 or config.get("duration_s") != 45 or
+            config.get("required_atoms") != ["sig.turn_indicator"]):
+        raise ValueError("Materialized exact C412593 runtime identity differs")
+    name = case_id[len(PREFIX):]
+    if (case_id not in config.get("supported_case_ids", []) or
+            config.get("case", {}).get("case_id") != case_id or
+            config["case"].get("district_type") != _district(name) or
+            config["case"].get("signal_target_ft") != CASE_TARGET_FEET[name]):
+        raise ValueError("Materialized exact case district/target binding differs")
+    cameras = config.get("cameras")
+    from native_sources import SIZES
+    if not isinstance(cameras, list) or tuple(row.get("name") for row in cameras) != CAMERAS:
+        raise ValueError("Materialized four original cameras required")
+    if any((row.get("width"), row.get("height")) != SIZES[row["name"]]
+           for row in cameras):
+        raise ValueError("Materialized original camera dimensions differ")
+    district = _district(case_id[len(PREFIX):])
+    xml = ET.fromstring(draft_xodr(district))
+    roads = {int(road.get("id")) for road in xml.findall("road")}
+    objects = {item.get("name") for item in xml.findall("./road/objects/object")}
+    if (roads != {APPROACH_ROAD, CONNECTOR_ROAD, OUTGOING_ROAD} or
+            not {"freight_loading_zone_sign", "freight_loading_bay"} <= objects):
+        raise ValueError("Authored exact right-turn map lacks road or freight zone")
+    return {"case_id": case_id, "district_variant": district,
+            "map_sha256": hashlib.sha256(draft_xodr(district).encode()).hexdigest(),
+            "cpu_check_passed": True, "simulation_started": False}
+
+
 def capture(args):
     output = Path(args.output_dir).resolve()
     repo = _repo()
@@ -265,6 +333,7 @@ def capture(args):
             not (output / "config.json").is_file()):
         raise ValueError("Use runtime.py to materialize an ignored exact attempt")
     config = json.loads((output / "config.json").read_text())
+    check_construction(output)
     if args.case_id is None:
         args.case_id = config.get("selected_case_id")
     if (config.get("selected_case_id") != args.case_id or
