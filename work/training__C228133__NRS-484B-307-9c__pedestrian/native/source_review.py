@@ -27,7 +27,8 @@ def bind(attempt, review):
     data = json.loads(review.read_text())
     names = ('native-signal-frames.jsonl',
              'native-pedestrian-device-frames.jsonl', 'video_frames.jsonl',
-             'road-boundary.json')
+             'road-boundary.json', 'governing-device-authority.json',
+             'highway-authority.json')
     sources = data.get('source_sha256')
     if data.get('format') != 'c228133-native-source-review-v1' or \
             not isinstance(data.get('reviewer'), str) or not data['reviewer'].strip() or \
@@ -37,11 +38,27 @@ def bind(attempt, review):
         if _digest(attempt / name) != sources[name]:
             raise ValueError('Reviewed Native source changed: ' + name)
     geometry = json.loads((attempt / 'road-boundary.json').read_text())
+    governing = json.loads((attempt / 'governing-device-authority.json').read_text())
+    highway = json.loads((attempt / 'highway-authority.json').read_text())
     if geometry.get('source_kind') != 'native_map_readback' or \
             data.get('highway_boundary_reviewed') is not True or \
             data.get('highway_boundary_basis') not in ('dedication_and_public_use',
-                                                      'official_road_inventory'):
+                                                      'official_road_inventory') or \
+            highway.get('format') != 'c228133-highway-authority-v1' or \
+            highway.get('basis') != data.get('highway_boundary_basis') or \
+            highway.get('native_road_id') != geometry.get('native_road_id') or \
+            highway.get('boundary_y_m') != geometry.get('boundary_y_m') or \
+            highway.get('road_side') != geometry.get('road_side') or \
+            not isinstance(highway.get('authority_reference'), str) or \
+            not highway['authority_reference'].strip():
         raise ValueError('Highway boundary requires independent source review')
+    if governing.get('format') != 'c228133-governing-device-authority-v1' or \
+            governing.get('source_kind') != 'official_traffic_control_inventory' or \
+            governing.get('is_debug_geometry') is not False or \
+            not isinstance(governing.get('authority_reference'), str) or \
+            not governing['authority_reference'].strip() or \
+            governing.get('red_actor_id') == governing.get('arrow_actor_id'):
+        raise ValueError('Official governing signal authority missing')
     signal_rows = _rows(attempt / names[0])
     device_rows = _rows(attempt / names[1])
     footage = [json.loads(line) for line in (attempt / names[2]).read_text().splitlines()]
@@ -64,6 +81,8 @@ def bind(attempt, review):
         if signal.get('red_actor_id') == signal.get('arrow_actor_id') or \
                 decision.get('red_actor_id') != signal.get('red_actor_id') or \
                 decision.get('arrow_actor_id') != signal.get('arrow_actor_id') or \
+                signal.get('red_actor_id') != governing.get('red_actor_id') or \
+                signal.get('arrow_actor_id') != governing.get('arrow_actor_id') or \
                 decision.get('device_actor_id') != device.get('device_actor_id'):
             raise ValueError('Review actor identity mismatch')
         if decision.get('red') not in ('steady', 'other') or \

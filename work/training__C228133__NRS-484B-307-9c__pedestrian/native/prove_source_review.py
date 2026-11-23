@@ -8,6 +8,7 @@ import tempfile
 
 from source_capture import VIEWS
 from source_review import bind, write_bound_rows
+from saved_source_analysis import analyze
 
 
 HERE = Path(__file__).resolve().parent
@@ -45,11 +46,28 @@ def prove():
         sources = {'native-signal-frames.jsonl': signal,
                    'native-pedestrian-device-frames.jsonl': device,
                    'video_frames.jsonl': video,
-                   'road-boundary.json': {'source_kind': 'native_map_readback',
+                   'road-boundary.json': {'format': 'pedestrian-road-boundary-v1',
+                                          'source_kind': 'native_map_readback',
+                                          'native_road_id': 7,
                                           'road_side': 'at_or_above_y',
-                                          'boundary_y_m': 0}}
+                                          'boundary_y_m': 0},
+                   'governing-device-authority.json': {
+                       'format': 'c228133-governing-device-authority-v1',
+                       'source_kind': 'official_traffic_control_inventory',
+                       'is_debug_geometry': False, 'red_actor_id': 31,
+                       'arrow_actor_id': 32,
+                       'authority_reference': 'synthetic-stub-inventory'},
+                   'highway-authority.json': {
+                       'format': 'c228133-highway-authority-v1',
+                       'basis': 'official_road_inventory', 'native_road_id': 7,
+                       'road_side': 'at_or_above_y', 'boundary_y_m': 0,
+                       'authority_reference': 'synthetic-stub-road-inventory'}}
         for name, row in sources.items():
             (attempt / name).write_text(json.dumps(row) + '\n')
+        (attempt / 'native-pedestrian-frames.jsonl').write_text(json.dumps({
+            'frame': 0, 'native_frame': 101, 'time_s': 1.0,
+            'actor_id': 17, 'source_kind': 'native_actor',
+            'footprint_roadward_y_m': -1.0}) + '\n')
         decision = {'frame': 0, 'source_rgb_sha256': hashes,
                     'red_actor_id': 31, 'arrow_actor_id': 32,
                     'device_actor_id': None, 'red': 'steady',
@@ -76,7 +94,13 @@ def prove():
         output = attempt / 'reviewed'
         assert write_bound_rows(attempt, path, output) == 1
         assert (output / 'native-signal-frames.jsonl').is_file()
-        errors = []
+        (attempt / 'independent-review.json').write_text(json.dumps(review) + '\n')
+        original = digest(attempt / 'native-signal-frames.jsonl')
+        report = analyze(attempt)
+        assert report['measurement']['frame_count'] == 1
+        assert report['measurement']['potential_9c_entry_frames'] == []
+        assert digest(attempt / 'native-signal-frames.jsonl') == original
+        errors = [rejected(lambda: analyze(attempt), 'Retain prior review output')]
         for key, value, expected in (
                 ('source_rgb_sha256', {**hashes, 'overview': '0' * 64},
                  'four original camera'),
@@ -89,6 +113,27 @@ def prove():
         bad = copy.deepcopy(review)
         bad['highway_boundary_reviewed'] = False
         errors.append(rejected(lambda: check(bad), 'Highway boundary'))
+        bad = copy.deepcopy(review)
+        bad['source_sha256'].pop('governing-device-authority.json')
+        errors.append(rejected(lambda: check(bad), 'Incomplete named Native source review'))
+        bad = copy.deepcopy(review)
+        authority = sources['governing-device-authority.json'].copy()
+        authority['is_debug_geometry'] = True
+        (attempt / 'governing-device-authority.json').write_text(json.dumps(authority) + '\n')
+        bad['source_sha256']['governing-device-authority.json'] = digest(
+            attempt / 'governing-device-authority.json')
+        errors.append(rejected(lambda: check(bad), 'Official governing signal authority'))
+        (attempt / 'governing-device-authority.json').write_text(json.dumps(
+            sources['governing-device-authority.json']) + '\n')
+        bad = copy.deepcopy(review)
+        highway = sources['highway-authority.json'].copy()
+        highway['boundary_y_m'] = 1
+        (attempt / 'highway-authority.json').write_text(json.dumps(highway) + '\n')
+        bad['source_sha256']['highway-authority.json'] = digest(
+            attempt / 'highway-authority.json')
+        errors.append(rejected(lambda: check(bad), 'Highway boundary'))
+        (attempt / 'highway-authority.json').write_text(json.dumps(
+            sources['highway-authority.json']) + '\n')
         bad = copy.deepcopy(review)
         bad['frames'][0]['native_frame'] = 102
         (attempt / 'native-signal-frames.jsonl').write_text(json.dumps(
