@@ -38,7 +38,7 @@ def main():
             if not attempts:
                 raise ValueError('Current comparison source missing: ' + suffix)
             attempt = max(attempts, key=lambda candidate: candidate.stat().st_mtime_ns)
-            saved = proof_dir / 'saved-command.log' 
+            saved = proof_dir / 'saved-command.log'
             paths.extend((attempt, saved))
         result = audit(kind, *paths, diagnostic=True)
         assert result["source_comparison_passed"] and not result["passed"]

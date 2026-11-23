@@ -49,7 +49,7 @@ def adapt_finalizer(source):
     source = source.replace('from exception_duration import plan as duration_plan\n',
                             'from exception_duration import plan as duration_plan\n'
                             'from armored_proxy import verify_readback\n')
-    source = source.replace("'native-raw-actors.jsonl',", 
+    source = source.replace("'native-raw-actors.jsonl',",
                             "'native-raw-actors.jsonl','native-armor-proxy-readback.json',", 1)
     marker = "    actor_rows=rows(attempt,'native-raw-actors.jsonl')\n"
     if source.count(marker) != 1:

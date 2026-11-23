@@ -67,7 +67,7 @@ def main(tag):
         spec = {'receipt': receipt.relative_to(HERE).as_posix(), 'sha256': sha(receipt)}
         validate(ROOT, HERE, {**case, 'physical_preparation': spec})
         case['physical_preparation'] = spec
-        
+
         print(suffix, 'three outcomes and lifecycle passed', flush=True)
     print(json.dumps({'selected_cases': 4, 'cpu_mock_outcomes': 12,
                       'lifecycle_tests': 4, 'manifest_sha256': sha(manifest_path),
