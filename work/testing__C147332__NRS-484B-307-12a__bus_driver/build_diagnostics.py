@@ -39,7 +39,11 @@ def diagnostic(scene, kind):
                   "faces_bus": True, "placement": "over_individual_lanes",
                   "governed_lane_ids": green,
                   "native_asset_blueprint_id": "fixture.green_arrow_asset",
-                  "dark_asset_blueprint_id": "fixture.dark_asset"}}
+                  "dark_asset_blueprint_id": "fixture.dark_asset",
+                  "native_display_state": {"attribute": "display_state",
+                                           "green_value": "down_green_arrow",
+                                           "dark_value": "dark",
+                                           "source_citation": "diagnostic only"}}}
     files["reviewed-context.json"] = dumps(packet)
     positions = {
         "green_selected_drive": [(10 + i * .4, -1.8) for i in range(5)],

@@ -41,12 +41,22 @@ def spawn_scene(world, scene, carla, site):
             blueprint = library.find(identifier)
             if blueprint is None:
                 raise ValueError("exact overhead head asset unavailable")
+            state = site["native_display_state"]
+            attribute = state["attribute"]
+            value = state["green_value"] if signal["display"] == "down_green_arrow" else state["dark_value"]
+            if not blueprint.has_attribute(attribute):
+                raise ValueError("reviewed display attribute unavailable on head blueprint")
+            blueprint.set_attribute(attribute, value)
+            if str(blueprint.get_attribute(attribute)) != value:
+                raise ValueError("head blueprint display state did not read back")
             transform = carla.Transform(carla.Location(x=signal["longitudinal_m"],
                 y=signal["lateral_m"], z=signal["height_m"]), carla.Rotation(yaw=180))
             actor = world.spawn_actor(blueprint, transform)
             if actor is None:
                 raise RuntimeError("overhead head spawn failed")
             heads.append(actor)
+            if str(actor.attributes.get(attribute)) != value:
+                raise ValueError("spawned overhead head display state did not read back")
         x, y = scene["route_waypoint_centers_m"][0]
         bus = world.spawn_actor(bus_bp, carla.Transform(carla.Location(x=x, y=y, z=0.7),
                                                          carla.Rotation(yaw=0)))

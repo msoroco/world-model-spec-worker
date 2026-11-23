@@ -174,6 +174,15 @@ def run_native(scene, road, site, output, host, port, packet_path):
                 cameras.append(frame)
                 frame_map.append(frame, time_s)
                 common = {"frame": frame, "elapsed_seconds": time_s}
+                state = site["native_display_state"]
+                displays = []
+                for head, signal in zip(heads, scene["signals"]):
+                    expected = (state["green_value"] if signal["display"] == "down_green_arrow"
+                                else state["dark_value"])
+                    observed = head.attributes.get(state["attribute"])
+                    if observed is None or str(observed) != expected:
+                        raise RuntimeError("original overhead head display state missing or changed")
+                    displays.append(str(observed))
                 body_file.write(json.dumps({**common, "source_path": "trace.jsonl",
                     "bus_actor_id": int(bus.id), "bus_footprint": _footprint(bus)}, allow_nan=False) + "\n")
                 signal_file.write(json.dumps({**common, "source_path": "sign-state-original.jsonl",
@@ -183,15 +192,18 @@ def run_native(scene, road, site, output, host, port, packet_path):
                     "lanes": [{"lane_id": signal["governed_lane_id"],
                                "direction": "bus_direction",
                                "lateral_bounds_m": signal["lateral_bounds_m"],
-                               "symbol": signal["display"]}
-                              for signal in scene["signals"]]}, allow_nan=False) + "\n")
+                               "symbol": signal["display"],
+                               "observed_display_value": observed}
+                              for signal, observed in zip(scene["signals"], displays)]}, allow_nan=False) + "\n")
                 head_file.write(json.dumps({**common, "heads": [
                     {"actor_id": int(head.id),
                      "blueprint_id": site["native_asset_blueprint_id"] if signal["display"] == "down_green_arrow" else site["dark_asset_blueprint_id"],
+                     "display_attribute": state["attribute"],
+                     "observed_display_value": observed,
                      "position": [head.get_transform().location.x,
                                   head.get_transform().location.y,
                                   head.get_transform().location.z]}
-                    for head, signal in zip(heads, scene["signals"])]}, allow_nan=False) + "\n")
+                    for head, signal, observed in zip(heads, scene["signals"], displays)]}, allow_nan=False) + "\n")
                 camera_file.write(json.dumps({**common, "source_path": "video_frames.jsonl",
                     "camera_names": list(CAMERAS)}, allow_nan=False) + "\n")
                 control_file.write(json.dumps({**common, "requested_control": request}, allow_nan=False) + "\n")

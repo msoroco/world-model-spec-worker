@@ -30,9 +30,87 @@
   "topic_inventory": {
     "exact-text": "The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle who intends to exit a roundabout: Shall use the left lane to turn left or complete a U-turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "purpose": "Mapped U-turn from physically left circular lane",
+      "gap_ids": [
+        "no_accepted_original_u_turn"
+      ],
+      "scenario_parameters": {
+        "intended_departure": "opposite_direction",
+        "roundabout_lane_role": "left",
+        "route_kind": "entry_ring_exit"
+      },
+      "construction_module": "roundabout.py",
+      "measurement_module": "roundabout.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Frozen cell identifies neither a particular source-surveyed multilane roundabout nor a verified connected entry-to-opposite-exit lane route; map readback and live footprint/visibility must precede physical use.",
+        "fallback_policy": "No untested fallback; preserve the mapped route and comparison variables."
+      }
+    },
+    {
+      "case_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "purpose": "Same mapped U-turn from outer circular lane",
+      "gap_ids": [
+        "no_accepted_original_u_turn"
+      ],
+      "scenario_parameters": {
+        "intended_departure": "opposite_direction",
+        "roundabout_lane_role": "outer",
+        "route_kind": "entry_ring_exit"
+      },
+      "construction_module": "roundabout.py",
+      "measurement_module": "roundabout.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Frozen cell identifies neither a particular source-surveyed multilane roundabout nor a verified connected entry-to-opposite-exit lane route; map readback and live footprint/visibility must precede physical use.",
+        "fallback_policy": "No untested fallback; preserve the mapped route and comparison variables."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "u_turn_left_vs_outer_lane",
+      "case_ids": [
+        "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn",
+        "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn"
+      ],
+      "fixed_conditions": [
+        "same source-hashed roundabout map and jurisdiction",
+        "same entry and opposite-direction exit, motor-vehicle operator, 20 Hz, duration and four-camera plan",
+        "same route controller and physical conditions"
+      ],
+      "deliberate_differences": [
+        "source-mapped and observed ring lane: left versus outer"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "native_map_lane_geometry",
+      "mandatory": true,
+      "source": "map readback; both allocated lanes, travel tangent and circular routes"
+    },
+    {
+      "name": "operator_intended_departure",
+      "mandatory": true,
+      "source": "source-bound authored intention and actor binding"
+    },
+    {
+      "name": "original_ego_lane_history",
+      "mandatory": true,
+      "source": "sealed Native 20 Hz identity, position, lane and section history"
+    },
+    {
+      "name": "actual_exit_heading",
+      "mandatory": true,
+      "source": "original departure frames and map entrance bearing"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json",
@@ -57,17 +135,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "A source-surveyed CARLA map with two correctly allocated lanes and connected opposite-direction U-turn routes has not yet been bound.",
+    "No original 900-frame Native history or four-view video exists; actual motion, camera coverage and physical outcome remain unverified.",
+    "Canonical runner, exact offline/compatibility receipts, semantic proposals, delivery and comparison audit integration remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "No frozen accepted recordings are listed; reviewed exact assignment, conditional witness, evidence inventory and full statute. New source-bound cases address left-lane use for the assigned intended U-turn only.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_original_u_turn",
+        "requirement": "Intended opposite-direction exit, allocated left-lane use, observed departure and operator identity in a complete roundabout",
+        "source": {
+          "path": "inputs/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json",
+          "sha256": "e8c4eb8a6906da9c069244c7b15099c79b231603d9d415c0d2ee4bb9a19432fc"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory lists zero recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_executable_topology_and_history_audit",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/LVMC-11-43-010-C1.json",
@@ -83,6 +172,18 @@
         "Establish operator identity, complete roundabout geometry, clearance and applicable jurisdiction."
       ],
       "reason": "The fixed U-turn task directly supports the opposite-direction exit branch."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Intended U-turn exit with left-lane use",
+      "source": "LVMC 11.43.010(C)(1)",
+      "status": "selected_required",
+      "evidence_or_gap": "no_accepted_original_u_turn",
+      "case_ids": [
+        "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn",
+        "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn"
+      ]
     }
   ]
 }

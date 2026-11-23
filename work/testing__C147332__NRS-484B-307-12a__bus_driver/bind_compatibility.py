@@ -48,7 +48,7 @@ def main() -> None:
             'method': 'Reviewed original highway and official device bytes with SHA-256 and lane/facing association',
             'evidence': 'reviewed-context.json'}
         for candidate in ('primary', 'fallback1'):
-            output = REPO / '.runtime-work/c147332-12a-compat-v3' / kind / candidate
+            output = REPO / '.runtime-work/c147332-12a-compat-v4' / kind / candidate
             receipt = json.loads((output / 'compatibility.json').read_text())
             if (receipt['passed'] is not True or receipt['case_id'] != entry['case_id']
                     or receipt['candidate_id'] != candidate):
@@ -62,16 +62,16 @@ def main() -> None:
             if analysis_sha != receipt['log_sha256'] or negative_sha != receipt['negative_log_sha256']:
                 raise ValueError('Compatibility logs changed: ' + stem)
             run_log_source = REPO / '.runtime-work' / (
-                'c147332-12a-compat-v3-' + kind + '-' + candidate + '.log')
+                'c147332-12a-compat-v4-' + kind + '-' + candidate + '.log')
             run_log_name = 'cpu-compat-' + kind + '-' + candidate + '.log'
             run_sha = retained(run_log_source, ROOT / run_log_name)
-            runtime_root = 'c147332-12a-runtime-v3-' + kind + '-' + candidate
+            runtime_root = 'c147332-12a-runtime-v4-' + kind + '-' + candidate
             command = (
                 'SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/' + runtime_root +
                 ' PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility'
                 ' --manifest work/testing__C147332__NRS-484B-307-12a__bus_driver/execution-manifest.json'
                 ' --case ' + entry['case_id'] + ' --candidate ' + candidate +
-                ' --output "$PWD/.runtime-work/c147332-12a-compat-v3/' + kind + '/' + candidate + '"'
+                ' --output "$PWD/.runtime-work/c147332-12a-compat-v4/' + kind + '/' + candidate + '"'
                 ' --library "$PWD/runtime/library"'
                 ' --validator "$PWD/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"')
             tests.append({'command': command, 'exit_code': 0,

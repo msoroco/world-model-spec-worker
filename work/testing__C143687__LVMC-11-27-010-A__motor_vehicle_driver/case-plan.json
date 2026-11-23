@@ -24,9 +24,250 @@
   "topic_inventory": {
     "exact-text": "Except as otherwise provided in Subsection (B), it is unlawful to operate a motorized vehicle upon or within a right-of-way that: (1) Has been designated on an official trails plan as an equestrian trail, multi-use trail, or other trail not intended for use by motorized vehicles; (2) Has been dedicated to the City for use as such a trail; and (3) Has been posted with appropriate signs to indicate that motorized vehicles are prohibited. The provisions of Subsection (A) do not apply to: (1) An emergency vehicle; (2) Any vehicle that is being used in connection with maintenance of the right-of-way; or (3) Any motorized wheelchair or other device that is designed for and used by a mobility-impaired person."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+      "branch": "all_prerequisites",
+      "kind": "delivery",
+      "gap_ids": [
+        "g_trail_records"
+      ],
+      "purpose": "All three cumulative corridor conditions sourced; ordinary motorized travel inside corridor.",
+      "construction": "trail.py:build_case",
+      "measurement": "saved_audit.py:audit_history",
+      "target_set": "full-test",
+      "capture_profile": "20 Hz, 900 original frames, four synchronized cameras",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Map, sign footprint, and route must be source checked before any physical risk can be characterized.",
+        "candidates": []
+      }
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated",
+      "branch": "not_designated",
+      "kind": "delivery",
+      "gap_ids": [
+        "g_trail_records"
+      ],
+      "purpose": "Official plan affirmatively reports this corridor is not a designated nonmotorized trail.",
+      "construction": "trail.py:build_case",
+      "measurement": "saved_audit.py:audit_history",
+      "target_set": "full-test",
+      "capture_profile": "20 Hz, 900 original frames, four synchronized cameras",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Map, sign footprint, and route must be source checked before any physical risk can be characterized.",
+        "candidates": []
+      }
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated",
+      "branch": "not_dedicated",
+      "kind": "delivery",
+      "gap_ids": [
+        "g_trail_records"
+      ],
+      "purpose": "City dedication record affirmatively reports this corridor is not dedicated as such a trail.",
+      "construction": "trail.py:build_case",
+      "measurement": "saved_audit.py:audit_history",
+      "target_set": "full-test",
+      "capture_profile": "20 Hz, 900 original frames, four synchronized cameras",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Map, sign footprint, and route must be source checked before any physical risk can be characterized.",
+        "candidates": []
+      }
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign",
+      "branch": "no_prohibition_sign",
+      "kind": "delivery",
+      "gap_ids": [
+        "g_trail_records"
+      ],
+      "purpose": "Read-back sign face lacks motor-vehicle prohibition while the governed access is held fixed.",
+      "construction": "trail.py:build_case",
+      "measurement": "saved_audit.py:audit_history",
+      "target_set": "full-test",
+      "capture_profile": "20 Hz, 900 original frames, four synchronized cameras",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Map, sign footprint, and route must be source checked before any physical risk can be characterized.",
+        "candidates": []
+      }
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle",
+      "branch": "emergency_vehicle",
+      "kind": "delivery",
+      "gap_ids": [
+        "g_trail_records"
+      ],
+      "purpose": "Emergency vehicle status and use are sourced separately from motorized travel.",
+      "construction": "trail.py:build_case",
+      "measurement": "saved_audit.py:audit_history",
+      "target_set": "full-test",
+      "capture_profile": "20 Hz, 900 original frames, four synchronized cameras",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Role/status readback and access geometry require local Native verification before candidate tuning.",
+        "candidates": []
+      }
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle",
+      "branch": "maintenance_vehicle",
+      "kind": "delivery",
+      "gap_ids": [
+        "g_trail_records"
+      ],
+      "purpose": "Actual right-of-way maintenance use is sourced separately from vehicle class.",
+      "construction": "trail.py:build_case",
+      "measurement": "saved_audit.py:audit_history",
+      "target_set": "full-test",
+      "capture_profile": "20 Hz, 900 original frames, four synchronized cameras",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Role/status readback and access geometry require local Native verification before candidate tuning.",
+        "candidates": []
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "trail_not_designated",
+      "case_ids": [
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated"
+      ],
+      "fixed_conditions": [
+        "cell/map/corridor geometry",
+        "motor route and operator",
+        "camera plan and 900-frame duration",
+        "city_trail_dedication",
+        "prohibits_motor_vehicles",
+        "emergency_use",
+        "maintenance_use"
+      ],
+      "deliberate_differences": [
+        "official_plan_designation"
+      ],
+      "audit": "saved_audit.py:audit_pair"
+    },
+    {
+      "comparison_id": "trail_not_dedicated",
+      "case_ids": [
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated"
+      ],
+      "fixed_conditions": [
+        "cell/map/corridor geometry",
+        "motor route and operator",
+        "camera plan and 900-frame duration",
+        "official_plan_designation",
+        "prohibits_motor_vehicles",
+        "emergency_use",
+        "maintenance_use"
+      ],
+      "deliberate_differences": [
+        "city_trail_dedication"
+      ],
+      "audit": "saved_audit.py:audit_pair"
+    },
+    {
+      "comparison_id": "trail_no_prohibition_sign",
+      "case_ids": [
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign"
+      ],
+      "fixed_conditions": [
+        "cell/map/corridor geometry",
+        "motor route and operator",
+        "camera plan and 900-frame duration",
+        "official_plan_designation",
+        "city_trail_dedication",
+        "emergency_use",
+        "maintenance_use"
+      ],
+      "deliberate_differences": [
+        "prohibits_motor_vehicles"
+      ],
+      "audit": "saved_audit.py:audit_pair"
+    },
+    {
+      "comparison_id": "trail_emergency_vehicle",
+      "case_ids": [
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle"
+      ],
+      "fixed_conditions": [
+        "cell/map/corridor geometry",
+        "motor route and operator",
+        "camera plan and 900-frame duration",
+        "official_plan_designation",
+        "city_trail_dedication",
+        "prohibits_motor_vehicles",
+        "maintenance_use"
+      ],
+      "deliberate_differences": [
+        "emergency_use"
+      ],
+      "audit": "saved_audit.py:audit_pair"
+    },
+    {
+      "comparison_id": "trail_maintenance_vehicle",
+      "case_ids": [
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle"
+      ],
+      "fixed_conditions": [
+        "cell/map/corridor geometry",
+        "motor route and operator",
+        "camera plan and 900-frame duration",
+        "official_plan_designation",
+        "city_trail_dedication",
+        "prohibits_motor_vehicles",
+        "emergency_use"
+      ],
+      "deliberate_differences": [
+        "maintenance_use"
+      ],
+      "audit": "saved_audit.py:audit_pair"
+    }
+  ],
+  "observations": [
+    {
+      "name": "official_plan_designation",
+      "source": "official plan record",
+      "interpretation": "original source or authored record; no legal verdict"
+    },
+    {
+      "name": "city_trail_dedication",
+      "source": "City dedication record",
+      "interpretation": "original source or authored record; no legal verdict"
+    },
+    {
+      "name": "prohibits_motor_vehicles",
+      "source": "sign face/source readback",
+      "interpretation": "original source or authored record; no legal verdict"
+    },
+    {
+      "name": "vehicle_inside_corridor",
+      "source": "original Native vehicle/corridor geometry",
+      "interpretation": "original source or authored record; no legal verdict"
+    },
+    {
+      "name": "emergency_use",
+      "source": "status and actual use record",
+      "interpretation": "original source or authored record; no legal verdict"
+    },
+    {
+      "name": "maintenance_use",
+      "source": "work order and actual use record",
+      "interpretation": "original source or authored record; no legal verdict"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/assignment.json",
@@ -51,17 +292,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Administrative records and exception-use facts require independent source review; CPU fixtures cannot establish them.",
+    "Mobility-device exception needs compatible role/cell allocation review.",
+    "Exact offline/compatibility receipts, semantic proposals, process-saved and delivery audit receipts remain CPU work.",
+    "Actual motion, sign visibility, video decode, and physical completion remain unverified until original capture."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Frozen evidence inventory is empty. Reviewed exact text and conditional witness; none of the administrative, sign, route, or exception facts has an accepted source-backed recording here.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "g_trail_records",
+        "requirement": "Cumulative trail designation, dedication, prohibition sign, actual motorized travel, and separate exception-use evidence",
+        "source": "inputs/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/assignment.json#law.text",
+        "why_existing_insufficient": "No accepted recordings are listed in frozen evidence.json; the supplied cell label and witness are conditional and cannot establish these facts."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_construction_and_original_history_audit",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,6 +332,43 @@
         "Retain official trail designation, dedication to the City, corridor boundaries and evidence relevant to sign appropriateness independently."
       ],
       "reason": "Motorized travel can occur within the signed trail corridor if all administrative prerequisites are established."
+    }
+  ],
+  "branch_decomposition": [
+    {
+      "branch": "all_prerequisites",
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+      "status": "construction_and_original_history_audit_implemented; exact runtime receipts_pending"
+    },
+    {
+      "branch": "not_designated",
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated",
+      "status": "construction_and_original_history_audit_implemented; exact runtime receipts_pending"
+    },
+    {
+      "branch": "not_dedicated",
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated",
+      "status": "construction_and_original_history_audit_implemented; exact runtime receipts_pending"
+    },
+    {
+      "branch": "no_prohibition_sign",
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign",
+      "status": "construction_and_original_history_audit_implemented; exact runtime receipts_pending"
+    },
+    {
+      "branch": "emergency_vehicle",
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle",
+      "status": "construction_and_original_history_audit_implemented; exact runtime receipts_pending"
+    },
+    {
+      "branch": "maintenance_vehicle",
+      "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle",
+      "status": "construction_and_original_history_audit_implemented; exact runtime receipts_pending"
+    },
+    {
+      "branch": "mobility_device_designed_for_and_used_by_mobility_impaired_person",
+      "status": "unresolved_cell_and_actor_binding",
+      "reason": "The assigned motor_vehicle_driver/nonmotorized_trail cell cannot establish a mobility-device operator and qualifying design/use by relabeling an ordinary vehicle. Review compatible candidate cell and source facts before allocation."
     }
   ]
 }

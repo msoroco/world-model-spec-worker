@@ -20,9 +20,87 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_measurement_cpu_tested_native_capture_pending",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk": {
+        "risk": "median opening can be misidentified as roadway crossing or wrong signal governing lanes",
+        "trigger": "Native map/route/signal source preflight rejection",
+        "candidate_plan": "repair the source-backed map and route before execution; no fallback claimed"
+      }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_measurement_cpu_tested_native_capture_pending",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk": {
+        "risk": "median opening can be misidentified as roadway crossing or wrong signal governing lanes",
+        "trigger": "Native map/route/signal source preflight rejection",
+        "candidate_plan": "repair the source-backed map and route before execution; no fallback claimed"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "inoperative_signal_precedence",
+      "case_ids": [
+        "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance"
+      ],
+      "fixed_conditions": [
+        "inspected OpenDRIVE map and identified median roadway crossing",
+        "public highway identity and both crossing routes",
+        "official device inventory and inoperative governing signal",
+        "actor blueprints, camera policy and duration"
+      ],
+      "deliberate_differences": [
+        "requested ego response to earlier-entered other vehicle; actual ego entry versus other exit is measured from original histories"
+      ],
+      "status": "source_gated_cpu_measurement_and_comparison_audit_tested_physical_unconfirmed",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "observations": [
+    {
+      "name": "other_entry_frame",
+      "source": "sealed original Native frame/actor histories and governing signal readback",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "ego_entry_frame",
+      "source": "sealed original Native frame/actor histories and governing signal readback",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "other_exit_frame",
+      "source": "sealed original Native frame/actor histories and governing signal readback",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "ego_waited_until_other_exit",
+      "source": "sealed original Native frame/actor histories and governing signal readback",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "signal_inoperative_all_frames",
+      "source": "sealed original Native frame/actor histories and governing signal readback",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
@@ -66,8 +144,9 @@
     "4724442f9099a88f6ec32fbc63141c47f5984402a5980e5dfd87c5fa38cba641"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original accepted traces/videos are absent, so their physical equivalence, signal readback and crossing order are unverified.",
+    "Portable construction and saved audit core are CPU tested; exact runner, canonical proposals, source-bound compatibility, saved-only processing and independent delivery acceptance proofs remain CPU work.",
+    "Actual CARLA motion, signal state, body trajectories and camera visibility require later physical review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -117,7 +196,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "two_exact_cases_source_gated_measurement_cpu_tested_delivery_proofs_pending",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",

@@ -49,6 +49,13 @@ def validate(packet_path, *, source_root):
     if not isinstance(lanes, list) or not lanes or len(lanes) != len(set(lanes)) or any(
             not isinstance(lane, str) or not lane for lane in lanes):
         raise ValueError("official green-arrow lane association unreviewed")
+    state = device.get("native_display_state")
+    if (not isinstance(state, dict) or not isinstance(state.get("attribute"), str) or
+            not state["attribute"] or not isinstance(state.get("green_value"), str) or
+            not state["green_value"] or not isinstance(state.get("dark_value"), str) or
+            not state["dark_value"] or state["green_value"] == state["dark_value"] or
+            not state.get("source_citation")):
+        raise ValueError("reviewed Native green/dark display attribute and values required")
     return {"reviewed_packet_sha256": sha(packet_path),
             "highway_source_sha256": highway_hash,
             "highway_id": highway["highway_id"],
@@ -56,4 +63,5 @@ def validate(packet_path, *, source_root):
             "governed_lane_ids": lanes,
             "native_asset_blueprint_id": device["native_asset_blueprint_id"],
             "dark_asset_blueprint_id": device["dark_asset_blueprint_id"],
+            "native_display_state": state,
             "legal_judgment": "unresolved"}

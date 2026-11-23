@@ -17,7 +17,8 @@ def struct(**fields):
 
 class FakeActor:
     def __init__(self, blueprint, transform):
-        self.blueprint = blueprint
+        self.blueprint = blueprint.identifier
+        self.attributes = dict(blueprint.attributes)
         self.transform = transform
         self.bounding_box = struct(extent=struct(x=3.0, y=1.2))
         self.destroyed = False
@@ -34,7 +35,7 @@ class FakeWorld:
         return self
 
     def find(self, identifier):
-        return identifier
+        return FakeBlueprint(identifier)
 
     def spawn_actor(self, blueprint, transform):
         actor = FakeActor(blueprint, transform)
@@ -56,10 +57,37 @@ class FakeCarla:
         return struct(location=location, rotation=rotation)
 
 
+class FakeBlueprint:
+    def __init__(self, identifier):
+        self.identifier = identifier
+        self.attributes = {"display_state": "unknown"}
+
+    def has_attribute(self, name):
+        return name in self.attributes
+
+    def set_attribute(self, name, value):
+        self.attributes[name] = value
+
+    def get_attribute(self, name):
+        return self.attributes[name]
+
+
 class NativeDriverTests(unittest.TestCase):
+    def test_unreadable_display_attribute_rejects_head_construction(self):
+        scene = json.loads((ROOT / "cases" / "green_selected_drive" / "scene.json").read_text())
+        site = {"native_asset_blueprint_id": "fixture.green", "dark_asset_blueprint_id": "fixture.dark",
+                "native_display_state": {"attribute": "unavailable", "green_value": "green", "dark_value": "dark"}}
+        world = FakeWorld()
+        with self.assertRaisesRegex(ValueError, "display attribute unavailable"):
+            spawn_scene(world, scene, FakeCarla, site)
+        self.assertEqual(world.calls, [])
+
     def test_both_overhead_heads_and_bus_spawn_at_exact_lane_centers(self):
         site = {"native_asset_blueprint_id": "fixture.green",
-                "dark_asset_blueprint_id": "fixture.dark"}
+                "dark_asset_blueprint_id": "fixture.dark",
+                "native_display_state": {"attribute": "display_state",
+                                         "green_value": "down_green_arrow",
+                                         "dark_value": "dark"}}
         for kind in ("green_selected_drive", "adjacent_dark_drive",
                      "second_green_drive", "green_selected_stand"):
             with self.subTest(kind=kind):
@@ -75,6 +103,8 @@ class NativeDriverTests(unittest.TestCase):
                 expected = ["fixture.green", "fixture.green" if kind == "second_green_drive"
                             else "fixture.dark", "vehicle.mitsubishi.fusorosa"]
                 self.assertEqual([actor.blueprint for actor in world.calls], expected)
+                self.assertEqual([head.attributes["display_state"] for head in heads],
+                                 ["down_green_arrow", "down_green_arrow" if kind == "second_green_drive" else "dark"])
                 x, y = scene["route_waypoint_centers_m"][0]
                 request = control_request(scene, x_m=x, y_m=y, yaw_deg=0, speed_mps=0)
                 self.assertEqual(request["target_lateral_m"], y)

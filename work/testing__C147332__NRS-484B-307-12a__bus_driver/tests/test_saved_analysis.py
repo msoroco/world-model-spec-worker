@@ -15,6 +15,7 @@ from analysis import build_report
 from comparison_audit import audit
 from delivery_audit import audit_attempt
 from scene_construction import scene
+from source_review import validate as validate_site
 
 
 def sha(path):
@@ -40,6 +41,10 @@ def fixture(root, *, bus_lane="east", green=("east",), moving=True, case_id=None
                                   "placement": "over_individual_lanes",
                                   "native_asset_blueprint_id": "fixture.signal",
                                   "dark_asset_blueprint_id": "fixture.dark",
+                                  "native_display_state": {"attribute": "display_state",
+                                                           "green_value": "down_green_arrow",
+                                                           "dark_value": "dark",
+                                                           "source_citation": "synthetic test fixture"},
                                   "governed_lane_ids": list(green)}}
     packet_hash = put(root / "reviewed-context.json", json.dumps(packet))
     acquisition = {"reviewed-context.json": packet_hash}
@@ -116,6 +121,19 @@ def sealed_fixture(root):
 
 
 class SavedAnalysisTests(unittest.TestCase):
+    def test_reviewed_native_display_mapping_is_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixture(root)
+            packet_path = root / "reviewed-context.json"
+            packet = json.loads(packet_path.read_text())
+            self.assertEqual(validate_site(packet_path, source_root=root)["native_display_state"]["green_value"],
+                             "down_green_arrow")
+            packet["official_device"]["native_display_state"]["dark_value"] = "down_green_arrow"
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "green/dark display"):
+                validate_site(packet_path, source_root=root)
+
     def test_delivery_audit_diagnostic_positive_and_native_guard(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

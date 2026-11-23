@@ -2,11 +2,30 @@
   "assignment_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver",
   "input_sha256": "376db851a59e4205a7414327d4c260b826bfa954601c3170d53abc7f586c4b82",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "source_gated_construction_checkpoint",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "2798f1dc7806ea2a4ce8a686ab1bb742b4ad5592055a38589631bcf7fa5d8633"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "assignment-check.log",
+      "sha256": "088e7a005ce45dff0d4d24f8de0ddd93dba1026ade7720469c05952f82eda357"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "After all CPU delivery proofs pass: actual median-opening crossing geometry, live signal readback, both actor trajectories, 20 Hz capture and four-camera physical visibility."
+  ],
+  "reason": "Two exact cases and an isolated comparison are planned; source-gated Native map/device binding, lazy actor construction, original-frame measurement, and comparison audit pass seven CPU tests. Strict gate still rejects partial status: canonical runner/config/construction, semantic proposals, exact offline and compatibility proofs, saved-only processing, canonical independent delivery acceptance and source review of accepted recordings remain CPU work."
 }

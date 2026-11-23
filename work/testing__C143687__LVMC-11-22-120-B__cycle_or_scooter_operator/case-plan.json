@@ -24,9 +24,125 @@
   "topic_inventory": {
     "exact-text": "The City Traffic Engineer is authorized to determine and designate those heavily traveled streets upon which shall be prohibited the use of the roadway by motor-driven cycles, bicycles, horse-drawn vehicles or other nonmotorized traffic and shall erect appropriate signs giving notice thereof. When signs are erected giving notice thereof, no person shall disobey the restriction stated on such signs."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_enter",
+      "kind": "delivery",
+      "motion": "enter_roadway",
+      "construction_goal": "posted bicycle prohibition, route enters governed street",
+      "actor_classification": "human-propelled bicycle operator with sourced bicycle blueprint",
+      "gap_ids": [
+        "no_accepted_recording",
+        "original_designation_sign_and_roadway_history"
+      ],
+      "physical_risk": {
+        "status": "physical",
+        "reason": "A narrow trail-to-roadway junction may prevent stable bicycle entry or four-camera sign visibility; preflight the junction and capture before selecting a fallback."
+      },
+      "evidence_required": [
+        "City Traffic Engineer designation and restriction source",
+        "original local jurisdiction and street identity",
+        "erected sign wording, facing direction, placement and applicability",
+        "connected trail-to-roadway route with original body segment history",
+        "human-powered bicycle actor and blueprint readback",
+        "45-second 20-Hz Native history and four synchronized cameras"
+      ]
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_stop",
+      "kind": "delivery",
+      "motion": "stop_before_roadway",
+      "construction_goal": "posted bicycle prohibition, route stops before governed street",
+      "actor_classification": "human-propelled bicycle operator with sourced bicycle blueprint",
+      "gap_ids": [
+        "no_accepted_recording",
+        "original_designation_sign_and_roadway_history"
+      ],
+      "physical_risk": {
+        "status": "none",
+        "reason": "No specific additional fallback established; original site and capture preflight required."
+      },
+      "evidence_required": [
+        "City Traffic Engineer designation and restriction source",
+        "original local jurisdiction and street identity",
+        "erected sign wording, facing direction, placement and applicability",
+        "connected trail-to-roadway route with original body segment history",
+        "human-powered bicycle actor and blueprint readback",
+        "45-second 20-Hz Native history and four synchronized cameras"
+      ]
+    },
+    {
+      "case_id": "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_remain_trail",
+      "kind": "delivery",
+      "motion": "remain_trail",
+      "construction_goal": "posted bicycle prohibition, bicycle remains on connected trail",
+      "actor_classification": "human-propelled bicycle operator with sourced bicycle blueprint",
+      "gap_ids": [
+        "no_accepted_recording",
+        "original_designation_sign_and_roadway_history"
+      ],
+      "physical_risk": {
+        "status": "none",
+        "reason": "No specific additional fallback established; original site and capture preflight required."
+      },
+      "evidence_required": [
+        "City Traffic Engineer designation and restriction source",
+        "original local jurisdiction and street identity",
+        "erected sign wording, facing direction, placement and applicability",
+        "connected trail-to-roadway route with original body segment history",
+        "human-powered bicycle actor and blueprint readback",
+        "45-second 20-Hz Native history and four synchronized cameras"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "posted_roadway_entry",
+      "case_ids": [
+        "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_enter",
+        "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_stop"
+      ],
+      "fixed_conditions": [
+        "map and jurisdiction",
+        "engineer designation",
+        "governed street and access direction",
+        "erected sign identity, wording and placement",
+        "human bicycle classification",
+        "camera profile and 45-second duration"
+      ],
+      "deliberate_variable": "bicycle roadway entry",
+      "deliberate_differences": [
+        "original segment history shows roadway entry versus stopping before roadway"
+      ],
+      "legal_outcome": "unresolved; independent legal review required"
+    },
+    {
+      "comparison_id": "trail_vs_roadway_use",
+      "case_ids": [
+        "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_enter",
+        "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_remain_trail"
+      ],
+      "fixed_conditions": [
+        "map and jurisdiction",
+        "engineer designation",
+        "governed street and access direction",
+        "erected sign identity, wording and placement",
+        "human bicycle classification",
+        "camera profile and 45-second duration"
+      ],
+      "deliberate_variable": "bicycle route surface",
+      "deliberate_differences": [
+        "original segment history shows governed roadway entry versus trail-only travel"
+      ],
+      "legal_outcome": "unresolved; independent legal review required"
+    }
+  ],
+  "observations": [
+    "engineer designation and bicycle roadway restriction",
+    "erected sign wording, placement, direction and posting",
+    "connected trail and designated street roadway",
+    "original bicycle actor identity and route segment history"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json",
@@ -51,17 +167,30 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual CARLA bicycle motion, sign visibility and camera coverage require physical execution.",
+    "Canonical semantic proposals, execution bundles, source-bound compatibility and independent delivery/comparison receipts remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_recording",
+        "requirement": "Exact posted restriction and bicycle use in C143687",
+        "source": "inputs/testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings."
+      },
+      {
+        "id": "original_designation_sign_and_roadway_history",
+        "requirement": "Engineer designation, erected sign and original bicycle roadway-use history",
+        "source": "inputs/testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator/witnesses.json",
+        "why_existing_insufficient": "The conditional witness has no original designation, sign, route or motion source."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "executable_cpu_construction_checkpoint",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -86,5 +215,6 @@
       ],
       "reason": "A nonmotorized-trail scene can include an adjoining designated street roadway governed by the fixed access-restriction sign."
     }
-  ]
+  ],
+  "source_observation_mapping": {}
 }
