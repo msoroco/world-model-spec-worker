@@ -282,3 +282,7 @@ Archived four exact offline logs for `source_verified_opposite_intends_left` and
 ## 2026-11-23 unbound processing receipt archive
 
 Eight unbound saved-processing receipt copies were preserved byte-exactly in `work/_shared/c125714-unbound-processing-receipts-20261123.json` with original paths and SHA256 hashes (archive SHA256 `05cbe21cbe377f47209ececbb0ac69dc315761394883c337aca484147629854e`). The assignment-scoped complete strict delivery-ready check passed after archival. The package remains **ready** on its current CPU proof.
+
+## 2026-11-23 unbound comparison receipt preservation
+
+Seven historical receipt files without current JSON path references were preserved byte for byte in `work/_shared/c125714-unbound-comparison-receipts-20261123.json` (SHA256 `dcc98445cdd9cdb2dfc20c135b7914c4fe2d8109fcdc2e45d394b63633faf417`). Each entry records the original path and SHA256. The assignment-scoped strict delivery-ready gate passed after archival; C125714 remains ready.
