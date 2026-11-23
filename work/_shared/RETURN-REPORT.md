@@ -310,3 +310,15 @@ The 32 exact primary/fallback construction mirrors with four-view `pose_strategy
 ## 2026-11-23 C412593(413-2) scoped strict gate passed
 
 C412593(413-2) is **ready** for CPU delivery preparation. Its 32 exact primary/fallback camera-profile constructions passed offline, positive/missing-source compatibility and recorded-only saved processing. Eight selected cases passed physical classifier/lifecycle fixtures and independent positive/negative delivery audits. Three source-bound comparison families passed with altered-camera negatives rejected. Returned receipts and archives were rebound to current hashes; explicit execution-manifest, semantic, delivery and compatibility validators passed. The actual assignment-scoped strict `worker_check.py --complete --require-delivery-ready` exited 0. Native capture, real pixels, physical completion and legal acceptance remain unclaimed. Current batch status is 27 ready and 16 partial of 43; the full strict gate cannot pass until the remaining packages are completed.
+
+## 2026-11-23 C125745(250-2) staged physical CPU proof
+
+Six staged timing/hold primaries now pass all three synthetic CPU physical classifier outcomes against exact current-runtime compatible source attempts. Eighteen result/log pairs are hash-bound in the returned shared archive and sweep index; the returned 48-test suite and assignment-scoped nonready checker pass. The corrected 16-frame hold attempt was used after the equality check rejected an 8-frame attempt. C125745 remains **partial** while canonical six-case manifest, lifecycle, delivery and comparison bindings, plus official-device/opposite-turn sweeps, are incomplete. Current batch status remains 27 ready and 16 partial of 43; Native physical/legal acceptance is unclaimed.
+
+## 2026-11-23 C215286(113-2) source audit progress
+
+Both exact reverse-case primary synthetic attempts passed a new independent original-source diagnostic audit covering frame/body/time joins, source identity, four camera decodes and the intended over-versus-short crosswalk outcome. Each audit rejected a changed district source. The returned audit receipts explicitly record 9 frames against the planned 900, no reviewed real site or actual pixels, and no delivery readiness claim. Pinned CPU preflight and assignment-scoped nonready check pass. C215286 remains **partial** pending real site-source review, canonical semantic stages and full-duration independent delivery/comparison binding; the batch remains 27 ready and 16 partial of 43.
+
+## 2026-11-23 C215286(113-2) semantic stage proof
+
+The five-stage canonical semantic proposal chain now passes the pinned direct validator for the two existing reverse-crosswalk selected cases and an unselected baseline; the validation output is hash-bound in the package result. The current nine-frame primary attempts also reproduce the existing source-bound comparison receipt. C215286 stays **partial** pending reviewed real site sources and a 900-frame independent delivery audit. Pinned CPU preflight and assignment-scoped nonready check pass. Batch status remains 27 ready and 16 partial of 43.

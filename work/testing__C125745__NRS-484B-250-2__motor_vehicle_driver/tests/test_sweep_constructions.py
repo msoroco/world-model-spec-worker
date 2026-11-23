@@ -39,6 +39,26 @@ def indexed_file_json(spec):
 
 
 class SweepConstructionTests(unittest.TestCase):
+    def test_staged_physical_classifier_archive(self):
+        index = read('sweep-constructions/index.json')
+        for row in index['constructions']:
+            with self.subTest(case=row['case_id']):
+                proof = row['staged_physical_cpu_proof']
+                self.assertIn('synthetic classifier', proof['scope'])
+                self.assertEqual(digest(proof['archive_file']), proof['archive_sha256'])
+                archive = read(proof['archive_file'])
+                for kind, expected in [('complete_motion', 'met'),
+                                       ('incomplete_motion', 'not_met'),
+                                       ('missing_evidence', 'unverified')]:
+                    binding = proof['fixtures']['json_' + kind]
+                    item = archive['files'][binding['archive_member']]
+                    data = base64.b64decode(item['base64'], validate=True)
+                    self.assertEqual(hashlib.sha256(data).hexdigest(), binding['original_sha256'])
+                    result = json.loads(data)
+                    self.assertEqual(result['physical_checks']['maneuver']['status'], expected)
+                    self.assertEqual(result['maneuver_completed'], expected == 'met')
+                    self.assertFalse(result['physical_acceptance_claimed'])
+
     def test_exact_commanded_axes_and_distinct_offline_fallbacks(self):
         index = read('sweep-constructions/index.json')
         self.assertEqual(len(index['constructions']), 6)

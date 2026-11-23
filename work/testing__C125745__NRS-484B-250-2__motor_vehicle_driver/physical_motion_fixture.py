@@ -4,6 +4,7 @@ import copy
 import json
 import sys
 import tempfile
+import shutil
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
@@ -103,8 +104,47 @@ def run(kind,case,output):
   return {'case_id':case,'fixture':kind,'maneuver_status':expected,'diagnostic_fixture':True,
       'source_hashes':check['sources']}
 
+def run_staged(kind,case,attempt,output):
+ """Exercise a staged sweep's source-bound CPU classifier; no Native claim."""
+ index=read(HERE/'sweep-constructions/index.json')
+ point=next(x for x in index['constructions'] if x['case_id']==case)
+ construction_path=HERE/point['construction']
+ if sha(construction_path)!=point['sha256']:raise ValueError('Staged construction changed')
+ construction=read(construction_path)
+ if construction['case_id']!=case:raise ValueError('Staged case mismatch')
+ embedded=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
+ config=read(attempt/'config.json')
+ if config!=embedded:raise ValueError('Attempt config differs from construction')
+ receipt=read(attempt/'compatibility.json')
+ if receipt.get('passed') is not True or receipt.get('case_id')!=case or receipt.get('construction_sha256')!=point['sha256']:
+  raise ValueError('Current exact compatibility receipt missing')
+ if kind=='lifecycle':raise ValueError('Staged lifecycle requires canonical saved claim')
+ with tempfile.TemporaryDirectory(prefix='c125745-staged-motion-') as tmp:
+  fixture=Path(tmp)
+  for name in ('config.json','trace.jsonl','video_frames.jsonl','crossing_history.jsonl','junction_context.json'):
+   shutil.copyfile(attempt/name,fixture/name)
+  write(fixture/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':True,
+       'scope':'Staged synthetic CPU classifier fixture; no Native physical acceptance'})
+  motion=fixture/'crossing_history.jsonl'
+  if kind=='missing_evidence':motion.unlink()
+  else:
+   rows=[json.loads(line) for line in motion.read_text().splitlines()]
+   first=copy.deepcopy(rows[0]['ego']['body_vertices_xy_m'])
+   for i,row in enumerate(rows):
+    offset=29*i/(len(rows)-1) if kind=='complete_motion' else 0
+    row['ego']['body_vertices_xy_m']=[[x+offset,y] for x,y in first]
+   motion.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+  result=physical_result(fixture,{'target_checks':[]})
+  expected={'complete_motion':'met','incomplete_motion':'not_met','missing_evidence':'unverified'}[kind]
+  check=result['physical_checks']['maneuver']
+  if check['status']!=expected or result['maneuver_completed']!=(expected=='met') or result['physical_acceptance_claimed'] is not False:
+   raise AssertionError('Staged physical classifier differs: '+kind)
+  write(output,result)
+  return {'case_id':case,'fixture':kind,'maneuver_status':expected,'diagnostic_fixture':True,'source_hashes':check['sources']}
+
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--kind',required=True,choices=('complete_motion','incomplete_motion','missing_evidence','lifecycle'))
  p.add_argument('--case',required=True);p.add_argument('--output',required=True,type=Path)
+ p.add_argument('--staged-attempt',type=Path)
  a=p.parse_args();a.output.parent.mkdir(parents=True,exist_ok=True)
- print(json.dumps(run(a.kind,a.case,a.output),sort_keys=True))
+ print(json.dumps(run_staged(a.kind,a.case,a.staged_attempt,a.output) if a.staged_attempt else run(a.kind,a.case,a.output),sort_keys=True))

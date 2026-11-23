@@ -1,80 +1,13 @@
 {
   "cell_id": "C215286",
   "actor": "motor_vehicle_driver",
-  "status": "partial",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
-      "target_law_id": "NRS-484B-113-2",
-      "target_type": "violating_attempt",
-      "rationale": "Source-bound reverse complete-body entry on the selected crosswalk; physical realization and legal setting remain unverified.",
-      "variable_assignments": {
-        "reverse_stop_target": {
-          "kind": "controller",
-          "value": "over_crosswalk",
-          "unit": "categorical"
-        },
-        "crosswalk_body_overlap": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "boolean"
-        },
-        "residence_district": {
-          "kind": "world_setup",
-          "value": "unverified",
-          "unit": "categorical"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Actual residence-district designation and marked crosswalk need independent source review."
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "native_reverse",
-            "unit": "boolean",
-            "method": "original Native control readback",
-            "time_window": "entire captured interval",
-            "reference_frame": "original Native frame",
-            "sampling_rate_hz": 20,
-            "uncertainty": "sampled at 20 Hz"
-          },
-          {
-            "name": "backward_motion",
-            "unit": "boolean",
-            "method": "original complete-body displacement projected against Native heading",
-            "time_window": "entire captured interval",
-            "reference_frame": "original Native frame",
-            "sampling_rate_hz": 20,
-            "uncertainty": "between-frame motion unresolved"
-          },
-          {
-            "name": "crosswalk_overlap",
-            "unit": "boolean",
-            "method": "original complete-body intersection with sourced crosswalk polygon",
-            "time_window": "entire captured interval",
-            "reference_frame": "original Native frame",
-            "sampling_rate_hz": 20,
-            "uncertainty": "actual markings require original pixel review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "crosswalk_context",
-            "unit": "structured record",
-            "method": "hashed site packet joined to Native road and complete-body geometry"
-          }
-        ],
-        "limitations": [
-          "Residence-district status, crosswalk markings and actual camera visibility require independent source review."
-        ]
-      }
-    },
-    {
-      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk",
-      "target_law_id": "NRS-484B-113-2",
-      "target_type": "compliant_attempt",
-      "rationale": "Same sourced road and reverse approach with an authored complete-body stopping target before the crosswalk; actual stop remains a physical check.",
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral reference definition for the same reverse-crosswalk measurement contract; not a selected recording.",
       "variable_assignments": {
         "reverse_stop_target": {
           "kind": "controller",
@@ -135,6 +68,154 @@
         "limitations": [
           "Residence-district status, crosswalk markings and actual camera visibility require independent source review."
         ]
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "violating_attempt",
+      "rationale": "Source-bound reverse complete-body entry on the selected crosswalk; physical realization and legal setting remain unverified.",
+      "variable_assignments": {
+        "reverse_stop_target": {
+          "kind": "controller",
+          "value": "over_crosswalk",
+          "unit": "categorical"
+        },
+        "crosswalk_body_overlap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_reverse",
+            "unit": "boolean",
+            "method": "original Native control readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz"
+          },
+          {
+            "name": "backward_motion",
+            "unit": "boolean",
+            "method": "original complete-body displacement projected against Native heading",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "between-frame motion unresolved"
+          },
+          {
+            "name": "crosswalk_overlap",
+            "unit": "boolean",
+            "method": "original complete-body intersection with sourced crosswalk polygon",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "actual markings require original pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_context",
+            "unit": "structured record",
+            "method": "hashed site packet joined to Native road and complete-body geometry"
+          }
+        ],
+        "limitations": [
+          "Residence-district status, crosswalk markings and actual camera visibility require independent source review."
+        ]
+      },
+      "paired_probe_id": "reverse_crosswalk_boundary",
+      "deliberate_differences": [
+        "reverse_stop_target"
+      ],
+      "probe": {
+        "primary_variable": "reverse_stop_target",
+        "comparison_or_standard": "paired complete-body reverse crossing at the same sourced crosswalk",
+        "target_value_or_branch": "over_crosswalk"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "compliant_attempt",
+      "rationale": "Same sourced road and reverse approach with an authored complete-body stopping target before the crosswalk; actual stop remains a physical check.",
+      "variable_assignments": {
+        "reverse_stop_target": {
+          "kind": "controller",
+          "value": "before_crosswalk",
+          "unit": "categorical"
+        },
+        "crosswalk_body_overlap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "residence_district": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_reverse",
+            "unit": "boolean",
+            "method": "original Native control readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz"
+          },
+          {
+            "name": "backward_motion",
+            "unit": "boolean",
+            "method": "original complete-body displacement projected against Native heading",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "between-frame motion unresolved"
+          },
+          {
+            "name": "crosswalk_overlap",
+            "unit": "boolean",
+            "method": "original complete-body intersection with sourced crosswalk polygon",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "actual markings require original pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_context",
+            "unit": "structured record",
+            "method": "hashed site packet joined to Native road and complete-body geometry"
+          }
+        ],
+        "limitations": [
+          "Residence-district status, crosswalk markings and actual camera visibility require independent source review."
+        ]
+      },
+      "paired_probe_id": "reverse_crosswalk_boundary",
+      "deliberate_differences": [
+        "reverse_stop_target"
+      ],
+      "probe": {
+        "primary_variable": "reverse_stop_target",
+        "comparison_or_standard": "paired complete-body reverse crossing at the same sourced crosswalk",
+        "target_value_or_branch": "before_crosswalk"
       }
     }
   ],
