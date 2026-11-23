@@ -27,10 +27,23 @@
             "source": "reference_corner.mkv and approach.mkv",
             "metric": "original full-frame red-X head and bus co-visibility",
             "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/adjacent_travel/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6ecd114d2e3812f520448cb24bc9ab81cce734ab61e42e6ac5c619422423ebc1",
+            "log": "proof-adjacent_travel-fallback1-oriented.log",
+            "log_sha256": "734a818b21c8c51c7cd91543230c53fdb60d49cb4acf6abf67d55089f7d9d79f"
+          },
+          "compatibility": {
+            "receipt": "compat-adjacent_travel-fallback1-oriented-receipt.json",
+            "sha256": "5e7e026ceb05d4a29ab5b7bb9d89c9984875fba19914d0a3bd39dd6a8fca8e10",
+            "log": "compat-adjacent_travel-fallback1-oriented-log.log",
+            "negative_log": "compat-adjacent_travel-fallback1-oriented-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "partial_source_review_pending",
       "fixture_recipe": "work/testing__C147332__NRS-484B-307-12b__bus_driver/cases/adjacent_travel/fixture-recipe.json",
       "acquisition": {
         "bus_full_body_footprint": {
@@ -63,6 +76,53 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/adjacent_travel/primary",
+        "exit_code": 0,
+        "construction_sha256": "fef4c9f396ede13b2927619c2e605e0a96cddd6070c2b27ec9f6b1ee9b6c773a",
+        "log": "proof-adjacent_travel-primary-oriented.log",
+        "log_sha256": "591ce9e726c3023e3361ed2c37ac88d8e620ce72dcd8fda77cbe0b61ee0a627f"
+      },
+      "compatibility": {
+        "receipt": "compat-adjacent_travel-primary-oriented-receipt.json",
+        "sha256": "9c7f6f6d1040fd124dc19fcd80d16f9586b73655da1f4ea46683d751d5e50399",
+        "log": "compat-adjacent_travel-primary-oriented-log.log",
+        "negative_log": "compat-adjacent_travel-primary-oriented-negative.log"
+      },
+      "negative": {
+        "log": "compat-adjacent_travel-primary-oriented-negative.log",
+        "log_sha256": "67f74064221f31b06293e2b0f5775409485c1eadd5356d6b2689d7e5aa5ce0cf"
+      },
+      "physical_preparation": {
+        "receipt": "physical-adjacent_travel-oriented-receipt.json",
+        "sha256": "4b3fb6a1c349271d1307f3acd7566d677cfe07474f5b85385ea5e2ad9e04732e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "649cb4b133909767e04de88b5b6bd21f96a09cd38772d3499959fd6ff6796490",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel",
+        "test_exit_code": 0,
+        "test_log": "independent/adjacent_travel-positive.log",
+        "test_log_sha256": "99a1e0610645907bfcc9a78e2586374f9a9226586eb6ca17f85b5d9fb86a815d",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__adjacent_travel --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/adjacent_travel-negative.log",
+        "negative_log_sha256": "62e6d4f4481dbe19bbca7e176fbbafe211b06b54eadb220264f6b3f7c50d1b40",
+        "proof_scope": "synthetic CPU audit invariants; original pixel and physical acceptance unclaimed"
       }
     },
     {
@@ -90,10 +150,23 @@
             "source": "reference_corner.mkv and approach.mkv",
             "metric": "original full-frame red-X head and bus co-visibility",
             "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/lateral_entry/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "506afd77c525403739e6b1be67b8fba0dfd833a30ac15b381a18bb480b2de290",
+            "log": "proof-lateral_entry-fallback1-oriented.log",
+            "log_sha256": "d23084e59da90e9ed9eb2ef3e12a5e8cdd01bfa0d16e333f044a6a03b4bd5858"
+          },
+          "compatibility": {
+            "receipt": "compat-lateral_entry-fallback1-oriented-receipt.json",
+            "sha256": "fd72107a865b6226fd7d505b897140bd7859518f6d97e7e9296ba90c98b17dcc",
+            "log": "compat-lateral_entry-fallback1-oriented-log.log",
+            "negative_log": "compat-lateral_entry-fallback1-oriented-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "partial_source_review_pending",
       "fixture_recipe": "work/testing__C147332__NRS-484B-307-12b__bus_driver/cases/lateral_entry/fixture-recipe.json",
       "acquisition": {
         "bus_full_body_footprint": {
@@ -126,6 +199,53 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/lateral_entry/primary",
+        "exit_code": 0,
+        "construction_sha256": "faee7bf3716eb700318ee4baea38e3f4f1cb6a405b108247879a5404ef61658d",
+        "log": "proof-lateral_entry-primary-oriented.log",
+        "log_sha256": "0740f3d1213052a2f6d43f15be1d0976017f7026e2955c1544d16c43338a713a"
+      },
+      "compatibility": {
+        "receipt": "compat-lateral_entry-primary-oriented-receipt.json",
+        "sha256": "c98d124d774acb6056c4ef54b9a87313f6cef458b4549ae7873e489724399349",
+        "log": "compat-lateral_entry-primary-oriented-log.log",
+        "negative_log": "compat-lateral_entry-primary-oriented-negative.log"
+      },
+      "negative": {
+        "log": "compat-lateral_entry-primary-oriented-negative.log",
+        "log_sha256": "18e354f07bbabd95f849648a17e0d7c9fd8bead20e2f5eced3bb04a0ab7a6424"
+      },
+      "physical_preparation": {
+        "receipt": "physical-lateral_entry-oriented-receipt.json",
+        "sha256": "1edc2ebde863037b1db6d89d7741a00fb1ca146f05cc837c62a7f2533e3fe05b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "649cb4b133909767e04de88b5b6bd21f96a09cd38772d3499959fd6ff6796490",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry",
+        "test_exit_code": 0,
+        "test_log": "independent/lateral_entry-positive.log",
+        "test_log_sha256": "b9a3a1ff3bd939cc06ac25489e55a38b609e2c447a09befa0da7c3f381fae02f",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__lateral_entry --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/lateral_entry-negative.log",
+        "negative_log_sha256": "147da5e277020664524192be7b258cea38d8b40b56e52d2c531aedb29128c140",
+        "proof_scope": "synthetic CPU audit invariants; original pixel and physical acceptance unclaimed"
       }
     },
     {
@@ -153,10 +273,23 @@
             "source": "reference_corner.mkv and approach.mkv",
             "metric": "original full-frame red-X head and bus co-visibility",
             "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/red_lane_stand/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "4a3779bd75e001ab558a904bb1e10b6d3b27db68a9ac2f853ad15fd2bc860439",
+            "log": "proof-red_lane_stand-fallback1-oriented.log",
+            "log_sha256": "86a112caeddb756cb9a8225057683bba256aff8c6cae402e61da54b9bde025d9"
+          },
+          "compatibility": {
+            "receipt": "compat-red_lane_stand-fallback1-oriented-receipt.json",
+            "sha256": "9d32a5a50146472a803ff089e07e289e7656241701316085daeaeb092a000da2",
+            "log": "compat-red_lane_stand-fallback1-oriented-log.log",
+            "negative_log": "compat-red_lane_stand-fallback1-oriented-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "partial_source_review_pending",
       "fixture_recipe": "work/testing__C147332__NRS-484B-307-12b__bus_driver/cases/red_lane_stand/fixture-recipe.json",
       "acquisition": {
         "bus_full_body_footprint": {
@@ -189,6 +322,53 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/red_lane_stand/primary",
+        "exit_code": 0,
+        "construction_sha256": "ba0be84010b1208ffe895723a8e3f5b9d624a1e4b5670a013b29d0854e4d1881",
+        "log": "proof-red_lane_stand-primary-oriented.log",
+        "log_sha256": "dc498eb7879a25659de443513b16b91285db2d3c8323c7cef3ed4a6394e586b6"
+      },
+      "compatibility": {
+        "receipt": "compat-red_lane_stand-primary-oriented-receipt.json",
+        "sha256": "75287217983942342f0525beebc9f0dbca10f67361e1b22853e90f8cd56e5d3e",
+        "log": "compat-red_lane_stand-primary-oriented-log.log",
+        "negative_log": "compat-red_lane_stand-primary-oriented-negative.log"
+      },
+      "negative": {
+        "log": "compat-red_lane_stand-primary-oriented-negative.log",
+        "log_sha256": "de6d97fb0a8f7b60ade7cf8a2313bf421429ba3d90e5b6fa4f9dc924eb68af09"
+      },
+      "physical_preparation": {
+        "receipt": "physical-red_lane_stand-oriented-receipt.json",
+        "sha256": "fd1b25d1e4ab87f0a7c08c5cfe61d36848ea832dad12c000392284502e62d7ee"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "649cb4b133909767e04de88b5b6bd21f96a09cd38772d3499959fd6ff6796490",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand",
+        "test_exit_code": 0,
+        "test_log": "independent/red_lane_stand-positive.log",
+        "test_log_sha256": "867d445e12147c69957a85af18bd489e36e0ce8b3087b54a203cf3ee582582f6",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_stand --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/red_lane_stand-negative.log",
+        "negative_log_sha256": "30cbd487acb25714e1047b08f5df6286e19aea233b305c24f4a373b3c42f3105",
+        "proof_scope": "synthetic CPU audit invariants; original pixel and physical acceptance unclaimed"
       }
     },
     {
@@ -216,10 +396,23 @@
             "source": "reference_corner.mkv and approach.mkv",
             "metric": "original full-frame red-X head and bus co-visibility",
             "failure_condition": "primary original pixels obscure the reviewed head or its lane association"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/red_lane_drive/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "60db45be48160b96e56f5a847826d7993df5bbecddcb00e684179e37dc16be5d",
+            "log": "proof-red_lane_drive-fallback1-oriented.log",
+            "log_sha256": "ec80ecc2d159168b8fb531988df7e74bbdf9baa442c6a4be99f6cd346f6acab9"
+          },
+          "compatibility": {
+            "receipt": "compat-red_lane_drive-fallback1-oriented-receipt.json",
+            "sha256": "86b45b674920bf4accdc9f0c2aa6acf13118e5edfdde05bf52dc52c582bab938",
+            "log": "compat-red_lane_drive-fallback1-oriented-log.log",
+            "negative_log": "compat-red_lane_drive-fallback1-oriented-negative.log"
           }
         }
       ],
-      "preparation_status": "partial_offline_pending",
+      "preparation_status": "partial_source_review_pending",
       "fixture_recipe": "work/testing__C147332__NRS-484B-307-12b__bus_driver/cases/red_lane_drive/fixture-recipe.json",
       "acquisition": {
         "bus_full_body_footprint": {
@@ -252,9 +445,56 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147332__NRS-484B-307-12b__bus_driver/execution-manifest.json --case testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147332-oriented-offline/red_lane_drive/primary",
+        "exit_code": 0,
+        "construction_sha256": "9e2e562073edf1a23baabedd2c29368917c5b1b7ef7d0bde6fa35e82473ff29e",
+        "log": "proof-red_lane_drive-primary-oriented.log",
+        "log_sha256": "f21a013143b91bb624d7b7b457d886fcc8aefcd9149190f3488ac622fbed764e"
+      },
+      "compatibility": {
+        "receipt": "compat-red_lane_drive-primary-oriented-receipt.json",
+        "sha256": "bb00b5730fc06e47581d21fa0736892d2999fd6d6c7d57b2422c90c3f413eb52",
+        "log": "compat-red_lane_drive-primary-oriented-log.log",
+        "negative_log": "compat-red_lane_drive-primary-oriented-negative.log"
+      },
+      "negative": {
+        "log": "compat-red_lane_drive-primary-oriented-negative.log",
+        "log_sha256": "dbb2b0c7ab6005538723952d58bf11a45e42bec757acaceda685e16cac13698e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-red_lane_drive-oriented-receipt.json",
+        "sha256": "17b824967d4e3422dc28d259abdee6b042a0978b94b5e146919729c09ca72ee7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "649cb4b133909767e04de88b5b6bd21f96a09cd38772d3499959fd6ff6796490",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive",
+        "test_exit_code": 0,
+        "test_log": "independent/red_lane_drive-positive.log",
+        "test_log_sha256": "9f83679be70664660c542265f312a349946861f8590a314731e56046749795b0",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/independent/prove_delivery_audit.py testing__C147332__NRS-484B-307-12b__bus_driver__red_lane_drive --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/red_lane_drive-negative.log",
+        "negative_log_sha256": "4114c2df9d0f2603e45ed693f3ca2cc545d99bf7e57c6053e61a8f7b7841bbf4",
+        "proof_scope": "synthetic CPU audit invariants; original pixel and physical acceptance unclaimed"
       }
     }
   ],
-  "preparation_status": "partial_offline_pending",
+  "preparation_status": "partial_source_review_pending",
   "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8"
 }

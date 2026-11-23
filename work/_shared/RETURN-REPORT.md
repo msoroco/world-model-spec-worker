@@ -1309,3 +1309,11 @@ C150041 source audit now rejects resealed backward or nonfinite original frame t
 ## 2026-11-23 C125714 physical-source audit checkpoint
 
 The first incomplete batch assignment, C125714, now rejects independent delivery acceptance when a `met` physical maneuver receipt lacks sealed ego-body history, crossing context or frame-map bindings. Seven exact synthetic audit protocols, the pinned acceptance-contract validator and the 77-test assignment suite pass; `result.json` binds 101 passing logs and remains partial. CPU preflight, update check and exact static gate pass. The full strict gate still fails on partial/missing packages (`.runtime-work/full-strict-c125714-binding.log`). Reviewed factual sources, nondiagnostic candidate packages and local integration remain worker-owned. Original Native motion, pixels and legal acceptance are unverified. No Git command was run.
+
+## 2026-11-23 C147332 rotated-bus construction checkpoint
+
+The next C147332 construction records the bus's oriented lower-body hull from observed world vertices, closing an axis-aligned false-entry path. Two focused tests and the 30-test assignment suite pass. All eight rebuilt primary/fallback bundles pass pinned offline and positive/negative compatibility; four synthetic physical protocols, four primary saved-only runs, CPU preflight and exact delivery-contract validation pass. The exact static gate passes. `result.json` remains partial with 89 hash-matched logs. The complete strict gate still fails because partial/missing packages remain. See `work/testing__C147332__NRS-484B-307-12b__bus_driver/HANDOFF.md` for source-review and nondiagnostic construction work. No Git command was run.
+
+## 2026-11-23 C150041 delivery and saved-only binding checkpoint
+
+C150041's six exact manifest cases now bind their tested independent delivery audit contracts and source-hashed synthetic saved-only processing logs. The binder, pinned delivery-contract validator, 44-test suite, CPU preflight and exact partial static gate pass; `result.json` stays partial with 66 passing proof-log entries. The unexpanded source-backed orientation sweep still prevents executable-manifest validation. The complete strict batch gate exits 1 because partial/missing packages remain. See the C150041 HANDOFF for the reviewed Native site and sweep construction steps. No Git command was run.
