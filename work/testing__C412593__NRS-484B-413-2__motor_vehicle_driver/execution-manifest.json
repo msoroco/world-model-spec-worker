@@ -8,12 +8,129 @@
       "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "e5677c8afa20bad5c41c7d6d3ba2cb2b880a58344d6a009a31a5a81b5cdeda33",
+      "construction_sha256": "fbef05f4688ce1d0ebfd8ccbabf32058c49313014529cb2ac78e962c31cb348a",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
       },
-      "fixture_recipe": "work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "compatibility": {
+        "receipt": "primary-compatibility-receipt.json",
+        "sha256": "f79375205bd6a3c5e128cdd29bb70e8314fdb205aa1732d69c89fef985d7bb3e",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sig.turn_indicator": {
+          "entrypoint": "native_sources.py",
+          "method": "original Native 20 Hz source capture and saved derivation",
+          "evidence": "drive_history.jsonl, trace.jsonl and four source-camera frame joins"
+        },
+        "right_indicator": {
+          "entrypoint": "native_sources.py",
+          "method": "original Native 20 Hz source capture and saved derivation",
+          "evidence": "drive_history.jsonl, trace.jsonl and four source-camera frame joins"
+        },
+        "ego_position_xy_m": {
+          "entrypoint": "native_sources.py",
+          "method": "original Native 20 Hz source capture and saved derivation",
+          "evidence": "drive_history.jsonl, trace.jsonl and four source-camera frame joins"
+        },
+        "ego_heading_deg": {
+          "entrypoint": "native_sources.py",
+          "method": "original Native 20 Hz source capture and saved derivation",
+          "evidence": "drive_history.jsonl, trace.jsonl and four source-camera frame joins"
+        },
+        "ego_road_id": {
+          "entrypoint": "native_sources.py",
+          "method": "original Native 20 Hz source capture and saved derivation",
+          "evidence": "drive_history.jsonl, trace.jsonl and four source-camera frame joins"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/contract3-right_business_at_100_ft-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "fbef05f4688ce1d0ebfd8ccbabf32058c49313014529cb2ac78e962c31cb348a",
+        "log": "cpu-tests.log",
+        "log_sha256": "7ad5f4b78dbd33ea5b21169e751c5d762aa7dd605b49cf18b6f3a8cacb758f14"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native lamp readback, source-camera visibility and exact course onset may drift"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/right_business_at_100_ft-fallback1-construction.json",
+          "construction_sha256": "4b5fea04941acb9f575a98cecb3671e5ab6ddd540dd347a61844fa513fcf05f0",
+          "trigger": {
+            "source": "original Native drive history and four source-camera frame joins",
+            "metric": "signal-on distance before measured course change",
+            "failure_condition": "Primary fails the measured signal or course target"
+          },
+          "changed_knobs": [
+            "requested_speed_mps: 4.0 to 3.0"
+          ],
+          "remedy": "Apply the stated engineering knob and remeasure the same selected right turn",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/contract3-right_business_at_100_ft-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "4b5fea04941acb9f575a98cecb3671e5ab6ddd540dd347a61844fa513fcf05f0",
+            "log": "cpu-tests.log",
+            "log_sha256": "7ad5f4b78dbd33ea5b21169e751c5d762aa7dd605b49cf18b6f3a8cacb758f14"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/right_business_at_100_ft-fallback2-construction.json",
+          "construction_sha256": "591f7f8da2c26ab2895389581d1fde217cad25e0258a5c9336954e2d139bbbe4",
+          "trigger": {
+            "source": "original Native drive history and four source-camera frame joins",
+            "metric": "Native body geometry and indicator readback",
+            "failure_condition": "Primary fails the measured signal or course target"
+          },
+          "changed_knobs": [
+            "blueprint_selection_index: 0 to 1"
+          ],
+          "remedy": "Apply the stated engineering knob and remeasure the same selected right turn",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/contract3-right_business_at_100_ft-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python --candidate fallback2",
+            "exit_code": 0,
+            "construction_sha256": "591f7f8da2c26ab2895389581d1fde217cad25e0258a5c9336954e2d139bbbe4",
+            "log": "cpu-tests.log",
+            "log_sha256": "7ad5f4b78dbd33ea5b21169e751c5d762aa7dd605b49cf18b6f3a8cacb758f14"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/right_business_at_100_ft-fallback3-construction.json",
+          "construction_sha256": "5a0292caf28481b433b3d63b9e1be9433322482cfb901237d5fd3ca3aae00468",
+          "trigger": {
+            "source": "original Native drive history and four source-camera frame joins",
+            "metric": "available approach length before right-turn onset",
+            "failure_condition": "Primary fails the measured signal or course target"
+          },
+          "changed_knobs": [
+            "approach_start_m: 0.0 to 5.0"
+          ],
+          "remedy": "Apply the stated engineering knob and remeasure the same selected right turn",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/manifest.json --case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__right_business_at_100_ft --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c412593-fallback/contract3-right_business_at_100_ft-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python --candidate fallback3",
+            "exit_code": 0,
+            "construction_sha256": "5a0292caf28481b433b3d63b9e1be9433322482cfb901237d5fd3ca3aae00468",
+            "log": "cpu-tests.log",
+            "log_sha256": "7ad5f4b78dbd33ea5b21169e751c5d762aa7dd605b49cf18b6f3a8cacb758f14"
+          }
+        }
+      ]
     }
   ]
 }

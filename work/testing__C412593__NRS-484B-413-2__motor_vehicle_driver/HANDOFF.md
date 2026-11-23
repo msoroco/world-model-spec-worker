@@ -1,3 +1,7 @@
+## 2026-11-22 C412593 selected primary compatibility
+
+The selected right-business-at-100-ft primary passed the current package compatibility command with the pinned CPU runtime: four original-size generated camera streams, retained 900-frame history and capture envelope, saved finalizer, positive and missing-drive-history negative measurement, Native result validation, Core conversion, Lean decoder and final render. Exact receipt and analysis/negative logs are returned beside `execution-manifest.json`; pinned receipt verification passed. All 11 current exact offline bundles and 27 unit tests pass. Five historical one-shot scripts from C101303/C158196 were preserved byte-exactly in the reversible shared archive to stay within the return file cap; both affected ready packages passed scoped strict checks. The redundant top-level C412593 config was removed; the exact config remains embedded in each construction. C412593 stays partial while other cases, fallback compatibility, saved-only and independent audits are completed. The fixture is synthetic and asserts no physical or legal acceptance.
+
 Current `.venv-cpu/bin/python runtime.py preflight` passed with Lean 4.28.0 and no simulation; the assignment-scoped `worker_check.py --complete` passed for the truthful partial return. The full strict gate still requires the remaining batch packages.
 
 ## 2026-11-22 C412593 inventoried diagnostic fixture

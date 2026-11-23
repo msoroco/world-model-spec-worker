@@ -171,6 +171,25 @@ def finalize_attempt(attempt, output):
         evidence.append({"name": name, "unit": next(item["unit"] for item in
                          config["recording_description"]["channels"] if item["name"] == name),
                          "reference": relative})
+    route_context = json.loads((attempt / "route_context.json").read_text())
+    context_evidence = {
+        "authored_map_context": {
+            "native_map_id": route_context["native_map_id"],
+            "route_source": route_context["native_route_source"],
+            "route_context_sha256": sources["route_context.json"],
+        },
+        "district_zone_context": {
+            "district_type": route_context["district_type"],
+            "district_source": route_context["district_source"],
+            "zone_status": "independent physical and legal review pending",
+            "route_context_sha256": sources["route_context.json"],
+        },
+    }
+    (attempt / "recorded_context.json").write_text(
+        json.dumps(context_evidence, allow_nan=False) + "\n")
+    for item in config["recording_description"]["context_inputs"]:
+        evidence.append({"name": item["name"], "unit": item["unit"],
+                         "reference": "recorded_context.json"})
     target = {"target": "continuous original right signal before sourced right turn",
               "requested": True,
               "measured": observed["observed_distance_meets_boundary"],
