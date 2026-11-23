@@ -72,8 +72,8 @@ def main() -> None:
     result["readiness_kind"] = "seven_exact_offline_and_compatibility_cpu_proved_physical_preparation_pending"
     result["reason"] = ("Seven exact construction bundles pass pinned offline checks, and all seven "
                         "source-bound diagnostic cases pass the full pinned compatibility pipeline "
-                        "including negative source rejection. Reviewed numeric/site inputs, a runtime "
-                        "capture runner interface, physical preparation, canonical acquisition mappings, "
+                        "including negative source rejection. The materialized capture runner interface "
+                        "passes its focused CPU proof. Reviewed numeric/site inputs, physical preparation, canonical acquisition mappings, "
                         "and remaining batch packages are worker-owned CPU preparation. Synthetic "
                         "diagnostics do not establish physical motion, visibility or legal acceptance.")
     result_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

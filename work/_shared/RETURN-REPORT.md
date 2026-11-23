@@ -967,3 +967,19 @@ All seven C179789 exact constructions have positive pinned offline checks (47 te
 ## 2026-11-23 C179789 rebuilt-entrypoint proof
 
 The pinned capture invocation mismatch was fixed in C179789 `runner.py`. A focused proof verifies `--output-dir` parsing and rejection of a missing reviewed Native packet before CARLA import. All seven construction bundles were rebuilt and pass 47 pinned offline tests each. All seven case-specific compatibility commands passed again against the new construction hashes, including negative missing-source rejection; manifest receipts and logs were rebound. Status remains partial for reviewed Native inputs, physical preparation, acquisition mappings, and other ready-gate work.
+
+## 2026-11-23 C179789 final materialized-root proof
+
+C179789 runner now validates output-root location from the materialized attempt and accepts a locally supplied reviewed Native packet path. The focused CLI proof passes. All seven exact bundles passed pinned 47-test offline checks and full positive/negative compatibility again on the final construction hashes. Run 10 receipts, analysis logs and negative logs are hash-bound in the execution manifest. Status remains partial for the reviewed Native site packet, physical preparation, acquisition mappings and remaining ready-gate work.
+
+## 2026-11-23 strict-gate checkpoint
+
+The final strict `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` run exits 1 at `Preparation acceptance failed: partial/missing packages remain` (retained under `.runtime-work/full-strict-c179789-10.log`). Current result count: partial=233, ready=9. The C179789 assignment `--complete` checkpoint passes; returned-file scan found zero UTF-8, size, trailing-whitespace, or conflict-marker issues across 4024 files. No Git command was run.
+
+### 2026-11-23 C179789 physical CPU proof checkpoint
+
+Seven exact cases now bind case-hashed sealed synthetic complete/incomplete/missing-motion receipts and a fake-Native lifecycle proof. `cpu-physical-build.log` and `cpu-physical-contract.log` pass. Assignment remains partial: site/source review and canonical acquisition mappings are worker-owned; synthetic proof is not physical acceptance. See `work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/HANDOFF.md`.
+
+### 2026-11-23 C179789 acquisition mapping checkpoint
+
+Nine original Native condition channels are mapped for each of seven exact cases. The pinned compatibility receipt checker passed all seven (`cpu-acquisition-contract.log`). C179789 remains partial pending reviewed source/site inputs and final delivery checks; synthetic fixtures remain diagnostic.

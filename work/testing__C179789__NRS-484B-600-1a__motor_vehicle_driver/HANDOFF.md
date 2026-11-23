@@ -186,3 +186,31 @@ All seven exact cases passed `.venv-cpu/bin/python runtime.py compatibility` usi
 - `fog`: `4098ed6a3190d0a92b0a71d8e53e6af22c583373cd9eb16d76e73b3bc37c76fb`
 
 The reviewed Native packet is not yet authored or source-bound. Physical outcome and lifecycle fixtures, canonical acquisition mappings, and ready-gate requirements remain worker-owned CPU preparation. Do not use these synthetic fixtures to assert actual motion, visibility, or legal judgment.
+
+## 2026-11-23 final materialized-root proof
+
+The runner now locates the `.runtime-work` ancestor from the materialized output attempt, rather than from its source-file depth. It accepts `SCENARIO_NATIVE_SITE_PACKET` as the local reviewed packet binding while rejecting an absent packet before CARLA import. `prove_runner_interface.py` passes both checks in an offline-materialized reference bundle. The seven construction bundles were rebuilt again and each passed the pinned 47-test offline check. The seven pinned compatibility commands were rerun against these final hashes; each positive and missing-source negative proof passed. `bind_compatibility_receipts.py --run-number 10` verified and retained current receipts, analysis logs and negative logs. Final receipt SHA256 values:
+
+- `reference`: `b4c567be823d0a68fbb3a97a8333cc6e8d2a6b8cce46bc7f19a1608386a5dff7`
+- `faster`: `115b86bfcc05a5cc05a9f74a9bb8e110b5bcf842de4eff140dc937ec4ffa0268`
+- `nearer_traffic`: `9da9cc157e7cd13ed4261ec9a061150ad384d52b66a1e00c1b337388488e07d4`
+- `wet_surface`: `706e378af8e0b8f5fa1aa4017c72b27aa899b5a8205f967d6bc67faf0560ba20`
+- `narrower`: `185587001eee33a2006cefe91298c2e47534a357a18e8d2637097e9e337018ae`
+- `rain`: `9326ec6ea5e511bac4682d6b646359d204fd45a34dd1c0c8b0c329d625ad5877`
+- `fog`: `2ad91517f464d970e2a57168c58e11d2afdb5ecb7a4fa77c8682607638487f0a`
+
+Next CPU work: author a reviewed seven-case Native packet from a real selected OpenDRIVE/source citation, build the three physical completion/lifecycle fixtures, bind acquisition mappings, and satisfy the remaining exact ready-gate fields. The diagnostic map is synthetic and cannot substitute for the reviewed site.
+
+## 2026-11-23 final gate checkpoint
+
+The final strict `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` run exits 1 at `Preparation acceptance failed: partial/missing packages remain` (retained under `.runtime-work/full-strict-c179789-10.log`). Current result count: partial=233, ready=9. The C179789 assignment `--complete` checkpoint passes; returned-file scan found zero UTF-8, size, trailing-whitespace, or conflict-marker issues across 4024 files. No Git command was run.
+
+## 2026-11-23 physical completion CPU proof
+
+Seven exact manifest cases now bind `physical/<case-suffix>/receipt.json`. `build_physical_receipts.py` generated and tested 900-frame sealed synthetic traces for complete motion, incomplete motion, and missing evidence. The complete case also rejects a changed source seal. `prove_capture_lifecycle.py` exercised `runner.capture_original` with fake CARLA objects and verified capture, encoder closure, restoration, Native return, owner release and saved processing order. The pinned `worker_exchange.physical_preparation.validate` contract passed for all seven receipts (`cpu-physical-contract.log`). Source, result and log hashes are retained in each receipt. These are diagnostic CPU fixtures; actual travel, camera coverage, sight lines and source-site suitability remain unverified.
+
+Resume: obtain or construct a reviewed Native site/source packet and canonical acquisition mappings, then run their case-bound CPU proofs. Recheck this assignment with `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__NRS-484B-600-1a__motor_vehicle_driver --complete --require-delivery-ready`. Do not set ready until all required CPU gates pass.
+
+## 2026-11-23 Native acquisition mapping checkpoint
+
+`bind_acquisition.py` bound every required recording channel (ego speed, leader gap, mapped cross-section widths, wetness, precipitation, fog and tire friction) to `native_conditions.py:sample_native`, with retained original-condition evidence. `cpu-acquisition-map.log` passed against the exact construction contents and the retained 47-test `cpu-tests.log`. The pinned `worker_exchange.package_compatibility.check_receipts` independently passed all seven compatibility and acquisition mapping contracts (`cpu-acquisition-contract.log`). The mapped highway cross-section remains explicitly distinct from an established statutory highway boundary. A reviewed source/site packet remains needed before physical capture or ready status.
