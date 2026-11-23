@@ -1001,3 +1001,15 @@ C202480 now has source-hashed crossing-site validation, live position/speed cont
 The full strict gate exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c202480-source-finalizer.log`). Continue the C202480 CPU work and the remaining partial assignments. No Git command was run.
 
 Returned-file scan after this checkpoint: 4,147 files, zero UTF-8, size, trailing-whitespace or conflict-marker issues. Current result counts are 233 partial and 9 ready. C202480 remains partial with 25 diagnostic CPU tests passed; no status was promoted without full CPU proofs.
+
+### 2026-11-23 C202480 original geometry continuation
+
+C202480 now captures original actor bounding-box half extents, heading and stable IDs. Saved analysis measures observed lateral offset from the reviewed rightmost slot and stopped two-queue footprint alignment; it rejects wrong-way, invalid or out-of-highway actor traces. A separate `geometry_audit.py` recomputes these values from the retained original trace, and the postcapture pipeline retains its receipt. The 29-test diagnostic CPU suite passes (`work/testing__C202480__NRS-484B-560-3__motor_vehicle_driver/cpu-geometry-audit-tests.log`), including real measurement changes on synthetic overlap/separation and a falsified-result rejection. Pinned CPU preflight and C202480 focused static check pass. Status remains partial pending the reviewed site packet, exact offline/compatibility proofs, semantic proposals, canonical delivery audit and independent comparison audit. No physical or legal acceptance is claimed.
+
+Full strict gate exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c202480-geometry-audit.log`). No Git command was run.
+
+### 2026-11-23 C202480 four-pair comparison checkpoint
+
+C202480's four case comparisons now have exact IDs and an executable independent `comparison_audit.py`. It checks original geometry audit identities, fixed crossing authority/approach/camera and road sources, then the intended queue, marked-lane, or right-side contrast. The lane-count pair permits changed OpenDRIVE while holding crossing authority and stop geometry fixed. The 32-test diagnostic CPU suite passes (`work/testing__C202480__NRS-484B-560-3__motor_vehicle_driver/cpu-comparison-audit-tests.log`); it covers all four pairs and rejects absent queue contrast and changed fixed road geometry. The focused assignment static check and pinned preflight pass. This is software preparation on synthetic fixtures, with no physical or legal acceptance claim. C202480 remains partial pending an actual reviewed site packet, semantic proposals, exact offline/positive-negative compatibility receipts, and the canonical full-video delivery audit.
+
+The full strict gate exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/full-strict-c202480-comparison-audit.log`). No Git command was run.

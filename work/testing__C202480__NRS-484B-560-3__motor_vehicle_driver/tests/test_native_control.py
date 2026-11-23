@@ -13,6 +13,8 @@ from native_control import step
 class Actor:
     def __init__(self, x, speed):
         self.x, self.speed, self.controls = x, speed, []
+        self.bounding_box = type("Box", (), {
+            "extent": type("Extent", (), {"x": 2.})()})()
 
     def get_transform(self):
         return type("Transform", (), {"location": type("Point", (), {"x": self.x})()})()
@@ -43,6 +45,17 @@ class ControlTests(unittest.TestCase):
                 self.assertEqual(stop["ego"]["brake"], 1.)
                 self.assertEqual(stop["companion"]["brake"], 1.)
                 self.assertFalse(stop["ego"]["observed_stop_confirmed"])
+                self.assertLess(stop["ego"]["remaining_to_authored_stop_m"], 0)
+
+    def test_front_bumper_margin_changes_with_original_vehicle_length(self):
+        ego = Actor(-3., 0.)
+        ego.bounding_box.extent.x = 2.8
+        scene = type("Scene", (), {"ego": ego, "companion": None,
+                                    "packet": {"approach_direction": 1,
+                                               "stop_line_x_m": 0.}})()
+        result = step(scene, lambda **kwargs: kwargs)["ego"]
+        self.assertEqual(result["brake"], 1.)
+        self.assertAlmostEqual(result["remaining_to_authored_stop_m"], -.3)
 
     def test_nonfinite_live_velocity_rejected(self):
         ego = Actor(-10., float("nan"))

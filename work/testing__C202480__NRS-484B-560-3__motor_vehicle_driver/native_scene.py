@@ -49,7 +49,7 @@ def inspect(packet_path: Path, plan_path: Path, case_id: str) -> tuple[dict, dic
         raise ValueError("reviewed crossing site packet format required")
     sources = packet.get("sources")
     if not isinstance(sources, dict) or set(sources) != set(SOURCE_NAMES):
-        raise ValueError("all five reviewed site sources required")
+        raise ValueError("all six reviewed site sources required")
     data = {name: _source(packet_path, sources[name], name) for name in SOURCE_NAMES}
     try:
         authority = json.loads(data["crossing_authority"])

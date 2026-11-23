@@ -19,6 +19,14 @@ from native_capture import capture
 from native_scene import create, inspect
 
 
+def native_process_identity() -> dict:
+    """Retain the Linux PID generation so later release rejects a live owner."""
+    pid = os.getpid()
+    stat = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+    ticks = int(stat.rsplit(")", 1)[1].split()[19])
+    return {"pid": pid, "proc_start_ticks": ticks}
+
+
 def retain_site_sources(attempt: Path, packet_path: Path, plan_path: Path,
                         case_id: str) -> Path:
     """Copy reviewed source bytes into the immutable original attempt."""
@@ -101,6 +109,7 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path,
             errors.append("site retention: " + str(error))
     status = {"case_id": case_id, "capture": acquired,
               "restoration": restoration, "errors": errors,
+              "native_process": native_process_identity(),
               "site_packet_sha256": hashlib.sha256(Path(packet_path).read_bytes()).hexdigest(),
               "retained_site_packet": "site/packet.json" if retained_packet else None,
               "physical_acceptance_claimed": False, "legal_judgment": "unresolved"}
@@ -129,8 +138,19 @@ def main():
     if not args.case_id:
         parser.error("exact case ID is required")
     os.environ.setdefault("SCENARIO_PIPELINE_OUTPUT_ROOT", str(args.output_dir.resolve()))
-    print(json.dumps(capture_original(args.output_dir, packet, plan, args.case_id,
-                                      host=args.host, port=args.port), indent=2))
+    status = capture_original(args.output_dir, packet, plan, args.case_id,
+                              host=args.host, port=args.port)
+    status_path = args.output_dir / "native-run-status.json"
+    exit_path = args.output_dir / "native-exit.json"
+    if exit_path.exists():
+        raise ValueError("retain previous Native exit receipt")
+    exit_path.write_text(json.dumps({
+        "event": "native_exit_pending_process_termination",
+        "case_id": args.case_id,
+        "native_process": status["native_process"],
+        "native_run_status_sha256": hashlib.sha256(status_path.read_bytes()).hexdigest(),
+        "physical_acceptance_claimed": False}, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(status, indent=2))
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ from pathlib import Path
 
 from native_camera import VIEWS
 from native_scene import inspect
+from owner_release import verify_release
 
 
 def sha(path: Path) -> str:
@@ -65,6 +66,7 @@ def _heading_difference(yaw: float, direction: int) -> float:
 
 def analyze(attempt: Path) -> tuple[dict, dict]:
     attempt = Path(attempt).resolve()
+    verify_release(attempt)
     status = _document(attempt / "native-run-status.json")
     case_id = status.get("case_id")
     if (status.get("errors") != [] or
@@ -100,6 +102,9 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
     stop_run = 0
     first_stop = None
     max_speed = 0.
+    first_ego_x = None
+    max_approach_displacement = 0.
+    control_requested = False
     aligned_queue_frames = 0
     first_queue_alignment = None
     stopped_right_offsets = []
@@ -129,6 +134,21 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                 any(cameras[name].get("sha256") != hashes[name] for name in videos)):
             raise ValueError("original four-camera frame map join differs")
         x, y, speed, length, width, yaw, ego_id = _motion(row, "ego")
+        if first_ego_x is None:
+            first_ego_x = x
+        max_approach_displacement = max(max_approach_displacement,
+                                        direction * (x - first_ego_x))
+        controls = row.get("controls")
+        if not isinstance(controls, dict) or not isinstance(controls.get("ego"), dict):
+            raise ValueError("original Native ego control missing")
+        ego_control = controls["ego"]
+        throttle = ego_control.get("throttle")
+        brake = ego_control.get("brake")
+        if (type(throttle) not in (int, float) or type(brake) not in (int, float) or
+                not math.isfinite(throttle) or not math.isfinite(brake) or
+                not 0 <= throttle <= 1 or not 0 <= brake <= 1):
+            raise ValueError("original Native ego control invalid")
+        control_requested |= throttle > 0 or brake > 0
         if _heading_difference(yaw, direction) > 20.:
             raise ValueError("original ego heading differs from reviewed approach")
         if not (highway_low < y - width and y + width < highway_high):
@@ -150,7 +170,9 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
             raise ValueError("original actor identity changed across frames")
         max_speed = max(max_speed, speed)
         before_rail = packet["approach_direction"] * (packet["rail_line_x_m"] - x) > 0
-        if speed <= .1 and before_rail:
+        front_distance = direction * (packet["stop_line_x_m"] - x) - length
+        at_stop_line = 0 <= front_distance <= 3.
+        if speed <= .1 and before_rail and at_stop_line:
             stop_run += 1
             stopped_right_offsets.append(direction * (y - right_y))
             if stop_run == 20 and first_stop is None:
@@ -158,6 +180,7 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                               "ego_x_m": x,
                               "ego_y_m": y,
                               "ego_right_edge_clearance_m": abs(y - packet["highway_right_y_m"]) - width,
+                              "front_bumper_distance_before_stop_line_m": front_distance,
                               "distance_before_stop_line_m": packet["approach_direction"] *
                                                               (packet["stop_line_x_m"] - x)}
         else:
@@ -175,6 +198,7 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                                              "longitudinal_center_separation_m": abs(x - cx)}
     observations = {"first_one_second_stop": first_stop,
                     "maximum_ego_speed_mps": max_speed,
+                    "maximum_approach_displacement_m": max_approach_displacement,
                     "authored_marked_lane_count": len(packet["marked_lanes"]),
                     "original_actor_ids": list(actor_ids),
                     "first_two_queue_alignment": first_queue_alignment,
@@ -183,11 +207,17 @@ def analyze(attempt: Path) -> tuple[dict, dict]:
                         min(stopped_right_offsets) if stopped_right_offsets else None,
                     "source_frame_count": 900}
     measured = first_stop is not None
-    result = {"case_id": case_id, "maneuver_completed": False,
+    completed = (measured and control_requested and
+                 max_approach_displacement >= 2. and
+                 (case["traffic_arrangement"] != "two_queues" or
+                  aligned_queue_frames >= 20))
+    result = {"case_id": case_id, "setup_confirmed": True,
+              "behavior_attempted": control_requested,
+              "maneuver_completed": completed,
               "realized_observables": observations,
               "physical_checks": {"one_second_pre_rail_stationary_observation": {
                   "status": "met" if measured else "not_met",
-                  "method": "at least 20 contiguous original 20 Hz frames at <=0.1 m/s before authored rail line",
+                  "method": "at least 20 contiguous original 20 Hz frames at <=0.1 m/s with front bumper 0 to 3 m before authored stop line",
                   "sources": {"trace.jsonl": sha(attempt / "trace.jsonl"),
                               "site/packet.json": source_hash}}},
               "legal_judgment": "unresolved", "physical_acceptance_claimed": False,

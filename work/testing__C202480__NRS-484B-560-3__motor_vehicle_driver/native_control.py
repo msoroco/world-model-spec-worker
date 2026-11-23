@@ -24,8 +24,11 @@ def command(actor, packet: dict, vehicle_control_factory):
     speed = math.sqrt(sum(_finite(getattr(velocity, axis), "actor velocity") ** 2
                           for axis in ("x", "y", "z")))
     stop_x = _finite(packet["stop_line_x_m"], "stop line")
-    # 1.5 m is a controller footprint margin, not a statutory stopping rule.
-    remaining = direction * (stop_x - x) - 1.5
+    half_length = _finite(actor.bounding_box.extent.x, "actor half length")
+    if half_length <= 0:
+        raise ValueError("invalid Native actor footprint")
+    # 0.5 m is an engineering front-bumper margin, not a statutory cutoff.
+    remaining = direction * (stop_x - x) - half_length - .5
     target = min(5.0, math.sqrt(max(0.0, 4.0 * remaining)))
     error = target - speed
     if remaining <= 0 or target < .2:
