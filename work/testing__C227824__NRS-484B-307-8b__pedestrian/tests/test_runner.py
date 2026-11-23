@@ -9,6 +9,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from runner import check, main
+from build_construction import build
 from saved_entry import CAMERAS
 
 
@@ -20,8 +21,13 @@ class RunnerTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         map_bytes = b"<OpenDRIVE/>\n"
         (self.root / "candidate-corridor.xodr").write_bytes(map_bytes)
-        (self.root / "construction.json").write_text("{}\n")
-        (self.root / "runner.py").write_text("# materialized runner\n")
+        config, measurement, construction = build()
+        for name, value in (("config.json", config),
+                            ("measurement-contract.json", measurement),
+                            ("construction.json", construction)):
+            (self.root / name).write_text(json.dumps(value) + "\n")
+        for item in construction["files"]:
+            (self.root / item["path"]).write_text(item["content"])
         (self.root / "device-review.json").write_text('{"complete": true}\n')
         (self.root / "camera-review.json").write_text('{"complete": true}\n')
         self.scene = {
@@ -99,6 +105,18 @@ class RunnerTests(unittest.TestCase):
         self.scene["device_inventory_review"]["source_path"] = "../other.json"
         self.write_scene()
         with self.assertRaisesRegex(ValueError, "review source missing or escapes attempt"):
+            check(self.root)
+
+    def test_changed_case_specific_config_rejected(self):
+        config = json.loads((self.root / "config.json").read_text())
+        config["selected_case_id"] = "other-case"
+        (self.root / "config.json").write_text(json.dumps(config) + "\n")
+        with self.assertRaisesRegex(ValueError, "case identity differs: config.json"):
+            check(self.root)
+
+    def test_changed_materialized_source_rejected(self):
+        (self.root / "native_signal.py").write_text("# altered source\n")
+        with self.assertRaisesRegex(ValueError, "construction source differs: native_signal.py"):
             check(self.root)
 
 

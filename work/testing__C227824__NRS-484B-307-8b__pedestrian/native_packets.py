@@ -73,8 +73,10 @@ class PacketWriter:
 
     def __init__(self, attempt):
         self.root = Path(attempt).resolve()
-        workspace = Path(__file__).resolve().parents[2]
-        private = (workspace / ".runtime-work").resolve()
+        source = Path(__file__).resolve()
+        bundled = next((parent for parent in source.parents
+                        if parent.name == ".runtime-work"), None)
+        private = (bundled if bundled is not None else source.parents[2] / ".runtime-work").resolve()
         if not self.root.is_dir() or not self.root.is_relative_to(private):
             raise ValueError("Native attempt must exist under .runtime-work")
         self.streams = {}

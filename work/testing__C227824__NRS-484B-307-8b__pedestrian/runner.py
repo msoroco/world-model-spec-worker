@@ -28,6 +28,24 @@ def check(attempt):
     if not isinstance(scene, dict):
         raise ValueError("materialized Native scene must be an object")
     root = _materialized(scene, root)
+    for name, key in (("config.json", "selected_case_id"),
+                      ("construction.json", "case_id"),
+                      ("measurement-contract.json", "case_id")):
+        path = root / name
+        if not path.is_file() or json.loads(path.read_text()).get(key) != scene.get("case_id"):
+            raise ValueError("materialized case identity differs: " + name)
+    construction = json.loads((root / "construction.json").read_text())
+    files = construction.get("files")
+    if not isinstance(files, list) or not files:
+        raise ValueError("materialized construction source inventory missing")
+    for item in files:
+        name = item.get("path") if isinstance(item, dict) else None
+        if (not isinstance(name, str) or not name or Path(name).is_absolute()
+                or ".." in Path(name).parts):
+            raise ValueError("materialized construction path invalid")
+        path = root / name
+        if not path.is_file() or path.is_symlink() or path.read_text() != item.get("content"):
+            raise ValueError("materialized construction source differs: " + name)
     validate_attempt(scene, scene.get("planned_frames"))
     review_devices(scene)
     placements(scene)

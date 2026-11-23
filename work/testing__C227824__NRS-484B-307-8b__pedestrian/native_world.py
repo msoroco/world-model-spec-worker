@@ -25,10 +25,16 @@ def _sha(path):
     return digest.hexdigest()
 
 
+def _private_root():
+    source = Path(__file__).resolve()
+    bundled = next((parent for parent in source.parents
+                    if parent.name == ".runtime-work"), None)
+    return bundled if bundled is not None else source.parents[2] / ".runtime-work"
+
+
 def _materialized(scene, attempt):
     root = Path(attempt).resolve()
-    workspace = Path(__file__).resolve().parents[2]
-    if not root.is_dir() or not root.is_relative_to((workspace / ".runtime-work").resolve()):
+    if not root.is_dir() or not root.is_relative_to(_private_root().resolve()):
         raise ValueError("materialized Native attempt must be under .runtime-work")
     required = ("scene.json", "construction.json", "runner.py", "candidate-corridor.xodr")
     if any(not (root / name).is_file() for name in required):
@@ -130,8 +136,7 @@ def run_with_client(scene, attempt, client, carla, *, snapshot_world, restore_wo
 def run_native(scene, attempt, host="127.0.0.1", port=2000):
     """Production entrypoint; importing this module never imports CARLA."""
     root = _materialized(scene, attempt)
-    workspace = Path(__file__).resolve().parents[2]
-    output_root = (workspace / ".runtime-work" / "c227824-runtime").resolve()
+    output_root = (_private_root() / "c227824-runtime").resolve()
     output_root.mkdir(parents=True, exist_ok=True)
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(output_root)
     import carla

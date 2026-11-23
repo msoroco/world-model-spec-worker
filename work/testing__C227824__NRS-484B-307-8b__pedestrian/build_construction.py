@@ -13,22 +13,23 @@ ROOT = Path(__file__).resolve().parent
 CASE = ROOT.name + "__red_no_device_entry"
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
            ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
-MODULES = ("runner.py", "native_world.py", "native_attempt.py",
+MODULES = ("runner.py", "materialize_cases.py", "native_case_bundles.py",
+           "native_world.py", "native_attempt.py",
            "native_packets.py", "native_signal.py", "native_cameras.py",
            "native_recorder.py", "walker_control.py", "saved_entry.py",
            "entry_measurement.py", "analysis.py", "delivery_audit.py",
            "comparison_audit.py")
 
 
-def build():
+def build(case_id=CASE):
     plan = json.loads((ROOT / "case-plan.json").read_text())
     proposals = json.loads((ROOT / "proposals/cases.json").read_text())
     ids = [case["case_id"] for case in plan["cases"]]
     selected = {case["case_id"]: case for case in proposals["cases"]
                 if case["target_type"] != "baseline"}
-    if set(ids) != set(selected) or CASE not in selected:
+    if set(ids) != set(selected) or case_id not in selected:
         raise ValueError("construction case selection differs from exact plan")
-    description = selected[CASE]["recording_description"]
+    description = selected[case_id]["recording_description"]
     channels = {item["name"] for item in description["channels"]}
     mandatory = {item["name"] for item in plan["observations"]
                  if item.get("mandatory", True)}
@@ -38,8 +39,8 @@ def build():
         raise ValueError("full highway boundary context missing")
     config = {
         "law_id": plan["law_id"], "cell_id": plan["cell_id"],
-        "actor": plan["actor"], "selected_case_id": CASE,
-        "supported_case_ids": ids, "case": selected[CASE],
+        "actor": plan["actor"], "selected_case_id": case_id,
+        "supported_case_ids": ids, "case": selected[case_id],
         "duration_s": 12, "rate_hz": 20,
         "capture_provenance": "original Native samples required",
         "required_atoms": [], "source_packets": [],
@@ -56,7 +57,7 @@ def build():
     }
     measurement = {
         "format": "worker-measurement-contract",
-        "case_id": CASE,
+        "case_id": case_id,
         "law_id": plan["law_id"],
         "requirements": [{
             "requirement": "Steady-red pedestrian highway entry and separate-device exception",
@@ -78,7 +79,7 @@ def build():
                                       ("measurement-contract.json", measurement))))
     construction = {
         "law_id": plan["law_id"], "cell_id": plan["cell_id"],
-        "actor": plan["actor"], "case_id": CASE,
+        "actor": plan["actor"], "case_id": case_id,
         "status": "draft",
         "entrypoint": "runner.py", "files": files,
         "mechanisms": {
