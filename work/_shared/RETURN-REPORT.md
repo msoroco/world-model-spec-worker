@@ -983,3 +983,13 @@ Seven exact cases now bind case-hashed sealed synthetic complete/incomplete/miss
 ### 2026-11-23 C179789 acquisition mapping checkpoint
 
 Nine original Native condition channels are mapped for each of seven exact cases. The pinned compatibility receipt checker passed all seven (`cpu-acquisition-contract.log`). C179789 remains partial pending reviewed source/site inputs and final delivery checks; synthetic fixtures remain diagnostic.
+
+### 2026-11-23 strict gate result
+
+C179789 focused static check passed after physical and acquisition proof. Full strict gate still fails at partial/missing packages; current status counts {'partial': 233, 'ready': 9}. Exact log: `.runtime-work/full-strict-c179789-physical-acquisition.log`. Continue worker-owned site/source and remaining batch preparation; do not promote partial results to ready.
+
+### 2026-11-23 C202480 branch construction checkpoint
+
+Five exact cases and four comparison isolations are planned for NRS 484B.560(3). New saved-only branch audit passes three CPU tests, including source rejection. Status remains partial while executable crossing/traffic construction and full source-bound proofs are worker-owned. See the assignment HANDOFF.md.
+
+C202480 focused static check passed after the branch plan and audit implementation (`cpu-static-check.log`). Full batch strict gate remains failed by the unchanged 233 partial results.
