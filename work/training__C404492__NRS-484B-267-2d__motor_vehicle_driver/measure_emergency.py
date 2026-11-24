@@ -36,7 +36,9 @@ def measure(root,branch='emergency_moving'):
     kind=ctx.get('review_kind')
     if kind not in ('synthetic_diagnostic','original_source_review'):
         raise ValueError('Source provenance not reviewed')
-    for key in ('reviewer','ego_driver_source','ego_vehicle_source','emergency_authorization_source',
+    authority_source=('regulatory_agency_vehicle_source' if branch=='regulatory_moving'
+                      else 'emergency_authorization_source')
+    for key in ('reviewer','ego_driver_source','ego_vehicle_source',authority_source,
                 'qualifying_flash_equipment_source','flashing_light_visual_source',
                 'lane_boundary_source','officer_direction_review_source'):
         if not ctx.get(key):raise ValueError('Missing statutory context source: '+key)

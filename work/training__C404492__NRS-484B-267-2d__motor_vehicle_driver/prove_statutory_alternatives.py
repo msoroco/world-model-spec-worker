@@ -37,6 +37,7 @@ def main():
         official=base/'official_abreast';fixture(official,True)
         for location in (official_behind,official):
             context(location,emergency_vehicle_authorized=False,
+                    emergency_authorization_source=None,
                     official_regulatory_vehicle=True,
                     regulatory_agency_vehicle_source='synthetic-fixture:reviewed-agency-source')
         official_follow=measure(official_behind,branch='regulatory_moving')
@@ -47,6 +48,9 @@ def main():
         assert sum(r['longitudinal_overlap_length_m']>0 for r in official_result['per_frame_geometry'])==299
         reject(official,'emergency_moving')
         context(official,official_regulatory_vehicle=False)
+        reject(official,'regulatory_moving')
+        context(official,official_regulatory_vehicle=True,
+                regulatory_agency_vehicle_source=None)
         reject(official,'regulatory_moving')
 
         movement=base/'movement';fixture(movement,True)
@@ -80,7 +84,7 @@ def main():
                           'regulatory_follow_overlap_frames':0,
                           'regulatory_abreast_overlap_frames':299,
                           'visible_movement_frames':40,'driver_hand_signal_frames':40,
-                          'negative_source_checks':5,'original_native_executed':False,
+                          'negative_source_checks':6,'original_native_executed':False,
                           'legal_result':None},sort_keys=True))
 
 

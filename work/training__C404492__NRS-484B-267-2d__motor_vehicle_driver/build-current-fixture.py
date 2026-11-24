@@ -1,4 +1,5 @@
 """Inventory source-shaped 600-frame diagnostic inputs for public compatibility."""
+import argparse
 import hashlib
 import json
 import os
@@ -74,9 +75,14 @@ def build(suffix):
     if source.exists():
         raise ValueError('Retain prior source fixture; remove only after review')
     source.parent.mkdir(parents=True, exist_ok=True)
-    fixture(source, suffix == 'controlled_2')
+    fixture(source, suffix in ('controlled_2', 'official_2'))
     context = json.loads((source / 'emergency_context.json').read_text())
     context['case_id'] = HERE.name + '__' + suffix
+    if suffix.startswith('official_'):
+        context['emergency_vehicle_authorized'] = False
+        context['emergency_authorization_source'] = None
+        context['official_regulatory_vehicle'] = True
+        context['regulatory_agency_vehicle_source'] = 'synthetic-fixture:agency-status-review'
     write(source / 'emergency_context.json', context)
     frame_map = rows(source / 'video_frames.jsonl')
     poses = rows(source / 'vehicle_poses.jsonl')
@@ -159,8 +165,11 @@ def build(suffix):
 
 
 if __name__ == '__main__':
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--case',choices=('controlled_1','controlled_2','official_1','official_2'))
+    args=parser.parse_args()
     output = Path(os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT', '/')).resolve()
     if ROOT / '.runtime-work' not in output.parents:
         raise SystemExit('Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work')
-    for case in ('controlled_1', 'controlled_2'):
+    for case in ((args.case,) if args.case else ('controlled_1', 'controlled_2')):
         build(case)

@@ -7,7 +7,7 @@ import subprocess
 
 from prove import FRAMES, RATE, RADIUS, curve_point, inverse_point, check
 
-CAMERAS = ("west_view", "east_view", "overview", "driver_reference")
+CAMERAS = ("approach", "reference_corner", "overview", "driver_reference")
 TURN_PHASES = ("forward_left", "reverse_right", "forward_left_finish")
 
 

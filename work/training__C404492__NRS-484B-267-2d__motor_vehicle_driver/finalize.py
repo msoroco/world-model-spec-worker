@@ -5,6 +5,18 @@ from pathlib import Path
 
 from measure_emergency import AID, CAMERAS, measure, rows, sha
 
+CASES=tuple(AID+'__'+suffix for suffix in
+            ('controlled_1','controlled_2','official_1','official_2'))
+
+
+def statutory_branch(case_id):
+    return 'regulatory_moving' if case_id.endswith(('__official_1','__official_2')) else 'emergency_moving'
+
+
+def reviewed_authority(context, case_id):
+    return (context['official_regulatory_vehicle'] if statutory_branch(case_id)=='regulatory_moving'
+            else context['emergency_vehicle_authorized'])
+
 
 def source_joined_same_direction_abreast_and_order(measured):
     """Return original body intervals and order without a statutory cutoff."""
@@ -12,14 +24,14 @@ def source_joined_same_direction_abreast_and_order(measured):
 
 
 def finalize(source_dir, case_id, output, *, diagnostic=False):
-    if case_id not in (AID+'__controlled_1', AID+'__controlled_2'):
-        raise ValueError('Exact selected emergency case required')
+    if case_id not in CASES:
+        raise ValueError('Exact emergency or regulatory case required')
     source_dir=Path(source_dir)
     ctx=json.loads((source_dir/'emergency_context.json').read_text())
     expected='synthetic_diagnostic' if diagnostic else 'original_source_review'
     if ctx.get('review_kind')!=expected or ctx.get('case_id')!=case_id:
         raise ValueError('Exact case and source review provenance required')
-    measured=measure(source_dir)
+    measured=measure(source_dir,branch=statutory_branch(case_id))
     measured['case_id']=case_id
     measured['source_review_kind']=expected
     measured['selected_outcome_observed']=None
@@ -46,10 +58,10 @@ def finalize_attempt(attempt, output):
     construction=json.loads((attempt/'construction.json').read_text())
     context=json.loads((attempt/'emergency_context.json').read_text())
     case_id=cfg.get('case_id')
-    if (case_id not in (AID+'__controlled_1',AID+'__controlled_2') or
+    if (case_id not in CASES or
             construction.get('case_id')!=case_id or context.get('case_id')!=case_id):
         raise ValueError('Exact saved case identity differs')
-    measured=measure(attempt)
+    measured=measure(attempt,branch=statutory_branch(case_id))
     mapping=rows(attempt/'video_frames.jsonl')
     poses=rows(attempt/'vehicle_poses.jsonl')
     channels=attempt/'channels'
@@ -63,7 +75,7 @@ def finalize_attempt(attempt, output):
                 ego,emergency=pose['ego'],pose['emergency']
                 values={
                     'drv.responding_emergency':{'actor_id':emergency['actor_id'],
-                        'authorized_review':context['emergency_vehicle_authorized'],
+                        'authorized_review':reviewed_authority(context,case_id),
                         'qualifying_equipment_review':context['qualifying_flash_equipment_reviewed'],
                         'flashing_light_phase_on':emergency['flashing_light_phase_on']},
                     'rel.same_direction':{'heading_dot':geometry['heading_dot'],
@@ -82,7 +94,7 @@ def finalize_attempt(attempt, output):
                 stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name]},allow_nan=False)+'\n')
         evidence.append({'name':name,'unit':descriptor['unit'],'reference':'channels/'+path.name})
     review_context={'emergency_context':{
-        'authorized':context['emergency_vehicle_authorized'],
+        'authorized':reviewed_authority(context,case_id),
         'qualifying_flash_equipment_reviewed':context['qualifying_flash_equipment_reviewed'],
         'source_review_kind':context['review_kind'],
         'source_sha256':sha(attempt/'emergency_context.json')},

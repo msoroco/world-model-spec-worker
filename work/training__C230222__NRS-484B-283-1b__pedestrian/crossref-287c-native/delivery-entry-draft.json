@@ -1,0 +1,308 @@
+{
+  "format": "c230222-287c-delivery-entry-draft-v1",
+  "assignment_id": "training__C230222__NRS-484B-283-1b__pedestrian",
+  "selected": false,
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked",
+      "kind": "delivery",
+      "construction": "crossref-287c-native/marked/construction.json",
+      "construction_sha256": "c69b05fd7bd3e95dc4be507df7a58c38f1e4c3d470a9db043eac6fa7eeaceca5",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "crossref-287c-native/marked/fallback1/construction.json",
+          "construction_sha256": "c1970ea0950bd8a4bd4815c55886b2b510e45edc2d00f204522b5d449d38bafe",
+          "trigger": {
+            "source": "original_native_pedestrian_footprint_and_road_edge",
+            "metric": "native_initial_footprint_clearance_m_below",
+            "failure_condition": "native_initial_footprint_clearance_m_below 1.25"
+          },
+          "changed_knobs": [
+            "pedestrian spawn and two-meter pre-roll"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-manifest.json --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked --candidate fallback1 --output .runtime-work/c230222-287c-fallback-marked-offline",
+            "exit_code": 0,
+            "construction_sha256": "c1970ea0950bd8a4bd4815c55886b2b510e45edc2d00f204522b5d449d38bafe",
+            "log": "crossref-287c-native/marked/fallback1/offline.log",
+            "log_sha256": "b83ada233f114ad9ed2074b53573fc4abfc5dc4e5dfc2faf788cc3899a0dd7f9"
+          },
+          "compatibility": {
+            "receipt": "crossref-287c-native/marked/fallback1/proofs/compatibility.json",
+            "sha256": "232273b1ea0ef36ae30c00d9f65dd8128df12ca9597f6c9651f8944a6ea96137",
+            "log": "crossref-287c-native/marked/fallback1/proofs/positive-analysis.log",
+            "negative_log": "crossref-287c-native/marked/fallback1/proofs/negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "crossref-287c-native/marked/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/marked/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native walker footprint may overlap the curb edge; use the fallback only when source-measured initial clearance falls below 1.25 m."
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-manifest.json --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked --output .runtime-work/c230222-287c-topology-marked-offline2",
+        "exit_code": 0,
+        "construction_sha256": "c69b05fd7bd3e95dc4be507df7a58c38f1e4c3d470a9db043eac6fa7eeaceca5",
+        "log": "crossref-287c-native/marked/proofs/offline.log",
+        "log_sha256": "3e853f101a120298ae45def70f97968de98054dd17bdcbbe07ce045fd912b0ea"
+      },
+      "compatibility": {
+        "receipt": "crossref-287c-native/marked/proofs/compatibility.json",
+        "sha256": "36abf0d64b9352e1dd99e5312facc24a202ee5f62ac0ac377074c995b3f9e82f",
+        "log": "crossref-287c-native/marked/proofs/positive-analysis.log",
+        "negative_log": "crossref-287c-native/marked/proofs/negative-analysis.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "crossref-287c-native/marked/proofs/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "crossref-287c-native/marked/proofs/processing.json",
+        "sha256": "8e2940bdec8339b92b375e84539e2216f11a9d4b8ab6818a9931eab78038051b"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230222__NRS-484B-283-1b__pedestrian/execution-manifest.json --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v0001/feedback.json",
+        "test_log": "crossref-287c-native/marked/proofs/processing.json",
+        "test_log_sha256": "8e2940bdec8339b92b375e84539e2216f11a9d4b8ab6818a9931eab78038051b",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked",
+        "receipt": "crossref-287c-native/marked/physical-proof/proof.json",
+        "sha256": "4eb79484255fa486b66c97e3b45c4acaf1848410e780d7a6bc7cdf8e897edd8a"
+      },
+      "acquisition": {
+        "curb_camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "drv.stopping_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "crossref-287c-native/delivery_audit.py",
+        "script_sha256": "069b618b8764764cbd7d9cfd227d1cf3781656e7e0ace9bdec13aa59b32d8ac2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/delivery_audit.py --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-marked-compat --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-marked-saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-marked-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "crossref-287c-native/marked/proofs/delivery-positive.log",
+        "test_log_sha256": "801a156db3cf3594ce7f0aa72da9e8e2a2cb6928afdddf14de7a81a43479ba31",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/delivery_audit.py --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-marked-compat --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-marked-saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-marked-delivery-rejected.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "negative_log": "crossref-287c-native/marked/proofs/delivery-negative.log",
+        "negative_log_sha256": "9f9c2667e1d60109bf649047d518336d1af2803a5432dbc3794d0e5e75fcfec7",
+        "proof_scope": "Synthetic software positive and original Native rejection; no physical acceptance"
+      }
+    },
+    {
+      "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked",
+      "kind": "delivery",
+      "construction": "crossref-287c-native/unmarked/construction.json",
+      "construction_sha256": "3008b9140102c149fc80ec8358fc394db8b9976c4c9a4f0ff8025248a8ffc8fb",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "crossref-287c-native/unmarked/fallback1/construction.json",
+          "construction_sha256": "bdddcd9bfff55c3dc4a2e84cc0d5386828192b0aaaedd2944b42a611cc26d5d2",
+          "trigger": {
+            "source": "original_native_pedestrian_footprint_and_road_edge",
+            "metric": "native_initial_footprint_clearance_m_below",
+            "failure_condition": "native_initial_footprint_clearance_m_below 1.25"
+          },
+          "changed_knobs": [
+            "pedestrian spawn and two-meter pre-roll"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-manifest.json --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked --candidate fallback1 --output .runtime-work/c230222-287c-fallback-unmarked-offline",
+            "exit_code": 0,
+            "construction_sha256": "bdddcd9bfff55c3dc4a2e84cc0d5386828192b0aaaedd2944b42a611cc26d5d2",
+            "log": "crossref-287c-native/unmarked/fallback1/offline.log",
+            "log_sha256": "02e14a42df1e735c28ce9af28473df5ee7bf2a7d941cbbf538355cd28d239db1"
+          },
+          "compatibility": {
+            "receipt": "crossref-287c-native/unmarked/fallback1/proofs/compatibility.json",
+            "sha256": "534a7c279586b980ffb9cf965e7ad8059fed92898b87cd51d8c1fa871ed20eb0",
+            "log": "crossref-287c-native/unmarked/fallback1/proofs/positive-analysis.log",
+            "negative_log": "crossref-287c-native/unmarked/fallback1/proofs/negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "crossref-287c-native/unmarked/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/unmarked/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native walker footprint may overlap the curb edge; use the fallback only when source-measured initial clearance falls below 1.25 m."
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-manifest.json --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked --output .runtime-work/c230222-287c-topology-unmarked-offline2",
+        "exit_code": 0,
+        "construction_sha256": "3008b9140102c149fc80ec8358fc394db8b9976c4c9a4f0ff8025248a8ffc8fb",
+        "log": "crossref-287c-native/unmarked/proofs/offline.log",
+        "log_sha256": "61834b74e817df83e303a85635bf62d40c78b08900fca4a399934af9009c1f56"
+      },
+      "compatibility": {
+        "receipt": "crossref-287c-native/unmarked/proofs/compatibility.json",
+        "sha256": "e06a6b84eba3dad1c721e5d55467ffab5553710d4787ab277d729394f0fe0d57",
+        "log": "crossref-287c-native/unmarked/proofs/positive-analysis.log",
+        "negative_log": "crossref-287c-native/unmarked/proofs/negative-analysis.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "crossref-287c-native/unmarked/proofs/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "crossref-287c-native/unmarked/proofs/processing.json",
+        "sha256": "3dedc6742f5531a0043cf9ed82ee108679751177495f01b59cc426dcda56f528"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230222__NRS-484B-283-1b__pedestrian/execution-manifest.json --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v0001/feedback.json",
+        "test_log": "crossref-287c-native/unmarked/proofs/processing.json",
+        "test_log_sha256": "3dedc6742f5531a0043cf9ed82ee108679751177495f01b59cc426dcda56f528",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked",
+        "receipt": "crossref-287c-native/unmarked/physical-proof/proof.json",
+        "sha256": "d20ebc10ea8e86e50e04b0f601ced5ad1224b5da997a92377b005b121b4e8750"
+      },
+      "acquisition": {
+        "curb_camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "drv.stopping_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "finalize.py",
+          "method": "Source-bound original pedestrian footprint, vehicle state, road geometry and frame join; derived channels never replace original pixels",
+          "evidence": "curb-samples.jsonl, curb-context.json, trace.jsonl, video_frames.jsonl, four original camera files"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "crossref-287c-native/delivery_audit.py",
+        "script_sha256": "069b618b8764764cbd7d9cfd227d1cf3781656e7e0ace9bdec13aa59b32d8ac2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/delivery_audit.py --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-unmarked-compat --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-unmarked-saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-unmarked-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "crossref-287c-native/unmarked/proofs/delivery-positive.log",
+        "test_log_sha256": "98da6702e0b58dbab7ed2733d2f54d6080ff7f3beac4bdf46ff8aec388f6feef",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/delivery_audit.py --case training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-unmarked-compat --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-unmarked-saved/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230222-287c-topology-unmarked-delivery-rejected.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "negative_log": "crossref-287c-native/unmarked/proofs/delivery-negative.log",
+        "negative_log_sha256": "9f9c2667e1d60109bf649047d518336d1af2803a5432dbc3794d0e5e75fcfec7",
+        "proof_scope": "Synthetic software positive and original Native rejection; no physical acceptance"
+      }
+    }
+  ]
+}

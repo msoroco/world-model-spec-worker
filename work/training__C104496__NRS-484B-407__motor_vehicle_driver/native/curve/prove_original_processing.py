@@ -66,7 +66,7 @@ def fixture(bundle, directory):
     directory.mkdir(parents=True)
     (directory / "native-raw-actors.jsonl").write_text("".join(json.dumps(row) + "\n" for row in raw))
     (directory / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in video))
-    for name in ("west_view", "east_view", "overview", "driver_reference"):
+    for name in ("approach", "reference_corner", "overview", "driver_reference"):
         (directory / (name + ".mkv")).write_bytes(b"synthetic fixture; not FFV1\n")
     mapping = {"source_kind": "synthetic_fixture", "road_sha256": sha(bundle / "curve.xodr"),
                "legal_verdict": None, "ego_actor_id": 10, "other_actor_id": 11,
@@ -93,7 +93,7 @@ def refresh(directory, review):
     review["map_sha256"] = sha(directory / "native-map-readback.json")
     review["capture_report_sha256"] = sha(directory / "native-capture-report.json")
     review["media_sha256"] = {name + ".mkv": sha(directory / (name + ".mkv"))
-                              for name in ("west_view", "east_view", "overview", "driver_reference")}
+                              for name in ("approach", "reference_corner", "overview", "driver_reference")}
     put(directory / "review.json", review)
 
 

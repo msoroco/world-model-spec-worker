@@ -11,7 +11,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 ASSIGNMENT = HERE.parent.name
-SCRATCH = ROOT / ".runtime-work/c104496-reviewed-offline"
+SCRATCH = ROOT / ".runtime-work/c104496-reviewed-offline-media-v4"
 CASES = (("crest", "probe_01"), ("crest", "probe_02"), ("curve", "probe_03"))
 CHOICES = ("primary", "fallback1", "fallback2")
 

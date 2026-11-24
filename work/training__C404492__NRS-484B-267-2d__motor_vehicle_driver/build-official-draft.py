@@ -50,7 +50,8 @@ def main():
             files=[{'path':'runner.py','content':(HERE/'native/runner.py').read_text()},
                    {'path':'tests/test_native.py','content':(HERE/'native/tests/test_native.py').read_text()},
                    {'path':'config.json','content':json.dumps(cfg,indent=2)+'\n'},
-                   {'path':'measure_emergency.py','content':(HERE/'measure_emergency.py').read_text()}]
+                   {'path':'measure_emergency.py','content':(HERE/'measure_emergency.py').read_text()},
+                   {'path':'finalize.py','content':(HERE/'finalize.py').read_text()}]
             construction={'format':'worker-construction','assignment_id':AID,'case_id':case,
                 'law_id':'NRS-484B-267-2d','cell_id':'C404492','actor':'motor_vehicle_driver',
                 'entrypoint':'runner.py','recording_description':recording,

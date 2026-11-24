@@ -51,7 +51,14 @@ def check():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir")
+    parser.add_argument("--host")
+    parser.add_argument("--port", type=int)
     args = parser.parse_args()
-    if not args.check:
-        raise ValueError("Staged source preflight supports --check only")
-    print(json.dumps(check(),sort_keys=True))
+    if args.check:
+        print(json.dumps(check(),sort_keys=True))
+    else:
+        if not args.output_dir or not args.host or not args.port:
+            parser.error("Owned Native attempt requires output directory, host and port")
+        from native_capture import execute
+        execute(args.output_dir, args.host, args.port)

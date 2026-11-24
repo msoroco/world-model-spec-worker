@@ -67,11 +67,19 @@ def control_for(actor, request, carla):
 
 
 def capture(bundle, output, host, port):
+    bundle, output = Path(bundle).resolve(), Path(output).resolve()
+    if not output.is_dir() or output != bundle:
+        raise ValueError("Capture requires the materialized bundle directory")
+    acquisition = ("native-map-readback.json", "native-raw-actors.jsonl",
+                   "video_frames.jsonl", "native-capture-report.json",
+                   "approach.mkv", "reference_corner.mkv", "overview.mkv",
+                   "driver_reference.mkv")
+    if any((output / name).exists() for name in acquisition):
+        raise ValueError("Retain prior acquisition; use a fresh materialized bundle")
     import carla
     import numpy as np
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
 
-    bundle, output = Path(bundle).resolve(), Path(output).resolve()
     check(bundle)
     cfg = json.loads((bundle / "config.json").read_text())
     requests = [json.loads(line) for line in (bundle / "requested-tracks.jsonl").read_text().splitlines()]
@@ -81,7 +89,6 @@ def capture(bundle, output, host, port):
     if prior.get_settings().synchronous_mode or any(a.type_id.startswith(("vehicle.", "walker.", "sensor."))
                                                  for a in prior.get_actors()):
         raise RuntimeError("Exclusive idle asynchronous CARLA world required")
-    output.mkdir(parents=True, exist_ok=False)
     owned, sensors, encoders, logs = [], {}, {}, {}
     changed = False; frames = 0; error = None; restoration = None; map_readback = None
     try:
@@ -128,8 +135,8 @@ def capture(bundle, output, host, port):
         east_x, east_y = curve_point(352.4, -1.75)
         center_x, center_y = curve_point(200, -25)
         driver_x, driver_y = curve_point(185, -10)
-        specs = (("west_view", 1280, 720, (west_x, west_y, elevation(47.6, cfg["grade_height_m"])+1.4), math.degrees(47.6/RADIUS), 0),
-                 ("east_view", 1280, 720, (east_x, east_y, elevation(352.4, cfg["grade_height_m"])+1.4), math.degrees(352.4/RADIUS)+180, 0),
+        specs = (("approach", 1280, 720, (west_x, west_y, elevation(47.6, cfg["grade_height_m"])+1.4), math.degrees(47.6/RADIUS), 0),
+                 ("reference_corner", 1280, 720, (east_x, east_y, elevation(352.4, cfg["grade_height_m"])+1.4), math.degrees(352.4/RADIUS)+180, 0),
                  ("overview", 1920, 1080, (center_x, center_y, elevation(200, cfg["grade_height_m"])+(50 if elevated else 35)), math.degrees(200/RADIUS)+90, -65),
                  ("driver_reference", 1280, 720, (driver_x, driver_y, elevation(185, cfg["grade_height_m"])+3), math.degrees(185/RADIUS)+45, -10))
         for name, width, height, location, yaw, pitch in specs:
