@@ -1,7 +1,7 @@
 {
   "format": "worker-ordered-gpu-queue",
   "status": "partial_current_runtime_ready_assignments",
-  "note": "Exact current-runtime CPU-ready entries only; physical/local acceptance and remaining assignments are pending.",
+  "note": "Partial ordered queue of current-runtime strict-ready packages; physical and local acceptance are pending.",
   "assignments": [
     "testing__C229023__LVMC-11-30-030__motor_vehicle_driver",
     "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
@@ -10,7 +10,8 @@
     "testing__C153046__NRS-484B-307-8c__motor_vehicle_driver",
     "testing__C109749__NRS-484B-253__motor_vehicle_driver",
     "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver",
-    "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver"
+    "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver",
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver"
   ],
   "cases": [
     {
@@ -699,6 +700,66 @@
       "owner_release_command": "CASE_ID=testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
       "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/local-delivery-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-delivery-audit\" TMPDIR=\"$PWD/.runtime-work/local-delivery-audit\" PYTHONPATH=\"$PWD/work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver\" .venv-cpu/bin/python -c 'import json,sys; from pathlib import Path; from delivery_audit import audit; print(json.dumps(audit(Path(sys.argv[1]), case_id=sys.argv[2]), sort_keys=True))' \"$ATTEMPT\" testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only > \"$SOURCE_AUDIT\"",
       "candidate_commands": {}
+    },
+    {
+      "order": 50,
+      "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+      "prepare_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+      "execute_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive \"$REVIEW_ARCHIVE\"",
+      "capture_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/local-delivery-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-delivery-audit\" TMPDIR=\"$PWD/.runtime-work/local-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/delivery_audit.py --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --attempt \"$ATTEMPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {
+        "fallback1": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --candidate fallback1"
+      }
+    },
+    {
+      "order": 51,
+      "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+      "prepare_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline",
+      "execute_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive \"$REVIEW_ARCHIVE\"",
+      "capture_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/local-delivery-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-delivery-audit\" TMPDIR=\"$PWD/.runtime-work/local-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/delivery_audit.py --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --attempt \"$ATTEMPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {
+        "fallback1": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --candidate fallback1"
+      }
+    },
+    {
+      "order": 52,
+      "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+      "prepare_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+      "execute_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive \"$REVIEW_ARCHIVE\"",
+      "capture_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/local-delivery-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-delivery-audit\" TMPDIR=\"$PWD/.runtime-work/local-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/delivery_audit.py --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --attempt \"$ATTEMPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {
+        "fallback1": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --candidate fallback1"
+      }
+    },
+    {
+      "order": 53,
+      "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline",
+      "prepare_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline",
+      "execute_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive \"$REVIEW_ARCHIVE\"",
+      "capture_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/local-delivery-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-delivery-audit\" TMPDIR=\"$PWD/.runtime-work/local-delivery-audit\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/delivery_audit.py --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --attempt \"$ATTEMPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {
+        "fallback1": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --candidate fallback1"
+      }
     }
   ],
   "comparison_audit_commands": [
@@ -985,6 +1046,24 @@
         "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only"
       ],
       "command": "mkdir -p \"$PWD/.runtime-work/local-comparison-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-comparison-audit\" TMPDIR=\"$PWD/.runtime-work/local-comparison-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/_shared/c109035_comparison_cli.py --comparison lamps_without_siren --attempt-map \"$COMPARISON_ATTEMPT_MAP\" --output \"$COMPARISON_AUDIT\""
+    },
+    {
+      "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+      "comparison_id": "approach_lateral_position",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline"
+      ],
+      "command": "mkdir -p \"$PWD/.runtime-work/local-comparison-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-comparison-audit\" TMPDIR=\"$PWD/.runtime-work/local-comparison-audit\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/saved_delivery.py --near-attempt \"$NEAR_ATTEMPT\" --far-attempt \"$FAR_ATTEMPT\" --output \"$COMPARISON_AUDIT\""
+    },
+    {
+      "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+      "comparison_id": "imaginary_approach_lateral_position",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline"
+      ],
+      "command": "mkdir -p \"$PWD/.runtime-work/local-comparison-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/local-comparison-audit\" TMPDIR=\"$PWD/.runtime-work/local-comparison-audit\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/saved_delivery.py --near-attempt \"$NEAR_ATTEMPT\" --far-attempt \"$FAR_ATTEMPT\" --output \"$COMPARISON_AUDIT\""
     }
   ]
 }

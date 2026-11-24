@@ -2,14 +2,14 @@
   "applied_update": 0,
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "8a14a3e8f6c0ac470e16c0195b8a7bf2e20482edfcab4c6ec968edb174a69ace",
-  "readiness_kind": "source_bound_construction_draft",
+  "readiness_kind": "delivery_prepared",
   "reason": "Ready-mode trial found missing explicit empty source_observation_mapping for the frozen zero-term law; exact strict failed in cpu-native-v9-ready-strict.log. Repair and rerun before ready.",
   "remaining_gpu_checks": [
     "Supply independently reviewed public-highway source packet bound to loaded OpenDRIVE and exact roads before Native capture",
     "Actual 45 s CARLA motion and four-camera source quality, original body/road/signal evidence and full physical-completion audit",
     "Independently judge statutory nearest portion from retained original evidence without inventing a numeric cutoff"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
@@ -1108,6 +1108,18 @@
       "exit_code": 0,
       "log": "cpu-native-v9-saved-near-missing.log",
       "sha256": "853ba052dd73816fc903bbbdfd13a7bfac4b921c046610e11af949db2e3880ca"
+    },
+    {
+      "command": "repo_root=\"$PWD\"; export PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$repo_root/.runtime-work\" SCENARIO_PIPELINE_OUTPUT_ROOT=\"$repo_root/.runtime-work/c109705-focused\"; (cd work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver && PYTHONPATH=\"$PWD\" \"$repo_root/.venv-cpu/bin/python\" -m unittest tests/test_bundle.py -v)",
+      "exit_code": 0,
+      "log": "cpu-native-v9-root-bundle-tests.log",
+      "sha256": "356226bdd95c9f347d7ef45c30604d2aa5a2077c8554e5ad34f3e432969847af"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c109705-strict .venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "cpu-native-v9-ready-strict.log",
+      "sha256": "a1801a621406345b87a7b4d82ea1c8e9626c50bb5275088ad79c6466e9ca31a2"
     }
   ],
   "first_gpu_delivery_command": "CARLA_MAP_PACKET=\"$CARLA_MAP_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""

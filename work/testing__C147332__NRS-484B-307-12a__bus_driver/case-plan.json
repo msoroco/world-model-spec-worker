@@ -145,10 +145,33 @@
     }
   ],
   "observations": [
-    "Original full bus footprint fits in a mapped lane",
-    "Individual overhead arrow symbol, facing direction and governed lane are observed on each original frame",
-    "Bus movement measured separately from green-arrow permission",
-    "Highway and official-device source hashes retained"
+    {
+      "name": "bus_full_body_footprint",
+      "mandatory": true,
+      "source": "source-hashed original bus body and motion samples",
+      "covers": [
+        "Original full bus footprint fits in a mapped lane",
+        "Bus movement measured separately from green-arrow permission"
+      ]
+    },
+    {
+      "name": "mapped_lane_signals",
+      "mandatory": true,
+      "source": "source-hashed original overhead heads, governed lane map and reviewed highway/device packet",
+      "covers": [
+        "Individual overhead arrow symbol, facing direction and governed lane are observed on each original frame",
+        "Highway and official-device source hashes retained"
+      ],
+      "limit": "actual reviewed highway/device source must be supplied before non-diagnostic Native capture"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "source": "four original synchronized camera streams and frame identities",
+      "covers": [
+        "Actual bus and device pixel visibility remains for human review"
+      ]
+    }
   ],
   "sources": [
     {

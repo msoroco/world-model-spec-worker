@@ -58,6 +58,19 @@ def measure_official_prohibition(stage):
             'sources': hashes}
 
 
+def measure_exception_circumstances(stage):
+    """Measure observed exception flags without inferring a legal exception."""
+    joined = measure_official_prohibition(stage)
+    history = joined['value']
+    return {'method': 'measure_exception_circumstances',
+            'value': {'case_id': history['case_id'],
+                      'halt_inside_frames': history['halt_inside_frames'],
+                      'exception_source_during_halt_frames':
+                          history['exception_source_during_halt_frames'],
+                      'legal_judgment': None},
+            'sources': joined['sources']}
+
+
 def _native_result(stage, measurement):
     """Build derived review streams from saved rows; leave physical status false."""
     root = Path(stage)
@@ -126,9 +139,11 @@ def _native_result(stage, measurement):
 def analyze(stage, output, *, report_only=False):
     stage = Path(stage)
     measurement = measure_official_prohibition(stage)
+    exception_measurement = measure_exception_circumstances(stage)
     report = {'format': 'worker-analysis-report',
               'case_id': measurement['value']['case_id'],
-              'measurements': {'official_prohibition_history': measurement},
+              'measurements': {'official_prohibition_history': measurement,
+                               'exception_circumstances': exception_measurement},
               'legal_judgment': None,
               'limitations': ['Original source measurements need physical and independent legal review.']}
     if not report_only:

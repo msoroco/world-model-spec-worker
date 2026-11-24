@@ -55,11 +55,13 @@ def main():
         short = entry['case_id'].rsplit('__', 1)[-1]
         output = outputs[short]
         case_dir = folder / 'cases' / short
-        for name in ('compatibility.json', 'compatibility-analysis.log', 'negative-analysis.log'):
-            shutil.copyfile(output / name, case_dir / name)
+        for source, target in (('compatibility.json', 'compatibility.json'),
+                               ('compatibility-analysis.log', 'cpu-compatibility-analysis.log'),
+                               ('negative-analysis.log', 'negative-analysis.log')):
+            shutil.copyfile(output / source, case_dir / target)
         entry['compatibility'] = {'receipt': f'cases/{short}/compatibility.json',
                                   'sha256': sha(case_dir / 'compatibility.json'),
-                                  'log': f'cases/{short}/compatibility-analysis.log'}
+                                  'log': f'cases/{short}/cpu-compatibility-analysis.log'}
         entry['negative'] = {'log': f'cases/{short}/negative-analysis.log'}
         entry['acquisition'] = {
             'actual_halt_activity': {'entrypoint': 'native_capture.py',

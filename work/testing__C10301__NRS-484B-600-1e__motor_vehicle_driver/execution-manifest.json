@@ -2,14 +2,14 @@
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "preparation_status": "offline_only_partial",
+  "preparation_status": "cpu_delivery_prepared_source_gated",
   "cases": [
     {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
       "kind": "delivery",
       "construction": "construction-below.json",
       "construction_sha256": "7d45e805fa5a7b6555a56f73e0eb5a852d8c2030ee6a4c4699dc43f1e7944fc7",
-      "preparation_status": "source_bound_diagnostic_partial",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
       "candidate_risk": {
         "status": "physical",
         "reason": "High-speed 45-second motion requires surveyed route length, clearance and successful speed readback."
@@ -28,31 +28,30 @@
             "native_site: spawn at second independently verified route waypoint after primary first-waypoint spawn failure"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate fallback1 --output .runtime-work/c10301-next/offline-fallback1-below",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate fallback1 --output .runtime-work/c10301-next/rebind-offline-fallback1-below",
             "construction_sha256": "92f60aa38698c53282540b99d403c2cdadd41a30a673379e5eb689197ff2d28d",
             "exit_code": 0,
-            "log": "cpu-offline-fallback1-below.log",
-            "log_sha256": "0508e9c006e1c9197943fca1dc81e09b72a4a77ad53ec37b4c0bf0668b2c4c3c"
+            "log": "cpu-rebind-offline-fallback1-below.log",
+            "log_sha256": "9df870466c65d0554c8a981f1bbe0a560872acc0ddce9f55caa51e3fa15ce0a7"
           },
           "compatibility": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate fallback1 --output .runtime-work/c10301-next/compat-fallback1-below --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
-            "log": "cpu-compat-fallback1-below-analysis.log",
-            "negative_log": "cpu-compat-fallback1-below-negative.log",
-            "receipt": "cpu-compat-fallback1-below-receipt.json",
-            "sha256": "afcc5f82a181e4e75a700c12356ae6e370f38c25c2c8295203e32c80531c987f"
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate fallback1 --output .runtime-work/c10301-next/rebind-compat-fallback1-below --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "log": "cpu-rebind-compat-fallback1-below-analysis.log",
+            "negative_log": "cpu-rebind-compat-fallback1-below-negative.log",
+            "receipt": "cpu-rebind-compat-fallback1-below-receipt.json",
+            "sha256": "4301839a8b69ffb9e1515cffdf6350775bbbbcc0ea140cd3d8dac0b196d36e2a"
           }
         }
       ],
       "offline": {
-        "exit_code": 0,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate primary --output .runtime-work/c10301-next/rebind-offline-primary-below",
         "construction_sha256": "7d45e805fa5a7b6555a56f73e0eb5a852d8c2030ee6a4c4699dc43f1e7944fc7",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --output .runtime-work/c10301-next/offline-below-v16",
-        "log": "cpu-full-offline-below.log",
-        "log_sha256": "982db78269f3631a5bab538154423bc75e9ce7e19084a96c06dac548d6ac8d3b"
+        "exit_code": 0,
+        "log": "cpu-rebind-offline-primary-below.log",
+        "log_sha256": "49af0bb9820f8072f7b81a68271676a440d668d5f05502375e151901c8a87060"
       },
       "missing_proofs": [
-        "comparison audit receipt",
-        "reviewed original route and access-aisle authority"
+        "reviewed original route and access-aisle authority; present-day physical evidence pending"
       ],
       "measurement_contract": "cases/below/measurement-contract.json",
       "measurement_procedure": {
@@ -60,14 +59,14 @@
       },
       "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/cases/below/fixture-recipe.json",
       "compatibility": {
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --output .runtime-work/c10301-next/compat-below-postbind --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
-        "log": "cpu-full-compat-below-analysis.log",
-        "negative_log": "cpu-full-compat-below-negative.log",
-        "receipt": "cpu-full-compat-below-receipt.json",
-        "sha256": "c1b1f0201acf97b59b75b9ba40ccc74d163976430e313b612964a426dbcf2aad"
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate primary --output .runtime-work/c10301-next/rebind-compat-primary-below --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+        "log": "cpu-rebind-compat-primary-below-analysis.log",
+        "negative_log": "cpu-rebind-compat-primary-below-negative.log",
+        "receipt": "cpu-rebind-compat-primary-below-receipt.json",
+        "sha256": "1db0ff333e71f692090ee5e058d03aa69fd31f37a15f96f929a302d3e263f5db"
       },
       "negative": {
-        "log": "cpu-full-compat-below-negative.log"
+        "log": "cpu-rebind-compat-primary-below-negative.log"
       },
       "acquisition": {
         "sampled_speed_mps": {
@@ -93,7 +92,7 @@
       },
       "physical_preparation": {
         "receipt": "physical-preparation-below.json",
-        "sha256": "6f48ac24697498a17f7ea27346173252049dca8cc4b40ac8fdd3dcbc99daa271"
+        "sha256": "8c32116a0aab4c0bf9e5e4ca3c93b7c76b4fe7aa4146564959664f9dcc1e5f74"
       },
       "delivery_acceptance": {
         "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
@@ -126,6 +125,15 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-full-saved-below.log",
+        "test_log_sha256": "027514cf31551ca7bcdd518c93aee42e8e2cb42404977da6023c936adc4a9e0f",
+        "proof_scope": "sealed synthetic diagnostic source only; physical Native capture pending"
       }
     },
     {
@@ -133,7 +141,7 @@
       "kind": "delivery",
       "construction": "construction-equal.json",
       "construction_sha256": "a9da520573d868129326f593477b86c67779984fe4e65638a2d5cc28969376aa",
-      "preparation_status": "source_bound_diagnostic_partial",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
       "candidate_risk": {
         "status": "physical",
         "reason": "High-speed 45-second motion requires surveyed route length, clearance and successful speed readback."
@@ -152,31 +160,30 @@
             "native_site: spawn at second independently verified route waypoint after primary first-waypoint spawn failure"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate fallback1 --output .runtime-work/c10301-next/offline-fallback1-equal",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate fallback1 --output .runtime-work/c10301-next/rebind-offline-fallback1-equal",
             "construction_sha256": "44c33e1990cdc16c01f97bb1858b941a371e24cd9dbc58022068a6fafe1838f0",
             "exit_code": 0,
-            "log": "cpu-offline-fallback1-equal.log",
-            "log_sha256": "56290d4e681032162ab21fafc4131375ff46c20adb2a3fd802117d1a5d54ce68"
+            "log": "cpu-rebind-offline-fallback1-equal.log",
+            "log_sha256": "c95b08b46ed47cd7f05562073331f09b24f718775d35fee32619fee2a26cb451"
           },
           "compatibility": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate fallback1 --output .runtime-work/c10301-next/compat-fallback1-equal --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
-            "log": "cpu-compat-fallback1-equal-analysis.log",
-            "negative_log": "cpu-compat-fallback1-equal-negative.log",
-            "receipt": "cpu-compat-fallback1-equal-receipt.json",
-            "sha256": "901fd143ff6946c523f1ffc353dadfdddb10446ec12f42081ff9ececd1dff253"
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate fallback1 --output .runtime-work/c10301-next/rebind-compat-fallback1-equal --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "log": "cpu-rebind-compat-fallback1-equal-analysis.log",
+            "negative_log": "cpu-rebind-compat-fallback1-equal-negative.log",
+            "receipt": "cpu-rebind-compat-fallback1-equal-receipt.json",
+            "sha256": "4bac9533597f065e07bde8b58e1f7cc936fca80b201949970b98a58885d98e12"
           }
         }
       ],
       "offline": {
-        "exit_code": 0,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate primary --output .runtime-work/c10301-next/rebind-offline-primary-equal",
         "construction_sha256": "a9da520573d868129326f593477b86c67779984fe4e65638a2d5cc28969376aa",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --output .runtime-work/c10301-next/offline-equal-v16",
-        "log": "cpu-full-offline-equal.log",
-        "log_sha256": "c95b08b46ed47cd7f05562073331f09b24f718775d35fee32619fee2a26cb451"
+        "exit_code": 0,
+        "log": "cpu-rebind-offline-primary-equal.log",
+        "log_sha256": "c36b4cd653a210c24199b1f5c63f41224cc26f8941985fce2e0cdde966dc562e"
       },
       "missing_proofs": [
-        "comparison audit receipt",
-        "reviewed original route and access-aisle authority"
+        "reviewed original route and access-aisle authority; present-day physical evidence pending"
       ],
       "measurement_contract": "cases/equal/measurement-contract.json",
       "measurement_procedure": {
@@ -184,14 +191,14 @@
       },
       "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/cases/equal/fixture-recipe.json",
       "compatibility": {
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --output .runtime-work/c10301-next/compat-equal-postbind --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
-        "log": "cpu-full-compat-equal-analysis.log",
-        "negative_log": "cpu-full-compat-equal-negative.log",
-        "receipt": "cpu-full-compat-equal-receipt.json",
-        "sha256": "b6c8fe2d1eae457ff4d99780d9f1ec3a73d92fb874cd174362b2cf969c2e9e13"
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate primary --output .runtime-work/c10301-next/rebind-compat-primary-equal --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+        "log": "cpu-rebind-compat-primary-equal-analysis.log",
+        "negative_log": "cpu-rebind-compat-primary-equal-negative.log",
+        "receipt": "cpu-rebind-compat-primary-equal-receipt.json",
+        "sha256": "e6e047d9e972737d931f7125bfd3cd27e3af481ab71efa3e6d4a742c61d3c145"
       },
       "negative": {
-        "log": "cpu-full-compat-equal-negative.log"
+        "log": "cpu-rebind-compat-primary-equal-negative.log"
       },
       "acquisition": {
         "sampled_speed_mps": {
@@ -217,7 +224,7 @@
       },
       "physical_preparation": {
         "receipt": "physical-preparation-equal.json",
-        "sha256": "c53d0086e6dae48d35f7f0faaa349329efd5e81a5ff81e628d2c12ab4d495de1"
+        "sha256": "639e750b1075b85b6045048b3a2bb68e98db7e677839034a396bef8789f22752"
       },
       "delivery_acceptance": {
         "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
@@ -250,6 +257,15 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-full-saved-equal.log",
+        "test_log_sha256": "a5fc343381b9315e17dfe687e15ea207aa7653c9a2b38a310cce08dd5917e962",
+        "proof_scope": "sealed synthetic diagnostic source only; physical Native capture pending"
       }
     },
     {
@@ -257,7 +273,7 @@
       "kind": "delivery",
       "construction": "construction-above.json",
       "construction_sha256": "0d44356daaf0569820644b7105fee7675bf4aba0d5df2d3a47766348c2c0e23e",
-      "preparation_status": "source_bound_diagnostic_partial",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
       "candidate_risk": {
         "status": "physical",
         "reason": "High-speed 45-second motion requires surveyed route length, clearance and successful speed readback."
@@ -276,31 +292,30 @@
             "native_site: spawn at second independently verified route waypoint after primary first-waypoint spawn failure"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate fallback1 --output .runtime-work/c10301-next/offline-fallback1-above",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate fallback1 --output .runtime-work/c10301-next/rebind-offline-fallback1-above",
             "construction_sha256": "8486b705f97e383b4d689dec1acc53e98d3f23040b4328fa589eea94395b4a24",
             "exit_code": 0,
-            "log": "cpu-offline-fallback1-above.log",
-            "log_sha256": "e2ba8d9ff7423445285b504622ccc13d0dac72e250de8ad5f171059cba6ed87b"
+            "log": "cpu-rebind-offline-fallback1-above.log",
+            "log_sha256": "1c80e65c7cca0e1b6fb5e7b762c123ca27c716d5d3b5413e2d209227ae31edfd"
           },
           "compatibility": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate fallback1 --output .runtime-work/c10301-next/compat-fallback1-above --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
-            "log": "cpu-compat-fallback1-above-analysis.log",
-            "negative_log": "cpu-compat-fallback1-above-negative.log",
-            "receipt": "cpu-compat-fallback1-above-receipt.json",
-            "sha256": "f75cffb80a4b1d8e9463c9fa7ebb84489f61719b3451ee4a5cdd5644a9f07c00"
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate fallback1 --output .runtime-work/c10301-next/rebind-compat-fallback1-above --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "log": "cpu-rebind-compat-fallback1-above-analysis.log",
+            "negative_log": "cpu-rebind-compat-fallback1-above-negative.log",
+            "receipt": "cpu-rebind-compat-fallback1-above-receipt.json",
+            "sha256": "8953438a51da61f66de17674eee3d9067f32681e344695366a1029f13338e005"
           }
         }
       ],
       "offline": {
-        "exit_code": 0,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate primary --output .runtime-work/c10301-next/rebind-offline-primary-above",
         "construction_sha256": "0d44356daaf0569820644b7105fee7675bf4aba0d5df2d3a47766348c2c0e23e",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --output .runtime-work/c10301-next/offline-above-v16",
-        "log": "cpu-full-offline-above.log",
-        "log_sha256": "b6a8206d770897b6ad192ca5ca94d9ea0f74d28f847c65c9b55c460166049385"
+        "exit_code": 0,
+        "log": "cpu-rebind-offline-primary-above.log",
+        "log_sha256": "1c80e65c7cca0e1b6fb5e7b762c123ca27c716d5d3b5413e2d209227ae31edfd"
       },
       "missing_proofs": [
-        "comparison audit receipt",
-        "reviewed original route and access-aisle authority"
+        "reviewed original route and access-aisle authority; present-day physical evidence pending"
       ],
       "measurement_contract": "cases/above/measurement-contract.json",
       "measurement_procedure": {
@@ -308,14 +323,14 @@
       },
       "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/cases/above/fixture-recipe.json",
       "compatibility": {
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --output .runtime-work/c10301-next/compat-above-postbind --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
-        "log": "cpu-full-compat-above-analysis.log",
-        "negative_log": "cpu-full-compat-above-negative.log",
-        "receipt": "cpu-full-compat-above-receipt.json",
-        "sha256": "77bc4a7fad405d1c0265daca486764e0864bad9932f50df928e48aa0f192c105"
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate primary --output .runtime-work/c10301-next/rebind-compat-primary-above --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+        "log": "cpu-rebind-compat-primary-above-analysis.log",
+        "negative_log": "cpu-rebind-compat-primary-above-negative.log",
+        "receipt": "cpu-rebind-compat-primary-above-receipt.json",
+        "sha256": "97e365c8d086c638b34422119678b25184d5648baaeeffb57418d383f43b89e0"
       },
       "negative": {
-        "log": "cpu-full-compat-above-negative.log"
+        "log": "cpu-rebind-compat-primary-above-negative.log"
       },
       "acquisition": {
         "sampled_speed_mps": {
@@ -341,7 +356,7 @@
       },
       "physical_preparation": {
         "receipt": "physical-preparation-above.json",
-        "sha256": "4b836f3365952ad814a728c027494d53a0ead467535a6450fe08c2f7ad6ff661"
+        "sha256": "eb1fb0544565b72722476361cf31e1e5596131145f5aa49360e5533146795169"
       },
       "delivery_acceptance": {
         "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above",
@@ -374,6 +389,15 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-full-saved-above.log",
+        "test_log_sha256": "13af1bf08ff5034e206121053723e44f8d526d3b520eb08a8f607b5f0488a8ee",
+        "proof_scope": "sealed synthetic diagnostic source only; physical Native capture pending"
       }
     }
   ]
