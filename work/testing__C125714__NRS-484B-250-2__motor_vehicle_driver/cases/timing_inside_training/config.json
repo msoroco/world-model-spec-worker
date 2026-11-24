@@ -1,0 +1,93 @@
+{
+  "cell_id": "C125714",
+  "law_id": "NRS-484B-250-2",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+  "supported_case_ids": [
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release"
+  ],
+  "rate_hz": 20,
+  "duration_s": 10,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "top down across complete median-opening intersection"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "ego west approach facing crossing and other vehicle"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "other south approach facing crossing and ego vehicle"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "ego driver reference facing crossing"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+    "requested_entry_offset_s": -0.02500000037252903,
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_original_footprint",
+          "unit": "m",
+          "method": "Native actor world bounding box each original 20 Hz tick",
+          "sampling_rate_hz": 20,
+          "time_window": "whole crossing approach and entry",
+          "reference_frame": "OpenDRIVE world XY",
+          "uncertainty": "actual map and crossing authority require source review"
+        },
+        {
+          "name": "other_original_footprint",
+          "unit": "m",
+          "method": "Native actor world bounding box each original 20 Hz tick",
+          "sampling_rate_hz": 20,
+          "time_window": "whole crossing approach and entry",
+          "reference_frame": "OpenDRIVE world XY",
+          "uncertainty": "actual map and crossing authority require source review"
+        },
+        {
+          "name": "intersection_entry_time_difference_s",
+          "unit": "s",
+          "method": "first original footprint crossing upper timestamps; retain brackets",
+          "sampling_rate_hz": 20,
+          "time_window": "through both entries",
+          "reference_frame": "original Native frame clock",
+          "uncertainty": "approximately same time is legal judgment"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_crossing",
+          "unit": "source-hashed OpenDRIVE and authority",
+          "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+        }
+      ],
+      "limitations": [
+        "Engineering candidate map does not establish legal highway/intersection status.",
+        "Requested release schedule does not prove actual entry timing or yielding."
+      ]
+    }
+  }
+}

@@ -11,24 +11,91 @@
       "judgment_refs": [
         {
           "phrase": "at approximately the same time",
-          "note": "Training coverage targets only; legal judgment unresolved."
+          "note": "No legal numeric threshold is inferred from training range."
         }
       ],
       "missing_inputs": [
         "source-reviewed physical C125714 map and original captures"
-      ]
+      ],
+      "rationale": "Original footprint entry timing probes around frozen training range; source review and legal judgment remain unresolved."
     }
   ],
   "cases": [
     {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "baseline",
+      "rationale": "Shared neutral crossing/timing reference; no legal status or physical acceptance.",
+      "variable_assignments": {
+        "requested_entry_offset_s": {
+          "kind": "controller",
+          "value": -0.02500000037252903
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "timed_release"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "right-of-way yielding behavior and subsection-4 applicability"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "other_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "intersection_entry_time_difference_s",
+            "unit": "s",
+            "method": "first original footprint crossing upper timestamps; retain brackets",
+            "sampling_rate_hz": 20,
+            "time_window": "through both entries",
+            "reference_frame": "original Native frame clock",
+            "uncertainty": "approximately same time is legal judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_crossing",
+            "unit": "source-hashed OpenDRIVE and authority",
+            "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+          }
+        ],
+        "limitations": [
+          "Engineering candidate map does not establish legal highway/intersection status.",
+          "Requested release schedule does not prove actual entry timing or yielding."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "judgment_range_coverage_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Sample the frozen judgment training range with measured original footprint entry, retaining unresolved legal timing judgment.",
       "variable_assignments": {
         "requested_entry_offset_s": {
           "kind": "controller",
           "value": -2.860000042617321
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "timed_release"
         }
       },
       "unresolved_judgment_calls": [
@@ -76,17 +143,30 @@
           "Engineering candidate map does not establish legal highway/intersection status.",
           "Requested release schedule does not prove actual entry timing or yielding."
         ]
+      },
+      "paired_probe_id": "median_opening_entry_timing_training_range",
+      "deliberate_differences": [
+        "requested_entry_offset_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_entry_offset_s",
+        "comparison_or_standard": "frozen training range; legal approximately-same-time unresolved",
+        "target_value_or_branch": -2.860000042617321
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "judgment_range_coverage_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Sample the frozen judgment training range with measured original footprint entry, retaining unresolved legal timing judgment.",
       "variable_assignments": {
         "requested_entry_offset_s": {
           "kind": "controller",
           "value": -0.02500000037252903
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "timed_release"
         }
       },
       "unresolved_judgment_calls": [
@@ -134,17 +214,30 @@
           "Engineering candidate map does not establish legal highway/intersection status.",
           "Requested release schedule does not prove actual entry timing or yielding."
         ]
+      },
+      "paired_probe_id": "median_opening_entry_timing_training_range",
+      "deliberate_differences": [
+        "requested_entry_offset_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_entry_offset_s",
+        "comparison_or_standard": "frozen training range; legal approximately-same-time unresolved",
+        "target_value_or_branch": -0.02500000037252903
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "judgment_range_coverage_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Sample the frozen judgment training range with measured original footprint entry, retaining unresolved legal timing judgment.",
       "variable_assignments": {
         "requested_entry_offset_s": {
           "kind": "controller",
           "value": 2.810000041872263
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "timed_release"
         }
       },
       "unresolved_judgment_calls": [
@@ -192,12 +285,21 @@
           "Engineering candidate map does not establish legal highway/intersection status.",
           "Requested release schedule does not prove actual entry timing or yielding."
         ]
+      },
+      "paired_probe_id": "median_opening_entry_timing_training_range",
+      "deliberate_differences": [
+        "requested_entry_offset_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_entry_offset_s",
+        "comparison_or_standard": "frozen training range; legal approximately-same-time unresolved",
+        "target_value_or_branch": 2.810000041872263
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "controlled_yielding_policy_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Compare original ego brake and crossing entry while holding the reviewed intersection, other vehicle and timing target fixed; do not infer legal yielding.",
       "variable_assignments": {
         "requested_entry_offset_s": {
@@ -252,14 +354,24 @@
         ],
         "limitations": [
           "Engineering candidate map does not establish legal highway/intersection status.",
-          "Requested release schedule does not prove actual entry timing or yielding."
+          "Requested release schedule does not prove actual entry timing or yielding.",
+          "Ego controller policy is an engineering intervention; original brake and entry timing are measured separately."
         ]
+      },
+      "paired_probe_id": "ego_control_policy",
+      "deliberate_differences": [
+        "ego_control_policy"
+      ],
+      "probe": {
+        "primary_variable": "ego_control_policy",
+        "comparison_or_standard": "same other actor release with alternate controller policy",
+        "target_value_or_branch": "wait_for_other_clear"
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release",
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "controlled_yielding_policy_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Compare original ego brake and crossing entry while holding the reviewed intersection, other vehicle and timing target fixed; do not infer legal yielding.",
       "variable_assignments": {
         "requested_entry_offset_s": {
@@ -314,8 +426,18 @@
         ],
         "limitations": [
           "Engineering candidate map does not establish legal highway/intersection status.",
-          "Requested release schedule does not prove actual entry timing or yielding."
+          "Requested release schedule does not prove actual entry timing or yielding.",
+          "Ego controller policy is an engineering intervention; original brake and entry timing are measured separately."
         ]
+      },
+      "paired_probe_id": "ego_control_policy",
+      "deliberate_differences": [
+        "ego_control_policy"
+      ],
+      "probe": {
+        "primary_variable": "ego_control_policy",
+        "comparison_or_standard": "same other actor release with alternate controller policy",
+        "target_value_or_branch": "advance_at_release"
       }
     }
   ]

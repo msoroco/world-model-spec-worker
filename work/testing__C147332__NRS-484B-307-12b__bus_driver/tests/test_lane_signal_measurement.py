@@ -218,6 +218,10 @@ class RedXLaneMeasurement(unittest.TestCase):
                 "source_sha256": hashlib.sha256((root / path).read_bytes()).hexdigest(),
                 "reviewer": "fixture", "source_citation": "fixture citation"}
             packet = {"review_status": "reviewed",
+                      "site": {"route": "fixture route", "travel_direction": "fixture direction",
+                               "milepost_or_cross_streets": "fixture marker",
+                               "gantry_or_device_id": "fixture gantry", "bus_approach": "fixture approach",
+                               "governed_lane": "red_lane"},
                       "highway": {**descriptor("highway.txt"), "status": "public_highway_reviewed"},
                       "official_device": {**descriptor("device.txt"),
                          "device_kind": "official_overhead_lane_signal", "symbol": "red_x",
@@ -228,6 +232,12 @@ class RedXLaneMeasurement(unittest.TestCase):
             packet_path = root / "packet.json"
             packet_path.write_text(json.dumps(packet))
             self.assertEqual(validate(packet_path, source_root=root)["governed_lane_id"], "red_lane")
+            packet["site"]["gantry_or_device_id"] = ""
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "reviewed exact highway site"):
+                validate(packet_path, source_root=root)
+            packet["site"]["gantry_or_device_id"] = "fixture gantry"
+            packet_path.write_text(json.dumps(packet))
             linked_packet = root / "linked-packet.json"
             linked_packet.symlink_to(packet_path)
             with self.assertRaisesRegex(ValueError, "reviewed packet escapes"):
@@ -266,6 +276,10 @@ class RedXLaneMeasurement(unittest.TestCase):
             descriptor = lambda name: {"source_path": name, "source_sha256": sha(name),
                                         "reviewer": "fixture", "source_citation": "fixture only"}
             packet = {"review_status": "reviewed",
+                      "site": {"route": "fixture route", "travel_direction": "fixture direction",
+                               "milepost_or_cross_streets": "fixture marker",
+                               "gantry_or_device_id": "fixture gantry", "bus_approach": "fixture approach",
+                               "governed_lane": "red_lane"},
                       "highway": {**descriptor("highway.txt"), "status": "public_highway_reviewed"},
                       "official_device": {**descriptor("device.txt"),
                           "device_kind": "official_overhead_lane_signal", "symbol": "red_x",

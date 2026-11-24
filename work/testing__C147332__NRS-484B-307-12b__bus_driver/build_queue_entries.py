@@ -25,7 +25,8 @@ def build() -> dict:
     rows = []
     for case in sorted(expected):
         entry = entries[case]
-        execute = (LOCAL + " execute-delivery" + BASE + ' --run "$RUN" --case ' + case +
+        execute = ('C147332_REVIEWED_SOURCE_PACKET="$REVIEWED_SOURCE_PACKET" ' +
+                   LOCAL + " execute-delivery" + BASE + ' --run "$RUN" --case ' + case +
                    ' --job "$JOB_ID" --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"')
         rows.append({
             "assignment_id": ASSIGNMENT, "case_id": case,

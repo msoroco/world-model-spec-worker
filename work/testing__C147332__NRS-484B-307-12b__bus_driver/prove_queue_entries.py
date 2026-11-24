@@ -22,6 +22,9 @@ def validate(packet: dict) -> None:
         raise ValueError("exact comparison queue coverage changed")
     for row in cases:
         case = row["case_id"]
+        source_prefix = 'C147332_REVIEWED_SOURCE_PACKET="$REVIEWED_SOURCE_PACKET" '
+        if not row.get("execute_command", "").startswith(source_prefix) or not row.get("capture_command", "").startswith(source_prefix):
+            raise ValueError("reviewed source packet missing from Native dispatch")
         for key in ("capture_command", "postprocessing_command", "owner_release_command",
                     "additional_source_audit_command", "prepare_command", "execute_command",
                     "accept_command"):
@@ -73,6 +76,16 @@ def main() -> None:
             raise
     else:
         raise AssertionError("missing original camera profile was accepted")
+    missing_source = copy.deepcopy(packet)
+    for key in ("execute_command", "capture_command"):
+        missing_source["cases"][0][key] = missing_source["cases"][0][key].split(" ", 1)[1]
+    try:
+        validate(missing_source)
+    except ValueError as error:
+        if "reviewed source packet missing" not in str(error):
+            raise
+    else:
+        raise AssertionError("missing reviewed packet dispatch was accepted")
     print("four exact cases and two comparison commands pass; missing rows rejected")
 
 

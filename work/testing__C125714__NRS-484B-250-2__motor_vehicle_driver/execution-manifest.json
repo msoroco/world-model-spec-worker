@@ -1,18 +1,46 @@
 {
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "cases": [
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
       "kind": "delivery",
       "construction": "cases/timing_inside_training/construction.json",
-      "construction_sha256": "12b52b01e0764f3f817fc8ac64f5457262f15e25e5efb0bef37c311f0888804a",
+      "construction_sha256": "c25f4da95afdd808beede44e2d36daf81c0389143aab1027a54a4bd774348df3",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+        "reason": "Two-vehicle median-opening spawn and crossing can fail at the first route waypoint; alternate nearby approach waypoint retains the exact case and observation channels."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/timing_inside_training/fallback1-construction.json",
+          "construction_sha256": "4e5e2669043d11af477319b146699217ad90a62a09d7e128044802f35b9b7076",
+          "trigger": {
+            "source": "Native owner capture log and route waypoint readback",
+            "metric": "first reviewed ego route waypoint spawn result",
+            "failure_condition": "primary ego first-waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "ego first route waypoint x from -25 m to -23 m on the same authored approach road"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-fallback1-timing_inside_training",
+            "construction_sha256": "4e5e2669043d11af477319b146699217ad90a62a09d7e128044802f35b9b7076",
+            "exit_code": 0,
+            "log": "cases/timing_inside_training/fallback1-offline.log",
+            "log_sha256": "96070dbf2434365c53e31f130bfe209dea71cf8d76ea7a07737b8bcf2e061766"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-fallback1-timing_inside_training --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "receipt": "cases/timing_inside_training/fallback1-compatibility.json",
+            "sha256": "c1fb0718e65c66fad31671810ff2c5a8c2324e33bb11a9d9cd995f18a44df00f",
+            "log": "cases/timing_inside_training/fallback1-analysis.log",
+            "negative_log": "cases/timing_inside_training/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/timing_inside_training/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -42,16 +70,16 @@
         }
       },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --output .runtime-work/c125714-2502-timing_inside_training-offline-20261123-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-primary-timing_inside_training",
+        "construction_sha256": "c25f4da95afdd808beede44e2d36daf81c0389143aab1027a54a4bd774348df3",
         "exit_code": 0,
-        "construction_sha256": "12b52b01e0764f3f817fc8ac64f5457262f15e25e5efb0bef37c311f0888804a",
         "log": "cases/timing_inside_training/primary-offline.log",
-        "log_sha256": "d793006d2c23bb4ecfbd04e6c9af6a8e6b6687b4296849bf0c7c5f1a05a47e69"
+        "log_sha256": "d9f70d8e37e5f5c9cf6f0c517e300153ce0cd916a158e70583db55836e9b2fce"
       },
       "compatibility": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --output .runtime-work/c125714-2502-timing_inside_training-compatibility-20261123-j --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-primary-timing_inside_training --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
         "receipt": "cases/timing_inside_training/primary-compatibility.json",
-        "sha256": "558e32a5a070f4ac5b83256f921a9a5403f088b6a418fcd55400fabc4c32e687",
+        "sha256": "4175734855811d8e4f61b77a5c0ba2b3b49fe8ebb6559bdfba9dfd8dfa8c2072",
         "log": "cases/timing_inside_training/primary-compatibility-analysis.log",
         "negative_log": "cases/timing_inside_training/primary-negative-analysis.log"
       },
@@ -73,18 +101,72 @@
       "physical_preparation": {
         "receipt": "cases/timing_inside_training/physical-preparation.json",
         "sha256": "1c3a5698dfc291750fd8f80f0a64c7e59a7ee1373c8b15b6274cbd1ffbe75f45"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete original participant/trace/frame count missing",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --scratch .runtime-work/c125714-next",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --scratch .runtime-work/c125714-next --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "d31a8f5314328ffd8b0b57a9d9f8aa0318a8ba66f3d20502ab447b64314d2f8f",
+        "test_log": "cases/timing_inside_training/delivery-positive.log",
+        "test_log_sha256": "39f0d09f24472b5894bfaa12a7fdf2dd56c818ee20558748453ced04b0da4fc3",
+        "negative_log": "cases/timing_inside_training/delivery-negative.log",
+        "negative_log_sha256": "9d785ad2622511145bb1e751e022c9b36d43be37d7c91a658dc559ea5b7c9cab",
+        "scope": "Source-bound synthetic diagnostic; actual Native and legal acceptance remain future checks."
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
       "kind": "delivery",
       "construction": "cases/timing_below_training/construction.json",
-      "construction_sha256": "120ea303ca3edb8712cc25c76b4af83d5c5d6af1a4f628e082bebab8e3ab07ff",
+      "construction_sha256": "dec77884f65ab38a327803faba0a5191b2e842fea94236931df2155b2d3cd3d5",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+        "reason": "Two-vehicle median-opening spawn and crossing can fail at the first route waypoint; alternate nearby approach waypoint retains the exact case and observation channels."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/timing_below_training/fallback1-construction.json",
+          "construction_sha256": "3e3d7f4b676ded2d2f8aa3c065f58bb4b90d41512d96b9eca057aafbb18c6e35",
+          "trigger": {
+            "source": "Native owner capture log and route waypoint readback",
+            "metric": "first reviewed ego route waypoint spawn result",
+            "failure_condition": "primary ego first-waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "ego first route waypoint x from -25 m to -23 m on the same authored approach road"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-fallback1-timing_below_training",
+            "construction_sha256": "3e3d7f4b676ded2d2f8aa3c065f58bb4b90d41512d96b9eca057aafbb18c6e35",
+            "exit_code": 0,
+            "log": "cases/timing_below_training/fallback1-offline.log",
+            "log_sha256": "c04a873f0a8505a2dd344055cc1670e0964abb4c0b4c4e0c380eb29d27466c1a"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-fallback1-timing_below_training --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "receipt": "cases/timing_below_training/fallback1-compatibility.json",
+            "sha256": "8de3ac3b849dfbd43b32788dd79118fa96226aaeb31f879a661d05a47ebc6bb3",
+            "log": "cases/timing_below_training/fallback1-analysis.log",
+            "negative_log": "cases/timing_below_training/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/timing_below_training/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -114,16 +196,16 @@
         }
       },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --output .runtime-work/c125714-2502-timing_below_training-offline-20261123-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-primary-timing_below_training",
+        "construction_sha256": "dec77884f65ab38a327803faba0a5191b2e842fea94236931df2155b2d3cd3d5",
         "exit_code": 0,
-        "construction_sha256": "120ea303ca3edb8712cc25c76b4af83d5c5d6af1a4f628e082bebab8e3ab07ff",
         "log": "cases/timing_below_training/primary-offline.log",
-        "log_sha256": "994cb8e195ca06d15c14e0436b0f2963cbfa4d6b4382be9f7f36b60ba75b8424"
+        "log_sha256": "9464f8e86df60972afe65e79e326538089c887e79d4396047b0853c57002bc3f"
       },
       "compatibility": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --output .runtime-work/c125714-2502-timing_below_training-compatibility-20261123-j --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-primary-timing_below_training --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
         "receipt": "cases/timing_below_training/primary-compatibility.json",
-        "sha256": "12100bab66d76c74fa7ba1e56da721cbd5440b94d0e28f2007a113c9f04727d1",
+        "sha256": "87efe28aeec8ed1f2755b3f7a2d58312307cb07dd627675896da90f2b6ee186c",
         "log": "cases/timing_below_training/primary-compatibility-analysis.log",
         "negative_log": "cases/timing_below_training/primary-negative-analysis.log"
       },
@@ -145,18 +227,72 @@
       "physical_preparation": {
         "receipt": "cases/timing_below_training/physical-preparation.json",
         "sha256": "4db79f93636d55d2d59d4d7ed053dacfadd91bd5788fb5d2df8e351799cc463f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete original participant/trace/frame count missing",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --scratch .runtime-work/c125714-next",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --scratch .runtime-work/c125714-next --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "d31a8f5314328ffd8b0b57a9d9f8aa0318a8ba66f3d20502ab447b64314d2f8f",
+        "test_log": "cases/timing_below_training/delivery-positive.log",
+        "test_log_sha256": "d802d7817738ebd1aa27f0b7c04279452dbbfe304d0979c06bc960c9ea1ecd3d",
+        "negative_log": "cases/timing_below_training/delivery-negative.log",
+        "negative_log_sha256": "9d785ad2622511145bb1e751e022c9b36d43be37d7c91a658dc559ea5b7c9cab",
+        "scope": "Source-bound synthetic diagnostic; actual Native and legal acceptance remain future checks."
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
       "kind": "delivery",
       "construction": "cases/timing_above_training/construction.json",
-      "construction_sha256": "2d77211a05f155d6afb1569daa48253bde818236889b19822f6cb2bd1982230f",
+      "construction_sha256": "7cfc4fe387c9f9b618d8f1ad138731ddc115fafb7db03ea1a50e097bf9667ce1",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+        "reason": "Two-vehicle median-opening spawn and crossing can fail at the first route waypoint; alternate nearby approach waypoint retains the exact case and observation channels."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/timing_above_training/fallback1-construction.json",
+          "construction_sha256": "afdd05b641c89eaa64946c4a40f1018b2729cea33562670c4424805c39b71409",
+          "trigger": {
+            "source": "Native owner capture log and route waypoint readback",
+            "metric": "first reviewed ego route waypoint spawn result",
+            "failure_condition": "primary ego first-waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "ego first route waypoint x from -25 m to -23 m on the same authored approach road"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-fallback1-timing_above_training",
+            "construction_sha256": "afdd05b641c89eaa64946c4a40f1018b2729cea33562670c4424805c39b71409",
+            "exit_code": 0,
+            "log": "cases/timing_above_training/fallback1-offline.log",
+            "log_sha256": "dae060ed2a8d80b471badb000fae39d12e7b3ed2c39f7a11c963249359f374f8"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-fallback1-timing_above_training --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "receipt": "cases/timing_above_training/fallback1-compatibility.json",
+            "sha256": "301c49e2728e27444d6e2a496d0cc4cece4024d0cec1f148d980cfc613e560cf",
+            "log": "cases/timing_above_training/fallback1-analysis.log",
+            "negative_log": "cases/timing_above_training/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/timing_above_training/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -186,16 +322,16 @@
         }
       },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --output .runtime-work/c125714-2502-timing_above_training-offline-20261123-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-primary-timing_above_training",
+        "construction_sha256": "7cfc4fe387c9f9b618d8f1ad138731ddc115fafb7db03ea1a50e097bf9667ce1",
         "exit_code": 0,
-        "construction_sha256": "2d77211a05f155d6afb1569daa48253bde818236889b19822f6cb2bd1982230f",
         "log": "cases/timing_above_training/primary-offline.log",
-        "log_sha256": "ca261d250aa3ab21a662afdb328a41a9f163bc9befaf44afb41ba2748fb6fe97"
+        "log_sha256": "e2ba82e605bdea86ff72f40621dff6c397c1fee47ae308780a4ebfc10ca8fd07"
       },
       "compatibility": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --output .runtime-work/c125714-2502-timing_above_training-compatibility-20261123-j --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-primary-timing_above_training --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
         "receipt": "cases/timing_above_training/primary-compatibility.json",
-        "sha256": "154d2600c238eceaff907de7fc3e9f05e7591a91704e3a32aee100f54f8038b4",
+        "sha256": "e2d7b14d20beb2d8e1d40ce06acd4515dc1e53462b7bb1a7c34a39e1654551be",
         "log": "cases/timing_above_training/primary-compatibility-analysis.log",
         "negative_log": "cases/timing_above_training/primary-negative-analysis.log"
       },
@@ -217,18 +353,72 @@
       "physical_preparation": {
         "receipt": "cases/timing_above_training/physical-preparation.json",
         "sha256": "9a88243ac75db9b91a345a5d87eb28be92ac3948736173327597b7d7fef49002"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete original participant/trace/frame count missing",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --scratch .runtime-work/c125714-next",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --scratch .runtime-work/c125714-next --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "d31a8f5314328ffd8b0b57a9d9f8aa0318a8ba66f3d20502ab447b64314d2f8f",
+        "test_log": "cases/timing_above_training/delivery-positive.log",
+        "test_log_sha256": "03c483bd935fc0ede091a35885e2b73d5657b8ac52ae01664dc46d3a37447339",
+        "negative_log": "cases/timing_above_training/delivery-negative.log",
+        "negative_log_sha256": "9d785ad2622511145bb1e751e022c9b36d43be37d7c91a658dc559ea5b7c9cab",
+        "scope": "Source-bound synthetic diagnostic; actual Native and legal acceptance remain future checks."
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
       "kind": "delivery",
       "construction": "cases/yield_wait_for_other_clear/construction.json",
-      "construction_sha256": "9a024347c3539517fd13945ade3839072ad60a5e634666799cbd795c01201673",
+      "construction_sha256": "37bbaab9d8a0cb588db5a58c9435cc9e527d5ff6b0a3e4f5f8d28d20ad029198",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+        "reason": "Two-vehicle median-opening spawn and crossing can fail at the first route waypoint; alternate nearby approach waypoint retains the exact case and observation channels."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_wait_for_other_clear/fallback1-construction.json",
+          "construction_sha256": "6a6767ca245846daa8854ec486fbd0bc29be592ccc5336c0d58b01c32696aa5f",
+          "trigger": {
+            "source": "Native owner capture log and route waypoint readback",
+            "metric": "first reviewed ego route waypoint spawn result",
+            "failure_condition": "primary ego first-waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "ego first route waypoint x from -25 m to -23 m on the same authored approach road"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-fallback1-yield_wait_for_other_clear",
+            "construction_sha256": "6a6767ca245846daa8854ec486fbd0bc29be592ccc5336c0d58b01c32696aa5f",
+            "exit_code": 0,
+            "log": "cases/yield_wait_for_other_clear/fallback1-offline.log",
+            "log_sha256": "2d5e2cee29cc69a8928062d0d3d56253c580e66c4b52f616688dc50027156491"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-fallback1-yield_wait_for_other_clear --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "receipt": "cases/yield_wait_for_other_clear/fallback1-compatibility.json",
+            "sha256": "8b8eb1dcfc4e8eb2b892b2f33f9ed57eb9156137abc8b34db02bdcdd46e29b65",
+            "log": "cases/yield_wait_for_other_clear/fallback1-analysis.log",
+            "negative_log": "cases/yield_wait_for_other_clear/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/yield_wait_for_other_clear/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -263,16 +453,16 @@
         }
       },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --output .runtime-work/c125714-yield-offline-20261123-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-primary-yield_wait_for_other_clear",
+        "construction_sha256": "37bbaab9d8a0cb588db5a58c9435cc9e527d5ff6b0a3e4f5f8d28d20ad029198",
         "exit_code": 0,
-        "construction_sha256": "9a024347c3539517fd13945ade3839072ad60a5e634666799cbd795c01201673",
         "log": "cases/yield_wait_for_other_clear/primary-offline.log",
-        "log_sha256": "cab7fda398e3aeb8f711812e4712820ddb45030084a4bd9c142b287df04c22df"
+        "log_sha256": "4c4c22ab01265ea1924bb3fc6f50f4d395b74b739a8824223296fd8faa78ca7c"
       },
       "compatibility": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --output .runtime-work/c125714-yield-compat-20261123-d --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-primary-yield_wait_for_other_clear --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
         "receipt": "cases/yield_wait_for_other_clear/primary-compatibility.json",
-        "sha256": "5e368d15666689d930a5ce25413af6182f7604a7c304550e82aa4375c6e7cbf6",
+        "sha256": "28cc6800ea226a80beb546c2e11f931fba685496f8412d832f6a493b1c70c43f",
         "log": "cases/yield_wait_for_other_clear/primary-compatibility-analysis.log",
         "negative_log": "cases/yield_wait_for_other_clear/primary-negative-analysis.log"
       },
@@ -294,18 +484,72 @@
       "physical_preparation": {
         "receipt": "cases/yield_wait_for_other_clear/physical-preparation.json",
         "sha256": "a091a36eb84fefe46d86305df1c5e7a35a11f05b1972d7b801127cc47016d6de"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete original participant/trace/frame count missing",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --scratch .runtime-work/c125714-next",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --scratch .runtime-work/c125714-next --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "d31a8f5314328ffd8b0b57a9d9f8aa0318a8ba66f3d20502ab447b64314d2f8f",
+        "test_log": "cases/yield_wait_for_other_clear/delivery-positive.log",
+        "test_log_sha256": "502a72703a6df6e04d40f1f10948cc2af91b22358cf3be96c474314e58de9101",
+        "negative_log": "cases/yield_wait_for_other_clear/delivery-negative.log",
+        "negative_log_sha256": "9d785ad2622511145bb1e751e022c9b36d43be37d7c91a658dc559ea5b7c9cab",
+        "scope": "Source-bound synthetic diagnostic; actual Native and legal acceptance remain future checks."
       }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release",
       "kind": "delivery",
       "construction": "cases/advance_at_release/construction.json",
-      "construction_sha256": "e3c4002d772cf7e46381b7c26db3dc0497f278328a0830b51c20ff4c42eaf7bc",
+      "construction_sha256": "f0c7164359dd06dab37d92f233773f1e831eb515afb3fea36db209a4cf9af50b",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+        "reason": "Two-vehicle median-opening spawn and crossing can fail at the first route waypoint; alternate nearby approach waypoint retains the exact case and observation channels."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/advance_at_release/fallback1-construction.json",
+          "construction_sha256": "11fa368716827e865514f17339f7cf8402faee26c3b98e13a577549e3fc997ef",
+          "trigger": {
+            "source": "Native owner capture log and route waypoint readback",
+            "metric": "first reviewed ego route waypoint spawn result",
+            "failure_condition": "primary ego first-waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "ego first route waypoint x from -25 m to -23 m on the same authored approach road"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-fallback1-advance_at_release",
+            "construction_sha256": "11fa368716827e865514f17339f7cf8402faee26c3b98e13a577549e3fc997ef",
+            "exit_code": 0,
+            "log": "cases/advance_at_release/fallback1-offline.log",
+            "log_sha256": "0fe68848f357d90ecf8e17a8303dcb47ae16b0b5d52852a0cc25a35e24c151e7"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-fallback1-advance_at_release --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "receipt": "cases/advance_at_release/fallback1-compatibility.json",
+            "sha256": "8db6a6d3746b3330f775bc2fde37dcbe5bb16afaa31b5e773ea7f4fcca135685",
+            "log": "cases/advance_at_release/fallback1-analysis.log",
+            "negative_log": "cases/advance_at_release/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/advance_at_release/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -340,16 +584,16 @@
         }
       },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --output .runtime-work/c125714-advance-offline-20261123-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/source-v2-offline-primary-advance_at_release",
+        "construction_sha256": "f0c7164359dd06dab37d92f233773f1e831eb515afb3fea36db209a4cf9af50b",
         "exit_code": 0,
-        "construction_sha256": "e3c4002d772cf7e46381b7c26db3dc0497f278328a0830b51c20ff4c42eaf7bc",
         "log": "cases/advance_at_release/primary-offline.log",
-        "log_sha256": "736268166d241b9efa67c1e43ad61d66af9b01f976d164957789a75dab269489"
+        "log_sha256": "fcc617ba6ce273cca86994b7424d6e75d3c2a2ea01ace3811b8abd4321008c61"
       },
       "compatibility": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --output .runtime-work/c125714-advance-compat-20261123-a --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125714-next/rebind-compat-primary-advance_at_release --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
         "receipt": "cases/advance_at_release/primary-compatibility.json",
-        "sha256": "264b9fed67b2e8ce2e3925460eacaf07d66ac37d180089ae4c30dfba30734dd6",
+        "sha256": "43e29953c088944261225c612e995150dc6158073c2d28ea068b8891d22cd949",
         "log": "cases/advance_at_release/primary-compatibility-analysis.log",
         "negative_log": "cases/advance_at_release/primary-negative-analysis.log"
       },
@@ -371,6 +615,32 @@
       "physical_preparation": {
         "receipt": "cases/advance_at_release/physical-preparation.json",
         "sha256": "6bce8499e1d00429a972adbafe6a6ff70f33457d5c8289a88a794d0aabea2b6d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete original participant/trace/frame count missing",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --scratch .runtime-work/c125714-next",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_audit.py testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --scratch .runtime-work/c125714-next --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "d31a8f5314328ffd8b0b57a9d9f8aa0318a8ba66f3d20502ab447b64314d2f8f",
+        "test_log": "cases/advance_at_release/delivery-positive.log",
+        "test_log_sha256": "ab69480e92e14c3d70eb74c20dbb218d500bb5ea94053116d12467277152492b",
+        "negative_log": "cases/advance_at_release/delivery-negative.log",
+        "negative_log_sha256": "9d785ad2622511145bb1e751e022c9b36d43be37d7c91a658dc559ea5b7c9cab",
+        "scope": "Source-bound synthetic diagnostic; actual Native and legal acceptance remain future checks."
       }
     }
   ]

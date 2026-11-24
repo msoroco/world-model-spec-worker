@@ -19,6 +19,7 @@ def write_json(path, value):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--scratch', type=Path, required=True)
+    parser.add_argument('--tag', default='')
     args = parser.parse_args()
     folder = Path(__file__).resolve().parent
     scratch = args.scratch.resolve()
@@ -39,7 +40,7 @@ def main():
             log = case_dir / ('physical-' + kind + '.log')
             command = [sys.executable, str(folder / 'prove_physical.py'),
                        '--case', case, '--kind', kind, '--scratch', str(scratch),
-                       '--result', str(result)]
+                       '--result', str(result), '--tag', args.tag]
             proc = subprocess.run(command, capture_output=True, text=True, env=env)
             log.write_text((proc.stdout + proc.stderr).rstrip() + '\n')
             if proc.returncode:

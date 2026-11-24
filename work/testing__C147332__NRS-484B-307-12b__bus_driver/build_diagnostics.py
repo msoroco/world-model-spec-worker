@@ -32,6 +32,10 @@ def diagnostic(scene, kind):
     descriptor = lambda path: {"source_path": path, "source_sha256": digest(files[path]),
                                "reviewer": "software fixture", "source_citation": "diagnostic only"}
     packet = {"review_status": "reviewed",
+              "site": {"route": "synthetic fixture route", "travel_direction": "fixture direction",
+                       "milepost_or_cross_streets": "fixture marker",
+                       "gantry_or_device_id": "fixture gantry", "bus_approach": "fixture approach",
+                       "governed_lane": "red_lane"},
               "highway": {**descriptor("highway.txt"), "status": "public_highway_reviewed"},
               "official_device": {**descriptor("device.txt"),
                   "device_kind": "official_overhead_lane_signal", "symbol": "red_x",

@@ -3,7 +3,7 @@
   "assignment_id": "testing__C229439__NRS-484B-450-1o__motor_vehicle_driver",
   "input_sha256": "a2d07b8c5a0b5f9f330b683e13ad4f0334a9a3a8294984cf36db3634ea65425c",
   "readiness_kind": "delivery_prepared",
-  "reason": "CPU source-gated delivery package proved; physical capture and official source review remain local prerequisites.",
+  "reason": "Eight-case current-runtime CPU delivery package passed the exact scoped strict gate; official source acquisition and physical CARLA acceptance remain local prerequisites.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -20,6 +20,12 @@
       "exit_code": 0,
       "log": "cpu-diagnostic-source-proof.log",
       "sha256": "3db94e7e6056cc7bf9c669b43661b3ea584b7e5f0e2b13b24216ade1dcbbf392"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229439__NRS-484B-450-1o__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "strict-check.log",
+      "sha256": "6fe52666d06eaf9f5d8750a36f652b6b5ae79ed1ab513c15aea9127af0b1cbd5"
     }
   ],
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229439__NRS-484B-450-1o__motor_vehicle_driver --case testing__C229439__NRS-484B-450-1o__motor_vehicle_driver__park_effective --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""

@@ -12,11 +12,12 @@ def main():
     parser.add_argument('--kind', choices=('complete_motion', 'incomplete_motion', 'missing_evidence'), required=True)
     parser.add_argument('--scratch', type=Path, required=True)
     parser.add_argument('--result', type=Path, required=True)
+    parser.add_argument('--tag', default='')
     args = parser.parse_args()
     sys.path.insert(0, 'runtime')
     from scenario_pipeline.worker_exchange.native_output import physical_result
 
-    source = args.scratch / ('source-' + args.case)
+    source = args.scratch / (args.tag + 'source-' + args.case)
     stage = args.scratch / ('physical-' + args.case + '-' + args.kind)
     if stage.exists():
         shutil.rmtree(stage)
@@ -39,7 +40,7 @@ def main():
         (stage / 'crossing_history.jsonl').write_text(''.join(json.dumps({
             'frame': row['frame'], 'time_s': row['time_s'],
             'ego_vertices_m': row['body_vertices_xy_m']}) + '\n' for row in rows))
-    saved = args.scratch / ('saved-' + args.case) / 'v0001' / 'analysis' / 'result.json'
+    saved = args.scratch / (args.tag + 'saved-' + args.case) / 'v0001' / 'analysis' / 'result.json'
     result = physical_result(stage, json.loads(saved.read_text()))
     expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
                 'missing_evidence': 'unverified'}[args.kind]

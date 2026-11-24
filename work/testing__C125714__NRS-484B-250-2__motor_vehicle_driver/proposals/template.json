@@ -4,23 +4,58 @@
   "actor": "motor_vehicle_driver",
   "quote": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
   "structure": {
-    "selected_requirement": "left driver yields to right driver when two vehicles enter from different highways at approximately same time",
-    "conditions": [
-      "different highways",
-      "intersection entry",
-      "left and right approaches",
-      "approximately same time"
-    ],
+    "law_id": "NRS-484B-250-2",
+    "activation": {
+      "different_highways": true,
+      "intersection_entry": "both vehicles",
+      "approach_relation": "left/right"
+    },
+    "obligation": "left driver yields right-of-way to right driver",
     "exceptions": [
-      "official traffic-control-device governance",
-      "opposite approaches with one intending or making a left turn",
-      "subsection 4 qualification"
+      {
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4]",
+        "qualification": "subsection 4 governs when applicable"
+      },
+      {
+        "source_clause": "intersections controlled by official traffic-control devices",
+        "condition": "official device controls intersection"
+      },
+      {
+        "source_clause": "vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn",
+        "condition": "opposite approach plus one left-turn intention or movement"
+      }
+    ],
+    "timing": {
+      "phrase": "at approximately the same time",
+      "judgment": "unresolved"
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "at approximately the same time",
+        "note": "No legal numeric threshold is inferred from training range."
+      }
     ]
   },
   "parameter_refs": [
-    "intersection_entry_time_difference_s",
-    "ego_side",
-    "other_side",
-    "official_device_controls_intersection"
+    {
+      "name": "intersection_entry_time_difference_s",
+      "kind": "measured_value",
+      "range_or_domain": "source-bound original observation; legal judgment unresolved"
+    },
+    {
+      "name": "ego_side",
+      "kind": "world_setup",
+      "range_or_domain": "source-bound original observation; legal judgment unresolved"
+    },
+    {
+      "name": "other_side",
+      "kind": "world_setup",
+      "range_or_domain": "source-bound original observation; legal judgment unresolved"
+    },
+    {
+      "name": "official_device_controls_intersection",
+      "kind": "world_setup",
+      "range_or_domain": "source-bound original observation; legal judgment unresolved"
+    }
   ]
 }

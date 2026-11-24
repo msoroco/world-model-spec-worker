@@ -23,7 +23,7 @@
     {
       "path": "source_review.py",
       "source": "work/testing__C147332__NRS-484B-307-12b__bus_driver/source_review.py",
-      "content": "\"\"\"Require retained highway and official overhead-device sources before Native use.\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nfrom pathlib import Path\n\n\ndef _sha(path):\n    return hashlib.sha256(path.read_bytes()).hexdigest()\n\n\ndef validate(packet_path, *, source_root):\n    packet_path, root = Path(packet_path), Path(source_root)\n    root_resolved = root.resolve()\n    if (packet_path.is_symlink() or not packet_path.is_file() or\n            not packet_path.resolve().is_relative_to(root_resolved)):\n        raise ValueError(\"reviewed packet escapes retained source root\")\n    packet = json.loads(packet_path.read_text())\n    if packet.get(\"review_status\") != \"reviewed\":\n        raise ValueError(\"highway and official-device review not completed\")\n    for key in (\"highway\", \"official_device\"):\n        item = packet.get(key)\n        if not isinstance(item, dict):\n            raise ValueError(key + \" source descriptor missing\")\n        rel = item.get(\"source_path\")\n        if not isinstance(rel, str) or not rel or Path(rel).is_absolute() or \"..\" in Path(rel).parts:\n            raise ValueError(key + \" source path is not retained locally\")\n        source = root / rel\n        if source.is_symlink() or not source.resolve().is_relative_to(root_resolved):\n            raise ValueError(key + \" original source escapes retained root\")\n        if not source.is_file() or _sha(source) != item.get(\"source_sha256\"):\n            raise ValueError(key + \" original source missing or changed\")\n        if not item.get(\"reviewer\") or not item.get(\"source_citation\"):\n            raise ValueError(key + \" review provenance missing\")\n    if packet[\"highway\"].get(\"status\") != \"public_highway_reviewed\":\n        raise ValueError(\"public highway status unreviewed\")\n    device = packet[\"official_device\"]\n    if (device.get(\"device_kind\") != \"official_overhead_lane_signal\" or\n            device.get(\"symbol\") != \"red_x\" or device.get(\"faces_bus\") is not True or\n            device.get(\"governed_lane_id\") != \"red_lane\" or\n            not isinstance(device.get(\"native_asset_blueprint_id\"), str) or\n            not device[\"native_asset_blueprint_id\"]):\n        raise ValueError(\"red-X device, facing or lane association unreviewed\")\n    state = device.get(\"native_display_state\")\n    if (not isinstance(state, dict) or not isinstance(state.get(\"attribute\"), str) or\n            not state[\"attribute\"] or not isinstance(state.get(\"red_x_value\"), str) or\n            not state[\"red_x_value\"] or not state.get(\"source_citation\")):\n        raise ValueError(\"reviewed Native red-X display attribute and value required\")\n    return {\"reviewed_packet_sha256\": _sha(packet_path),\n            \"highway_source_sha256\": packet[\"highway\"][\"source_sha256\"],\n            \"official_device_source_sha256\": device[\"source_sha256\"],\n            \"native_asset_blueprint_id\": device[\"native_asset_blueprint_id\"],\n            \"native_display_state\": state,\n            \"governed_lane_id\": device[\"governed_lane_id\"],\n            \"legal_judgment\": \"unresolved\"}\n"
+      "content": "\"\"\"Require retained highway and official overhead-device sources before Native use.\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nfrom pathlib import Path\n\n\ndef _sha(path):\n    return hashlib.sha256(path.read_bytes()).hexdigest()\n\n\ndef validate(packet_path, *, source_root):\n    packet_path, root = Path(packet_path), Path(source_root)\n    root_resolved = root.resolve()\n    if (packet_path.is_symlink() or not packet_path.is_file() or\n            not packet_path.resolve().is_relative_to(root_resolved)):\n        raise ValueError(\"reviewed packet escapes retained source root\")\n    packet = json.loads(packet_path.read_text())\n    if packet.get(\"review_status\") != \"reviewed\":\n        raise ValueError(\"highway and official-device review not completed\")\n    site = packet.get(\"site\")\n    required_site = (\"route\", \"travel_direction\", \"milepost_or_cross_streets\",\n                     \"gantry_or_device_id\", \"bus_approach\", \"governed_lane\")\n    if (not isinstance(site, dict) or any(not isinstance(site.get(key), str) or\n            not site[key].strip() for key in required_site) or\n            site[\"governed_lane\"] != \"red_lane\"):\n        raise ValueError(\"reviewed exact highway site and governed lane required\")\n    for key in (\"highway\", \"official_device\"):\n        item = packet.get(key)\n        if not isinstance(item, dict):\n            raise ValueError(key + \" source descriptor missing\")\n        rel = item.get(\"source_path\")\n        if not isinstance(rel, str) or not rel or Path(rel).is_absolute() or \"..\" in Path(rel).parts:\n            raise ValueError(key + \" source path is not retained locally\")\n        source = root / rel\n        if source.is_symlink() or not source.resolve().is_relative_to(root_resolved):\n            raise ValueError(key + \" original source escapes retained root\")\n        if not source.is_file() or _sha(source) != item.get(\"source_sha256\"):\n            raise ValueError(key + \" original source missing or changed\")\n        if not item.get(\"reviewer\") or not item.get(\"source_citation\"):\n            raise ValueError(key + \" review provenance missing\")\n    if packet[\"highway\"].get(\"status\") != \"public_highway_reviewed\":\n        raise ValueError(\"public highway status unreviewed\")\n    device = packet[\"official_device\"]\n    if (device.get(\"device_kind\") != \"official_overhead_lane_signal\" or\n            device.get(\"symbol\") != \"red_x\" or device.get(\"faces_bus\") is not True or\n            device.get(\"governed_lane_id\") != \"red_lane\" or\n            not isinstance(device.get(\"native_asset_blueprint_id\"), str) or\n            not device[\"native_asset_blueprint_id\"]):\n        raise ValueError(\"red-X device, facing or lane association unreviewed\")\n    state = device.get(\"native_display_state\")\n    if (not isinstance(state, dict) or not isinstance(state.get(\"attribute\"), str) or\n            not state[\"attribute\"] or not isinstance(state.get(\"red_x_value\"), str) or\n            not state[\"red_x_value\"] or not state.get(\"source_citation\")):\n        raise ValueError(\"reviewed Native red-X display attribute and value required\")\n    return {\"reviewed_packet_sha256\": _sha(packet_path),\n            \"site\": site,\n            \"highway_source_sha256\": packet[\"highway\"][\"source_sha256\"],\n            \"official_device_source_sha256\": device[\"source_sha256\"],\n            \"native_asset_blueprint_id\": device[\"native_asset_blueprint_id\"],\n            \"native_display_state\": state,\n            \"governed_lane_id\": device[\"governed_lane_id\"],\n            \"legal_judgment\": \"unresolved\"}\n"
     },
     {
       "path": "lane_signal_measurement.py",
@@ -121,6 +121,24 @@
         "time_window": "every original captured frame",
         "reference_frame": "original CARLA world and frame/time",
         "uncertainty": "Native import, device pixels and full-body motion require later review"
+      },
+      {
+        "name": "red_x_entry_frames",
+        "unit": "frame index set",
+        "method": "Saved-only full-body boundary crossing from original bus footprint and red-X lane signal history",
+        "sampling_rate_hz": 20,
+        "time_window": "complete original attempt",
+        "reference_frame": "original synchronized CARLA frame/time",
+        "uncertainty": "Software derivation only until original Native sources and pixels are independently reviewed"
+      },
+      {
+        "name": "red_x_driving_frames",
+        "unit": "frame index set",
+        "method": "Saved-only full-body in-lane travel from original bus footprint, control and red-X lane signal history",
+        "sampling_rate_hz": 20,
+        "time_window": "complete original attempt",
+        "reference_frame": "original synchronized CARLA frame/time",
+        "uncertainty": "Software derivation only until original Native sources and pixels are independently reviewed"
       }
     ],
     "context_inputs": [
@@ -143,5 +161,15 @@
     "bus body target contained within roadway",
     "head target over governed lane"
   ],
-  "source_kind": "worker engineering candidate; public highway and official device unverified"
+  "source_kind": "worker engineering candidate; public highway and official device unverified",
+  "mechanisms": {
+    "construction_status": "source-gated Native bus and overhead red-X implementation CPU tested",
+    "source_gate": "runner requires independently reviewed retained highway and official-device original source packet before Native dispatch",
+    "signal_state": "set and read back reviewed imported blueprint display value before bus spawn; verify observed actor attribute every original tick"
+  },
+  "termination_rules": [
+    "360 original synchronized 20 Hz world ticks over 18 seconds",
+    "seal captured original sources and camera frames only after complete tick sequence",
+    "destroy owned bus, signal and cameras and restore original CARLA world settings/map on all exits"
+  ]
 }

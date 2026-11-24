@@ -1,6 +1,6 @@
 # C229439 / NRS 484B.450(1)(o) motor vehicle driver
 
-Status: **partial**, pending CPU delivery package. The exact strict assignment check fails because this result is partial. No accepted recording exists in the frozen evidence inventory. The conditional witness does not prove the sign's exact instruction, official authority, governed area, or effective conditions. No external blocker has been demonstrated.
+Status: **ready for source-gated local delivery**. The exact strict assignment check exited 0 after eight current-runtime CPU packages passed. No accepted recording exists in the frozen evidence inventory. The conditional witness does not prove the sign's exact instruction, official authority, governed area, or effective conditions. No external blocker has been demonstrated.
 
 ## Source and coverage
 
@@ -73,3 +73,17 @@ Remaining CPU work is substantial: extend each diagnostic recipe with the pinned
 The current pinned runtime now materializes all eight refreshed source-gated Native bundles. Every exact offline proof, Core/video compatibility positive and missing-device negative, and fresh recorded-only positive and missing-device negative passed. The exception requirement is selected in four cases and has a second source-hashed measurement, with no legal judgment inferred. The independent delivery audit decoded all four 900-frame diagnostic videos for each case and rejected a missing official-device source. Five matched comparison audits passed and rejected removal of their deliberate source differences. These fixtures are synthetic software checks; they do not establish official device authority, actual sign pixels, physical parking completion, or statutory violation.
 
 Aggregate config/construction, four-view camera plan and source-observation mapping are authored. Current proof logs: `cpu-tests.log` (31 passing), `cpu-diagnostic-source-proof.log`, `proof-*.log`, per-case `cpu-compatibility-analysis.log`, `negative-analysis.log`, `saved-positive.log`, `saved-negative.log`, `delivery-positive.log`, `delivery-negative.log`, and `comparisons/*`. Exact selected manifest hashes bind each receipt. Pinned package receipt validation and exact scoped strict gate are the next CPU checks. Actual C229439 map, reviewed official sign authority/instruction/placement/effective interval, driver source and exception packets remain necessary for local Native execution and physical acceptance.
+
+## 2026-11-24 exact scoped readiness gate
+
+`.venv-cpu/bin/python worker_check.py --assignment testing__C229439__NRS-484B-450-1o__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. The returned `strict-check.log` is bound in `result.json`. Eight selected cases and five comparison audits are ready for the local queue. `C229439_SITE_REF`, `C229439_DEVICE_REF`, `C229439_VEHICLE_REF` and `C229439_CONTEXT_REF` must name independently reviewed source-sealed packets before actual CARLA execution. No synthetic source is an official highway/device record, and physical/legal acceptance remains a separate local review.
+
+### Original-attempt comparison command (2026-11-24)
+
+`original_comparison_audit.py` compares two independent saved Native attempts for any of the five selected comparison IDs. It requires each production attempt to be `native_original`, source-hashes the exact site/device/900-row history, validates original 20 Hz row identity and source joins, checks the original four-camera source seal, matches road polygon/map/route, driver vehicle source, device instruction, observed halt activity and non-deliberate exception conditions, then requires the declared observed difference during matched halt frames. It writes a source-hash receipt with physical acceptance false and legal judgment null. The command is:
+
+```
+.venv-cpu/bin/python work/testing__C229439__NRS-484B-450-1o__motor_vehicle_driver/original_comparison_audit.py --comparison device_effective_time --left-attempt "$LEFT_ATTEMPT" --right-attempt "$RIGHT_ATTEMPT" --output "$OUTPUT"
+```
+
+Use the other selected IDs `traffic_conflict_exception`, `law_direction_exception`, `police_direction_exception`, and `device_direction_exception` with their exact ordered case attempts. Six focused tests passed, including altered source hash, wrong case, erased difference, duplicate attempt, and production rejection of synthetic sources. The `--diagnostic` flag is test-only for synthetic saved fixtures and cannot serve as original physical evidence. Logs: `cpu-original-comparison-tests.log` and `cpu-original-comparison-cli.log`. Actual reviewed original attempts and independent physical/legal review remain necessary at local execution.

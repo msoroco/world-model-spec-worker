@@ -25,22 +25,23 @@ def main() -> None:
     for entry in manifest["cases"]:
         case = entry["case_id"]
         kind = case.removeprefix(ROOT.name + "__")
-        positive = ROOT / "independent" / (kind + "-positive.log")
-        negative = ROOT / "independent" / (kind + "-negative.log")
-        if ("diagnostic protocol positive and three negatives passed" not in positive.read_text() or
-                "original pixel review missing or stale" not in negative.read_text()):
+        positive = ROOT / ("site-v1-" + kind + "-delivery-positive.log")
+        negative = ROOT / ("site-v1-" + kind + "-delivery-negative.log")
+        if ("diagnostic full-source/four-camera audit passed" not in positive.read_text() or
+                "acquisition original source missing or changed" not in negative.read_text()):
             raise ValueError("exact audit CPU proof missing: " + case)
         command = ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/' + ROOT.name +
-                   '/independent/prove_delivery_audit.py ' + case)
+                   '/prove_delivery_case.py --case ' + case +
+                   ' --output "$DIAGNOSTIC_OUTPUT" --source "$DIAGNOSTIC_SOURCE"')
         entry["delivery_acceptance"] = {
             "case_id": case, "sets": ["full-test"], "checks": list(CHECKS),
             "script": "independent/delivery_audit.py", "script_sha256": sha(script),
             "command": command, "test_exit_code": 0,
-            "test_log": "independent/" + kind + "-positive.log",
+            "test_log": positive.name,
             "test_log_sha256": sha(positive),
             "negative_command": command + " --negative", "negative_exit_code": 1,
-            "negative_expected_error": "original pixel review missing or stale",
-            "negative_log": "independent/" + kind + "-negative.log",
+            "negative_expected_error": "acquisition original source missing or changed",
+            "negative_log": negative.name,
             "negative_log_sha256": sha(negative),
             "proof_scope": "synthetic CPU audit invariants; original pixel and physical acceptance unclaimed",
         }

@@ -19,6 +19,13 @@ def validate(packet_path, *, source_root):
     packet = json.loads(packet_path.read_text())
     if packet.get("review_status") != "reviewed":
         raise ValueError("highway and official-device review not completed")
+    site = packet.get("site")
+    required_site = ("route", "travel_direction", "milepost_or_cross_streets",
+                     "gantry_or_device_id", "bus_approach", "governed_lane")
+    if (not isinstance(site, dict) or any(not isinstance(site.get(key), str) or
+            not site[key].strip() for key in required_site) or
+            site["governed_lane"] != "red_lane"):
+        raise ValueError("reviewed exact highway site and governed lane required")
     for key in ("highway", "official_device"):
         item = packet.get(key)
         if not isinstance(item, dict):
@@ -48,6 +55,7 @@ def validate(packet_path, *, source_root):
             not state["red_x_value"] or not state.get("source_citation")):
         raise ValueError("reviewed Native red-X display attribute and value required")
     return {"reviewed_packet_sha256": _sha(packet_path),
+            "site": site,
             "highway_source_sha256": packet["highway"]["source_sha256"],
             "official_device_source_sha256": device["source_sha256"],
             "native_asset_blueprint_id": device["native_asset_blueprint_id"],
