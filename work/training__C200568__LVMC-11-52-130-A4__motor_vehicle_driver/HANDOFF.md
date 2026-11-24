@@ -19,3 +19,19 @@ Accepted membership: 0 membership rows; exact source-hashed equivalence and reus
 Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
 
 Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+
+## 2026-11-23 CPU hydrant geometry source diagnostic
+
+Added `native/hydrant_measure.py` and `native/prove_hydrant_measure.py`. The diagnostic requires source statements for parking permission, hydrant position, and distance uncertainty, plus 600 joined stopped frames at 20 Hz with four pinned camera identities and vehicle footprints. It measures the closest hydrant-to-footprint distance and retains a bracket. Parallel-permitted parking uses the source law's 15-foot threshold; angle-permitted and no-parking locations use 20 feet. Paint and sign fields are recorded but never used to select the threshold. Exception facts remain declarations requiring original evidence and independent review, not geometry-derived verdicts.
+
+The proof builds all fourteen planned source shapes under `.runtime-work/`: two clearance witnesses, six exception-context declarations, and six 14.5/15/15.5 and 19.5/20/20.5 foot boundary examples. A separate no-parking regime check confirms the twenty-foot branch. Five missing-source mutations reject missing permission, missing hydrant, truncated frames, camera loss and missing footprint. These are `synthetic_native_sample` geometry diagnostics, not Native motion, pixels or legal compliance.
+
+Commands, each exit 0 with `TMPDIR`, `PYTHONDONTWRITEBYTECODE=1`, and `SCENARIO_PIPELINE_OUTPUT_ROOT` set under `.runtime-work/`:
+
+- `.venv-cpu/bin/python runtime.py preflight > native/current-preflight.log 2>&1`
+- `.venv-cpu/bin/python native/prove_hydrant_measure.py > native/hydrant-proof.json`
+- `.venv-cpu/bin/python worker_check.py --assignment training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver --complete > native/current-static-check.log 2>&1`
+
+SHA-256: measurement code `28def6169e319fed8dd06d4750eae60b4877f3843208b660dd60ce3784d76fa3`; proof script `ce9694e13e59150e708df578f6903fa798b89972c414a03547c8a83e081fec05`; proof result `2098bb4d72a9d0503b23fef2601858050b8937385319dcc68a7f6c6b8a07b069`; preflight log `f79f814cdfe1348436b622f8d3a3aa619e729487f7d63e677a269eead1858541`; scoped checkpoint log `ca8ce2d7d0032b7628764ba182512073bbe58c350d418dc2b7dc766f9a8b1cc5`.
+
+Next CPU work: construct the exact public-access premises Native scene, hydrant and parked-vehicle controllers, and source acquisition for permission, traffic conflict and lawful direction. Bind all fourteen cases to an execution manifest with four source camera streams and run pinned offline, positive/negative compatibility, saved-only, semantic and independent audits. Reconcile the full exception grammar against source law before final selection; synthetic context declarations do not prove those exceptions. There is no exact construction bundle yet; keep the assignment partial.
