@@ -75,3 +75,47 @@ def build(site_path: str | Path, *, crosswalk_kind: str, ego_behavior: str) -> d
             "pedestrian_route": [pedestrian_start, pedestrian_end],
             "ego_route": ego_route, "ego_behavior": ego_behavior,
             "limit": "Geometry and route intent only; original stopped purpose, actor motion and legal crossing status require separate source review."}
+
+
+def build_sourced(site_path: str | Path, *, crosswalk_kind: str, ego_behavior: str) -> dict:
+    """Bind a proposed route to regular source files beside its site packet.
+
+    This checks source custody, not the authority or physical truth of the packet.
+    """
+    path = Path(site_path)
+    site = json.loads(path.read_bytes())
+    sources = site.get("sources")
+    required = {"map", "intersection", "sidewalk", "curb_or_edge", "stopped_purpose"}
+    if crosswalk_kind == "marked":
+        required.add("marking")
+    if not isinstance(sources, dict) or not required <= sources.keys():
+        raise ValueError("complete site source inventory required")
+    root = path.parent.resolve()
+    inventory = {}
+    used = set()
+    for name in sorted(required):
+        entry = sources[name]
+        if not isinstance(entry, dict) or not all(isinstance(entry.get(k), str) and entry[k] for k in ("path", "sha256", "citation")):
+            raise ValueError(f"{name} source path, hash and citation required")
+        if len(Path(entry["path"]).parts) != 1 or Path(entry["path"]).is_absolute():
+            raise ValueError(f"{name} source path must be a portable sibling filename")
+        source = path.parent / entry["path"]
+        if source.is_symlink() or not source.is_file() or source.resolve().parent != root or source.resolve() == path.resolve():
+            raise ValueError(f"{name} must be a distinct regular source beside the site packet")
+        if source.resolve() in used:
+            raise ValueError("site sources must be distinct files")
+        used.add(source.resolve())
+        actual = hashlib.sha256(source.read_bytes()).hexdigest()
+        if actual != entry["sha256"]:
+            raise ValueError(f"{name} source hash mismatch")
+        inventory[name] = {"path": entry["path"], "sha256": actual, "citation": entry["citation"]}
+    if site.get("map_sha256") != inventory["map"]["sha256"]:
+        raise ValueError("site map hash differs from original map source")
+    if site.get("curb_or_traveled_edge_source") != sources["curb_or_edge"]["citation"]:
+        raise ValueError("curb source citation differs from site geometry")
+    if crosswalk_kind == "marked" and site.get("crosswalk_marking_source") != sources["marking"]["citation"]:
+        raise ValueError("marking source citation differs from site geometry")
+    result = build(path, crosswalk_kind=crosswalk_kind, ego_behavior=ego_behavior)
+    result["source_inventory"] = inventory
+    result["source_status"] = "bytes_verified_authority_and_physical_truth_unreviewed"
+    return result

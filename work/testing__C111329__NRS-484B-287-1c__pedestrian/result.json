@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1c__pedestrian",
   "input_sha256": "2932c84bb38141f8c24e785be11e7b7f14e9ba762f570ef845db2e636939c172",
   "status": "partial",
-  "readiness_kind": "case_plan_source_measurements_four_camera_observation_and_lazy_carla_readback",
+  "readiness_kind": "case_plan_source_measurements_four_camera_observation_lazy_carla_readback_and_tick_route_control",
   "applied_update": 0,
   "tests": [
     {
@@ -22,10 +22,34 @@
       "exit_code": 0,
       "log": "cpu-static-check.log",
       "sha256": "2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1c__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-route-integration-tests.log",
+      "sha256": "5cdab3d500e21a0333807024efb87c1de6fa8f5d1ab2f6f1690cd265534a32ba"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-route-preflight.log",
+      "sha256": "ea55fdb989d1827c213c923af4284a1d85b33429dd7d7a01f58038f1fed484b9"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1c__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-route-static.log",
+      "sha256": "2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-route-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact cases and two controlled comparisons remain planned. Source-bound site geometry, lazy walker route, 20 Hz original walker/device and four-camera PNG capture, saved-only full pixel decode and crossing/operation validator, independent source comparison audit, and a lazy CARLA BGRA callback/device-actor readback bridge pass 30 focused CPU tests. The new bridge requires separate operation evidence and frame-synchronous callback pixels. Ready gate still fails: reviewed real site/device sources, exact delivery manifests and finalizers, canonical stage proposals, saved-only positive/negative compatibility proofs and independent delivery audit remain CPU work; legal adjacency, official status and NRS 484B.290 exception remain unresolved."
+  "reason": "Three exact cases and two controlled comparisons remain planned. Source-bound site geometry, lazy walker route, 20 Hz walker/device and four-camera PNG capture, saved-only full pixel audit, independent source comparison audit, lazy CARLA readback, and an owned route-control-to-tick wrapper pass 34 focused CPU tests. This route integration controls the walker before each original frame and destroys it on success or failure. Ready gate remains partial: reviewed fixed-cell map and device sources, exact production construction/manifest/finalizers, canonical stage proposals, saved-only positive/negative compatibility and independent delivery audit remain CPU work; legal adjacency, official status and NRS 484B.290 exception remain unresolved."
 }

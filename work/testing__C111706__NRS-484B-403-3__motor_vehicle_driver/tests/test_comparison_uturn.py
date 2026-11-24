@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from comparison_uturn import ComparisonError, compare
+from comparison_uturn import ASSIGNMENT, ComparisonError, compare
 
 
 def seal(path):
@@ -35,7 +35,8 @@ def native(case, *, inside=True, other_x=5):
 
 
 def site(case, *, ego_route="route-a", start=0):
-    return {"case_id": case, "map_sha256": "map", "district_source_sha256": "district",
+    return {"case_id": ASSIGNMENT + "__" + case, "map_sha256": "map",
+            "route_sha256": "route", "district_source_sha256": "district",
             "intersection_boundary_source_sha256": "boundary", "ego_blueprint": "vehicle.ego",
             "other_blueprint": "vehicle.other", "weather_sha256": "weather",
             "camera_policy_sha256": "camera", "other_route_sha256": "other-route",
@@ -45,18 +46,20 @@ def site(case, *, ego_route="route-a", start=0):
 class ComparisonTest(unittest.TestCase):
     def files(self, root, *, second_site, inside):
         paths = []
-        for index, (site_value, is_inside) in enumerate(((site("near"), True),
+        for index, (site_value, is_inside) in enumerate(((site("intersection_vehicle_near"), True),
                                                           (second_site, inside))):
             site_path = root / f"site-{index}.json"
             native_path = root / f"native-{index}.json"
             site_path.write_text(json.dumps(site_value))
-            native_path.write_text(json.dumps(native(site_value["case_id"], inside=is_inside)))
+            packet = native(site_value["case_id"], inside=is_inside)
+            packet["site_sha256"] = seal(site_path)
+            native_path.write_text(json.dumps(packet))
             paths.extend((site_path, seal(site_path), native_path, seal(native_path)))
         return paths
 
     def test_location_pair_is_source_bound_and_distinct(self):
         with tempfile.TemporaryDirectory() as directory:
-            files = self.files(Path(directory), second_site=site("before", ego_route="route-b"),
+            files = self.files(Path(directory), second_site=site("approach_before_intersection", ego_route="route-b"),
                                inside=False)
             result = compare("intersection_exception_location", *files)
             self.assertGreater(result["observed_whole_body_inside_intersection_frames"][0], 0)
@@ -64,23 +67,43 @@ class ComparisonTest(unittest.TestCase):
 
     def test_timing_pair_keeps_ego_route(self):
         with tempfile.TemporaryDirectory() as directory:
-            files = self.files(Path(directory), second_site=site("far", start=80), inside=True)
+            files = self.files(Path(directory), second_site=site("intersection_vehicle_far", start=80), inside=True)
             result = compare("surrounding_vehicle_context", *files)
             self.assertEqual(result["legal_interpretation"], "unresolved_review")
 
     def test_rejects_changed_fixed_weather(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            files = self.files(root, second_site=site("far", start=80), inside=True)
+            files = self.files(root, second_site=site("intersection_vehicle_far", start=80), inside=True)
             changed = json.loads(files[4].read_text())
             changed["weather_sha256"] = "other-weather"
             files[4].write_text(json.dumps(changed))
             files[5] = seal(files[4])
+            packet = json.loads(files[6].read_text())
+            packet["site_sha256"] = files[5]
+            files[6].write_text(json.dumps(packet))
+            files[7] = seal(files[6])
             with self.assertRaisesRegex(ComparisonError, "weather"):
                 compare("surrounding_vehicle_context", *files)
 
     def test_rejects_missing_declared_timing_difference(self):
         with tempfile.TemporaryDirectory() as directory:
-            files = self.files(Path(directory), second_site=site("far", start=0), inside=True)
+            files = self.files(Path(directory), second_site=site("intersection_vehicle_far", start=0), inside=True)
             with self.assertRaisesRegex(ComparisonError, "timing difference"):
+                compare("surrounding_vehicle_context", *files)
+
+    def test_rejects_wrong_exact_case_pair(self):
+        with tempfile.TemporaryDirectory() as directory:
+            files = self.files(Path(directory), second_site=site("approach_before_intersection", ego_route="route-b"), inside=False)
+            with self.assertRaisesRegex(ComparisonError, "exact comparison case pair"):
+                compare("surrounding_vehicle_context", *files)
+
+    def test_rejects_native_site_or_route_mismatch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            files = self.files(Path(directory), second_site=site("intersection_vehicle_far", start=80), inside=True)
+            packet = json.loads(files[6].read_text())
+            packet["route_sha256"] = "unreviewed-route"
+            files[6].write_text(json.dumps(packet))
+            files[7] = seal(files[6])
+            with self.assertRaisesRegex(ComparisonError, "site/map/route source binding"):
                 compare("surrounding_vehicle_context", *files)

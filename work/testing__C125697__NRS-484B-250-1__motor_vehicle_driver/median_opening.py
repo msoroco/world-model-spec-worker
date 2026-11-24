@@ -118,9 +118,21 @@ def measure_saved(trace, scene, expected_frames=900):
     entries = {"ego": None, "other": None}
     exits = {"ego": None, "other": None}
     prior = {"ego": False, "other": False}
+    first_native_frame = None
+    first_native_time = None
     for index, frame in enumerate(frames):
         if frame.get("frame") != index or not math.isclose(frame.get("time_s", -1), index/20, abs_tol=1e-5):
             raise ValueError("original frame/time join is incomplete")
+        native_frame = frame.get("native_frame_id")
+        native_time = frame.get("native_elapsed_seconds")
+        if type(native_frame) is not int or type(native_time) not in (int, float) or not math.isfinite(native_time):
+            raise ValueError("original Native frame/clock missing")
+        if first_native_frame is None:
+            first_native_frame = native_frame
+            first_native_time = native_time
+        if native_frame != first_native_frame + index or not math.isclose(
+                native_time - first_native_time, index / 20, abs_tol=0.002):
+            raise ValueError("original Native frame/clock discontinuity")
         if frame.get("signal_readback") != "inoperative":
             raise ValueError("governing signal did not remain inoperative")
         for name in ("ego", "other"):
@@ -141,6 +153,8 @@ def measure_saved(trace, scene, expected_frames=900):
     if any(v is None for v in entries.values()) or any(v is None for v in exits.values()):
         raise ValueError("both original entry and exit events required")
     return {"case_id": scene["case_id"], "entry_frames": entries, "exit_frames": exits,
+            "native_first_frame_id": first_native_frame,
+            "native_first_elapsed_seconds": first_native_time,
             "other_entered_before_ego": entries["other"] < entries["ego"],
             "ego_waited_until_other_exit": entries["ego"] >= exits["other"],
             "signal_inoperative_all_frames": True, "legal_judgment": "unresolved"}

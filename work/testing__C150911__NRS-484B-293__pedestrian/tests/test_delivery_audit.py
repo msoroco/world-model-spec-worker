@@ -21,8 +21,10 @@ def fixture(root):
               "native_result_sha256": sources["native_result"]["sha256"],
               "frame_map_sha256": sources["frame_map"]["sha256"], "sources": sources}
     measurement = {"case_id": "exact-case", "legal_practicability": "unresolved",
-                   "fixed_sources": {"obstacle_source_sha256": "obs", "participant_source_sha256": "people"},
+                   "fixed_sources": {"obstacle_source_sha256": "obs", "participant_source_sha256": "people",
+                                     "pedestrian_source_sha256": "walker-source"},
                    "full_original_trace": [{"frame": n, "within_crosswalk": n == 1,
+                                            "pedestrian_id": "walker-1", "pedestrian_source": "walker-source",
                                             "obstacle_source": "obs", "participant_source": "people",
                                             "available_right_width_m": 0.5, "nearby_participants": []}
                                            for n in range(3)]}
@@ -72,6 +74,14 @@ class SavedAuditTest(unittest.TestCase):
             measurement["legal_practicability"] = "unresolved"
             measurement["full_original_trace"][2]["frame"] = 4
             with self.assertRaisesRegex(ValueError, "gapped original"):
+                audit.audit_saved(packet, measurement, root)
+
+    def test_pedestrian_identity_join(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            packet, measurement = fixture(root)
+            measurement["full_original_trace"][1]["pedestrian_id"] = "other-walker"
+            with self.assertRaisesRegex(ValueError, "pedestrian identity"):
                 audit.audit_saved(packet, measurement, root)
 
 

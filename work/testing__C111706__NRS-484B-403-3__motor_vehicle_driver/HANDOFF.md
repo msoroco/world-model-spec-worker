@@ -71,3 +71,15 @@ Current SHA-256 bound logs:
 - `cpu-preflight.log`: `648c524feb704da659d14a8f044f7a40ac4c4a8f16e36457b9bfc7b768de0c53` (exit 0)
 - `assignment-check.log`: `01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb` (exit 0)
 - `assignment-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-24 exact comparison source-join checkpoint
+
+`comparison_uturn.py` now rejects a wrong case pair and requires each sealed Native packet to match its independently sealed site, map and route source. This closes a source substitution path in the two controlled U-turn comparisons. Added negative tests for wrong pair and changed Native route. The check still does not establish a reviewed physical site, legal intersection or completed Native U-turn.
+
+Pinned suite passes 46 tests; preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. New SHA256 receipts:
+- `cpu-source-join-tests.log`: `05ce13edcaed0f0bc3ceb5e2529685e0b1d92f16d412484c3fbe601138ba23a0`
+- `cpu-source-join-preflight.log`: `969ede04060c274f9db61736781c4ecd6fb51158077148b80d51ca11e3129260`
+- `cpu-source-join-static.log`: `01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb`
+- `cpu-source-join-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Next CPU work remains reviewed site/map/district/boundary and per-case routes, exact production bundles/manifest and finalizers, semantic proposals, saved positive/negative compatibility, process receipts and independent owner-release audit.

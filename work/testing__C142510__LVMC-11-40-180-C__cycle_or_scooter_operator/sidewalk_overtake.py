@@ -15,7 +15,8 @@ from pathlib import Path
 
 ASSIGNMENT='testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator'
 SOURCES=('road.xodr','site-context.json','rider-body-history.jsonl',
-         'pedestrian-body-history.jsonl','pedestrian-microphone.wav')
+         'pedestrian-body-history.jsonl','emitter-event-history.jsonl',
+         'pedestrian-microphone.wav')
 
 
 def need(ok,message):
@@ -123,6 +124,11 @@ def measure(attempt):
          type(site.get('pedestrian_actor_id')) is int and
          site['rider_actor_id']!=site['pedestrian_actor_id'],
          'distinct original rider/pedestrian identities required')
+    need(type(site.get('emitter_actor_id')) is int and
+         site['emitter_actor_id'] not in (site['rider_actor_id'],site['pedestrian_actor_id']) and
+         number(site.get('microphone_propagation_max_s')) and
+         0<=site['microphone_propagation_max_s']<=.2,
+         'source-bound emitter identity or propagation window missing')
     direction=site.get('sidewalk_travel_unit_xy')
     need(isinstance(direction,list) and len(direction)==2 and
          all(number(x) for x in direction) and
@@ -130,15 +136,23 @@ def measure(attempt):
     region=polygon(site.get('sidewalk_polygon_xy_m'))
     rider=rows(files['rider-body-history.jsonl'])
     pedestrian=rows(files['pedestrian-body-history.jsonl'])
-    need(len(rider)==len(pedestrian),'original actor histories unequal')
+    emitter=rows(files['emitter-event-history.jsonl'])
+    need(len(rider)==len(pedestrian)==len(emitter),'original actor/emitter histories unequal')
     previous=None;relative=[];separations=[];brake_frames=[];approach_speeds=[]
-    for a,b in zip(rider,pedestrian):
+    emitted=[]
+    for a,b,e in zip(rider,pedestrian,emitter):
         frame,time=a.get('frame'),a.get('time_s')
         need((frame,time)==(b.get('frame'),b.get('time_s')),
              'original rider/pedestrian frame/time join differs')
         need(a.get('actor_id')==site['rider_actor_id'] and
              b.get('actor_id')==site['pedestrian_actor_id'],
              'original actor identity differs')
+        need(e.get('frame')==frame and e.get('time_s')==time and
+             e.get('actor_id')==site['emitter_actor_id'] and
+             e.get('source')=='original_native' and
+             type(e.get('emitted')) is bool,
+             'original audible emitter event/frame join differs')
+        if e['emitted']:emitted.append(time)
         need(type(frame) is int and number(time),'original frame/time missing')
         if previous:
             need(frame==previous[0]+1 and .049<=time-previous[1]<=.051,
@@ -163,6 +177,10 @@ def measure(attempt):
     need(site['microphone_start_time_s']<=relative[0][1] and
          site['microphone_start_time_s']+audio['sample_count']/audio['sample_rate_hz']>=relative[-1][1],
          'original microphone does not cover complete rider/pedestrian episode')
+    if audio['onset_time_s'] is not None:
+        need(any(0<=audio['onset_time_s']-event<=site['microphone_propagation_max_s']
+                 for event in emitted),
+             'microphone onset has no source-bound emitter event')
     before=audio['onset_time_s'] is not None and audio['onset_time_s']<relative[pass_index][1]
     return {'format':'worker-c142510-sidewalk-overtake-v1','assignment_id':ASSIGNMENT,
             'case_id':site.get('case_id'),'sidewalk_id':site['sidewalk_id'],
@@ -172,7 +190,8 @@ def measure(attempt):
             'minimum_center_separation_m':min(separations),
             'minimum_approach_speed_mps':min(approach_speeds[:pass_index+1]),
             'brake_frames_before_pass':[f for f in brake_frames if f<relative[pass_index][0]],
-            'microphone':audio,'detected_signal_before_pass':before,
+            'microphone':audio,'original_emitter_event_times_s':emitted,
+            'detected_signal_before_pass':before,
             'frame_count':len(rider),
             'source_sha256':{name:manifest[name]['sha256'] for name in SOURCES},
             'yielding_right_of_way':'unresolved_original_behavior_review',

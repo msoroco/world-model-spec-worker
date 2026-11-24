@@ -41,7 +41,10 @@ def trace(s, ego_entry=60, other_entry=40):
     for i in range(900):
         ego_y = -10 if i < ego_entry else (0 if i < ego_entry+10 else 10)
         other_x = -10 if i < other_entry else (0 if i < other_entry+10 else 10)
-        frames.append({"frame": i, "time_s": i/20, "signal_readback": "inoperative",
+        frames.append({"frame": i, "time_s": i/20,
+                       "native_frame_id": 1200 + i,
+                       "native_elapsed_seconds": 50.0 + i/20,
+                       "signal_readback": "inoperative",
                        "ego": {"id": 10, "road_id": 1, "body_vertices_xy_m": body(0, ego_y)},
                        "other": {"id": 11, "road_id": 2, "body_vertices_xy_m": body(other_x, 0)}})
     return {"case_id": s["case_id"], "map_sha256": s["crossing"]["opendrive_sha256"],
@@ -129,6 +132,7 @@ class MedianOpeningTests(unittest.TestCase):
         result = MODULE.measure_saved(trace(s), s)
         self.assertTrue(result["other_entered_before_ego"])
         self.assertTrue(result["ego_waited_until_other_exit"])
+        self.assertEqual(result["native_first_frame_id"], 1200)
         self.assertEqual(result["legal_judgment"], "unresolved")
 
     def test_comparison(self):
@@ -158,6 +162,16 @@ class MedianOpeningTests(unittest.TestCase):
         saved = trace(s)
         saved["frames"][50]["signal_readback"] = "green"
         with self.assertRaisesRegex(ValueError, "inoperative"):
+            MODULE.measure_saved(saved, s)
+        for key, value in (("native_frame_id", 1300),
+                           ("native_elapsed_seconds", 80.0)):
+            saved = trace(s)
+            saved["frames"][50][key] = value
+            with self.assertRaisesRegex(ValueError, "Native frame/clock discontinuity"):
+                MODULE.measure_saved(saved, s)
+        saved = trace(s)
+        del saved["frames"][50]["native_elapsed_seconds"]
+        with self.assertRaisesRegex(ValueError, "Native frame/clock missing"):
             MODULE.measure_saved(saved, s)
 
     def test_comparison_rejects_changed_fixed_source(self):

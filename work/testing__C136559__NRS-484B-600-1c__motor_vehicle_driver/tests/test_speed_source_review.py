@@ -66,6 +66,21 @@ class OriginalSpeedReviewTests(unittest.TestCase):
                                              unit="km/h", rate=48.28032)
             self.assertAlmostEqual(measure(root, inventory, case)["posted_rate_mps"], 13.4112)
 
+    def test_strict_boundary_keeps_sub_nanometer_speed_difference(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            case, inventory = self._attempt(root, speed=13.4112000001)
+            result = measure(root, inventory, case)
+            self.assertEqual(result["observed_above_frames"], 900)
+            self.assertTrue(all(row["above_posted_rate"] for row in result["samples"]))
+            self.assertGreater(result["samples"][0]["rate_difference_mps"], 0)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            case, inventory = self._attempt(root, speed=13.4111999999)
+            result = measure(root, inventory, case)
+            self.assertEqual(result["observed_above_frames"], 0)
+            self.assertLess(result["samples"][0]["rate_difference_mps"], 0)
+
     def test_governed_portion_and_direction_are_measured(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

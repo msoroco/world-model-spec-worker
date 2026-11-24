@@ -58,8 +58,16 @@ def audit_original_history(path: Path, expected_sha256: str, case_id: str,
             raise ValueError('posted interval or body footprint invalid')
         overlap_frames += min(bounds[1], body[1]) > max(bounds[0], body[0])
         cameras = row.get('camera_frames')
-        if not isinstance(cameras, dict) or any(not cameras.get(k) for k in camera_keys):
+        if not isinstance(cameras, dict) or set(cameras) != set(camera_keys):
             raise ValueError('four-camera frame source missing')
+        for camera in camera_keys:
+            packet = cameras[camera]
+            if (not isinstance(packet, dict) or
+                packet.get('original_frame') != first + index or
+                not isinstance(packet.get('source_sha256'), str) or
+                len(packet['source_sha256']) != 64 or
+                any(c not in '0123456789abcdef' for c in packet['source_sha256'])):
+                raise ValueError('four-camera original frame/source join invalid')
         kind = row.get('exception_kind')
         if kind not in ('none', 'lawful_traffic_conflict', 'police_direction', 'traffic_device_direction'):
             raise ValueError('exception kind unsupported')

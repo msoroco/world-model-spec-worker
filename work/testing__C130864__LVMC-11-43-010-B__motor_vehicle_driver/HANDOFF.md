@@ -36,3 +36,15 @@ Added `native_roundabout.py` SHA256 `ca7dbc4883d698ec218cd97e1f8fbbea6ac970429e4
 `tests/test_native_roundabout.py` SHA256 `0fb3eeb7cbf61d68608ad0831dd373039e3928ca8c79cb4f05611df6739f7a3b` exercises source-bound construction, distinct spawns, hold/release, wrong lane, stale source, disconnected route and tracking loss. The full focused suite passes 12 tests: `cpu-roundabout-tests.log` SHA256 `73f2a2170625c27e84db9752426f44554050dbd20dd37ecadcb6d3e2ed475e45`. Pinned preflight exits 0: `cpu-preflight.log` SHA256 `ea685bfbcdb1b0bde932b595d92311cbe7ba9a1af052b2de1292092fe00a86f1`. Scoped static exits 0: `assignment-check.log` SHA256 `050c89d4e0371aba3770d30ebfc24be48749844dfadf62f72ade89c13d41ff0f`. Exact scoped strict exits 1 on truthful partial: `strict-gate.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
 Next CPU work: bind reviewed fixed-cell roundabout map and lane/route source packets to all six exact cases; provide a complete 20 Hz world/camera runner and finalizer, semantic proposals, source-specific diagnostics and positive/negative compatibility, saved-only processing and independent delivery/comparison audits. Later physical work checks realized motion, whether the circulating opponent was present and conflicted at ego entry, camera visibility and actual traffic gap. No legal gap threshold is invented.
+
+## 2026-11-24 original trace capture checkpoint
+
+Added `capture_roundabout.py` to join two distinct original actors and source-checked roundabout construction to 900 contiguous synchronous 20 Hz world frames. It retains eight world-space body vertices and measured speeds for each actor, writes a SHA-sealed trace and source receipt only after completion, and brakes both actors on capture failure. Short fixture captures are explicitly diagnostic and cannot pass `roundabout_measurements.measure`. One 900-frame CPU fixture successfully joins the saved measurement; timing, missing-body and world-rate negatives are tested. This is an executable capture boundary, not proof of a real Native map or legal traffic gap.
+
+Pinned suite passes 17 tests; preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. New SHA256 receipts:
+- `cpu-original-capture-tests.log`: `d33dd64f1befd0f3707f3a3c6d7cfef93651550d76bc0292a2886eda29bf557d`
+- `cpu-original-capture-preflight.log`: `72ea09a845c1a231de4ed06a6481c273b6e6899223540974b87b9e385c03d0fb`
+- `cpu-original-capture-static.log`: `050c89d4e0371aba3770d30ebfc24be48749844dfadf62f72ade89c13d41ff0f`
+- `cpu-original-capture-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Next CPU work: reviewed map and route packets for all six exact cases, full world/sensor lifecycle runner with four-camera capture, saved camera decode and finalizer, semantic proposals, offline/positive-negative compatibility, and independent delivery/comparison audits.

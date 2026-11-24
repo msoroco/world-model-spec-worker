@@ -45,7 +45,7 @@ def callbacks(*, missing=None, frame_jump=False):
     def sample(frame):
         return {"source": "original_native", "case_id": CASE, "map_sha256": "a" * 64,
                 "frame": frame, "time_s": (frame - 100) * 0.05,
-                "ego_actor_id": 1, "rider_actor_id": 2,
+                "ego_actor_id": 1, "rider_actor_id": 2, "rider_person_actor_id": 42,
                 "rider_kind_observed": "bicycle", "rider_mounted_observed": True,
                 "surface_gap_m": 3.0, "ego_speed_mps": 8.0, "rider_speed_mps": 3.0,
                 "ego_brake_observed": 0.7, "conflict_window_observed": 300 <= frame < 400,
@@ -58,6 +58,19 @@ def callbacks(*, missing=None, frame_jump=False):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_changed_rider_person_rejected_before_sealing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tick, sample, camera_png = callbacks()
+            def changed(frame):
+                row = sample(frame)
+                if frame == 110:
+                    row["rider_person_actor_id"] = 99
+                return row
+            with self.assertRaisesRegex(ValueError, "rider person identity"):
+                CAPTURE.capture_attempt(tmp, case_id=CASE, site=SITE,
+                                        tick=tick, sample=changed, camera_png=camera_png)
+            self.assertFalse((pathlib.Path(tmp) / "encounter-packet.json").exists())
+
     def test_900_frame_source_and_pixel_join(self):
         with tempfile.TemporaryDirectory() as tmp:
             tick, sample, camera_png = callbacks()

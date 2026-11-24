@@ -22,10 +22,34 @@
       "exit_code": 1,
       "log": "strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-clock-tests.log",
+      "sha256": "667f0a69cc264af78f1db60abc193aa5b3b4320c75d89660f79edb1fed7b35b0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-native-clock-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-native-clock-static.log",
+      "sha256": "088e7a005ce45dff0d4d24f8de0ddd93dba1026ade7720469c05952f82eda357"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-clock-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "After all CPU delivery proofs pass: actual median-opening crossing geometry, live signal readback, both actor trajectories, 20 Hz capture and four-camera physical visibility."
   ],
-  "reason": "Two exact cases and an isolated comparison are planned; source-gated Native map/device binding, lazy actor construction, original-frame measurement, and comparison audit pass seven CPU tests. Strict gate still rejects partial status: canonical runner/config/construction, semantic proposals, exact offline and compatibility proofs, saved-only processing, canonical independent delivery acceptance and source review of accepted recordings remain CPU work."
+  "reason": "Saved crossing measurement now requires original Native frame IDs and elapsed timestamps throughout 900 frames, independent of attempt-relative indices, rejecting missing, stale and discontinuous source clocks. Seven focused tests, pinned preflight and scoped static pass. Exact strict exits 1 on truthful partial. Canonical runner/config/construction, semantics, offline/compatibility, saved delivery and independent canonical acceptance remain CPU work; two accepted recordings still need original source review."
 }

@@ -115,7 +115,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             'original frame/time identity missing')
     bus_id = traffic_id = None
     stopped_distances, uncertainties, angles, traffic_speeds = [], [], [], []
-    activity_seen = False
+    loading_run = longest_loading_run = 0
     for i, row in enumerate(rows):
         require(row.get('original_frame') == first + i and
                 number(row.get('time_s')) and
@@ -128,6 +128,10 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                     'original measurement source missing: ' + field)
         require(row.get('curb_geometry_source_sha256') ==
                 scene['curb_geometry_source_sha256'] and
+                row.get('right_front_wheel_source_sha256') ==
+                scene['right_front_wheel_source_sha256'] and
+                row.get('location_designation_source_sha256') ==
+                scene['location_designation_source_sha256'] and
                 row.get('activity') == case.activity,
                 'original curb/activity context changed')
         require(row.get('bus_id') and row.get('traffic_id'),
@@ -142,18 +146,29 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
         require(point(row.get('right_front_wheel_xy')) and
                 type(row.get('loading_active')) is bool,
                 'original wheel/activity state missing')
-        if row['bus_speed_mps'] <= .01:
+        if row['bus_speed_mps'] <= .01 and row['loading_active']:
+            loading_run += 1
+            longest_loading_run = max(longest_loading_run, loading_run)
             stopped_distances.append(point_segment_distance(
                 row['right_front_wheel_xy'], *scene['curb_segment_xy']))
             uncertainties.append(row['wheel_position_uncertainty_m'])
             angles.append(row['bus_curb_angle_deg'])
             traffic_speeds.append(row['traffic_speed_mps'])
-            activity_seen |= row['loading_active']
-    require(len(stopped_distances) >= 20 and activity_seen,
+        else:
+            loading_run = 0
+    require(longest_loading_run >= 20,
             'stopped loading interval missing')
+    lower = min(d-u for d,u in zip(stopped_distances,uncertainties))
+    upper = max(d+u for d,u in zip(stopped_distances,uncertainties))
+    relation = ('within' if upper <= EIGHTEEN_INCH_M else
+                'beyond' if lower > EIGHTEEN_INCH_M else 'indeterminate')
     return {'case_id': case.name, 'stopped_frame_count': len(stopped_distances),
+            'longest_continuous_stopped_loading_frames': longest_loading_run,
             'minimum_right_front_wheel_curb_m': min(stopped_distances),
             'maximum_right_front_wheel_curb_m': max(stopped_distances),
+            'right_front_wheel_curb_lower_bound_m': lower,
+            'right_front_wheel_curb_upper_bound_m': upper,
+            'distance_interval_relation_to_18_in': relation,
             'maximum_wheel_position_uncertainty_m': max(uncertainties),
             'maximum_bus_curb_angle_deg': max(angles),
             'minimum_other_traffic_speed_mps': min(traffic_speeds),

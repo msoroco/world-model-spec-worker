@@ -15,6 +15,7 @@ def site():
         "crosswalk_id": "cw-1", "one_way_road_id": "road-1",
         "access_source_sha256": "access", "signal_source_sha256": "signal",
         "obstacle_source_sha256": "obstacles", "participant_source_sha256": "participants",
+        "pedestrian_source_sha256": "pedestrian-source",
         "crosswalk_qualification": "native_crosswalk_readback",
         "pedestrian_access": True, "governing_signal": "pedestrian_walk",
         "crosswalk_width_m": 4, "entry_center": [0, 0], "exit_center": [10, 0],
@@ -71,7 +72,9 @@ class CrosswalkDeliveryTest(unittest.TestCase):
         self.assertEqual(a.calls[-1], ("destroy", "walker"))
 
     def test_original_measurement_and_missing_stream_rejection(self):
-        samples = [{"frame": n, "elapsed_s": n * 0.05, "pedestrian_xy": [n, -1]} for n in range(3)]
+        samples = [{"frame": n, "elapsed_s": n * 0.05, "pedestrian_xy": [n, -1],
+                    "pedestrian_id": "walker-1", "pedestrian_source_sha256": "pedestrian-source"}
+                   for n in range(3)]
         obstacles = [{"frame": n, "source_sha256": "obstacles", "available_right_width_m": 1.5} for n in range(3)]
         participants = [{"frame": n, "source_sha256": "participants", "participants": []} for n in range(3)]
         result = delivery.measure(site(), samples, obstacles, participants)
@@ -85,6 +88,14 @@ class CrosswalkDeliveryTest(unittest.TestCase):
         obstacles[1]["source_sha256"] = "obstacles"
         samples[1]["elapsed_s"] = 0.07
         with self.assertRaisesRegex(ValueError, "20 Hz"):
+            delivery.measure(site(), samples, obstacles, participants)
+        samples[1]["elapsed_s"] = 0.05
+        samples[1]["pedestrian_id"] = "other-walker"
+        with self.assertRaisesRegex(ValueError, "pedestrian identity"):
+            delivery.measure(site(), samples, obstacles, participants)
+        samples[1]["pedestrian_id"] = "walker-1"
+        samples[1]["frame"] = 1.0
+        with self.assertRaisesRegex(ValueError, "frame identity"):
             delivery.measure(site(), samples, obstacles, participants)
 
     def test_comparison_rejects_changed_fixed_source_and_verdict(self):

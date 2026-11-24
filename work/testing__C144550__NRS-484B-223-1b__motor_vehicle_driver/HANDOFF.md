@@ -42,3 +42,15 @@ Added six exact cases: three source-review candidates for frozen accepted IDs an
 Preflight exit 0; five focused tests exit 0; scoped static exit 0; exact scoped strict exit 1 (`Preparation acceptance failed: partial/missing packages remain`). Log command bindings and hashes are in `result.json`.
 
 Next CPU work: implement real controlled lane-change construction and a capture-backed driver-check source; finalize original signal/lane/traffic packets with source hashes; validate case-specific positive/negative compatibility, delivery and comparison audits. Review accepted original traces/video before deciding whether any new recording is needed. CARLA physical motion and video quality follow CPU readiness.
+
+## 2026-11-24 independent readback finalization checkpoint
+
+Added `finalize_lane_change.py` to bind four independently SHA-sealed original 900-frame packets: frame map, ego pose/lane offset, Native signal readback and driver-check readback. It requires exact case identity and frame/time joins, named lane geometry and distinct signal/check provenance. It feeds the joined rows to the existing source-bound timing measurement without allowing the driver-check packet to override signal state. Negative tests reject stale bytes, missing check provenance and frame substitution; absent observed check stays false. This code does not produce a real driver-check channel or prove ascertainment or safety.
+
+Pinned suite passes 10 tests; preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. New SHA256 receipts:
+- `cpu-independent-readback-tests.log`: `073827435efd36e70550cf9bd8b117d376ca929508b605d7ffd9e74f6e8a7da0`
+- `cpu-independent-readback-preflight.log`: `2ab6a3d1f922721f8e39464a6d2bf7cc8d89bbff8a9653437a5c6c16792bcf0a`
+- `cpu-independent-readback-static.log`: `f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d`
+- `cpu-independent-readback-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Next CPU work: bind actual original driver-check source, review accepted traces/video, implement controlled lane-change construction and capture, exact semantic proposals, positive/negative compatibility and independent delivery/comparison acceptance.

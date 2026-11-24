@@ -45,7 +45,7 @@ def _canonical(value: dict) -> bytes:
 
 def capture_observation(world, walker, packet: dict, case_id: str, output: str | Path,
                         read_device, *, ticks: int = 900, camera_readers=None,
-                        camera_dimensions=None) -> dict:
+                        camera_dimensions=None, before_tick=None) -> dict:
     """Write original observations; ``ticks`` is injectable for CPU fixtures."""
     site = assess_site(packet, require_operating=False)
     if not isinstance(case_id, str) or not case_id:
@@ -54,6 +54,8 @@ def capture_observation(world, walker, packet: dict, case_id: str, output: str |
         raise ValueError("at least two Native ticks required")
     if not callable(read_device):
         raise ValueError("device reader required")
+    if before_tick is not None and not callable(before_tick):
+        raise ValueError("before-tick route controller must be callable")
     expected = set(site["device_ids"])
     packet_sha = hashlib.sha256(_canonical(packet)).hexdigest()
     frames = []
@@ -76,6 +78,8 @@ def capture_observation(world, walker, packet: dict, case_id: str, output: str |
     previous_time = None
     try:
       for _ in range(ticks):
+        if before_tick is not None:
+            before_tick()
         tick_frame = int(world.tick())
         snapshot = world.get_snapshot()
         frame = int(snapshot.frame)

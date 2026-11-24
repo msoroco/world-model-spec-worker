@@ -45,7 +45,7 @@ def audit_pair(base_root, base_inventory, other_root, other_inventory, alternati
         raise ValueError("fixed original duration changed")
     if not base["public_authority_posted"] or base["governed_frames"] != base["original_frames"]:
         raise ValueError("baseline original governed portion missing")
-    if not all(row["rate_difference_mps"] is not None and row["rate_difference_mps"] > 0
+    if not all(row["above_posted_rate"] is True
                for row in base["samples"]):
         raise ValueError("baseline speed not above posted rate throughout")
     b_rows, o_rows = br["samples"], oroute["samples"]

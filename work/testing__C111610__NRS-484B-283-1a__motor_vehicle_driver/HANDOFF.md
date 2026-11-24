@@ -61,3 +61,9 @@ Next CPU work: bind an original site/map survey and a real CARLA adapter to this
 
 Focused 29-test suite passed (`cpu-tests.log` SHA256 6784e234f8711c09d6ac40b7d8058f8c83c6242317566f6e97fab3068c8eb640); pinned preflight passed (`cpu-preflight.log` SHA256 d875096aa9571dc8a8d95f70ea21a10b174ce6012f7f3f3d4cbd75d3798c7163). This is a software source-integrity checkpoint. Original Native site/CARLA source validation, exact inline bundles, offline/compatibility, semantic stages and delivery acceptance still require construction.
 Scoped static `check-complete.log` exit 0 SHA256 e5747523924cafcfcb63f346271e3ef25d46c51d37527c8af4b11f5026889978; exact strict `check-strict.log` exit 1 on truthful partial SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.
+
+## 2026-11-24 saved delivery clock join checkpoint
+
+`saved_delivery.py` now reprocesses source-sealed actor measurements and independently decodes all 2,400 original camera PNGs for one exact 600-frame attempt. It joins the ego and pedestrian original Native frame/time fields to the camera frame map on every tick, verifies case/scene/source-index identity, and writes a source-hashed saved receipt. A resealed actor-clock mutation is rejected even though each earlier independent processor accepts its own input. The retained fake-adapter diagnostic succeeds and explicitly leaves physical provenance, pixel visibility and legal judgment unresolved.
+
+The focused suite passed 31 tests, pinned preflight and scoped static passed, and exact scoped strict exited 1 on truthful partial. SHA-bound commands and logs are in `result.json`. Remaining CPU construction: original reviewed Native site and CARLA adapter, seven canonical inline bundles and manifest, semantic stages, pinned offline/compatibility receipts, and complete saved delivery/comparison acceptance.

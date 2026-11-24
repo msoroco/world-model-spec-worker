@@ -30,3 +30,15 @@ Added `comparison_speed.py` SHA256 `ff43513f76be5a4d7d679bc8ef9817966414f852025d
 Pinned proofs: 11 focused tests exit 0, `cpu-speed-tests.log` SHA256 `0d262c6c8f990110ce06c3005cc2933bdd4ec101a3563a969f18ee9564e5b6b7`; preflight exits 0, `cpu-preflight.log` SHA256 `d8644008c19841232acd3410c57911aa785c952a9d4d703bd4d7d23a17246b4f`; scoped static exits 0, `cpu-static-check.log` SHA256 `76c4fc909dad88e8d70d86772fc316d5ae7aa2cb0944adc3782b7c83791cfa64`. Exact scoped strict exits 1 on truthful partial, `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
 Next CPU work: attach original acquisition and saved finalization to each retained case candidate, review actual source traces/videos and sign authority/visibility, build exact construction/controller if new capture remains necessary, finish semantic proposals, positive/negative compatibility, delivery receipts and independent delivery acceptance. The demo-only `sign_not_in_view` candidate remains distinct from full-test membership. Later physical review checks actual speed, posted sign visibility and capture quality.
+
+## 2026-11-24 strict numeric boundary checkpoint
+
+The source-bound verifier previously rounded each original speed difference to nine decimals, which could erase a small positive difference at NRS 484B.600(1)(c)'s strict greater-than boundary. It now converts posted units with decimal source values, preserves the measured difference, and reports `above_posted_rate` per governed frame plus an `observed_above_frames` count. The independent comparison uses that predicate for its baseline. Positive and negative 0.0000000001 m/s offsets are CPU-tested; this is arithmetic correctness, not a physical speed tolerance or legal applicability determination.
+
+Pinned suite passes 13 tests; preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. New SHA256 receipts:
+- `cpu-strict-boundary-tests.log`: `c59f995f93dfb824b770e024c6176f6bf4f30dffaa4e4367692805b9c1a4a2c8`
+- `cpu-strict-boundary-preflight.log`: `ea0b2c28d27f274facd9932c0e15cbad90b233896cf0560c2a0bbe747d097141`
+- `cpu-strict-boundary-static.log`: `76c4fc909dad88e8d70d86772fc316d5ae7aa2cb0944adc3782b7c83791cfa64`
+- `cpu-strict-boundary-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Remaining CPU work: source-bind original accepted traces and videos, finalize each candidate and run saved compatibility; construct new exact cases only if evidence review finds a gap, then complete semantic proposals and independent delivery acceptance.

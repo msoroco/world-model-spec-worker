@@ -35,6 +35,7 @@ def attempt(root):
                       "wheel_diameters_in": [26, 26]}}
     rows = [{"source": "original_native", "case_id": CASE, "map_sha256": "a" * 64,
              "frame": n + 100, "time_s": n * 0.05, "ego_actor_id": 1, "rider_actor_id": 2,
+             "rider_person_actor_id": 42,
              "rider_kind_observed": "bicycle", "rider_mounted_observed": True,
              "surface_gap_m": 3.0, "ego_speed_mps": 8.0, "rider_speed_mps": 3.0,
              "ego_brake_observed": 0.7, "conflict_window_observed": n in range(300, 400),
@@ -66,6 +67,16 @@ class SavedEncounterTests(unittest.TestCase):
             attempt(root)
             (root / "history.json").write_text("[]", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "hash drift"):
+                MODULE.finalize_saved(root)
+
+    def test_resealed_changed_rider_person_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            packet, _, rows, _ = attempt(root)
+            rows[320]["rider_person_actor_id"] = 99
+            packet["history"] = write_json(root, "history.json", rows)
+            write_json(root, "encounter-packet.json", packet)
+            with self.assertRaisesRegex(ValueError, "rider person identity"):
                 MODULE.finalize_saved(root)
 
     def test_missing_camera_and_frame_drift_rejected(self):

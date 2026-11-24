@@ -32,7 +32,8 @@ def validate_site(site):
     """Reject ungrounded walkways and missing qualification/context sources."""
     for key in ("map_sha256", "crosswalk_source_sha256", "crosswalk_id",
                 "one_way_road_id", "access_source_sha256", "signal_source_sha256",
-                "obstacle_source_sha256", "participant_source_sha256"):
+                "obstacle_source_sha256", "participant_source_sha256",
+                "pedestrian_source_sha256"):
         value = site.get(key)
         if not isinstance(value, str) or not value:
             raise ValueError("missing site source: " + key)
@@ -84,9 +85,14 @@ def measure(site, samples, obstacle_samples, participant_samples):
         raise ValueError("missing original participant/obstacle samples")
     start, length, forward, right = _vector(site)
     width = float(site["crosswalk_width_m"])
-    frames = [int(row["frame"]) for row in samples]
+    if any(type(row.get("frame")) is not int for row in samples):
+        raise ValueError("original frame identity invalid")
+    frames = [row["frame"] for row in samples]
     if frames != list(range(frames[0], frames[0] + len(frames))):
         raise ValueError("nonconsecutive original frames")
+    if any(type(row.get("elapsed_s")) not in (int, float) or
+           not math.isfinite(row["elapsed_s"]) for row in samples):
+        raise ValueError("original elapsed time invalid")
     times = [float(row["elapsed_s"]) for row in samples]
     if any(abs((times[i] - times[i - 1]) - 0.05) > 0.001 for i in range(1, len(times))):
         raise ValueError("original samples must be 20 Hz")
@@ -94,7 +100,13 @@ def measure(site, samples, obstacle_samples, participant_samples):
         if [int(row["frame"]) for row in stream] != frames:
             raise ValueError(name + " frame join missing")
     trace = []
+    pedestrian_id = samples[0].get("pedestrian_id")
+    if not pedestrian_id:
+        raise ValueError("original pedestrian identity missing")
     for row, obstacle, participant in zip(samples, obstacle_samples, participant_samples):
+        if (row.get("pedestrian_id") != pedestrian_id or
+            row.get("pedestrian_source_sha256") != site["pedestrian_source_sha256"]):
+            raise ValueError("original pedestrian identity/source changed")
         if obstacle.get("source_sha256") != site["obstacle_source_sha256"]:
             raise ValueError("obstacle source binding differs")
         if participant.get("source_sha256") != site["participant_source_sha256"]:
@@ -108,7 +120,9 @@ def measure(site, samples, obstacle_samples, participant_samples):
             raise ValueError("invalid available right width")
         if not isinstance(participant.get("participants"), list):
             raise ValueError("missing participant inventory")
-        trace.append({"frame": int(row["frame"]), "elapsed_s": float(row["elapsed_s"]),
+        trace.append({"frame": row["frame"], "elapsed_s": float(row["elapsed_s"]),
+                      "pedestrian_id": pedestrian_id,
+                      "pedestrian_source": site["pedestrian_source_sha256"],
                       "station_m": station, "right_lateral_m": lateral,
                       "within_crosswalk": 0 <= station <= length and abs(lateral) <= width / 2,
                       "obstacle_source": obstacle["source_sha256"],
@@ -119,7 +133,7 @@ def measure(site, samples, obstacle_samples, participant_samples):
             "fixed_sources": {key: site[key] for key in ("map_sha256", "crosswalk_source_sha256",
                               "crosswalk_id", "one_way_road_id", "access_source_sha256",
                               "signal_source_sha256", "obstacle_source_sha256",
-                              "participant_source_sha256")},
+                              "participant_source_sha256", "pedestrian_source_sha256")},
             "full_original_trace": trace, "right_half_sample_count": sum(r["right_lateral_m"] > 0 for r in trace),
             "crosswalk_sample_count": sum(r["within_crosswalk"] for r in trace),
             "legal_practicability": "unresolved"}

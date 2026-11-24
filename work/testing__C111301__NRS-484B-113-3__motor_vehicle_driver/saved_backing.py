@@ -22,7 +22,14 @@ def _sealed(root, ref):
     if not isinstance(ref, dict) or set(ref) != {"path", "sha256"}:
         raise ValueError("sealed path and hash required")
     base = Path(root).resolve()
-    candidate = (base / ref["path"]).resolve()
+    relative = ref["path"]
+    if (not isinstance(relative, str) or not relative or
+            Path(relative).is_absolute() or ".." in Path(relative).parts):
+        raise ValueError("sealed source must be a file inside attempt")
+    raw = base / relative
+    if any(path.is_symlink() for path in (raw, *raw.parents) if path != base and base in path.parents):
+        raise ValueError("sealed source must not use a linked path")
+    candidate = raw.resolve()
     if candidate == base or base not in candidate.parents or not candidate.is_file():
         raise ValueError("sealed source must be a file inside attempt")
     digest = hashlib.sha256(candidate.read_bytes()).hexdigest()

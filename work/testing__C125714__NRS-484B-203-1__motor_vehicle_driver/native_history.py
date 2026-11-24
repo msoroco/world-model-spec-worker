@@ -6,11 +6,18 @@ seals observed motion only; requested routes never substitute for body readback.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import math
 from pathlib import Path
 
+from PIL import Image
+
 from opposing_pass import _number, construct, load_sealed, measure, world_routes
+
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
+                     "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _project(vertices, origin, forward):
@@ -37,7 +44,8 @@ def _paved(packet, ego_station, other_station):
 
 
 def capture(adapter, map_path, expected_map_sha256, variant, output,
-            *, frames=900, diagnostic_fixture=False):
+            *, frames=900, diagnostic_fixture=False, media_output=None,
+            camera_dimensions=None):
     """Write a once-only source-hashed trace for the exact variant."""
     if frames != 900 and not diagnostic_fixture:
         raise ValueError("production capture requires 900 original frames")
@@ -57,7 +65,16 @@ def capture(adapter, map_path, expected_map_sha256, variant, output,
     output = Path(output)
     if output.exists():
         raise FileExistsError(output)
+    media_root = Path(media_output) if media_output is not None else None
+    dims = CAMERA_DIMENSIONS if camera_dimensions is None else camera_dimensions
+    if media_root is not None:
+        if media_root.exists():
+            raise FileExistsError(media_root)
+        if set(dims) != set(CAMERAS):
+            raise ValueError("four original camera dimensions required")
+        media_root.mkdir(parents=True)
     rows, actor_ids = [], None
+    camera_rows = []
     first_time = previous_time = previous_frame = None
     for index in range(frames):
         sample = adapter.tick()
@@ -76,6 +93,28 @@ def capture(adapter, map_path, expected_map_sha256, variant, output,
         if abs(native_time - first_time - index/20) > .001:
             raise ValueError("episode time diverged from original Native clock")
         previous_frame, previous_time = native_frame, native_time
+        if media_root is not None:
+            images = sample.get("cameras")
+            if not isinstance(images, dict) or set(images) != set(CAMERAS):
+                raise ValueError("four original cameras required per Native tick")
+            view_refs = {}
+            for name in CAMERAS:
+                data = images[name]
+                if not isinstance(data, bytes) or not data:
+                    raise ValueError("original camera bytes missing")
+                with Image.open(io.BytesIO(data)) as image:
+                    image.load()
+                    if (image.format != "PNG" or image.size != tuple(dims[name]) or
+                            image.mode not in ("RGB", "RGBA")):
+                        raise ValueError("original camera profile mismatch")
+                path = media_root / f"{name}-{index:06d}.png"
+                path.write_bytes(data)
+                view_refs[name] = {"path": path.name,
+                                   "sha256": hashlib.sha256(data).hexdigest()}
+            camera_rows.append({"frame": index, "time_s": index/20,
+                                "native_frame": native_frame,
+                                "native_elapsed_s": native_time,
+                                "views": view_refs})
         ego, other = sample.get("ego"), sample.get("other")
         if not isinstance(ego, dict) or not isinstance(other, dict):
             raise ValueError("two original actor samples required")
@@ -119,5 +158,55 @@ def capture(adapter, map_path, expected_map_sha256, variant, output,
     measure(trace)
     output.write_text(json.dumps(trace, sort_keys=True, separators=(",", ":")) + "\n",
                       encoding="utf-8")
-    return {"path": str(output), "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
+    receipt = {"path": str(output), "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
             "frame_count": frames, "diagnostic_fixture": diagnostic_fixture}
+    if media_root is not None:
+        manifest = media_root / "camera-manifest.json"
+        manifest.write_text(json.dumps(camera_rows, sort_keys=True, separators=(",", ":")) + "\n",
+                            encoding="utf-8")
+        receipt["camera_manifest"] = {"path": str(manifest),
+                                      "sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
+                                      "view_frames": frames * len(CAMERAS)}
+    return receipt
+
+
+def audit_media(trace_path, expected_trace_sha256, media_root, expected_manifest_sha256,
+                *, dimensions=None):
+    """Reopen and decode each retained camera against the original actor clock."""
+    trace = load_sealed(trace_path, expected_trace_sha256)
+    rows = trace.get("samples")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("original actor samples missing")
+    root = Path(media_root)
+    manifest_path = root / "camera-manifest.json"
+    camera_rows = load_sealed(manifest_path, expected_manifest_sha256)
+    if not isinstance(camera_rows, list) or len(camera_rows) != len(rows):
+        raise ValueError("camera/actor frame count mismatch")
+    dims = CAMERA_DIMENSIONS if dimensions is None else dimensions
+    if set(dims) != set(CAMERAS):
+        raise ValueError("four original camera dimensions required")
+    for index, (actor, camera) in enumerate(zip(rows, camera_rows)):
+        if any(camera.get(key) != actor.get(key) for key in
+               ("frame", "time_s", "native_frame", "native_elapsed_s")):
+            raise ValueError(f"camera/actor original clock mismatch at {index}")
+        views = camera.get("views")
+        if not isinstance(views, dict) or set(views) != set(CAMERAS):
+            raise ValueError("four original camera views required")
+        for name in CAMERAS:
+            entry = views[name]
+            expected_name = f"{name}-{index:06d}.png"
+            if entry.get("path") != expected_name:
+                raise ValueError("original camera path mismatch")
+            data = (root / expected_name).read_bytes()
+            if hashlib.sha256(data).hexdigest() != entry.get("sha256"):
+                raise ValueError("original camera bytes changed")
+            with Image.open(io.BytesIO(data)) as image:
+                image.load()
+                if (image.format != "PNG" or image.size != tuple(dims[name]) or
+                        image.mode not in ("RGB", "RGBA")):
+                    raise ValueError("original camera decode/profile mismatch")
+    return {"trace_sha256": expected_trace_sha256,
+            "camera_manifest_sha256": expected_manifest_sha256,
+            "joined_frames": len(rows), "decoded_view_frames": len(rows)*len(CAMERAS),
+            "diagnostic_fixture": trace.get("diagnostic_fixture") is True,
+            "physical_acceptance": False, "legal_judgment": "unresolved"}

@@ -1,6 +1,7 @@
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -10,6 +11,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
 from stand import SourceError, audit_saved_attempt
 from stand_capture import capture
+from stand_media_audit import audit as audit_media
 
 
 class Actor:
@@ -52,7 +54,9 @@ def observe(snapshot, actors):
 
 class CaptureTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        scratch = PACKAGE.parents[1] / '.runtime-work' / 'c135087-media-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.world = World()
@@ -90,6 +94,29 @@ class CaptureTest(unittest.TestCase):
             capture(self.world, self.actors, lambda snapshot, actors: {
                 "passenger_loading_active": True}, "case-a", "Town", self.root)
         self.assertFalse((self.root / "actor-rows.json").exists())
+
+    def test_four_original_video_decodes_and_hash_tamper(self):
+        cameras = {}
+        for name in ('front', 'rear', 'left', 'right'):
+            path = self.root / (name + '.mkv')
+            result = subprocess.run([
+                'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                'color=c=black:s=16x16:r=20:d=0.2', '-frames:v', '4',
+                '-c:v', 'ffv1', '-y', str(path)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            cameras[name] = {'path': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                             'frame_count': 4, 'fps': 20}
+        attempt = {'case_id': 'diagnostic-stand', 'frame_count': 4, 'fps': 20,
+                   'cameras': cameras}
+        report = audit_media(attempt, self.root, expected_frames=4,
+                             dimensions={name: (16, 16) for name in cameras})
+        self.assertEqual(report['decoded_view_frames'], 16)
+        self.assertTrue(report['diagnostic_fixture'])
+        self.assertFalse(report['physical_acceptance'])
+        with (self.root / 'front.mkv').open('ab') as stream:
+            stream.write(b'changed')
+        with self.assertRaisesRegex(SourceError, 'hash mismatch'):
+            audit_media(attempt, self.root, expected_frames=4)
 
 
 if __name__ == "__main__":

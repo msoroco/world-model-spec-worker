@@ -29,3 +29,19 @@ Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, in
 - `saved_audit.py` independently hashes and decodes a 900-frame original Native history, checks source and frame joins, sign readback, body footprint, attendance, property, exception source and four named camera-frame references. This is a CPU saved-source check, not a full video decode or physical-visibility proof. `tests/test_fire_lane.py` passed eight focused tests, including missing designation/sign/exception source, owned-resource cleanup, timing/source tampering, comparison fixed-condition tampering, and sealed-history camera/hash/timing tampering.
 - `.venv-cpu/bin/python runtime.py preflight` passed (`preflight.log`). Exact `worker_check.py --assignment testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver --complete` passed (`complete-check.log`). Its `--require-delivery-ready` variant failed at `Preparation acceptance failed: partial/missing packages remain` (`strict-check.log`), consistent with the truthful partial result. Test and check log hashes are in `result.json`.
 - Next CPU work: create the case-specific Native runner/config/finalizer and 20 Hz four-camera acquisition for each planned case, exact execution manifest and justified tested fallbacks, canonical semantic proposals and index, source-hashed diagnostic recipes, offline and positive/negative compatibility receipts, saved-only `process-saved` path, and full independently decoded delivery audit with negative proof. The actual location-specific Fire Code designation records and physical sign/vehicle visibility must be checked against original capture, not asserted from this fixture. Re-run exact strict check after those CPU deliverables.
+
+## 2026-11-24 four-camera original-frame join checkpoint
+
+The saved independent audit now requires exactly front, rear, left and right camera packets on every original history row. Each packet must carry the same original frame ID as that row and a 64-character SHA256 source digest. Resealed histories with a missing packet or an off-by-one camera frame are rejected. The fixture proves only saved-source consistency, not physical camera visibility.
+
+### Receipts
+
+- `cpu-camera-join-tests.log` exit 0, SHA256 `eafe4f3625d150f485d3feb630338a66b0d5d54506c6595b5a3d2ee53bed7ddd`
+- `cpu-camera-join-preflight.log` exit 0, SHA256 `bc69691469b410bc924b5b75e97e3505fdc9ba29a8a7b1aa8d77d8c7f04ebd96`
+- `cpu-camera-join-static.log` exit 0, SHA256 `c8823939f74113616bb2aaf5562cb706a8c5835d8616bf81c0b8b4aaf3906246`
+- `cpu-camera-join-strict.log` exit 1, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+- `saved_audit.py` SHA256 `830b145ea57ef2900af2982ebc651a2f91c7d2735d9ee88c88270abf2a7f1874`
+- `tests/test_fire_lane.py` SHA256 `7afa5d8ee8eab5406241429b51f4884be4151650a60a22f06ddb0c4e5955fb54`
+
+Eight focused tests, pinned preflight and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: per-case Native bundles, diagnostics, positive/negative compatibility, semantic proposals and full independent delivery audit.

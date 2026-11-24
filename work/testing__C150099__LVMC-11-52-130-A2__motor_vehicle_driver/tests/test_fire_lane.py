@@ -132,7 +132,9 @@ class SavedAudit(unittest.TestCase):
                      sign_physically_present=True, sign_text_readback='FIRE LANE',
                      activity_observation='parked', attended_observation=True,
                      property_kind='public', posted_interval_m=[10, 30],
-                     body_interval_m=[11, 15], camera_frames={'front':'f','rear':'r','left':'l','right':'rt'},
+                     body_interval_m=[11, 15],
+                     camera_frames={name: {'original_frame': i, 'source_sha256': 'a'*64}
+                                    for name in ('front', 'rear', 'left', 'right')},
                      exception_kind='none') for i in range(900)]
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / 'history.jsonl'
@@ -147,7 +149,12 @@ class SavedAudit(unittest.TestCase):
             digest = write()
             with self.assertRaisesRegex(ValueError, 'four-camera'):
                 saved_audit.audit_original_history(p, digest, 'a', fixed['site_sha256'])
-            rows[500]['camera_frames']['front'] = 'f'
+            rows[500]['camera_frames']['front'] = {'original_frame': 499,
+                                                   'source_sha256': 'a'*64}
+            digest = write()
+            with self.assertRaisesRegex(ValueError, 'four-camera original frame'):
+                saved_audit.audit_original_history(p, digest, 'a', fixed['site_sha256'])
+            rows[500]['camera_frames']['front']['original_frame'] = 500
             rows[500]['time_s'] = 30
             digest = write()
             with self.assertRaisesRegex(ValueError, '20 Hz'):

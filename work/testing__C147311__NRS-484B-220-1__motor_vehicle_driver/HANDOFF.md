@@ -23,3 +23,19 @@ Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped 
 ## Remaining CPU work
 
 Create canonical selected-case bundles and source-bound positive/negative compatibility, saved processing, semantic proposals and independent delivery/comparison audits. Review existing accepted original sources before selecting any repeat lane-one recording. Then rerun scoped strict. Actual CARLA sign governance and travel visibility remain physical review after CPU readiness.
+
+## 2026-11-24 position and velocity consistency checkpoint
+
+The saved 900-frame direction measurement now requires an original ego position source on each row, validates SHA-shaped source references, and checks adjacent original positions against velocity and elapsed time. A reversed velocity with unchanged positions, tampered positions, missing position source and malformed context digest are rejected. This is a CPU acquisition/measurement contract; no physical capture is claimed.
+
+### Receipts
+
+- `cpu-position-tests.log` exit 0, SHA256 `5ee9dd033dcc430dea8fa347ccbf0858850e9c3f326e41952ae6c7d4a97fda01`
+- `cpu-position-preflight.log` exit 0, SHA256 `8f5031299024e59b7a9fd340dc4980120ae90736e7309c8b104ae9b7b2a18ad0`
+- `cpu-position-static.log` exit 0, SHA256 `44477c53eaa70167331894dacb9d2162ec93757b9c05d35170548a95bffe475a`
+- `cpu-position-strict.log` exit 1, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+- `one_way_direction.py` SHA256 `09ffd3c50b3effcc9bf842527c6cb33346a5f0fcaa6fda9907513b14d518ca5f`
+- `tests/test_one_way_direction.py` SHA256 `41bc5c603da8d8d233e406fb3a5882b52f9dc3941755df166991c9d022e99266`
+
+Five focused tests, pinned preflight and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: canonical selected-case bundles and independent comparison/delivery audits for all four exact cases.

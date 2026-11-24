@@ -11,6 +11,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
 from native_history_capture import capture
 from crossing_timing import measure
+from saved_finalizer import finalize
 
 
 class Vertex:
@@ -65,7 +66,9 @@ class World:
 
 class CaptureTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        scratch = PACKAGE.parents[1] / '.runtime-work' / 'c125763-finalizer-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.world = World()
@@ -120,6 +123,35 @@ class CaptureTest(unittest.TestCase):
         self.packet.write_text(json.dumps(self.scene) + "\n")
         with self.assertRaisesRegex(ValueError, "bounds"):
             capture(self.world, self.packet, self.ego, self.other, self.root / "bad", 4)
+
+    def test_saved_finalizer_seals_timing_and_rejects_stale_source(self):
+        attempt = self.root / 'capture'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4)
+        manifest = attempt / 'source-manifest.json'
+        digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        output = self.root / 'entry-result.json'
+        result = finalize(attempt, output, expected_manifest_sha256=digest,
+                          probe_id='entry_inside')
+        self.assertEqual(result['original_frame_count'], 4)
+        self.assertTrue(result['diagnostic_fixture'])
+        self.assertFalse(result['legal_verdict_claimed'])
+        with self.assertRaises(FileExistsError):
+            finalize(attempt, output, expected_manifest_sha256=digest,
+                     probe_id='entry_inside')
+        with self.assertRaisesRegex(ValueError, 'manifest hash mismatch'):
+            finalize(attempt, self.root / 'stale.json',
+                     expected_manifest_sha256='0'*64, probe_id='entry_inside')
+
+    def test_saved_finalizer_rejects_changed_original_history(self):
+        attempt = self.root / 'capture'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4)
+        manifest = attempt / 'source-manifest.json'
+        digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        with (attempt / 'ego-body-history.jsonl').open('a') as stream:
+            stream.write('{}\n')
+        with self.assertRaisesRegex(ValueError, 'stale original Native source'):
+            finalize(attempt, self.root / 'result.json',
+                     expected_manifest_sha256=digest, probe_id='entry_inside')
 
 
 if __name__ == "__main__":

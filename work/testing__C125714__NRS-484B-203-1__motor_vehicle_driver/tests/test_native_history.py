@@ -1,15 +1,18 @@
 import hashlib
+import io
 import json
 import pathlib
 import sys
 import tempfile
 import unittest
 
+from PIL import Image
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 
-from native_history import capture
+from native_history import audit_media, capture
 from opposing_pass import finalize_sealed, measure
 from test_opposing_pass import site
 
@@ -41,6 +44,23 @@ class Adapter:
                 "other": {"actor_id": "other",
                           "vertices_world_xyz_m": vertices(1-i, 1.7),
                           "velocity_world_xyz_mps": [-6, 0, 0]}}
+
+
+class CameraAdapter(Adapter):
+    def __init__(self, digest, missing=False):
+        super().__init__(digest)
+        self.missing = missing
+        stream = io.BytesIO()
+        Image.new("RGB", (2, 2), (10, 20, 30)).save(stream, format="PNG")
+        self.image = stream.getvalue()
+
+    def tick(self):
+        sample = super().tick()
+        sample["cameras"] = {name: self.image for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")}
+        if self.missing and self.index == 2:
+            del sample["cameras"]["approach"]
+        return sample
 
 
 class NativeHistoryTests(unittest.TestCase):
@@ -90,6 +110,43 @@ class NativeHistoryTests(unittest.TestCase):
             capture(Adapter("0"*64), self.map_path, self.digest,
                     "right_half", self.root / "attestation.json", frames=3,
                     diagnostic_fixture=True)
+
+
+    def test_same_tick_four_camera_capture_and_saved_decode(self):
+        dims = {name: (2, 2) for name in
+                ("overview", "approach", "reference_corner", "driver_reference")}
+        trace = self.root / "trace.json"
+        media = self.root / "media"
+        receipt = capture(CameraAdapter(self.digest), self.map_path, self.digest,
+                          "right_half", trace, frames=3, diagnostic_fixture=True,
+                          media_output=media, camera_dimensions=dims)
+        report = audit_media(trace, receipt["sha256"], media,
+                             receipt["camera_manifest"]["sha256"], dimensions=dims)
+        self.assertEqual(report["joined_frames"], 3)
+        self.assertEqual(report["decoded_view_frames"], 12)
+        self.assertFalse(report["physical_acceptance"])
+        frame = media / "approach-000001.png"
+        frame.write_bytes(b"changed")
+        with self.assertRaisesRegex(ValueError, "camera bytes changed"):
+            audit_media(trace, receipt["sha256"], media,
+                        receipt["camera_manifest"]["sha256"], dimensions=dims)
+        frame.write_bytes(CameraAdapter(self.digest).image)
+        manifest = media / "camera-manifest.json"
+        rows = json.loads(manifest.read_text())
+        rows[1]["native_frame"] += 1
+        manifest.write_text(json.dumps(rows) + "\n")
+        resealed = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(ValueError, "original clock mismatch"):
+            audit_media(trace, receipt["sha256"], media, resealed, dimensions=dims)
+
+    def test_missing_original_camera_rejected(self):
+        dims = {name: (2, 2) for name in
+                ("overview", "approach", "reference_corner", "driver_reference")}
+        with self.assertRaisesRegex(ValueError, "four original cameras"):
+            capture(CameraAdapter(self.digest, missing=True), self.map_path, self.digest,
+                    "right_half", self.root / "trace.json", frames=3,
+                    diagnostic_fixture=True, media_output=self.root / "media",
+                    camera_dimensions=dims)
 
 
 if __name__ == "__main__":

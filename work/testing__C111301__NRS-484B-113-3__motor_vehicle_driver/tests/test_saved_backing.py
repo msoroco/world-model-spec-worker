@@ -7,6 +7,8 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRATCH = ROOT.parents[1] / '.runtime-work'
+SCRATCH.mkdir(exist_ok=True)
 sys.path.insert(0, str(ROOT))
 from saved_backing import ASSIGNMENT, process
 from saved_comparison import audit
@@ -57,7 +59,7 @@ def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
 
 class SavedBackingTests(unittest.TestCase):
     def test_original_map_bytes_are_sealed_separately_from_packet(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             self.assertEqual(process(root, ASSIGNMENT + "__pedestrian_yield")["map_source"]["path"],
@@ -73,15 +75,28 @@ class SavedBackingTests(unittest.TestCase):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_missing_original_map_is_rejected(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             fixture(root)
             (root / "road.xodr").unlink()
             with self.assertRaisesRegex(ValueError, "sealed source must be a file"):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
+    def test_linked_original_map_is_rejected_even_inside_attempt(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
+            root = Path(directory)
+            receipt = fixture(root)
+            linked = root / 'linked-road.xodr'
+            linked.symlink_to(root / 'road.xodr')
+            packet = json.loads((root / 'map.json').read_text(encoding='utf-8'))
+            packet['map_source']['path'] = linked.name
+            receipt['map_packet'] = write(root, 'map.json', packet)
+            write(root, 'acquisition.json', receipt)
+            with self.assertRaisesRegex(ValueError, 'linked path'):
+                process(root, ASSIGNMENT + '__pedestrian_yield')
+
     def test_full_camera_decode_and_frame_count_rejection(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             for name in ("front", "rear", "left", "right"):
@@ -108,7 +123,7 @@ class SavedBackingTests(unittest.TestCase):
                             dimensions={name: (16, 16) for name in receipt["media"]})
 
     def test_saved_measurement_with_full_camera_decode(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             for name in ("front", "rear", "left", "right"):
@@ -143,7 +158,7 @@ class SavedBackingTests(unittest.TestCase):
         return left, right, receipt
 
     def test_saved_comparison_replays_both_attempts(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             left, right, _ = self._paired(Path(directory))
             result = audit(left, right)
             self.assertEqual(result["frame_count"], 900)
@@ -158,7 +173,7 @@ class SavedBackingTests(unittest.TestCase):
                              "pedestrian_yield_response")
 
     def test_case_response_witnesses_are_original_and_case_specific(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             left, right, _ = self._paired(Path(directory))
             yielded = process(left, ASSIGNMENT + "__pedestrian_yield")
             continued = process(right, ASSIGNMENT + "__pedestrian_continue")
@@ -168,7 +183,7 @@ class SavedBackingTests(unittest.TestCase):
             self.assertEqual(yielded["response_witness"]["legal_judgment"], "unresolved")
 
     def test_response_rejects_transient_or_wrong_case_behavior(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             frames = json.loads((root / "telemetry.json").read_text(encoding="utf-8"))
@@ -187,7 +202,7 @@ class SavedBackingTests(unittest.TestCase):
                 response_witness(measured, case_id=ASSIGNMENT + "__pedestrian_yield")
 
     def test_saved_comparison_rejects_changed_context_and_tamper(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             left, right, receipt = self._paired(Path(directory))
             packet = json.loads((right / "map.json").read_text(encoding="utf-8"))
             packet["pedestrian_route"][1]["y_m"] = 4
@@ -200,7 +215,7 @@ class SavedBackingTests(unittest.TestCase):
                 audit(left, right)
 
     def test_saved_comparison_rejects_exposure_drift(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             left, right, receipt = self._paired(Path(directory))
             frames = json.loads((right / "telemetry.json").read_text(encoding="utf-8"))
             frames[100]["pedestrian_xy"] = [9, 9]
@@ -211,7 +226,7 @@ class SavedBackingTests(unittest.TestCase):
                 audit(left, right)
 
     def test_saved_corridor_flag_is_checked_against_original_route(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             frames = json.loads((root / "telemetry.json").read_text(encoding="utf-8"))
@@ -228,7 +243,7 @@ class SavedBackingTests(unittest.TestCase):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_sealed_original_join(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             fixture(root)
             output = process(root, ASSIGNMENT + "__pedestrian_yield")
@@ -237,7 +252,7 @@ class SavedBackingTests(unittest.TestCase):
             self.assertFalse(output["physical_completion"])
 
     def test_rejects_tampered_source(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             fixture(root)
             (root / "telemetry.json").write_text("[]\n", encoding="utf-8")
@@ -245,7 +260,7 @@ class SavedBackingTests(unittest.TestCase):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_rejects_camera_frame_mismatch(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             maps = json.loads((root / "frame-map.json").read_text())
@@ -256,7 +271,7 @@ class SavedBackingTests(unittest.TestCase):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_rejects_missing_media_and_diagnostic(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             receipt["media"].pop("rear")
@@ -269,7 +284,7 @@ class SavedBackingTests(unittest.TestCase):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_rejects_case_and_outside_path(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             with self.assertRaisesRegex(ValueError, "exact-case identity"):
@@ -280,7 +295,7 @@ class SavedBackingTests(unittest.TestCase):
                 process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_rejects_time_gap(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
             frames = json.loads((root / "telemetry.json").read_text())

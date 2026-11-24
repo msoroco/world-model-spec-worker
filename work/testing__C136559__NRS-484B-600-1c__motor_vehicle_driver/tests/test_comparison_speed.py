@@ -36,6 +36,13 @@ class ComparisonTests(unittest.TestCase):
         self.assertEqual(audit_pair(self.base_root, self.base_inventory,
                          self.other_root, other, "equal")["alternative_governed_frames"], 900)
 
+    def test_near_boundary_baseline_remains_strictly_above(self):
+        _, self.base_inventory = self.fixture._attempt(self.base_root,
+                                                       speed=13.4112000001)
+        other = self.alternative("equal", speed=13.4112)
+        self.assertTrue(audit_pair(self.base_root, self.base_inventory,
+                        self.other_root, other, "equal")["fixed_source_checks_passed"])
+
     def test_rejects_changed_fixed_roadway_source(self):
         other = self.alternative("below", speed=12)
         self.fixture._change(self.other_root, other, "posted_control",

@@ -34,6 +34,7 @@ def measure(packet: dict, attempt: Path) -> dict:
         raise ValueError('original governing signal readback required')
     frames = packet.get('frames')
     observed = state.get('observed_frame_ids')
+    signal_rows = state.get('observed_signal_states')
     if not isinstance(frames, list) or len(frames) < 3 or not isinstance(observed, list):
         raise ValueError('original signal/frame history required')
     first = frames[0].get('frame')
@@ -47,9 +48,18 @@ def measure(packet: dict, attempt: Path) -> dict:
             raise ValueError('original signal/frame 20 Hz join differs')
     if observed != [row['frame'] for row in frames]:
         raise ValueError('governing signal does not span original frame history')
+    if (not isinstance(signal_rows, list) or len(signal_rows) != len(frames) or
+            any(not isinstance(row, dict) or
+                row.get('frame') != frame['frame'] or
+                row.get('governs_ego_approach') is not True or
+                row.get('state') not in ('red', 'yellow', 'green')
+                for row, frame in zip(signal_rows, frames))):
+        raise ValueError('original per-frame governing signal state missing')
     return {'signal_governs_ego_approach': True,
             'first_frame': first, 'last_frame': frames[-1]['frame'],
             'frame_count': len(frames),
             'signal_state_source_sha256': packet['sources']['signal_state_readback']['sha256'],
+            'observed_signal_states': {state: sum(row['state'] == state for row in signal_rows)
+                                       for state in ('red', 'yellow', 'green')},
             'subsection_1_exception_observed': True,
             'legal_conduct_under_other_rules': 'unresolved'}

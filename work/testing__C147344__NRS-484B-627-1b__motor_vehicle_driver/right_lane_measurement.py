@@ -19,10 +19,19 @@ def measure(path: str | Path) -> dict:
     path = Path(path)
     raw = path.read_bytes()
     packet = json.loads(raw)
+    return measure_packet(packet, {"path": str(path),
+                                   "sha256": hashlib.sha256(raw).hexdigest()})
+
+
+def measure_packet(packet: dict, source: dict) -> dict:
     if packet.get("assignment_id") != ASSIGNMENT:
         raise ValueError("wrong assignment")
     if not packet.get("original_trace_id"):
         raise ValueError("original trace identity required")
+    relation_source = packet.get("follower_relation_source_sha256")
+    if (not isinstance(relation_source, str) or len(relation_source) != 64 or
+            any(c not in "0123456789abcdef" for c in relation_source)):
+        raise ValueError("independent original follower-relation source required")
     frames = packet.get("frames")
     if not isinstance(frames, list) or len(frames) < 3:
         raise ValueError("three original frames required")
@@ -40,6 +49,10 @@ def measure(path: str | Path) -> dict:
             raise ValueError("original lane identities required")
         if not f.get("follower_actor_id") or not f.get("follower_lane_id"):
             raise ValueError("original following actor and lane required")
+        if type(f.get("follower_immediately_behind_readback")) is not bool:
+            raise ValueError("original immediate-follower relation readback required")
+        if f["follower_immediately_behind_readback"] and f["follower_lane_id"] != f["ego_lane_id"]:
+            raise ValueError("immediate follower relation conflicts with original lane")
         if not isinstance(f.get("passing_slower_vehicle_observed"), bool):
             raise ValueError("original passing observation required")
         if not isinstance(f.get("same_direction_marked_lane_count"), int) or f["same_direction_marked_lane_count"] < 2:
@@ -48,7 +61,8 @@ def measure(path: str | Path) -> dict:
             "frame_index": i,
             "time_s": f["time_s"],
             "ego_in_extreme_right_lane": f["ego_lane_id"] == f["rightmost_same_direction_lane_id"],
-            "follower_immediately_behind_in_ego_lane": f["follower_lane_id"] == f["ego_lane_id"],
+            "follower_in_ego_lane": f["follower_lane_id"] == f["ego_lane_id"],
+            "follower_immediately_behind_in_ego_lane": f["follower_immediately_behind_readback"],
             "follower_closing_speed_mps": f["follower_speed_mps"] - f["ego_speed_mps"],
             "follower_gap_m": f["follower_gap_m"],
             "passing_slower_vehicle_observed": f["passing_slower_vehicle_observed"],
@@ -56,7 +70,8 @@ def measure(path: str | Path) -> dict:
     return {
         "assignment_id": ASSIGNMENT,
         "original_trace_id": packet["original_trace_id"],
-        "source": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
+        "source": source,
+        "follower_relation_source_sha256": relation_source,
         "observations": observations,
         "review_limit": "Closing speed and gap do not alone prove impediment; observed passing does not alone prove necessity. Highway status, lane markings, immediately-behind relation and exception need source review.",
     }

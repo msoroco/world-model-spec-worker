@@ -30,6 +30,11 @@ def measure(source_path: str | Path) -> dict:
     """
     path = Path(source_path)
     trace = json.loads(path.read_text(encoding="utf-8"))
+    return measure_trace(trace, _source(path))
+
+
+def measure_trace(trace: dict, source: dict) -> dict:
+    """Measure joined original samples with their independently sealed source."""
     if trace.get("assignment_id") != ASSIGNMENT:
         raise ValueError("assignment identity mismatch")
     if not trace.get("original_trace_id") or not trace.get("source_lane_id"):
@@ -67,7 +72,7 @@ def measure(source_path: str | Path) -> dict:
         "assignment_id": ASSIGNMENT,
         "original_trace_id": trace["original_trace_id"],
         "source_lane_id": trace["source_lane_id"],
-        "source": _source(path),
+        "source": source,
         "method": "planar_original_pose_path_integral_signal_to_first_center_displacement_gt_0.05m",
         "signal_onset_index": signal,
         "signal_precedes_center_departure": signal is not None and signal < departure,

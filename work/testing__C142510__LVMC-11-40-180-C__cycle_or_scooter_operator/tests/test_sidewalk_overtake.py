@@ -18,13 +18,16 @@ def body(x,y):return [[x-.1,y-.1],[x+.1,y-.1],[x+.1,y+.1],[x-.1,y+.1]]
 
 class SidewalkTest(unittest.TestCase):
     def setUp(self):
-        t=tempfile.TemporaryDirectory();self.addCleanup(t.cleanup);self.root=Path(t.name)
+        scratch=ROOT.parents[1]/'.runtime-work'/'c142510-test-scratch'
+        scratch.mkdir(parents=True,exist_ok=True)
+        t=tempfile.TemporaryDirectory(dir=scratch);self.addCleanup(t.cleanup);self.root=Path(t.name)
         self.site={'assignment_id':m.ASSIGNMENT,'cell_id':'C142510',
             'case_id':m.ASSIGNMENT+'__signal_before', 'reviewer':'synthetic fixture',
             'sidewalk_source_citation':'fixture sidewalk','sidewalk_id':'walk A',
             'connected_route_citation':'fixture route','microphone_calibration_source':'fixture sound',
             'physical_surface_kind':'sidewalk','sidewalk_connected':True,
             'rider_kind':'bicycle','rider_actor_id':11,'pedestrian_actor_id':22,
+            'emitter_actor_id':33,'microphone_propagation_max_s':.05,
             'sidewalk_travel_unit_xy':[1,0],
             'sidewalk_polygon_xy_m':[[-5,-1],[5,-1],[5,1],[-5,1]],
             'microphone_sample_rate_hz':1000,'microphone_start_time_s':0.0,
@@ -32,6 +35,7 @@ class SidewalkTest(unittest.TestCase):
         self.rider=self.rows(11,[-2,-1.5,-.5,.5,1.5])
         self.pedestrian=self.rows(22,[0]*5)
         self.sound_start=50
+        self.emitter_event=True
         self.write()
 
     @staticmethod
@@ -48,6 +52,12 @@ class SidewalkTest(unittest.TestCase):
         (self.root/'site-context.json').write_text(json.dumps(self.site))
         for name,rows in (('rider',self.rider),('pedestrian',self.pedestrian)):
             (self.root/f'{name}-body-history.jsonl').write_text(''.join(json.dumps(x)+'\n' for x in rows))
+        emitter=[{'source':'original_native','frame':row['frame'],
+                  'time_s':row['time_s'],'actor_id':33,
+                  'emitted':self.emitter_event and self.sound_start==i*50}
+                 for i,row in enumerate(self.rider)]
+        (self.root/'emitter-event-history.jsonl').write_text(
+            ''.join(json.dumps(row)+'\n' for row in emitter))
         samples=[0]*500
         if self.sound_start is not None:
             for i in range(self.sound_start,min(self.sound_start+50,len(samples))):
@@ -106,6 +116,22 @@ class SidewalkTest(unittest.TestCase):
         result=m.measure(self.root)
         self.assertIsNone(result['microphone']['onset_time_s'])
         self.assertFalse(result['detected_signal_before_pass'])
+
+    def test_unrelated_loud_sound_has_no_original_emitter_join(self):
+        self.emitter_event=False;self.write()
+        with self.assertRaisesRegex(ValueError,'no source-bound emitter event'):
+            m.measure(self.root)
+        self.emitter_event=True;self.write()
+        history=self.root/'emitter-event-history.jsonl'
+        lines=history.read_text().splitlines()
+        rows=[json.loads(line) for line in lines]
+        rows[1]['actor_id']=99
+        history.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        manifest=json.loads((self.root/'source-manifest.json').read_text())
+        manifest['emitter-event-history.jsonl']['sha256']=m.sha(history)
+        (self.root/'source-manifest.json').write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError,'emitter event/frame join'):
+            m.measure(self.root)
 
     def test_rider_response_pair_uses_original_brake_history(self):
         braking=m.measure(self.root)

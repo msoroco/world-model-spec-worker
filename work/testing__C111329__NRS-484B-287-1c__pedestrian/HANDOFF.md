@@ -39,3 +39,15 @@ Added `carla_readback.py`, a lazy bridge from four named CARLA BGRA camera callb
 Pinned CPU proofs: `cpu-tests.log` (30 tests, exit 0) SHA256 `e756aef84bf0b8067efa7dbe42558b926ffb00be2af37186986e2631fd48e6bc`; `cpu-preflight.log` (exit 0) SHA256 `71b5e75c8e8b6dfe5d820a79cd7642e5fe17ba3e034cbe8783eb50859177a352`; `cpu-static-check.log` (exit 0) SHA256 `2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe`. Exact assignment strict check exits 1, `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`, because the package remains truthful `partial`.
 
 Next CPU work: obtain/review the exact fixed-cell map, device authority/operation and complete marking survey sources; bind three case-specific runners and finalizers to those sources; create canonical stage proposals and saved-only positive/negative compatibility plus independent delivery receipts. Legal adjacency, official-device status and NRS 484B.290 still need independent source-supported review. No live CARLA or legal acceptance is claimed by the CPU fixture.
+
+## 2026-11-24 route-control integration checkpoint
+
+Added `owned_capture.py` and a `before_tick` hook in `native_observation.py`. The wrapper source-checks and spawns the route walker, applies `advance_pedestrian` immediately before each world tick, and destroys the actor on both capture success and failure. The capture rejects a noncallable hook or a hook failure without leaving an original observation. This closes a control timing gap; it does not establish a reviewed Native site, device operation or legal outcome.
+
+Focused suite: 34 tests pass. Pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. SHA256 receipts:
+- `cpu-route-integration-tests.log`: `5cdab3d500e21a0333807024efb87c1de6fa8f5d1ab2f6f1690cd265534a32ba`
+- `cpu-route-preflight.log`: `ea55fdb989d1827c213c923af4284a1d85b33429dd7d7a01f58038f1fed484b9`
+- `cpu-route-static.log`: `2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe`
+- `cpu-route-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Next: bind reviewed fixed-cell map, device authority/operation and complete marking survey; build exact per-case production bundles/finalizers, canonical proposals and saved positive/negative compatibility with independent delivery audit. Legal adjacency, official-device status and the NRS 484B.290 exception remain unresolved.

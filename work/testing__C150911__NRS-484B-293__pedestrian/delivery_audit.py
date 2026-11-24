@@ -36,7 +36,14 @@ def audit_saved(packet, measurement, source_root):
         raise ValueError("gapped original frame map")
     if not any(row.get("within_crosswalk") for row in trace):
         raise ValueError("no observed crosswalk passage")
+    pedestrian_id = trace[0].get("pedestrian_id")
+    pedestrian_source = measurement["fixed_sources"].get("pedestrian_source_sha256")
+    if not pedestrian_id or not pedestrian_source:
+        raise ValueError("original pedestrian source missing")
     for row in trace:
+        if (row.get("pedestrian_id") != pedestrian_id or
+            row.get("pedestrian_source") != pedestrian_source):
+            raise ValueError("original pedestrian identity/source join changed")
         if row.get("obstacle_source") != measurement["fixed_sources"].get("obstacle_source_sha256"):
             raise ValueError("missing original obstacle join")
         if row.get("participant_source") != measurement["fixed_sources"].get("participant_source_sha256"):

@@ -45,3 +45,15 @@ Eight focused CPU tests passed in `cpu-crosswalk-tests.log`, including CLI repla
 | `result.json` | `ec2603c3e9724a3f232e4b8aba0cf2ca3a900d1e8afb2baaf4a99d9467fc294f` |
 
 Pinned preflight, 14 focused tests and scoped static exit 0. Exact scoped strict exits 1 on truthful partial status and is retained here and in `strict-gate.log`, outside successful `result.json.tests` receipts. Next CPU work: bind actual source intersection, sidewalk and crosswalk geometry; implement physical actor controllers, case finalizers and exact bundles; prove positive/negative compatibility, saved-only processing and independent delivery/comparison audits. CARLA motion and camera quality follow CPU readiness.
+
+## 2026-11-24 source-bound crosswalk site construction
+
+`crosswalk_construction.build_sourced` now requires distinct regular source files beside the site packet for the original map, qualifying road intersection, opposite sidewalk geometry, curb/traveled edge and independently observed stopped purpose; marked cases also require original marking source. It verifies their bytes, SHA-256 and citations and binds the site map SHA to the map source before producing the existing geometry and ego/pedestrian routes. Symlinks, missing purpose, altered sidewalk bytes, changed map identity and mismatched curb citation are rejected. This is a custody and consistency guard; source authority, physical intersection status, pedestrian intent and legal applicability remain unreviewed.
+
+All 23 focused tests pass (`cpu-sourced-site-tests.log`), pinned preflight passes (`cpu-sourced-site-preflight.log`), and exact scoped static passes (`cpu-sourced-site-static.log`). The exact scoped strict check exits 1 on truthful partial (`cpu-sourced-site-strict.log`). Commands and SHA-256 receipts are in `result.json`. Next CPU work: integrate a real reviewed Native site packet and six executable scene bundles, actor controllers and synchronized camera capture, semantic proposals, positive/negative compatibility, saved delivery and independent comparison audits.
+
+
+`case_construction.construct` now selects all six exact case IDs from the fixed plan and requires the sealed stopped-purpose observer source to match each case. It binds crossing kind, ego request, map/source inventory, plan hash and a 20 Hz/900-frame four-camera capture plan, without asserting physical or legal success. A changed observed purpose is rejected. This is a source-bound construction proposal, not a completed Native runner or canonical bundle.
+
+
+`case_construction.compare_constructions` independently checks the exact ordered plan pair, plan hash, fixed map/capture/pedestrian/source facts and each declared changed dimension. Stop-purpose comparisons may change only the observer source while preserving map, geometry and route; wrong pair and changed original map/pedestrian sources are rejected. These are source-bound construction audits and do not substitute for post-capture observed comparison acceptance.

@@ -23,3 +23,19 @@ Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped 
 ## Remaining CPU work
 
 Create canonical selected-case bundles and source-bound positive/negative compatibility, saved processing, semantic proposals and independent delivery/comparison audits. Ensure precise original right-front-wheel pose uncertainty supports the 1-cm boundary probes. Then rerun scoped strict. Actual CARLA wheel geometry, loading and traffic/camera visibility remain physical review after CPU readiness.
+
+## 2026-11-24 stopped loading measurement checkpoint
+
+The saved original-frame measurement now requires at least 20 consecutive frames with both the bus stopped and actual loading active. Distances from preloading stops are excluded. Right-front-wheel and location-designation row sources are bound to the scene sources. For every stopped loading measurement, wheel uncertainty produces lower and upper bounds; the output labels their relation to 18 inches as within, beyond or indeterminate without making a legal judgment.
+
+### Receipts
+
+- `cpu-loading-tests.log` exit 0, SHA256 `26dc1434f954370716c3b8e7ab1338fe4feb5e8482a308fd3bcf20f773f1c2e5`
+- `cpu-loading-preflight.log` exit 0, SHA256 `929334194aa03afd1a7953a948e000fe4e63a38272ec750fabf9076ecad31052`
+- `cpu-loading-static.log` exit 0, SHA256 `7c9ebe5f7f854d49deef519d8657dbdab3def38f76e82160225ae323a4b86edc`
+- `cpu-loading-strict.log` exit 1, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+- `bus_curb.py` SHA256 `e8f2f882456c1c8b037348adf5c3218863aeaf4246719cb2a586ac8b66ff2f43`
+- `tests/test_bus_curb.py` SHA256 `00809fbda3af9b74fdd7d64b88cb2abb0475566539244d71a35d63533d4f29e0`
+
+Five focused tests, pinned preflight and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: canonical selected-case bundles and independent comparison/delivery audits for all seven exact cases.

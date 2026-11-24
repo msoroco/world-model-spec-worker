@@ -74,7 +74,8 @@ def finalize_saved(attempt):
             raise ValueError("original history case drift")
     measurement = ENCOUNTER.audit_original_history(rows,
         expected_rider_kind=kind, expected_response=response,
-        map_sha256=site["map_sha256"])
+        map_sha256=site["map_sha256"],
+        expected_person_actor_id=map_packet["rider"]["person_actor_id"])
     camera_frames = _load_source(root, packet.get("camera_frames"))
     original_frames = [row["frame"] for row in rows]
     if not isinstance(camera_frames, dict) or set(camera_frames) != set(CAMERAS):
@@ -91,6 +92,7 @@ def finalize_saved(attempt):
         "kind": kind,
         "response": response,
         "map_sha256": site["map_sha256"],
+        "rider_person_actor_id": map_packet["rider"]["person_actor_id"],
         "source_hashes": {name: packet[name]["sha256"] for name in ("site", "history", "camera_frames")},
         "original_frames": len(rows),
         "camera_frames": {name: len(camera_frames[name]) for name in CAMERAS},

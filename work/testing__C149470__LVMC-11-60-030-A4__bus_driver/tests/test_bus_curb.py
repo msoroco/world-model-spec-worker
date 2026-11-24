@@ -75,6 +75,13 @@ class BusTests(unittest.TestCase):
                                        case.target_distance_m)
                 self.assertEqual(result['statutory_limit_m'],.4572)
                 self.assertIsNone(result['parallel_judgment'])
+                expected = ('within' if case.target_distance_m < .4572 else
+                            'beyond' if case.target_distance_m > .4572 else
+                            'indeterminate')
+                self.assertEqual(result['distance_interval_relation_to_18_in'],
+                                 expected)
+                self.assertEqual(result['longest_continuous_stopped_loading_frames'],
+                                 750)
 
     def test_missing_source_and_activity_rejected(self):
         case=probe.CASES[0];s=scene(case);data=rows(case,s)
@@ -85,6 +92,23 @@ class BusTests(unittest.TestCase):
         for row in data: row['loading_active']=False
         with self.assertRaisesRegex(ValueError,'stopped loading'):
             probe.measure_original(data,s,case)
+
+    def test_continuous_loading_and_source_binding(self):
+        case=probe.CASES[0];s=scene(case);data=rows(case,s)
+        for i,row in enumerate(data): row['loading_active']=(i>=100 and i%2==0)
+        with self.assertRaisesRegex(ValueError,'stopped loading'):
+            probe.measure_original(data,s,case)
+        data=rows(case,s)
+        data[160]['right_front_wheel_source_sha256']='b'*64
+        with self.assertRaisesRegex(ValueError,'context changed'):
+            probe.measure_original(data,s,case)
+
+    def test_measurement_excludes_preloading_stop(self):
+        case=probe.CASES[0];s=scene(case);data=rows(case,s)
+        for i in range(100,150): data[i]['right_front_wheel_xy'][1]=2
+        result=probe.measure_original(data,s,case)
+        self.assertAlmostEqual(result['maximum_right_front_wheel_curb_m'],
+                               case.target_distance_m)
 
     def test_tour_bus_and_spawn_rejected(self):
         case=probe.CASES[0];s=scene(case);s['tour_bus']=True

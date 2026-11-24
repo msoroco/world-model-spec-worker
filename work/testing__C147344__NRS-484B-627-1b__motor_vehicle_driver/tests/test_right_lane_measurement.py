@@ -12,10 +12,12 @@ from right_lane_measurement import ASSIGNMENT, measure
 class RightLaneTests(unittest.TestCase):
     def packet(self):
         return {"assignment_id": ASSIGNMENT, "original_trace_id": "synthetic-test-only",
+                "follower_relation_source_sha256": "a" * 64,
                 "frames": [{"time_s": i * 0.05, "ego_speed_mps": 4.0,
                             "follower_gap_m": 20.0 - i, "follower_speed_mps": 7.0,
                             "ego_lane_id": "middle", "rightmost_same_direction_lane_id": "right",
                             "follower_actor_id": "car-b", "follower_lane_id": "middle",
+                            "follower_immediately_behind_readback": True,
                             "passing_slower_vehicle_observed": False,
                             "same_direction_marked_lane_count": 3} for i in range(3)]}
 
@@ -35,9 +37,31 @@ class RightLaneTests(unittest.TestCase):
     def test_right_lane_separate_from_immediate_follower(self):
         p = self.packet()
         p["frames"][0]["ego_lane_id"] = "right"
+        p["frames"][0]["follower_immediately_behind_readback"] = False
         r = self.run_measure(p)
         self.assertTrue(r["observations"][0]["ego_in_extreme_right_lane"])
         self.assertFalse(r["observations"][0]["follower_immediately_behind_in_ego_lane"])
+
+    def test_same_lane_does_not_establish_immediate_follower(self):
+        p = self.packet()
+        p["frames"][0]["follower_immediately_behind_readback"] = False
+        r = self.run_measure(p)
+        self.assertTrue(r["observations"][0]["follower_in_ego_lane"])
+        self.assertFalse(r["observations"][0]["follower_immediately_behind_in_ego_lane"])
+
+    def test_missing_or_inconsistent_relation_rejected(self):
+        p = self.packet()
+        del p["follower_relation_source_sha256"]
+        with self.assertRaisesRegex(ValueError, "independent original follower-relation"):
+            self.run_measure(p)
+        p = self.packet()
+        p["frames"][0]["follower_lane_id"] = "right"
+        with self.assertRaisesRegex(ValueError, "conflicts with original lane"):
+            self.run_measure(p)
+        p = self.packet()
+        del p["frames"][0]["follower_immediately_behind_readback"]
+        with self.assertRaisesRegex(ValueError, "relation readback"):
+            self.run_measure(p)
 
     def test_missing_lane_identity_rejected(self):
         p = self.packet()

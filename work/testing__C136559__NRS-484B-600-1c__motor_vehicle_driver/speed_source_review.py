@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from decimal import Decimal, localcontext
 from pathlib import Path
 
 
@@ -79,7 +80,15 @@ def measure(root: Path, inventory: dict, case_id: str) -> dict:
         raise ValueError("original posted control and highway provenance incomplete")
     if not control["sign_in_camera_view"] and not control.get("off_camera_reading_assumption_source"):
         raise ValueError("off-camera governing limit remains unknown without reading assumption")
-    rate_mps = control["rate"] * UNIT_TO_MPS[control["unit"]]
+    with localcontext() as context:
+        context.prec = 50
+        source_rate = Decimal(str(control["rate"]))
+        if control["unit"] == "mph":
+            rate_mps = source_rate * Decimal("0.44704")
+        elif control["unit"] == "km/h":
+            rate_mps = source_rate * Decimal(5) / Decimal(18)
+        else:
+            rate_mps = source_rate
     samples = []
     for frame, m, r in zip(frames, motion["samples"], route["samples"]):
         for name, row in (("motion", m), ("route", r)):
@@ -100,16 +109,21 @@ def measure(root: Path, inventory: dict, case_id: str) -> dict:
                     r["segment_id"] == control["governed_segment_id"] and
                     r["direction"] == control["governed_direction"] and
                     control["public_authority_posted"])
+        with localcontext() as context:
+            context.prec = 50
+            difference = Decimal(str(m["speed_mps"])) - rate_mps if governed else None
         samples.append({"frame": frame["frame"], "time_s": frame["time_s"],
                         "speed_mps": m["speed_mps"], "governed_portion": governed,
-                        "rate_difference_mps": round(m["speed_mps"] - rate_mps, 9) if governed else None})
+                        "rate_difference_mps": float(difference) if governed else None,
+                        "above_posted_rate": difference > 0 if governed else None})
     return {"format": "c136559-original-posted-speed-v1", "case_id": case_id,
             "source_sha256": {name: sources[name]["sha256"] for name in SOURCES},
             "original_frames": len(frames), "posted_rate": control["rate"],
-            "posted_unit": control["unit"], "posted_rate_mps": round(rate_mps, 9),
+            "posted_unit": control["unit"], "posted_rate_mps": float(rate_mps),
             "public_authority_posted": control["public_authority_posted"],
             "sign_in_camera_view": control["sign_in_camera_view"],
             "governed_frames": sum(row["governed_portion"] for row in samples),
+            "observed_above_frames": sum(row["above_posted_rate"] is True for row in samples),
             "samples": samples, "legal_applicability_and_priority": "unresolved"}
 
 

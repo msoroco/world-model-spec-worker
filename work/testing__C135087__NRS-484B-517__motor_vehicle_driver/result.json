@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver",
   "input_sha256": "06cb284004c708d321b998ad5b85859eb953ae40993d8b114df68f3c6b9b4a97",
-  "status": "partial",
   "readiness_kind": "construction_checkpoint",
-  "applied_update": 0,
+  "reason": "Eight exact taxicab-stand cases and seven comparisons remain partial. New independent saved media auditor verifies four SHA-sealed original MKVs with ffprobe frame timestamps, 20 Hz continuity, dimensions and full ffmpeg decode. A short synthetic diagnostic proves positive decode and changed-byte rejection; 19 focused tests, pinned preflight and scoped static pass. Physical pixel/source acceptance remains unresolved. Reviewed real site/class sources, exact runner/config bundles, Native finalizer, semantic proposals, per-case offline/compatibility and complete delivery/comparison audits remain CPU work.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C135087__NRS-484B-517__motor_vehicle_driver/tests -v",
@@ -28,10 +32,30 @@
       "exit_code": 1,
       "log": "strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C135087__NRS-484B-517__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-media-tests.log",
+      "sha256": "a09903c3fdb6c271654909f240280b18bbb102d7d5d8bc06e3cb4c1830e3b21e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-media-preflight.log",
+      "sha256": "05554ef505a989c6a8a634391d3a80d291d6be4d3474544683ef362c28c40ff3"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C135087__NRS-484B-517__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-media-static.log",
+      "sha256": "04130d876ef912bf084e190afa4bc8fc35c120db7f97a6298f40c11011185523"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C135087__NRS-484B-517__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-media-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Source-hashed 900-frame live actor/observer capture now feeds the independent saved source audit; original 20 Hz time gaps are rejected. Eighteen CPU tests, pinned preflight and scoped static pass. Exact strict remains partial. Source-sealed real site/class records, exact CARLA runner/config bundles, Native result finalizer, semantic proposals, per-case offline/compatibility, full media decode and delivery/comparison audits remain CPU work."
+  ]
 }

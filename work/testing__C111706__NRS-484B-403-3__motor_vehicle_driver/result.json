@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver",
   "input_sha256": "9fbbfa138edaa7336c22f0f79c2266ed404dda2a4e77789a973d1c2685a4ee74",
   "status": "partial",
-  "readiness_kind": "partial_saved_uturn_delivery_source_audit",
+  "readiness_kind": "partial_saved_uturn_delivery_and_exact_comparison_source_audit",
   "applied_update": 0,
   "tests": [
     {
@@ -28,10 +28,34 @@
       "exit_code": 1,
       "log": "assignment-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-source-join-tests.log",
+      "sha256": "05ce13edcaed0f0bc3ceb5e2529685e0b1d92f16d412484c3fbe601138ba23a0"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-source-join-preflight.log",
+      "sha256": "969ede04060c274f9db61736781c4ecd6fb51158077148b80d51ca11e3129260"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-source-join-static.log",
+      "sha256": "01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-source-join-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact U-turn cases and two comparisons remain partial. New saved_delivery.py joins exact site, Native route/district/intersection sources, measured full-body location and reversal, all 900 frame/cadence requirements in original mode, and full decode of four camera PNG sources; original camera paths must be attempt-local expected frame files. Forty-four focused CPU tests pass, pinned preflight and scoped static pass. Strict scoped delivery gate fails on truthful partial status. Reviewed physical site, exact bundles/manifest, semantic proposals, positive/negative compatibility, saved-only process and owner-release proof remain CPU work; physical/legal classification unverified."
+  "reason": "Three exact U-turn cases and two comparisons remain partial. The independent comparison audit now requires the two exact planned case pairs and binds each Native packet to its sealed site, map and route sources. Forty-six focused CPU tests pass, pinned preflight and scoped static pass. Strict scoped delivery gate fails on truthful partial status. Reviewed physical site, exact bundles/manifest, semantic proposals, positive/negative compatibility, saved-only process and owner-release proof remain CPU work; physical/legal classification unverified."
 }

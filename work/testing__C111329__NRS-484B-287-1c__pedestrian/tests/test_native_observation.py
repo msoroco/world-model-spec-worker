@@ -5,10 +5,12 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from native_observation import analyze_saved, capture_observation
+from owned_capture import capture_owned
 from saved_camera_audit import audit_saved
 from PIL import Image
 import test_site_geometry
@@ -64,6 +66,62 @@ class ObservationTests(unittest.TestCase):
         self.assertTrue(result["both_devices_operating_during_crossing"])
         self.assertEqual(result["observed_crossing_frame_range"], [2, 4])
         self.assertEqual(result["legal_official_status"], "undetermined")
+
+    def test_route_control_precedes_each_original_tick(self):
+        calls = []
+        original_tick = self.world.tick
+        def tick():
+            calls.append("tick")
+            return original_tick()
+        self.world.tick = tick
+        capture_observation(self.world, self.walker, self.packet, "case-one",
+                            self.path, self.read_device, ticks=5,
+                            before_tick=lambda: calls.append("control"))
+        self.assertEqual(calls, [item for _ in range(5)
+                                 for item in ("control", "tick")])
+
+    def test_bad_or_failed_route_controller_cannot_leave_original(self):
+        with self.assertRaisesRegex(ValueError, "route controller"):
+            capture_observation(self.world, self.walker, self.packet, "case-one",
+                                self.path, self.read_device, ticks=5,
+                                before_tick=1)
+        def fail():
+            raise RuntimeError("control failed")
+        with self.assertRaisesRegex(RuntimeError, "control failed"):
+            capture_observation(self.world, self.walker, self.packet, "case-one",
+                                self.path, self.read_device, ticks=5,
+                                before_tick=fail)
+        self.assertFalse(self.path.exists())
+
+    def test_owned_capture_controls_each_tick_and_cleans_walker(self):
+        actor = type("Actor", (), {"destroy": lambda self: setattr(self, "destroyed", True)})()
+        controlled = []
+        def advance(_, packet, index, *, carla_module=None):
+            controlled.append((self.world.frame, index))
+            return index
+        with patch("owned_capture.spawn_pedestrian", return_value=actor), \
+             patch("owned_capture.advance_pedestrian", side_effect=advance), \
+             patch("owned_capture.capture_observation") as capture:
+            def drive(world, walker, packet, case_id, output, reader, **kwargs):
+                for _ in range(kwargs["ticks"]):
+                    kwargs["before_tick"]()
+                    world.tick()
+                return {"frame_count": kwargs["ticks"]}
+            capture.side_effect = drive
+            result = capture_owned(self.world, self.packet, "case-one", self.path,
+                                   self.read_device, {}, ticks=5)
+        self.assertEqual(result["frame_count"], 5)
+        self.assertEqual(controlled, [(i, 1) for i in range(5)])
+        self.assertTrue(actor.destroyed)
+
+    def test_owned_capture_cleans_walker_after_capture_failure(self):
+        actor = type("Actor", (), {"destroy": lambda self: setattr(self, "destroyed", True)})()
+        with patch("owned_capture.spawn_pedestrian", return_value=actor), \
+             patch("owned_capture.capture_observation", side_effect=RuntimeError("capture failed")):
+            with self.assertRaisesRegex(RuntimeError, "capture failed"):
+                capture_owned(self.world, self.packet, "case-one", self.path,
+                              self.read_device, {}, ticks=5)
+        self.assertTrue(actor.destroyed)
 
     def test_inactive_readback_preserved(self):
         def inactive(device_id):

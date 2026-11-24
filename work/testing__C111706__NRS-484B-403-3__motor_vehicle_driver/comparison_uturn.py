@@ -13,6 +13,17 @@ class ComparisonError(ValueError):
     pass
 
 
+ASSIGNMENT = "testing__C111706__NRS-484B-403-3__motor_vehicle_driver"
+PAIRS = {
+    "intersection_exception_location": frozenset((
+        ASSIGNMENT + "__intersection_vehicle_near",
+        ASSIGNMENT + "__approach_before_intersection")),
+    "surrounding_vehicle_context": frozenset((
+        ASSIGNMENT + "__intersection_vehicle_near",
+        ASSIGNMENT + "__intersection_vehicle_far")),
+}
+
+
 def _need(ok, reason):
     if not ok:
         raise ComparisonError(reason)
@@ -32,10 +43,20 @@ def compare(comparison_id: str, left_site: Path, left_site_sha: str,
     No physical success or legal classification is inferred from the case name.
     Requiring completed site fields means an unsurveyed draft cannot pass.
     """
-    _need(comparison_id in ("intersection_exception_location", "surrounding_vehicle_context"),
+    _need(comparison_id in PAIRS,
           "unknown comparison")
     left = _read(left_site, left_site_sha)
     right = _read(right_site, right_site_sha)
+    _need(frozenset((left.get("case_id"), right.get("case_id"))) == PAIRS[comparison_id],
+          "exact comparison case pair differs")
+    for site, site_sha, native_path, native_sha in (
+            (left, left_site_sha, left_native, left_native_sha),
+            (right, right_site_sha, right_native, right_native_sha)):
+        packet = _read(native_path, native_sha)
+        _need(packet.get("site_sha256") == site_sha and
+              packet.get("map_sha256") == site.get("map_sha256") and
+              packet.get("route_sha256") == site.get("route_sha256"),
+              "Native site/map/route source binding differs")
     left_result = analyze_native(left_native, expected_case=left["case_id"],
                                  expected_sha256=left_native_sha)
     right_result = analyze_native(right_native, expected_case=right["case_id"],

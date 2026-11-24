@@ -3,7 +3,7 @@
   "assignment_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver",
   "input_sha256": "8e3606471525b5f206c97bd40bd7ad7cede67b27554dfe39c51f395b6f07baed",
   "readiness_kind": "exact_cases_native_source_gates_saved_measurement_and_comparison_audit",
-  "reason": "Seven exact cases and five comparisons remain partial. Native source writer and independent saved media audit now verify a 600-tick, 20 Hz four-camera diagnostic path with 2,400 original PNG decodes and frame joins; 29 focused tests and pinned preflight pass. The retained sample uses a fake adapter and is diagnostic only. Original map/site acquisition and physical CARLA provenance, exact inline bundles and manifest, offline/compatibility/saved delivery, semantic proposals and physical pixel review remain unfinished.",
+  "reason": "Seven exact cases and five comparisons remain partial. A saved delivery join now combines source-sealed 600-frame actor measurements with independently decoded 2,400 original camera PNGs and rejects resealed actor/camera Native clock divergence; 31 focused tests and pinned preflight pass. Retained sample is a fake-adapter diagnostic only. Original site/CARLA provenance, seven inline bundles/manifest, offline and compatibility receipts, semantic proposals and physical pixel review remain unfinished.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -44,6 +44,36 @@
       "exit_code": 0,
       "log": "saved-media-diagnostic.json",
       "sha256": "35d19bd60a5d67a00db15b39b5658230971a94ed9ac00e4bc3728de8e86f2df2"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-delivery-join-tests.log",
+      "sha256": "d0bb8600cb23a989ae0306980fd0a8b71f1901638596fd39fa36bb95abadb570"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-delivery-join-preflight.log",
+      "sha256": "319f3e09f260f2a24e1313e41a3d7a74def73fe4429c2856cf07f640554dc856"
+    },
+    {
+      "command": "synthetic saved_delivery.join over 600 frames and four original camera streams",
+      "exit_code": 0,
+      "log": "saved-delivery-join-proof.log",
+      "sha256": "552f29c82ab472360f38db8449a3c0662901fe9049696d42f3c884cdecb41d5e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "check-delivery-join-complete.log",
+      "sha256": "e5747523924cafcfcb63f346271e3ef25d46c51d37527c8af4b11f5026889978"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "check-delivery-join-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ]
 }

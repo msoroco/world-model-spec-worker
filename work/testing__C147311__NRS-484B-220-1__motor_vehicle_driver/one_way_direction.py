@@ -33,6 +33,11 @@ def point(value):
             all(number(v) for v in value))
 
 
+def digest(value):
+    return (isinstance(value, str) and len(value) == 64 and
+            all(c in '0123456789abcdef' for c in value))
+
+
 def validate_scene(scene: Mapping, case: Case):
     require(case in CASES, 'unknown exact one-way case')
     require(scene.get('cell_id') == 'C147311' and
@@ -56,7 +61,7 @@ def validate_scene(scene: Mapping, case: Case):
                   'lane_inventory', 'one_way_designation',
                   'sign_authority', 'sign_message', 'sign_orientation',
                   'sign_placement', 'sign_governance', 'ego_route'):
-        require(scene.get(field + '_source_sha256'),
+        require(digest(scene.get(field + '_source_sha256')),
                 'original context missing: ' + field)
     direction = scene.get('designated_unit_xy')
     require(point(direction) and abs(hypot(*direction)-1) <= .001,
@@ -93,17 +98,18 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
     require(type(first) is int and number(rows[0].get('time_s')),
             'original frame/time identity missing')
     ego_id = None
+    previous = None
     forward = reverse = 0
     for i, row in enumerate(rows):
         require(row.get('original_frame') == first + i and
                 number(row.get('time_s')) and
                 abs(row['time_s'] - rows[0]['time_s'] - i / 20) <= .005,
                 'original frame/time join invalid')
-        for field in ('frame', 'ego_motion', 'driver_control',
+        for field in ('frame', 'ego_motion', 'ego_position', 'driver_control',
                       'lane_inventory', 'one_way_designation',
                       'sign_authority', 'sign_message',
                       'sign_orientation', 'sign_governance'):
-            require(row.get(field + '_source_sha256'),
+            require(digest(row.get(field + '_source_sha256')),
                     'original measurement source missing: ' + field)
         require(row.get('one_way_designation_source_sha256') ==
                 scene['one_way_designation_source_sha256'] and
@@ -114,14 +120,26 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                 'original lane/designation/sign context changed')
         require(row.get('ego_id'), 'ego identity missing')
         ego_id = ego_id or row['ego_id']
-        require(row['ego_id'] == ego_id and point(row.get('velocity_xy')),
-                'ego identity or velocity missing')
+        require(row['ego_id'] == ego_id and point(row.get('velocity_xy')) and
+                point(row.get('position_xy')),
+                'ego identity, velocity or position missing')
+        if previous is not None:
+            dt = row['time_s'] - previous['time_s']
+            require(.045 <= dt <= .055, 'original sample interval invalid')
+            displacement = [row['position_xy'][j] - previous['position_xy'][j]
+                            for j in range(2)]
+            expected = [(row['velocity_xy'][j] + previous['velocity_xy'][j])
+                        * dt / 2 for j in range(2)]
+            require(hypot(*(displacement[j] - expected[j] for j in range(2)))
+                    <= max(.1, hypot(*expected) * .2),
+                    'original position and velocity disagree')
         dot = sum(a*b for a,b in zip(row['velocity_xy'],
                                      scene['designated_unit_xy']))
         if dot > .5:
             forward += 1
         elif dot < -.5:
             reverse += 1
+        previous = row
     require(forward + reverse >= 100, 'original vehicle travel missing')
     require((forward > reverse) if case.direction == 'designated'
             else (reverse > forward),
