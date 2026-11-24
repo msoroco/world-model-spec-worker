@@ -35,6 +35,9 @@ def generate():
             original,
             '    if config.get("candidate_id") == "fallback1":\n'
             '        request["controller"]["target_speed_mps"] = 3.0\n' + original)
+        runner_source = ROOT / (suffix + "_fallback_bundle_runner.py")
+        runner_source.write_text(runner["content"], encoding="utf-8")
+        runner["source"] = str(runner_source.relative_to(ROOT.parents[1]))
         bundle["source_kind"] = "diagnostic_offline_reciprocal_fallback_native_review_required"
         target = ROOT / "cases" / suffix / "fallback1-construction.json"
         write(target, bundle)

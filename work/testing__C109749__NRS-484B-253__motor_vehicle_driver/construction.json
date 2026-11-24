@@ -1,0 +1,79 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C109749",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "content": "\"\"\"Materialize one exact C109749 candidate for local Native execution.\"\"\"\nimport argparse\nimport subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument('--case', required=True)\n    parser.add_argument('--output', required=True)\n    parser.add_argument('--candidate', default='primary')\n    args = parser.parse_args(argv)\n    manifest = Path(__file__).with_name('execution-manifest.json')\n    command = [sys.executable, 'runtime.py', 'materialize', '--manifest', str(manifest),\n               '--case', args.case, '--candidate', args.candidate, '--output', args.output]\n    subprocess.run(command, check=True)\n\n\nif __name__ == '__main__':\n    main()\n",
+      "path": "runner.py",
+      "source": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/runner.py"
+    },
+    {
+      "content": "{\n  \"actor\": \"motor_vehicle_driver\",\n  \"assignment_id\": \"testing__C109749__NRS-484B-253__motor_vehicle_driver\",\n  \"cameras\": [\n    {\n      \"fov_deg\": 90,\n      \"height\": 1080,\n      \"name\": \"overview\",\n      \"pose_strategy\": \"ego-attached overview\",\n      \"width\": 1920\n    },\n    {\n      \"fov_deg\": 90,\n      \"height\": 720,\n      \"name\": \"approach\",\n      \"pose_strategy\": \"ego-attached approach\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 90,\n      \"height\": 720,\n      \"name\": \"reference_corner\",\n      \"pose_strategy\": \"ego-attached reference_corner\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 90,\n      \"height\": 720,\n      \"name\": \"driver_reference\",\n      \"pose_strategy\": \"ego-attached driver_reference\",\n      \"width\": 1280\n    }\n  ],\n  \"cell_id\": \"C109749\",\n  \"duration_s\": 45,\n  \"law_id\": \"NRS-484B-253\",\n  \"native_map_survey\": \"required_before_capture\",\n  \"rate_hz\": 20,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"supported_case_ids\": [\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_no_yield\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_given\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield\",\n    \"testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield\"\n  ]\n}\n",
+      "path": "config.json",
+      "source": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json"
+    }
+  ],
+  "law_id": "NRS-484B-253",
+  "measurement_plan": [
+    "full-body intersection occupancy",
+    "opposite approach and clearance",
+    "left-signal and turn commitment",
+    "source-bound four-camera frame join"
+  ],
+  "mechanisms": [
+    "materialize selected candidate with pinned runtime",
+    "Native scene and source capture delegated to each exact inline bundle"
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "method": "original source-bound actor sample",
+        "name": "ego_body_history",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "full original recording",
+        "uncertainty": "diagnostic software fixture or unreviewed Native sensor accuracy",
+        "unit": "structured"
+      },
+      {
+        "method": "original source-bound actor sample",
+        "name": "opponent_body_history",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "full original recording",
+        "uncertainty": "diagnostic software fixture or unreviewed Native sensor accuracy",
+        "unit": "structured"
+      },
+      {
+        "method": "original source-bound actor sample",
+        "name": "ego_signal_history",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "full original recording",
+        "uncertainty": "diagnostic software fixture or unreviewed Native sensor accuracy",
+        "unit": "categorical"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "source-hashed original map packet",
+        "name": "intersection_geometry",
+        "unit": "structured"
+      }
+    ],
+    "limitations": [
+      "Immediate hazard, legal yield and signal duty require separate judgment.",
+      "Diagnostic sources do not establish physical realization."
+    ]
+  },
+  "static_checks": [
+    "exact case selection",
+    "source-hashed inline candidate",
+    "reviewed Native map before capture",
+    "four-view source frame join"
+  ],
+  "termination_rules": [
+    "900 original frames or explicit failed attempt; no truncation as success"
+  ]
+}

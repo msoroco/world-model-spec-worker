@@ -100,9 +100,16 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     frame_map: list[dict] = []
     graph_map: list[dict] = []
     archives = {}
+    recorder_active = False
+    recorder_info = None
     try:
         adapter.start(binding['planned_construction'])
         started = True
+        if getattr(adapter, 'native_attested', False):
+            start_recorder = getattr(adapter, 'start_recorder', None)
+            if callable(start_recorder):
+                start_recorder(root / 'carla_recorder.log')
+                recorder_active = True
         archives = {name: zipfile.ZipFile(root / (name + '.zip'), 'w',
                                          compression=zipfile.ZIP_STORED)
                     for name in sorted(CAMERAS)}
@@ -217,13 +224,21 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                 hashlib.sha256(opendrive.encode()).hexdigest() != binding['opendrive_sha256']):
             raise ValueError('Native OpenDRIVE changed during capture')
     except BaseException:
-        shutil.rmtree(root)
+        try:
+            if recorder_active:
+                adapter.stop_recorder()
+                recorder_active = False
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
         raise
     finally:
         try:
             for archive in archives.values():
                 archive.close()
             try:
+                if recorder_active:
+                    recorder_info = adapter.stop_recorder()
+                    recorder_active = False
                 if started:
                     adapter.brake()
             finally:
@@ -251,6 +266,13 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
         if participants_history:
             hashes['synchronized_motion_records.jsonl'] = _write_jsonl(
                 root / 'synchronized_motion_records.jsonl', participants_history)
+        if recorder_info is not None:
+            info_bytes = recorder_info.encode()
+            (root / 'recorder_info.txt').write_bytes(info_bytes)
+            hashes['recorder_info.txt'] = hashlib.sha256(info_bytes).hexdigest()
+            recorder_path = root / 'carla_recorder.log'
+            hashes['carla_recorder.log'] = hashlib.sha256(
+                recorder_path.read_bytes()).hexdigest()
         if geometry is not None:
             geometry_bytes = (json.dumps(geometry, sort_keys=True, separators=(',', ':')) + '\n').encode()
             (root / 'road_geometry.json').write_bytes(geometry_bytes)
@@ -261,7 +283,8 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                            binding['public_highway_reviewed'] is True and
                            len(body_history) == FRAMES and geometry is not None and
                            len(graph_map) == FRAMES and
-                           len(participants_history) == FRAMES)
+                           len(participants_history) == FRAMES and
+                           recorder_info is not None)
         acquisition = {'case_id': case_id,
                        'diagnostic_fixture': not complete_source,
                        'map_binding': binding,

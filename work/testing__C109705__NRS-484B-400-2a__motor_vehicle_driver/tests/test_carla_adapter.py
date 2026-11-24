@@ -135,6 +135,43 @@ class CarlaAdapterTests(unittest.TestCase):
         self.adapter = NativeCarlaAdapter(self.world, carla, self.packet,
                                           self.config)
 
+    def test_original_recorder_lifecycle_and_actor_census(self):
+        with tempfile.TemporaryDirectory(dir='.runtime-work') as temp:
+            record = Path(temp) / 'carla_recorder.log'
+            events = []
+
+            def start(path, extra):
+                events.append(('start', path, extra))
+                record.write_bytes(b'original binary CARLA recorder')
+                return 'Recorder started'
+
+            def stop():
+                events.append(('stop',))
+
+            client = NS(start_recorder=start, stop_recorder=stop,
+                        show_recorder_file_info=lambda path, verbose:
+                        ' Create 7: vehicle.test at 0 0 0\n')
+            self.adapter.client = client
+            self.adapter.start(self.plan)
+            self.adapter.start_recorder(record)
+            self.assertEqual(self.adapter.stop_recorder(),
+                             ' Create 7: vehicle.test at 0 0 0\n')
+            self.assertEqual(events, [('start', str(record), True), ('stop',)])
+            self.adapter.cleanup()
+
+    def test_missing_recorder_census_rejected(self):
+        with tempfile.TemporaryDirectory(dir='.runtime-work') as temp:
+            record = Path(temp) / 'carla_recorder.log'
+            client = NS(start_recorder=lambda path, extra: record.write_bytes(b'x'),
+                        stop_recorder=lambda: None,
+                        show_recorder_file_info=lambda path, verbose: '')
+            self.adapter.client = client
+            self.adapter.start(self.plan)
+            self.adapter.start_recorder(record)
+            with self.assertRaisesRegex(ValueError, 'actor census missing'):
+                self.adapter.stop_recorder()
+            self.adapter.cleanup()
+
     def test_exact_four_camera_frame_and_restoration(self):
         self.adapter.start(self.plan)
         self.assertTrue(self.world.settings.synchronous_mode)

@@ -3115,3 +3115,23 @@ C109749 now passes four current-hash reciprocal primary/fallback offline checks,
 C179789 passes 70 focused tests, all seven rebuilt selected offline bundles and seven positive/negative delivery protocol tests. Current-runtime full compatibility and saved-only processing continue on the updated bundle hashes. The actor-count capture/finalizer path remains source-gated and optional for the existing seven cases; result remains partial.
 
 C109705 v5 completed eight offline, eight full compatibility, four saved-only positives and a missing-context negative, with pinned receipts/contracts/static passing. Adding original velocity retention then changed bundled source bytes, and exact scoped strict correctly rejected the stale `native_capture.py` binding. Its owner is rebinding and rerunning affected v6 proofs; no ready status was claimed.
+
+## 2026-11-24 current-runtime refresh details
+
+C109749 rebounded all eight selected constructions and the source manifest to the current runtime hash. Six nonreciprocal offline and positive/missing-source compatibility paths pass after the diagnostic generator supplied current speed-overlay velocity provenance. Four reciprocal primary/fallback 900-frame compatibility jobs continue; physical preparation refreshed for all eight. No strict-ready claim.
+
+C179789 reference pinned compatibility passes positive and missing-source negative after the diagnostic velocity vector repair. Its revised seven-case independent delivery suite passes 14 positive/negative checks; four of seven offline reruns completed at this checkpoint, with the remaining compatibility and saved-only jobs running. No original physical result is claimed.
+
+C109705 v6 selected source retains original CARLA velocity and same-frame synchronized motion records for all live vehicle/walker actors. Its 57 focused tests and eight offline checks pass; full compatibility is running. A pinned production Core probe rejected synthetic speed as untrusted, and the owner is implementing original velocity provenance for that path. The missing reviewed-highway authority remains unresolved; no ready claim.
+
+## 2026-11-24 06:25 PST environment and active proof update
+
+The lead reran `.venv-cpu/bin/python runtime.py verify --runtime runtime`, `.venv-cpu/bin/python runtime.py preflight`, and `.venv-cpu/bin/python worker_check.py --updates`; all exited 0. Runtime sources verified, CPU preflight passed with Lean 4.28.0, and updates remain version 0 with no paused assignments. The full batch strict gate is deferred while 228 assignments remain truthful partial. No package was marked ready from a diagnostic proof.
+
+C109705 v6 now has 57 focused tests, eight offline, eight full current-runtime compatibility, four saved-only positive and missing-context negative checks, pinned receipts/contracts and scoped static passing on its current manifest. Its exact scoped strict gate exits 1 on truthful partial. The owner continues production Core projector/recorder/graph/native-signal/MKV/closure publication, with original velocity and synchronized participant source retention; no reviewed public-highway authority is inferred.
+
+C109749 now has eight current-manifest saved-only receipts and ten offline/positive-negative compatibility paths across six nonreciprocal and two reciprocal exact cases. The owner found six nonreciprocal inline runners still raised a Native adapter error; it is wiring their existing production two-vehicle live entrypoint and will rebind affected construction hashes before strict. Status remains partial.
+
+C179789 has 70 focused tests, seven offline bundles and fourteen independent delivery positive/negative checks passing. Five of seven full compatibility and four of seven saved-only processes had passed at this checkpoint; the remaining rain/fog and saved jobs are running. Its optional 900-frame actor-count history is sealed and independently checked, while the frozen animal/bicycle/pedestrian judgment ranges still lack reviewed site/asset witness packets. Status remains partial.
+
+The lead scanned 1,090 files across shared and the three active assignment directories for UTF-8, size, trailing whitespace, conflict markers and blank EOF; no issues were found at that time. No Git command was run.

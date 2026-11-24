@@ -38,8 +38,9 @@ class NativeCarlaAdapter:
 
     native_attested = True
 
-    def __init__(self, world, carla, packet, config):
+    def __init__(self, world, carla, packet, config, client=None):
         self.world, self.carla = world, carla
+        self.client = client
         self.packet, self.config = packet, config
         self.ego_actor = None
         self.sensors = {}
@@ -51,6 +52,31 @@ class NativeCarlaAdapter:
         self.condition = threading.Condition()
         self.callback_error = None
         self.current = None
+        self.recorder_path = None
+
+    def start_recorder(self, path):
+        """Start the CARLA server recorder after actors have been acquired."""
+        if self.client is None or self.ego_actor is None or self.recorder_path is not None:
+            raise ValueError('Native recorder requires a live owned actor and client')
+        path = Path(path)
+        if path.exists():
+            raise ValueError('Native recorder path already exists')
+        result = self.client.start_recorder(str(path), True)
+        if result is False:
+            raise ValueError('Native recorder refused to start')
+        self.recorder_path = path
+
+    def stop_recorder(self):
+        if self.recorder_path is None:
+            raise ValueError('Native recorder was not started')
+        path = self.recorder_path
+        self.client.stop_recorder()
+        if not path.is_file() or not path.stat().st_size:
+            raise ValueError('Native recorder source missing after stop')
+        info = self.client.show_recorder_file_info(str(path), False)
+        if not isinstance(info, str) or 'Create ' not in info:
+            raise ValueError('Native recorder actor census missing')
+        return info
 
     def start(self, plan):
         if plan['map_name'] != self.world.get_map().name:

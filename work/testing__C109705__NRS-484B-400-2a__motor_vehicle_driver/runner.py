@@ -59,7 +59,7 @@ def run_native_source(config, map_packet, output, host, port, *, carla_module=No
     client.set_timeout(30.0)
     world = client.get_world()
     packet = json.loads(Path(map_packet).read_text())
-    adapter = NativeCarlaAdapter(world, carla_module, packet, config)
+    adapter = NativeCarlaAdapter(world, carla_module, packet, config, client=client)
     return run_capture(adapter, config, map_packet, output)
 
 def main():

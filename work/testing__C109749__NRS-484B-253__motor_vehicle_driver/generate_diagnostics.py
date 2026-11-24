@@ -79,8 +79,7 @@ def make(suffix):
                       "heading_deg": 90.0, "speed_mps": 1.0,
                       "speed_mph": 2.236936 if reciprocal else 1.0 / 0.44704,
                       "position_m": [0, ego_y, 0]})
-        if reciprocal:
-            trace[-1]["velocity_mps"] = [0, 1, 0]
+        trace[-1]["velocity_mps"] = [0, 1, 0]
         mapping.append({"video_frame": index, "carla_frame": index,
                         "native_frame": index, "time_s": time_s})
         motion.append({"frame": index, "time_s": time_s,
