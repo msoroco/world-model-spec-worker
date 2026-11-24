@@ -469,6 +469,614 @@
         "negative_log_sha256": "2c462d68434bc875bb86de5f49be9847e2fe770723649a65d3dad900a2033fe9",
         "proof_scope": "900-frame synthetic source/measurement/four-camera decoded-frame CPU boundary; Native acceptance pending"
       }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+      "kind": "delivery",
+      "construction": "cases/intersection-alternative-construction.json",
+      "construction_sha256": "7ba55e22f99844885de99e61697f5d83a426b6ade49aa822bc833095349cb204",
+      "measurement_procedure": {
+        "entrypoint": "reverse_alternative_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native site, reverse path and four camera views require original-source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_into_intersection-fallback1-construction.json",
+          "construction_sha256": "303626bdecd2c2557afab79eed156a7d4c81fdb6f9c404041fcb6330db3fea0e",
+          "trigger": {
+            "source": "native-run-status.json and capture/manifest.json",
+            "metric": "subject actor spawn and first original frame",
+            "failure_condition": "Primary Audi blueprint unavailable or subject actor spawn fails before first capture frame"
+          },
+          "changed_knobs": [
+            "site_templates vehicle_blueprint_id: vehicle.audi.tt -> vehicle.tesla.model3; route, site geometry, cameras and case identity fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "cases/reverse_into_intersection-measurement-contract.json",
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/fixtures/0/full-diagnostic-recipe.json",
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "site_review.py",
+          "method": "sourced crosswalk polygon joined to Native map",
+          "evidence": "crosswalk_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "crosswalk_reverse.py",
+          "method": "original complete body intersects sourced polygon",
+          "evidence": "reverse_history.jsonl"
+        },
+        "native_reverse": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "backward_motion": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "crosswalk_overlap": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native map and intersection region source readback",
+          "evidence": "reverse_site_context.json and capture/native/graphs"
+        },
+        "region_overlap": {
+          "entrypoint": "runner.py",
+          "method": "original Native complete-body geometry and sourced region frame join",
+          "evidence": "reverse_history.jsonl and reverse_site_context.json"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/alternative-offline-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-0-site-template-384fb9e0",
+        "exit_code": 0,
+        "construction_sha256": "7ba55e22f99844885de99e61697f5d83a426b6ade49aa822bc833095349cb204",
+        "log": "cases/alternative-0-offline.log",
+        "log_sha256": "6f57c207317764ab6be1e4baeac2810ac9d2ac6ffb042f3b705ea2023a2fefc8"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection --output .runtime-work/c215286-alt-intersection-compat-v4 --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/intersection-full-compatibility-receipt.json",
+        "sha256": "dff0c6e14901e724e8854ae4f8619d423e7c1fc01042298f13c675d2ad102d85",
+        "log": "cases/intersection-full-compatibility-analysis.log",
+        "negative_log": "cases/intersection-full-negative-analysis.log",
+        "negative_log_sha256": "58c77adc759fb47b1dd61bf9bccc8d8a478705aaf627fe41af3c6b584432582d"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection --attempt .runtime-work/c215286-alt-intersection-entry-saved-source --output .runtime-work/c215286-alt-intersection-entry-saved-full --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/intersection-entry-saved-processing-receipt.json",
+        "sha256": "34cf8054ef985c05bcb06a83a5b53d7fe08295cfebeb80c87fb134ba3cbbb9f1",
+        "log": "cases/intersection-entry-saved-processing.log",
+        "log_sha256": "34cf8054ef985c05bcb06a83a5b53d7fe08295cfebeb80c87fb134ba3cbbb9f1"
+      },
+      "negative": {
+        "log": "cases/intersection-full-negative-analysis.log",
+        "sha256": "58c77adc759fb47b1dd61bf9bccc8d8a478705aaf627fe41af3c6b584432582d"
+      },
+      "physical_preparation": {
+        "receipt": "cases/intersection-entry-physical-preparation.json",
+        "sha256": "6937133d3a06432a917451a9471f2a8edfff1e3570ddcb2cb115050b66e4ce25"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_preflight_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-native-preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_capture.py --check",
+        "source_preflight_script": "delivery_audit.py",
+        "source_preflight_script_sha256": "df4ba56f345f9ca91c4b9485e20784780f904aa4c987fc137e0254a908d2d5c2",
+        "synthetic_rejection_log": "cpu-tests.log",
+        "synthetic_rejection_log_sha256": "475f9c1c49fc4c2b86f1c82898999c033d643f5fc14eb2bace1d3a4fdfa70cb0",
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "reverse_alternative_delivery_audit.py",
+        "script_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "auditor": "reverse_alternative_delivery_audit.py",
+        "auditor_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-intersection-entry-saved-full/v0001/analysis testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "test_exit_code": 0,
+        "test_log": "cases/intersection-entry-delivery-positive.log",
+        "test_log_sha256": "9f89407515ecb9d5acb7b89e07e7c285b718a8bb4182338bbde4a99ffc9e9b86",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alternative-delivery-negative/intersection-entry testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Changed original site source: geometry_source",
+        "negative_log": "cases/intersection-entry-delivery-negative.log",
+        "negative_log_sha256": "3d0da8e854312944740415d24fe1b84f354c0e275915a8f169fab0f2a7408fb4",
+        "proof_scope": "900-frame synthetic software boundary; original Native source, pixels and legal outcome unaccepted"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection",
+      "kind": "delivery",
+      "construction": "cases/intersection_stop-alternative-construction.json",
+      "construction_sha256": "05876d7a79bc8f89d788b643f4685f68cc377ca16d823235d8bd5d526e9479ce",
+      "measurement_procedure": {
+        "entrypoint": "reverse_alternative_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native site, reverse path and four camera views require original-source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_stops_before_intersection-fallback1-construction.json",
+          "construction_sha256": "d27a861d77850730b4be864d50b48b01585d3286aa98f3dcc385231972808291",
+          "trigger": {
+            "source": "native-run-status.json and capture/manifest.json",
+            "metric": "subject actor spawn and first original frame",
+            "failure_condition": "Primary Audi blueprint unavailable or subject actor spawn fails before first capture frame"
+          },
+          "changed_knobs": [
+            "site_templates vehicle_blueprint_id: vehicle.audi.tt -> vehicle.tesla.model3; route, site geometry, cameras and case identity fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "cases/reverse_stops_before_intersection-measurement-contract.json",
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/fixtures/1/full-diagnostic-recipe.json",
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "site_review.py",
+          "method": "sourced crosswalk polygon joined to Native map",
+          "evidence": "crosswalk_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "crosswalk_reverse.py",
+          "method": "original complete body intersects sourced polygon",
+          "evidence": "reverse_history.jsonl"
+        },
+        "native_reverse": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "backward_motion": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "crosswalk_overlap": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native map and intersection region source readback",
+          "evidence": "reverse_site_context.json and capture/native/graphs"
+        },
+        "region_overlap": {
+          "entrypoint": "runner.py",
+          "method": "original Native complete-body geometry and sourced region frame join",
+          "evidence": "reverse_history.jsonl and reverse_site_context.json"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/alternative-offline-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-1-site-template-ffbba7a6",
+        "exit_code": 0,
+        "construction_sha256": "05876d7a79bc8f89d788b643f4685f68cc377ca16d823235d8bd5d526e9479ce",
+        "log": "cases/alternative-1-offline.log",
+        "log_sha256": "b6510425705ad9ad7fc297f007c011873073c7b2509a8f95d8798fedea898286"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection --output .runtime-work/c215286-alt-intersection-stop-compat --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/intersection-stop-full-compatibility-receipt.json",
+        "sha256": "40b6a2c4b047bf98c79cf694187ddb413d57824b85a2ee5ec4bbdf335c294b3d",
+        "log": "cases/intersection-stop-full-compatibility-analysis.log",
+        "negative_log": "cases/intersection-stop-full-negative-analysis.log",
+        "negative_log_sha256": "d6491706887f0bade4ef6c8253c5ce9e783b25b1aa28ddd312637a4d81729ed2"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection --attempt .runtime-work/c215286-alt-intersection-stop-saved-source --output .runtime-work/c215286-alt-intersection-stop-saved-full --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/intersection-stop-saved-processing-receipt.json",
+        "sha256": "e55f97f1c91efe85dfe65db8e64b4e7a037b5fa3eff689a68e62614fee60ada4",
+        "log": "cases/intersection-stop-saved-processing.log",
+        "log_sha256": "e55f97f1c91efe85dfe65db8e64b4e7a037b5fa3eff689a68e62614fee60ada4"
+      },
+      "negative": {
+        "log": "cases/intersection-stop-full-negative-analysis.log",
+        "sha256": "d6491706887f0bade4ef6c8253c5ce9e783b25b1aa28ddd312637a4d81729ed2"
+      },
+      "physical_preparation": {
+        "receipt": "cases/intersection-stop-physical-preparation.json",
+        "sha256": "ab2b5cde0f27f253086ff767de84e586d2c10aa7fb8886aca41e88e7689b506d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_preflight_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-native-preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_capture.py --check",
+        "source_preflight_script": "delivery_audit.py",
+        "source_preflight_script_sha256": "df4ba56f345f9ca91c4b9485e20784780f904aa4c987fc137e0254a908d2d5c2",
+        "synthetic_rejection_log": "cpu-tests.log",
+        "synthetic_rejection_log_sha256": "475f9c1c49fc4c2b86f1c82898999c033d643f5fc14eb2bace1d3a4fdfa70cb0",
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "reverse_alternative_delivery_audit.py",
+        "script_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "auditor": "reverse_alternative_delivery_audit.py",
+        "auditor_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-intersection-stop-saved-full/v0001/analysis testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection",
+        "test_exit_code": 0,
+        "test_log": "cases/intersection-stop-delivery-positive.log",
+        "test_log_sha256": "4818dcd1faffdb5c55dd5f49fc323d618a5444c9d6ae02ffa0c1ae1d1faca9dc",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alternative-delivery-negative/intersection-stop testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Changed original site source: geometry_source",
+        "negative_log": "cases/intersection-stop-delivery-negative.log",
+        "negative_log_sha256": "3d0da8e854312944740415d24fe1b84f354c0e275915a8f169fab0f2a7408fb4",
+        "proof_scope": "900-frame synthetic software boundary; original Native source, pixels and legal outcome unaccepted"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+      "kind": "delivery",
+      "construction": "cases/street_corner-alternative-construction.json",
+      "construction_sha256": "fd6e0478a9fe4ab81add094008f0ed5138c250c2ed96c10783dab3cd9a97ef36",
+      "measurement_procedure": {
+        "entrypoint": "reverse_alternative_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native site, reverse path and four camera views require original-source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_around_street_corner-fallback1-construction.json",
+          "construction_sha256": "135ef88977d5b4df45403a7cbb42482e09cdf85b7b3d5a03480921cb6fd0833a",
+          "trigger": {
+            "source": "native-run-status.json and capture/manifest.json",
+            "metric": "subject actor spawn and first original frame",
+            "failure_condition": "Primary Audi blueprint unavailable or subject actor spawn fails before first capture frame"
+          },
+          "changed_knobs": [
+            "site_templates vehicle_blueprint_id: vehicle.audi.tt -> vehicle.tesla.model3; route, site geometry, cameras and case identity fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "cases/reverse_around_street_corner-measurement-contract.json",
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/fixtures/2/full-diagnostic-recipe.json",
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "site_review.py",
+          "method": "sourced crosswalk polygon joined to Native map",
+          "evidence": "crosswalk_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "crosswalk_reverse.py",
+          "method": "original complete body intersects sourced polygon",
+          "evidence": "reverse_history.jsonl"
+        },
+        "native_reverse": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "backward_motion": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "crosswalk_overlap": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native map and intersection region source readback",
+          "evidence": "reverse_site_context.json and capture/native/graphs"
+        },
+        "region_overlap": {
+          "entrypoint": "runner.py",
+          "method": "original Native complete-body geometry and sourced region frame join",
+          "evidence": "reverse_history.jsonl and reverse_site_context.json"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/alternative-offline-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-2-site-template-0b9828b9",
+        "exit_code": 0,
+        "construction_sha256": "fd6e0478a9fe4ab81add094008f0ed5138c250c2ed96c10783dab3cd9a97ef36",
+        "log": "cases/alternative-2-offline.log",
+        "log_sha256": "eba01dcc8d946e531db362db222c9ebd9f823e2bbd1809d02ca8d8ddc753d476"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner --output .runtime-work/c215286-alt-corner-entry-compat-v3 --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/corner-entry-full-compatibility-receipt.json",
+        "sha256": "fb500f620fab0f6b12a5010b385e7e9626671648b2036e02edf0059b8ccb299b",
+        "log": "cases/corner-entry-full-compatibility-analysis.log",
+        "negative_log": "cases/corner-entry-full-negative-analysis.log",
+        "negative_log_sha256": "3bc3004db1c298fe1ba6a756de8eb5bb8d6069224006f84f39cc49aa3100fa55"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner --attempt .runtime-work/c215286-alt-corner-entry-saved-source --output .runtime-work/c215286-alt-corner-entry-saved-full --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/corner-entry-saved-processing-receipt.json",
+        "sha256": "0330312a58e85073a99f4f940b565df99c87cd88c1f7df9606133537ca75e118",
+        "log": "cases/corner-entry-saved-processing.log",
+        "log_sha256": "0330312a58e85073a99f4f940b565df99c87cd88c1f7df9606133537ca75e118"
+      },
+      "negative": {
+        "log": "cases/corner-entry-full-negative-analysis.log",
+        "sha256": "3bc3004db1c298fe1ba6a756de8eb5bb8d6069224006f84f39cc49aa3100fa55"
+      },
+      "physical_preparation": {
+        "receipt": "cases/corner-entry-physical-preparation.json",
+        "sha256": "f083b428916b7ee1224cbd6ccaa6e01cec07d245ed4036b89ac064ebba20779d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_preflight_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-native-preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_capture.py --check",
+        "source_preflight_script": "delivery_audit.py",
+        "source_preflight_script_sha256": "df4ba56f345f9ca91c4b9485e20784780f904aa4c987fc137e0254a908d2d5c2",
+        "synthetic_rejection_log": "cpu-tests.log",
+        "synthetic_rejection_log_sha256": "475f9c1c49fc4c2b86f1c82898999c033d643f5fc14eb2bace1d3a4fdfa70cb0",
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "reverse_alternative_delivery_audit.py",
+        "script_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "auditor": "reverse_alternative_delivery_audit.py",
+        "auditor_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-corner-entry-saved-full/v0001/analysis testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "test_exit_code": 0,
+        "test_log": "cases/corner-entry-delivery-positive.log",
+        "test_log_sha256": "650645baba1b7fbf10d8c7cce2a4220b4129b8d036a3568c8a496d48ec1ff864",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alternative-delivery-negative/corner-entry testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Changed original site source: geometry_source",
+        "negative_log": "cases/corner-entry-delivery-negative.log",
+        "negative_log_sha256": "3d0da8e854312944740415d24fe1b84f354c0e275915a8f169fab0f2a7408fb4",
+        "proof_scope": "900-frame synthetic software boundary; original Native source, pixels and legal outcome unaccepted"
+      }
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner",
+      "kind": "delivery",
+      "construction": "cases/street_corner_stop-alternative-construction.json",
+      "construction_sha256": "c878812376b12f492ab5b3a2a09ebb0cf4db5fabaefbd892d17e94d4c1d222c7",
+      "measurement_procedure": {
+        "entrypoint": "reverse_alternative_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native site, reverse path and four camera views require original-source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_stops_before_street_corner-fallback1-construction.json",
+          "construction_sha256": "aa6e471310e63ec13df60e30f7e7adc0110a16427c218870443ec01072ae5b13",
+          "trigger": {
+            "source": "native-run-status.json and capture/manifest.json",
+            "metric": "subject actor spawn and first original frame",
+            "failure_condition": "Primary Audi blueprint unavailable or subject actor spawn fails before first capture frame"
+          },
+          "changed_knobs": [
+            "site_templates vehicle_blueprint_id: vehicle.audi.tt -> vehicle.tesla.model3; route, site geometry, cameras and case identity fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "cases/reverse_stops_before_street_corner-measurement-contract.json",
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/fixtures/3/full-diagnostic-recipe.json",
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native pose and velocity readback",
+          "evidence": "trace.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "site_review.py",
+          "method": "sourced crosswalk polygon joined to Native map",
+          "evidence": "crosswalk_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "crosswalk_reverse.py",
+          "method": "original complete body intersects sourced polygon",
+          "evidence": "reverse_history.jsonl"
+        },
+        "native_reverse": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "backward_motion": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "crosswalk_overlap": {
+          "entrypoint": "finalizer.py",
+          "method": "source-bound original reverse history measurement",
+          "evidence": "reverse_history.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native map and intersection region source readback",
+          "evidence": "reverse_site_context.json and capture/native/graphs"
+        },
+        "region_overlap": {
+          "entrypoint": "runner.py",
+          "method": "original Native complete-body geometry and sourced region frame join",
+          "evidence": "reverse_history.jsonl and reverse_site_context.json"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/alternative-offline-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-3-site-template-34d0194d",
+        "exit_code": 0,
+        "construction_sha256": "c878812376b12f492ab5b3a2a09ebb0cf4db5fabaefbd892d17e94d4c1d222c7",
+        "log": "cases/alternative-3-offline.log",
+        "log_sha256": "ec6480814015916dfb7177f1f3fbe73df7f0522f114c415e088bfd8b3cae387e"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner --output .runtime-work/c215286-alt-corner-stop-compat --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/corner-stop-full-compatibility-receipt.json",
+        "sha256": "b1560b15bca3cd98c806133f06dd89ee0ed2c533479656d2907a89d6bcc62191",
+        "log": "cases/corner-stop-full-compatibility-analysis.log",
+        "negative_log": "cases/corner-stop-full-negative-analysis.log",
+        "negative_log_sha256": "2a4bb4a92b8eddcbc8428111025f846c14af941f69e5e5865bff8ed4f11eca68"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c215286-intersection-stage/manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner --attempt .runtime-work/c215286-alt-corner-stop-saved-source --output .runtime-work/c215286-alt-corner-stop-saved-full --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/corner-stop-saved-processing-receipt.json",
+        "sha256": "e0e187c7f6242d3fc2dac8a406f76cf4ea09daf3f538dc1d39c1f2e1c2d151c7",
+        "log": "cases/corner-stop-saved-processing.log",
+        "log_sha256": "e0e187c7f6242d3fc2dac8a406f76cf4ea09daf3f538dc1d39c1f2e1c2d151c7"
+      },
+      "negative": {
+        "log": "cases/corner-stop-full-negative-analysis.log",
+        "sha256": "2a4bb4a92b8eddcbc8428111025f846c14af941f69e5e5865bff8ed4f11eca68"
+      },
+      "physical_preparation": {
+        "receipt": "cases/corner-stop-physical-preparation.json",
+        "sha256": "99837ecc3a557e76f7c3ab80b60a30ad00ed7f147413a01a51877a18ed124cbd"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_preflight_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-native-preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_capture.py --check",
+        "source_preflight_script": "delivery_audit.py",
+        "source_preflight_script_sha256": "df4ba56f345f9ca91c4b9485e20784780f904aa4c987fc137e0254a908d2d5c2",
+        "synthetic_rejection_log": "cpu-tests.log",
+        "synthetic_rejection_log_sha256": "475f9c1c49fc4c2b86f1c82898999c033d643f5fc14eb2bace1d3a4fdfa70cb0",
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "reverse_alternative_delivery_audit.py",
+        "script_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "auditor": "reverse_alternative_delivery_audit.py",
+        "auditor_sha256": "e2b84e84c9ddd034d0d4b643216e0052f278f5c5a117a9aec9718dd7bdfc7b57",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alt-corner-stop-saved-full/v0001/analysis testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner",
+        "test_exit_code": 0,
+        "test_log": "cases/corner-stop-delivery-positive.log",
+        "test_log_sha256": "482abc3c88d11b58111afd31022ce8d4a1aabff2c74feae6b586b5cce78613dc",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-alternative-delivery /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/reverse_alternative_delivery_audit.py /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c215286-alternative-delivery-negative/corner-stop testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Changed original site source: geometry_source",
+        "negative_log": "cases/corner-stop-delivery-negative.log",
+        "negative_log_sha256": "3d0da8e854312944740415d24fe1b84f354c0e275915a8f169fab0f2a7408fb4",
+        "proof_scope": "900-frame synthetic software boundary; original Native source, pixels and legal outcome unaccepted"
+      }
     }
   ],
   "comparisons": [
@@ -481,6 +1089,26 @@
       "receipt": "cases/comparison-receipt.json",
       "sha256": "9f04997cd0ca376b3f712abcbb4a0ec246ce05f0f7e39aa48d59694cc6eae081",
       "scope": "synthetic original-source diagnostic comparison; physical and legal acceptance unresolved"
+    },
+    {
+      "comparison_id": "reverse_intersection_entry_vs_stop",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection"
+      ],
+      "receipt": "cases/intersection-alternative-comparison.json",
+      "sha256": "086a50193a7e5d196284a7ae9ca00e5ce1313ba5877e4695153bbd11f9e8d709",
+      "scope": "900-frame synthetic source-joined comparison; original Native site and pixels unverified"
+    },
+    {
+      "comparison_id": "reverse_street_corner_entry_vs_stop",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner"
+      ],
+      "receipt": "cases/street_corner-alternative-comparison.json",
+      "sha256": "72d81633997d997c55fae6484d04b204fbd1fae8f57715923940f2119871d47f",
+      "scope": "900-frame synthetic source-joined comparison; original Native site and pixels unverified"
     }
   ]
 }

@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C215286",
   "law_id": "NRS-484B-113-2",
-  "selected_branch": "Backing on or over a crosswalk on a residence-district highway.",
+  "selected_branch": "Backing into an intersection, on or over a crosswalk, or around a street corner",
   "cases": [
     {
       "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
@@ -24,6 +24,46 @@
         "reverse_motion"
       ],
       "physical_risk": "rear body may still overlap crosswalk despite center stopping short"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing inside the sourced intersection region",
+      "gap_ids": [
+        "intersection_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored intersection region"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing before the sourced intersection region",
+      "gap_ids": [
+        "intersection_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored intersection region"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing inside the sourced street corner region",
+      "gap_ids": [
+        "street_corner_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored street corner region"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing before the sourced street corner region",
+      "gap_ids": [
+        "street_corner_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored street corner region"
     }
   ],
   "comparisons": [
@@ -38,6 +78,32 @@
       ],
       "deliberate_differences": [
         "measured complete-body crosswalk intersection during reverse"
+      ]
+    },
+    {
+      "comparison_id": "reverse_intersection_entry_vs_stop",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection"
+      ],
+      "fixed_conditions": [
+        "same Native map, road, region, vehicle, start body, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "reverse route enters region or stops before it"
+      ]
+    },
+    {
+      "comparison_id": "reverse_street_corner_entry_vs_stop",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner"
+      ],
+      "fixed_conditions": [
+        "same Native map, road, region, vehicle, start body, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "reverse route enters region or stops before it"
       ]
     }
   ],
@@ -91,9 +157,10 @@
   "runtime_uncertainties": [
     "Native reverse readback is setup evidence; actual backing requires original motion.",
     "Cell covers crosswalk alternative, not intersection or around-corner alternatives.",
-    "Both selected cases pass exact diagnostic CPU paths, but real reviewed site sources, physical-risk fallbacks, semantic and full-duration delivery audits remain worker-owned CPU work."
+    "Both selected cases pass exact diagnostic CPU paths, but real reviewed site sources, physical-risk fallbacks, semantic and full-duration delivery audits remain worker-owned CPU work.",
+    "Intersection and corner sources are synthetic CPU diagnostics; original Native map/camera review pending."
   ],
-  "planning_status": "partial; two selected constructions and exact synthetic CPU proof paths pass; physical and remaining CPU readiness unresolved",
+  "planning_status": "selected six-case CPU package; Native site and camera review pending",
   "requirement_dispositions": [
     {
       "requirement": "Shall not back on or over a crosswalk",
@@ -104,6 +171,26 @@
         "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk"
       ],
       "evidence_or_gap": "Fixed cell selects the crosswalk alternative; original reverse-body overlap needs measurement."
+    },
+    {
+      "requirement": "Shall not back into an intersection",
+      "source": "NRS 484B.113(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection"
+      ],
+      "evidence_or_gap": "Original Native site review and reverse complete-body/heading observation required; synthetic site is diagnostic only."
+    },
+    {
+      "requirement": "Shall not back around a street corner",
+      "source": "NRS 484B.113(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner"
+      ],
+      "evidence_or_gap": "Original Native site review and reverse complete-body/heading observation required; synthetic site is diagnostic only."
     }
   ],
   "decoded_frame_cpu_audit": {
