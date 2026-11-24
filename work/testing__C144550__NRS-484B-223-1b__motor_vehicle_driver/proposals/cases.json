@@ -4,11 +4,28 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__shared_baseline",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "delivery",
-      "rationale": "Two marked same-direction lanes; left indicator before complete body begins leaving source lane, source-measured target gap",
-      "variable_assignments": {},
+      "target_type": "baseline",
+      "rationale": "Shared source-bound left-lane change reference for comparisons",
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -51,15 +68,112 @@
           "Original pixels must establish clearly marked lane appearance and signal display.",
           "Driver safety ascertainment remains a legal judgment."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Two marked same-direction lanes; left indicator before complete body begins leaving source lane, source-measured target gap",
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "paired_probe_id": "lane-movement-conjunctive-prerequisites",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "signal_timing",
+        "comparison_or_standard": "Shared baseline and the other source-bound selected variants; no legal safety cutoff assigned.",
+        "target_value_or_branch": "Two marked same-direction lanes; left indicator before complete body begins leaving source lane, source-measured target gap"
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
     },
     {
       "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Same lane change with appropriate indicator first observed after body begins leaving",
       "variable_assignments": {
-        "signal_timing": "indicator first observed after source-lane body departure"
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator first observed after source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        }
       },
       "recording_description": {
         "channels": [
@@ -103,15 +217,43 @@
           "Original pixels must establish clearly marked lane appearance and signal display.",
           "Driver safety ascertainment remains a legal judgment."
         ]
-      }
+      },
+      "paired_probe_id": "lane-movement-conjunctive-prerequisites",
+      "deliberate_differences": [
+        "signal_timing"
+      ],
+      "probe": {
+        "primary_variable": "signal_timing",
+        "comparison_or_standard": "Shared baseline and the other source-bound selected variants; no legal safety cutoff assigned.",
+        "target_value_or_branch": "Same lane change with appropriate indicator first observed after body begins leaving"
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
     },
     {
       "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Same left lane change with wrong right indicator",
       "variable_assignments": {
-        "indicator_direction": "right indicator during left lane change"
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "right indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        }
       },
       "recording_description": {
         "channels": [
@@ -155,15 +297,43 @@
           "Original pixels must establish clearly marked lane appearance and signal display.",
           "Driver safety ascertainment remains a legal judgment."
         ]
-      }
+      },
+      "paired_probe_id": "lane-movement-conjunctive-prerequisites",
+      "deliberate_differences": [
+        "indicator_direction"
+      ],
+      "probe": {
+        "primary_variable": "indicator_direction",
+        "comparison_or_standard": "Shared baseline and the other source-bound selected variants; no legal safety cutoff assigned.",
+        "target_value_or_branch": "Same left lane change with wrong right indicator"
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
     },
     {
       "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Same signaled movement with target vehicle nearer in measured gap",
       "variable_assignments": {
-        "target_vehicle_placement": "nearer target-lane route point; report measured body gap, no legal cutoff"
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "nearer target-lane route point; report measured body gap, no legal cutoff"
+        }
       },
       "recording_description": {
         "channels": [
@@ -207,16 +377,43 @@
           "Original pixels must establish clearly marked lane appearance and signal display.",
           "Driver safety ascertainment remains a legal judgment."
         ]
-      }
+      },
+      "paired_probe_id": "lane-movement-conjunctive-prerequisites",
+      "deliberate_differences": [
+        "target_vehicle_placement"
+      ],
+      "probe": {
+        "primary_variable": "target_vehicle_placement",
+        "comparison_or_standard": "Shared baseline and the other source-bound selected variants; no legal safety cutoff assigned.",
+        "target_value_or_branch": "Same signaled movement with target vehicle nearer in measured gap"
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
     },
     {
       "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Right adjacent marked lane with appropriate right indicator before movement",
       "variable_assignments": {
-        "lane_change_direction": "right adjacent same-direction marked lane",
-        "indicator_direction": "right before source-lane body departure"
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "right adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "right before source-lane body departure"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        }
       },
       "recording_description": {
         "channels": [
@@ -260,7 +457,53 @@
           "Original pixels must establish clearly marked lane appearance and signal display.",
           "Driver safety ascertainment remains a legal judgment."
         ]
-      }
+      },
+      "paired_probe_id": "lane-movement-conjunctive-prerequisites",
+      "deliberate_differences": [
+        "lane_change_direction",
+        "indicator_direction"
+      ],
+      "probe": {
+        "primary_variable": "lane_change_direction",
+        "comparison_or_standard": "Shared baseline and the other source-bound selected variants; no legal safety cutoff assigned.",
+        "target_value_or_branch": "Right adjacent marked lane with appropriate right indicator before movement"
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "signal-appropriateness-pending",
+      "target_law_id": "NRS-484B-223-1b",
+      "judgment_refs": [
+        {
+          "phrase": "appropriate turn signal",
+          "note": "Appropriate direction and display require source-bound indicator state and original camera review."
+        }
+      ],
+      "rationale": "Source-bound signal direction and first body departure require a frozen numeric sampling design without a statutory lead-time threshold.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Feasible fixed sampling range and spacing for indicator timing and source-bound original pixels."
+      ]
+    },
+    {
+      "sweep_id": "safety-ascertainment-pending",
+      "target_law_id": "NRS-484B-223-1b",
+      "judgment_refs": [
+        {
+          "phrase": "ascertained that such movement can be made with safety",
+          "note": "Target-lane separation and conflict trajectories are observable; driver ascertainment and legal safety remain unresolved."
+        }
+      ],
+      "rationale": "Preserve physical target-lane gap variation while leaving driver ascertainment unresolved.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Feasible source-bound gap range, spacing, and full target traffic trajectories for a fixed grid."
+      ]
     }
   ]
 }
