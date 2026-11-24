@@ -1,3 +1,13 @@
+# Current v2 two-primary CPU proof — 2026-11-24
+
+The package remains **partial and unselected**. The prior Core `manifest is not complete` result used a stale November 5 decoder; `probe-package.py` now points to the current validator, and the exact primary passed. The synthetic evidence speed provenance is correctly marked `synthetic_native_sample`. `build-current-v2-primary.py` creates explicit source-hashed 600-frame JSON-graph recipes for both existing right-turn cases, retaining four canonical camera names and no fixture-provided derived channels.
+
+Both primary cases passed `runtime.py compatibility` with exact saved analysis, Native validation, mandatory source-derived observations, Core/Lean, four-camera composition, full final decode, selected measurement contract and missing-road-source negative. Both passed the actual `runtime.py process-saved` path with original source hashes preserved and 600 decoded final frames. Independent `audit-current-v2-pair.py` verifies exact construction/manifest/recipe/contract hashes, receipt hashes and the controlled synthetic contrast: 30 pre-turn stationary frames in probe A versus zero in probe B, while 600 steady-red frames, 4.55 s sampled pedestrian clearance and 4.8 s sampled other-traffic clearance remain fixed. Durable proof `current-v2-primary-pair-proof.json` SHA-256 `368e594a25d4e10fdeb6bafc33807861d74e58366b2372e1ddad24b7a1a37391`; exact compatibility, negative and saved-processing receipts are copied under this assignment.
+
+No original Native signal, actor trajectory, governing control, visible pixels, physical completion or legal permission is established. Remaining worker-owned CPU work: select exact cases after source/evidence review, review at most two risk fallbacks per case and prove them under current v2, independently audit the statutory alternatives and controlled comparisons, bind canonical semantic proposals and delivery audits, then let the lead integrate queue entries. The old eight draft fallback proofs are historical.
+
+---
+
 # NRS-484B-307-8c at C110919
 
 Status: **partial, unselected**. Actor `motor_vehicle_driver`; frozen cell `intersection` / `right_turn` / `traffic_light`. No CARLA run, original pixels, accepted recording, or legal verdict is claimed.

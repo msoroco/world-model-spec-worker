@@ -49,6 +49,40 @@ def finalize(attempt: Path, output: Path) -> dict:
     if config.get("case_variant") not in ("two_cycles", "one_cycle"):
         raise ValueError("Unknown exact case variant")
     analysis = analyze(attempt)
+    channel_dir = attempt / "channels"
+    if channel_dir.exists():
+        raise ValueError("Derived channel directory already exists; use fresh retained sources")
+    native_rows = [json.loads(line) for line in (attempt / "native_samples.jsonl").read_text().splitlines()]
+    frame_rows = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines()]
+    source_hashes = analysis["sources"]
+    channel_values = {
+        "ego_body_pose": lambda n, m: {"body_vertices_m": n["body_vertices_m"],
+                                       "speed_mps": n["speed_mps"],
+                                       "speed_provenance": n.get("speed_provenance", "source_unclassified")},
+        "signal_phase_readback": lambda n, m: {"signal_actor_id": n["signal_actor_id"],
+                                              "cross_signal_actor_id": n["cross_signal_actor_id"],
+                                              "ego_face": n["ego_face_observed"],
+                                              "cross_phase": n["cross_phase_observed"],
+                                              "detector_request_present": n["detector_request_present"],
+                                              "detector_request_serviced": n["detector_request_serviced"]},
+        "frame_join": lambda n, m: {"video_frame": m["video_frame"],
+                                     "native_frame": m["native_frame"],
+                                     "time_s": m["time_s"]},
+    }
+    expected_channels = [item["name"] for item in config["recording_description"]["channels"]]
+    if set(expected_channels) != set(channel_values):
+        raise ValueError("Declared recording channels differ from source-derived channels")
+    channel_dir.mkdir()
+    for name, value_of in channel_values.items():
+        with (channel_dir / (name + ".jsonl")).open("x") as stream:
+            for native, mapping in zip(native_rows, frame_rows):
+                stream.write(json.dumps({"native_frame": mapping["native_frame"],
+                                         "time_s": mapping["time_s"],
+                                         "value": value_of(native, mapping),
+                                         "source_sha256": source_hashes}, allow_nan=False) + "\n")
+    derived_channels = {name: sha(channel_dir / (name + ".jsonl")) for name in sorted(channel_values)}
+    if any(sha(attempt / name) != digest for name, digest in source_hashes.items()):
+        raise ValueError("Finalizer changed retained Native source")
     video_paths = [attempt / (name + ".mkv") for name in CAMERAS]
     counts = {path.name: decoded_frames(path) for path in video_paths}
     if any(count != 600 for count in counts.values()):
@@ -78,8 +112,9 @@ def finalize(attempt: Path, output: Path) -> dict:
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": config["recording_description"],
         "recording_evidence": [
-            {"name": "native_samples", "unit": "original Native frame", "reference": "native_samples.jsonl"},
-            {"name": "video_frame_map", "unit": "original video frame", "reference": "video_frames.jsonl"}],
+            {"name": channel["name"], "unit": channel["unit"],
+             "reference": "channels/" + channel["name"] + ".jsonl"}
+            for channel in config["recording_description"]["channels"]],
         "realized_observables": {
             "complete_cycles_before_entry": {"value": len([f for f in observed["complete_cycle_end_frames"]
                                                            if f < observed["entry_frame"]]),
@@ -98,6 +133,8 @@ def finalize(attempt: Path, output: Path) -> dict:
     report = {"format": "c111071-saved-finalizer-report-v1",
               "case_id": config["case_id"], "case_variant": config["case_variant"],
               "saved_analysis": analysis, "video_frame_counts": counts,
+              "derived_recording_evidence": {"channels": derived_channels,
+                                             "source_sha256": source_hashes},
               "video_sha256": {path.name: sha(path) for path in video_paths},
               "config_sha256": sha(config_path),
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False}

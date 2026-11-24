@@ -71,6 +71,15 @@ for case in ('witness_1', 'witness_2'):
             'sha256': sha(proof / 'compatibility.json'),
             'log': str((proof / 'analysis.log').relative_to(HERE)),
         }
+    for candidate in entry['candidates']:
+        candidate_proof = proof / candidate['id']
+        if (candidate_proof / 'compatibility.json').is_file():
+            candidate['compatibility'] = {
+                'receipt': str((candidate_proof / 'compatibility.json').relative_to(HERE)),
+                'sha256': sha(candidate_proof / 'compatibility.json'),
+                'log': str((candidate_proof / 'analysis.log').relative_to(HERE)),
+                'negative_log': str((candidate_proof / 'negative-analysis.log').relative_to(HERE)),
+            }
 write(HERE / 'current-v2-probe-manifest.json', manifest)
 print(json.dumps({'manifest_sha256': sha(HERE / 'current-v2-probe-manifest.json'),
                   'cases': len(manifest['cases']), 'source_files_per_case': len(sources)}))

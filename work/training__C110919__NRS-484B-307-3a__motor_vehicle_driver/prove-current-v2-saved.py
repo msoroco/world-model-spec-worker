@@ -1,5 +1,6 @@
 """Run recorded-only saved processing on both pinned diagnostic sources."""
 import hashlib
+import argparse
 import json
 import os
 from pathlib import Path
@@ -27,14 +28,14 @@ def command(args, env):
     return json.loads(completed.stdout)
 
 
-def stage(case, folder, env):
+def stage(case, folder, env, candidate):
     case_id = HERE.name + '__' + case
     recipe = HERE / f'current-v2-{case}-recipe.json'
     fixture = folder / (case + '-fixture')
     source = command(['fixture', '--recipe', str(recipe), '--output', str(fixture)], env)
     attempt = folder / (case + '-attempt')
     command(['materialize', '--manifest', str(MANIFEST), '--case', case_id,
-             '--output', str(attempt)], env)
+             '--candidate', candidate, '--output', str(attempt)], env)
     for path in fixture.iterdir():
         target = attempt / path.name
         if target.exists():
@@ -46,8 +47,8 @@ def stage(case, folder, env):
     return case_id, attempt, source
 
 
-def prove(case, folder, env):
-    case_id, attempt, source = stage(case, folder, env)
+def prove(case, folder, env, candidate):
+    case_id, attempt, source = stage(case, folder, env, candidate)
     original = {p.relative_to(attempt).as_posix(): sha(p)
                 for p in attempt.rglob('*') if p.is_file()}
     receipt = command(['process-saved', '--manifest', str(MANIFEST), '--case', case_id,
@@ -70,7 +71,8 @@ def prove(case, folder, env):
     if missing.returncode == 0 or 'Missing required source: road_geometry.json' not in missing.stdout + missing.stderr:
         raise ValueError('Missing geometry was accepted by saved analyzer')
     result = json.loads(Path(receipt['result']).read_text())
-    return {'case_id': case_id, 'fixture_sha256': source['fixture_sha256'],
+    return {'case_id': case_id, 'candidate_id': candidate,
+            'fixture_sha256': source['fixture_sha256'],
             'recipe_sha256': sha(HERE / f'current-v2-{case}-recipe.json'),
             'processing_sha256': sha(Path(receipt['version']) / 'processing.json'),
             'result_sha256': receipt['result_sha256'],
@@ -81,19 +83,24 @@ def prove(case, folder, env):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--candidate', default='primary', choices=('primary', 'fallback1'))
+    args = parser.parse_args()
     SCRATCH.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ)
     env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(SCRATCH)
     env['PYTHONDONTWRITEBYTECODE'] = '1'
     env['TMPDIR'] = str(SCRATCH)
     with tempfile.TemporaryDirectory(dir=SCRATCH, prefix='saved-proof-') as temp:
-        cases = [prove(case, Path(temp), env) for case in ('witness_1', 'witness_2')]
-    if [case['yielded_to_pedestrian'] for case in cases] != [True, False]:
+        labels = ('witness_1', 'witness_2') if args.candidate == 'primary' else ('witness_1',)
+        cases = [prove(case, Path(temp), env, args.candidate) for case in labels]
+    if [case['yielded_to_pedestrian'] for case in cases] != ([True, False] if args.candidate == 'primary' else [True]):
         raise ValueError('Controlled witness variable differs')
     result = {'format': 'c110919-current-v2-recorded-only-saved-proof',
               'passed': True, 'cases': cases, 'selected': False,
               'scope': 'Synthetic source-hashed software proof; physical arrow glyph and acceptance unproved'}
-    (HERE / 'current-v2-saved-proof.json').write_text(json.dumps(result, indent=2) + '\n')
+    filename = 'current-v2-saved-proof.json' if args.candidate == 'primary' else 'current-v2-fallback1-saved-proof.json'
+    (HERE / filename).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
 
 

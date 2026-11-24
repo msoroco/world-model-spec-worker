@@ -1,0 +1,141 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "d18befee1831c2f556b868d4dccf892151f01c96a0249efdac9d92a7ce700d1d"
+  },
+  "status": "unselected_30_second_cpu_fallback_migration",
+  "cases": [
+    {
+      "case_id": "training__C111256__NRS-484B-283-1a__motor_vehicle_driver__witness_2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal mapping, actor behavior, frame coverage and pixels need original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111256-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C111256__NRS-484B-283-1a__motor_vehicle_driver/long-capture-matrix/witness_2/diagnostic-recipe.json",
+      "kind": "unselected_cpu_diagnostic",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "long-capture-fallbacks/witness_2/fallback1/construction.json",
+          "construction_sha256": "c7989edfc70182b7da850ef858ac064115cffd5edaa2aeb53997f91e3f937d75",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "long-capture-fallbacks/witness_2/fallback2/construction.json",
+          "construction_sha256": "ab1931ff13cbd3a4642d1e935797ef4b5f1b0b8ec2a81ce80b76e653e56b3ddb",
+          "trigger": {
+            "source": "original Native marked-crosswalk pedestrian ego-half occupancy joined to full ego body crossing",
+            "metric": "min_ego_half_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "long-capture-fallbacks/witness_2/fallback3/construction.json",
+          "construction_sha256": "6479a2e2db4e2a3b102c0f53e272112931b3a68f2827200669f3e3b09dedb10f",
+          "trigger": {
+            "source": "decoded original marked-crosswalk and ego-body mask corners in overview video",
+            "metric": "min_crosswalk_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "construction": "long-capture-matrix/witness_2/construction.json",
+      "construction_sha256": "2aafe1ebb10b9d0cf7f8b175797f635a305d34eccc3dfd3e252dfd044273ef25",
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "crosswalk_exception": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "drv.extreme_lane": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "drv.yields_to": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        },
+        "st.stop_line": {
+          "entrypoint": "runner.py",
+          "method": "Original Native sampled channel and saved source join, with exact case map and actor readback required",
+          "evidence": "Synthetic CPU fixture is diagnostic; original Native source and independent pixel review remain required"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ]
+}

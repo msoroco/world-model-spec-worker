@@ -37,6 +37,7 @@ def fixture(path: Path, entry: int) -> None:
             "detector_request_serviced": False, "other_device_prohibition_observed": False,
             "body_vertices_m": [[-1, front-2], [1, front-2], [-1, front], [1, front]],
             "speed_mps": 0 if 15 <= frame < entry else 3,
+            "speed_provenance": "synthetic_native_sample",
             "entered_intersection": frame >= entry,
             "pedestrians_in_crosswalk": False, "lawful_traffic_conflict": False,
         })
@@ -59,7 +60,10 @@ def add_video_sources(path: Path, variant: str) -> None:
         "assignment_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator",
         "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__" + variant,
         "case_variant": variant, "rate_hz": 20, "duration_s": 30,
-        "recording_description": {"channels": ["native_samples", "video_frame_map"]},
+        "recording_description": {"channels": [
+            {"name": "ego_body_pose", "unit": "structured"},
+            {"name": "signal_phase_readback", "unit": "structured"},
+            {"name": "frame_join", "unit": "structured"}]},
     })
     for name in CAMERAS:
         run = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
@@ -117,6 +121,17 @@ def main() -> None:
         final_positive = finalize(positive, root / "positive_output")
         final_early = finalize(early, root / "early_output")
         assert final_positive["video_frame_counts"] == {name + ".mkv": 600 for name in CAMERAS}
+        for path in (positive, early):
+            report = final_positive if path == positive else final_early
+            channels = report["derived_recording_evidence"]["channels"]
+            assert len(channels) == 3
+            for name, digest in channels.items():
+                source = path / "channels" / (name + ".jsonl")
+                rows = [json.loads(line) for line in source.read_text().splitlines()]
+                assert len(rows) == 600
+                assert hashlib.sha256(source.read_bytes()).hexdigest() == digest
+                assert all(row["native_frame"] == i + 100 and row["time_s"] == i / 20
+                           for i, row in enumerate(rows))
         assert json.loads((root / "positive_output" / "result.json").read_text())["target_checks"][0]["matched"]
         assert json.loads((root / "early_output" / "result.json").read_text())["target_checks"][0]["matched"]
         missing_camera = root / "missing_camera"
@@ -150,6 +165,7 @@ def main() -> None:
              "finalizer_sha256": hashlib.sha256((HERE / "finalize.py").read_bytes()).hexdigest(),
              "finalizer_positive_and_contrast": True,
              "four_source_cameras_decoded": True,
+             "source_derived_channels": 3,
              "missing_source_camera_rejected": True,
              "source_kind": "synthetic_native_sample", "native_observation": False,
              "physical_or_legal_acceptance": False}

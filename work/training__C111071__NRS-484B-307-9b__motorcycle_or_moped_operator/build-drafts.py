@@ -36,6 +36,8 @@ def main():
                       {'name': 'signal_phase_readback', 'unit': 'structured'},
                       {'name': 'frame_join', 'unit': 'structured'}],
                       'limitations': ['Physical signal causation, actor and four-camera acquisition unverified']}}
+        config['mandatory_channels'] = [item['name'] for item in config['recording_description']['channels']]
+        config['case']['recording_description'] = config['recording_description']
         sources = {'runner.py': (HERE / 'native/runner.py').read_text(),
                    'cycle_controller.py': (HERE / 'native/cycle_controller.py').read_text(),
                    'saved_measurement.py': (HERE / 'native/saved_measurement.py').read_text(),

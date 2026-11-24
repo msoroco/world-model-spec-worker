@@ -3,7 +3,7 @@
   "input_sha256": "42d93d330a6604eab561f0431850549d39ac9de391ad436112622dade30daca6",
   "applied_update": 16,
   "status": "partial",
-  "reason": "Selected crosswalk branch now has source-shaped 600-frame stop/yield controller proof and source-driven replay: halt trace released only after conflict clearance, rolling trace crossed before release and was rejected, altered source hash was rejected. Physical signal and geometry readback, selected construction and four cameras, current offline/compatibility, saved processing, fallbacks and delivery audits remain unfinished; accepted recordings have not been source-reviewed for equivalence.",
+  "reason": "Selected no-stop-line near-crosswalk branch has a 600-frame source-driven stop/yield controller proof and a new retained-row finalizer proof for both halt and roll. The finalizer derives ten 600-row channels from hash-bound raw sources, preserves originals, rejects missing signal and altered rows, and preserves the halt contrast and yield. Exact Native construction, four cameras, current public compatibility and actual process-saved, fallbacks, accepted-source equivalence review, signal/geometry physical evidence and independent delivery audits remain unfinished.",
   "readiness_kind": "implementation_checkpoint",
   "counts": {
     "source_topics": 4,
@@ -24,6 +24,13 @@
       "proof": "native/controller-proof.json",
       "proof_sha256": "7883579d7e64e503c92f0a3dccc118859f83f79a0d98c4fdedd0c33f65aa1f00",
       "scope": "synthetic 600-frame 20-Hz controller policy only; no Native physical or legal result"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python native/prove_source_finalization.py",
+      "exit_code": 0,
+      "proof": "native/source-finalization-proof.json",
+      "proof_sha256": "649d0dd9ab23b0c1027d6f598bfa71962e14cb15bfba66694f7bacf4788b2c4b",
+      "scope": "synthetic 600-frame retained-row finalization only; not public compatibility, process-saved or Native physical proof"
     }
   ],
   "source_controller_checkpoint": {
@@ -32,6 +39,21 @@
     "halt_release_frame": 241,
     "rolling_crossing_rejected": true,
     "changed_source_rejected": true,
+    "original_native_observed": false
+  },
+  "source_finalization_checkpoint": {
+    "format": "nrs-484b-250-4-source-finalization-checkpoint-v1",
+    "finalizer_sha256": "2d3cb0f36cabae651e1aa7a2940f6ec012e63ea7c6fcdcd9b37d91fb8842185a",
+    "prover_sha256": "c46e2a8cd10ba7814d01bbf1c5012ad8d9cd69ffef70cf88e91758bf2c28f19a",
+    "proof_sha256": "649d0dd9ab23b0c1027d6f598bfa71962e14cb15bfba66694f7bacf4788b2c4b",
+    "cases_proven": 2,
+    "frames_per_case": 600,
+    "derived_channels_per_case": 10,
+    "missing_signal_negative_per_case": true,
+    "changed_source_negative_per_case": true,
+    "source_originals_preserved": true,
+    "public_compatibility_proved": false,
+    "actual_process_saved_proved": false,
     "original_native_observed": false
   }
 }
