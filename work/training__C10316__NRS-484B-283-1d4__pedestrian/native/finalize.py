@@ -110,7 +110,7 @@ def derive_channels(folder, config):
 def report(folder, case_id):
     folder = Path(folder)
     value = steady_entry(folder)
-    sources = {name: sha(folder / name) for name in ('steady-samples.jsonl', 'steady-context.json', 'road.xodr')}
+    sources = {name: sha(folder / name) for name in ('steady-samples.jsonl', 'steady-context.json')}
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'steady_entry_and_progress': {
                 'method': 'steady_entry', 'value': value, 'sources': sources}},

@@ -11,7 +11,7 @@ ROOT = HERE.parents[1]
 if not Path(os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT', '')).resolve().is_relative_to(
         (ROOT / '.runtime-work').resolve()):
     raise RuntimeError('Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work')
-sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
 from worker_exchange.measurement_contract import validate
 
 
@@ -28,6 +28,8 @@ for suffix in ('witness_1', 'witness_2', 'exception_1_1', 'exception_1_2'):
     construction = HERE / bundles / suffix / 'primary/construction.json'
     contract = json.loads(source.read_text())
     contract['format'] = 'worker-measurement-contract'
+    for requirement in contract['requirements']:
+        requirement['inputs'] = [name for name in requirement['inputs'] if name != 'road.xodr']
     target = HERE / 'current-contracts' / (suffix + '.json')
     target.parent.mkdir(exist_ok=True)
     target.write_text(json.dumps(contract, indent=2) + '\n')

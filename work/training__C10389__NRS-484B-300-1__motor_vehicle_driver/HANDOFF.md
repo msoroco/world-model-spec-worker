@@ -55,3 +55,35 @@ The 600-frame probe_1 primary now has an unselected source-hashed current JSON a
 The durable proof inventory is `current-v2-primary-proof/summary.json` (SHA-256 `e427563be4c432d7b339c6b14f864fb0466263e565009ef51eddd371bbb0b5cc`). The current v2 manifest is `current-v2-primary-probe-manifest.json` (SHA-256 `017d78a8723efea9db30ec7bb0b05234edace264f6676cdcdb6f75794cd3362e`); construction SHA-256 `db1f90788be05d0080db7284e2e8a888b0d4a7efa9dc567bc870cf94ea721cc5`. Generated adapter graphs and media remain under `.runtime-work/c10389-v2-primary/`. Assignment-scoped `worker_check.py --complete` passes. This is a CPU diagnostic, not selected delivery or Native physical evidence.
 
 The assignment remains partial. Worker-owned next steps: review and select the exact device pair; construct the contrary case and at most two risk-based fallbacks per case under the current runtime; add police-officer and 484B.307 exception coverage; write independent delivery/comparison audits, semantic proposals, selected manifest/queue/integration receipts; then run the assignment-scoped strict gate. Official placement, original pixels, officer direction and physical outcome remain for original source review, with no legal verdict asserted.
+
+## 2026-11-24 active-runtime two-probe candidate compatibility
+
+The current active `runtime/SOURCE-MANIFEST.json` (SHA-256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`) was verified with `runtime.py verify` and `runtime.py preflight`. The previous diagnostic manifest bound retired runtime/pipeline and its old decoder rejected the active ontology value `limousine`; a fresh decoder from `runtime/library` now lives only under `.runtime-work/c10389-active-decoder/`.
+
+`build-current-v2-probe.py` now emits per-case/candidate source-hashed v3 diagnostics for both exact device responses. `current-v3-draft-manifest.json` (SHA-256 `621599e4eb748ef08fd865fc2fb60f4e5874de914fdfbae9a3347a9767708e47`) binds primary, route fallback1, and camera fallback2 for each probe. These are unselected diagnostics with unchanged exact case IDs and law, not selected delivery. Six active-runtime offline checks and six public compatibility checks passed, including 600-frame actor/video joins, four source cameras, Native validation, conversion, current Lean decoding, full video decode, case measurement, and missing-actor rejection. Receipt SHA-256 values:
+
+- `probe_1` `primary`: `0186a9cb162a98031195d868f6b1a1cafdb9fa2dde5084ce9c77280424691bff` (11 compatibility checks).
+- `probe_1` `fallback1`: `024e9c7f2735e1279050b18ac9e00d91e5b3ccb1851d530dd6068e80fcedec9e` (11 compatibility checks).
+- `probe_1` `fallback2`: `f35a886f1e7d77e4132fb5fa4fbfbb2fc1b02fe04cb68836e525f3f345029f0d` (11 compatibility checks).
+- `probe_2` `primary`: `8d88510a12e82688d57ea4fca133a74ce2391f58a36c0c4b2015580a1c67a273` (11 compatibility checks).
+- `probe_2` `fallback1`: `70e2aa7ee08fd1bd879ccbd500f2db3e75b26cdc5aedee6fd39c3eb440d1baf9` (11 compatibility checks).
+- `probe_2` `fallback2`: `6a5e102895899bc7a91a90e97b5f4781f23d01695bad6ee086cdf463841319f9` (11 compatibility checks).
+
+The six compatibility source outputs are in `current-v3-compat-proof/`; generated media and decoder files are under `.runtime-work/`. The assignment-scoped `worker_check.py --assignment training__C10389__NRS-484B-300-1__motor_vehicle_driver --complete` passed. The result remains partial. Next CPU work is binding these exact constructions into canonical selected delivery, recording the source-bound saved-only path for both cases and fallbacks, adding officer-direction and signal-specific exception coverage, semantic/physical proposals, independent delivery/comparison audits, then passing exact scoped strict. Original official placement, synchronized Native pixels, physical stop/crossing and legal judgment remain unverified.
+
+## 2026-11-24 recorded-only candidate saved processing
+
+All six source-bound synthetic compatibility attempts were subsequently processed with the current `runtime.py process-saved` command under `.runtime-work/`. Each original acquisition remained byte-identical, all 600 Native frame/time joins passed, and saved law analysis completed without re-running Native capture. The returned `current-v3-saved-proof/` records candidate-specific `processing.json`, analysis and command logs. Processing receipt SHA-256 values:
+
+- `probe_1` `primary`: `f80784c6ed784700ba5f0b57df900fc79ca8509d2a2a06445278a1088c12603e`.
+- `probe_1` `fallback1`: `508dc1269e6bc95ee67b149dbb0eb564975238cdb82733eaa5a393eedab56e17`.
+- `probe_1` `fallback2`: `2c4bf50ec4a3381ddd245a30a29979868295ed21c55759f492ec9199a845451d`.
+- `probe_2` `primary`: `c9dbc4a9bff7e51c8ccbabcf096c0dfffa78532cb4741f399ecbc767f38f5847`.
+- `probe_2` `fallback1`: `6589998efb1ad1f9da562a702736817c38f1c765ed68acc364a85d205a952458`.
+- `probe_2` `fallback2`: `2e53652585175b74fa808206af47e24d912f3e22c6754b48e75c659553f1d9e3`.
+
+These are recorded-only CPU software proofs, not physical completion or legal acceptance. The selected execution manifest, statutory officer/signal exceptions, canonical semantic and physical proofs, and independent delivery/comparison audits are still CPU work.
+
+## 2026-11-24 recorded-only missing-source feedback
+
+The independent `prove-current-v3-missing-source.py` copied each primary source-bound diagnostic attempt only under `.runtime-work/`, removed `native-raw-actors.jsonl`, and ran the active `runtime.py process-saved` path. Both cases produced incomplete-evidence feedback, preserved the remaining original hashes, and did not request Native replay. Proof SHA-256: `probe_1` `8d5ef36fc7ae339af125e9e337d88871b35c07c3ac5d5ba4f2451cec5b1d95c5`, `probe_2` `5aa04ec3707504b495208b1a1cc8d757dc435170bf85163ba40fb1e0fc14de8f`. This does not fill the missing source or claim physical completion.

@@ -116,7 +116,7 @@ def report(folder, case_id):
         contract = Path(__file__).resolve().parent.parent / 'statutory-context-contract.json'
     facts = folder / 'statutory-diagnostic-facts.json'
     context_assessment = assess(contract, value, facts if facts.is_file() else None)
-    sources = {name: sha(folder / name) for name in ('exception-samples.jsonl', 'exception-context.json', 'road.xodr')}
+    sources = {name: sha(folder / name) for name in ('exception-samples.jsonl', 'exception-context.json')}
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'prior_entry_exception_source_facts': {
                 'method': 'prior_entry_exception', 'value': value, 'sources': sources}},

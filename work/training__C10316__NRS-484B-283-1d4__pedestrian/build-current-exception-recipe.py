@@ -84,13 +84,21 @@ def build(suffix='exception_1_1'):
         for row in evidence:
             row['ego']['speed_provenance'] = 'synthetic_native_sample'
         (fixture / 'capture/evidence.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in evidence))
+        trace = [json.loads(line) for line in (fixture / 'trace.jsonl').read_text().splitlines()]
+        for row in trace:
+            row['velocity_mps'] = [row['speed_mps'], 0.0, 0.0]
+        (fixture / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace))
+        capture_manifest = json.loads((fixture / 'capture/manifest.json').read_text())
+        capture_manifest['sources']['trace.jsonl'] = sha(fixture / 'trace.jsonl')
+        (fixture / 'capture/manifest.json').write_text(json.dumps(capture_manifest, indent=2) + '\n')
         frames = [json.loads(line) for line in (fixture / 'capture/native/frames.jsonl').read_text().splitlines()]
         for row in frames:
             row['base'] = str(Path(row['base']).with_suffix('.adapter.json'))
+            row['adapter_graph'] = row['base']
         (fixture / 'capture/native/frames.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in frames))
         files, graphs = {}, []
         for path in sorted(fixture.rglob('*')):
-            if not path.is_file() or path.suffix == '.mkv' or 'channels' in path.relative_to(fixture).parts:
+            if not path.is_file() or path.suffix == '.mkv' or path.name == 'road.xodr' or 'channels' in path.relative_to(fixture).parts:
                 continue
             relative = path.relative_to(fixture).as_posix()
             if path.suffix == '.pkl':

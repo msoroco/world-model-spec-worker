@@ -2,92 +2,431 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_1",
-      "rationale": "Selected 600-frame controlled crossroads entry request with body-derived CPU timing; original Native and legal applicability remain unverified",
+      "case_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__baseline",
+      "rationale": "Neutral authored intersection without a crossing other vehicle.",
       "recording_description": {
         "channels": [
           {
-            "method": "Retained actor body rows",
-            "name": "ego_body",
-            "reference_frame": "original frame/time and authored road",
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "st.intersection",
+            "reference_frame": "source video/native frame and authored road",
             "sampling_rate_hz": 20,
             "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
             "unit": "structured"
           },
           {
-            "method": "Retained actor body rows",
-            "name": "other_body",
-            "reference_frame": "original frame/time and authored road",
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "st.lane_enters",
+            "reference_frame": "source video/native frame and authored road",
             "sampling_rate_hz": 20,
             "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.entering_intersection",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.arrival_order",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "rel.bearing",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.yields_to",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "dev.traffic_signal",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.turning",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "ego_body",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "other_body",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
             "unit": "structured"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Synthetic CPU source; official device governance and legal precedence unverified"
+          "Synthetic CPU fixture is not original Native motion or reviewed pixels",
+          "Public-highway and official-device governance, turn intent, subsection 4 and right-of-way remain unverified"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "authored_intersection_control": {
+          "kind": "world_setup",
+          "value": "no_authored_devices"
+        },
+        "authored_other_vehicle_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "commanded_approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_yield_wait_s": {
+          "kind": "controller",
+          "value": 0.0
+        }
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_1",
+      "deliberate_differences": [
+        "ego_yield_wait_s"
+      ],
+      "paired_probe_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__entry_pair",
+      "probe": {
+        "comparison_or_standard": "paired measured entry-time contrast; legal standard unresolved",
+        "primary_variable": "ego_yield_wait_s",
+        "target_value_or_branch": 1.0
+      },
+      "rationale": "Measure body-front entry timing under fixed other-vehicle motion and a changed ego yield wait; no legal label.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "st.intersection",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "st.lane_enters",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.entering_intersection",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.arrival_order",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "rel.bearing",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.yields_to",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "dev.traffic_signal",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.turning",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "ego_body",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "other_body",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic CPU fixture is not original Native motion or reviewed pixels",
+          "Public-highway and official-device governance, turn intent, subsection 4 and right-of-way remain unverified"
         ]
       },
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "approximately the same time",
-        "official traffic-control device governance",
-        "opposite-direction left-turn exclusion",
-        "subsection 4 dependency",
-        "right-of-way determination"
+        "approximately the same time"
       ],
       "variable_assignments": {
-        "ego_yield_action_requested": true
+        "authored_intersection_control": {
+          "kind": "world_setup",
+          "value": "no_authored_devices"
+        },
+        "authored_other_vehicle_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "commanded_approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_yield_wait_s": {
+          "kind": "controller",
+          "value": 1.0
+        }
       }
     },
     {
       "case_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__controlled_2",
-      "rationale": "Selected 600-frame controlled crossroads entry request with body-derived CPU timing; original Native and legal applicability remain unverified",
+      "deliberate_differences": [
+        "ego_yield_wait_s"
+      ],
+      "paired_probe_id": "training__C111294__NRS-484B-250-2__motor_vehicle_driver__entry_pair",
+      "probe": {
+        "comparison_or_standard": "paired measured entry-time contrast; legal standard unresolved",
+        "primary_variable": "ego_yield_wait_s",
+        "target_value_or_branch": 0.0
+      },
+      "rationale": "Measure body-front entry timing under fixed other-vehicle motion and a changed ego yield wait; no legal label.",
       "recording_description": {
         "channels": [
           {
-            "method": "Retained actor body rows",
-            "name": "ego_body",
-            "reference_frame": "original frame/time and authored road",
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "st.intersection",
+            "reference_frame": "source video/native frame and authored road",
             "sampling_rate_hz": 20,
             "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
             "unit": "structured"
           },
           {
-            "method": "Retained actor body rows",
-            "name": "other_body",
-            "reference_frame": "original frame/time and authored road",
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "st.lane_enters",
+            "reference_frame": "source video/native frame and authored road",
             "sampling_rate_hz": 20,
             "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.entering_intersection",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.arrival_order",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "rel.bearing",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.yields_to",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "dev.traffic_signal",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "drv.turning",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "ego_body",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained source-joined actor body, trace and authored road context",
+            "name": "other_body",
+            "reference_frame": "source video/native frame and authored road",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; original physical and legal review pending",
             "unit": "structured"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Synthetic CPU source; official device governance and legal precedence unverified"
+          "Synthetic CPU fixture is not original Native motion or reviewed pixels",
+          "Public-highway and official-device governance, turn intent, subsection 4 and right-of-way remain unverified"
         ]
       },
       "target_law_id": "NRS-484B-250-2",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "approximately the same time",
-        "official traffic-control device governance",
-        "opposite-direction left-turn exclusion",
-        "subsection 4 dependency",
-        "right-of-way determination"
+        "approximately the same time"
       ],
       "variable_assignments": {
-        "ego_yield_action_requested": false
+        "authored_intersection_control": {
+          "kind": "world_setup",
+          "value": "no_authored_devices"
+        },
+        "authored_other_vehicle_present": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "commanded_approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_yield_wait_s": {
+          "kind": "controller",
+          "value": 0.0
+        }
       }
     }
   ],
   "cell_id": "C111294",
-  "format": "worker-case-proposals",
   "status": "draft",
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Entry-time relation requires a source-reviewed legal judgment; no numeric cutoff is supplied.",
+          "phrase": "approximately the same time"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native physically feasible entry-time range",
+        "Source-reviewed interpretation of approximate same time"
+      ],
+      "rationale": "A fixed physical entry-time sweep needs original Native feasibility and source-reviewed judgment policy.",
+      "status": "incomplete",
+      "sweep_id": "c111294_approximate_entry_time",
+      "target_law_id": "NRS-484B-250-2"
+    }
+  ],
+  "sweeps_expanded": true
 }
