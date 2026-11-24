@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import json
+import tarfile
 import unittest
 import zlib
 from pathlib import Path
@@ -27,7 +28,15 @@ def construction_bytes(item):
 
 
 def historical_bytes(item):
-    archive = read(item['historical_construction_archive'])
+    archive_path = HERE / item['historical_construction_archive']
+    if archive_path.suffix == '.xz':
+        with tarfile.open(archive_path, 'r:xz') as packed:
+            source = packed.extractfile(
+                'work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/'
+                'sweep-constructions/historical-unqualified-bundles.json')
+            archive = json.load(source)
+    else:
+        archive = json.loads(archive_path.read_text())
     member = archive['files'][item['historical_construction_member']]
     raw = zlib.decompress(base64.b64decode(member['zlib_base64'], validate=True))
     assert len(raw) == member['bytes']
@@ -898,3 +907,45 @@ class SweepConstructionTests(unittest.TestCase):
         self.assertTrue(life['premature_release_rejected'])
         negative = plan['negative_binding_check']
         self.assertIn(negative['error_contains'], negative['log_text'])
+
+    def test_frame40_fallback23_retained_current_cpu_receipts(self):
+        plan = read('case-plan.json')
+        manifest = read('execution-manifest.json')
+        for candidate_id in ('fallback2', 'fallback3'):
+            with self.subTest(candidate=candidate_id):
+                proof = plan[f'frame40_{candidate_id}_current_cpu_proof']
+                case = next(item for item in manifest['cases']
+                            if item['case_id'] == proof['case_id'])
+                self.assertEqual(proof['execution_manifest_file_sha256_at_attempt'],
+                                 '730d0153a4eabc6fa89afd21393ee1f1ffd8dd2653763503a2b72b914c91c573')
+                candidate = next(item for item in case['candidates']
+                                 if item['id'] == candidate_id)
+                self.assertEqual(proof['construction_sha256'],
+                                 candidate['construction_sha256'])
+                if candidate_id == 'fallback2':
+                    self.assertEqual(proof['bound_execution_manifest_file_sha256'],
+                                     digest('execution-manifest.json'))
+                    self.assertEqual(candidate['compatibility']['sha256'],
+                                     proof['artifacts']['compatibility.json']['sha256'])
+                    self.assertEqual(digest(candidate['post_capture']['test_log']),
+                                     proof['artifacts']['processing.json']['sha256'])
+                decoded = {}
+                for name, item in proof['artifacts'].items():
+                    data = zlib.decompress(base64.b64decode(
+                        item['payload'], validate=True))
+                    self.assertEqual(len(data), item['byte_length'])
+                    self.assertEqual(hashlib.sha256(data).hexdigest(),
+                                     item['sha256'])
+                    decoded[name] = data
+                receipt = json.loads(decoded['compatibility.json'])
+                saved = json.loads(decoded['processing.json'])
+                self.assertTrue(receipt['passed'])
+                self.assertEqual(receipt['candidate_id'], candidate_id)
+                self.assertEqual(receipt['negative_log_sha256'],
+                                 proof['artifacts']['negative-analysis.log']['sha256'])
+                self.assertEqual(saved['native_revision']['construction_sha256'],
+                                 candidate['construction_sha256'])
+                self.assertTrue(saved['passed'])
+                self.assertTrue(saved['recorded_only'])
+                self.assertTrue(saved['originals_preserved'])
+                self.assertEqual(saved['timestamp_joins']['frames'], 135)
