@@ -2,6 +2,7 @@ import importlib.util
 import hashlib
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,6 +10,7 @@ from types import SimpleNamespace as NS
 
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 
 
 def load(name):
@@ -23,12 +25,121 @@ comparison=load("comparison_audit")
 capture_sources=load("officer_capture_sources")
 finalizer=load("finalizer")
 camera=load("officer_camera")
+site=load("officer_site")
+native_capture=load("officer_native_capture")
+runner=load("runner")
+builder=load("build_primary_construction")
 
 
 def body(x):return [[x+dx,y] for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]
 
 
 class OfficerTests(unittest.TestCase):
+    def test_primary_construction_binds_exact_owned_sources(self):
+        bundle=builder.build()
+        self.assertEqual(bundle["case_id"],json.loads((ROOT/"config.json").read_text())["selected_case_id"])
+        self.assertEqual(bundle["entrypoint"],"runner.py")
+        for file in bundle["files"]:
+            if "source" in file:
+                self.assertEqual(file["content"],(ROOT/file["path"]).read_text())
+        self.assertIn("officer_native_capture.py",{file["path"] for file in bundle["files"]})
+        ids=set()
+        for suffix in builder.SUFFIXES:
+            case=measure.PREFIX+suffix
+            selected=builder.build(case)
+            ids.add(selected["case_id"])
+            configured=json.loads(next(item["content"] for item in selected["files"]
+                                       if item["path"]=="config.json"))
+            self.assertEqual(configured["selected_case_id"],case)
+            if suffix=="no_officer_yield_nearest_view":
+                self.assertIsNone(configured["officer_context"]["authority_source"])
+        self.assertEqual(len(ids),4)
+
+    def test_exact_native_runner_cpu_check_rejects_wrong_case_and_site(self):
+        config=json.loads((ROOT/"config.json").read_text())
+        self.assertEqual(runner.validate_config(config)["selected_case_id"],
+                         config["selected_case_id"])
+        wrong=json.loads(json.dumps(config));wrong["selected_case_id"]=measure.PREFIX+"invented"
+        with self.assertRaisesRegex(ValueError,"Exact C157964"):
+            runner.validate_config(wrong)
+        wrong=json.loads(json.dumps(config));wrong["site"]["xodr_sha256"]="0"*64
+        with self.assertRaisesRegex(ValueError,"authored junction"):
+            runner.validate_config(wrong)
+        wrong=json.loads(json.dumps(config));wrong["site"]["through_lane"]=[157963,-1]
+        with self.assertRaisesRegex(ValueError,"through approach"):
+            runner.validate_config(wrong)
+        wrong=json.loads(json.dumps(config));wrong["camera_mounts"].pop("approach")
+        with self.assertRaisesRegex(ValueError,"camera mounts"):
+            runner.validate_config(wrong)
+
+    def test_native_officer_capture_joins_original_tick_and_rejects_stale_camera(self):
+        class Sensor:
+            def listen(self,callback):self.callback=callback
+            def stop(self):self.stopped=True
+            def destroy(self):self.destroyed=True
+        class World:
+            def __init__(self):self.frame=100;self.sensors=[];self.stale=False
+            def spawn_actor(self,blueprint,transform,**options):
+                sensor=Sensor();self.sensors.append(sensor);return sensor
+            def tick(self):
+                self.frame+=1
+                for sensor in self.sensors:
+                    sensor.callback(NS(frame=self.frame-int(self.stale),timestamp=self.frame/20,
+                                       width=2,height=2,raw_data=bytes(16)))
+                return self.frame
+            def get_snapshot(self):return NS(frame=self.frame,timestamp=NS(elapsed_seconds=self.frame/20))
+        class Encoder:
+            def __init__(self,root,sizes=None):self.processes={"open":True};self.rows=[]
+            def __enter__(self):return self
+            def validate_packets(self,packets):
+                if len(packets)!=4:raise ValueError("camera count")
+            def add_packets(self,packets):self.rows.append([p.frame for p in packets.values()])
+            def _finish(self,abort=False):self.processes={};self.abort=abort
+        class Writer:
+            def __init__(self,root,context):self.rows=[]
+            def __enter__(self):return self
+            def add_tick(self,snapshot,packets,ego,officer,pose):
+                self.rows.append((snapshot.frame,pose["programmed_direction"]))
+                return {"time_s":snapshot.timestamp.elapsed_seconds}
+            def __exit__(self,*args):pass
+        class Pipeline:
+            def __init__(self,client,ego,root,case_id,required_observations):self.rows=[]
+            def capture(self,frame,time_s):self.rows.append((frame,time_s))
+            def close(self,confirmed=True):self.confirmed=confirmed
+        world=World();case_id=measure.ABSENT
+        mounts={name:{"transform":NS(),"attach_to":None} for name in camera.CAMERAS}
+        with tempfile.TemporaryDirectory() as tmp:
+            capture=native_capture.NativeOfficerCapture(world,NS(),tmp,case_id,
+                {"ego":NS()}, {"case_id":case_id,"officer_actor_id":None},
+                {name:NS() for name in camera.CAMERAS},mounts,[],None,3,
+                encoder_factory=Encoder,writer_factory=Writer,capture_factory=Pipeline)
+            with capture:
+                for _ in range(3):capture.capture_tick()
+            self.assertEqual(capture.writer.rows,[(101,"none"),(102,"none"),(103,"none")])
+            self.assertEqual([row[0] for row in capture.pipeline_capture.rows],[101,102,103])
+            self.assertTrue(capture.pipeline_capture.confirmed)
+            self.assertTrue(all(sensor.destroyed for sensor in world.sensors))
+            world=World();world.stale=True
+            capture=native_capture.NativeOfficerCapture(world,NS(),tmp,case_id,
+                {"ego":NS()}, {"case_id":case_id,"officer_actor_id":None},
+                {name:NS() for name in camera.CAMERAS},mounts,[],None,3,
+                encoder_factory=Encoder,writer_factory=Writer,capture_factory=Pipeline)
+            with self.assertRaisesRegex(ValueError,"frame differs"):
+                with capture:capture.capture_tick()
+            self.assertFalse(capture.pipeline_capture.confirmed)
+            self.assertTrue(capture.encoder.abort)
+
+    def test_authored_officer_site_has_signed_ego_and_both_through_directions(self):
+        checked=site.validate_site()
+        self.assertEqual(checked["ego_road_id"],157960)
+        self.assertEqual(checked["through_approaches"],[[157964,-1],[157966,1]])
+        self.assertFalse(checked["signal_controller_present"])
+        with tempfile.TemporaryDirectory() as tmp:
+            changed=Path(tmp)/"changed.xodr"
+            changed.write_text(site.SITE.read_text().replace('type="205"','type="206"'))
+            with self.assertRaisesRegex(ValueError,"signed ego entrance"):
+                site.validate_site(changed)
+
     def test_four_original_camera_encoder_and_packet_validation(self):
         sizes={name:(2,2) for name in camera.CAMERAS}
         packet=NS(width=2,height=2,raw_data=bytes([0,0,255,255])*4)
