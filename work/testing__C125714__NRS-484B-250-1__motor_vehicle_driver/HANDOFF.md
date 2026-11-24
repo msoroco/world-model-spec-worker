@@ -455,3 +455,23 @@ C125714 remains partial. Genuine reviewed source packets for the seven exact sce
 `preflight_reviewed_packet.py` now stages reviewed retained source bytes in a private sibling directory and publishes `preflight.json` only after the full original map/context/source check succeeds. Failure removes the staged directory, preserving a fresh destination for a corrected source packet. The focused test changes a sealed device source, confirms failure leaves no output directory, restores the original bytes, and successfully retries the same path. This protects the seven-case reviewed candidate author from treating partial preflight output as a receipt.
 
 The full assignment suite passes 84 tests with one existing diagnostic-root skip. Pinned CPU preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial status. Four new command/log SHA-256 receipts are appended in `result.json`. Nondiagnostic source findings for public-highway/crossing, official-device, human-driver and subsection-4 facts, canonical manifest and local integration remain worker-owned CPU work; current synthetic protocols do not establish them. Original Native motion/pixels and legal review remain unverified.
+
+## 2026-11-24 cross-view presentation start guard
+
+`delivery_audit.audit_media_time` now rejects a camera whose encoded presentation start differs by more than 1 ms from the other three original views. The previous per-camera relative 20 Hz check accepted a whole stream shifted by one frame while original frame IDs still appeared joined. The focused real-FFV1 test confirms that failure and the positive four-view case still passes.
+
+The seven diagnostic primary and fallback bundles were regenerated. Seven-case primary offline and saved positive/missing-source negative, fallback offline/compatibility, primary compatibility, and saved-only processing proofs all pass against the refreshed constructions. The full assignment suite passes 85 tests with one expected diagnostic-root skip. Pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial status. These are diagnostic CPU proofs, with no Native physical or legal acceptance.
+
+Current SHA-256 log receipts:
+- `cpu-cross-view-media-tests.log`: `44e4b1fe97c028bc0e9386bf27833c464dc32cfb5410a9c1cb6c66b0610007d0`
+- `cpu-cross-view-build.log`: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
+- `cpu-cross-view-suite.log`: `180217c6ced1b258971c8ce136860509868f5c1155740d7d8d03f1d023585df8`
+- `cpu-cross-view-preflight.log`: `d751fb03fb4467ba3c2938355e87310bd0e8a1dec4be87242430e19bf70c8835`
+- `cpu-cross-view-primary.log`: `ea3f2c4a2feee4d6de43a20ebfff01b611f49a1c9f9bd19f7da02d8c312811c5`
+- `cpu-cross-view-fallback.log`: `5c693168af4d8a6b2f4e394a1dc695669cdfc691f39851a5324cb188400987c6`
+- `cpu-cross-view-compat.log`: `eada810df6383b9734bf6043dd921de0bf8fc13f73c7de130c3401de9a0e73ea`
+- `cpu-cross-view-saved.log`: `4c181a1fff6d3a563a761acb25c30a8dcc07d3a29629a33f4567abb44beeec3b`
+- `cpu-cross-view-static.log`: `a3fafeb8ac368f9bc591b2c08b831a41fbd3b27e29ac7889b56b4d17963cd22d`
+- `cpu-cross-view-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Remaining CPU work is genuine independently reviewed source packets for the seven exact scenes, source-bound nondiagnostic constructions, the canonical manifest, and local integration. Original Native motion and decoded pixels remain unverified. All scratch stayed under `.runtime-work/`; no Git, frozen input, runtime, batch, or shared file was edited.

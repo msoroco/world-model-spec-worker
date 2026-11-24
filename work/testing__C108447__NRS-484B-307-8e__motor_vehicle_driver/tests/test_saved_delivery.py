@@ -167,6 +167,23 @@ class SavedDeliveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'image inventory differs'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
+    def test_resealed_duplicate_image_member_rejected(self):
+        path = self.root / 'property.zip'
+        with ZipFile(path, 'a') as archive:
+            archive.writestr('100.png', archive.read('100.png'))
+        self.bundle['cameras']['property']['sha256'] = audit.sha(path.read_bytes())
+        with self.assertRaisesRegex(ValueError, 'duplicate entries'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+
+    def test_production_image_profile_rejected_when_wrong(self):
+        image = Image.new('RGB', (2, 2), (1, 2, 3))
+        sink = io.BytesIO()
+        image.save(sink, format='PNG')
+        with Image.open(io.BytesIO(sink.getvalue())) as decoded:
+            audit.validate_original_image(decoded, 'overview', 20)
+            with self.assertRaisesRegex(ValueError, 'profile required'):
+                audit.validate_original_image(decoded, 'overview', 900)
+
     def test_case_rebind_rejected(self):
         self.bundle['case_id'] = 'wrong-case'
         with self.assertRaisesRegex(ValueError, 'case identity differs'):

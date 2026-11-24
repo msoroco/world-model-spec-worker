@@ -2,7 +2,7 @@
   "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
   "input_sha256": "7bc27994f2b7e7339898faac896f16b7d19f55e49d7099d8106d557e4e2399d0",
   "status": "partial",
-  "readiness_kind": "partial_five_exact_cpu_bundles_controlled_yield_cadence_guard",
+  "readiness_kind": "partial_five_exact_cpu_bundles_reviewed_context_join",
   "applied_update": 0,
   "tests": [
     {
@@ -136,10 +136,34 @@
       "exit_code": 0,
       "log": "cpu-cadence-compat.log",
       "sha256": "d04e0fa49d22455c31f9122173f46c8b9412228145d32aabbd16e178da16e547"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-review-join-tests.log",
+      "sha256": "cfed1146372a1b5efa7a06263d963a49af8cec4f9f93619106c316a4f9c10edc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-review-join-preflight.log",
+      "sha256": "df1fda3108bd44391df25cc3b2367b5803e891823afe2c88ac31ffa1deedfa67"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-review-join-static.log",
+      "sha256": "cc5926eaa4badf150cb317b2f4af80f7a581d99334be67c65f61d736bbe79873"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-review-join-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual reviewed CARLA original motion, camera visibility, physical setup and saved-delivery audit after remaining CPU preparation"
   ],
-  "reason": "Saved controlled-yield brake observation now requires a complete source-measured frame count, contiguous original CARLA frame IDs and 20 Hz timestamps before reporting pre-entry braking. Thirty-four focused tests, pinned preflight, scoped static and fresh controlled-yield positive/negative compatibility pass. Exact scoped strict exits 1 on truthful partial. Reviewed source/site and exception context, full saved-only delivery command proofs, canonical physical acceptance and accepted original evidence review remain CPU/local preparation; no physical or legal verdict."
+  "reason": "Independent saved delivery auditor now joins the hash-bound reviewed-context source to the exact original crossing site and map; a resealed conflicting turn-intent source is rejected. Thirty-four focused CPU tests, pinned preflight and scoped static pass; exact strict remains truthful partial. Original site and accepted evidence review, full saved-only/delivery command receipts and exception coverage remain CPU work. Synthetic fixture proves only source integrity, not real context or physical acceptance."
 }

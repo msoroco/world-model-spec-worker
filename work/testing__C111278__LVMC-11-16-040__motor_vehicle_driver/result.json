@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver",
   "input_sha256": "37e80eef6f088ae3632520288109e2a435ac0b77d72a32e6c2445d4656023cfc",
   "status": "partial",
-  "readiness_kind": "partial_synchronized_sight_camera_adapter_and_saved_audit",
+  "readiness_kind": "partial_sight_camera_comparison_semantic_proposals",
   "applied_update": 0,
   "tests": [
     {
@@ -40,10 +40,46 @@
       "exit_code": 1,
       "log": "cpu-comparison-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/build_semantic_proposals.py",
+      "exit_code": 0,
+      "log": "cpu-semantic-build.log",
+      "sha256": "a8a748310e0e9bd929427372bc281ad21aae569c807f0a889bdbae9d1ac397d7"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/tests -p test_semantic_proposals.py -v",
+      "exit_code": 0,
+      "log": "cpu-semantic-focused.log",
+      "sha256": "7966bf11bdc1846187dcb6b3c2b05ba191280b7661d69cb555dd18b78c1b9b64"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-semantic-all-tests.log",
+      "sha256": "9ca3be370ca464dc91d37cfd36c50d9b587d05625e8761da68170149f4d96cfa"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-semantic-preflight.log",
+      "sha256": "150546123c921440b331d0b888173bc28999c62e5e9eabf4f34297cde36304df"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-semantic-static.log",
+      "sha256": "72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-semantic-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six exact sight cases and four comparisons remain planned. Independent saved comparison audit now reopens each exact original attempt, checks fixed source hashes and frame windows, measured changed conditions, and the 15 mph below-at-above traversal sequence without legal verdicts. Twenty-four focused assignment tests, pinned preflight and scoped static pass; exact strict remains truthful partial. Reviewed site authority, case runner, canonical bundles/semantic proposals, offline/compatibility/process-saved receipts and physical audit remain CPU work; actual visibility remains unverified."
+  "reason": "Frozen-law-bound draft semantic stages cover six exact sight/traversal cases and four isolated speed, view, through-street and traffic-control comparisons. Twenty-eight assignment tests including full 3,600-image source decode, pinned preflight and scoped static pass. Exact strict remains truthful partial pending reviewed municipal site and original authority, case-specific runner, canonical six bundles, compatibility/process-saved and independent delivery receipts; physical motion and visibility unverified."
 }

@@ -74,13 +74,16 @@ class DeliveryAuditTests(unittest.TestCase):
             root = Path(temp)
             write = lambda name, value: (root/name).write_text(json.dumps(value)+'\n')
             write('config.json', {'selected_case_id':case,'duration_s':.15,'rate_hz':20})
-            write('reviewed-context.json', {'source':'CPU-only unit fixture'})
             (root/'road.xodr').write_text('CPU-only unit fixture\n')
             write('site-context.json', {'map_sha256':sha(root/'road.xodr'),
                   'ego_actor_id':17,'other_actor_id':29,'ego_highway':'a',
                   'other_highway':'b','ego_side':'left','other_side':'right',
+                  'case_id':case,'approach_relation':'crossing',
                   'official_device_controls_intersection':False,
-                  'other_left_turn_intent':False,'subsection_4_context_reviewed':True})
+                  'other_left_turn_intent':False,'other_left_turn_making':False,
+                  'subsection_4_context_reviewed':True})
+            write('reviewed-context.json', dict(json.loads((root/'site-context.json').read_text()),
+                                                reviewer='CPU fixture reviewer'))
             write('acquisition-provenance.json', {'provenance_kind':'native',
                   'diagnostic_fixture':False,
                   'reviewed_context_sha256':sha(root/'reviewed-context.json')})
@@ -111,6 +114,18 @@ class DeliveryAuditTests(unittest.TestCase):
                       'legal_verdict_claimed':False}
             write('result.json',result)
             self.assertEqual(audit_sources(root,case)['frames'],3)
+            reviewed = json.loads((root/'reviewed-context.json').read_text())
+            reviewed['other_left_turn_intent'] = True
+            write('reviewed-context.json', reviewed)
+            provenance = json.loads((root/'acquisition-provenance.json').read_text())
+            provenance['reviewed_context_sha256'] = sha(root/'reviewed-context.json')
+            write('acquisition-provenance.json', provenance)
+            with self.assertRaisesRegex(ValueError, 'exception context differs'):
+                audit_sources(root,case)
+            reviewed['other_left_turn_intent'] = False
+            write('reviewed-context.json', reviewed)
+            provenance['reviewed_context_sha256'] = sha(root/'reviewed-context.json')
+            write('acquisition-provenance.json', provenance)
             result['physical_checks']['maneuver']['status'] = 'unknown'
             write('result.json',result)
             with self.assertRaisesRegex(ValueError, 'physical completion'):

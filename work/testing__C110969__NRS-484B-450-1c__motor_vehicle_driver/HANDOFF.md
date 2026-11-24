@@ -62,3 +62,27 @@ Next CPU work: reviewed original Native intersection geometry and independent ex
 `build_offline_draft.py` now emits nine exact inline constructions and `execution-manifest.draft.json`, preserving each planned activity, inside/outside destination, exception context, original 20-Hz/900-frame interval and pinned four-camera dimensions. The bundles embed the current Native acquisition, scene, media, saved finalization and comparison code. Their runner verifies the embedded source-hashed plan and exact case attributes, then refuses an unsourced Native launch. This is diagnostic preparation, not a canonical delivery manifest or original exception evidence.
 
 Pinned preflight and builder passed; all nine exact `runtime.py offline` checks passed with materializations under `.runtime-work/`. The focused suite passed **23** tests, including plan/manifest/source joins. Scoped static passed; exact scoped strict exited 1 on truthful partial status. Commands and cleaned log hashes are in `result.json.tests`. Next CPU work remains a surveyed map and original exception source, production runner, canonical semantic proposals/manifest, positive/negative compatibility, process-saved and independent delivery receipts.
+
+## 2026-11-24 Native box-local yaw footprint continuation
+
+`native_acquisition.body_footprint` now applies the Native bounding box local yaw before the actor world yaw. The earlier projection ignored box-local rotation, potentially misclassifying intersection contact for a rotated vehicle body. A focused test verifies the four world XY corners for a 45-degree local box on a 90-degree actor. This preserves observed geometry without a legal conclusion.
+
+The 24-test suite and pinned CPU preflight pass. `build_offline_draft.py` refreshed all nine exact diagnostic bundles with the corrected Native capture code; all nine pinned `runtime.py offline` checks pass. Scoped static passes. Exact scoped strict exits 1 on truthful partial status. These are diagnostic software checks, not reviewed map/exception or original Native evidence.
+
+Current SHA-256 log receipts:
+- `cpu-box-rotation-tests.log`: `2a48eb1744a587171859131f4dd4f81861e383a7b4c4e398fce35e4aadbee3ea`
+- `cpu-box-rotation-build.log`: `d358dc7f98d860236bb4d45d9111d5f9bcd5d29620582bfe5c64d9df01129a1e`
+- `cpu-box-rotation-preflight.log`: `ecc244ba0d1e72dc82e9ac21464c489a59c7c1b2490e8e58ef13fcfda2d54979`
+- `cpu-box-rotation-static.log`: `9296c9674fd98ad66bd320223857489a92ea91ac01b71648282fd5cbe42399d7`
+- `cpu-box-rotation-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+- `cpu-box-rotation-offline-outside_reference.log`: `d02262ef6acc45d54b102952d737a3af3d09382a4f3c5cdd854e3ccc3330a7d6`
+- `cpu-box-rotation-offline-inside_stop.log`: `5f7c435e6367c1241f2877134425ddd4836c7200b39db0d2339ef61fe1299d55`
+- `cpu-box-rotation-offline-inside_stand.log`: `56bbebf8399938c16d8ffff5a28f34d94161db6c771858ea73649aaab757ce49`
+- `cpu-box-rotation-offline-inside_park.log`: `3b1b73c90b3e0357c4e73ed1f483efcf1c9ce7e87649808edadd1469e9e206e5`
+- `cpu-box-rotation-offline-traffic_conflict.log`: `ea1105d73dbc8d1f4b20d456a628d280d53db43941d71884c071a08cc045d19c`
+- `cpu-box-rotation-offline-law_direction.log`: `ad24c0044259435786fae8c720da560b1791654122579dd2dec40ddd71b23fff`
+- `cpu-box-rotation-offline-officer_direction.log`: `77403855aaf808c3fe5daf8a09739ee4334084c50d7af8e7145914f478175c73`
+- `cpu-box-rotation-offline-device_direction.log`: `22bb22a2888440c299ffb20a08822f587be51797f41062dda76a2607b070d835`
+- `cpu-box-rotation-offline-through_motion.log`: `0cf3f71557bad2fb8b36d356fe957fee57700ede800e9cbdabbfddc68de560e0`
+
+Next CPU work: review and retain original map/exception source packets, implement the production camera sensor adapter, then prepare source-bound canonical proposals/manifest, positive/negative compatibility, saved-only processing and independent delivery receipts. Keep physical contact and legal outcome unresolved until original capture and review. No Git or frozen/runtime/batch/shared edit was made.

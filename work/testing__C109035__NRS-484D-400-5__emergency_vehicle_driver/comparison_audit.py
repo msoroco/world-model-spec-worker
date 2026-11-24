@@ -1,6 +1,14 @@
 """Independent fixed-condition checks for C109035 saved comparison records."""
 from __future__ import annotations
 
+import hashlib
+import json
+from pathlib import Path
+
+from emergency_scene import CASE_KNOBS
+
+PREFIX = "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__"
+
 
 FIXED = (
     "cell_id", "actor", "map_sha256", "site_sha256", "route_sha256",
@@ -35,3 +43,31 @@ def compare(comparison_id: str, records: list[dict]) -> dict:
     return {"comparison_id": comparison_id, "case_ids": [r["case_id"] for r in records],
             "fixed_fields_verified": list(FIXED), "deliberate_fields": sorted(allowed),
             "physical_status": "source_join_only"}
+
+
+def compare_exact(plan_path: Path, comparison_id: str, records: list[dict]) -> dict:
+    """Join a saved comparison to its exact frozen-plan membership and controls."""
+    data = Path(plan_path).read_bytes()
+    plan = json.loads(data)
+    matches = [item for item in plan.get("comparisons", [])
+               if item.get("comparison_id") == comparison_id]
+    if len(matches) != 1:
+        raise ValueError("Exact comparison absent or ambiguous in case plan")
+    expected = matches[0]["case_ids"]
+    if len(expected) != len(records) or set(expected) != {r.get("case_id") for r in records}:
+        raise ValueError("Exact comparison case membership mismatch")
+    for record in records:
+        suffix = record["case_id"][len(PREFIX):] if record["case_id"].startswith(PREFIX) else ""
+        if suffix not in CASE_KNOBS:
+            raise ValueError("Unknown exact case")
+        knobs = CASE_KNOBS[suffix]
+        if (record.get("event_context") != knobs["event"]
+                or type(record.get("requested_siren")) is not bool
+                or type(record.get("requested_warning_lamps")) is not bool
+                or record["requested_siren"] != knobs["siren"]
+                or record["requested_warning_lamps"] != knobs["lamps"]):
+            raise ValueError("Authored controls differ from exact case")
+    result = compare(comparison_id, records)
+    result["case_plan_sha256"] = hashlib.sha256(data).hexdigest()
+    result["physical_status"] = "source_join_only"
+    return result

@@ -9,7 +9,7 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "blind_encounter.py", "native_capture.py", "carla_adapter.py",
-    "saved_encounter.py", "delivery_audit.py",
+    "saved_encounter.py", "delivery_audit.py", "reviewed_sources.py",
 )
 
 RUNNER = '''"""Exact blind-person encounter diagnostic bundle preflight."""
@@ -19,6 +19,7 @@ import json
 from pathlib import Path
 from blind_encounter import CASE_BY_ID
 from native_capture import CAMERAS
+from reviewed_sources import prepare
 
 
 def check():
@@ -56,11 +57,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--source-packet")
     args = parser.parse_args()
     case_id = check()
     if args.check:
         print("diagnostic blind-person bundle passed: " + case_id)
         return
+    if args.source_packet:
+        plan = prepare(Path(args.source_packet))
+        if plan["case_id"] != case_id.removeprefix(json.loads((Path(__file__).resolve().parent / "config.json").read_text())["assignment_id"] + "__"):
+            raise ValueError("reviewed packet exact case mismatch")
+        raise ValueError("reviewed plan bound; Native actor spawn and world ownership require local integration")
     raise ValueError("Reviewed Native map, blindness and actually carried cue sources required")
 
 

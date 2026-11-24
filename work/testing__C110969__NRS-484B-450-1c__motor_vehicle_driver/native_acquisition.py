@@ -27,10 +27,13 @@ def body_footprint(actor) -> list[list[float]]:
     _require(box.extent.x > 0 and box.extent.y > 0, "invalid Native body extent")
     angle = math.radians(transform.rotation.yaw)
     c, s = math.cos(angle), math.sin(angle)
+    box_angle = math.radians(getattr(getattr(box, "rotation", None), "yaw", 0.0))
+    bc, bs = math.cos(box_angle), math.sin(box_angle)
     points = []
     for dx, dy in ((-box.extent.x, -box.extent.y), (box.extent.x, -box.extent.y),
                    (box.extent.x, box.extent.y), (-box.extent.x, box.extent.y)):
-        x, y = box.location.x + dx, box.location.y + dy
+        x = box.location.x + bc*dx - bs*dy
+        y = box.location.y + bs*dx + bc*dy
         points.append([transform.location.x + c*x - s*y,
                        transform.location.y + s*x + c*y])
     _require(all(math.isfinite(v) for point in points for v in point), "nonfinite Native body")

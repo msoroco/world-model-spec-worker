@@ -18,6 +18,10 @@ spec = importlib.util.spec_from_file_location("blind_encounter", HERE / "blind_e
 encounter = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = encounter
 spec.loader.exec_module(encounter)
+review_spec = importlib.util.spec_from_file_location("blind_reviewed_capture", HERE / "reviewed_sources.py")
+reviewed = importlib.util.module_from_spec(review_spec)
+sys.modules[review_spec.name] = reviewed
+review_spec.loader.exec_module(reviewed)
 
 CAMERAS = ("front", "left", "right", "rear")
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
@@ -123,3 +127,24 @@ def capture(adapter, case_id: str, output: Path, *, attestation: Path,
     finally:
         adapter.emergency_stop()
         adapter.close()
+
+
+def capture_reviewed(adapter, case_id: str, output: Path, *, source_packet: Path) -> dict:
+    """Require a reviewed, hash-bound source packet before Native capture.
+
+    Actor creation and CARLA world restoration remain the caller's responsibility.
+    The adapter's live person identity is checked by capture against the packet.
+    """
+    source_packet = source_packet.resolve(strict=True)
+    plan = reviewed.prepare(source_packet)
+    if plan["case_id"] != case_id:
+        raise ValueError("reviewed packet exact case mismatch")
+    packet = json.loads(source_packet.read_text(encoding="utf-8"))
+    root = source_packet.parent
+    att = root / packet["blindness_attestation"]["path"]
+    cue = root / packet["carried_cue"]["path"]
+    manifest = capture(adapter, case_id, output, attestation=att, carried_cue=cue)
+    manifest["reviewed_source_bindings"] = plan["reviewed_source_bindings"]
+    manifest["reviewed_map_id"] = plan["map_id"]
+    (output / "saved-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return manifest

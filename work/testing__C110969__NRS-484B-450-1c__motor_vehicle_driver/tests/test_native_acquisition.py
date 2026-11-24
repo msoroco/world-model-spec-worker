@@ -1,4 +1,5 @@
 import json
+import math
 import sys
 import tempfile
 import unittest
@@ -67,6 +68,17 @@ class AcquisitionTests(unittest.TestCase):
     def test_native_footprint_rotates_actual_box(self):
         points = body_footprint(Actor())
         self.assertEqual(points, [[5.5, 4], [5.5, 6], [4.5, 6], [4.5, 4]])
+
+    def test_native_footprint_applies_box_local_rotation(self):
+        actor = Actor()
+        actor.bounding_box = S(location=S(x=0, y=0), extent=S(x=1, y=0.5),
+                               rotation=S(yaw=45))
+        points = body_footprint(actor)
+        c = math.sqrt(0.5)
+        self.assertAlmostEqual(points[0][0], 5 + 1.5*c)
+        self.assertAlmostEqual(points[0][1], 5 - 0.5*c)
+        self.assertAlmostEqual(points[1][0], 5 - 0.5*c)
+        self.assertAlmostEqual(points[1][1], 5 + 1.5*c)
 
     def test_acquisition_finalizer_and_source_tamper(self):
         with tempfile.TemporaryDirectory() as tmp:

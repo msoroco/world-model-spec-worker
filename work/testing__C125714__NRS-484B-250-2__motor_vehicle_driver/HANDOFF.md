@@ -72,3 +72,14 @@ Current CPU log SHA-256 receipts:
 - `cpu-cadence-compat.log`: `d04e0fa49d22455c31f9122173f46c8b9412228145d32aabbd16e178da16e547`
 - `static-check.log`: `cc5926eaa4badf150cb317b2f4af80f7a581d99334be67c65f61d736bbe79873`
 - `strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+## 2026-11-23 independent reviewed-context source join
+
+`delivery_audit.py:audit_sources` now invokes the separate `branch_alternatives.observe_context` checker after verifying the reviewed-context SHA. It rejoins exact case ID, original map hash, roadway and approach relation, official-device status, turn intent/making and subsection-4 context to the original site packet. A test changes turn intent, rehashes the reviewed packet into acquisition provenance, and verifies the independent audit still rejects the contradictory source. The three-frame diagnostic fixture asserts source-integrity behavior only; it does not certify the reviewed packet as real physical authority.
+
+Thirty-four focused tests, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. The reviewed original site/accepted evidence, remaining statutory alternatives and full saved-only delivery command receipts remain outstanding CPU work.
+
+- `cpu-review-join-tests.log` SHA256 `cfed1146372a1b5efa7a06263d963a49af8cec4f9f93619106c316a4f9c10edc`; exit 0.
+- `cpu-review-join-preflight.log` SHA256 `df1fda3108bd44391df25cc3b2367b5803e891823afe2c88ac31ffa1deedfa67`; exit 0.
+- `cpu-review-join-static.log` SHA256 `cc5926eaa4badf150cb317b2f4af80f7a581d99334be67c65f61d736bbe79873`; exit 0.
+- `cpu-review-join-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.

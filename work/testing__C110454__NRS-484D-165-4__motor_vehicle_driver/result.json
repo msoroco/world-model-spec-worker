@@ -2,7 +2,7 @@
   "assignment_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver",
   "input_sha256": "0d7cdb67c208a8e876a7613f4a173438bde0dc54b0d49509e3f3d7e1ae339e8d",
   "status": "partial",
-  "readiness_kind": "saved_delivery_and_comparison_partial",
+  "readiness_kind": "partial_saved_delivery_semantic_proposals",
   "applied_update": 0,
   "tests": [
     {
@@ -142,10 +142,58 @@
       "exit_code": 1,
       "log": "cpu-media-decode-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/build_semantic_proposals.py",
+      "exit_code": 0,
+      "log": "cpu-semantic-build.log",
+      "sha256": "b2d9e0c23f1407d0771771fad186dc28aed0b3c85b831fa527a2c14e735e638d"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-semantic-tests.log",
+      "sha256": "90f45f3ca2e21c268211f24baa83db4a2cd4c04cb414da8e7293613877471558"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-semantic-preflight.log",
+      "sha256": "ca3e5c4252ec2838ce31a5d9991a7b5df8331688503f333bed640769fa0d03f2"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-semantic-static.log",
+      "sha256": "718f8cc5dcda62dcf0f81f4249dab89bbeec8a36ef2530dcfb1c01ed938f8e69"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-semantic-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --output .runtime-work/c110454-semantic-output/offline-unlit --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-unlit.log",
+      "sha256": "ddf31674966111b00ff71780f0921fc32d9ce96a273eb8a3556efb80f05b0bc2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --output .runtime-work/c110454-semantic-output/offline-low_beam --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-low_beam.log",
+      "sha256": "f7a5b54cfdf4613f92c9001e1cfff3247ffa9f6d7993149caef4ed39a7d5ba30"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --output .runtime-work/c110454-semantic-output/offline-high_beam --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-high_beam.log",
+      "sha256": "17ebcf13c266e3efd850945a1a98cfa3537c0ac5816b5554364c7133983de5d2"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact diagnostic bundles now include an original ZIP/PNG media decoder that requires exactly 900 Native frame names, camera-frame-map joins and pinned 1920x1080/1280x720 dimensions before a nondiagnostic delivery audit reports full decode. Twenty-one focused tests, pinned preflight, three rebuilt offline diagnostics and scoped static pass. Strict stays partial pending reviewed site, production runner, physical depressed beam-aim construction, canonical semantic/manifest, compatibility and saved-only delivery proofs. Requested/read-back light bits do not establish emission, aim or legal parking."
+  "reason": "Frozen-law-bound draft semantic stages cover unlit, low-beam and high-beam exact cases and two controlled requested-mode comparisons. Twenty-five focused tests, pinned preflight, all three exact offline diagnostics and scoped static pass. Strict remains truthful partial pending reviewed original parking site, physical beam-aim/emission source, production runner, canonical manifest and per-case compatibility/saved-delivery receipts."
 }

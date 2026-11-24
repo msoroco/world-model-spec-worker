@@ -1,0 +1,115 @@
+{
+  "cell_id": "C110454",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit",
+      "target_law_id": "NRS-484D-165-4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Actual parking, lamp readback, emission and beam aim require original source review. No legal label is inferred.",
+      "variable_assignments": {
+        "requested_headlamp_mode": {
+          "kind": "controller",
+          "value": "unlit"
+        }
+      },
+      "recording_description": "Original parked-vehicle 45-second 20-Hz four-camera headlamp capture",
+      "diagnostic_construction": {
+        "path": "construction-unlit.json",
+        "sha256": "22202c092af8921e318b2489e434d16f95a7b87f49d32816557b7c295b12b13a"
+      },
+      "unresolved_judgment_calls": [
+        "Actual parked status",
+        "Actual headlamp illumination",
+        "Emitted beam depression or dimming"
+      ]
+    },
+    {
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam",
+      "target_law_id": "NRS-484D-165-4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Actual parking, lamp readback, emission and beam aim require original source review. No legal label is inferred.",
+      "variable_assignments": {
+        "requested_headlamp_mode": {
+          "kind": "controller",
+          "value": "low_beam"
+        }
+      },
+      "recording_description": "Original parked-vehicle 45-second 20-Hz four-camera headlamp capture",
+      "diagnostic_construction": {
+        "path": "construction-low_beam.json",
+        "sha256": "87e6794c2a7715a00481885ee9786d93f602732c90628a2bf24426a5739dc76a"
+      },
+      "unresolved_judgment_calls": [
+        "Actual parked status",
+        "Actual headlamp illumination",
+        "Emitted beam depression or dimming"
+      ]
+    },
+    {
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam",
+      "target_law_id": "NRS-484D-165-4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Actual parking, lamp readback, emission and beam aim require original source review. No legal label is inferred.",
+      "variable_assignments": {
+        "requested_headlamp_mode": {
+          "kind": "controller",
+          "value": "high_beam"
+        }
+      },
+      "recording_description": "Original parked-vehicle 45-second 20-Hz four-camera headlamp capture",
+      "diagnostic_construction": {
+        "path": "construction-high_beam.json",
+        "sha256": "830098d1e1fd6def49a67bd31c857c61b51017ef53694e8c8a5d7f03767f618b"
+      },
+      "unresolved_judgment_calls": [
+        "Actual parked status",
+        "Actual headlamp illumination",
+        "Emitted beam depression or dimming"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "lighted_applicability",
+      "case_ids": [
+        "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit",
+        "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam"
+      ],
+      "fixed_conditions": [
+        "C110454 intersection geometry and reviewed parking footprint",
+        "motor_vehicle_driver and vehicle blueprint",
+        "park maneuver and duration",
+        "weather and camera profile",
+        "original-source measurement method"
+      ],
+      "changed_variable": "requested_headlamp_mode",
+      "deliberate_differences": [
+        "requested headlamp mode: unlit versus low beam"
+      ]
+    },
+    {
+      "comparison_id": "dimmed_vs_bright_headlamp",
+      "case_ids": [
+        "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam",
+        "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam"
+      ],
+      "fixed_conditions": [
+        "C110454 intersection geometry and reviewed parking footprint",
+        "motor_vehicle_driver and vehicle blueprint",
+        "park maneuver and duration",
+        "weather and camera profile",
+        "original-source measurement method"
+      ],
+      "changed_variable": "requested_headlamp_mode",
+      "deliberate_differences": [
+        "requested headlamp mode: low beam versus high beam"
+      ]
+    }
+  ],
+  "sweep_specs": []
+}

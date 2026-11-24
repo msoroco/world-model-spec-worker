@@ -113,6 +113,13 @@ def audit_sources(attempt, case_id):
             site.get('other_left_turn_intent') is not False or
             site.get('subsection_4_context_reviewed') is not True):
         raise ValueError('reviewed crossing and statutory exception context not bound')
+    from branch_alternatives import observe_context
+    branch = observe_context(attempt/'site-context.json', attempt/'road.xodr', reviewed)
+    if (branch['case_id'] != case_id or
+            branch['facts']['different_highways_left_right'] is not True or
+            branch['facts']['official_device_controlled'] is not False or
+            branch['facts']['subsection_4_context'] is not True):
+        raise ValueError('reviewed original crossing facts differ from exact delivery case')
     expected = round(config['duration_s']*config['rate_hz'])
     count = verify_frame_join(*(rows(attempt/name) for name in
           ('video_frames.jsonl','trace.jsonl','ego-body-history.jsonl',

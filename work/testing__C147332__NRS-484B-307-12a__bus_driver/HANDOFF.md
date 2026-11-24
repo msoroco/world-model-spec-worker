@@ -136,3 +136,22 @@ Remaining CPU integration: the pinned semantic validator still requires a compli
 `stationary_hold.py` now checks contiguous Native frame numbers, video indices and 20 Hz timestamps before accepting a source-hashed full-body brake hold. The prior checker could accept a rehashed trace with all channels skipping the same frame. New tests reject both a Native-frame gap and a timestamp gap. The three stationary physical CPU outcomes were rerun, four-case physical receipts rebound, and the pinned physical preparation validator passed. These are synthetic source-protocol proofs, not real bus motion or legal findings.
 
 The focused suite passes 27 tests; pinned preflight and scoped static pass. The exact scoped strict gate exits 1 on truthful partial status. Six new SHA-bound logs are in `result.json`. The pinned semantic permission/plain-rule mismatch remains, with its source-bound repair proposal preserved; genuine highway/device review and Native pixels are unverified.
+
+## 2026-11-23 rotated bus footprint and full CPU reproof
+
+`native_capture._footprint` now projects the actual eight Native bounding-box vertices into four unique XY corners and computes their convex hull. It rejects missing, nonfinite, or degenerate bus bodies. This preserves rotation in lane coverage; the previous axis-aligned envelope could falsely include a neighboring lane. `tests/test_native_footprint.py` covers a rotated diamond and malformed input. The full assignment suite passes 29 tests.
+
+All four exact cases and their fallback constructions were regenerated with the current capture source. Eight pinned offline and compatibility runs pass, including missing-channel negatives. Four synthetic physical-protocol receipts were rebound to the new construction hashes. Eight pinned saved-only positive/missing-signal negative runs pass with byte-preserved synthetic originals; the four primary receipts are bound in `post_capture`. The independent delivery audit and exact readiness-component validator pass. These are CPU diagnostic proofs only.
+
+The current top-level `construction.json` was refreshed from the selected primary bundle. Scoped partial static validation passes. Exact scoped strict validation exits 1 on truthful partial acceptance. Reviewed highway/official-device provenance and Native bus motion/original pixels remain missing; the semantic validator also still demands a violation pair for this permission-only rule. No ready, physical, or jurisdiction claim is made.
+
+Current SHA-256 proof logs:
+- `cpu-footprint-preflight.log` exit 0: `512dfb654b4ff91b7f370632bed3834c5e702b9996a1f9bee83202165ed7f054`
+- `cpu-footprint-tests.log` exit 0: `d2b77b22f02a82c9a81c46840d8079c5671df3018ebd92fd06aa27bd174d5486`
+- `cpu-footprint-build.log` exit 0: `824ab60e0c9a358d36c5c01bf38a17ab1a26427fe89d90fdbbdf8387607f3f79`
+- `cpu-footprint-bind-physical.log` exit 0: `2d0f10801d2fb6a90a4f19450921b6484624e20349b285febea9ccaa16b2bda5`
+- `cpu-footprint-compatibility-validation.log` exit 0: `64684c1917faceba13c7e9fabf321ae2c3a93c23552cb33aedf30ee4aa0859ef`
+- `cpu-footprint-bind-delivery.log` exit 0: `dfa696fe9688ff7f53864f31e75d028a15ad6345b757257334470774a603661b`
+- `cpu-footprint-readiness-components.log` exit 0: `c921fc22b7f407d596d4b8ca525f215e6eb56ec3b2a24919b3c8bd746d983e36`
+- `cpu-footprint-static.log` exit 0: `630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16`
+- `cpu-footprint-strict.log` exit 1: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`

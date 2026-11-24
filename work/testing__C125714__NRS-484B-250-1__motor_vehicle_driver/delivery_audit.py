@@ -99,6 +99,7 @@ def audit_media_time(path, expected_frames):
                for row, timestamp in zip(source_rows, times)):
             raise ValueError("original timestamp join differs: " + name)
     counts = {}
+    first_camera_pts = None
     for name, dimensions in CAMERA_SIZE.items():
         video = path / name
         probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v",
@@ -132,6 +133,10 @@ def audit_media_time(path, expected_frames):
                 or any(abs((value - pts[0]) - index * .05) > .001
                        for index, value in enumerate(pts))):
             raise ValueError("original camera presentation time differs from 20 Hz Native frames: " + name)
+        if first_camera_pts is None:
+            first_camera_pts = pts[0]
+        elif abs(pts[0] - first_camera_pts) > .001:
+            raise ValueError("original camera presentation start differs across views: " + name)
         decoded = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(video),
                                   "-f", "null", "-"], capture_output=True, timeout=180)
         if decoded.returncode:

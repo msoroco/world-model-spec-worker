@@ -87,3 +87,15 @@ Current refreshed CPU log SHA-256 receipts:
 - `cpu-bundle-tests.log`: `d84fd8b0f2f9e5d9619c99a65221b5c0f0fb8c384fbb064140e521d704bc25c4` (exit 0)
 - `cpu-bundle-static.log`: `0a4ff9e3e5d8205601b12039ecd202fc0159418643bff694b18cd0939c6dff4f` (exit 0)
 - `cpu-bundle-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-24 reviewed original-source packet checkpoint
+
+`reviewed_sources.py` now loads five distinct source files: reviewed original Native map/route, blindness reviewer metadata and original, and carried-cue reviewer metadata and original. It binds each by SHA256, requires the original evidence bytes named by the reviewer records, validates exact person/driver IDs, cue, map and finite route, and calls `blind_encounter.plan_native`. Diagnostic case bundles include this planner and accept an optional `--source-packet`; they still refuse physical launch until local Native actor/world ownership is integrated. Fixtures in the three new focused tests are explicitly synthetic and do not claim real blindness or cue visibility.
+
+Pinned preflight, 18 focused tests, six rebuilt offline constructions, and scoped static pass. Exact scoped strict exits 1 on truthful partial. See `result.json` for commands and SHA256 logs (`cpu-reviewed-*.log`). Next CPU work: acquire reviewed map/blindness/cue originals from the authorized local source process, integrate a Native spawn/world-restoration runner, canonical semantic proposals and six positive/negative compatibility proofs, saved-only processing and comparison receipts. Contact remains observation-only.
+
+## 2026-11-24 reviewed capture entrypoint checkpoint
+
+`native_capture.capture_reviewed` now calls the SHA-bound reviewed-source packet before any capture, checks exact case identity, invokes the existing original 900-frame capture with those attestation/cue files, and seals map and evidence hashes in the saved manifest. The new test checks that the reviewed files are passed to capture and that another case is rejected; the production caller still must own actor creation and world restoration.
+
+The latest focused suite passes 19 tests (`cpu-reviewed-tests-v3.log`). Rebuilt all six diagnostic bundles after embedding this entrypoint; each pinned offline command passes (`cpu-reviewed-v2-offline-*.log`). Pinned preflight and scoped static pass, exact scoped strict remains exit 1 on truthful partial (`cpu-reviewed-strict-v3.log`). All current SHA receipts are in `result.json`. Canonical semantic proposals, positive/negative compatibility, saved delivery and comparison receipts, plus local reviewed originals and Native world/actor ownership are next CPU tasks.

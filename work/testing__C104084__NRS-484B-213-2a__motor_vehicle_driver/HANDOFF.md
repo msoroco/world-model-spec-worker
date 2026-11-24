@@ -174,3 +174,15 @@ Pinned preflight, 36 focused tests and scoped static checks pass. The exact scop
 `delivery_audit.py` independently reopens the sealed original crest packets and all four MP4s, rejoins the saved finalizer observation and decoded-media report with the derived trace, frame map and target checks, and requires the saved receipt to match a freshly computed source-bound value. It rejects a rewritten physical-visibility claim and a changed derived trace. Its receipt retains source, saved receipt, derived and video hashes and explicitly claims no physical or legal acceptance. This CPU fixture uses three generated frames per camera; a 900-frame original capture and local canonical delivery remain unverified.
 
 Pinned preflight, 39 focused tests and scoped static pass. Exact scoped strict exits 1 on truthful partial status. Four new normalized log SHA256 receipts are in `result.json`. Concrete Native adapter, exact bundles, semantic proposals, compatibility, source authority review and canonical process-saved integration remain CPU work; the curve cell allocation remains lead-owned.
+
+### Exact-law semantic proposal checkpoint (2026-11-23)
+
+`build_semantic_proposals.py` binds the frozen NRS 484B.213(2)(a) text, assignment and case plan into five draft stage families and `proposals/semantic-index.json`. The four exact cases encode only requested side, crest-view setup and source road direction. Three comparisons are checked to vary one declared variable each: ego side, original view condition, or one-way exception. The proposal retains unresolved highway authority, crest/view and hazard-distance judgments and claims no physical or legal acceptance.
+
+Forty-three focused CPU tests, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. Native adapter/site source review, canonical case bundles, offline and positive/negative compatibility, saved processing and delivery receipts remain.
+
+- `cpu-semantic-build.log` SHA256 `b510007e8cc19be94be656b11be21499a834c686e97610528bdc9e90bafad098`; exit 0.
+- `cpu-semantic-tests.log` SHA256 `82323a215b6d5a6b680becf55cbb6537ae4e5d611a3c369dd2122f974bcc349a`; exit 0.
+- `cpu-semantic-preflight.log` SHA256 `53b2dc44115dca8de01b83baa4fc603d1e3637323751f2f477905f827df42191`; exit 0.
+- `cpu-semantic-static.log` SHA256 `f7103607cf441b4b4422aedc645f5c195966afff4737211c9e74cf1887c18534`; exit 0.
+- `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.

@@ -66,3 +66,16 @@ Next CPU work: write the operator case runner that binds a reviewed site packet,
 `comparison_audit.py` names all four exact comparisons and reopens each selected case with `saved_sight.verify`, which validates the original source seal and fully decodes four synchronized cameras. It checks exact case identity/order, shared map/site/boundary source hashes, fixed Native approach and traversal frame windows, and the intended speed, sight, through-road or control contrast. The speed triplet must measure below, at (within 0.01 m/s measurement tolerance) and above the statute's 15 mph prima facie value. This tolerance is an engineering equality check, not a legal speed band. The receipt makes no physical visibility or legal conclusion. The audit also requires all 900 original camera frames and 3,600 decoded images per saved attempt. Synthetic mocked saved measurements exercise four positive pairs and missing inventory, changed fixed source/window, and absent speed-boundary and missing-camera negatives; full original-pixel join remains covered separately by the existing 900-frame tests.
 
 All 24 assignment tests passed, including the full 3,600-image decode suite; pinned preflight and scoped static passed. Exact scoped strict exited 1 on truthful partial status. Five normalized log SHA256 receipts are in `result.json`. Reviewed site and real route/ray readers, canonical bundles, semantic proposals, offline/compatibility/process-saved proofs, and independent physical audit remain worker-owned CPU work.
+
+## 2026-11-24 source-bound six-case semantic checkpoint
+
+`build_semantic_proposals.py` binds the frozen LVMC 11.16.040 text, assignment and case plan into draft relevance, template, bindings, cases and semantic-index stages. All six exact cases preserve requested traversal speed, occluder, through-street and traffic-control values. Four controlled comparisons change only the declared variable. The template separates last-100-foot approach sight from traversal speed and retains the two independent exceptions; measured visibility, municipal authority and legal application stay unresolved. Four negative/positive semantic tests reject quote, case and comparison drift.
+
+All 28 focused assignment tests passed, including the complete 3,600-original-image decode fixture. Pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial. Reviewed Native site, real route/ray acquisition, six canonical bundles, exact compatibility, saved-only and delivery receipts remain CPU work.
+
+- `cpu-semantic-build.log` SHA256 `a8a748310e0e9bd929427372bc281ad21aae569c807f0a889bdbae9d1ac397d7`; exit 0.
+- `cpu-semantic-focused.log` SHA256 `7966bf11bdc1846187dcb6b3c2b05ba191280b7661d69cb555dd18b78c1b9b64`; exit 0.
+- `cpu-semantic-all-tests.log` SHA256 `9ca3be370ca464dc91d37cfd36c50d9b587d05625e8761da68170149f4d96cfa`; exit 0.
+- `cpu-semantic-preflight.log` SHA256 `150546123c921440b331d0b888173bc28999c62e5e9eabf4f34297cde36304df`; exit 0.
+- `cpu-semantic-static.log` SHA256 `72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca`; exit 0.
+- `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.

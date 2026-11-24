@@ -127,3 +127,18 @@ Pinned preflight, bundle build, all **20** focused tests, three exact offline co
 `delivery_audit.py` now opens each nondiagnostic camera ZIP and fully decodes its PNGs. It requires the exact Native frame names and source-frame map, no duplicate or missing ZIP entries, and the pinned overview/detail dimensions. A small original-shaped two-frame fixture verifies four positive archives and rejects a changed frame map or dimensions; text-only diagnostic stand-ins still do not claim decode. The delivery receipt reports full decode only after the nondiagnostic 900-frame path passes. This checks saved pixels and timing identity, not visible beam emission, physical aim or legal parking.
 
 The three exact diagnostic constructions were rebuilt with this code and all three offline checks pass. Twenty-one focused tests, pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial status. Eight new SHA-bound logs are recorded in `result.json`. Reviewed Native site, production owner runner, physical aim branch, canonical proposals/manifest, positive-negative compatibility and saved-only delivery receipts remain CPU work.
+
+## 2026-11-23 exact headlamp semantic proposals
+
+`build_semantic_proposals.py` binds the frozen NRS 484D.165(4) text, assignment, case plan and all three exact diagnostic construction hashes into draft relevance, template, bindings, cases and semantic-index stages. The unlit/low/high proposals vary only requested mode; the two comparisons preserve the frozen fixed conditions. Actual parked status, lamp illumination and emitted beam depression/dimming remain independently unresolved; API bits are not a legal outcome. Four new tests reject quote, case and comparison drift.
+
+Twenty-five focused tests, pinned preflight, all three exact offline diagnostics and scoped static pass. Exact scoped strict exits 1 on truthful partial. Reviewed original site, beam-aim source, production runner, canonical manifest, positive/negative compatibility and saved delivery remain CPU work.
+
+- `cpu-semantic-build.log` SHA256 `b2d9e0c23f1407d0771771fad186dc28aed0b3c85b831fa527a2c14e735e638d`; exit 0.
+- `cpu-semantic-tests.log` SHA256 `90f45f3ca2e21c268211f24baa83db4a2cd4c04cb414da8e7293613877471558`; exit 0.
+- `cpu-semantic-preflight.log` SHA256 `ca3e5c4252ec2838ce31a5d9991a7b5df8331688503f333bed640769fa0d03f2`; exit 0.
+- `cpu-semantic-static.log` SHA256 `718f8cc5dcda62dcf0f81f4249dab89bbeec8a36ef2530dcfb1c01ed938f8e69`; exit 0.
+- `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+- `cpu-semantic-offline-unlit.log` SHA256 `ddf31674966111b00ff71780f0921fc32d9ce96a273eb8a3556efb80f05b0bc2`; exit 0.
+- `cpu-semantic-offline-low_beam.log` SHA256 `f7a5b54cfdf4613f92c9001e1cfff3247ffa9f6d7993149caef4ed39a7d5ba30`; exit 0.
+- `cpu-semantic-offline-high_beam.log` SHA256 `17ebcf13c266e3efd850945a1a98cfa3537c0ac5816b5554364c7133983de5d2`; exit 0.

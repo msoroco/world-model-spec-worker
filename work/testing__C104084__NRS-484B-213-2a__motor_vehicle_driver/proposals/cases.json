@@ -1,0 +1,170 @@
+{
+  "cell_id": "C104084",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+      "target_law_id": "NRS-484B-213-2a",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Ego remains in right-side assigned lane while approaching a source-measured obstructing crest on a two-way highway. Requested context is not original observed road or view state.",
+      "variable_assignments": {
+        "requested_ego_side": {
+          "kind": "controller",
+          "value": "right"
+        },
+        "requested_crest_view": {
+          "kind": "world_setup",
+          "value": "obstructed"
+        },
+        "source_road_direction": {
+          "kind": "source_context",
+          "value": "two_way"
+        }
+      },
+      "recording_description": "Original 45-second 20-Hz four-camera crest approach with body and proxy-ray packets",
+      "unresolved_judgment_calls": [
+        "Highway and road-direction authority",
+        "Approaching a crest",
+        "Obstructed view",
+        "Distance creating a hazard if an opposite-direction vehicle might approach"
+      ]
+    },
+    {
+      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+      "target_law_id": "NRS-484B-213-2a",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Ego crosses to the left side while approaching the same obstructing crest on a two-way highway. Requested context is not original observed road or view state.",
+      "variable_assignments": {
+        "requested_ego_side": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "requested_crest_view": {
+          "kind": "world_setup",
+          "value": "obstructed"
+        },
+        "source_road_direction": {
+          "kind": "source_context",
+          "value": "two_way"
+        }
+      },
+      "recording_description": "Original 45-second 20-Hz four-camera crest approach with body and proxy-ray packets",
+      "unresolved_judgment_calls": [
+        "Highway and road-direction authority",
+        "Approaching a crest",
+        "Obstructed view",
+        "Distance creating a hazard if an opposite-direction vehicle might approach"
+      ]
+    },
+    {
+      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
+      "target_law_id": "NRS-484B-213-2a",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Ego crosses to the left side on a two-way crest approach with a source-measured clear proxy ray; hazard-distance judgment remains unresolved. Requested context is not original observed road or view state.",
+      "variable_assignments": {
+        "requested_ego_side": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "requested_crest_view": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "source_road_direction": {
+          "kind": "source_context",
+          "value": "two_way"
+        }
+      },
+      "recording_description": "Original 45-second 20-Hz four-camera crest approach with body and proxy-ray packets",
+      "unresolved_judgment_calls": [
+        "Highway and road-direction authority",
+        "Approaching a crest",
+        "Obstructed view",
+        "Distance creating a hazard if an opposite-direction vehicle might approach"
+      ]
+    },
+    {
+      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed",
+      "target_law_id": "NRS-484B-213-2a",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Ego crosses a center reference on a one-way highway with an obstructing grade; subsection 3 exception is tested as authored context, not inferred from absence of opposing traffic. Requested context is not original observed road or view state.",
+      "variable_assignments": {
+        "requested_ego_side": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "requested_crest_view": {
+          "kind": "world_setup",
+          "value": "obstructed"
+        },
+        "source_road_direction": {
+          "kind": "source_context",
+          "value": "one_way"
+        }
+      },
+      "recording_description": "Original 45-second 20-Hz four-camera crest approach with body and proxy-ray packets",
+      "unresolved_judgment_calls": [
+        "Highway and road-direction authority",
+        "Approaching a crest",
+        "Obstructed view",
+        "Distance creating a hazard if an opposite-direction vehicle might approach"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "left_side_motion",
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed"
+      ],
+      "fixed_conditions": [
+        "same two-way original road and crest geometry",
+        "same approaching direction and opposite-direction lane",
+        "same opposing vehicle route and timing",
+        "same actor, cameras and duration"
+      ],
+      "changed_variable": "requested_ego_side",
+      "deliberate_differences": [
+        "ego body remains in assigned right-side lane versus crosses to left side"
+      ]
+    },
+    {
+      "comparison_id": "crest_view_obstruction",
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear"
+      ],
+      "fixed_conditions": [
+        "same two-way allocation, actor and left-side ego route",
+        "same opposing vehicle route and timing",
+        "same cameras and duration"
+      ],
+      "changed_variable": "requested_crest_view",
+      "deliberate_differences": [
+        "original sampled road-grade profile and resulting proxy-ray intersection vary; hazard judgment remains unlabelled"
+      ]
+    },
+    {
+      "comparison_id": "one_way_exception",
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
+      ],
+      "fixed_conditions": [
+        "same hill-crest layout and left-of-reference ego motion",
+        "same actor, cameras and duration"
+      ],
+      "changed_variable": "source_road_direction",
+      "deliberate_differences": [
+        "original Native lane-direction allocation is two-way versus one-way; other vehicle travels in a compatible lane and has no invented opposite-direction status in the one-way case"
+      ]
+    }
+  ],
+  "sweep_specs": []
+}

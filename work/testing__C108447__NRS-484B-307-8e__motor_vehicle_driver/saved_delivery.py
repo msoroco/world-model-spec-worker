@@ -18,6 +18,8 @@ from case_observation import audit_case
 from property_route import analyze_files
 
 CAMERAS = ('overview', 'approach', 'property', 'destination')
+PROFILE = {'overview': (1920, 1080), 'approach': (1280, 720),
+           'property': (1280, 720), 'destination': (1280, 720)}
 
 
 def require(ok: bool, message: str) -> None:
@@ -27,6 +29,14 @@ def require(ok: bool, message: str) -> None:
 
 def sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def validate_original_image(image, camera: str, expected_frames: int) -> None:
+    """Require the pinned profile for a full production episode."""
+    require(image.format == 'PNG' and image.width > 0 and image.height > 0,
+            f'{camera} original PNG required')
+    if expected_frames == 900:
+        require(image.size == PROFILE[camera], f'{camera} original PNG profile required')
 
 
 def source_file(root: Path, ref: dict, label: str) -> Path:
@@ -97,12 +107,15 @@ def audit(attempt: Path, bundle: dict, *, expected_frames: int = 900) -> dict:
         require(all(row.get('cameras', {}).get(camera) == {'member': item['member'], 'sha256': item['sha256']}
                     for row, item in zip(frames, members)), f'{camera} original frame map image join required')
         with ZipFile(archive_path) as archive:
-            require(set(archive.namelist()) == {item['member'] for item in members}, f'{camera} image inventory differs')
+            names = archive.namelist()
+            require(len(names) == expected_frames and len(set(names)) == expected_frames and
+                    set(names) == {item['member'] for item in members},
+                    f'{camera} image inventory differs or contains duplicate entries')
             for item in members:
                 data = archive.read(item['member'])
                 require(sha(data) == item['sha256'], f'{camera} original image hash differs')
                 with Image.open(BytesIO(data)) as image:
-                    require(image.format == 'PNG' and image.width > 0 and image.height > 0, f'{camera} original PNG required')
+                    validate_original_image(image, camera, expected_frames)
                     image.load()
         decoded[camera] = len(members)
     observation = analyze_files(map_path, trace_path, case_path)

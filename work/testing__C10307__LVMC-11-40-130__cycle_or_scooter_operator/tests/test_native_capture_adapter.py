@@ -11,7 +11,7 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, FrameJoin, FourCameraCapture
-from native_run import configure_world, source_configuration, snapshot_sources, spawn_case_pedestrian
+from native_run import configure_world, source_configuration, snapshot_sources, spawn_case_pedestrian, pedestrian_source
 from delivery_audit import audit_source_provenance
 
 CASE = "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference"
@@ -76,6 +76,30 @@ class NativeAdapterTests(unittest.TestCase):
             snapshot_sources(attempt, env, selected, CASE)
             receipt = audit_source_provenance(attempt, CASE)
             self.assertEqual(receipt['source_sha256']['road'], digest(road))
+            near_case = CASE.replace('__reference', '__pedestrian_near_rack')
+            pedestrian_path = root / 'pedestrian.json'
+            pedestrian_path.write_text(json.dumps({
+                'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
+                'case_id': near_case, 'blueprint_id': 'walker.pedestrian.0001',
+                'rack_blueprint_id': 'static.rack',
+                'spawn_pose': {'x': .5, 'y': 3.5, 'z': .2, 'yaw': 90.0}}))
+            near_scene = {**scene, 'case_id': near_case,
+                          'pedestrian_blueprint_id': 'walker.pedestrian.0001',
+                          'pedestrian_spawn_source': {'path': str(pedestrian_path),
+                                                      'sha256': digest(pedestrian_path)}}
+            near_scene_path = root / 'near-scene.json'
+            near_scene_path.write_text(json.dumps(near_scene))
+            near_env = {**env, 'C10307_SCENE_SOURCE': str(near_scene_path),
+                        'C10307_SCENE_SHA256': digest(near_scene_path)}
+            selected_near, _ = source_configuration(near_env, near_case)
+            near_attempt = root / 'near-attempt'
+            near_attempt.mkdir()
+            snapshot_sources(near_attempt, near_env, selected_near, near_case)
+            near_receipt = audit_source_provenance(near_attempt, near_case)
+            self.assertEqual(near_receipt['source_sha256']['pedestrian'], digest(pedestrian_path))
+            (near_attempt / 'source-provenance' / 'pedestrian.json').write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                audit_source_provenance(near_attempt, near_case)
             (attempt / 'source-provenance' / 'rack.json').write_text('{}')
             with self.assertRaisesRegex(ValueError, 'hash mismatch'):
                 audit_source_provenance(attempt, CASE)
@@ -118,11 +142,52 @@ class NativeAdapterTests(unittest.TestCase):
         self.assertEqual(world.weather.wetness, 75.0)
 
     def test_case_pedestrian_spawn_is_source_gated(self):
-        config = {"case": {"world_setup": {"pedestrian_condition": "pedestrian near rack"}}}
-        with self.assertRaisesRegex(ValueError, "source-gated"):
+        config = {"selected_case_id": CASE.replace('__reference', '__pedestrian_near_rack'),
+                  "case": {"world_setup": {"pedestrian_condition": "pedestrian near rack"}}}
+        with self.assertRaisesRegex(ValueError, "source"):
             spawn_case_pedestrian(None, None, {}, {"blueprint_ids": []}, config)
         config["case"]["world_setup"]["pedestrian_condition"] = "no pedestrian near rack"
         self.assertIsNone(spawn_case_pedestrian(None, None, {}, {}, config))
+
+    def test_reviewed_pedestrian_pose_controls_spawn_and_rejects_drift(self):
+        case = CASE.replace('__reference', '__pedestrian_near_rack')
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'pedestrian.json'
+            packet = {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
+                      'case_id': case, 'blueprint_id': 'walker.pedestrian.0001',
+                      'rack_blueprint_id': 'static.rack',
+                      'spawn_pose': {'x': 0.5, 'y': 3.5, 'z': 0.2, 'yaw': 90.0}}
+            path.write_text(json.dumps(packet))
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            scene = {'pedestrian_blueprint_id': packet['blueprint_id'],
+                     'rack_blueprint_id': packet['rack_blueprint_id'],
+                     'pedestrian_spawn_source': {'path': str(path), 'sha256': digest}}
+            self.assertEqual(pedestrian_source(scene, case), packet)
+            actor = SimpleNamespace(type_id=packet['blueprint_id'])
+            blueprint = SimpleNamespace(id=packet['blueprint_id'])
+            class World:
+                def get_blueprint_library(self):
+                    return SimpleNamespace(find=lambda _: blueprint)
+                def spawn_actor(self, _, transform):
+                    self.transform = transform
+                    return actor
+            world = World()
+            carla = SimpleNamespace(Location=lambda **kwargs: kwargs,
+                                    Rotation=lambda **kwargs: kwargs,
+                                    Transform=lambda location, rotation: (location, rotation))
+            config = {'selected_case_id': case,
+                      'case': {'world_setup': {'pedestrian_condition': 'pedestrian near rack'}}}
+            self.assertIs(spawn_case_pedestrian(world, carla, scene,
+                          {'blueprint_ids': [packet['blueprint_id']]}, config), actor)
+            self.assertEqual(world.transform[0], {'x': .5, 'y': 3.5, 'z': .2})
+            self.assertEqual(world.transform[1], {'yaw': 90.0})
+            packet['spawn_pose']['y'] = 20.0
+            path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                pedestrian_source(scene, case)
+            scene['pedestrian_spawn_source']['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'not near rack'):
+                pedestrian_source(scene, case)
 
     def test_four_sensor_creation_pixels_and_cleanup(self):
         class Blueprint:

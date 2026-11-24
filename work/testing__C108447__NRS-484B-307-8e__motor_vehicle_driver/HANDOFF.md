@@ -81,3 +81,22 @@ The map binder now requires the connector and optional ordinary roadway routes t
 `saved_delivery.source_file` now rejects traversal components and symlink aliases for original map, parcel authority, trace, case, frame map and camera archives. The added negative test replaces a trace source with a byte-identical symlink and then attempts a `nested/../trace.json` reference; both fail before any source or pixel conclusion. This preserves the saved attempt boundary and does not certify parcel authority, physical motion or legal avoidance purpose.
 
 All six exact inline bundles were regenerated to include the updated auditor. Their construction hashes and refreshed exact offline proof logs are bound in `draft-offline-receipts.json`. Pinned preflight, all 63 focused tests, all six exact offline checks and scoped static exited 0; exact scoped strict exited 1 on truthful partial status. New log hashes are in `result.json`. Remaining CPU work includes positive/negative compatibility, per-case saved processing and independent delivery/comparison receipts, authoritative reviewed Native map/parcel selection, and canonical integration.
+
+## 2026-11-24 original media inventory and profile guard
+
+`saved_delivery.py` rejects duplicate ZIP member names even when the archive hash is refreshed. On a full 900-frame attempt, it also enforces the 1920×1080 overview and 1280×720 detail camera profile after full PNG decode. Two tests cover a resealed duplicate and production dimension mismatch; diagnostic short episodes retain small images for CPU fixture speed and cannot claim delivery. Six exact inline constructions were regenerated, all six offline materializations passed and `draft-offline-receipts.json` now binds the new construction and log hashes.
+
+An exact private-bypass `runtime.py compatibility` attempt exits before analysis because the draft manifest has no `measurement_contract` entry; `cpu-compat-private-v1.log` records this precise CPU gap. Sixty-five tests, pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial. Canonical measurement contracts and analysis, positive/negative compatibility, saved-only and delivery receipts, and authoritative parcel/map review remain worker-owned.
+
+- `cpu-compat-private-v1.log` SHA256 `5a56a170eea0bedbe6a2eba190489c9db69fca8359b46bd56479d8d32d17502e`; exit 1.
+- `cpu-zip-build.log` SHA256 `6c09a898aaf9078f03f6e7ac15cf243093041c9e6135fa96e360b71d57e728cf`; exit 0.
+- `cpu-zip-tests.log` SHA256 `3f90206aeced29db13c660fca6ad3308f4251d6619e23d894caba20e27b780eb`; exit 0.
+- `cpu-zip-preflight.log` SHA256 `ea0de4773400feca113e45df889b420e1e0d314919c6c5dce4d5203e19bf1e9d`; exit 0.
+- `cpu-zip-static.log` SHA256 `98c73331c9ba5bcabd7c402e1028fdda6681d78d0a90c2626a7f8c461529d8a3`; exit 0.
+- `cpu-zip-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+- `cpu-zip-offline-private_bypass.log` SHA256 `c1735749e6d714a44fb95fde75eaefb7df0669b9f063e7b6386b1dfad8b520a4`; exit 0.
+- `cpu-zip-offline-public_bypass.log` SHA256 `a299b02d9e2565b102a47d4866b5c643beb9c8f92a93b378c84b6cf528e4dc48`; exit 0.
+- `cpu-zip-offline-ordinary_crossing.log` SHA256 `79de09db64ecc94ff87b61793aeda90b0a660a34fd2af1ba6dead331de93f827`; exit 0.
+- `cpu-zip-offline-no_approach_red.log` SHA256 `4e78f485e11a516d4cf543778295b1c556e38893d5ca35e40d3c7ac87014c104`; exit 0.
+- `cpu-zip-offline-destination_red.log` SHA256 `697450a4058b9a424d6e8b877ff6bcf9ca6c7493245d76044102461e82d64de1`; exit 0.
+- `cpu-zip-offline-other_purpose.log` SHA256 `3536fbefd4e8c042135fcffb135d0b10d82df09ce15442ec72a45fc10681ad31`; exit 0.

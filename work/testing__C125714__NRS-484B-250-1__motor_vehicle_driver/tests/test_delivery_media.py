@@ -127,6 +127,20 @@ class NativeMediaAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'presentation time differs'):
                 audit_media_time(tmp, 9)
 
+    def test_camera_presentation_start_mismatch_rejected(self):
+        with TemporaryDirectory() as tmp:
+            native_video_fixture(tmp)
+            video = Path(tmp) / 'approach.mkv'
+            shifted = Path(tmp) / 'approach-shifted.mkv'
+            command = ['ffmpeg', '-nostdin', '-v', 'error', '-f', 'lavfi', '-i',
+                       'color=c=black:s=1280x720:r=20', '-frames:v', '9',
+                       '-vf', 'setpts=PTS+1', '-c:v', 'ffv1', '-pix_fmt', 'yuv420p',
+                       '-y', str(shifted)]
+            subprocess.run(command, check=True, capture_output=True, timeout=60)
+            shifted.replace(video)
+            with self.assertRaisesRegex(ValueError, 'presentation start differs'):
+                audit_media_time(tmp, 9)
+
     def test_skipped_native_frame_and_time_step_rejected(self):
         with TemporaryDirectory() as tmp:
             native_video_fixture(tmp)
