@@ -490,11 +490,41 @@
       "exit_code": 0,
       "log": "turn-route-proof.json",
       "sha256": "a92ca2ffb06be972aac50a911b602dc94b253618016b9ac9edc2303fedec8f86"
+    },
+    {
+      "command": "cd work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver && SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/../../.runtime-work/c125745-device PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-device-contrast.log",
+      "sha256": "ff0bef4ec6b2e918611d8483662b8f813b7ee0c8e9d59b409c3c50539af95819"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/build_device_contrast.py",
+      "exit_code": 0,
+      "log": "device-contrast-staged.json",
+      "sha256": "67f37fca5f29cc20e32436180439e0a5e67e051541bfabb5dad40a4eecfb505b"
+    },
+    {
+      "command": "cd work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver && SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/../../.runtime-work/c125745-turn-contrast PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-turn-contrast.log",
+      "sha256": "19864825c6035100f97bf394913b8a05fc17a32bb32bace8e6f16588a8b45b32"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/build_turn_contrast.py",
+      "exit_code": 0,
+      "log": "turn-contrast-staged.json",
+      "sha256": "2d5741ee8e94e06e44fe961e511453b73e608929ce5a30db8dd2672253073112"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-turn-contrast-left-20261124/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --output .runtime-work/c125745-turn-contrast-left-offline-20261124",
+      "exit_code": 0,
+      "log": "turn-contrast-left-offline.log",
+      "sha256": "da3f5868b0e9c59526cf55e6b8ef66607d118a45566cff5d57a54a882c9a416c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual official sign status/governance, statutory crossing, entry timing, complete vehicle motion and camera visibility."
   ],
-  "reason": "76 C125745 package tests and source-bound commanded left-exit audit pass; official-device and observed left-turn judgment sweeps remain incomplete. No Native, physical or legal acceptance claimed.",
+  "reason": "80 package CPU tests pass. Manifest-hashed staged device-presence and opposite-direction left/straight construction pairs have fixed-condition and negative tests; neither is a selected exact case with current-runtime compatibility or saved-only proofs. Official-device status and observed turn/legal judgment remain unresolved.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
