@@ -14,9 +14,9 @@ spec.loader.exec_module(module)
 
 class CaptureTests(unittest.TestCase):
     def setUp(self):
-        verts = [NS(x=x, y=y) for x in (0, 2) for y in (1, 3) for _ in (0, 1)]
-        self.ego = NS(id=7, get_velocity=lambda: NS(length=lambda: 0.0),
-                      get_transform=lambda: object(),
+        verts = [NS(x=x, y=y, z=z) for x in (0, 2) for y in (1, 3) for z in (0, 1)]
+        self.ego = NS(id=7, get_velocity=lambda: NS(x=0, y=0, z=0, length=lambda: 0.0),
+                      get_transform=lambda: NS(location=NS(x=1, y=2, z=0.5), rotation=NS(yaw=90)),
                       bounding_box=NS(get_world_vertices=lambda transform: verts))
         self.snapshot = NS(frame=10, timestamp=NS(elapsed_seconds=0.5))
         self.case = {"case_id": "exact", "halt_action": "park"}

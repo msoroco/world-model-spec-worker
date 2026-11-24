@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -13,7 +14,7 @@ from analysis import analyze
 
 class AnalysisTests(unittest.TestCase):
     def setUp(self):
-        scratch = FOLDER.parents[1] / '.runtime-work/c229439-analysis-tests'
+        scratch = Path(os.environ['TMPDIR']) / 'c229439-analysis-tests'
         scratch.mkdir(parents=True, exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.root = Path(self.temp.name)
@@ -49,7 +50,7 @@ class AnalysisTests(unittest.TestCase):
         self.temp.cleanup()
 
     def test_source_measurement(self):
-        report = analyze(self.root, self.root / 'report.json')
+        report = analyze(self.root, self.root / 'report.json', report_only=True)
         value = report['measurements']['official_prohibition_history']['value']
         self.assertEqual(value['halt_inside_frames'], 5)
         self.assertIsNone(report['legal_judgment'])
@@ -57,7 +58,7 @@ class AnalysisTests(unittest.TestCase):
     def test_missing_device_packet_rejected(self):
         (self.root / 'device-source.json').unlink()
         with self.assertRaisesRegex(ValueError, 'Missing required source: device-source.json'):
-            analyze(self.root, self.root / 'report.json')
+            analyze(self.root, self.root / 'report.json', report_only=True)
         self.assertFalse((self.root / 'report.json').exists())
 
 

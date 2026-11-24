@@ -62,6 +62,9 @@ def original_row(snapshot, ego, case, device, site, context, pixel_bindings):
     _require(math.isfinite(speed) and speed >= 0, "original speed invalid")
     x_values = [float(v.x) for v in vertices]
     y_values = [float(v.y) for v in vertices]
+    z_values = [float(v.z) for v in vertices]
+    transform = ego.get_transform()
+    velocity = ego.get_velocity()
     footprint = [[min(x_values), min(y_values)], [max(x_values), min(y_values)],
                  [max(x_values), max(y_values)], [min(x_values), max(y_values)]]
     return {"frame": snapshot.frame, "time_s": float(snapshot.timestamp.elapsed_seconds),
@@ -75,6 +78,11 @@ def original_row(snapshot, ego, case, device, site, context, pixel_bindings):
             "law_direction": context["law_direction"],
             "device_direction": context["device_direction"],
             "speed_mps": speed,
+            "position_m": [float(transform.location.x), float(transform.location.y),
+                           float(transform.location.z)],
+            "heading_deg": float(transform.rotation.yaw),
+            "velocity_mps": [float(velocity.x), float(velocity.y), float(velocity.z)],
+            "body_vertices_m": [[float(v.x), float(v.y), float(v.z)] for v in vertices],
             "body_corners_xy": footprint,
             "camera_frames": pixel_bindings}
 

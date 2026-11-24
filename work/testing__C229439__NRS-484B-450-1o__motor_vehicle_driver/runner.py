@@ -79,6 +79,7 @@ def main():
     settings = world.get_settings()
     weather = world.get_weather()
     owned = []
+    completed = False
     try:
         sync = world.get_settings()
         sync.synchronous_mode = True
@@ -89,6 +90,16 @@ def main():
         construct_case(adapter, *refs, config['case'])
         capture(world, carla, adapter, config['case'], site, device,
                 observer.observe, args.output_dir, context['reviewed_camera_poses'])
+        output = Path(args.output_dir)
+        (output / 'vehicle-source.json').write_text(json.dumps(vehicle, indent=2) + '\n')
+        (output / 'context-source.json').write_text(json.dumps(context, indent=2) + '\n')
+        completed = True
+    except Exception as error:
+        output = Path(args.output_dir)
+        output.mkdir(parents=True, exist_ok=True)
+        (output / 'native-run-status.json').write_text(json.dumps({'errors': [str(error)],
+            'case_id': config['case']['case_id'], 'capture_completed': False}, indent=2) + '\n')
+        raise
     finally:
         for actor in reversed(owned):
             try:
@@ -97,6 +108,15 @@ def main():
                 pass
         world.apply_settings(settings)
         world.set_weather(weather)
+    if completed:
+        from native_output_bridge import seal
+        try:
+            seal(args.output_dir, world, restoration_verified=True)
+        except Exception as error:
+            (Path(args.output_dir) / 'native-run-status.json').write_text(json.dumps({
+                'errors': [str(error)], 'case_id': config['case']['case_id'],
+                'capture_completed': True, 'source_seal_completed': False}, indent=2) + '\n')
+            raise
 
 
 if __name__ == '__main__':

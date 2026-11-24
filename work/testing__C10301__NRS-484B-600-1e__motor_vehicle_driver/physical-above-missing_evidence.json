@@ -1,0 +1,234 @@
+{
+  "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above",
+  "measured_values": {
+    "vehicle_operation": {
+      "method": "measure_operation",
+      "value": {
+        "actor": "motor_vehicle_driver",
+        "vehicle_blueprint_id": "vehicle.diagnostic",
+        "observed_motion_samples": 900,
+        "original_kinematics_sha256": "949d8907d383fcbaa15609f98fed1b4de7a53bfeb8e8100ec789d26a2dd53bce",
+        "travel_m": 1564.4143036139853,
+        "territorial_applicability": "unresolved"
+      },
+      "sources": {
+        "authored-setup.json": "31c60a51087a2bdab68404f63f2acf8a8408d00acba85ae63ed1ad0c326ae78e",
+        "native-site-source.json": "73e31a4848f447221711b18bccb75b95c12a31a67d5f2a8190c57b69c5e5da0e",
+        "native-motion-receipt.json": "48707e6acb0e7c7063ca5630539b4a4d0daf6ada30bd1035bec267801520fee2",
+        "native-kinematics.jsonl": "949d8907d383fcbaa15609f98fed1b4de7a53bfeb8e8100ec789d26a2dd53bce"
+      }
+    },
+    "sampled_rate_boundary": {
+      "method": "measure_rate",
+      "value": {
+        "peak_sample_mph": 85.09313632614648,
+        "sampled_relation": "some_sample_clearly_above",
+        "peak_uncertainty_mph": 0.11184681460272,
+        "between_sample_peaks": "unobserved",
+        "sample_count": 900
+      },
+      "sources": {
+        "original-speed.jsonl": "1ed11a43dfbe7f02354179c67cfd6c7f18d185411f5c7c84bfdb64a4f00a3ca1",
+        "speed-source.json": "d6ec7a520f07f145ea2a7d8e681e7bb26f50a8107559c180fc2c8c9e8569bfde"
+      }
+    }
+  },
+  "target_checks": [
+    {
+      "target": "authored sampled speed probe",
+      "requested": 85.0,
+      "measured": 85.09313632614648,
+      "method": "sealed 20 Hz original actor velocity",
+      "tolerance": 1.0,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": {
+        "authored-setup.json": "31c60a51087a2bdab68404f63f2acf8a8408d00acba85ae63ed1ad0c326ae78e",
+        "original-speed.jsonl": "1ed11a43dfbe7f02354179c67cfd6c7f18d185411f5c7c84bfdb64a4f00a3ca1"
+      }
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": {
+    "physical_completion_unverified": true
+  },
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "sampled_speed_mps",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "original actor velocity magnitude",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "ego_position_m",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "original actor location vector",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "route_readback",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "original map waypoint and route station",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "camera_frame_sources",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "original four-camera frame readback",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "sampled_speed_mps",
+      "unit": "m/s",
+      "reference": "channels/sampled_speed_mps.jsonl"
+    },
+    {
+      "name": "ego_position_m",
+      "unit": "structured record",
+      "reference": "channels/ego_position_m.jsonl"
+    },
+    {
+      "name": "route_readback",
+      "unit": "structured record",
+      "reference": "channels/route_readback.jsonl"
+    },
+    {
+      "name": "camera_frame_sources",
+      "unit": "structured record",
+      "reference": "channels/camera_frame_sources.jsonl"
+    }
+  ],
+  "realized_observables": {},
+  "provenance_kind": "synthetic_fixture",
+  "diagnostic_fixture": true,
+  "physical_acceptance_claimed": false,
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "945b1bf5b2f1558c0448b01434181003ad9e1aaee0b4ddf122e808e0c7f88b2a",
+        "video_frames.jsonl": "56c6dfe350864e55241f8282bd2b56c878e6ef5e776464cea3f06bf1360831cf"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 112.5,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "945b1bf5b2f1558c0448b01434181003ad9e1aaee0b4ddf122e808e0c7f88b2a",
+        "video_frames.jsonl": "56c6dfe350864e55241f8282bd2b56c878e6ef5e776464cea3f06bf1360831cf"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 112.5,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "945b1bf5b2f1558c0448b01434181003ad9e1aaee0b4ddf122e808e0c7f88b2a",
+        "video_frames.jsonl": "56c6dfe350864e55241f8282bd2b56c878e6ef5e776464cea3f06bf1360831cf"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 112.5,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "945b1bf5b2f1558c0448b01434181003ad9e1aaee0b4ddf122e808e0c7f88b2a",
+        "video_frames.jsonl": "56c6dfe350864e55241f8282bd2b56c878e6ef5e776464cea3f06bf1360831cf"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "scope": "Source protocol provenance, not physical or legal acceptance"
+}

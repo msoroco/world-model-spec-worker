@@ -21,16 +21,16 @@ def main() -> None:
     candidate = entry["candidates"][0]
     if candidate["id"] != "fallback1" or candidate["construction_sha256"] != sha(HERE / candidate["construction"]):
         raise ValueError("Fallback candidate changed")
-    offline_log = HERE / "cpu-fallback-offline.log"
+    offline_log = HERE / "cpu-offline-response_siren_pedestrian-fallback1-v9.log"
     if '"offline_passed": true' not in offline_log.read_text():
         raise ValueError("Fallback offline proof missing")
     candidate["offline"] = {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/" +
                    HERE.name + "/execution-manifest.json --case " + entry["case_id"] +
-                   " --candidate fallback1 --output .runtime-work/c109035-fallback-offline-v1 --python $PWD/.venv-cpu/bin/python",
+                   " --candidate fallback1 --output .runtime-work/c109035-offline-response_siren_pedestrian-fallback1-v9 --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0, "construction_sha256": candidate["construction_sha256"],
         "log": offline_log.name, "log_sha256": sha(offline_log)}
-    output = REPO / ".runtime-work/c109035-fallback-compat-v1"
+    output = REPO / ".runtime-work/c109035-compat-response_siren_pedestrian-fallback1-v9"
     receipt = json.loads((output / "compatibility.json").read_text())
     if (receipt.get("case_id") != entry["case_id"] or
             receipt.get("candidate_id") != "fallback1" or

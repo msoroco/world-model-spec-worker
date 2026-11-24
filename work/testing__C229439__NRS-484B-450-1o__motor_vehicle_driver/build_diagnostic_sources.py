@@ -38,7 +38,8 @@ def build(folder):
                          'device_direction': halted and case['exception'] == 'device_direction',
                          'speed_mps': 0 if halted else 1, 'halt_activity': case['halt_action'] if halted else 'travel',
                          'body_corners_xy': [[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]],
-                         'prohibited_actions': [case['halt_action']]})
+                         'prohibited_actions': [case['halt_action']],
+                         'camera_frames': {'diagnostic_generated_video': True}})
         hashes = {}
         for name, value in (('site-source.json', site), ('device-source.json', device), ('actor_rows.json', rows)):
             hashes[name] = dump(source_dir / name, value)

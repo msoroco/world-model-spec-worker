@@ -35,9 +35,130 @@
           },
           "changed_knobs": [
             "reviewed fallback_cameras poses, with original profile sizes and source hash"
-          ]
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian --candidate fallback1 --output .runtime-work/c109035-offline-response_siren_pedestrian-fallback1-v9 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ad70a2c557fa3fd2658bdaa0c197cadb0309696bf41564a63019acb64f678c8e",
+            "log": "cpu-offline-response_siren_pedestrian-fallback1-v9.log",
+            "log_sha256": "cef5fdb523b8ef1ca94f02d156fc3d6376469f863e2b9c63412036a6078e3fed"
+          },
+          "compatibility": {
+            "receipt": "compat-response_siren_pedestrian-fallback1-receipt.json",
+            "sha256": "4aeeff790d341689afe345cb3900e15ccc9b242fdc41137675ca18b480854991",
+            "log": "compat-response_siren_pedestrian-fallback1-compatibility-analysis.log",
+            "negative_log": "compat-response_siren_pedestrian-fallback1-negative-analysis.log"
+          }
         }
-      ]
+      ],
+      "physical_preparation": {
+        "receipt": "physical/response_siren_pedestrian/receipt.json",
+        "sha256": "27209aae8bed0ed34533301155719c3c87df894d0d04cf762f15c112d8458ba2"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian --output .runtime-work/c109035-offline-response_siren_pedestrian-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "aa172ae62d90b2d672fcbfdb2a20c94048d3038d227f0ee8a6843a996e9ead86",
+        "log": "cpu-offline-response_siren_pedestrian-v9.log",
+        "log_sha256": "455915175548b1d2368ef245c456e0f395daa6e26b04a244a4aa92e5dcc17305"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-response_siren_pedestrian-positive.log",
+        "test_log_sha256": "b6b814d8c9a701a720b944bfd58010f32fb8fe649e874459cfc51f4e7107ec9d",
+        "negative_log": "delivery-response_siren_pedestrian-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-response_siren_pedestrian-receipt.json",
+        "sha256": "83065add6277f9b52615593712342039c46a672970fc13c5052e4c1618311198",
+        "log": "compat-response_siren_pedestrian-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-response_siren_pedestrian-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/response_siren_pedestrian-processing.json",
+        "sha256": "1e3ce873b6a1e463e4fca17e16504fba479c178cc254a61086f3d4c4e4a4417b",
+        "proof_log": "cpu-saved-response_siren_pedestrian-v9.log",
+        "proof_log_sha256": "55cef2b4da841be11bc685c8999eee7d173883e3a6fab64ca434a7c6b14c1495"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-response_siren_pedestrian-v9.log",
+        "test_log_sha256": "55cef2b4da841be11bc685c8999eee7d173883e3a6fab64ca434a7c6b14c1495",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only",
@@ -58,7 +179,115 @@
         "status": "none",
         "reason": "No specific alternate construction is yet justified from original motion or camera evidence."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "physical_preparation": {
+        "receipt": "physical/response_lamps_only/receipt.json",
+        "sha256": "10f0df7480ff85c43507ffcd917efb142e80d24b2be495c9ff215d3756129de0"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only --output .runtime-work/c109035-offline-response_lamps_only-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "0d3d3caae97321d3aa74f4fca35bf864af85985e69b0f139e8cbdf9b55c5ff89",
+        "log": "cpu-offline-response_lamps_only-v9.log",
+        "log_sha256": "f64f0ef5f9f492a7a606ddf218aa7b0bc7c606954541a612610f3643b3713432"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-response_lamps_only-positive.log",
+        "test_log_sha256": "bb3c0e90d5093af08b842da1a7155d93fd1da43d93034bb75ef59fb0f4bcef8d",
+        "negative_log": "delivery-response_lamps_only-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-response_lamps_only-receipt.json",
+        "sha256": "4fa64e1a984e434c97fec6f1d6301c4ec76eb08212959a4f334c9074e42253b2",
+        "log": "compat-response_lamps_only-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-response_lamps_only-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/response_lamps_only-processing.json",
+        "sha256": "a7b54f3b8f979b46f579c46c0ad4135e43cf2b34a63359da72db10a642524f27",
+        "proof_log": "cpu-saved-response_lamps_only-v9.log",
+        "proof_log_sha256": "12515eb59f42c5cbfd5200917c27bc9664de1989cb4aee560385e47c1be618d7"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-response_lamps_only-v9.log",
+        "test_log_sha256": "12515eb59f42c5cbfd5200917c27bc9664de1989cb4aee560385e47c1be618d7",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent",
@@ -79,7 +308,115 @@
         "status": "none",
         "reason": "No specific alternate construction is yet justified from original motion or camera evidence."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "physical_preparation": {
+        "receipt": "physical/response_silent/receipt.json",
+        "sha256": "7e57cb2a59fdaa1cc23ddf25f487e8f04bf92a05f9f02cc0717704955266a063"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent --output .runtime-work/c109035-offline-response_silent-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "773ae49ede51b77828181d49e7f905cc8b4847f344b5dc6627372bc8edee626b",
+        "log": "cpu-offline-response_silent-v9.log",
+        "log_sha256": "54c23bcb4a7c409e3a2081ec25f0b9683385d7007a7f7b7081e6297d362be179"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-response_silent-positive.log",
+        "test_log_sha256": "42ff6bf95a87a1e805234ddb88b491a068fce186cb72338e10c8f7c84de7dbc5",
+        "negative_log": "delivery-response_silent-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-response_silent-receipt.json",
+        "sha256": "859fda868296aa3779a1b6bd7087d1ce6042db8b0c819f4136648cb119efbd7e",
+        "log": "compat-response_silent-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-response_silent-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/response_silent-processing.json",
+        "sha256": "4dbc9c91a9c3b6cbd2480ff12be6efafa2373e8577c4f894d13749c9e85d7967",
+        "proof_log": "cpu-saved-response_silent-v9.log",
+        "proof_log_sha256": "ebdcbe672ec34e969cc4493c5d0d19b8f76f7768030291c01403f53167f26b8b"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-response_silent-v9.log",
+        "test_log_sha256": "ebdcbe672ec34e969cc4493c5d0d19b8f76f7768030291c01403f53167f26b8b",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren",
@@ -100,7 +437,115 @@
         "status": "none",
         "reason": "No specific alternate construction is yet justified from original motion or camera evidence."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "physical_preparation": {
+        "receipt": "physical/pursuit_actual_siren/receipt.json",
+        "sha256": "6f2de2797f18bf3aa4128b8137d916a4b647fb3cbae770d4fff9fa033e4dd3be"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren --output .runtime-work/c109035-offline-pursuit_actual_siren-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "840d1ebd9b0e9d47385aecf3fd06258629c3684a2a82056ccc8f76f736a0f5c6",
+        "log": "cpu-offline-pursuit_actual_siren-v9.log",
+        "log_sha256": "888f9b2cc18f4466858b7efa472ca4014bfe80a97ca73b3b3eba2324135f99f8"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-pursuit_actual_siren-positive.log",
+        "test_log_sha256": "8cf3d2e6bd0f12726e97514ad2392d67e7f4882fcd62fb1414136fe013981cd2",
+        "negative_log": "delivery-pursuit_actual_siren-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-pursuit_actual_siren-receipt.json",
+        "sha256": "ce65d4752fdd67a0fefc1856ca3f1c2a5c9c3f9bbeb4e06492de550ea0f167e6",
+        "log": "compat-pursuit_actual_siren-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-pursuit_actual_siren-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/pursuit_actual_siren-processing.json",
+        "sha256": "7f5997f14650ebb2179a2ac9e20b31cda6b67916b694b668d1ad4d1c6dbf6e37",
+        "proof_log": "cpu-saved-pursuit_actual_siren-v9.log",
+        "proof_log_sha256": "9d64b13c69b456f9e733ddd33280e29515510530b030e4174874f6d14003b1fc"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-pursuit_actual_siren-v9.log",
+        "test_log_sha256": "9d64b13c69b456f9e733ddd33280e29515510530b030e4174874f6d14003b1fc",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren",
@@ -121,7 +566,115 @@
         "status": "none",
         "reason": "No specific alternate construction is yet justified from original motion or camera evidence."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "physical_preparation": {
+        "receipt": "physical/pursuit_suspected_siren/receipt.json",
+        "sha256": "a734ae4df323dda9c0cf468e8d713aa3dcb6cdc711c24c3b1f31b130515fc5ba"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren --output .runtime-work/c109035-offline-pursuit_suspected_siren-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "7a7183c07890d7287d120627fe5a5aabdfa34c67ddb8dd145f5559f95fadb380",
+        "log": "cpu-offline-pursuit_suspected_siren-v9.log",
+        "log_sha256": "7e2b08ed8bdfa7829d79bca51f4179faafe4a6da60facc83639e44a70c32ff2a"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-pursuit_suspected_siren-positive.log",
+        "test_log_sha256": "ba3a30646c8498b7c9953e88f27841e433a486c8e6dc6ae57ee622af48c5096d",
+        "negative_log": "delivery-pursuit_suspected_siren-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-pursuit_suspected_siren-receipt.json",
+        "sha256": "f18974d5ad4250632cbe0294062a5f4095517410f57de81e82c6de6366da7770",
+        "log": "compat-pursuit_suspected_siren-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-pursuit_suspected_siren-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/pursuit_suspected_siren-processing.json",
+        "sha256": "f6133613a88e17e64e236b9e6489a9974f02e9b57fa4af4f439642e79cf5357f",
+        "proof_log": "cpu-saved-pursuit_suspected_siren-v9.log",
+        "proof_log_sha256": "f932aae4d4d75df27f3fff869a80010bc17761455f19dd1035c16493e2c6de3b"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-pursuit_suspected_siren-v9.log",
+        "test_log_sha256": "f932aae4d4d75df27f3fff869a80010bc17761455f19dd1035c16493e2c6de3b",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren",
@@ -142,7 +695,115 @@
         "status": "none",
         "reason": "No specific alternate construction is yet justified from original motion or camera evidence."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "physical_preparation": {
+        "receipt": "physical/unqualified_siren/receipt.json",
+        "sha256": "0f6072d7167203d0fe204c39a6b81a73c3094a557bdff2dcc873bfd091d840b5"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren --output .runtime-work/c109035-offline-unqualified_siren-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9e12b4180d20879f48afd83dd1082d7fc45d0c4c070f972ed93ae94fd6df0270",
+        "log": "cpu-offline-unqualified_siren-v9.log",
+        "log_sha256": "ca243727317098b6b39b1c8c79b6a5afdf3bb4b6ca94e2ed10b31248447b7e4d"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-unqualified_siren-positive.log",
+        "test_log_sha256": "e25d51dd367cc2697cd592981795eadb31fc904e3f88691a44f98f81d64c15b1",
+        "negative_log": "delivery-unqualified_siren-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-unqualified_siren-receipt.json",
+        "sha256": "41a7c16e11bd29611930d7bb25e7d000f741a008c938bd616d3767cb4bf8e382",
+        "log": "compat-unqualified_siren-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-unqualified_siren-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/unqualified_siren-processing.json",
+        "sha256": "6142efb6e4748bd504a5f4d5c50bac7333439e510dbbbd5e0ebfd1c08f10a83b",
+        "proof_log": "cpu-saved-unqualified_siren-v9.log",
+        "proof_log_sha256": "056100ec262790b96bdb9aac556f54d37f3a75efc510a7a362c6f8fc89cf2c87"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-unqualified_siren-v9.log",
+        "test_log_sha256": "056100ec262790b96bdb9aac556f54d37f3a75efc510a7a362c6f8fc89cf2c87",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only",
@@ -163,7 +824,115 @@
         "status": "none",
         "reason": "No specific alternate construction is yet justified from original motion or camera evidence."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "physical_preparation": {
+        "receipt": "physical/unqualified_lamps_only/receipt.json",
+        "sha256": "c44d7e581e83816d9d90fe235a3721d29363c711d0ea0c2cd9fca6aadf7836ab"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only --output .runtime-work/c109035-offline-unqualified_lamps_only-v9 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "7825ee38cf59cddcb0ef7ea66531e42673a96ac4b6e74108a894772168e945f3",
+        "log": "cpu-offline-unqualified_lamps_only-v9.log",
+        "log_sha256": "421a7bacd130a07118c3028b907eefc3b407db7fb58be059ed2dcb7529cb5796"
+      },
+      "acquisition": {
+        "siren_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument siren boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "warning_lamp_active": {
+          "entrypoint": "device_readback.py",
+          "method": "external instrument lamp boolean joined to each Native frame",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "ego.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl ego source actor id and pose"
+        },
+        "pedestrian_position": {
+          "entrypoint": "actor_readback.py",
+          "method": "pedestrian.get_transform sampled for each Native frame",
+          "evidence": "actor_trace.jsonl pedestrian source actor id and pose"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "camera_recorder.py",
+          "method": "four RGB sensor callbacks joined to each Native frame",
+          "evidence": "camera_trace.jsonl and four original ZIP sources"
+        },
+        "original_siren_and_warning_lamp_state": {
+          "entrypoint": "device_readback.py",
+          "method": "independent boolean samples and command/readback retained separately",
+          "evidence": "device_samples.jsonl and device_trace.jsonl"
+        },
+        "qualifying_event_and_temporal_relation": {
+          "entrypoint": "original_adapters.py",
+          "method": "sealed dispatch document joined to each original device frame by saved analysis",
+          "evidence": "dispatch_context.json and device_trace.jsonl"
+        },
+        "pedestrian_approach_relation": {
+          "entrypoint": "actor_readback.py",
+          "method": "two original actor poses joined by Native frame",
+          "evidence": "actor_trace.jsonl and camera_trace.jsonl"
+        },
+        "equipment_and_authorization": {
+          "entrypoint": "original_adapters.py",
+          "method": "reviewed equipment source retained and joined to each original frame",
+          "evidence": "equipment_record.json and device_trace.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_cases.py",
+        "script_sha256": "1c33c486e0ceccd49b78ba2558946099434fa48980f43d2db98acfe06d1a6f6b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/prove_delivery_cases.py testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original capture seal, source or restoration differs",
+        "test_log": "delivery-unqualified_lamps_only-positive.log",
+        "test_log_sha256": "405f23156c6c19df5f9a26d41332af44607aefc4473cfb757cd71aad9e48e069",
+        "negative_log": "delivery-unqualified_lamps_only-negative.log",
+        "negative_log_sha256": "943ed59895bd190068112c3d1d69e5f187ed487a9edc1d63dd2fba61de28f767",
+        "scope": "synthetic diagnostic acceptance protocol; physical review pending",
+        "physical_acceptance_claimed": false
+      },
+      "compatibility": {
+        "receipt": "compat-unqualified_lamps_only-receipt.json",
+        "sha256": "60636e2468053d81c8bdeb34bd667d985159033d2e0c7c057611e6e963d7c42f",
+        "log": "compat-unqualified_lamps_only-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "compat-unqualified_lamps_only-negative-analysis.log"
+      },
+      "saved_only": {
+        "receipt": "saved-proofs/unqualified_lamps_only-processing.json",
+        "sha256": "fc61fb5b3690ad1f6f77094c6df0cd7c95acedccbd5418a39914bf8ebe88086c",
+        "proof_log": "cpu-saved-unqualified_lamps_only-v9.log",
+        "proof_log_sha256": "1ecf865dd9a232edfa3049c22b367b9cbe87b3fe37b5a8e0f35609c5a7f1e5f4"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109035__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cpu-saved-unqualified_lamps_only-v9.log",
+        "test_log_sha256": "1ecf865dd9a232edfa3049c22b367b9cbe87b3fe37b5a8e0f35609c5a7f1e5f4",
+        "test_exit_code": 0,
+        "proof_scope": "sealed synthetic source fixture; physical Native capture pending"
+      }
     }
   ],
   "status": "partial_cpu_receipts_pending"

@@ -24,7 +24,7 @@ def main() -> None:
         suffix = case_id.removeprefix(HERE.name + "__")
         if suffix not in SUFFIXES:
             raise ValueError("Unexpected exact case")
-        version = "v8" if suffix in SUFFIXES[3:6] else "v7"
+        version = "v9"
         source = REPO / ".runtime-work" / f"c109035-compat-{suffix}-{version}"
         receipt_source = source / "compatibility.json"
         receipt = json.loads(receipt_source.read_text())

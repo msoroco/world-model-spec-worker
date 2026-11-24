@@ -23,7 +23,7 @@ def main():
             stage = Path(temporary) / 'stage'
             materialize(repo, repo / entry['fixture_recipe'], stage)
             command = [sys.executable, str(folder / 'analysis.py'), '--attempt', str(stage),
-                       '--output', str(stage / 'analysis-report.json')]
+                       '--output', str(stage / 'analysis-report.json'), '--report-only']
             positive = subprocess.run(command, capture_output=True, text=True, env=os.environ.copy())
             if positive.returncode:
                 raise RuntimeError(short + ': positive analyzer failed: ' + positive.stderr)
