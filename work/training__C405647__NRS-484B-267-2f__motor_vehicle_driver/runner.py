@@ -80,7 +80,7 @@ def validate_native_lanes(ego_lane, emergency_lane):
             'emergency_lane_id': 1}
 
 
-def subject_response(frame, config, ego_x, emergency_x, ego_half_length=2.0,
+def subject_response(frame, config, ego_x, ego_y, emergency_x, ego_half_length=2.0,
                      emergency_half_length=2.0):
     """Request a right-edge stop until the approaching vehicle has passed.
 
@@ -92,7 +92,9 @@ def subject_response(frame, config, ego_x, emergency_x, ego_half_length=2.0,
     if config['case_suffix'] == 'controlled_2':
         return (config['requested_subsequent_subject_speed_mps'], 0.0, 'continued_travel')
     if 100 <= frame < 120:
-        return (1.0, -0.75, 'move_to_right_edge')
+        remaining_s=(120-frame)/RATE
+        lateral_velocity=(config['requested_right_edge_center_y_m']-ego_y)/remaining_s
+        return (1.0, max(-1.0,min(0.0,lateral_velocity)), 'move_to_right_edge')
     passed = emergency_x + emergency_half_length < ego_x - ego_half_length
     if not passed:
         return (0.0, 0.0, 'stopped_until_passed')
@@ -151,7 +153,7 @@ def execute(output,survey,host,port):
                 ego_pose=ego.get_transform(); emergency_pose=emergency.get_transform()
                 ego_extent=ego.bounding_box.extent.x; emergency_extent=emergency.bounding_box.extent.x
                 ego_vx,ego_vy,phase=subject_response(
-                    i,c,ego_pose.location.x,emergency_pose.location.x,
+                    i,c,ego_pose.location.x,ego_pose.location.y,emergency_pose.location.x,
                     ego_extent,emergency_extent)
                 ego.set_target_velocity(carla.Vector3D(x=ego_vx,y=ego_vy,z=0))
                 native=world.tick();snap=world.get_snapshot()

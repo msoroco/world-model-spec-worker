@@ -12,12 +12,12 @@ def main():
     cases = []
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(HERE.name + '__')
-        requested = 'reduce_to_1_mps' if suffix == 'controlled_1' else 'continue_at_3_mps'
+        requested = 'move_to_right_edge_and_stop_until_passed' if suffix == 'controlled_1' else 'continue_at_3_mps'
         cases.append({'case_id': entry['case_id'], 'target_law_id': plan['law_id'],
                       'target_type': 'judgment_sweep',
-                      'rationale': 'Compare source-bound emergency approach and subject speed response; subsection 1 duties and qualification remain for original review.',
+                      'rationale': 'Compare source-bound emergency approach, right-edge stop until passed, and continued travel; statutory qualification remains for original review.',
                       'variable_assignments': {
-                          'requested_speed_response': {'kind': 'controller',
+                          'requested_subsection_1_response': {'kind': 'controller',
                                                        'value': requested,
                                                        'unit': 'categorical'},
                           'observed_emergency_approach': {'kind': 'subject_behavior',
@@ -33,9 +33,9 @@ def main():
                           'approaches the driver vehicle and invokes supplied subsection 1 duties',
                           'unless otherwise directed by a law enforcement officer'],
                       'paired_probe_id': HERE.name + '__approach_response_pair',
-                      'deliberate_differences': ['requested_speed_response'],
-                      'probe': {'primary_variable': 'requested_speed_response',
-                                'comparison_or_standard': 'source-bound post-approach ego speed and closing geometry',
+                      'deliberate_differences': ['requested_subsection_1_response'],
+                      'probe': {'primary_variable': 'requested_subsection_1_response',
+                                'comparison_or_standard': 'source-bound right-edge geometry, stop-until-passed timing and continued travel',
                                 'target_value_or_branch': requested},
                       'recording_description': recording})
     proposal = {'cell_id': plan['cell_id'], 'actor': plan['actor'], 'status': 'draft',

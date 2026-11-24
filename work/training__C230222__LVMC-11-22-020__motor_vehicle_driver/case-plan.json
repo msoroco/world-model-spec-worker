@@ -123,17 +123,20 @@
   ],
   "source_observation_mapping": {
     "drv.time_to_conflict": {
-      "evidence": "Participant trajectories and closing time require a future saved-source derivation; no legal cutoff is assigned.",
-      "channels": [],
+      "evidence": "Thirty-second constant-velocity planar body-overlap time is computed from same-frame original Native body corners and velocities. This is an engineering proxy, not observed future conflict or a legal cutoff.",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-body-geometry.jsonl",
+        "native-ego-frames.jsonl"
       ]
     },
     "drv.hard_deceleration": {
       "evidence": "Longitudinal acceleration derives from original Native ego acceleration and velocity; hard is a review cue, not a fixed legal threshold.",
       "channels": [
-        "curbside_driving_cues"
+        "drv.hard_deceleration"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
@@ -143,7 +146,7 @@
     "kin.yaw_rate": {
       "evidence": "Yaw rate derives from adjacent original Native ego yaw samples at 20 Hz.",
       "channels": [
-        "curbside_driving_cues"
+        "kin.yaw_rate"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
@@ -153,7 +156,7 @@
     "kin.speed": {
       "evidence": "Speed magnitude derives from original Native ego velocity.",
       "channels": [
-        "curbside_driving_cues"
+        "kin.speed"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
@@ -163,7 +166,7 @@
     "rel.surface_gap": {
       "evidence": "Planar participant-body gap recomputes from every retained original Native actor bounding-box corner; no participant leaves the gap unknown.",
       "channels": [
-        "curbside_driving_cues"
+        "rel.surface_gap"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
@@ -174,7 +177,7 @@
     "rel.contact": {
       "evidence": "Positive contact requires an original Native collision sensor event; no event leaves contact unknown.",
       "channels": [
-        "curbside_driving_cues"
+        "rel.contact"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
@@ -184,7 +187,9 @@
     },
     "st.highway": {
       "evidence": "Native map identity is recorded; municipal highway status still requires original source review.",
-      "channels": [],
+      "channels": [
+        "st.highway"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
         "driving-context.json"
@@ -192,7 +197,9 @@
     },
     "ru.pedestrian": {
       "evidence": "Native actor identity is retained but pedestrian visibility requires original camera review; no presence or visibility is inferred from missing actors.",
-      "channels": [],
+      "channels": [
+        "ru.pedestrian"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
         "native-body-geometry.jsonl",
@@ -210,7 +217,7 @@
     "status": "source_shaped_software_fixture_only",
     "sample_count": 600,
     "sampling_rate_hz": 20,
-    "negative_count": 9,
+    "negative_count": 10,
     "legal_verdict": null
   },
   "unselected_native_draft": {
@@ -223,6 +230,6 @@
     "duration_s": 30,
     "camera_count": 4,
     "selection_status": "unselected_diagnostic_only",
-    "construction_limit": "Native runner now retains original actor bounding-box geometry and collision sensor events. No absent-contact inference, verified curbside map geometry, time to conflict, pedestrian visibility, municipal highway status, selected delivery or saved audits yet."
+    "construction_limit": "Exact probe_a/probe_b draft runners now select a Native driving lane with adjacent sidewalk, spawn a stationary sidewalk pedestrian, retain original body geometry and collision events, and derive a 30-second constant-velocity conflict proxy. Municipal highway status, pixel visibility, selected delivery and independent audits remain open."
   }
 }

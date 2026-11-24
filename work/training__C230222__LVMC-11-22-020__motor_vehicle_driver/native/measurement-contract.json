@@ -17,6 +17,7 @@
     "longitudinal_acceleration_mps2",
     "yaw_rate_degps",
     "minimum_surface_gap_m",
+    "constant_velocity_time_to_conflict_s",
     "contact",
     "pedestrian_visible"
   ],
@@ -24,9 +25,9 @@
   "null_rule": "A null surface gap means no retained participant body for that frame, not infinite clearance; null contact/pedestrian/jurisdiction means unknown, never absence or compliance.",
   "legal_rule": "No measurement is a numerical legal definition of careless or imprudent; the meter emits no legal verdict.",
   "remaining_source_work": [
-    "Derive participant trajectories and time to conflict from retained raw Native packets.",
     "Review original collision event timing, four synchronized camera streams, pedestrian visibility, and jurisdiction/highway source evidence.",
     "Bind exact selected probes, compatibility, saved processing and independent delivery/comparison audits."
   ],
-  "diagnostic_only": true
+  "diagnostic_only": true,
+  "time_to_conflict_method": "At each original Native frame, independently solve swept two-dimensional body overlap for constant measured planar velocities over a 30-second engineering horizon; null means no predicted overlap within the horizon, not safety or legal prudence."
 }

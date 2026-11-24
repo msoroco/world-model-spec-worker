@@ -6,12 +6,12 @@ import queue
 import subprocess
 from pathlib import Path
 
-from body_geometry import scene_clearance
+from body_geometry import choose_curbside_spawn, scene_clearance, spawn_sidewalk_pedestrian
 
 FRAMES = 600
 RATE = 20
 PREFIX = 'training__C230222__LVMC-11-22-020__motor_vehicle_driver__'
-VIEWS = ('overview', 'approach', 'curb_reference', 'driver_reference')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -24,6 +24,8 @@ def check(config):
             config.get('candidate_id') != 'primary' or
             config.get('duration_s') != 30 or config.get('rate_hz') != RATE or
             config.get('vehicle_blueprint') != 'vehicle.tesla.model3' or
+            config.get('pedestrian_blueprint_selector') != 'walker.pedestrian.*' or
+            config.get('pedestrian_placement') != 'adjacent_sidewalk' or
             config.get('legal_verdict') is not None or
             type(config.get('spawn_point_index')) is not int or
             config['spawn_point_index'] < 0):
@@ -33,8 +35,9 @@ def check(config):
             tuple(camera.get('name') for camera in cameras) != VIEWS):
         raise ValueError('Four named source cameras required')
     for camera in cameras:
-        if (type(camera.get('width')) is not int or camera['width'] < 16 or
-                type(camera.get('height')) is not int or camera['height'] < 16 or
+        expected_size = (1920, 1080) if camera['name'] == 'overview' else (1280, 720)
+        if ((camera.get('width'), camera.get('height')) != expected_size or
+                camera.get('pose_strategy') != 'ego_relative_transform' or
                 type(camera.get('fov_deg')) not in (int, float) or
                 not 1 <= camera['fov_deg'] <= 170 or
                 type(camera.get('location_xyz_m')) is not list or
@@ -105,11 +108,20 @@ def execute(config, output, host, port):
         spawns = world.get_map().get_spawn_points()
         if len(spawns) <= config['spawn_point_index']:
             raise RuntimeError('Requested spawn unavailable')
+        selected_spawn_index, curbside = choose_curbside_spawn(
+            world.get_map(), spawns, config['spawn_point_index'],
+            carla.LaneType.Driving, (carla.LaneType.Sidewalk,))
         blueprint = world.get_blueprint_library().find(config['vehicle_blueprint'])
-        ego = world.try_spawn_actor(blueprint, spawns[config['spawn_point_index']])
+        ego = world.try_spawn_actor(blueprint, spawns[selected_spawn_index])
         if ego is None:
             raise RuntimeError('Requested spawn occupied')
         actors.append(ego)
+        roadside = world.get_map().get_waypoint(
+            spawns[selected_spawn_index].location, project_to_road=False,
+            lane_type=carla.LaneType.Driving).get_right_lane()
+        walker = spawn_sidewalk_pedestrian(
+            world, roadside, config['pedestrian_blueprint_selector'])
+        actors.append(walker)
         collision_bp = world.get_blueprint_library().find('sensor.other.collision')
         collision_sensor = world.spawn_actor(collision_bp, carla.Transform(), attach_to=ego)
         actors.append(collision_sensor)
@@ -131,8 +143,12 @@ def execute(config, output, host, port):
             sensor.listen(lambda image, name=camera['name']: packets.put((name, image)))
         (output / 'driving-context.json').write_text(json.dumps({
             'source_kind': 'original_native', 'cell_id': 'C230222',
+            'case_id': config['case_id'],
             'law_id': 'LVMC-11-22-020', 'actor': 'motor_vehicle_driver',
             'map_name': world.get_map().name, 'vehicle_id': str(ego.id),
+            'pedestrian_id': str(walker.id),
+            'selected_spawn_point_index': selected_spawn_index,
+            'curbside_lane_source': curbside,
             'highway_in_city_evidence': None, 'legal_verdict': None,
             'camera_sources': {view: view + '.mkv' for view in VIEWS}}, indent=2) + '\n')
         with PipelineCapture(client, ego, output, config['case_id'],
@@ -182,6 +198,7 @@ def execute(config, output, host, port):
                     'acceleration_mps2': xyz(ego.get_acceleration()),
                     'yaw_deg': pose.rotation.yaw,
                     'minimum_surface_gap_m': body['minimum_surface_gap_m'],
+                    'time_to_conflict_s': body['minimum_constant_velocity_time_to_overlap_s'],
                     'contact': True if collided else None,
                     'pedestrian_visible': None}) + '\n')
                 count += 1

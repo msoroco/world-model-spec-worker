@@ -156,7 +156,7 @@ def execute(output,survey,host,port):
                     image=q.get(timeout=30)
                     if image.frame!=native:raise RuntimeError('Original camera frame mismatch')
                     encoders[name].stdin.write(image.raw_data);mapped[name]=image.frame
-                fmap.append(native,t,camera_native_frames=mapped)
+                fmap.append(native,t,native_frame=native,camera_native_frames=mapped)
                 records=[]
                 for actor in (ego,emergency):
                     pose=actor.get_transform();vel=actor.get_velocity();bbox=actor.bounding_box.extent

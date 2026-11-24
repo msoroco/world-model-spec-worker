@@ -9,12 +9,16 @@ PREFIX = ROOT.name + '__'
 
 CAMERAS = [
     {'name': 'overview', 'width': 1920, 'height': 1080, 'fov_deg': 90,
+     'pose_strategy': 'ego_relative_transform',
      'location_xyz_m': [-12, 0, 12], 'rotation_pyr_deg': [-35, 0, 0]},
     {'name': 'approach', 'width': 1280, 'height': 720, 'fov_deg': 90,
+     'pose_strategy': 'ego_relative_transform',
      'location_xyz_m': [8, -12, 5], 'rotation_pyr_deg': [-10, 35, 0]},
-    {'name': 'curb_reference', 'width': 1280, 'height': 720, 'fov_deg': 90,
+    {'name': 'reference_corner', 'width': 1280, 'height': 720, 'fov_deg': 90,
+     'pose_strategy': 'ego_relative_transform',
      'location_xyz_m': [-8, 10, 5], 'rotation_pyr_deg': [-10, -35, 0]},
     {'name': 'driver_reference', 'width': 1280, 'height': 720, 'fov_deg': 90,
+     'pose_strategy': 'ego_relative_transform',
      'location_xyz_m': [0.4, 0, 1.5], 'rotation_pyr_deg': [0, 0, 0]},
 ]
 
@@ -23,7 +27,7 @@ import json
 import unittest
 from pathlib import Path
 from runner import FRAMES, RATE, check, phase_at
-from body_geometry import scene_clearance
+from body_geometry import choose_curbside_spawn, scene_clearance, spawn_sidewalk_pedestrian
 
 class Vec:
     def __init__(self, x, y, z=0):
@@ -49,6 +53,44 @@ class Actor:
         self.pose = Pose(x, y, yaw)
     def get_transform(self):
         return self.pose
+    def get_velocity(self):
+        return Vec(0, 0)
+
+class Lane:
+    def __init__(self, lane_type, right=None):
+        self.lane_type, self.right = lane_type, right
+        self.road_id, self.section_id, self.lane_id = 1, 0, -1
+    def get_right_lane(self):
+        return self.right
+
+class Map:
+    def __init__(self, lanes):
+        self.lanes = lanes
+    def get_waypoint(self, location, *, project_to_road, lane_type):
+        assert project_to_road is False
+        assert lane_type == 'Driving'
+        return self.lanes[location]
+
+class Spawn:
+    def __init__(self, location):
+        self.location = location
+
+class Blueprint:
+    id = 'walker.pedestrian.0001'
+
+class Library:
+    def filter(self, selector):
+        assert selector == 'walker.pedestrian.*'
+        return [Blueprint()]
+
+class World:
+    def __init__(self):
+        self.created = None
+    def get_blueprint_library(self):
+        return Library()
+    def try_spawn_actor(self, blueprint, pose):
+        self.created = (blueprint.id, pose.location.z)
+        return Actor(9, 2, 2, kind='walker.pedestrian.0001')
 
 class ExactCaptureContract(unittest.TestCase):
     def setUp(self):
@@ -104,6 +146,27 @@ class ExactCaptureContract(unittest.TestCase):
         result = scene_clearance(ego, [ego, sensor])
         self.assertIsNone(result['minimum_surface_gap_m'])
         self.assertEqual(result['participants'], [])
+
+    def test_selects_source_observed_curbside_lane(self):
+        spawns = [Spawn(0), Spawn(1)]
+        native_map = Map([Lane('Driving'), Lane('Driving', Lane('Sidewalk'))])
+        selected, info = choose_curbside_spawn(native_map, spawns, 0,
+                                               'Driving', ('Sidewalk', 'Shoulder', 'Parking'))
+        self.assertEqual(selected, 1)
+        self.assertEqual(info['right_neighbor_type'], 'Sidewalk')
+        with self.assertRaisesRegex(ValueError, 'No source-observed curbside'):
+            choose_curbside_spawn(Map([Lane('Driving'), Lane('Driving')]),
+                                  spawns, 0, 'Driving', ('Sidewalk',))
+
+    def test_creates_sidewalk_pedestrian_from_native_lane(self):
+        world = World()
+        lane = Lane('Sidewalk')
+        lane.transform = type('Transform', (), {'location': Vec(2, 2, 0)})()
+        walker = spawn_sidewalk_pedestrian(world, lane, 'walker.pedestrian.*')
+        self.assertEqual(walker.type_id, 'walker.pedestrian.0001')
+        self.assertEqual(world.created, ('walker.pedestrian.0001', 0.3))
+        with self.assertRaisesRegex(ValueError, 'Exact adjacent-sidewalk'):
+            spawn_sidewalk_pedestrian(world, lane, 'vehicle.*')
 '''
 
 
@@ -119,6 +182,8 @@ def config(case_id, erratic):
         'actor': 'motor_vehicle_driver', 'candidate_id': 'primary',
         'spawn_point_index': 0, 'duration_s': 30, 'rate_hz': 20,
         'vehicle_blueprint': 'vehicle.tesla.model3',
+        'pedestrian_blueprint_selector': 'walker.pedestrian.*',
+        'pedestrian_placement': 'adjacent_sidewalk',
         'required_atoms': ['kin.position', 'kin.speed', 'kin.accel_longitudinal'],
         'cameras': CAMERAS,
         'control_phases': [
@@ -138,6 +203,8 @@ def main():
     entries = []
     runner = (NATIVE / 'native_runner.py').read_text()
     body_geometry = (NATIVE / 'body_geometry.py').read_text()
+    driving_cues = (NATIVE / 'driving_cues.py').read_text()
+    finalizer = (NATIVE / 'finalize_driving.py').read_text()
     for label, erratic in (('probe_a', False), ('probe_b', True)):
         case_id = PREFIX + label
         proposal = {
@@ -147,6 +214,8 @@ def main():
             'files': [
                 {'path': 'runner.py', 'content': runner},
                 {'path': 'body_geometry.py', 'content': body_geometry},
+                {'path': 'driving_cues.py', 'content': driving_cues},
+                {'path': 'finalize.py', 'content': finalizer},
                 {'path': 'config.json', 'content': json.dumps(config(case_id, erratic), indent=2) + '\n'},
                 {'path': 'tests/test_offline.py', 'content': TESTS},
             ],
@@ -155,10 +224,15 @@ def main():
                            'four source-camera encodes', 'source-bound motion trace',
                            'original Native actor bounding-box geometry and collision sensor events'],
             'recording_description': {
-                'channels': [{'name': 'curbside_driving_cues', 'unit': 'structured',
+                'channels': [{'name': name, 'unit': 'structured',
                               'sampling_rate_hz': 20, 'time_window': '600 frames',
-                              'method': 'measure original Native trace and context'}],
-                'limitations': ['Control requests do not establish observed motion or legal carelessness.']},
+                              'method': 'source-joined original Native body, collision, motion and context review'}
+                             for name in ('drv.time_to_conflict', 'drv.hard_deceleration',
+                                          'kin.yaw_rate', 'kin.speed', 'rel.surface_gap',
+                                          'rel.contact', 'st.highway', 'ru.pedestrian')],
+                'limitations': ['Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.',
+                                'Pedestrian pixel visibility and municipal highway status remain unknown until original review.',
+                                'Control requests do not establish observed motion or legal carelessness.']},
             'static_checks': ['exact assignment', '600 frames', 'four cameras',
                               'continuous control schedule', 'no legal verdict'],
             'status': 'draft_cpu_offline_only',

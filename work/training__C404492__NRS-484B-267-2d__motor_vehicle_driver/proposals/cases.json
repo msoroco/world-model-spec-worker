@@ -1,0 +1,426 @@
+{
+  "cell_id": "C404492",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "No qualifying emergency approach is asserted in the unselected neutral context.",
+      "variable_assignments": {
+        "requested_relative_position": {
+          "kind": "controller",
+          "value": "follow_behind",
+          "unit": "categorical"
+        },
+        "observed_longitudinal_overlap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_overtake_crossings": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "count"
+        },
+        "qualified_emergency_context": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_context": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or official vehicle of a regulatory agency making use of qualifying flashing lights",
+        "moving in the same direction of travel as the driver",
+        "not drive abreast of or overtake",
+        "except when otherwise directed by a law enforcement officer",
+        "preparing to move means any visible indication including movement or driver hand signals"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.responding_emergency",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.same_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.longitudinal_overlap",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.overtaking",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.ahead_behind_in_lane",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "kin.velocity",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "dev.human_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independent emergency authorization and qualifying flashing-light review",
+            "name": "emergency_context",
+            "unit": "structured"
+          },
+          {
+            "method": "original officer identity, instruction, recipient and timing review",
+            "name": "officer_direction_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture cannot establish physical realization or legal outcome"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare original body overlap while retaining qualification and exception judgments for independent source review.",
+      "variable_assignments": {
+        "requested_relative_position": {
+          "kind": "controller",
+          "value": "follow_behind",
+          "unit": "categorical"
+        },
+        "observed_longitudinal_overlap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_overtake_crossings": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "count"
+        },
+        "qualified_emergency_context": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        },
+        "officer_direction_context": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or official vehicle of a regulatory agency making use of qualifying flashing lights",
+        "moving in the same direction of travel as the driver",
+        "not drive abreast of or overtake",
+        "except when otherwise directed by a law enforcement officer",
+        "preparing to move means any visible indication including movement or driver hand signals"
+      ],
+      "paired_probe_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__same_direction_abreast_pair",
+      "deliberate_differences": [
+        "requested_relative_position"
+      ],
+      "probe": {
+        "primary_variable": "requested_relative_position",
+        "comparison_or_standard": "original longitudinal body overlap and order crossings",
+        "target_value_or_branch": "controlled_1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.responding_emergency",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.same_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.longitudinal_overlap",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.overtaking",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.ahead_behind_in_lane",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "kin.velocity",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "dev.human_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independent emergency authorization and qualifying flashing-light review",
+            "name": "emergency_context",
+            "unit": "structured"
+          },
+          {
+            "method": "original officer identity, instruction, recipient and timing review",
+            "name": "officer_direction_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture cannot establish physical realization or legal outcome"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare original body overlap while retaining qualification and exception judgments for independent source review.",
+      "variable_assignments": {
+        "requested_relative_position": {
+          "kind": "controller",
+          "value": "drive_abreast",
+          "unit": "categorical"
+        },
+        "observed_longitudinal_overlap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_overtake_crossings": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "count"
+        },
+        "qualified_emergency_context": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        },
+        "officer_direction_context": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or official vehicle of a regulatory agency making use of qualifying flashing lights",
+        "moving in the same direction of travel as the driver",
+        "not drive abreast of or overtake",
+        "except when otherwise directed by a law enforcement officer",
+        "preparing to move means any visible indication including movement or driver hand signals"
+      ],
+      "paired_probe_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__same_direction_abreast_pair",
+      "deliberate_differences": [
+        "requested_relative_position"
+      ],
+      "probe": {
+        "primary_variable": "requested_relative_position",
+        "comparison_or_standard": "original longitudinal body overlap and order crossings",
+        "target_value_or_branch": "controlled_2"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.responding_emergency",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.same_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.longitudinal_overlap",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.overtaking",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.ahead_behind_in_lane",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "kin.velocity",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "dev.human_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independent emergency authorization and qualifying flashing-light review",
+            "name": "emergency_context",
+            "unit": "structured"
+          },
+          {
+            "method": "original officer identity, instruction, recipient and timing review",
+            "name": "officer_direction_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture cannot establish physical realization or legal outcome"
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__same_direction_abreast",
+      "target_law_id": "NRS-484B-267-2d",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "authorized emergency vehicle or official vehicle of a regulatory agency making use of qualifying flashing lights",
+          "note": "Verify authorization, qualifying equipment and original lamp pixels independently of a blueprint or request."
+        },
+        {
+          "phrase": "moving in the same direction of travel as the driver",
+          "note": "Compare original actor headings, body trajectories and road lanes; the engineering heading check is not a legal cutoff."
+        },
+        {
+          "phrase": "not drive abreast of or overtake",
+          "note": "Keep original longitudinal body overlap and order crossings distinct; no statutory numeric overlap cutoff is supplied."
+        },
+        {
+          "phrase": "except when otherwise directed by a law enforcement officer",
+          "note": "Verify officer identity, recipient, direction content and timing from original sources."
+        },
+        {
+          "phrase": "preparing to move means any visible indication including movement or driver hand signals",
+          "note": "The current selected moving branch does not prove a preparing-to-move alternative; retain a separate coverage gap."
+        }
+      ],
+      "rationale": "Two same-direction requested positions are constructed; original qualification and separate visible preparation alternatives remain unresolved.",
+      "missing_inputs": [
+        "Original Native authority, lamp pixels and officer context",
+        "Separate preparing-to-move movement or hand-signal branch review"
+      ]
+    }
+  ]
+}

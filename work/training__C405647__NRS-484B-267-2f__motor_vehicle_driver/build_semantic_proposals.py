@@ -38,12 +38,12 @@ def main():
         {'phrase': 'except when otherwise directed by a law enforcement officer',
          'note': 'Officer identity, direction content, recipient and time require original review.'},
         {'phrase': 'Approaches the driver’s vehicle, proceed as required pursuant to subsection 1',
-         'note': 'The three supplied subsection 1 duties require separate measured response; the current speed pair is only a diagnostic.'},
+         'note': 'The three supplied subsection 1 duties require original yield, right-edge position and stop-until-passed review; synthetic response paths are diagnostics.'},
         {'phrase': 'Stops, proceed as required pursuant to NRS 484B.607',
          'note': 'Record the stopped alternative; the exact 484B.607 duties are absent from the frozen corpus.'}]
     parameters = [
-        {'name': 'requested_speed_response', 'kind': 'controller',
-         'range_or_domain': ['reduce_to_1_mps', 'continue_at_3_mps']},
+        {'name': 'requested_subsection_1_response', 'kind': 'controller',
+         'range_or_domain': ['move_to_right_edge_and_stop_until_passed', 'continue_at_3_mps']},
         {'name': 'observed_emergency_approach', 'kind': 'subject_behavior',
          'range_or_domain': [True, False, None]},
         {'name': 'officer_direction', 'kind': 'world_setup',

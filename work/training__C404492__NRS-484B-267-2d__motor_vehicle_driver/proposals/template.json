@@ -1,0 +1,89 @@
+{
+  "template_id": "NRS-484B-267-2d@motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2d",
+  "actor": "motor_vehicle_driver",
+  "quote": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If the authorized emergency vehicle or official vehicle of a regulatory agency is moving in the same direction of travel as the driver, not drive abreast of or overtake the authorized emergency vehicle or official vehicle of a regulatory agency. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-267-2d",
+    "activation": {
+      "condition": "approaching a qualifying flashing-light emergency or regulatory vehicle moving in the same direction, unless otherwise directed by an officer",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "do not drive abreast of or overtake the qualifying vehicle in the selected same-direction movement branch",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when otherwise directed by a law enforcement officer",
+        "description": "Original officer direction may change the response; none is inferred from a synthetic request."
+      }
+    ],
+    "timing": {
+      "description": "upon approach during same-direction movement; no invented spatial or temporal cutoff",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "authorized emergency vehicle or official vehicle of a regulatory agency making use of qualifying flashing lights",
+        "note": "Verify authorization, qualifying equipment and original lamp pixels independently of a blueprint or request."
+      },
+      {
+        "phrase": "moving in the same direction of travel as the driver",
+        "note": "Compare original actor headings, body trajectories and road lanes; the engineering heading check is not a legal cutoff."
+      },
+      {
+        "phrase": "not drive abreast of or overtake",
+        "note": "Keep original longitudinal body overlap and order crossings distinct; no statutory numeric overlap cutoff is supplied."
+      },
+      {
+        "phrase": "except when otherwise directed by a law enforcement officer",
+        "note": "Verify officer identity, recipient, direction content and timing from original sources."
+      },
+      {
+        "phrase": "preparing to move means any visible indication including movement or driver hand signals",
+        "note": "The current selected moving branch does not prove a preparing-to-move alternative; retain a separate coverage gap."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_relative_position",
+      "kind": "controller",
+      "range_or_domain": [
+        "follow_behind",
+        "drive_abreast"
+      ]
+    },
+    {
+      "name": "observed_longitudinal_overlap_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "original continuous body interval overlap or unknown"
+    },
+    {
+      "name": "observed_overtake_crossings",
+      "kind": "subject_behavior",
+      "range_or_domain": "original signed-order crossing count or unknown"
+    },
+    {
+      "name": "qualified_emergency_context",
+      "kind": "world_setup",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ]
+    },
+    {
+      "name": "officer_direction_context",
+      "kind": "world_setup",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ]
+    }
+  ]
+}

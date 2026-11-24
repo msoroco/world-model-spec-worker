@@ -27,16 +27,21 @@ def fixture(path, erratic=False):
                        'time_s': index / RATE, 'velocity_mps': [6.0, 0.0, 0.0],
                        'acceleration_mps2': [acceleration, 0.0, 0.0],
                        'yaw_deg': yaw, 'minimum_surface_gap_m': gap,
+                       'time_to_conflict_s': gap / 6.0,
                        'contact': False, 'pedestrian_visible': index >= 450})
         geometry.append({
             'source_kind': 'synthetic_native_sample', 'native_frame': native,
             'time_s': index / RATE,
             'ego_footprint_xy_m': [[-1, -0.5], [1, -0.5], [1, 0.5], [-1, 0.5]],
+            'ego_velocity_xy_mps': [6.0, 0.0],
             'participants': [{'actor_id': 2, 'type_id': 'vehicle.test',
                               'footprint_xy_m': [[1 + gap, -0.5], [3 + gap, -0.5],
                                                  [3 + gap, 0.5], [1 + gap, 0.5]],
-                              'planar_gap_m': gap}],
+                              'velocity_xy_mps': [0.0, 0.0],
+                              'planar_gap_m': gap,
+                              'constant_velocity_time_to_overlap_s': gap / 6.0}],
             'minimum_surface_gap_m': gap,
+            'minimum_constant_velocity_time_to_overlap_s': gap / 6.0,
             'gap_method': 'original_native_2d_body_footprint_separation'})
         mapping.append({'native_frame': native, 'video_frame': index, 'time_s': index / RATE})
     write_rows(path / 'native-ego-frames.jsonl', motion)
@@ -91,11 +96,13 @@ def main():
         rejects(Path('.'), 'missing_geometry', lambda p, m, f: (p / 'native-body-geometry.jsonl').unlink()),
         rejects(Path('.'), 'altered_geometry', lambda p, m, f: (m[250].update(minimum_surface_gap_m=1.0), write_rows(p / 'native-ego-frames.jsonl', m))),
         rejects(Path('.'), 'unbound_collision', lambda p, m, f: (m[250].update(contact=True), write_rows(p / 'native-ego-frames.jsonl', m))),
+        rejects(Path('.'), 'altered_time_to_conflict', lambda p, m, f: (m[250].update(time_to_conflict_s=30), write_rows(p / 'native-ego-frames.jsonl', m))),
         rejects(Path('.'), 'bad_identity', lambda p, m, f: (p / 'driving-context.json').write_text(json.dumps({'source_kind':'synthetic_native_sample','cell_id':'wrong','law_id':'LVMC-11-22-020','actor':'motor_vehicle_driver','highway_in_city_evidence':None}))),
     ]
     proof = {'format': 'c230222-curbside-driving-cues-proof-v1',
              'script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
              'meter_sha256': hashlib.sha256((ROOT / 'native/driving_cues.py').read_bytes()).hexdigest(),
+             'body_geometry_sha256': hashlib.sha256((ROOT / 'native/body_geometry.py').read_bytes()).hexdigest(),
              'positive': positive, 'negative': negative,
              'source_kind': 'synthetic_native_sample', 'physical_observation': False,
              'legal_verdict': None}

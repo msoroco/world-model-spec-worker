@@ -24,8 +24,10 @@ def main():
         'time_window':'all 600 frames','reference_frame':'original Native frame',
         'uncertainty':'50 ms frame bracket; statutory qualification requires independent review'}
         for name in CHANNELS],
-        'context_inputs':['independent emergency authorization and qualifying flashing-light review',
-                          'original officer direction review'],
+        'context_inputs':[{'name':'emergency_context','unit':'structured',
+                           'method':'independent emergency authorization and qualifying flashing-light review'},
+                          {'name':'officer_direction_context','unit':'structured',
+                           'method':'original officer identity, instruction, recipient and timing review'}],
         'limitations':['Synthetic fixture cannot establish physical realization or legal outcome']}
     entries=[]
     for suffix,gap in (('controlled_1',-20),('controlled_2',-20)):

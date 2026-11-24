@@ -26,10 +26,11 @@ def build(suffix):
     frames, poses, trace, evidence, native_frames, graphs = [], [], [], [], [], []
     ego_x, ego_y, em_x = -75.0, -1.75, -15.0
     request = {'case_suffix': suffix, 'requested_initial_subject_speed_mps': 3,
-               'requested_subsequent_subject_speed_mps': 0 if suffix == 'controlled_1' else 3}
+               'requested_subsequent_subject_speed_mps': 0 if suffix == 'controlled_1' else 3,
+               'requested_right_edge_center_y_m': -2.5}
     for i in range(600):
         time, native = i / 20, 1000 + i
-        ego_vx, ego_vy, phase = subject_response(i, request, ego_x, em_x)
+        ego_vx, ego_vy, phase = subject_response(i, request, ego_x, ego_y, em_x)
         ego_speed = (ego_vx ** 2 + ego_vy ** 2) ** .5
         em_speed = 2 if i >= 100 else 0
         ego_x += ego_vx / 20

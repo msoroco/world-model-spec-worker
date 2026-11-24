@@ -52,8 +52,14 @@ def main():
             assert result['target_checks'][0]['matched'] is True
             assert result['provenance_kind']=='synthetic_local_diagnostic'
             for item in result['recording_evidence']:
-                data=rows(root/item['reference'])
-                assert len(data)==600 and data[0]['time_s']==0
+                reference=root/item['reference']
+                if reference.suffix=='.jsonl':
+                    data=rows(reference)
+                    assert len(data)==600 and data[0]['time_s']==0
+                else:
+                    data=json.loads(reference.read_text())
+                    assert data['emergency_context']['emergency_vehicle_authorized'] is True
+                    assert data['officer_direction_context'] is False
             reject(root,root/'another-report.json')
         missing=Path(temp)/'missing'
         fixture(missing,False)

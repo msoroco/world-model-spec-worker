@@ -20,7 +20,7 @@ def fixture(root,abreast):
     with (root/'video_frames.jsonl').open('w') as f,(root/'vehicle_poses.jsonl').open('w') as p,(root/'trace.jsonl').open('w') as trace:
         for i in range(600):
             n=100+i;t=i*.05;x=i*.2
-            f.write(json.dumps({'video_frame':i,'native_frame':n,'time_s':t,
+            f.write(json.dumps({'video_frame':i,'carla_frame':n,'native_frame':n,'time_s':t,
                                 'camera_native_frames':{name:n for name in CAMERAS}})+'\n')
             em={'actor_id':2,'x_m':x,'y_m':0,'heading_rad':0,'speed_mps':4,
                 'half_length_m':2.5,'half_width_m':1,'flashing_light_phase_on':(i//10)%2==0}

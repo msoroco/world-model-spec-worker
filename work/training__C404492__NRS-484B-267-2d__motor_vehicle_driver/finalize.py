@@ -81,6 +81,16 @@ def finalize_attempt(attempt, output):
                     raise ValueError('Unknown declared recording channel: '+name)
                 stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name]},allow_nan=False)+'\n')
         evidence.append({'name':name,'unit':descriptor['unit'],'reference':'channels/'+path.name})
+    review_context={'emergency_context':{
+        'authorized':context['emergency_vehicle_authorized'],
+        'qualifying_flash_equipment_reviewed':context['qualifying_flash_equipment_reviewed'],
+        'source_review_kind':context['review_kind'],
+        'source_sha256':sha(attempt/'emergency_context.json')},
+        'officer_direction_context':context['officer_directed_otherwise']}
+    (channels/'context-review.json').write_text(json.dumps(review_context,indent=2,allow_nan=False)+'\n')
+    for descriptor in construction['recording_description']['context_inputs']:
+        evidence.append({'name':descriptor['name'],'unit':descriptor['unit'],
+                         'reference':'channels/context-review.json'})
     requested=case_id.endswith('__controlled_2')
     observed=any(row['longitudinal_overlap_length_m']>0 for row in measured['per_frame_geometry'])
     result={'case_id':case_id,'measured_values':{

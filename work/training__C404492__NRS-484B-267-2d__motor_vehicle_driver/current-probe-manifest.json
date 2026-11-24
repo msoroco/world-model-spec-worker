@@ -1,0 +1,101 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver",
+  "status": "partial",
+  "delivery_ready": false,
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1",
+      "construction": "draft-emergency/controlled_1/primary/construction.json",
+      "construction_sha256": "3f300d03954ff56d5eb642d3255152b167209b53730a4d450623fe50c03577a9",
+      "measurement_contract": "measurement-contracts/controlled_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "reason": "Authorization, qualifying lamp equipment, actual flash pixels and original same-direction Native travel require review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-emergency/controlled_1/fallback1/construction.json",
+          "construction_sha256": "5fa4725792d472f61cec1355c5c04175769c8ed6dbd6646e470bb8a24d43e3c7",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject cannot remain behind the emergency body during the approach frames",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-emergency/controlled_1/fallback2/construction.json",
+          "construction_sha256": "52fcfa05353533126ef0519e9d68788bf5f935a58599f47a907cbc5ba2419735",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot see both bodies and flashing lamp pixels across the controlled episode",
+            "metric": "independent subject/emergency body and lamp visibility",
+            "source": "original four-camera pixels and frame map"
+          }
+        }
+      ],
+      "id": "primary",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-controlled_1-recipe.json"
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2",
+      "construction": "draft-emergency/controlled_2/primary/construction.json",
+      "construction_sha256": "975cf88e2827003383c4cbfad9f41c402653963b4d32e4b1dea88783c4068e57",
+      "measurement_contract": "measurement-contracts/controlled_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "reason": "Authorization, qualifying lamp equipment, actual flash pixels and original same-direction Native travel require review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-emergency/controlled_2/fallback1/construction.json",
+          "construction_sha256": "bdd5f1d0d3bf87e6d178626bf942077108c0f1b76a55a88ae468d68f3544f0ac",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject cannot remain behind the emergency body during the approach frames",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-emergency/controlled_2/fallback2/construction.json",
+          "construction_sha256": "963dae1da8682f88384d83f858cf4f4b6ab7b0a0af3bf9ce57ee647286d82f0c",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot see both bodies and flashing lamp pixels across the controlled episode",
+            "metric": "independent subject/emergency body and lamp visibility",
+            "source": "original four-camera pixels and frame map"
+          }
+        }
+      ],
+      "id": "primary",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-controlled_2-recipe.json"
+    }
+  ]
+}

@@ -8,7 +8,7 @@ import json
 import math
 from pathlib import Path
 
-from body_geometry import planar_gap
+from body_geometry import constant_velocity_time_to_overlap, planar_gap
 
 FRAMES = 600
 RATE = 20
@@ -82,10 +82,13 @@ def measure(source):
                 'Kinematic source incomplete')
         yaw = item.get('yaw_deg')
         gap = item.get('minimum_surface_gap_m')
+        ttc = item.get('time_to_conflict_s')
         contact = item.get('contact')
         pedestrian = item.get('pedestrian_visible')
         require('minimum_surface_gap_m' in item and finite(yaw) and
                 (gap is None or finite(gap) and gap >= 0) and
+                'time_to_conflict_s' in item and
+                (ttc is None or finite(ttc) and ttc >= 0) and
                 (contact is None or type(contact) is bool) and
                 (pedestrian is None or type(pedestrian) is bool),
                 'Driving context source incomplete')
@@ -94,6 +97,7 @@ def measure(source):
         require(type(participants) is list and type(own) is list,
                 'Original body geometry missing')
         original_gaps = []
+        original_ttc = []
         for participant in participants:
             require(type(participant.get('actor_id')) is int and
                     type(participant.get('type_id')) is str and
@@ -104,11 +108,22 @@ def measure(source):
                     abs(measured_gap - participant['planar_gap_m']) < 1e-5,
                     'Participant gap differs from original body corners')
             original_gaps.append(measured_gap)
+            predicted = constant_velocity_time_to_overlap(
+                own, body.get('ego_velocity_xy_mps'),
+                participant['footprint_xy_m'], participant.get('velocity_xy_mps'))
+            require(predicted == participant.get('constant_velocity_time_to_overlap_s'),
+                    'Participant time-to-overlap differs from original body velocities')
+            if predicted is not None:
+                original_ttc.append(predicted)
         computed_gap = min(original_gaps, default=None)
+        computed_ttc = min(original_ttc, default=None)
         require(body.get('gap_method') ==
                 'original_native_2d_body_footprint_separation' and
                 body.get('minimum_surface_gap_m') == computed_gap and
                 gap == computed_gap, 'Motion gap differs from original body geometry')
+        require(body.get('minimum_constant_velocity_time_to_overlap_s') == computed_ttc and
+                ttc == computed_ttc,
+                'Motion time-to-conflict proxy differs from original body velocities')
         if contact is True:
             require(expected_native in event_frames,
                     'Contact cue lacks original collision event')
@@ -122,6 +137,7 @@ def measure(source):
                              'longitudinal_acceleration_mps2': longitudinal,
                              'yaw_rate_degps': yaw_rate,
                              'minimum_surface_gap_m': gap, 'contact': contact,
+                             'constant_velocity_time_to_conflict_s': ttc,
                              'pedestrian_visible': pedestrian})
         previous_yaw = yaw
     hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
@@ -135,7 +151,7 @@ def measure(source):
             'limitations': ['No engineering threshold defines careless or imprudent.',
                             'Motion cues alone do not establish municipal highway status.',
                             'Planar box clearance is not a 3D collision or legal conclusion.',
-                            'Time to conflict requires participant trajectories and is not inferred here.']}
+                            'Time to conflict is a 30-second constant-velocity planar-body proxy; it is not observed future motion or a legal cutoff.']}
 
 
 if __name__ == '__main__':

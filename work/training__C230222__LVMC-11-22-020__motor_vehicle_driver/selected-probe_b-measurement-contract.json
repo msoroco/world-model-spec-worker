@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "LVMC-11-22-020",
+      "source": "LVMC 11.22.020",
+      "output_key": "curbside_manner_measurement",
+      "method": "measure_curbside",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-ego-frames.jsonl",
+        "native-body-geometry.jsonl",
+        "native-collision-events.jsonl",
+        "video_frames.jsonl",
+        "driving-context.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-body-geometry.jsonl"
+    ],
+    "error_contains": "Missing required source: native-body-geometry.jsonl"
+  }
+}
