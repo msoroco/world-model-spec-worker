@@ -1,0 +1,78 @@
+{
+  "format": "c229597-native-sweep-helper-proof-v1",
+  "source_range_sha256": "87fa5cf348a8ed242c947a3c532f164989d7efe4d7a787d98d8c7f10db2d89d5",
+  "helper_sha256": "2801f4b6c4974c1628c8d78f47bdb001d8af1fe161f9109592c2b33a2bd25ae3",
+  "route_selections": [
+    {
+      "offset_m": 25.0,
+      "road_id": 1,
+      "lane_id": -1,
+      "selected": true
+    },
+    {
+      "offset_m": 100.0,
+      "road_id": 1,
+      "lane_id": -1,
+      "selected": true
+    },
+    {
+      "offset_m": 175.0,
+      "road_id": 1,
+      "lane_id": -1,
+      "selected": true
+    }
+  ],
+  "controller_steps": [
+    {
+      "target_mps2": 0.1,
+      "measured_mps2": 0.1,
+      "next_throttle": 0.25
+    },
+    {
+      "target_mps2": 0.15,
+      "measured_mps2": 0.1,
+      "next_throttle": 0.265
+    },
+    {
+      "target_mps2": 0.2,
+      "measured_mps2": 0.1,
+      "next_throttle": 0.28
+    }
+  ],
+  "negative_cases": [
+    {
+      "name": "off_grid_acceleration",
+      "rejected": true,
+      "error": "Acceleration target is outside the frozen engineering grid"
+    },
+    {
+      "name": "nonfinite_feedback",
+      "rejected": true,
+      "error": "Controller feedback must be finite"
+    },
+    {
+      "name": "off_grid_route",
+      "rejected": true,
+      "error": "Route offset is outside the frozen engineering grid"
+    },
+    {
+      "name": "missing_route",
+      "rejected": true,
+      "error": "Route offset has missing or ambiguous forward waypoint"
+    },
+    {
+      "name": "ambiguous_route",
+      "rejected": true,
+      "error": "Route offset has missing or ambiguous forward waypoint"
+    },
+    {
+      "name": "different_road",
+      "rejected": true,
+      "error": "Route offset changed road or lane identity"
+    }
+  ],
+  "native_executed": false,
+  "physical_response_verified": false,
+  "highway_status_verified": false,
+  "legal_verdict_claimed": false
+}

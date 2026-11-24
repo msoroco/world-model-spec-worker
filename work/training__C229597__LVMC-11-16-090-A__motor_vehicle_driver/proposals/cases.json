@@ -25,6 +25,26 @@
           "kind": "world_setup",
           "unit": "structured",
           "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": null
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": null
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
         }
       },
       "recording_description": {
@@ -98,6 +118,26 @@
         "realized_highway_context": {
           "kind": "world_setup",
           "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": null
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": null
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
           "value": null
         }
       },
@@ -185,6 +225,26 @@
           "kind": "world_setup",
           "unit": "structured",
           "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": null
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": null
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
         }
       },
       "recording_description": {
@@ -248,11 +308,863 @@
         "comparison_or_standard": "linked reference/contrast physical comparison; no legal threshold",
         "target_value_or_branch": "contrast"
       }
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1-0000",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample requested longitudinal acceleration targets while measuring actual Native acceleration and preserving exhibition as unknown.",
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
+      "deliberate_differences": [
+        "commanded_acceleration_mps2"
+      ],
+      "probe": {
+        "primary_variable": "commanded_acceleration_mps2",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_acceleration_mps2": 0.1
+        }
+      },
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
+      "sweep_spec_version": "fd101966c35588e802c6cfa5a1a8b84ff7010367e4f8b22809f350cb85ecea01",
+      "sweep_point": {
+        "commanded_acceleration_mps2": 0.1
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.1,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 25.0
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "exhibition of power or speed",
+          "note": "Acceleration and controller request alone do not establish a statutory exhibition; independent original video and surrounding episode context are needed."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "commanded_acceleration_mps2",
+          "observable": "ego_acceleration",
+          "unit": "m/s2",
+          "measurement": {
+            "method": "original Native longitudinal acceleration vector",
+            "time_window": "frames 160 through 439, excluding startup",
+            "statistic": "max"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ]
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1-0001",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample requested longitudinal acceleration targets while measuring actual Native acceleration and preserving exhibition as unknown.",
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
+      "deliberate_differences": [
+        "commanded_acceleration_mps2"
+      ],
+      "probe": {
+        "primary_variable": "commanded_acceleration_mps2",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_acceleration_mps2": 0.2
+        }
+      },
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
+      "sweep_spec_version": "fd101966c35588e802c6cfa5a1a8b84ff7010367e4f8b22809f350cb85ecea01",
+      "sweep_point": {
+        "commanded_acceleration_mps2": 0.2
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.2,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 25.0
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "exhibition of power or speed",
+          "note": "Acceleration and controller request alone do not establish a statutory exhibition; independent original video and surrounding episode context are needed."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "commanded_acceleration_mps2",
+          "observable": "ego_acceleration",
+          "unit": "m/s2",
+          "measurement": {
+            "method": "original Native longitudinal acceleration vector",
+            "time_window": "frames 160 through 439, excluding startup",
+            "statistic": "max"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ]
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1-0002",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample requested longitudinal acceleration targets while measuring actual Native acceleration and preserving exhibition as unknown.",
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
+      "deliberate_differences": [
+        "commanded_acceleration_mps2"
+      ],
+      "probe": {
+        "primary_variable": "commanded_acceleration_mps2",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "commanded_acceleration_mps2": 0.15
+        }
+      },
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
+      "sweep_spec_version": "fd101966c35588e802c6cfa5a1a8b84ff7010367e4f8b22809f350cb85ecea01",
+      "sweep_point": {
+        "commanded_acceleration_mps2": 0.15
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.15,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 25.0
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "exhibition of power or speed",
+          "note": "Acceleration and controller request alone do not establish a statutory exhibition; independent original video and surrounding episode context are needed."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "commanded_acceleration_mps2",
+          "observable": "ego_acceleration",
+          "unit": "m/s2",
+          "measurement": {
+            "method": "original Native longitudinal acceleration vector",
+            "time_window": "frames 160 through 439, excluding startup",
+            "statistic": "max"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ]
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2-0000",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample route positions on an authored centerline while recording original map and jurisdiction sources; statutory highway status remains unknown.",
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
+      "deliberate_differences": [
+        "requested_route_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_route_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_route_offset_m": 25.0
+        }
+      },
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
+      "sweep_spec_version": "099ea78bfae5e5262bec19518daafb1b2212606058cc655dcd1390aaae5c5293",
+      "sweep_point": {
+        "requested_route_offset_m": 25.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.1
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 25.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "on a highway",
+          "note": "A drafted road or OpenDRIVE label does not establish whether the realized route is a highway under the applicable law."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_route_offset_m",
+          "observable": "route_position_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original vehicle pose joined to source-hashed road geometry",
+            "time_window": "all 600 original frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ]
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2-0001",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample route positions on an authored centerline while recording original map and jurisdiction sources; statutory highway status remains unknown.",
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
+      "deliberate_differences": [
+        "requested_route_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_route_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_route_offset_m": 175.0
+        }
+      },
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
+      "sweep_spec_version": "099ea78bfae5e5262bec19518daafb1b2212606058cc655dcd1390aaae5c5293",
+      "sweep_point": {
+        "requested_route_offset_m": 175.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.1
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 175.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "on a highway",
+          "note": "A drafted road or OpenDRIVE label does not establish whether the realized route is a highway under the applicable law."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_route_offset_m",
+          "observable": "route_position_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original vehicle pose joined to source-hashed road geometry",
+            "time_window": "all 600 original frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ]
+    },
+    {
+      "case_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2-0002",
+      "target_law_id": "LVMC-11-16-090-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample route positions on an authored centerline while recording original map and jurisdiction sources; statutory highway status remains unknown.",
+      "paired_probe_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
+      "deliberate_differences": [
+        "requested_route_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_route_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_route_offset_m": 100.0
+        }
+      },
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
+      "sweep_spec_version": "099ea78bfae5e5262bec19518daafb1b2212606058cc655dcd1390aaae5c5293",
+      "sweep_point": {
+        "requested_route_offset_m": 100.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "requested_throttle_profile": {
+          "kind": "controller",
+          "unit": "structured",
+          "value": {
+            "phase": "reference"
+          }
+        },
+        "observed_motion": {
+          "kind": "subject_behavior",
+          "unit": "structured",
+          "value": null
+        },
+        "realized_highway_context": {
+          "kind": "world_setup",
+          "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.1
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 100.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "magnitude of original Native velocity vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_acceleration",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "original Native acceleration vector",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native position, heading and frame identity joined to camera frames",
+            "time_window": "all 600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exhibition_episode_context",
+            "unit": "structured",
+            "method": "original camera hashes, control request, participants and frame-map source references"
+          },
+          {
+            "name": "original_highway_survey",
+            "unit": "structured",
+            "method": "original OpenDRIVE hash, route and map source references; jurisdiction remains unverified"
+          }
+        ],
+        "limitations": [
+          "No numeric legal threshold or intent is inferred from throttle",
+          "Map geometry and road names do not establish statutory highway status",
+          "Jurisdiction and exhibition require independent source review"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "on a highway",
+          "note": "A drafted road or OpenDRIVE label does not establish whether the realized route is a highway under the applicable law."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_route_offset_m",
+          "observable": "route_position_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original vehicle pose joined to source-hashed road geometry",
+            "time_window": "all 600 original frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "exhibition of power or speed",
+        "on a highway"
+      ]
     }
   ],
   "sweep_specs": [
     {
-      "sweep_id": "C229597-judgment-1",
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1",
       "target_law_id": "LVMC-11-16-090-A",
       "judgment_refs": [
         {
@@ -260,15 +1172,28 @@
           "note": "Acceleration and controller request alone do not establish a statutory exhibition; independent original video and surrounding episode context are needed."
         }
       ],
-      "status": "incomplete",
+      "status": "complete",
       "mode": "one_dimensional",
-      "axes": [],
-      "landmarks": [],
-      "rationale": "A physical sweep must be fixed before legal interpretation; canonical scalar observables and source-supported physical ranges are not yet established.",
-      "missing_inputs": [
-        "Source-supported scalar sweep dimension and physical range for exhibition of power or speed",
-        "Original Native route, jurisdiction and complete episode observations"
+      "axes": [
+        {
+          "variable": "commanded_acceleration_mps2",
+          "observable": "ego_acceleration",
+          "unit": "m/s2",
+          "min": 0.1,
+          "max": 0.2,
+          "spacing": 0.05,
+          "measurement": {
+            "method": "original Native longitudinal acceleration vector",
+            "time_window": "frames 160 through 439, excluding startup",
+            "statistic": "max"
+          },
+          "range_rationale": "Brackets 0.1 and 0.2 m/s2 in source-hashed reference and contrast synthetic traces; engineering planning only.",
+          "spacing_rationale": "One interior target separates endpoints without implying a legal cutoff.",
+          "feasibility_evidence": "sweep-physical/planned-ranges.json and native-helper-proof.json; Native response remains unverified."
+        }
       ],
+      "landmarks": [],
+      "rationale": "Sample requested longitudinal acceleration targets while measuring actual Native acceleration and preserving exhibition as unknown.",
       "variable_assignments": {
         "requested_throttle_profile": {
           "kind": "controller",
@@ -285,6 +1210,26 @@
         "realized_highway_context": {
           "kind": "world_setup",
           "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.1
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 25.0
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
           "value": null
         }
       },
@@ -316,6 +1261,15 @@
             "time_window": "all 600 frames",
             "reference_frame": "Native world",
             "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
           }
         ],
         "context_inputs": [
@@ -335,10 +1289,17 @@
           "Map geometry and road names do not establish statutory highway status",
           "Jurisdiction and exhibition require independent source review"
         ]
-      }
+      },
+      "spec_version": "fd101966c35588e802c6cfa5a1a8b84ff7010367e4f8b22809f350cb85ecea01",
+      "planned_case_count": 3,
+      "selection_order": [
+        "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1-0000",
+        "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1-0001",
+        "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-1-0002"
+      ]
     },
     {
-      "sweep_id": "C229597-judgment-2",
+      "sweep_id": "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2",
       "target_law_id": "LVMC-11-16-090-A",
       "judgment_refs": [
         {
@@ -346,15 +1307,28 @@
           "note": "A drafted road or OpenDRIVE label does not establish whether the realized route is a highway under the applicable law."
         }
       ],
-      "status": "incomplete",
+      "status": "complete",
       "mode": "one_dimensional",
-      "axes": [],
-      "landmarks": [],
-      "rationale": "A physical sweep must be fixed before legal interpretation; canonical scalar observables and source-supported physical ranges are not yet established.",
-      "missing_inputs": [
-        "Source-supported scalar sweep dimension and physical range for on a highway",
-        "Original Native route, jurisdiction and complete episode observations"
+      "axes": [
+        {
+          "variable": "requested_route_offset_m",
+          "observable": "route_position_m",
+          "unit": "m",
+          "min": 25.0,
+          "max": 175.0,
+          "spacing": 75.0,
+          "measurement": {
+            "method": "original vehicle pose joined to source-hashed road geometry",
+            "time_window": "all 600 original frames",
+            "statistic": "first"
+          },
+          "range_rationale": "25 to 175 m stays inside the 300 m source-hashed synthetic road and observed 0 to 209.5 m reference path; highway status remains unknown.",
+          "spacing_rationale": "Three separated route origins cover a finite engineering path span without a legal cutoff.",
+          "feasibility_evidence": "sweep-physical/planned-ranges.json and native-helper-proof.json; Native route existence remains unverified."
+        }
       ],
+      "landmarks": [],
+      "rationale": "Sample route positions on an authored centerline while recording original map and jurisdiction sources; statutory highway status remains unknown.",
       "variable_assignments": {
         "requested_throttle_profile": {
           "kind": "controller",
@@ -371,6 +1345,26 @@
         "realized_highway_context": {
           "kind": "world_setup",
           "unit": "structured",
+          "value": null
+        },
+        "commanded_acceleration_mps2": {
+          "kind": "controller",
+          "unit": "m/s2",
+          "value": 0.1
+        },
+        "ego_acceleration": {
+          "kind": "subject_behavior",
+          "unit": "m/s2",
+          "value": null
+        },
+        "requested_route_offset_m": {
+          "kind": "world_setup",
+          "unit": "m",
+          "value": 25.0
+        },
+        "route_position_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
           "value": null
         }
       },
@@ -402,6 +1396,15 @@
             "time_window": "all 600 frames",
             "reference_frame": "Native world",
             "uncertainty": "20 Hz frame bracket"
+          },
+          {
+            "name": "route_position_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original ego pose projected onto source-hashed original road geometry",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native map and vehicle",
+            "uncertainty": "20 Hz frame bracket and source map projection"
           }
         ],
         "context_inputs": [
@@ -421,7 +1424,14 @@
           "Map geometry and road names do not establish statutory highway status",
           "Jurisdiction and exhibition require independent source review"
         ]
-      }
+      },
+      "spec_version": "099ea78bfae5e5262bec19518daafb1b2212606058cc655dcd1390aaae5c5293",
+      "planned_case_count": 3,
+      "selection_order": [
+        "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2-0000",
+        "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2-0001",
+        "training__C229597__LVMC-11-16-090-A__motor_vehicle_driver__judgment-2-0002"
+      ]
     }
   ],
   "sweeps_expanded": true

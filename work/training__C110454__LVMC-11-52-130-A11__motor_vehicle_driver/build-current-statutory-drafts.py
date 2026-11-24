@@ -31,7 +31,7 @@ def adapt(item):
         for channel in cfg["recording_description"]["channels"]:
             channel["time_window"] = "original 30 s / 600 frame attempt"
         content = json.dumps(cfg, indent=2) + "\n"
-    elif path in ("runner.py", "cameras.py", "finalize.py", "measure_park.py") or path.startswith("tests/"):
+    elif path in ("runner.py", "cameras.py", "finalize.py", "measure_park.py", "exception_evidence.py") or path.startswith("tests/"):
         content = content.replace("('overview','approach','intersection','parking')",
                                   "('overview','approach','reference_corner','driver_reference')")
         content = content.replace('"intersection","parking"', '"reference_corner","driver_reference"')
@@ -49,11 +49,18 @@ def adapt(item):
             content = content.replace('measured=measure_case_sources(attempt)', 'measured=measure_case_sources(attempt,count)')
             content = content.replace("description=config['recording_description']", "description=config['recording_description']\n    derive_channels_from_originals(attempt,description,saved_motion,rows(attempt/'video_frames.jsonl'))")
             content = content.replace('original 24 s / 480 frame attempt', 'original 30 s / 600 frame attempt')
+            if 'from exception_case import inspect_case' in content:
+                wrapper = "\ndef measure_exception_context(attempt, suffix, frames):\n    source=attempt/'exception_context.json'\n    value=inspect_case(source,suffix,frames)\n    return {'value':value,'method':'measure_exception_context',\n            'sources':{'exception_context.json':sha(source)}}\n\n"
+                content = content.replace('def finalize(attempt,output):', wrapper + 'def finalize(attempt,output):')
+                content = content.replace("exception=inspect_case(attempt/'exception_context.json', config['case_suffix'],",
+                                          "exception=measure_exception_context(attempt, config['case_suffix'],")
         if path.startswith("tests/"):
             content = content.replace('range(480)', 'range(600)').replace('i>=400', 'i>=500')
             content = content.replace('range(100,580)', 'range(100,700)')
             content = content.replace("'parking.mkv'", "'driver_reference.mkv'")
             content = content.replace('measure_case_sources(root)', 'measure_case_sources(root, 600)')
+        if path == "exception_evidence.py":
+            content = content.replace('i>=480', 'i>=600')
     if path == "exception_case.py":
         content = content.replace("'parking.mkv'", "'driver_reference.mkv'")
     return {**item, "content": content}
@@ -68,6 +75,13 @@ def main():
         for entry in original["cases"]:
             suffix = entry["case_id"].rsplit("__", 1)[-1]
             updated_entry = {**entry, "candidates": []}
+            if suffix.startswith("numeric_"):
+                updated_entry["measurement_contract"] = f"current-v2-{suffix}-measurement-contract.json"
+                recipe_name = "current-v2-witness_2-recipe.json" if suffix == "numeric_1_0" else f"current-v2-{suffix}-recipe.json"
+                updated_entry["fixture_recipe"] = str((HERE / recipe_name).relative_to(HERE.parents[1]))
+            elif suffix.startswith("exception_"):
+                updated_entry["measurement_contract"] = f"current-v2-{suffix}-measurement-contract.json"
+                updated_entry["fixture_recipe"] = str((HERE / f"current-v2-{suffix}-recipe.json").relative_to(HERE.parents[1]))
             for candidate in (entry, *entry["candidates"][:2]):
                 old = json.loads((HERE / candidate["construction"]).read_text())
                 current = {**old, "files": [adapt(item) for item in old["files"]]}
@@ -88,6 +102,23 @@ def main():
             result["cases"].append(updated_entry)
     target = HERE / "current-profile-statutory-manifest.json"
     write(target, result)
+    for suffix in ("numeric_1_0", "numeric_1_1", "numeric_1_2"):
+        contract = json.loads((HERE / "current-v2-witness_2-measurement-contract.json").read_text())
+        contract["case_id"] = HERE.name + "__" + suffix
+        contract["requirements"][0]["disposition_index"] = 4
+        write(HERE / f"current-v2-{suffix}-measurement-contract.json", contract)
+    for suffix in (f"exception_{branch}_{polarity}" for branch in (1, 2, 3) for polarity in (1, 2)):
+        exception_contract = json.loads((HERE / "current-v2-witness_2-measurement-contract.json").read_text())
+        exception_contract["case_id"] = HERE.name + "__" + suffix
+        row = exception_contract["requirements"][0]
+        row["disposition_index"] = int(suffix.split('_')[1])
+        row["output_key"] = "exception_source_context"
+        row["method"] = "measure_exception_context"
+        row["kind"] = "sourced_context"
+        row["inputs"] = ["exception_context.json"]
+        exception_contract["negative"] = {"remove": ["exception_context.json"],
+                                          "error_contains": "Missing required source: exception_context.json"}
+        write(HERE / f"current-v2-{suffix}-measurement-contract.json", exception_contract)
     print(json.dumps({"cases": len(result["cases"]),
                       "candidates": sum(1 + len(x["candidates"]) for x in result["cases"]),
                       "manifest_sha256": sha(target)}))

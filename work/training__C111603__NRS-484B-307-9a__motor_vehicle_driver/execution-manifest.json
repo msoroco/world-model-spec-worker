@@ -1,0 +1,340 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "8e963072639b1f12632d34ed9f15991fc92cb1489d0df7c25a2d3e508e9b9207"
+  },
+  "status": "selected_delivery_preparation",
+  "cases": [
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original arrow pixels, signal governance or full turn/yield visibility may fail review; alternate camera and hold plans preserve case scope."
+      },
+      "construction": "v2-primary/witness_1/construction.json",
+      "construction_sha256": "ef0192cef30665afe500ce9d9e10db5aa64231db7830d9041720e5a0a888a9ca",
+      "measurement_contract": "v2-primary/witness_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111603-saved-analysis-v2"
+      },
+      "fixture_recipe": "work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/v2-primary/witness_1/recipe.json",
+      "candidates": [
+        {
+          "id": "fallback2",
+          "trigger": {
+            "source": "original Native ego trajectory joined to source camera frames",
+            "metric": "approach arrow/vehicle pixel visibility in standard overview",
+            "failure_condition": "signal head or other vehicle occluded in review"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "construction": "selected-v2-candidates/witness_1/fallback2/construction.json",
+          "construction_sha256": "0b5fc05320d3abff489e632d5e665b02016b87be60b0c15d43e364922656fa9e",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "0b5fc05320d3abff489e632d5e665b02016b87be60b0c15d43e364922656fa9e",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1 --candidate fallback2 --output .runtime-work/c111603-rebound/witness_1-fallback2-offline-final --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "selected-runtime-proofs/witness_1/fallback2/offline.log",
+            "log_sha256": "9cfd9a9d301eaac6b018077961b2892a0cc8b00ce6dc03f1c78f7b745a7eb2fe"
+          },
+          "compatibility": {
+            "receipt": "selected-runtime-proofs/witness_1/fallback2/compatibility.json",
+            "sha256": "aa347e6e1da4484ebaf8f58a43553a92d22fec4e803f4de2cf9e6302a8ea1091",
+            "log": "selected-runtime-proofs/witness_1/fallback2/analysis.log",
+            "negative_log": "selected-runtime-proofs/witness_1/fallback2/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "trigger": {
+            "source": "original Native ego and signal timestamps joined to source camera frames",
+            "metric": "yield-hold-to-entry duration",
+            "failure_condition": "< 3 seconds of observable hold"
+          },
+          "changed_knobs": [
+            "pre_approach_dwell_s",
+            "yield_hold_s"
+          ],
+          "construction": "selected-v2-candidates/witness_1/fallback3/construction.json",
+          "construction_sha256": "dcaaea596b4929eb7bc961fa31a52a5b053fca2610be72f3db03aa80630f1cc9",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "dcaaea596b4929eb7bc961fa31a52a5b053fca2610be72f3db03aa80630f1cc9",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1 --candidate fallback3 --output .runtime-work/c111603-rebound/witness_1-fallback3-offline-final --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "selected-runtime-proofs/witness_1/fallback3/offline.log",
+            "log_sha256": "7a0ea0dfc8cb33cc64a8fe8fef895e702f976411a8e7d8afb1f5a67f81ed9549"
+          },
+          "compatibility": {
+            "receipt": "selected-runtime-proofs/witness_1/fallback3/compatibility.json",
+            "sha256": "790475c72aaf07c505e138744a34170a29c867a7f9bd95a2bad91d0f9d62c552",
+            "log": "selected-runtime-proofs/witness_1/fallback3/analysis.log",
+            "negative_log": "selected-runtime-proofs/witness_1/fallback3/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        },
+        "native_actor_signal_samples": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ef0192cef30665afe500ce9d9e10db5aa64231db7830d9041720e5a0a888a9ca",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1 --candidate primary --output .runtime-work/c111603-rebound/witness_1-primary-offline-final --python \"$PWD/.venv-cpu/bin/python\"",
+        "log": "selected-runtime-proofs/witness_1/primary/offline.log",
+        "log_sha256": "b206551ada9eb1d7f288fd086a015efd7eb5f98e7cf81777603c328df1c4851f"
+      },
+      "compatibility": {
+        "receipt": "selected-runtime-proofs/witness_1/primary/compatibility.json",
+        "sha256": "7523001c418cb810653d8ecac401b4ee3fd52a471e15f50b2428f22e7e925e0f",
+        "log": "selected-runtime-proofs/witness_1/primary/analysis.log",
+        "negative_log": "selected-runtime-proofs/witness_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-runtime-proofs/witness_1/primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "selected-runtime-proofs/witness_1/primary/processing.json",
+        "test_log_sha256": "d8efda81a582af78739ee88c854ecef57a1e504907dbc7af0918b8d6720ef8a6",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/witness_1/proof.json",
+        "sha256": "c29523e518ce99e4e6e417e33c27938abdc89b456dcb5c727999a566eb844645"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e9aeaff7596d5658f00ec0de11df4dad3ed3d2ed62449160215b0bf1fe16687c",
+        "command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/delivery_audit.py --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1 --candidate primary --attempt \"$ATTEMPT\" --processing \"$PROCESSING\" --output \"$REPORT\" --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/delivery_audit.py --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1 --candidate primary --attempt \"$MISSING_NATIVE_SOURCE\" --processing \"$PROCESSING\" --output \"$REPORT\" --diagnostic",
+        "test_log": "selected-runtime-proofs/witness_1/primary/delivery-positive.log",
+        "test_log_sha256": "14f36293edaae517f29856582f777b912a511012df9ca49cc44b8097eb6c2605",
+        "test_exit_code": 0,
+        "negative_log": "selected-runtime-proofs/witness_1/primary/delivery-negative.log",
+        "negative_log_sha256": "fb232fa9c255e70f74d70ed679ba8065e9aabaf9297335164957612c569d16d9",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: native-raw-actors.jsonl"
+      },
+      "comparison_audit": {
+        "script": "selected-comparison-audit.py",
+        "script_sha256": "3cd2e16657a531b1df91c6d606cb907872eb78931b7bacc12a1111cfc29390e6",
+        "command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.py --first /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_1-primary-compat-v2 --second /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2 --first-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_1-primary-compat-v2/analysis-report.json --second-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2/analysis-report.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.json",
+        "test_log": "selected-comparison-positive.log",
+        "test_log_sha256": "9c563c2a761a80c69f5a04898b5a546bd95bf80642575404c1b3272207021c0d",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.py --first /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/comparison-changed-source --second /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2 --first-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_1-primary-compat-v2/analysis-report.json --second-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2/analysis-report.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.json",
+        "negative_log": "selected-comparison-negative.log",
+        "negative_log_sha256": "251a7265eb83c337f8c943a06a21b1b6269064d59718b322771e602488296871",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison source hash changed: native-raw-actors.jsonl"
+      }
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original arrow pixels, signal governance or full turn/yield visibility may fail review; alternate camera and hold plans preserve case scope."
+      },
+      "construction": "v2-primary/witness_2/construction.json",
+      "construction_sha256": "279d0858402a3bc964f6be7f4a9e4d3918e7e45cdffe5dcb070bc6f403665ec7",
+      "measurement_contract": "v2-primary/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111603-saved-analysis-v2"
+      },
+      "fixture_recipe": "work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/v2-primary/witness_2/recipe.json",
+      "candidates": [
+        {
+          "id": "fallback2",
+          "trigger": {
+            "source": "original Native ego trajectory joined to source camera frames",
+            "metric": "approach arrow/vehicle pixel visibility in standard overview",
+            "failure_condition": "signal head or other vehicle occluded in review"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "construction": "selected-v2-candidates/witness_2/fallback2/construction.json",
+          "construction_sha256": "a85f74a15b3b654cf3fe98697be46077a01fd4fd2535691f25998e3073c2c81d",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a85f74a15b3b654cf3fe98697be46077a01fd4fd2535691f25998e3073c2c81d",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2 --candidate fallback2 --output .runtime-work/c111603-rebound/witness_2-fallback2-offline-final --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "selected-runtime-proofs/witness_2/fallback2/offline.log",
+            "log_sha256": "65af0993ea5773b8fa74c1b15d5079a911b6854329951800901a4fcb42baa447"
+          },
+          "compatibility": {
+            "receipt": "selected-runtime-proofs/witness_2/fallback2/compatibility.json",
+            "sha256": "cd3c4fdb88521e09cc4c460b5d6d1e91e1ec82636fc50c5bd2ddc91c33b9098e",
+            "log": "selected-runtime-proofs/witness_2/fallback2/analysis.log",
+            "negative_log": "selected-runtime-proofs/witness_2/fallback2/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "trigger": {
+            "source": "original Native ego and signal timestamps joined to source camera frames",
+            "metric": "yield-hold-to-entry duration",
+            "failure_condition": "< 3 seconds of observable hold"
+          },
+          "changed_knobs": [
+            "pre_approach_dwell_s",
+            "yield_hold_s"
+          ],
+          "construction": "selected-v2-candidates/witness_2/fallback3/construction.json",
+          "construction_sha256": "428df13163744ac9bf5f6d53f25e8c6ddad11918752fa4b9dee4a92e466bddc2",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "428df13163744ac9bf5f6d53f25e8c6ddad11918752fa4b9dee4a92e466bddc2",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2 --candidate fallback3 --output .runtime-work/c111603-rebound/witness_2-fallback3-offline-final --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "selected-runtime-proofs/witness_2/fallback3/offline.log",
+            "log_sha256": "ade3abaa12fa3835730885273f82f44238dd113492a90cd39f9f556785cb37ec"
+          },
+          "compatibility": {
+            "receipt": "selected-runtime-proofs/witness_2/fallback3/compatibility.json",
+            "sha256": "1e14a931882ad285fb3ab08b49f9f767d706fd65bbcd0d321ac3d3e2305af090",
+            "log": "selected-runtime-proofs/witness_2/fallback3/analysis.log",
+            "negative_log": "selected-runtime-proofs/witness_2/fallback3/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        },
+        "native_actor_signal_samples": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, signal and camera-frame acquisition with canonical source assembly",
+          "evidence": "native-raw-actors.jsonl; video_frames.jsonl; capture/evidence.jsonl; capture/native/frames.jsonl; four original FFV1 cameras"
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "279d0858402a3bc964f6be7f4a9e4d3918e7e45cdffe5dcb070bc6f403665ec7",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2 --candidate primary --output .runtime-work/c111603-rebound/witness_2-primary-offline-final --python \"$PWD/.venv-cpu/bin/python\"",
+        "log": "selected-runtime-proofs/witness_2/primary/offline.log",
+        "log_sha256": "6c00912466326d5cda3945ab665708376e53c086fc707bfd82df29abc9327117"
+      },
+      "compatibility": {
+        "receipt": "selected-runtime-proofs/witness_2/primary/compatibility.json",
+        "sha256": "6fae82c4e360010919d401e9728f54884b5ee528b1398e18347a3ab6489104b1",
+        "log": "selected-runtime-proofs/witness_2/primary/analysis.log",
+        "negative_log": "selected-runtime-proofs/witness_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-runtime-proofs/witness_2/primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "selected-runtime-proofs/witness_2/primary/processing.json",
+        "test_log_sha256": "54ae265ca4d91a1f56d5b6a71ff6cc96be5339eef480602aecb630c56efc865c",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/witness_2/proof.json",
+        "sha256": "afa7962645a3dc09b1067b99b0c27732f6413999407d47fd81cb54c32a62bab3"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e9aeaff7596d5658f00ec0de11df4dad3ed3d2ed62449160215b0bf1fe16687c",
+        "command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/delivery_audit.py --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2 --candidate primary --attempt \"$ATTEMPT\" --processing \"$PROCESSING\" --output \"$REPORT\" --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/delivery_audit.py --case training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2 --candidate primary --attempt \"$MISSING_NATIVE_SOURCE\" --processing \"$PROCESSING\" --output \"$REPORT\" --diagnostic",
+        "test_log": "selected-runtime-proofs/witness_2/primary/delivery-positive.log",
+        "test_log_sha256": "7addb78f9d12a667ec3055e079785ee4e8d238e9e496a4028169d0a4a3059f65",
+        "test_exit_code": 0,
+        "negative_log": "selected-runtime-proofs/witness_2/primary/delivery-negative.log",
+        "negative_log_sha256": "fb232fa9c255e70f74d70ed679ba8065e9aabaf9297335164957612c569d16d9",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: native-raw-actors.jsonl"
+      },
+      "comparison_audit": {
+        "script": "selected-comparison-audit.py",
+        "script_sha256": "3cd2e16657a531b1df91c6d606cb907872eb78931b7bacc12a1111cfc29390e6",
+        "command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.py --first /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_1-primary-compat-v2 --second /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2 --first-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_1-primary-compat-v2/analysis-report.json --second-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2/analysis-report.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.json",
+        "test_log": "selected-comparison-positive.log",
+        "test_log_sha256": "9c563c2a761a80c69f5a04898b5a546bd95bf80642575404c1b3272207021c0d",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.py --first /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/comparison-changed-source --second /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2 --first-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_1-primary-compat-v2/analysis-report.json --second-report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111603-rebound/witness_2-primary-compat-v2/analysis-report.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111603__NRS-484B-307-9a__motor_vehicle_driver/selected-comparison-audit.json",
+        "negative_log": "selected-comparison-negative.log",
+        "negative_log_sha256": "251a7265eb83c337f8c943a06a21b1b6269064d59718b322771e602488296871",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison source hash changed: native-raw-actors.jsonl"
+      }
+    }
+  ]
+}
