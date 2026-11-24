@@ -472,6 +472,686 @@
         "appropriate turn signal",
         "ascertained that such movement can be made with safety"
       ]
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Appropriate lamp first sampled at complete body departure; legal judgment unresolved.",
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator first observed at source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "paired_probe_id": "lane-movement-conjunctive-prerequisites",
+      "deliberate_differences": [
+        "signal_timing"
+      ],
+      "probe": {
+        "primary_variable": "signal_timing",
+        "comparison_or_standard": "Shared baseline and the other source-bound selected variants; no legal safety cutoff assigned.",
+        "target_value_or_branch": "Same lane change with appropriate indicator first observed after body begins leaving"
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    },
+    {
+      "case_id": "signal-appropriateness-pending-0000",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound signal direction and first body departure require a frozen numeric sampling design without a statutory lead-time threshold.",
+      "paired_probe_id": "signal-appropriateness-pending",
+      "deliberate_differences": [
+        "appropriate_signal_lead_frames"
+      ],
+      "probe": {
+        "primary_variable": "appropriate_signal_lead_frames",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "appropriate_signal_lead_frames": -1.0
+        }
+      },
+      "sweep_id": "signal-appropriateness-pending",
+      "sweep_spec_version": "8b549d5e1b54de8c5f1a25005057b33c9bb3f3b864c7a15d5def14a5eb1ae411",
+      "sweep_point": {
+        "appropriate_signal_lead_frames": -1.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "appropriate_signal_lead_frames": {
+          "kind": "controller",
+          "value": -1.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "appropriate_signal_lead_frames",
+            "unit": "frames",
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "appropriate turn signal",
+          "note": "Appropriate direction and display require source-bound indicator state and original camera review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "appropriate_signal_lead_frames",
+          "observable": "appropriate_signal_lead_frames",
+          "unit": "frames",
+          "measurement": {
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    },
+    {
+      "case_id": "signal-appropriateness-pending-0001",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound signal direction and first body departure require a frozen numeric sampling design without a statutory lead-time threshold.",
+      "paired_probe_id": "signal-appropriateness-pending",
+      "deliberate_differences": [
+        "appropriate_signal_lead_frames"
+      ],
+      "probe": {
+        "primary_variable": "appropriate_signal_lead_frames",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "appropriate_signal_lead_frames": 1.0
+        }
+      },
+      "sweep_id": "signal-appropriateness-pending",
+      "sweep_spec_version": "8b549d5e1b54de8c5f1a25005057b33c9bb3f3b864c7a15d5def14a5eb1ae411",
+      "sweep_point": {
+        "appropriate_signal_lead_frames": 1.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "appropriate_signal_lead_frames": {
+          "kind": "controller",
+          "value": 1.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "appropriate_signal_lead_frames",
+            "unit": "frames",
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "appropriate turn signal",
+          "note": "Appropriate direction and display require source-bound indicator state and original camera review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "appropriate_signal_lead_frames",
+          "observable": "appropriate_signal_lead_frames",
+          "unit": "frames",
+          "measurement": {
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    },
+    {
+      "case_id": "signal-appropriateness-pending-0002",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound signal direction and first body departure require a frozen numeric sampling design without a statutory lead-time threshold.",
+      "paired_probe_id": "signal-appropriateness-pending",
+      "deliberate_differences": [
+        "appropriate_signal_lead_frames"
+      ],
+      "probe": {
+        "primary_variable": "appropriate_signal_lead_frames",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "appropriate_signal_lead_frames": 0.0
+        }
+      },
+      "sweep_id": "signal-appropriateness-pending",
+      "sweep_spec_version": "8b549d5e1b54de8c5f1a25005057b33c9bb3f3b864c7a15d5def14a5eb1ae411",
+      "sweep_point": {
+        "appropriate_signal_lead_frames": 0.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "appropriate_signal_lead_frames": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "appropriate_signal_lead_frames",
+            "unit": "frames",
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "appropriate turn signal",
+          "note": "Appropriate direction and display require source-bound indicator state and original camera review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "appropriate_signal_lead_frames",
+          "observable": "appropriate_signal_lead_frames",
+          "unit": "frames",
+          "measurement": {
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    },
+    {
+      "case_id": "safety-ascertainment-pending-0000",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Preserve physical target-lane gap variation while leaving driver ascertainment unresolved.",
+      "paired_probe_id": "safety-ascertainment-pending",
+      "deliberate_differences": [
+        "nearest_target_body_gap_at_departure_m"
+      ],
+      "probe": {
+        "primary_variable": "nearest_target_body_gap_at_departure_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "nearest_target_body_gap_at_departure_m": 3.0
+        }
+      },
+      "sweep_id": "safety-ascertainment-pending",
+      "sweep_spec_version": "3fe67669a21e9e527cb0071ae3c1481971af9b469d808afeb6e1a5e1ce2b313b",
+      "sweep_point": {
+        "nearest_target_body_gap_at_departure_m": 3.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "nearest_target_body_gap_at_departure_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "nearest_target_body_gap_at_departure_m",
+            "unit": "m",
+            "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "ascertained that such movement can be made with safety",
+          "note": "Target-lane separation and conflict trajectories are observable; driver ascertainment and legal safety remain unresolved."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "nearest_target_body_gap_at_departure_m",
+          "observable": "nearest_target_body_gap_at_departure_m",
+          "unit": "m",
+          "measurement": {
+            "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    },
+    {
+      "case_id": "safety-ascertainment-pending-0001",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Preserve physical target-lane gap variation while leaving driver ascertainment unresolved.",
+      "paired_probe_id": "safety-ascertainment-pending",
+      "deliberate_differences": [
+        "nearest_target_body_gap_at_departure_m"
+      ],
+      "probe": {
+        "primary_variable": "nearest_target_body_gap_at_departure_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "nearest_target_body_gap_at_departure_m": 8.0
+        }
+      },
+      "sweep_id": "safety-ascertainment-pending",
+      "sweep_spec_version": "3fe67669a21e9e527cb0071ae3c1481971af9b469d808afeb6e1a5e1ce2b313b",
+      "sweep_point": {
+        "nearest_target_body_gap_at_departure_m": 8.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "nearest_target_body_gap_at_departure_m": {
+          "kind": "world_setup",
+          "value": 8.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "nearest_target_body_gap_at_departure_m",
+            "unit": "m",
+            "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "ascertained that such movement can be made with safety",
+          "note": "Target-lane separation and conflict trajectories are observable; driver ascertainment and legal safety remain unresolved."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "nearest_target_body_gap_at_departure_m",
+          "observable": "nearest_target_body_gap_at_departure_m",
+          "unit": "m",
+          "measurement": {
+            "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
     }
   ],
   "sweep_specs": [
@@ -485,9 +1165,115 @@
         }
       ],
       "rationale": "Source-bound signal direction and first body departure require a frozen numeric sampling design without a statutory lead-time threshold.",
-      "status": "incomplete",
-      "missing_inputs": [
-        "A source-bound synthetic 900-frame zero-lead lamp probe now joins the existing -1 and +1 source landmarks. Integrate it as a selected exact case with Native staging, positive/negative compatibility, saved processing and controlled comparison; then declare the complete physical sweep without assigning a legal lead-time threshold."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "appropriate_signal_lead_frames",
+          "observable": "appropriate_signal_lead_frames",
+          "unit": "frames",
+          "min": -1,
+          "max": 1,
+          "spacing": 1,
+          "range_rationale": "Measured source-backed endpoints; physical coverage only",
+          "spacing_rationale": "Include the observed endpoint and intervening landmark",
+          "feasibility_evidence": "judgment-grid-landmarks.json and zero-exact-candidate-replay.json",
+          "measurement": {
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "source-observed physical endpoints",
+          "source": "judgment-grid-landmarks.json and zero-exact-candidate-replay.json",
+          "verification_evidence": "physical-sweep-design.json",
+          "purpose": "coverage_landmark"
+        }
+      ],
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "appropriate_signal_lead_frames": {
+          "kind": "controller",
+          "value": -1,
+          "note": "Physical setpoint; realized observation measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "appropriate_signal_lead_frames",
+            "unit": "frames",
+            "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "spec_version": "8b549d5e1b54de8c5f1a25005057b33c9bb3f3b864c7a15d5def14a5eb1ae411",
+      "planned_case_count": 3,
+      "selection_order": [
+        "signal-appropriateness-pending-0000",
+        "signal-appropriateness-pending-0001",
+        "signal-appropriateness-pending-0002"
       ]
     },
     {
@@ -500,10 +1286,116 @@
         }
       ],
       "rationale": "Preserve physical target-lane gap variation while leaving driver ascertainment unresolved.",
-      "status": "incomplete",
-      "missing_inputs": [
-        "A complete selected finite sweep declaration with exact source-bound 3.0 m and 8.0 m measured gap points, frozen case order and comparison audit; legal safety and driver ascertainment remain unresolved."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "nearest_target_body_gap_at_departure_m",
+          "observable": "nearest_target_body_gap_at_departure_m",
+          "unit": "m",
+          "min": 3.0,
+          "max": 8.0,
+          "spacing": 5.0,
+          "range_rationale": "Measured source-backed endpoints; physical coverage only",
+          "spacing_rationale": "Use the two source-observed gaps",
+          "feasibility_evidence": "judgment-grid-landmarks.json",
+          "measurement": {
+            "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+            "time_window": "first complete-body source-lane departure",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "source-observed physical endpoints",
+          "source": "judgment-grid-landmarks.json",
+          "verification_evidence": "physical-sweep-design.json",
+          "purpose": "coverage_landmark"
+        }
+      ],
+      "variable_assignments": {
+        "lane_change_direction": {
+          "kind": "controller",
+          "value": "left adjacent marked same-direction lane"
+        },
+        "signal_timing": {
+          "kind": "controller",
+          "value": "indicator before source-lane body departure"
+        },
+        "indicator_direction": {
+          "kind": "controller",
+          "value": "left indicator during left lane change"
+        },
+        "target_vehicle_placement": {
+          "kind": "world_setup",
+          "value": "clear target-lane placement"
+        },
+        "nearest_target_body_gap_at_departure_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "note": "Physical setpoint; realized observation measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          },
+          {
+            "name": "nearest_target_body_gap_at_departure_m",
+            "unit": "m",
+            "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+            "time_window": "first complete-body source-lane departure in all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Between-frame timing and actual Native behavior remain unproved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      },
+      "spec_version": "3fe67669a21e9e527cb0071ae3c1481971af9b469d808afeb6e1a5e1ce2b313b",
+      "planned_case_count": 2,
+      "selection_order": [
+        "safety-ascertainment-pending-0000",
+        "safety-ascertainment-pending-0001"
       ]
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

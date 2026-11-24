@@ -1,7 +1,7 @@
 {
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
-  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "cases": [
     {
       "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
@@ -1076,6 +1076,469 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/right_signal_before_clear_gap/primary-saved-processing.json",
         "sha256": "13f3d685b34edeb5d8bb9aa1f4f991c695ccd4f6db5f84c26d9be726d52e8801"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap",
+      "kind": "delivery",
+      "construction": "cases/left_signal_at_departure_clear_gap/construction.json",
+      "construction_sha256": "edf174494322bbcbcb3fa130989a2a20271a52c2092518485ff03ce2280c6e4a",
+      "status": "selected_cpu_diagnostic_proven",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_signal_at_departure_clear_gap/fallback1-construction.json",
+          "construction_sha256": "03e729217de310d15642b4c9133e4e14cd2995dd7dbc77ec74b09b2bbf101db0",
+          "risk": "Native motion or camera view at the selected lane site may differ from the primary target"
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_signal_at_departure_clear_gap/fallback2-construction.json",
+          "construction_sha256": "b601d978e48209be5e333e8d6d35fd68bf4528e1d970ff4bb31d5aebb5620086",
+          "risk": "Native motion or camera view at the selected lane site may differ from the primary target"
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_signal_at_departure_clear_gap/fallback3-construction.json",
+          "construction_sha256": "eefe324d5a53ce6a430e107bd11cf77f0ed9623b0a34e0a1f692ecd14ed83f6b",
+          "risk": "Native motion or camera view at the selected lane site may differ from the primary target"
+        }
+      ],
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "source_lane_body_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/source_lane_body_departure.jsonl"
+        },
+        "indicator_before_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/indicator_before_departure.jsonl"
+        },
+        "target_lane_gap": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        }
+      },
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_signal_at_departure_clear_gap/diagnostic-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      }
+    },
+    {
+      "case_id": "signal-appropriateness-pending-0000",
+      "kind": "delivery",
+      "construction": "sweep-cases/signal-appropriateness-pending-0000/construction.json",
+      "construction_sha256": "5c193044b632d5d1e2a53732b6261e68930d30a8546d30835f9501b89a9f96b2",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_signal_late_clear_gap/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [],
+      "status": "selected_cpu_diagnostic_proven",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "source_lane_body_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/source_lane_body_departure.jsonl"
+        },
+        "indicator_before_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/indicator_before_departure.jsonl"
+        },
+        "target_lane_gap": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "signal-appropriateness-pending-0001",
+      "kind": "delivery",
+      "construction": "sweep-cases/signal-appropriateness-pending-0001/construction.json",
+      "construction_sha256": "5cecb0db3cc43d88f5fdaec1f9393846fdce37b32de26a708654a8319b544e89",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [],
+      "status": "selected_cpu_diagnostic_proven",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "source_lane_body_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/source_lane_body_departure.jsonl"
+        },
+        "indicator_before_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/indicator_before_departure.jsonl"
+        },
+        "target_lane_gap": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "signal-appropriateness-pending-0002",
+      "kind": "delivery",
+      "construction": "sweep-cases/signal-appropriateness-pending-0002/construction.json",
+      "construction_sha256": "2cc2242c5b2b5808dc700a94704c17976b34ac41b13f44d7dadd70372ff3134f",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_signal_at_departure_clear_gap/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [],
+      "status": "selected_cpu_diagnostic_proven",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "source_lane_body_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/source_lane_body_departure.jsonl"
+        },
+        "indicator_before_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/indicator_before_departure.jsonl"
+        },
+        "target_lane_gap": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "safety-ascertainment-pending-0000",
+      "kind": "delivery",
+      "construction": "sweep-cases/safety-ascertainment-pending-0000/construction.json",
+      "construction_sha256": "322f11b9b2add68559600d5e9678809baf8058e8cd472ce24bbda157690aee63",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_signal_before_close_gap/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [],
+      "status": "selected_cpu_diagnostic_proven",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "source_lane_body_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/source_lane_body_departure.jsonl"
+        },
+        "indicator_before_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/indicator_before_departure.jsonl"
+        },
+        "target_lane_gap": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "safety-ascertainment-pending-0001",
+      "kind": "delivery",
+      "construction": "sweep-cases/safety-ascertainment-pending-0001/construction.json",
+      "construction_sha256": "9518dc455067d50c52f05dd54f919d617df6f4df9b000f35ffa185254275f88b",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [],
+      "status": "selected_cpu_diagnostic_proven",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "record frame-aligned original Native actor and lane state through the pinned PipelineCapture graph/trace collector; final saved conversion reads the sealed source graphs",
+          "evidence": "capture/native/graphs/base/; capture/native/graphs/abstract/; trace.jsonl; capture/evidence.jsonl"
+        },
+        "source_lane_body_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/source_lane_body_departure.jsonl"
+        },
+        "indicator_before_departure": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/indicator_before_departure.jsonl"
+        },
+        "target_lane_gap": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
+          "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        }
       }
     }
   ]

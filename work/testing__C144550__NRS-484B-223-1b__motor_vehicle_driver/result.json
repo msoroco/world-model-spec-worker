@@ -112,10 +112,28 @@
       "exit_code": 0,
       "log": "cases/left_signal_at_departure_clear_gap/fallback3-saved-processing.log",
       "sha256": "22e6fd1a7607a9d976e8c3ce4348448139d8fbee1db2d2089505966e51614d3e"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-sweep-import .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_physical_sweep_design.py",
+      "exit_code": 0,
+      "log": "physical-sweep-design.log",
+      "sha256": "680895a98c78af127d24991a8526fec487fd1e3dfad58a4a2a57931f4d00b7d6"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-sweep-import PYTHONPATH=runtime .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/stage_physical_sweeps.py",
+      "exit_code": 0,
+      "log": "physical-sweep-stage.log",
+      "sha256": "5030893959ad098919f2ecaf75bbd3a0e67e286c7aaa7cc209bf563921deb9aa"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_sweep_candidates.py",
+      "exit_code": 0,
+      "log": "sweep-candidate-replay.log",
+      "sha256": "3b094ebaef038ce5d4156a556ec2c48b4627463177537597e55b5cf3b947db5c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual marked lanes, indicator display, lane-body movement, target traffic/gap and camera visibility."
   ],
-  "reason": "Five selected exact primaries and fifteen fallbacks retain prior CPU proofs. A separate zero-frame exact candidate and three fallbacks now pass current-runtime offline, source-bound positive/negative compatibility and recorded-only saved processing; a controlled synthetic comparison and four-candidate replay index pass. This new case is not yet selected or integrated into complete physical judgment sweeps. Physical and legal acceptance remain unproved."
+  "reason": "Five selected original exact cases retain their prior proofs. A separate zero-frame case and five source-aligned finite sweep cases now have exact constructions; all five sweep cases pass current-runtime offline, source-bound positive/negative compatibility and recorded-only saved processing. The zero case and sweeps are not yet integrated with the selected semantic and execution manifests, nor are all selected candidate receipts rebound to the final manifest. Physical and legal acceptance remain unproved."
 }
