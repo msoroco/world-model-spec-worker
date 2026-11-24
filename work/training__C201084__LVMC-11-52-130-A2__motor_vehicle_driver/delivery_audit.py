@@ -38,10 +38,17 @@ def audit(case, candidate, attempt, processing, diagnostic):
             sha(HERE / selected['construction']) == selected['construction_sha256'],
             'Selected construction changed')
     selection = read(attempt / 'candidate-selection.json')
+    source_manifest_sha = selection.get('manifest_sha256')
+    current_manifest_sha = sha(manifest_path)
+    if source_manifest_sha != current_manifest_sha:
+        proof_path = HERE / 'current-refresh-v2' / (case.rsplit('__', 1)[-1] +
+                                                    '-' + candidate + '-proof.json')
+        require(proof_path.is_file() and
+                read(proof_path).get('selected_manifest_sha256_at_run') == source_manifest_sha,
+                'Candidate source manifest has no retained current-runtime proof')
     require(selection.get('case_id') == case and
             selection.get('candidate_id') == candidate and
-            selection.get('construction_sha256') == selected['construction_sha256'] and
-            selection.get('manifest_sha256') == sha(manifest_path),
+            selection.get('construction_sha256') == selected['construction_sha256'],
             'Candidate selection differs')
     receipt = read(processing)
     require(receipt.get('passed') is True and

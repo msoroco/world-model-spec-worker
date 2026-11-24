@@ -34,13 +34,12 @@ def run(case, kind):
         else:
             raise AssertionError('Premature saved processing accepted')
         return {**base, 'events': EVENTS, 'exit_code': 0}
-    stem = 'c111256-selected-compat-witness1' if case == 'witness_1' else f'c111256-selected-{case}-primary-compat'
-    attempt = ROOT / '.runtime-work' / stem
+    attempt = ROOT / '.runtime-work/c111256-current' / (case + '-primary') / 'compat'
     samples_path = attempt / 'native_samples.jsonl'
     mapping_path = attempt / 'video_frames.jsonl'
     samples = [json.loads(line) for line in samples_path.read_text().splitlines()]
     mapping = [json.loads(line) for line in mapping_path.read_text().splitlines()]
-    assert len(samples) == len(mapping) == 480
+    assert len(samples) == len(mapping) == 600
     first_frame = samples[0]['native_frame']
     first_time = samples[0]['time_s']
     assert all(sample['native_frame'] == first_frame + index for index, sample in enumerate(samples))
@@ -59,11 +58,12 @@ def run(case, kind):
     assert status == expected, (case, kind, status)
     return {**base, 'physical_checks': {'maneuver': {
         'status': status,
-        'method': 'Synthetic 20 Hz ego body departure and exact 480-frame saved join',
+        'method': 'Synthetic 20 Hz ego body departure and exact 600-frame saved join',
         'sources': ['native_samples.jsonl', 'video_frames.jsonl']}},
         'maneuver_completed': status == 'met',
         'realized_observables': {'last_ego_y_m': samples[-1]['native_center_xy_m'][1]} if status == 'met' else {},
-        'provenance_kind': 'native',
+        'provenance_kind': 'synthetic_fixture',
+        'diagnostic_fixture': True,
         'synthetic_source_sha256': {'native_samples.jsonl': sha(samples_path),
                                      'video_frames.jsonl': sha(mapping_path)}}
 

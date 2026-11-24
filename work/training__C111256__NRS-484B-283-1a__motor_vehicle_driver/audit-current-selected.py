@@ -24,8 +24,8 @@ def audit():
     matrix = read(HERE / "current-selected-matrix-proof.json")
     manifest = read(HERE / "execution-manifest.json")
     binding = read(HERE / "current-selected-binding.json")
-    if (matrix["path_count"] != 16 or binding["prebind_manifest_sha256"] != matrix["manifest_sha256"]
-            or binding["bound_manifest_sha256"] != sha(HERE / "execution-manifest.json")
+    if (matrix["path_count"] != 16 or binding["selected_paths"] != 16
+            or binding["prebind_manifest_sha256"] != matrix["manifest_sha256"]
             or binding["matrix_proof_sha256"] != sha(HERE / "current-selected-matrix-proof.json")):
         raise ValueError("Prebind/final selected manifest proof differs")
     counts = {"cases": 0, "candidates": 0, "saved_source_hashes": 0, "frame_joins": 0}

@@ -1,6 +1,20 @@
 # training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver
 
-Status: partial. No delivery recording is selected or claimed.
+## Current CPU delivery preparation (2026-11-24)
+
+Status: ready / delivery_prepared after current-runtime CPU proofs; original Native, pixels, Fire Code designation/posting, property and attendance, statutory exceptions and local acceptance remain unverified. Eight exact selected cases retain 32 primary/fallback chains. Every chain passed pinned offline, public positive/negative compatibility and recorded-only saved processing. Eight selected diagnostic delivery audits passed positive and original-Native rejection. Three controlled comparisons passed independent source-hash/isolation checks, diagnostic only.
+
+- Runtime SOURCE-MANIFEST SHA-256: 5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3
+- Selected execution manifest SHA-256: 9bb6a46b0fa31d399ea320a12e48ea859fd5f08bfed2977e37cb987e59c823c5
+- Current source/comparison audit SHA-256: 307eb0b6420f9fa1a6928ce8eaca6739c8d65890629a207cf1998decabbe7215
+- Assignment test log SHA-256: d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad
+- Exact scoped strict command: `.venv-cpu/bin/python worker_check.py --assignment training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver --complete --require-delivery-ready`
+- Scoped strict exit 0, `static_checks_passed: true`; log SHA-256: 71516060a6d8666c7fd736d89622a7ccd07724b9be1e8d97e069e13109058158
+- First local GPU dispatch is recorded in `result.json`; preserve exact source, review and acceptance separation.
+
+The sections below retain the earlier partial construction history.
+
+Historical initial status: partial. No delivery recording was selected or claimed.
 
 ## Source review
 

@@ -138,6 +138,23 @@ def derive_channels(attempt: Path, native: list[dict], mapping: list[dict], geom
             elif name=='st.one_way_roadway':value=geometry['lanes']
             elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied'],
                 'pedestrian_on_ego_highway_half':sample['pedestrian_on_ego_highway_half']}
+            elif name=='dev.inoperative':value=not sample['official_device_actors_present']
+            elif name=='drv.time_to_conflict':
+                front=max(vertex[1] for vertex in sample['native_body_xy_m'])
+                remaining=max(0.0,geometry['nearest_crosswalk_y_m']-front)
+                value={'estimated_s':remaining/max(sample['speed_mps'],0.05),
+                       'pedestrian_conflict_occupied':sample['walker_conflict_occupied'],
+                       'legal_danger_threshold':None}
+            elif name=='drv.turning':value={'native_yaw_deg':sample['native_yaw_deg'],
+                'yaw_change_from_start_deg':sample['native_yaw_deg']-native[0]['native_yaw_deg']}
+            elif name=='kin.speed':value=sample['speed_mps']
+            elif name=='rel.occupies':value={'walker_conflict_occupied':sample['walker_conflict_occupied'],
+                'pedestrian_on_ego_highway_half':sample['pedestrian_on_ego_highway_half']}
+            elif name=='ru.pedestrian':value={'walker_center_xy_m':sample['walker_center_xy_m'],
+                'blind_declared':sample['pedestrian_blind_declared'],
+                'white_cane_declared':sample['white_cane_declared']}
+            elif name=='st.lane_direction':value={'ego_directional_lanes':sample['ego_directional_lanes'],
+                'road_one_way':sample['road_one_way']}
             elif name=='crosswalk_exception':value={'pedestrian_blind_declared':sample['pedestrian_blind_declared'],
                 'white_cane_declared':sample['white_cane_declared'],
                 'white_cane_visual_prop_physically_verified':False}
