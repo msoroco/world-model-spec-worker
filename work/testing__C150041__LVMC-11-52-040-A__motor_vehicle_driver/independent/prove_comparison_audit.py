@@ -12,14 +12,17 @@ sys.path.insert(0, str(ROOT))
 from parking_comparison_audit import PAIRS
 from parking_finalizer import finalize
 from comparison_audit import sha, verify_pair
+from installed_binding import bind
 
 
-def proof(comparison_id: str) -> None:
+def proof(comparison_id: str, installed_saved_root: Path | None = None) -> None:
     first, second, _ = PAIRS[comparison_id]
     sources = []
     receipts = []
     for suffix in (first, second):
-        fixture = REPO / ".runtime-work" / ("c150041-saved-fixture-v8-" + suffix)
+        binding = bind(suffix, installed_saved_root) if installed_saved_root else None
+        fixture = (Path(binding["source_attempt"]) if binding else
+                   REPO / ".runtime-work" / ("c150041-saved-fixture-v8-" + suffix))
         history = fixture / "parking-history.jsonl"
         measured = finalize(fixture / "reviewed-context.json", fixture, suffix,
                             history, sha(history))
@@ -55,11 +58,18 @@ def proof(comparison_id: str) -> None:
             raise
     else:
         raise AssertionError("different reviewed packet accepted")
+    if installed_saved_root:
+        print({"comparison_id": comparison_id, "passed": True,
+               "source_kind": "synthetic_fixture", "original_capture_reviewed": False,
+               "delivery_ready_claimed": False,
+               "installed_bindings": [bind(suffix, installed_saved_root)
+                                      for suffix in (first, second)]})
     print(comparison_id + ": measured diagnostic positive and missing-pixel/source negatives passed; no original acceptance")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("comparison_id", choices=tuple(PAIRS))
+    parser.add_argument("--installed-saved-root", type=Path)
     args = parser.parse_args()
-    proof(args.comparison_id)
+    proof(args.comparison_id, args.installed_saved_root)

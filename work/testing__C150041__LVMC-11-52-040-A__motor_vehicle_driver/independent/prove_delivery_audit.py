@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 
 from delivery_audit import CHECKS, OBSERVATIONS, ROOT, SOURCE, sha, verify_inputs
+from installed_binding import bind
 
 
 def fixture(attempt: Path, case_id: str):
@@ -54,7 +55,10 @@ def main() -> None:
                         ("park_parallel_lawful", "park_angled_lawful", "park_parallel_reverse",
                          "stand_parallel_lawful", "stand_angled_lawful", "stand_parallel_reverse")))
     parser.add_argument("--negative", action="store_true")
+    parser.add_argument("--installed-saved-root", type=Path)
     args = parser.parse_args()
+    binding = bind(args.case_id.removeprefix(ROOT.name + "__"),
+                   args.installed_saved_root) if args.installed_saved_root else None
     with tempfile.TemporaryDirectory(prefix="c150041-audit-proof-") as temp:
         attempt = Path(temp)
         source, physical, pixels, decode, core = fixture(attempt, args.case_id)
@@ -96,6 +100,9 @@ def main() -> None:
                 raise
         else:
             raise AssertionError("changed physical source accepted")
+        if binding:
+            print(json.dumps({"passed": True, "proof_scope": "diagnostic_cpu_protocol_only",
+                              "installed_binding": binding}, sort_keys=True))
         print(args.case_id + ": diagnostic protocol positive and three negatives passed; no original acceptance")
 
 
