@@ -17,11 +17,6 @@ def rectangle(x0, y0, x1, y1):
 
 def packet(base, inside):
     base.mkdir(parents=True, exist_ok=True)
-    sources = {}
-    for name in ("designation", "device", "map", "native_trace", "video_frame_map"):
-        path = base / (name + ".json")
-        path.write_text(json.dumps({"kind": name, "fixture": "synthetic_native_sample"}) + "\n")
-        sources[name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
     stop_x = 10.0 if inside else 18.0
     rows = []
     for i in range(FRAMES):
@@ -29,9 +24,9 @@ def packet(base, inside):
         rows.append({"native_frame": i, "video_frame": i, "time_s": i / RATE_HZ,
                      "observed_speed_mps": 1.0 if i < 100 else 0.0,
                      "vehicle_footprint_map_m": rectangle(x - 1, -0.8, x + 1, 0.8)})
-    return {
+    result = {
         "format": "worker-designated-stop-native-packet",
-        "sources": sources,
+        "sources": {},
         "device": {"device_id": "synthetic-device-1", "content": "synthetic no-stopping extent",
                    "authority_status": "source_reviewed_official", "erected": True,
                    "hazard_context_status": "physical_facts_retained_legal_unresolved",
@@ -41,6 +36,18 @@ def packet(base, inside):
         "traffic_and_direction_source": "synthetic traffic and direction timeline",
         "rows": rows,
     }
+    originals = {
+        "designation": {"designated_polygon_map_m": result["device"]["designated_polygon_map_m"]},
+        "device": {key: value for key, value in result["device"].items() if key != "designated_polygon_map_m"},
+        "map": {"coordinate_system": "synthetic map metres", "fixture": "synthetic_native_sample"},
+        "native_trace": rows,
+        "video_frame_map": [{"video_frame": row["video_frame"], "time_s": row["time_s"]} for row in rows],
+    }
+    for name, data in originals.items():
+        path = base / (name + ".json")
+        path.write_text(json.dumps(data, separators=(",", ":")) + "\n")
+        result["sources"][name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    return result
 
 
 def rejected(original, mutation, message):
@@ -70,11 +77,11 @@ def main():
         negatives = {
             "missing_designation_source": rejected(inside, lambda p: p["sources"].pop("designation"), "original source reference"),
             "changed_designation_source": rejected(inside, lambda p: p["sources"]["designation"].__setitem__("sha256", "0" * 64), "original source"),
-            "inactive_device": rejected(inside, lambda p: p["device"].__setitem__("active_last_frame", 200), "erection interval"),
-            "not_official": rejected(inside, lambda p: p["device"].__setitem__("authority_status", "unknown"), "Official erected"),
-            "missing_extent": rejected(inside, lambda p: p["device"].pop("designated_polygon_map_m"), "designated place"),
-            "missing_frame": rejected(inside, lambda p: p["rows"].pop(), "Incomplete"),
-            "bad_join": rejected(inside, lambda p: p["rows"][200].__setitem__("video_frame", 201), "frame join"),
+            "inactive_device": rejected(inside, lambda p: p["device"].__setitem__("active_last_frame", 200), "original device source"),
+            "not_official": rejected(inside, lambda p: p["device"].__setitem__("authority_status", "unknown"), "original device source"),
+            "missing_extent": rejected(inside, lambda p: p["device"].pop("designated_polygon_map_m"), "original extent source"),
+            "missing_frame": rejected(inside, lambda p: p["rows"].pop(), "original trace source"),
+            "bad_join": rejected(inside, lambda p: p["rows"][200].__setitem__("video_frame", 201), "original trace source"),
             "missing_person": rejected(inside, lambda p: p.__setitem__("person_caused_stop_source", ""), "Person-to-vehicle"),
             "missing_context": rejected(inside, lambda p: p.__setitem__("traffic_and_direction_source", ""), "direction context"),
         }

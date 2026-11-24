@@ -1,0 +1,37 @@
+{
+  "format": "prior-signal-measurement-contract-v1",
+  "assignment_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver",
+  "source_law": "NRS 484B.413(3)",
+  "sampling_hz": 20,
+  "duration_frames": 600,
+  "measurement_code": "native/prior_signal_meter.py",
+  "retained_sources": [
+    "canonical Native frame map",
+    "ego velocity, pose and bounding box",
+    "rear vehicle pose and bounding box, with same-lane and behind tests",
+    "ego signal control request and original lamp or arm observation",
+    "four synchronized source-camera videos"
+  ],
+  "outputs": [
+    "event frame and stop-versus-sudden-slow diagnostic",
+    "longitudinal acceleration derived from retained velocity frames",
+    "signal first-observed frame, precedence and frame lead",
+    "rear vehicle same-lane, behind and surface-gap observations at event"
+  ],
+  "source_observation_mapping": {
+    "drv.stopped": "speed <= 0.05 m/s diagnostic with source velocity",
+    "drv.hard_deceleration": "derived acceleration <= declared diagnostic threshold",
+    "kin.accel_longitudinal": "20 Hz velocity finite difference",
+    "sig.brake_lamp": "signal request plus original observed lamp state; no inference from deceleration alone",
+    "sig.hand_signal": "retained observed arm-signal state; unsupported in current fixture",
+    "drv.following": "rear actor tracked in same lane behind ego",
+    "rel.ahead_behind_in_lane": "Native pose and lane join",
+    "rel.surface_gap": "bounding-box surface gap at event"
+  },
+  "legal_boundaries": [
+    "The law supplies no numeric threshold for suddenly or immediately.",
+    "A same-frame brake lamp does not establish that an appropriate signal was first given.",
+    "Appropriateness and actual rear-driver visibility require independent original-source review."
+  ],
+  "physical_status": "unverified"
+}

@@ -1,0 +1,47 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1",
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1\",\n  \"selected_case_id\": \"training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1\",\n  \"law_id\": \"NRS-484B-413-3\",\n  \"cell_id\": \"C230259\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"duration_frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"fps\": 20,\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"follower_policy\": \"same_lane_behind_source_measured\",\n  \"control_phases\": [\n    {\n      \"name\": \"approach\",\n      \"first_frame\": 0,\n      \"last_frame\": 149,\n      \"signal_request\": \"none\"\n    },\n    {\n      \"name\": \"prior_signal\",\n      \"first_frame\": 150,\n      \"last_frame\": 199,\n      \"signal_request\": \"brake_lamp\"\n    },\n    {\n      \"name\": \"slow\",\n      \"first_frame\": 200,\n      \"last_frame\": 599,\n      \"signal_request\": \"brake_lamp\"\n    }\n  ],\n  \"physical_verified\": false,\n  \"legal_verdict\": null\n}\n"
+    },
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Check the unselected prior-signal scene/controller contract.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\n\n\ndef check(config):\n    expected = \"training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1\"\n    if config.get(\"case_id\") != expected or config.get(\"selected_case_id\") != expected:\n        raise ValueError(\"wrong exact case\")\n    if (config.get(\"law_id\"), config.get(\"cell_id\"), config.get(\"actor\")) != (\n            \"NRS-484B-413-3\", \"C230259\", \"motor_vehicle_driver\"):\n        raise ValueError(\"wrong law, cell, or actor\")\n    if (config.get(\"rate_hz\"), config.get(\"duration_s\"), config.get(\"duration_frames\")) != (20, 30, 600):\n        raise ValueError(\"full 30-second 20 Hz window required\")\n    cameras = config.get(\"cameras\")\n    if not isinstance(cameras, list) or [c.get(\"name\") for c in cameras] != [\n            \"overview\", \"approach\", \"reference_corner\", \"driver_reference\"]:\n        raise ValueError(\"four named cameras required\")\n    if any(c.get(\"fps\") != 20 or c.get(\"width\", 0) < 16 or c.get(\"height\", 0) < 16 for c in cameras):\n        raise ValueError(\"camera cadence or size invalid\")\n    phases = config.get(\"control_phases\")\n    if not isinstance(phases, list) or [(p.get(\"first_frame\"), p.get(\"last_frame\")) for p in phases] != [\n            (0, 149), (150, 199), (200, 599)]:\n        raise ValueError(\"controller phases do not cover 600 frames\")\n    if [p.get(\"signal_request\") for p in phases] != [\"none\", \"brake_lamp\", \"brake_lamp\"]:\n        raise ValueError(\"prior warning policy changed\")\n    if config.get(\"follower_policy\") != \"same_lane_behind_source_measured\":\n        raise ValueError(\"rear vehicle source policy absent\")\n    if config.get(\"physical_verified\") is not False or config.get(\"legal_verdict\") is not None:\n        raise ValueError(\"physical or legal claim in draft\")\n    return {\"checked\": True, \"frames\": 600, \"fps\": 20, \"simulation_started\": False}\n\n\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    args = parser.parse_args()\n    if not args.check:\n        raise SystemExit(\"Draft requires Native route, acquisition, and capture implementation\")\n    print(json.dumps(check(json.loads(Path(\"config.json\").read_text()))))\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\n\nclass DraftContract(unittest.TestCase):\n    def setUp(self):\n        self.config = json.loads(Path(\"config.json\").read_text())\n\n    def test_window(self):\n        self.assertEqual(check(self.config)[\"frames\"], 600)\n\n    def test_camera_missing(self):\n        bad = copy.deepcopy(self.config); bad[\"cameras\"].pop()\n        with self.assertRaisesRegex(ValueError, \"four named cameras\"):\n            check(bad)\n\n    def test_signal_timing(self):\n        bad = copy.deepcopy(self.config); bad[\"control_phases\"][1][\"signal_request\"] = \"none\"\n        with self.assertRaisesRegex(ValueError, \"prior warning\"):\n            check(bad)\n\n    def test_short_window(self):\n        bad = copy.deepcopy(self.config); bad[\"control_phases\"][-1][\"last_frame\"] = 598\n        with self.assertRaisesRegex(ValueError, \"controller phases\"):\n            check(bad)\n\n    def test_physical_claim(self):\n        bad = copy.deepcopy(self.config); bad[\"physical_verified\"] = True\n        with self.assertRaisesRegex(ValueError, \"physical or legal\"):\n            check(bad)\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "raw_ego_and_rear_motion",
+        "method": "Native velocity, transforms and bounding boxes",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "raw_signal_state",
+        "method": "Native control request plus original lamp observation",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named source cameras",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      }
+    ],
+    "limitations": [
+      "Native route and actual camera pixels unverified"
+    ]
+  },
+  "status": "draft_cpu_offline_only"
+}

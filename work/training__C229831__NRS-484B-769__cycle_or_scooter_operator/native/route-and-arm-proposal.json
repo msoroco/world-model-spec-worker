@@ -1,0 +1,29 @@
+{
+  "format": "worker-unselected-native-construction-proposal",
+  "assignment_id": "training__C229831__NRS-484B-769__cycle_or_scooter_operator",
+  "cell_id": "C229831",
+  "route": {
+    "layout": "road",
+    "maneuver": "right_turn",
+    "control": "intersection_boundary",
+    "required_geometry": ["highway roadway polygon", "connected right-turn entry lane", "intersection boundary", "connected right-turn exit lane"],
+    "spawn_rule": "select a waypoint on the incoming roadway lane with a connected right-turn successor; verify the entire rider footprint stays on roadway before the turn",
+    "route_rule": "advance through the intersection boundary to the connected right-turn exit, retaining 600 frame identities at 20 Hz"
+  },
+  "actor": {
+    "role": "cycle_or_scooter_operator",
+    "chosen_machine_for_controlled_comparison": "bicycle",
+    "machine_identity_source": "Native type ID plus rider mount evidence",
+    "physical_rider_arm_actuation": "unresolved in pinned runtime; must produce independently observable articulated right shoulder, elbow, and wrist or equivalent calibrated camera keypoints"
+  },
+  "camera_contract": ["front", "front_left", "front_right", "rear"],
+  "minimum_duration_s": 30,
+  "comparison": {
+    "fixed": ["cell", "machine", "operator", "right-turn path", "20 Hz", "four camera mounts", "roadway polygon", "map", "capture timing"],
+    "probe_a_requested_arm_pose": "right arm horizontal and to right side during roadway approach to turn",
+    "probe_b_requested_arm_pose": "both hands remain on handlebar during same roadway approach",
+    "only_deliberate_difference": "requested arm pose",
+    "physical_observation": "unverified; CPU proof exercises only source-shaped keypoint measurement"
+  },
+  "selection_status": "unselected"
+}

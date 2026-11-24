@@ -1,0 +1,50 @@
+{
+  "case_id": "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane",
+  "law_id": "NRS-484B-307-12a",
+  "cell_id": "C230247",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Exact unselected lane-control fixture. Native acquisition still requires review.\"\"\"\nimport argparse\nimport json\nimport xml.etree.ElementTree as ET\nfrom pathlib import Path\n\nASSIGNMENT = 'training__C230247__NRS-484B-307-12a__motor_vehicle_driver'\nCAMERAS = ('overview','approach','overhead_signal','driver_reference')\nHERE = Path(__file__).resolve().parent\n\n\ndef request(frame, case_id):\n    if type(frame) is not int or not 0 <= frame < 600:\n        raise ValueError('frame outside 600-frame contract')\n    if case_id not in (ASSIGNMENT+'__probe_same_lane',ASSIGNMENT+'__probe_other_lane'):\n        raise ValueError('unknown exact case')\n    lane = -2 if case_id.endswith('other_lane') else -1\n    return {'frame':frame,'target_lane_id':lane,'target_speed_mps':4.0,\n            'signal_id':100,'governing_signal_lane_id':-1,\n            'signal_indication_request':'green_down_arrow'}\n\n\ndef source_row(index, native_frame, elapsed_s, actor, signal_state, signal_inventory, waypoint):\n    if type(index) is not int or not 0 <= index < 600 or type(native_frame) is not int:\n        raise ValueError('original frame identity required')\n    if actor is None or signal_state is None or signal_inventory is None or waypoint is None:\n        raise ValueError('post-tick Native source packets required')\n    pose=actor.get_transform()\n    vertices=actor.bounding_box.get_world_vertices(pose)\n    if len(vertices)!=8:\n        raise ValueError('actor body vertices missing')\n    return {'frame':index,'native_frame':native_frame,'time_s':elapsed_s,\n            'actor_id':actor.id,'actor_blueprint':actor.type_id,\n            'actor_yaw_deg':pose.rotation.yaw,'actor_body_vertices_m':[[v.x,v.y,v.z] for v in vertices],\n            'occupied_lane_id':waypoint.lane_id,'lane_source':'map_waypoint_projection',\n            'signal_id':signal_inventory['id'],'signal_lane_id':signal_inventory['lane_id'],\n            'signal_mount_m':signal_inventory['mount_m'],'signal_authority_source':signal_inventory['authority_source'],\n            'signal_indication':signal_state['indication'],'signal_facing_yaw_deg':signal_inventory['facing_yaw_deg'],\n            'source':'native_post_tick'}\n\n\ndef check(config):\n    if (config.get('law_id'),config.get('cell_id'),config.get('actor')) != ('NRS-484B-307-12a','C230247','motor_vehicle_driver'):\n        raise ValueError('frozen identity differs')\n    cid=config.get('case_id')\n    if cid not in (ASSIGNMENT+'__probe_same_lane',ASSIGNMENT+'__probe_other_lane'):\n        raise ValueError('case identity differs')\n    if config.get('rate_hz')!=20 or config.get('duration_s')!=30:\n        raise ValueError('30-second timing differs')\n    if tuple(c['name'] for c in config.get('cameras',[]))!=CAMERAS:\n        raise ValueError('four-camera profile differs')\n    root=ET.parse(HERE/'road.xodr').getroot()\n    lanes=[root.find(f\".//lane[@id='{i}']\") for i in (-1,-2)]\n    if any(l is None or l.get('type')!='driving' or float(l.find('width').get('a'))!=3.5 for l in lanes):\n        raise ValueError('two driving lanes absent')\n    signal=root.find(\".//signal[@id='100']\")\n    if signal is None or signal.get('dynamic')!='yes' or signal.find('validity').attrib != {'fromLane':'-1','toLane':'-1'}:\n        raise ValueError('governing overhead signal absent')\n    if float(signal.get('zOffset'))<4.0:\n        raise ValueError('overhead mount absent')\n    req=request(300,cid)\n    if req['target_lane_id']!=(-2 if cid.endswith('other_lane') else -1):\n        raise ValueError('controlled comparison differs')\n    return {'passed':True,'case_id':cid,'frames':600,'rate_hz':20,'cameras':list(CAMERAS),\n            'signal_id':100,'signal_valid_lane_id':-1,'target_lane_id':req['target_lane_id'],\n            'native_capture_implemented':False,'physical_observation_claimed':False}\n\nif __name__=='__main__':\n    parser=argparse.ArgumentParser()\n    parser.add_argument('--check',action='store_true')\n    args=parser.parse_args()\n    if not args.check:\n        raise SystemExit('Native CARLA orchestration remains unfinished')\n    print(json.dumps(check(json.loads((HERE/'config.json').read_text())),sort_keys=True))\n"
+    },
+    {
+      "path": "road.xodr",
+      "content": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C230247_lane_control_draft\" version=\"1\" date=\"2026-11-23\" north=\"10\" south=\"-10\" east=\"120\" west=\"0\" vendor=\"worker\"/><road id=\"1\" name=\"lane_signal_highway\" length=\"120\" junction=\"-1\"><planView><geometry s=\"0\" x=\"0\" y=\"0\" hdg=\"0\" length=\"120\"><line/></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\"/></elevationProfile><lanes><laneSection s=\"0\"><left/><center><lane id=\"0\" type=\"none\" level=\"false\"/></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane><lane id=\"-2\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></right></laneSection></lanes><signals><signal id=\"100\" name=\"lane_control_green_arrow_draft\" s=\"60\" t=\"-1.75\" zOffset=\"4.5\" hOffset=\"0\" roll=\"0\" pitch=\"0\" orientation=\"+\" dynamic=\"yes\" country=\"US\" type=\"1000001\" subtype=\"1\" value=\"0\"><validity fromLane=\"-1\" toLane=\"-1\"/></signal></signals></road></OpenDRIVE>\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane\",\n  \"selected_case_id\": \"training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane\",\n  \"supported_case_ids\": [\n    \"training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane\"\n  ],\n  \"law_id\": \"NRS-484B-307-12a\",\n  \"cell_id\": \"C230247\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"overhead_signal\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"case\": {\n    \"case_id\": \"training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane\",\n    \"target_lane_id\": -2\n  },\n  \"status\": \"unselected_native_draft\",\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"signal_indication\",\n        \"unit\": \"enum\"\n      },\n      {\n        \"name\": \"signal_lane_id\",\n        \"unit\": \"map lane id\"\n      },\n      {\n        \"name\": \"actor_body_vertices_m\",\n        \"unit\": \"meters\"\n      },\n      {\n        \"name\": \"occupied_lane_id\",\n        \"unit\": \"map lane id\"\n      }\n    ],\n    \"limitations\": [\n      \"official device authority and actual green arrow display unverified\",\n      \"Native route, four-camera capture, and saved processing unfinished\"\n    ]\n  }\n}\n"
+    },
+    {
+      "path": "tests/test_draft.py",
+      "content": "import json\nfrom pathlib import Path\nimport unittest\nfrom runner import check, request\n\nclass Draft(unittest.TestCase):\n    def test_exact_bundle(self):\n        cfg=json.loads(Path('config.json').read_text())\n        result=check(cfg)\n        self.assertEqual(result['frames'],600)\n        self.assertEqual(result['signal_valid_lane_id'],-1)\n        self.assertEqual(result['target_lane_id'], -2 if cfg['case_id'].endswith('other_lane') else -1)\n    def test_reject_wrong_identity_and_time(self):\n        cfg=json.loads(Path('config.json').read_text())\n        cfg['law_id']='NRS-484B-307-12b'\n        with self.assertRaisesRegex(ValueError,'frozen identity'):\n            check(cfg)\n        with self.assertRaisesRegex(ValueError,'600-frame'):\n            request(600,cfg['case_id'])\nif __name__=='__main__': unittest.main()\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "signal_indication",
+        "unit": "enum"
+      },
+      {
+        "name": "signal_lane_id",
+        "unit": "map lane id"
+      },
+      {
+        "name": "actor_body_vertices_m",
+        "unit": "meters"
+      },
+      {
+        "name": "occupied_lane_id",
+        "unit": "map lane id"
+      }
+    ],
+    "limitations": [
+      "official device authority and actual green arrow display unverified",
+      "Native route, four-camera capture, and saved processing unfinished"
+    ]
+  },
+  "status": "draft_not_selected"
+}

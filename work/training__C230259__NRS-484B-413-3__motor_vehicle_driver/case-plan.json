@@ -110,42 +110,42 @@
     {
       "term": "drv.stopped",
       "purpose": "the stop",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     },
     {
       "term": "drv.hard_deceleration",
       "purpose": "operationalizes 'suddenly decrease the speed'",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     },
     {
       "term": "kin.accel_longitudinal",
       "purpose": "the deceleration itself",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     },
     {
       "term": "sig.brake_lamp",
       "purpose": "the appropriate signal to the vehicle behind",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     },
     {
       "term": "sig.hand_signal",
       "purpose": "or an arm signal, meaning stop_or_slow",
-      "status": "measurement_mapping_pending"
+      "status": "source_contract_only_native_arm_observation_pending"
     },
     {
       "term": "drv.following",
       "purpose": "the vehicle immediately to the rear",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     },
     {
       "term": "rel.ahead_behind_in_lane",
       "purpose": "that vehicle is behind in the same lane",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     },
     {
       "term": "rel.surface_gap",
       "purpose": "how close it is",
-      "status": "measurement_mapping_pending"
+      "status": "source_measurement_implemented_diagnostic_only"
     }
   ],
   "candidate_plans": [],
@@ -230,5 +230,65 @@
     "temporal_test": "For the sudden-decrease pair, measure the onset of the decrease and verify that an appropriate signal to the immediately rear driver begins before that onset.",
     "signal_caveat": "The frozen clause does not define a numerical lead time or declare that a brake lamp illuminated only by the same deceleration is prior warning. Brake and hand signals require original source timing and independent appropriateness review.",
     "status": "planning_only_original_sources_missing"
+  },
+  "source_observation_mapping": {
+    "drv.stopped": {
+      "measurement": "ego_speed_mps <= 0.05 diagnostic",
+      "source_refs": [
+        "ego_velocity_source_ref"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "measurement": "velocity-derived acceleration <= engineering probe threshold",
+      "source_refs": [
+        "ego_velocity_source_ref"
+      ]
+    },
+    "kin.accel_longitudinal": {
+      "measurement": "20 Hz finite difference of source ego speed",
+      "source_refs": [
+        "ego_velocity_source_ref"
+      ]
+    },
+    "sig.brake_lamp": {
+      "measurement": "first observed requested lamp frame, separately from deceleration",
+      "source_refs": [
+        "signal_source_ref"
+      ]
+    },
+    "sig.hand_signal": {
+      "measurement": "source contract exists; Native arm observation and modality audit pending",
+      "source_refs": [
+        "signal_source_ref"
+      ]
+    },
+    "drv.following": {
+      "measurement": "rear tracked actor same lane and behind at event",
+      "source_refs": [
+        "rear_pose_source_ref",
+        "ego_pose_source_ref"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "measurement": "Native pose/lane join at event",
+      "source_refs": [
+        "rear_pose_source_ref",
+        "ego_pose_source_ref"
+      ]
+    },
+    "rel.surface_gap": {
+      "measurement": "rear actor to ego surface gap at event",
+      "source_refs": [
+        "rear_extent_source_ref",
+        "ego_extent_source_ref"
+      ]
+    }
+  },
+  "diagnostic_cpu_checkpoint": {
+    "measurement_contract": "native/measurement-contract.json",
+    "proof": "native/prior-signal-proof.json",
+    "unselected_primary_construction": "native/draft-prior-construction.json",
+    "offline_log": "native/draft-prior-offline.log",
+    "physical_status": "unverified"
   }
 }

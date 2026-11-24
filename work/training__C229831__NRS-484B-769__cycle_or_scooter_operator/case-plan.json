@@ -54,7 +54,7 @@
     {
       "name": "sig.hand_signal",
       "mandatory": true,
-      "reason": "the arm signal and its meaning ∈ {left, right, stop_or_slow}"
+      "reason": "the arm signal and its meaning \u2208 {left, right, stop_or_slow}"
     },
     {
       "name": "ru.subject",
@@ -96,7 +96,8 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions.",
+    "Pinned adapter deletes sig.hand_signal; current 600-frame keypoint proof tests only a separately sourced measurement and does not prove a Native articulated arm actuator or saved processing."
   ],
   "statutory_text": "An operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall give all signals by hand and arm in the manner required by NRS 484B.420 [DEF-NRS-484B-420], except that the operator may give a signal for a right turn by extending his or her right hand and arm horizontally and to the right side of the bicycle, electric bicycle or electric scooter.",
   "activation_conditions_from_unreviewed_summary": [
@@ -114,5 +115,58 @@
     "ru.electric_scooter",
     "st.roadway",
     "drv.turning"
-  ]
+  ],
+  "source_observation_mapping": {
+    "sig.hand_signal": {
+      "measurement": "right_arm_horizontal_rightward_runs",
+      "acquisition": "raw calibrated shoulder, elbow, wrist keypoints; no pinned Core conversion",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.subject": {
+      "measurement": "operator_id",
+      "acquisition": "Native rider mount and identity packet",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.bicycle": {
+      "measurement": "machine_class",
+      "acquisition": "Native machine type ID; only the selected bicycle branch is proposed",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "measurement": "machine_class",
+      "acquisition": "Native machine type ID; alternative class still needs a separate case",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "measurement": "machine_class",
+      "acquisition": "Native machine type ID; alternative class still needs a separate case",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "measurement": "roadway_occupied_frames",
+      "acquisition": "raw footprint and sourced roadway polygon, shoulder excluded",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "measurement": "right_turn_route_frames",
+      "acquisition": "connected right-turn map waypoints and saved actor pose",
+      "source_refs": [
+        "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
+      ]
+    }
+  },
+  "native_measurement_proposal": "native/measurement-contract.json",
+  "native_route_and_arm_proposal": "native/route-and-arm-proposal.json"
 }

@@ -1,17 +1,23 @@
-# training__C229954__NRS-484B-500__vehicle_stopping_person
+# C229954 / NRS 484B.500 CPU checkpoint
 
-Status: blocked. This is a source-grounded planning return only, not a deployable delivery package.
+Status: **partial**. This package has a source-bound measurement contract and synthetic CPU diagnostics, but no selected delivery case or physical claim.
 
-Exact law: When official traffic-control devices are erected at hazardous or congested places, a person shall not stop, stand or park a vehicle in any such designated place.
+The exact law prohibits a person stopping, standing, or parking a vehicle in the place actually designated by official devices erected at a hazardous or congested place. The reviewed training witness asks for a destination stop within that place. The local snapshot has zero accepted recording memberships, so there is no reuse claim. The planned paired comparison holds the road, device, vehicle, person, traffic context and stop policy fixed, while varying whether the resting body overlaps the sourced designated extent. Both cases remain unverified planning entries.
 
-Selected witness scope: Destination stopping within the designated place. The case plan inventories 2 source topics and drafts one controlled comparison on `stop_inside_device_designated_place`. Neither case has a Native realization or legal outcome.
+## Implemented CPU work
 
-The local snapshot lists 0 accepted membership rows. No source-hashed equivalence receipt was available, so no historical recording is claimed reusable.
+- `native/designated_stop.py` reads five hash-bound original source files: designation, device, map, Native trace and video frame map. It rejects changed source bytes, source-packet disagreement, incomplete 600-frame/20 Hz joins, missing official-device content or authority, an erection interval shorter than the capture, and missing person/traffic-direction context. It computes vehicle-body overlap against the **designated polygon**, not a sign-position proxy, at every frame and reports continuous rest runs. The geometry is convex-only at this checkpoint; a sourced concave extent must be decomposed into convex parts before use.
+- `native/stop_controller.py` gives a 20 Hz observed-distance/speed approach, brake and hold policy. The requested target is an input from future map/device evidence. It does not place a CARLA vehicle or establish a legal stop.
+- `native/measurement-contract.json` lists all original sources, four cameras, the paired comparison, outputs and engineering tolerances. The 0.1 m/s rest tolerance and overlap epsilon are diagnostic tolerances, not statutory cutoffs.
+- `native/prove_designated_stop.py` passed a 600-frame synthetic inside/outside comparison. The inside sample has 500 rest-and-overlap frames; the outside sample has zero. Nine negative mutations reject missing or changed sources, altered device/extent facts, incomplete or misjoined frames, and missing person/context fields. Proof: `native/designated-stop-proof.json` SHA-256 `b7090983a34001ff505f9591345ed50ed4330f674d7c08afa817a79329b23d03`.
+- `native/prove_stop_controller.py` passed the synthetic 600-frame rest trace and four negative mutations. Proof: `native/stop-controller-proof.json` SHA-256 `560190ed4861419a74e3e9769deb9e733c5c8417fdb78f21e862f89e00964a57`.
 
-Blocker: Native physical mechanism, four distinct candidate constructions, exact offline/compatibility recipes, measured saved fixtures and independent audit are not yet produced for the selected law branch and source alternatives.
+Both proof commands use `.venv-cpu/bin/python` and exited 0. `runtime.py preflight` exited 0 under the pinned runtime. No synthetic fixture is called original Native velocity or source evidence.
 
-Resume: validate source alternatives and exceptions against the exact law; implement the selected comparison and each additional runnable source branch with semantic proposals, four distinct candidate plans, native and camera configuration, offline and compatibility proofs, saved positive/negative audit, and comparison audit. Reuse a historical original only with an exact source-hashed equivalence receipt. Set ready only after all CPU proofs pass.
+An exact **unselected** condition-A Native draft is in `draft-native/construction.json` (SHA-256 `d9497800e4beb5ba783b2fb66a0d6b69db90fa609aebc35443a92cbd6bcd6942`) and `draft-native-manifest.json`. It carries a 600-frame four-camera CARLA capture proposal, the observed-distance stop controller, frozen cell identity, and a hard original-official-device-source gate before connecting to CARLA. Pinned `runtime.py offline` passed its check and four contract tests without simulation; returned log `native/draft-offline.log` SHA-256 `b708e966e1a9f1b1ba847ac60a74e78df494af0f7176a8517806b79d045e3af2`. It is a draft construction proof only: the route to the designated polygon is unvalidated, it has no encoded/sealed video path, and condition B is not constructed.
 
-Physical prerequisites: Use an official device erected for the hazardous/congested place, record its designated region and stopped vehicle overlap.
+## Exact remaining CPU work
 
-Legal limit: Device presence elsewhere does not establish designation of the exact stopping place.
+Validate and complete the C229954 Native route and official device with its **content, authority, actual designated polygon and erection interval** from map/device sources. The frozen witness expressly says device positions alone do not establish the designated place. Capture the qualifying vehicle, person-caused halt, physical hazardous/congested context, traffic conflicts and police/device directions; preserve unresolved legal characterization. Bind four source cameras, actual 600-frame trace and frame map to the measurement script. Complete both exact cases and risk-reviewed fallbacks, pinned offline and positive/negative compatibility proofs, saved processing, semantic proposals, independent delivery and comparison audits, and a passing assignment-scoped strict gate. A selected case must not be promoted from these synthetic diagnostics.
+
+Physical Native motion, camera pixels, and canonical acceptance remain unobserved. No actual designated polygon or device authority record was supplied for this assignment; the current meter proves that later original data will be required and checked, not what its values will be.

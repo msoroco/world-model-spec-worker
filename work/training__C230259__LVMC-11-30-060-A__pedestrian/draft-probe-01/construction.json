@@ -1,0 +1,50 @@
+{
+  "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
+  "law_id": "LVMC-11-30-060-A",
+  "cell_id": "C230259",
+  "actor": "pedestrian",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Unselected outside-crosswalk Native request; --check is CPU-only.\"\"\"\nimport argparse\nimport json\nimport math\nimport xml.etree.ElementTree as ET\nfrom pathlib import Path\n\nASSIGNMENT = \"training__C230259__LVMC-11-30-060-A__pedestrian\"\nCAMERAS = (\"overview\", \"pedestrian_entry\", \"vehicle_approach\", \"roadway_crossing\")\nHERE = Path(__file__).resolve().parent\n\n\ndef request(index, case_id):\n    if type(index) is not int or not 0 <= index < 600:\n        raise ValueError(\"outside 600-frame contract\")\n    if case_id not in (ASSIGNMENT + \"__probe_01\", ASSIGNMENT + \"__probe_02\"):\n        raise ValueError(\"unknown exact case\")\n    depart = 320 if case_id.endswith(\"probe_01\") else 140\n    return {\"pedestrian_departure_frame\": depart,\n            \"pedestrian_target_speed_mps\": 1.2 if index >= depart else 0.0,\n            \"vehicle_target_speed_mps\": 2.2,\n            \"vehicle_yield_command\": None,\n            \"crossing_y_m\": 10.0}\n\n\ndef post_tick_row(index, native_frame, elapsed_s, pedestrian, vehicles):\n    if type(index) is not int or not 0 <= index < 600 or type(native_frame) is not int:\n        raise ValueError(\"original frame identity required\")\n    if type(elapsed_s) not in (int, float) or not math.isfinite(elapsed_s):\n        raise ValueError(\"original time required\")\n    pose = pedestrian.get_transform()\n    points = sorted({(round(v.x, 5), round(v.y, 5))\n                     for v in pedestrian.bounding_box.get_world_vertices(pose)})\n    if len(points) != 4:\n        raise ValueError(\"original pedestrian footprint required\")\n    observed = []\n    for vehicle in vehicles:\n        vpose, velocity = vehicle.get_transform(), vehicle.get_velocity()\n        observed.append({\"id\": vehicle.id, \"x_m\": vpose.location.x,\n                         \"y_m\": vpose.location.y,\n                         \"speed_mps\": math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)})\n    return {\"native_frame\": native_frame, \"time_s\": elapsed_s,\n            \"pedestrian_id\": pedestrian.id, \"pedestrian_footprint_xy_m\": [list(v) for v in points],\n            \"vehicles\": observed, \"source\": \"native_post_tick\"}\n\n\ndef check(config):\n    if (config.get(\"law_id\"), config.get(\"cell_id\"), config.get(\"actor\")) != (\n            \"LVMC-11-30-060-A\", \"C230259\", \"pedestrian\"):\n        raise ValueError(\"frozen identity differs\")\n    case = config.get(\"case_id\")\n    if case not in (ASSIGNMENT + \"__probe_01\", ASSIGNMENT + \"__probe_02\"):\n        raise ValueError(\"exact case differs\")\n    if config.get(\"rate_hz\") != 20 or config.get(\"duration_s\") != 30:\n        raise ValueError(\"30-second timing differs\")\n    if [c.get(\"name\") for c in config.get(\"cameras\", [])] != list(CAMERAS):\n        raise ValueError(\"four-camera contract differs\")\n    root = ET.parse(HERE / \"road.xodr\").getroot()\n    road = root.find(\"road\")\n    if road is None or road.get(\"junction\") != \"-1\" or road.get(\"length\") != \"60\":\n        raise ValueError(\"authored road geometry differs\")\n    if root.findall(\".//objects/object\") or root.findall(\".//junction\"):\n        raise ValueError(\"draft must omit marked crossing and intersection\")\n    assert request(0, case)[\"pedestrian_target_speed_mps\"] == 0\n    return {\"passed\": True, \"case_id\": case, \"frames\": 600, \"rate_hz\": 20,\n            \"cameras\": list(CAMERAS), \"native_capture_implemented\": False,\n            \"source_meter_interface_implemented\": True,\n            \"physical_crossing_observed\": False, \"legal_conclusion\": None}\n\n\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    args = parser.parse_args()\n    if not args.check:\n        raise SystemExit(\"Native CARLA orchestration remains unfinished\")\n    print(json.dumps(check(json.loads((HERE / \"config.json\").read_text())), sort_keys=True))\n"
+    },
+    {
+      "path": "road.xodr",
+      "content": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C230259_outside_crosswalk_draft\" version=\"1\" date=\"2026-11-23\" north=\"30\" south=\"-30\" east=\"10\" west=\"-10\" vendor=\"worker\"/><road id=\"1\" name=\"other_vehicle_road\" length=\"60\" junction=\"-1\"><planView><geometry s=\"0\" x=\"0\" y=\"-30\" hdg=\"1.5707963267948966\" length=\"60\"><line/></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\"/></elevationProfile><lanes><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"/></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></right></laneSection></lanes></road></OpenDRIVE>\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C230259__LVMC-11-30-060-A__pedestrian__probe_01\",\n  \"selected_case_id\": \"training__C230259__LVMC-11-30-060-A__pedestrian__probe_01\",\n  \"supported_case_ids\": [\n    \"training__C230259__LVMC-11-30-060-A__pedestrian__probe_01\"\n  ],\n  \"law_id\": \"LVMC-11-30-060-A\",\n  \"cell_id\": \"C230259\",\n  \"actor\": \"pedestrian\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"pedestrian_entry\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"vehicle_approach\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"roadway_crossing\",\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"case\": {\n    \"case_id\": \"training__C230259__LVMC-11-30-060-A__pedestrian__probe_01\"\n  },\n  \"status\": \"unselected_native_draft\",\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"pedestrian_footprint\",\n        \"unit\": \"m\"\n      },\n      {\n        \"name\": \"all_roadway_vehicles_pose_speed\",\n        \"unit\": \"structured\"\n      },\n      {\n        \"name\": \"marked_and_unmarked_crosswalk_context\",\n        \"unit\": \"survey\"\n      },\n      {\n        \"name\": \"original_frame_map\",\n        \"unit\": \"frame\"\n      }\n    ],\n    \"limitations\": [\n      \"Native capture and actual roadway designation not yet proven\",\n      \"Section 11.30.070 designated-place prohibition not yet adjudicated\"\n    ]\n  }\n}\n"
+    },
+    {
+      "path": "tests/test_draft.py",
+      "content": "import json\nfrom pathlib import Path\nimport unittest\nfrom runner import check, request\n\n\nclass Draft(unittest.TestCase):\n    def setUp(self):\n        self.config = json.loads(Path(\"config.json\").read_text())\n\n    def test_exact_contract(self):\n        result = check(self.config)\n        self.assertEqual(result[\"frames\"], 600)\n        expected = 320 if self.config[\"case_id\"].endswith(\"probe_01\") else 140\n        self.assertEqual(request(0, self.config[\"case_id\"])[\"pedestrian_departure_frame\"], expected)\n        self.assertEqual(request(expected, self.config[\"case_id\"])[\"pedestrian_target_speed_mps\"], 1.2)\n\n    def test_wrong_identity_and_frame_rejected(self):\n        bad = dict(self.config, cell_id=\"C0\")\n        with self.assertRaisesRegex(ValueError, \"frozen identity\"):\n            check(bad)\n        with self.assertRaisesRegex(ValueError, \"600-frame\"):\n            request(600, self.config[\"case_id\"])\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "pedestrian_footprint",
+        "unit": "m"
+      },
+      {
+        "name": "all_roadway_vehicles_pose_speed",
+        "unit": "structured"
+      },
+      {
+        "name": "marked_and_unmarked_crosswalk_context",
+        "unit": "survey"
+      },
+      {
+        "name": "original_frame_map",
+        "unit": "frame"
+      }
+    ],
+    "limitations": [
+      "Native capture and actual roadway designation not yet proven",
+      "Section 11.30.070 designated-place prohibition not yet adjudicated"
+    ]
+  },
+  "status": "draft_not_selected"
+}

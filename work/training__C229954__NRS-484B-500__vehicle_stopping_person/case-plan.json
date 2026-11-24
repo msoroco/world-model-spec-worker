@@ -122,31 +122,31 @@
       "name": "dev.regulatory_sign",
       "mandatory": true,
       "source_note": "the devices erected at the hazardous or congested place",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_native_source_contract_unobserved"
     },
     {
       "name": "dev.governs",
       "mandatory": true,
       "source_note": "the designated place",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_native_source_contract_unobserved"
     },
     {
       "name": "drv.standing_or_parked",
       "mandatory": true,
       "source_note": "the vehicle at rest",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_native_source_contract_unobserved"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
       "source_note": "the resting position within it",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_native_source_contract_unobserved"
     },
     {
       "name": "dev.position",
       "mandatory": true,
       "source_note": "where the devices stand, which bounds the place",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_native_source_contract_unobserved"
     }
   ],
   "sources": [
@@ -165,51 +165,81 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Use an official device erected for the hazardous/congested place, record its designated region and stopped vehicle overlap.",
-    "Device presence elsewhere does not establish designation of the exact stopping place.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "Original official device content, authority, actual designated extent and full erection interval not acquired.",
+    "Original hazardous or congested physical facts, person-caused stop and conflict/direction context not acquired.",
+    "Native map route, four camera setup and actual 600-frame source capture are not yet constructed.",
+    "Only synthetic source-binding and controller diagnostic proofs exist; no pinned offline, saved-processing or independent delivery audit exists.",
+    "Legal characterization of hazardous/congested place and any exception is unresolved."
   ],
   "source_observation_mapping": {
     "dev.regulatory_sign": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "original device content and authority record required; only synthetic CPU contract proved",
+      "channels": [
+        "device.content,device.authority_status,device.active_first_frame,device.active_last_frame"
+      ],
       "source_refs": [
-        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json"
+        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "dev.governs": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "original designated-extent document required; only synthetic CPU contract proved",
+      "channels": [
+        "device.designated_polygon_map_m"
+      ],
       "source_refs": [
-        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json"
+        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "original Native 20 Hz motion trace required; only synthetic CPU contract proved",
+      "channels": [
+        "rows[].observed_speed_mps,rest_runs_inclusive"
+      ],
       "source_refs": [
-        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json"
+        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "original Native body footprint and designated polygon required; only synthetic CPU contract proved",
+      "channels": [
+        "rows[].vehicle_footprint_map_m,rest_and_body_overlap_frames"
+      ],
       "source_refs": [
-        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json"
+        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "dev.position": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "original map/device placement required; only synthetic CPU contract proved",
+      "channels": [
+        "device.designated_polygon_map_m"
+      ],
       "source_refs": [
-        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json"
+        "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
+        "native/measurement-contract.json"
       ]
     }
   },
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
   "readiness": "planning_only",
   "physical_prerequisites": "Use an official device erected for the hazardous/congested place, record its designated region and stopped vehicle overlap.",
-  "legal_interpretation_limit": "Device presence elsewhere does not establish designation of the exact stopping place."
+  "legal_interpretation_limit": "Device presence elsewhere does not establish designation of the exact stopping place.",
+  "native_diagnostic": {
+    "status": "synthetic_cpu_proven_source_contract_only",
+    "measurement_contract": "native/measurement-contract.json",
+    "measurement_script": "native/designated_stop.py",
+    "measurement_proof": "native/designated-stop-proof.json",
+    "controller_script": "native/stop_controller.py",
+    "controller_proof": "native/stop-controller-proof.json",
+    "source_claim": "No original Native trace, device designation or camera pixels have been acquired.",
+    "unselected_draft_manifest": "draft-native-manifest.json",
+    "unselected_construction": "draft-native/construction.json",
+    "construction_sha256": "d9497800e4beb5ba783b2fb66a0d6b69db90fa609aebc35443a92cbd6bcd6942",
+    "pinned_offline_log": "native/draft-offline.log",
+    "pinned_offline_log_sha256": "b708e966e1a9f1b1ba847ac60a74e78df494af0f7176a8517806b79d045e3af2",
+    "construction_limit": "Unselected condition A only; actual device/map source, route alignment, encoded videos, sealing, exact saved path and condition B remain."
+  }
 }

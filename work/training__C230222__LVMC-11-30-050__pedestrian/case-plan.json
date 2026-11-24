@@ -179,56 +179,78 @@
   "runtime_uncertainties": [
     "Compare paths across the roadway outside a crosswalk against perpendicular and shortest-to-opposite-curb geometry.",
     "The two permitted route alternatives are disjunctive; a diagonal path may still be shortest in a skewed layout.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "No measured saved evidence or independent acceptance audit.",
+    "Two unselected exact 30-second four-camera Native constructions passed CPU offline; actual CARLA motion and source audit remain unverified.",
+    "Three distinct fallbacks, selected manifest, saved processing, compatibility, independent acceptance and comparison audit remain pending."
   ],
   "source_observation_mapping": {
     "ru.subject": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native runner retains pedestrian identity, transform, frame/time, and four camera frame hashes; saved Native audit is pending.",
+      "channels": [
+        "route-samples.jsonl",
+        "video_frames.jsonl"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
     },
     "st.roadway": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Authored road and curb segments are bound in the draft Native config and route context; actual Native map/pixel audit is pending.",
+      "channels": [
+        "road.xodr",
+        "route-context.json"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
     },
     "st.road_edge": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Authored road and curb segments are bound in the draft Native config and route context; actual Native map/pixel audit is pending.",
+      "channels": [
+        "road.xodr",
+        "route-context.json"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Route meter computes full entry-to-exit heading against origin curb tangent from source positions.",
+      "channels": [
+        "route-samples.jsonl",
+        "route-context.json"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
     },
     "kin.path_length": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Route meter sums frame-to-frame source positions and compares against nearest point on opposite curb segment.",
+      "channels": [
+        "route-samples.jsonl",
+        "route-context.json"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Crosswalk polygon/absence is retained in authored context; exception needs independent Native map/pixel audit.",
+      "channels": [
+        "road.xodr",
+        "route-context.json",
+        "video_frames.jsonl"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
     },
     "kin.position": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native runner retains pedestrian identity, transform, frame/time, and four camera frame hashes; saved Native audit is pending.",
+      "channels": [
+        "route-samples.jsonl",
+        "video_frames.jsonl"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
       ]
@@ -237,5 +259,32 @@
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
   "readiness": "planning_only",
   "physical_prerequisites": "Compare paths across the roadway outside a crosswalk against perpendicular and shortest-to-opposite-curb geometry.",
-  "legal_interpretation_limit": "The two permitted route alternatives are disjunctive; a diagonal path may still be shortest in a skewed layout."
+  "legal_interpretation_limit": "The two permitted route alternatives are disjunctive; a diagonal path may still be shortest in a skewed layout.",
+  "diagnostic_constructions": [
+    {
+      "case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a",
+      "kind": "unselected_cpu_draft",
+      "construction": "draft-route/condition_a/construction.json",
+      "offline_log": "draft-route/condition_a/offline.log",
+      "duration_s": 30,
+      "rate_hz": 20,
+      "four_source_cameras": true
+    },
+    {
+      "case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b",
+      "kind": "unselected_cpu_draft",
+      "construction": "draft-route/condition_b/construction.json",
+      "offline_log": "draft-route/condition_b/offline.log",
+      "duration_s": 30,
+      "rate_hz": 20,
+      "four_source_cameras": true
+    }
+  ],
+  "measurement_prototype": {
+    "source": "native/route_meter.py",
+    "proof": "native/route-meter-proof.json",
+    "source_kind": "synthetic_cpu_fixture",
+    "legal_verdict_assigned": false,
+    "real_native_capture_observed": false
+  }
 }

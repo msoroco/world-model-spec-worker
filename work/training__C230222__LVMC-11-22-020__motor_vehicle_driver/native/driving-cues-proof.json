@@ -1,0 +1,66 @@
+{
+  "format": "c230222-curbside-driving-cues-proof-v1",
+  "script_sha256": "64b6524e99a02e8d806162d33b5b1d4b568976728cce9d8ee0d8c04f9585a79a",
+  "meter_sha256": "f034768cc84c90c611db37073fcfd2606cb601503f30295eb7ffbfa2f89f381e",
+  "positive": {
+    "controlled_fixture": {
+      "source_sha256": {
+        "native-ego-frames.jsonl": "8e18ebdfbeb73c82fb9be1035b9dcb0a5abd30f10fa613b0aedf795c10af59fe",
+        "video_frames.jsonl": "b17c33487b755ca94bf290c3ae43cfb1783c967fc643b8d3fac914e4c00b0bfd",
+        "driving-context.json": "f40035f0d7734846c197888d7d41f2d1e0c10d163ead711ed5c40a832e9cfb36"
+      },
+      "sample_count": 600,
+      "max_abs_yaw_rate_degps": 0,
+      "min_surface_gap_m": 3.0,
+      "min_longitudinal_acceleration_mps2": 0.0,
+      "legal_verdict": null
+    },
+    "erratic_fixture": {
+      "source_sha256": {
+        "native-ego-frames.jsonl": "c4a9812b5dbb45326444af8aebd0985d265591394cd8aa7cca44b4d33dd335ac",
+        "video_frames.jsonl": "b17c33487b755ca94bf290c3ae43cfb1783c967fc643b8d3fac914e4c00b0bfd",
+        "driving-context.json": "f40035f0d7734846c197888d7d41f2d1e0c10d163ead711ed5c40a832e9cfb36"
+      },
+      "sample_count": 600,
+      "max_abs_yaw_rate_degps": 160.0,
+      "min_surface_gap_m": 0.5,
+      "min_longitudinal_acceleration_mps2": -3.0,
+      "legal_verdict": null
+    }
+  },
+  "negative": [
+    {
+      "case": "missing_trace",
+      "rejected": true,
+      "error": "Missing required source: native-ego-frames.jsonl"
+    },
+    {
+      "case": "short_trace",
+      "rejected": true,
+      "error": "Complete 600-frame source required"
+    },
+    {
+      "case": "frame_mismatch",
+      "rejected": true,
+      "error": "Native/video frame join differs"
+    },
+    {
+      "case": "time_mismatch",
+      "rejected": true,
+      "error": "20 Hz time join differs"
+    },
+    {
+      "case": "missing_gap",
+      "rejected": true,
+      "error": "Driving context source incomplete"
+    },
+    {
+      "case": "bad_identity",
+      "rejected": true,
+      "error": "Source identity differs"
+    }
+  ],
+  "source_kind": "synthetic_native_sample",
+  "physical_observation": false,
+  "legal_verdict": null
+}
