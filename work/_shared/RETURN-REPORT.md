@@ -1,8 +1,14 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 21 of 253 assignments are ready and 232 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 46 of 253 assignments are ready and 207 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-24 current owner wave and C382389 repair
+
+At this checkpoint, 46 of 253 result files say ready and 207 say partial. The full strict delivery gate remains unpassed. Three assignment owners are actively constructing/proving C405647, C230222 and C109028; none has been promoted by this entry. C230222's prior two-case scoped static gate passed, but its introductory statutory cross-reference coverage is incomplete, so the owner restored partial and added a same-cell LVMC 11.30.060(A) pair with positive and negative compatibility and recorded-only saved processing. C109028 now has nine selected diagnostic cases with a 2x2 observation sweep and is refreshing public/physical proofs. C405647's six-case primary/fallback matrix passed offline and public diagnostic compatibility; binding, saved processing and audits remain in progress.
+
+Lead is rebuilding C382389's right-only-lane reference/contrast diagnostics against the current runtime. The original repaired lane topology remains an unselected draft. Current-runtime saved analysis excludes derived channels, so the assignment-local finalizer now restores sealed `source_channels` to `channels` with a frame/time join check; the current diagnostic fixture supplies source-hashed `source_channels` and the authored road file. The first public run exposed the channel omission, the second reached conversion and exposed the road omission, and the third reached atom validation and exposed an unsupported `drv.in_intersection` required atom. Current-runtime primary and fallback1 public reference and contrast diagnostics now pass; receipt `current-primary-compatibility-proof.json` SHA-256 `d3a968bc67211801b2ddd62c9186eb5479f99987d9fbd64023a2acc391a3fbd3`. The C382389 assignment-scoped `worker_check.py --complete` exits 0. All eight current repaired candidate bundles pass `runtime.py offline`, bound by `current-offline-matrix-proof.json` SHA-256 `60c7f5259ab797477448d8e2a3f749d3a84c7cebcafc3015edfdd2af79edcbb7`. Public fallback2/fallback3 and original Native physical evidence remain pending. No Native, physical, legal, selected-delivery, or readiness claim follows from these synthetic diagnostics.
 
 ## 2026-11-23 contrast and owner-wave continuation
 

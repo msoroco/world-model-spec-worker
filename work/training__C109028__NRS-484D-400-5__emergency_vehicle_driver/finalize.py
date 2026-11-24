@@ -195,10 +195,12 @@ def finalize(attempt, output):
     dispatch_rows = read_rows(attempt / "dispatch.jsonl")
     native_rows = read_rows(attempt / "native_samples.jsonl")
     capture_rows = read_rows(attempt / "capture/evidence.jsonl")
+    acoustic_report = json.loads(require(attempt, "acoustic-report.json").read_text())
     channel_names = {row["name"] for row in config["recording_description"]["channels"]}
     required_channels = {"ru.emergency_vehicle", "sig.siren", "sig.warning_lamp",
                          "drv.responding_emergency", "kin.velocity", "ru.pedestrian",
-                         "ru.motor_vehicle", "drv.approaching"}
+                         "ru.motor_vehicle", "drv.approaching",
+                         "observer_distance_ft", "other_approach_distance_m"}
     if not required_channels <= channel_names:
         raise ValueError("Mandatory original source channels absent")
     observed = attempt / "observables"
@@ -209,6 +211,9 @@ def finalize(attempt, output):
         for index, (audio_row, dispatch_row, native_row, capture_row) in enumerate(
                 zip(audio_rows, dispatch_rows, native_rows, capture_rows)):
             ego, other = native_row["ego"], native_row["other"]
+            other_body = other["body_vertices_m"]
+            other_center = [sum(vertex[axis] for vertex in other_body) / len(other_body)
+                            for axis in (0, 1)]
             values = {
                 "ru.emergency_vehicle": {"actor_id": ego["actor_id"],
                     "blueprint_id": ego["blueprint_id"],
@@ -230,6 +235,9 @@ def finalize(attempt, output):
                 "drv.approaching": {"before_intersection":
                     ego["center_xy_m"][0] < config["intersection_x_m"],
                     "intersection_x_m": config["intersection_x_m"]},
+                "observer_distance_ft": acoustic_report["distance_ft"],
+                "other_approach_distance_m": math.dist(
+                    other_center, [config["intersection_x_m"], 0.0]),
             }
             if "siren_source" in channel_names:
                 values["siren_source"] = {"audible": audio_row["siren_audible"]}
@@ -246,6 +254,23 @@ def finalize(attempt, output):
             "documented_immediate_pursuit_frames": value["documented_immediate_pursuit_frames"],
             "legal_authorization_verified": False}}, indent=2) + "\n")
     result = physical_result(attempt, result)
+    first_other_body = native_rows[0]["other"]["body_vertices_m"]
+    first_other_center = [sum(vertex[axis] for vertex in first_other_body) /
+                          len(first_other_body) for axis in (0, 1)]
+    result["realized_observables"].update({
+        "observer_distance_ft": {
+            "value": acoustic_report["distance_ft"], "unit": "ft",
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment", "statistic": "first",
+            "sample_window_s": [native_rows[0]["time_s"], native_rows[0]["time_s"]],
+            "reference": "observables/observer_distance_ft.jsonl"},
+        "other_approach_distance_m": {
+            "value": math.dist(first_other_center, [config["intersection_x_m"], 0.0]),
+            "unit": "m",
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame", "statistic": "first",
+            "sample_window_s": [native_rows[0]["time_s"], native_rows[0]["time_s"]],
+            "reference": "observables/other_approach_distance_m.jsonl"}})
     validate_result(result)
     report = {"format": "c109028-saved-source-analysis-v1",
               "case_id": config["case_id"],

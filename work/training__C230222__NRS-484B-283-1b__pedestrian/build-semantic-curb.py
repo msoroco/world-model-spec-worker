@@ -65,6 +65,12 @@ def main():
                   'range_or_domain':'0.5 s or 3.5 s; construction request only','used_by_laws':[LAW]},
                  {'name':'measured_driver_yield_feasibility','kind':'subject_behavior',
                   'range_or_domain':'original source-joined vehicle response and pedestrian entry bracket; judgment unresolved',
+                  'used_by_laws':[LAW]},
+                 {'name':'authored_marked_crossing_relation','kind':'world_setup',
+                  'range_or_domain':'inside or outside the authored marking; original paint and right-of-way unverified',
+                  'used_by_laws':[LAW]},
+                 {'name':'authored_overhead_survey_target_presence','kind':'world_setup',
+                  'range_or_domain':'authored bridge-type survey target present or absent; original pedestrian overhead crossing and access unverified',
                   'used_by_laws':[LAW]}]}
     write(folder/'bindings.json',binding)
     plan=json.loads((HERE/'case-plan.json').read_text())
@@ -77,6 +83,38 @@ def main():
             'variable_assignments':assignments(None),'recording_description':recording,
             'unresolved_judgment_calls':[PHRASE]}]
     for item in plan['cases']:
+        if '__crossref_lvmc_11_30_060_a_' in item['case_id']:
+            label=item['case_id'].rsplit('_',1)[-1]
+            construction=json.loads((HERE/'crossref-060a-native'/label/'construction.json').read_text())
+            cases.append({'case_id':item['case_id'],'target_law_id':LAW,
+                      'target_type':'exception_context',
+                      'rationale':'Compare source footprint inside versus outside the authored marked crossing; original paint and right-of-way remain unverified.',
+                      'paired_probe_id':'c230222-crossref-060a-pair',
+                      'deliberate_differences':['authored_marked_crossing_relation'],
+                      'probe':{'primary_variable':'authored_marked_crossing_relation',
+                               'comparison_or_standard':'source footprint versus authored marking at first curb entry',
+                               'target_value_or_branch':label},
+                      'variable_assignments':{**assignments(.5),
+                          'authored_marked_crossing_relation':{'kind':'world_setup','value':label}},
+                      'recording_description':construction['recording_description'],
+                      'unresolved_judgment_calls':[PHRASE]})
+            continue
+        if '__crossref_lvmc_11_30_060_b_' in item['case_id']:
+            label=item['case_id'].split('__crossref_lvmc_11_30_060_b_',1)[1]
+            construction=json.loads((HERE/'crossref-060b-native'/label/'construction.json').read_text())
+            cases.append({'case_id':item['case_id'],'target_law_id':LAW,
+                      'target_type':'exception_context',
+                      'rationale':'Compare authored overhead survey target presence; actual pedestrian overpass visibility and access require original Native survey.',
+                      'paired_probe_id':'c230222-crossref-060b-pair',
+                      'deliberate_differences':['authored_overhead_survey_target_presence'],
+                      'probe':{'primary_variable':'authored_overhead_survey_target_presence',
+                               'comparison_or_standard':'original road geometry, infrastructure pixels and pedestrian access review',
+                               'target_value_or_branch':label},
+                      'variable_assignments':{**assignments(.5),
+                          'authored_overhead_survey_target_presence':{'kind':'world_setup','value':label}},
+                      'recording_description':construction['recording_description'],
+                      'unresolved_judgment_calls':[PHRASE]})
+            continue
         value=.5 if item['case_id'].endswith('probe_1') else 3.5
         construction=json.loads((HERE/'v2-primary'/item['case_id'].rsplit('__',1)[-1]/'construction.json').read_text())
         cases.append({'case_id':item['case_id'],'target_law_id':LAW,

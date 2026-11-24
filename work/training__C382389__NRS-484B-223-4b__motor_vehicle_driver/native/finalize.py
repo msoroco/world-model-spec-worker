@@ -7,6 +7,7 @@ import json
 import math
 from pathlib import Path
 import subprocess
+import shutil
 
 from measure_crossing import measure_crossing as measure
 
@@ -97,9 +98,20 @@ def finalize(attempt,output):
     observed=actual['straight_through_from_right_only_lane_observed']
     matched=observed is requested
     description=config['recording_description'];recording_evidence=[]
+    source_channels=attempt/'source_channels'
+    if not source_channels.is_dir():
+        raise ValueError('Missing required source: source_channels')
+    channel_output=attempt/'channels'
+    channel_output.mkdir(exist_ok=True)
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'
-        if not (attempt/reference).is_file():raise ValueError('Missing required source: '+reference)
+        source=source_channels/(name+'.jsonl')
+        if not source.is_file():raise ValueError('Missing required source: source_channels/'+name+'.jsonl')
+        channel_rows=rows(source)
+        if len(channel_rows)!=count or any(abs(float(row['time_s'])-float(index['time_s']))>1e-4
+            for row,index in zip(channel_rows,rows(attempt/'video_frames.jsonl'))):
+            raise ValueError('Original source channel frame/time join differs: '+name)
+        shutil.copyfile(source,attempt/reference)
         recording_evidence.append({'name':name,'unit':channel['unit'],'reference':reference})
     for context in description['context_inputs']:
         if not (attempt/'context.json').is_file():raise ValueError('Missing required source: context.json')

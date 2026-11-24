@@ -1,0 +1,130 @@
+{
+  "format": "worker-current-diagnostic-manifest",
+  "assignment_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_unselected_current_cpu_diagnostic",
+  "cases": [
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exclusive right-turn link is authored; original Native execution, lane cue, continuous crossing, tracking, and framing remain to be measured"
+      },
+      "measurement_contract": "current-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382389-right-only-lane-crossing-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "320679ce27caa0896921478d437d5b598e492892c4fa373d64f8af98ad1f12df",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "case-specific lane-link state and full-body straight exit",
+            "failure_condition": "Observed requested-lane link differs from expected state (reference straight link present; contrast straight link absent), or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "straight route start -50 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "current-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "ff6b5de6f5252ae3f81464d03ddcf8d22a0f940a5c5d9cefbb37bf7150fc53e9",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "straight path tracking",
+            "failure_condition": "maximum recorded route error on x=-10..7 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "current-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "424dba68c264e090b04d0240b97d9f4fdfab4597e6327e5e012bbb8f51a80baf",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-only-lane camera framing",
+            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
+          },
+          "changed_knobs": [
+            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "current-candidates/reference/primary/construction.json",
+      "construction_sha256": "216616f0e35f49f49cdfef36bee58fc8a14f5e0444fa013e79d36842604003dc",
+      "fixture_recipe": "work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-reference-recipe.json"
+    },
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast",
+      "kind": "draft_not_selected",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exclusive right-turn link is authored; original Native execution, lane cue, continuous crossing, tracking, and framing remain to be measured"
+      },
+      "measurement_contract": "current-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382389-right-only-lane-crossing-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "67ee6d603e0108576f3fc5b02288b9f23497903da231e8a983bcab3687608b31",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "case-specific lane-link state and full-body straight exit",
+            "failure_condition": "Observed requested-lane link differs from expected state (reference straight link present; contrast straight link absent), or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "straight route start -50 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "current-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "8e14af3b3cd6cc1d89504b152a95bdc03a42507a1ef3aacadb97e24953bd8d50",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "straight path tracking",
+            "failure_condition": "maximum recorded route error on x=-10..7 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "current-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "f514a9d39adda6406017f6c076777eaae88674cb51d72716b0fe880e21ac7a22",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-only-lane camera framing",
+            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
+          },
+          "changed_knobs": [
+            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "current-candidates/contrast/primary/construction.json",
+      "construction_sha256": "8d1cdd9af6720d875db68738817645c226cd0b327ddb3913c640bb666897dfc5",
+      "fixture_recipe": "work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-contrast-recipe.json"
+    }
+  ]
+}

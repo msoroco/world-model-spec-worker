@@ -94,6 +94,24 @@
             "time_window": "full 600-frame 30-second attempt",
             "reference_frame": "original Native frame and 20 Hz timestamp",
             "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
           }
         ],
         "context_inputs": [
@@ -110,22 +128,56 @@
       },
       "variable_assignments": {
         "documented_emergency_call": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": true
         },
         "documented_immediate_pursuit": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "siren_requested": {
           "kind": "controller",
           "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
         }
       },
       "unresolved_judgment_calls": [
         "under normal conditions",
         "actual or suspected violator of the law"
-      ]
+      ],
+      "paired_probe_id": "C109028-call-siren",
+      "deliberate_differences": [
+        "documented_emergency_call"
+      ],
+      "probe": {
+        "primary_variable": "documented_emergency_call",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "probe_a"
+      },
+      "deterministic_branch": {
+        "source_clause": "the siren must not be used except when the vehicle is operated in response to an emergency call or in the immediate pursuit of an actual or suspected violator of the law",
+        "judgment_context": [
+          {
+            "phrase": "under normal conditions",
+            "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment.",
+            "status": "not_exercised",
+            "reason": "This pair isolates emergency-call siren permission; equipment and violator judgments remain open."
+          },
+          {
+            "phrase": "actual or suspected violator of the law",
+            "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources.",
+            "status": "not_exercised",
+            "reason": "This pair isolates emergency-call siren permission; equipment and violator judgments remain open."
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
@@ -216,6 +268,24 @@
             "time_window": "full 600-frame 30-second attempt",
             "reference_frame": "original Native frame and 20 Hz timestamp",
             "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
           }
         ],
         "context_inputs": [
@@ -232,27 +302,61 @@
       },
       "variable_assignments": {
         "documented_emergency_call": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "documented_immediate_pursuit": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "siren_requested": {
           "kind": "controller",
           "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
         }
       },
       "unresolved_judgment_calls": [
         "under normal conditions",
         "actual or suspected violator of the law"
-      ]
+      ],
+      "paired_probe_id": "C109028-call-siren",
+      "deliberate_differences": [
+        "documented_emergency_call"
+      ],
+      "probe": {
+        "primary_variable": "documented_emergency_call",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "probe_b"
+      },
+      "deterministic_branch": {
+        "source_clause": "the siren must not be used except when the vehicle is operated in response to an emergency call or in the immediate pursuit of an actual or suspected violator of the law",
+        "judgment_context": [
+          {
+            "phrase": "under normal conditions",
+            "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment.",
+            "status": "not_exercised",
+            "reason": "This pair isolates emergency-call siren permission; equipment and violator judgments remain open."
+          },
+          {
+            "phrase": "actual or suspected violator of the law",
+            "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources.",
+            "status": "not_exercised",
+            "reason": "This pair isolates emergency-call siren permission; equipment and violator judgments remain open."
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
       "target_law_id": "NRS-484D-400-5",
-      "target_type": "source_diagnostic",
+      "target_type": "boundary_probe",
       "cell_id": "C109028",
       "actor": "emergency_vehicle_driver",
       "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
@@ -338,6 +442,24 @@
             "time_window": "full 600-frame 30-second attempt",
             "reference_frame": "original Native frame and 20 Hz timestamp",
             "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
           }
         ],
         "context_inputs": [
@@ -354,27 +476,46 @@
       },
       "variable_assignments": {
         "documented_emergency_call": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "documented_immediate_pursuit": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": true
         },
         "siren_requested": {
           "kind": "controller",
           "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
         }
       },
       "unresolved_judgment_calls": [
         "under normal conditions",
         "actual or suspected violator of the law"
-      ]
+      ],
+      "paired_probe_id": "C109028-pursuit",
+      "deliberate_differences": [
+        "documented_emergency_call",
+        "documented_immediate_pursuit",
+        "siren_requested"
+      ],
+      "probe": {
+        "primary_variable": "siren_requested",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "pursuit"
+      }
     },
     {
       "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
       "target_law_id": "NRS-484D-400-5",
-      "target_type": "source_diagnostic",
+      "target_type": "boundary_probe",
       "cell_id": "C109028",
       "actor": "emergency_vehicle_driver",
       "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
@@ -460,6 +601,24 @@
             "time_window": "full 600-frame 30-second attempt",
             "reference_frame": "original Native frame and 20 Hz timestamp",
             "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
           }
         ],
         "context_inputs": [
@@ -476,27 +635,46 @@
       },
       "variable_assignments": {
         "documented_emergency_call": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": true
         },
         "documented_immediate_pursuit": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "siren_requested": {
           "kind": "controller",
           "value": false
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
         }
       },
       "unresolved_judgment_calls": [
         "under normal conditions",
         "actual or suspected violator of the law"
-      ]
+      ],
+      "paired_probe_id": "C109028-call_lamps_only",
+      "deliberate_differences": [
+        "documented_emergency_call",
+        "documented_immediate_pursuit",
+        "siren_requested"
+      ],
+      "probe": {
+        "primary_variable": "siren_requested",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "call_lamps_only"
+      }
     },
     {
       "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only",
       "target_law_id": "NRS-484D-400-5",
-      "target_type": "source_diagnostic",
+      "target_type": "boundary_probe",
       "cell_id": "C109028",
       "actor": "emergency_vehicle_driver",
       "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
@@ -582,6 +760,24 @@
             "time_window": "full 600-frame 30-second attempt",
             "reference_frame": "original Native frame and 20 Hz timestamp",
             "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
           }
         ],
         "context_inputs": [
@@ -598,16 +794,971 @@
       },
       "variable_assignments": {
         "documented_emergency_call": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "documented_immediate_pursuit": {
-          "kind": "sourced_context",
+          "kind": "world_setup",
           "value": false
         },
         "siren_requested": {
           "kind": "controller",
           "value": false
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
+        }
+      },
+      "unresolved_judgment_calls": [
+        "under normal conditions",
+        "actual or suspected violator of the law"
+      ],
+      "paired_probe_id": "C109028-ordinary_lamps_only",
+      "deliberate_differences": [
+        "documented_emergency_call",
+        "documented_immediate_pursuit",
+        "siren_requested"
+      ],
+      "probe": {
+        "primary_variable": "siren_requested",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "ordinary_lamps_only"
+      }
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_0",
+      "target_law_id": "NRS-484D-400-5",
+      "target_type": "judgment_sweep",
+      "cell_id": "C109028",
+      "actor": "emergency_vehicle_driver",
+      "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "siren_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and microphone time",
+            "uncertainty": "Audible identity subject to reviewer; 500-foot capability and legal use remain unresolved"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor identity joined to authorization source",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.siren",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.warning_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native Special1 lamp readback",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original dispatch document and per-frame response record",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and center",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original capture participant inventory by frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original counterpart actor identity and body vertices",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body center relative to authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dispatch_authorization",
+            "unit": "structured",
+            "method": "Original dispatch and authorization documents joined to actor identity"
+          }
+        ],
+        "limitations": [
+          "Diagnostic synthetic PCM proves software join only; actual microphone, dispatch and acoustic assessment require original sources",
+          "No legal conclusion or physical success inferred from requests or fixtures"
+        ]
+      },
+      "variable_assignments": {
+        "documented_emergency_call": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "documented_immediate_pursuit": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "siren_requested": {
+          "kind": "controller",
+          "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
+        }
+      },
+      "unresolved_judgment_calls": [
+        "under normal conditions",
+        "actual or suspected violator of the law"
+      ],
+      "paired_probe_id": "C109028-joint-evidence",
+      "deliberate_differences": [
+        "observer_distance_ft",
+        "other_approach_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observer_distance_ft",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "sweep_0"
+      },
+      "sweep_id": "C109028-joint-evidence",
+      "sweep_spec_version": "872eb736f59583b3130c992e0bc28985e7d274ed1522eb3ac1659a252494fe49",
+      "sweep_point": {
+        "observer_distance_ft": 500,
+        "other_approach_distance_m": 10
+      },
+      "selection_rank": 0,
+      "judgment_refs": [
+        {
+          "phrase": "under normal conditions",
+          "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment."
+        },
+        {
+          "phrase": "actual or suspected violator of the law",
+          "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "observer_distance_ft",
+          "observable": "observer_distance_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment",
+            "statistic": "first"
+          }
+        },
+        {
+          "variable": "other_approach_distance_m",
+          "observable": "other_approach_distance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame",
+            "statistic": "first"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_1",
+      "target_law_id": "NRS-484D-400-5",
+      "target_type": "judgment_sweep",
+      "cell_id": "C109028",
+      "actor": "emergency_vehicle_driver",
+      "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "siren_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and microphone time",
+            "uncertainty": "Audible identity subject to reviewer; 500-foot capability and legal use remain unresolved"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor identity joined to authorization source",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.siren",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.warning_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native Special1 lamp readback",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original dispatch document and per-frame response record",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and center",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original capture participant inventory by frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original counterpart actor identity and body vertices",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body center relative to authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dispatch_authorization",
+            "unit": "structured",
+            "method": "Original dispatch and authorization documents joined to actor identity"
+          }
+        ],
+        "limitations": [
+          "Diagnostic synthetic PCM proves software join only; actual microphone, dispatch and acoustic assessment require original sources",
+          "No legal conclusion or physical success inferred from requests or fixtures"
+        ]
+      },
+      "variable_assignments": {
+        "documented_emergency_call": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "documented_immediate_pursuit": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "siren_requested": {
+          "kind": "controller",
+          "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 20
+        }
+      },
+      "unresolved_judgment_calls": [
+        "under normal conditions",
+        "actual or suspected violator of the law"
+      ],
+      "paired_probe_id": "C109028-joint-evidence",
+      "deliberate_differences": [
+        "observer_distance_ft",
+        "other_approach_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observer_distance_ft",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "sweep_1"
+      },
+      "sweep_id": "C109028-joint-evidence",
+      "sweep_spec_version": "872eb736f59583b3130c992e0bc28985e7d274ed1522eb3ac1659a252494fe49",
+      "sweep_point": {
+        "observer_distance_ft": 500,
+        "other_approach_distance_m": 20
+      },
+      "selection_rank": 1,
+      "judgment_refs": [
+        {
+          "phrase": "under normal conditions",
+          "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment."
+        },
+        {
+          "phrase": "actual or suspected violator of the law",
+          "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "observer_distance_ft",
+          "observable": "observer_distance_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment",
+            "statistic": "first"
+          }
+        },
+        {
+          "variable": "other_approach_distance_m",
+          "observable": "other_approach_distance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame",
+            "statistic": "first"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_2",
+      "target_law_id": "NRS-484D-400-5",
+      "target_type": "judgment_sweep",
+      "cell_id": "C109028",
+      "actor": "emergency_vehicle_driver",
+      "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "siren_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and microphone time",
+            "uncertainty": "Audible identity subject to reviewer; 500-foot capability and legal use remain unresolved"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor identity joined to authorization source",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.siren",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.warning_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native Special1 lamp readback",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original dispatch document and per-frame response record",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and center",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original capture participant inventory by frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original counterpart actor identity and body vertices",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body center relative to authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dispatch_authorization",
+            "unit": "structured",
+            "method": "Original dispatch and authorization documents joined to actor identity"
+          }
+        ],
+        "limitations": [
+          "Diagnostic synthetic PCM proves software join only; actual microphone, dispatch and acoustic assessment require original sources",
+          "No legal conclusion or physical success inferred from requests or fixtures"
+        ]
+      },
+      "variable_assignments": {
+        "documented_emergency_call": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "documented_immediate_pursuit": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "siren_requested": {
+          "kind": "controller",
+          "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 600
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
+        }
+      },
+      "unresolved_judgment_calls": [
+        "under normal conditions",
+        "actual or suspected violator of the law"
+      ],
+      "paired_probe_id": "C109028-joint-evidence",
+      "deliberate_differences": [
+        "observer_distance_ft",
+        "other_approach_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observer_distance_ft",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "sweep_2"
+      },
+      "sweep_id": "C109028-joint-evidence",
+      "sweep_spec_version": "872eb736f59583b3130c992e0bc28985e7d274ed1522eb3ac1659a252494fe49",
+      "sweep_point": {
+        "observer_distance_ft": 600,
+        "other_approach_distance_m": 10
+      },
+      "selection_rank": 2,
+      "judgment_refs": [
+        {
+          "phrase": "under normal conditions",
+          "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment."
+        },
+        {
+          "phrase": "actual or suspected violator of the law",
+          "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "observer_distance_ft",
+          "observable": "observer_distance_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment",
+            "statistic": "first"
+          }
+        },
+        {
+          "variable": "other_approach_distance_m",
+          "observable": "other_approach_distance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame",
+            "statistic": "first"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_3",
+      "target_law_id": "NRS-484D-400-5",
+      "target_type": "judgment_sweep",
+      "cell_id": "C109028",
+      "actor": "emergency_vehicle_driver",
+      "rationale": "Source-observed siren and dispatch branch diagnostic; legal outcome open.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "siren_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and microphone time",
+            "uncertainty": "Audible identity subject to reviewer; 500-foot capability and legal use remain unresolved"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor identity joined to authorization source",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.siren",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.warning_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native Special1 lamp readback",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original dispatch document and per-frame response record",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and center",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original capture participant inventory by frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original counterpart actor identity and body vertices",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body center relative to authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dispatch_authorization",
+            "unit": "structured",
+            "method": "Original dispatch and authorization documents joined to actor identity"
+          }
+        ],
+        "limitations": [
+          "Diagnostic synthetic PCM proves software join only; actual microphone, dispatch and acoustic assessment require original sources",
+          "No legal conclusion or physical success inferred from requests or fixtures"
+        ]
+      },
+      "variable_assignments": {
+        "documented_emergency_call": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "documented_immediate_pursuit": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "siren_requested": {
+          "kind": "controller",
+          "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 600
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 20
+        }
+      },
+      "unresolved_judgment_calls": [
+        "under normal conditions",
+        "actual or suspected violator of the law"
+      ],
+      "paired_probe_id": "C109028-joint-evidence",
+      "deliberate_differences": [
+        "observer_distance_ft",
+        "other_approach_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observer_distance_ft",
+        "comparison_or_standard": "source-observed physical evidence; legal judgment open",
+        "target_value_or_branch": "sweep_3"
+      },
+      "sweep_id": "C109028-joint-evidence",
+      "sweep_spec_version": "872eb736f59583b3130c992e0bc28985e7d274ed1522eb3ac1659a252494fe49",
+      "sweep_point": {
+        "observer_distance_ft": 600,
+        "other_approach_distance_m": 20
+      },
+      "selection_rank": 3,
+      "judgment_refs": [
+        {
+          "phrase": "under normal conditions",
+          "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment."
+        },
+        {
+          "phrase": "actual or suspected violator of the law",
+          "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "observer_distance_ft",
+          "observable": "observer_distance_ft",
+          "unit": "ft",
+          "measurement": {
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment",
+            "statistic": "first"
+          }
+        },
+        {
+          "variable": "other_approach_distance_m",
+          "observable": "other_approach_distance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame",
+            "statistic": "first"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__baseline",
+      "target_law_id": "NRS-484D-400-5",
+      "target_type": "baseline",
+      "cell_id": "C109028",
+      "actor": "emergency_vehicle_driver",
+      "rationale": "Unselected ordinary lamps-only reference for canonical semantic comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "siren_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and microphone time",
+            "uncertainty": "Audible identity subject to reviewer; 500-foot capability and legal use remain unresolved"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor identity joined to authorization source",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.siren",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.warning_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native Special1 lamp readback",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original dispatch document and per-frame response record",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and center",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original capture participant inventory by frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original counterpart actor identity and body vertices",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body center relative to authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dispatch_authorization",
+            "unit": "structured",
+            "method": "Original dispatch and authorization documents joined to actor identity"
+          }
+        ],
+        "limitations": [
+          "Diagnostic synthetic PCM proves software join only; actual microphone, dispatch and acoustic assessment require original sources",
+          "No legal conclusion or physical success inferred from requests or fixtures"
+        ]
+      },
+      "variable_assignments": {
+        "documented_emergency_call": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "documented_immediate_pursuit": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "siren_requested": {
+          "kind": "controller",
+          "value": false
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
         }
       },
       "unresolved_judgment_calls": [
@@ -616,6 +1767,203 @@
       ]
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": []
+  "sweep_specs": [
+    {
+      "sweep_id": "C109028-joint-evidence",
+      "target_law_id": "NRS-484D-400-5",
+      "judgment_refs": [
+        {
+          "phrase": "under normal conditions",
+          "note": "Equipment audibility at 500 feet requires a qualified original acoustic assessment."
+        },
+        {
+          "phrase": "actual or suspected violator of the law",
+          "note": "Pursuit purpose and the factual status of a suspected violator require original dispatch and incident sources."
+        }
+      ],
+      "status": "complete",
+      "rationale": "Jointly sample observer distance and other-vehicle approach geometry, retaining original acoustic and incident-source review for legal judgments.",
+      "mode": "joint",
+      "landmarks": [],
+      "axes": [
+        {
+          "variable": "observer_distance_ft",
+          "observable": "observer_distance_ft",
+          "unit": "ft",
+          "min": 500,
+          "max": 600,
+          "spacing": 100,
+          "measurement": {
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment",
+            "statistic": "first"
+          },
+          "range_rationale": "The source clause names 500 feet; 600 feet samples a farther original observer position without a new legal threshold.",
+          "spacing_rationale": "Two endpoints test source binding; no interpolation or legal cutoff is inferred.",
+          "feasibility_evidence": "The acquisition contract accepts independently documented distances at or beyond 500 feet; CPU fixtures verify both endpoint joins."
+        },
+        {
+          "variable": "other_approach_distance_m",
+          "observable": "other_approach_distance_m",
+          "unit": "m",
+          "min": 10,
+          "max": 20,
+          "spacing": 10,
+          "measurement": {
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame",
+            "statistic": "first"
+          },
+          "range_rationale": "Two distinct other-vehicle approach positions in the frozen crossroads sample pursuit proximity evidence without deciding violator status.",
+          "spacing_rationale": "The 10 m separation is an authored physical sampling step, not an immediacy or legal threshold.",
+          "feasibility_evidence": "The second actor can be spawned at distinct positions on the same authored crossing approach; original Native geometry is retained."
+        }
+      ],
+      "variable_assignments": {
+        "documented_emergency_call": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "documented_immediate_pursuit": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "siren_requested": {
+          "kind": "controller",
+          "value": true
+        },
+        "observer_distance_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "other_approach_distance_m": {
+          "kind": "world_setup",
+          "value": 10
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "siren_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and microphone time",
+            "uncertainty": "Audible identity subject to reviewer; 500-foot capability and legal use remain unresolved"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor identity joined to authorization source",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.siren",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "sig.warning_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native Special1 lamp readback",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original dispatch document and per-frame response record",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor velocity and center",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original capture participant inventory by frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original counterpart actor identity and body vertices",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original ego body center relative to authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "50 ms sampling; actual source identity, visibility and legal effect require review"
+          },
+          {
+            "name": "observer_distance_ft",
+            "unit": "ft",
+            "sampling_rate_hz": 20,
+            "method": "Original acoustic observer report joined to each Native frame",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Original observer placement and acoustic conditions require independent physical review"
+          },
+          {
+            "name": "other_approach_distance_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native other vehicle center distance from authored intersection",
+            "time_window": "full 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and 20 Hz timestamp",
+            "uncertainty": "Actor motion and original geometry require independent physical review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dispatch_authorization",
+            "unit": "structured",
+            "method": "Original dispatch and authorization documents joined to actor identity"
+          }
+        ],
+        "limitations": [
+          "Diagnostic synthetic PCM proves software join only; actual microphone, dispatch and acoustic assessment require original sources",
+          "No legal conclusion or physical success inferred from requests or fixtures"
+        ]
+      },
+      "spec_version": "872eb736f59583b3130c992e0bc28985e7d274ed1522eb3ac1659a252494fe49",
+      "planned_case_count": 4,
+      "selection_order": [
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_0",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_1",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_2",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_3"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

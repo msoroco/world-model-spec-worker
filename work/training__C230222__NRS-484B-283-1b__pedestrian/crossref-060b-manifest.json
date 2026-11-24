@@ -1,0 +1,76 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230222__NRS-484B-283-1b__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "unselected_current_runtime_primary_and_fallback_cpu_proof",
+  "cases": [
+    {
+      "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_b_overhead_candidate",
+      "construction": "crossref-060b-native/overhead_candidate/construction.json",
+      "construction_sha256": "e6de1ce418546abd901e5d4e1a6d54e4ea8bb1539e21662fe63d593be7c7cd23",
+      "authored_overhead_candidate": true,
+      "status": "unselected_cpu_construction",
+      "native_overhead_visibility_verified": false,
+      "pedestrian_tunnel_or_overhead_provided_verified": false,
+      "measurement_contract": "crossref-060b-native/overhead_candidate/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-060b-native/overhead_candidate/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native walker spawn may overlap curb geometry; source-measured initial footprint clearance chooses the same spawn/pre-roll fallback in both infrastructure contexts."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "crossref-060b-fallback1/overhead_candidate/construction.json",
+          "construction_sha256": "099d2ec02ac35e1ff2b9cfbf5946b449e58c4490f76e132246161bc46f886c7d",
+          "trigger": {
+            "source": "original_native_pedestrian_footprint_and_road_edge",
+            "metric": "native_initial_footprint_clearance_m_below",
+            "failure_condition": "native_initial_footprint_clearance_m_below 1.25"
+          },
+          "changed_knobs": [
+            "pedestrian spawn and two-meter pre-roll"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_b_no_overhead",
+      "construction": "crossref-060b-native/no_overhead/construction.json",
+      "construction_sha256": "a7f7e579d4a05c357a6a639ebd7247f8cff70513b298f2590d815532dbe04962",
+      "authored_overhead_candidate": false,
+      "status": "unselected_cpu_construction",
+      "native_overhead_visibility_verified": false,
+      "pedestrian_tunnel_or_overhead_provided_verified": false,
+      "measurement_contract": "crossref-060b-native/no_overhead/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-060b-native/no_overhead/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native walker spawn may overlap curb geometry; source-measured initial footprint clearance chooses the same spawn/pre-roll fallback in both infrastructure contexts."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "crossref-060b-fallback1/no_overhead/construction.json",
+          "construction_sha256": "1edff5e6daa4cdae1c357c83b6c0ab7b6490789d973132d906d39982477ae397",
+          "trigger": {
+            "source": "original_native_pedestrian_footprint_and_road_edge",
+            "metric": "native_initial_footprint_clearance_m_below",
+            "failure_condition": "native_initial_footprint_clearance_m_below 1.25"
+          },
+          "changed_knobs": [
+            "pedestrian spawn and two-meter pre-roll"
+          ]
+        }
+      ]
+    }
+  ]
+}

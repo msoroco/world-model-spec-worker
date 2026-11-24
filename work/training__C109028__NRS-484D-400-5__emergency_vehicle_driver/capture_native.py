@@ -104,7 +104,7 @@ def execute(config, output, host, port):
         emergency_bp.set_attribute("role_name", "c109028_emergency_request")
         other_bp.set_attribute("role_name", "c109028_other_driver")
         ego_wp = mapping.get_waypoint_xodr(1090, -1, 15)
-        other_wp = mapping.get_waypoint_xodr(1093, -1, 15)
+        other_wp = mapping.get_waypoint_xodr(1093, -1, config.get("other_spawn_s_m", 15))
         if ego_wp is None or other_wp is None:
             raise RuntimeError("Original crossroads lanes unavailable")
         ego = world.spawn_actor(emergency_bp, ego_wp.transform)

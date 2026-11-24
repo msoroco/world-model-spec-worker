@@ -41,22 +41,36 @@ def audit():
             raise ValueError('Frozen cross-reference content differs: ' + law_id)
         if not row['required_original_observations'] or row['current_curb_pair_proves_applicability'] or row['legal_applicability_conclusion'] is not None:
             raise ValueError('Curb cross-reference overclaims applicability')
-        expected_status = ('authored_native_crosswalk_cpu_geometry_no_native_observation'
-                           if law_id == 'LVMC-11-30-060-A' else
-                           'pending_physical_construction_and_review')
-        if row['same_cell_construction_status'] != expected_status:
-            raise ValueError('Curb cross-reference construction status differs')
         if law_id == 'LVMC-11-30-060-A':
-            branch = json.loads((HERE / 'crosswalk-branch-summary.json').read_text())
-            if (row.get('cpu_construction_summary') != 'crosswalk-branch-summary.json' or
-                branch['crossref_law_id'] != law_id or
-                branch['physical_crossref_cases_constructed'] or
-                branch['legal_applicability_conclusion'] is not None):
-                raise ValueError('Crosswalk CPU construction proof differs')
-    if result['applicability_resolved'] or result['physical_crossref_cases_constructed'] or result['selected_crossref_cases']:
+            expected_status = 'authored_native_crosswalk_600_frame_offline_public_positive_negative_and_saved_unselected'
+            if row['same_cell_construction_status'] != expected_status:
+                raise ValueError('Crosswalk construction status differs')
+            if row.get('cpu_construction_summary') != 'crossref-060a-native/proof.json':
+                raise ValueError('Crosswalk proof path differs')
+            proof = json.loads((HERE / row['cpu_construction_summary']).read_text())
+            if (len(proof['records']) != 2 or not proof['missing_frame_rejected'] or
+                proof['original_native_observed'] or proof['legal_applicability_conclusion'] is not None):
+                raise ValueError('Crosswalk proof scope differs')
+            for record in proof['records']:
+                label = record['case_id'].rsplit('_', 1)[-1]
+                if label not in ('marked', 'outside'):
+                    raise ValueError('Crosswalk case identity differs')
+                folder = HERE / 'crossref-060a-native' / label
+                if record['construction_sha256'] != sha(folder / 'construction.json') or record['source_measurement_sha256'] != sha(folder / 'source-measurement.json'):
+                    raise ValueError('Crosswalk construction or source measurement differs')
+                for name, digest in record['current_runtime_proof_hashes'].items():
+                    if sha(folder / 'proofs' / name) != digest:
+                        raise ValueError('Crosswalk public/saved proof differs')
+                fallback = HERE / 'crossref-060a-fallback1' / label
+                for name, digest in record['fallback1_current_runtime_proof_hashes'].items():
+                    if sha(fallback / 'proofs' / name) != digest:
+                        raise ValueError('Crosswalk fallback proof differs')
+        elif row['same_cell_construction_status'] != 'pending_physical_construction_and_review':
+            raise ValueError('Curb cross-reference construction status differs')
+    if result['applicability_resolved'] or result['physical_crossref_cases_constructed'] != 2 or result['selected_crossref_cases']:
         raise ValueError('Curb statutory coverage falsely marked complete')
     return {'independent_audit': 'pass', 'exact_frozen_crossrefs': 7,
-            'physical_crossref_cases_constructed': 0,
+            'physical_crossref_cases_constructed': 2,
             'legal_applicability_resolved': False, 'selected_crossref_cases': 0}
 
 

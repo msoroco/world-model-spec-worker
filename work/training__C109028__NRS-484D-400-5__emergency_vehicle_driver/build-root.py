@@ -9,7 +9,8 @@ NATIVE = HERE / "native"
 def build():
     config = json.loads((NATIVE / "config.json").read_text())
     config["supported_case_ids"] = [HERE.name + "__" + suffix for suffix in (
-        "probe_a", "probe_b", "pursuit", "call_lamps_only", "ordinary_lamps_only")]
+        "probe_a", "probe_b", "pursuit", "call_lamps_only", "ordinary_lamps_only",
+        "sweep_0", "sweep_1", "sweep_2", "sweep_3")]
     names = ("runner.py", "geometry.py", "motion.py", "capture_native.py",
              "finalize.py", "source_acquisition.py", "measure.py", "audit.py",
              "audit_original.py", "prove.py")

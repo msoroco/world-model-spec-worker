@@ -1,3 +1,9 @@
+## Current 2026-11-24 selected delivery checkpoint
+
+Nine exact selected 600-frame cases are built: probe_a, probe_b, pursuit, call_lamps_only, ordinary_lamps_only, and sweep_0 through sweep_3. The 2x2 joint sweep samples independently documented acoustic observer distance at 500/600 ft and original Native other-vehicle approach distance at 10/20 m. `proposals/semantic-index.json` and all seven stage references validate on the current runtime; nine draft offline checks, nine saved finalizer source-join and missing-audio negatives, nine physical outcome/lifecycle CPU fixtures, four original controlled comparison audits, and a joint sweep audit with three negative mutations pass. Public selected compatibility is being refreshed after adding two source-referenced realized sweep summaries. `result.json` stays partial until all nine selected compatibility and delivery receipts and the exact scoped strict gate pass.
+
+The diagnostic sources are synthetic and cannot prove actual 500-foot normal-condition audibility, authorization, dispatch purpose, a violator, physical completion, real pixels, or a legal outcome. Original Native, microphone PCM, frame-joined audio review, dispatch/authorization and acoustic documents must be acquired and independently reviewed during local execution. All generated scratch stays under `.runtime-work/`.
+
 # NRS-484D-400-5 at C109028
 
 Actor: `emergency_vehicle_driver`. Frozen cell: `intersection` / `emergency_response` / `other_vehicle`.

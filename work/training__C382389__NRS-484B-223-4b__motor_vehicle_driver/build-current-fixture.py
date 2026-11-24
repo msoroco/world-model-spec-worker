@@ -132,7 +132,7 @@ def make_source(label):
     write_rows(output / "capture/evidence.jsonl", evidence)
     write_rows(output / "capture/native/frames.jsonl", frames)
     for name, values in channels.items():
-        write_rows(output / "channels" / (name + ".jsonl"), values)
+        write_rows(output / "source_channels" / (name + ".jsonl"), values)
     write_json(output / "road_geometry.json", geometry)
     write_json(output / "context.json", {"surveyed_right_turn_lane_intersection": geometry})
     (output / "road.xodr").write_bytes((HERE / "native/right_only_road.xodr").read_bytes())
@@ -140,7 +140,7 @@ def make_source(label):
     write_json(output / "capture/manifest.json", {
         "extraction_confirmed": True, "frames": 480,
         "acquisition": "synthetic_diagnostic", "observation_contract_version": 1,
-        "required_observations": ["st.turn_lane", "rel.occupies", "drv.in_intersection"],
+        "required_observations": ["kin.position", "kin.heading"],
         "sources": {"road.xodr": digest(output / "road.xodr"),
                     "trace.jsonl": digest(output / "trace.jsonl")},
         "synthetic_diagnostic": True})
@@ -154,7 +154,7 @@ def make_source(label):
         "native_lane_design_verified": False})
     source_entries = []
     for path in sorted(output.rglob("*")):
-        if path.is_file() and path.name != "road.xodr":
+        if path.is_file():
             source_entries.append({"path": path.relative_to(output).as_posix(),
                                    "source": path.relative_to(ROOT).as_posix(),
                                    "sha256": digest(path)})

@@ -254,6 +254,23 @@ def finalize(attempt, output):
             "documented_immediate_pursuit_frames": value["documented_immediate_pursuit_frames"],
             "legal_authorization_verified": False}}, indent=2) + "\n")
     result = physical_result(attempt, result)
+    first_other_body = native_rows[0]["other"]["body_vertices_m"]
+    first_other_center = [sum(vertex[axis] for vertex in first_other_body) /
+                          len(first_other_body) for axis in (0, 1)]
+    result["realized_observables"].update({
+        "observer_distance_ft": {
+            "value": acoustic_report["distance_ft"], "unit": "ft",
+            "method": "independent calibrated acoustic report tied to original microphone source hash",
+            "time_window": "full recorded acoustic assessment", "statistic": "first",
+            "sample_window_s": [native_rows[0]["time_s"], native_rows[0]["time_s"]],
+            "reference": "observables/observer_distance_ft.jsonl"},
+        "other_approach_distance_m": {
+            "value": math.dist(first_other_center, [config["intersection_x_m"], 0.0]),
+            "unit": "m",
+            "method": "original Native other vehicle body center to authored intersection center",
+            "time_window": "first original synchronized frame", "statistic": "first",
+            "sample_window_s": [native_rows[0]["time_s"], native_rows[0]["time_s"]],
+            "reference": "observables/other_approach_distance_m.jsonl"}})
     validate_result(result)
     report = {"format": "c109028-saved-source-analysis-v1",
               "case_id": config["case_id"],

@@ -9,7 +9,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/probe_a/primary/construction.json",
-      "construction_sha256": "5e50b30a6736632a94b50ee8f68c42f5cbb3043f4494ed4f1c12ef7b3a25213d",
+      "construction_sha256": "0e22ece235be320e4cbd5b202402f6c3461527e6acd360ea70b59a5287a09f01",
       "measurement_contract": "selected-fixture/probe_a/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -22,62 +22,85 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-probe_a-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --output .runtime-work/c109028-probe_a-offline-v6 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "5e50b30a6736632a94b50ee8f68c42f5cbb3043f4494ed4f1c12ef7b3a25213d",
+        "construction_sha256": "0e22ece235be320e4cbd5b202402f6c3461527e6acd360ea70b59a5287a09f01",
         "log": "selected-proof/probe_a/primary/offline.log",
-        "log_sha256": "54941e10a2edd8ae8eee73a28fa746684bcb35d9d6273dc47c6ab9071b05ffae"
-      },
-      "compatibility": {
-        "receipt": "selected-proof/probe_a/primary/compatibility.json",
-        "sha256": "258f516b855ccd3e51eca3e62fc68ed357139ca5e49a5d544177891753ab3e27",
-        "log": "selected-proof/probe_a/primary/analysis.log",
-        "negative_log": "selected-proof/probe_a/primary/negative.log"
-      },
-      "negative": {
-        "log": "selected-proof/probe_a/primary/negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "physical-proof/probe_a/proof.json",
-        "sha256": "db796b763abaaaaac76c0567edbf0a9327d0d7a39260174fcbb0bc24d0a84baa"
+        "log_sha256": "02a39ce379654e59de388130a561c7e44f80d5b27e86a3c61e9c74a77137ce6e"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "delivery_acceptance": {
-        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --negative",
-        "script": "delivery_acceptance.py",
-        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
-        "test_exit_code": 0,
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing independent original Native and physical acceptance source",
-        "test_log": "delivery-proof/probe_a/positive.log",
-        "test_log_sha256": "97a4e2dd8d86a337795caded1805ad6293eb57e206797a4300d7413b6851495a",
-        "negative_log": "delivery-proof/probe_a/negative.log",
-        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_a/proof.json",
+        "sha256": "b1cfbdb844d0bcd99bda68a47cfbc94029c893b582a0976ae7ef3c51f2c2ba8c"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
         "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
-        "test_exit_code": 0,
         "test_log": "selected-proof/probe_a/primary/recorded-only.log",
-        "test_log_sha256": "a845db767570ea50228d2c6a0f01fed888501be04237cd9fb99dc6505011538b"
+        "test_log_sha256": "a845db767570ea50228d2c6a0f01fed888501be04237cd9fb99dc6505011538b",
+        "test_exit_code": 0
       }
     },
     {
@@ -85,7 +108,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/probe_b/primary/construction.json",
-      "construction_sha256": "7123ff8a2ed7d04cf605c4bc2bde3d10c3b049d6f874f2f633ca2a651a37dc29",
+      "construction_sha256": "3ed792bbfc0311e1f5345cacc2deb2460a55b8ddfcbffcac6b3d5e3072c88f41",
       "measurement_contract": "selected-fixture/probe_b/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -98,62 +121,85 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-probe_b-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --output .runtime-work/c109028-probe_b-offline-v6 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "7123ff8a2ed7d04cf605c4bc2bde3d10c3b049d6f874f2f633ca2a651a37dc29",
+        "construction_sha256": "3ed792bbfc0311e1f5345cacc2deb2460a55b8ddfcbffcac6b3d5e3072c88f41",
         "log": "selected-proof/probe_b/primary/offline.log",
-        "log_sha256": "d5140b163453e8b060f568781ce4354f9a71591db7237f512f74438585743271"
-      },
-      "compatibility": {
-        "receipt": "selected-proof/probe_b/primary/compatibility.json",
-        "sha256": "eabe5dbd9093d3333ce01b11272ef0cd79c12ed616e8b85e0c556077fbe9ef90",
-        "log": "selected-proof/probe_b/primary/analysis.log",
-        "negative_log": "selected-proof/probe_b/primary/negative.log"
-      },
-      "negative": {
-        "log": "selected-proof/probe_b/primary/negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "physical-proof/probe_b/proof.json",
-        "sha256": "e5b47340fe65c74b70114ffc89b4ceaa69b021a6da0630a630ff2a425181fe38"
+        "log_sha256": "7fda73f3657776131e4229a87d5ac61933d7b13d27f1f6f3411bf30aa736b418"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "delivery_acceptance": {
-        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --negative",
-        "script": "delivery_acceptance.py",
-        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
-        "test_exit_code": 0,
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing independent original Native and physical acceptance source",
-        "test_log": "delivery-proof/probe_b/positive.log",
-        "test_log_sha256": "3a058e2a9d798a07df3362341f9fb7d8c3835652e8b2f13f633c95bc847f1474",
-        "negative_log": "delivery-proof/probe_b/negative.log",
-        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_b/proof.json",
+        "sha256": "09826b754fceb95d60c592e026120c48577022297ebc01bf76a700a9e33d00c4"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
         "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
-        "test_exit_code": 0,
         "test_log": "selected-proof/probe_b/primary/recorded-only.log",
-        "test_log_sha256": "422eb1dd0fafe5b320bd5093c7b9da7fdc4fca5998a0bd8bde6d54deebcf110e"
+        "test_log_sha256": "422eb1dd0fafe5b320bd5093c7b9da7fdc4fca5998a0bd8bde6d54deebcf110e",
+        "test_exit_code": 0
       }
     },
     {
@@ -161,7 +207,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/pursuit/primary/construction.json",
-      "construction_sha256": "2db46595fae06a8d8cd4417ec7576fd91a92e93b969ef6cbc6997efc9f49b694",
+      "construction_sha256": "1c76c8eb162b3f3b8d44373a9e6f7ab7a192f88d2dfa2fef0fcbe6c4f6ce046d",
       "measurement_contract": "selected-fixture/pursuit/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -174,62 +220,85 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-pursuit-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --output .runtime-work/c109028-pursuit-offline-v6 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "2db46595fae06a8d8cd4417ec7576fd91a92e93b969ef6cbc6997efc9f49b694",
+        "construction_sha256": "1c76c8eb162b3f3b8d44373a9e6f7ab7a192f88d2dfa2fef0fcbe6c4f6ce046d",
         "log": "selected-proof/pursuit/primary/offline.log",
-        "log_sha256": "7f581bd52d94ef4af5db9b662bb73c8add57baac9fc6fe825eda78cbbdae314b"
-      },
-      "compatibility": {
-        "receipt": "selected-proof/pursuit/primary/compatibility.json",
-        "sha256": "1eb8c1168f9dc4315afed9ab6f41d186cf399790f2efcee7bf90fcd755bfa2f1",
-        "log": "selected-proof/pursuit/primary/analysis.log",
-        "negative_log": "selected-proof/pursuit/primary/negative.log"
-      },
-      "negative": {
-        "log": "selected-proof/pursuit/primary/negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "physical-proof/pursuit/proof.json",
-        "sha256": "023f367733588dde3ec3d7347bdf38ae4026be5cee21fc0281cdd2c4a903ce25"
+        "log_sha256": "88865953be5333423458ce736e28a7b2ac7743a70620e6c923ea9a279c902a86"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "delivery_acceptance": {
-        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --negative",
-        "script": "delivery_acceptance.py",
-        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
-        "test_exit_code": 0,
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing independent original Native and physical acceptance source",
-        "test_log": "delivery-proof/pursuit/positive.log",
-        "test_log_sha256": "8c38de2a020023ca159e51612357697c84822269391141d933ee47511a2722ed",
-        "negative_log": "delivery-proof/pursuit/negative.log",
-        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/pursuit/proof.json",
+        "sha256": "6c78e14dda89a2e8b6ab8d4541adc7b02fb7cea336709e5e0bf7c9193e5accef"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
         "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
-        "test_exit_code": 0,
         "test_log": "selected-proof/pursuit/primary/recorded-only.log",
-        "test_log_sha256": "acaa7b92fb16bb3a54b35fe7b2a211f43d90fbf20ab763085245dbe1c266c41c"
+        "test_log_sha256": "acaa7b92fb16bb3a54b35fe7b2a211f43d90fbf20ab763085245dbe1c266c41c",
+        "test_exit_code": 0
       }
     },
     {
@@ -237,7 +306,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/call_lamps_only/primary/construction.json",
-      "construction_sha256": "ae1210f493aa02c91ec8f15abd630d2ef91a26cbe471b25d2a9873c3a723d1b8",
+      "construction_sha256": "2da98ed459e3c9f3273c4e7b41d33090952772754183605943bf061874f4ef97",
       "measurement_contract": "selected-fixture/call_lamps_only/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -250,62 +319,85 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-call_lamps_only-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --output .runtime-work/c109028-call_lamps_only-offline-v6 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "ae1210f493aa02c91ec8f15abd630d2ef91a26cbe471b25d2a9873c3a723d1b8",
+        "construction_sha256": "2da98ed459e3c9f3273c4e7b41d33090952772754183605943bf061874f4ef97",
         "log": "selected-proof/call_lamps_only/primary/offline.log",
-        "log_sha256": "0729d4cecba4158dfd1d324ab9ba8b11bc42fc7583f39aaa36e2575a36a9a939"
-      },
-      "compatibility": {
-        "receipt": "selected-proof/call_lamps_only/primary/compatibility.json",
-        "sha256": "dff42c22313644ce8e309c486c89ad6993780939db51fb274feab58fc2cc41d9",
-        "log": "selected-proof/call_lamps_only/primary/analysis.log",
-        "negative_log": "selected-proof/call_lamps_only/primary/negative.log"
-      },
-      "negative": {
-        "log": "selected-proof/call_lamps_only/primary/negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "physical-proof/call_lamps_only/proof.json",
-        "sha256": "3987af0b154d0423c0f973a87639f6a92dffea279f4ba8a93bca511c8dc12a2c"
+        "log_sha256": "3e5004de583cd520c80c1846d155aca67577be98338b86b7574eefcafedfa05d"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "delivery_acceptance": {
-        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --negative",
-        "script": "delivery_acceptance.py",
-        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
-        "test_exit_code": 0,
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing independent original Native and physical acceptance source",
-        "test_log": "delivery-proof/call_lamps_only/positive.log",
-        "test_log_sha256": "ee2d16f19c8fdbb64038a5f0fd656559432bd07a33c30fee1a1a6ac0cc85e1c2",
-        "negative_log": "delivery-proof/call_lamps_only/negative.log",
-        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/call_lamps_only/proof.json",
+        "sha256": "72de8e58d438c5e3dd39cceb69780c57b8787b3cfa67394b58df5af1fc8b8d7a"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
         "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
-        "test_exit_code": 0,
         "test_log": "selected-proof/call_lamps_only/primary/recorded-only.log",
-        "test_log_sha256": "f033b297d8f71b87b2e78029fed633a3e5f28ec30b0a8db50dd0302106a3c991"
+        "test_log_sha256": "f033b297d8f71b87b2e78029fed633a3e5f28ec30b0a8db50dd0302106a3c991",
+        "test_exit_code": 0
       }
     },
     {
@@ -313,7 +405,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/ordinary_lamps_only/primary/construction.json",
-      "construction_sha256": "10389a3fc9957ab26b0496cdbd8d44857d53c82f388ce4dc531334d36a568179",
+      "construction_sha256": "63e83a45347430b6009bb88053764f1f1b11d42f9bca3e4e27b54a1b62d1e00e",
       "measurement_contract": "selected-fixture/ordinary_lamps_only/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -326,62 +418,481 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-ordinary_lamps_only-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --output .runtime-work/c109028-ordinary_lamps_only-offline-v6 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "10389a3fc9957ab26b0496cdbd8d44857d53c82f388ce4dc531334d36a568179",
+        "construction_sha256": "63e83a45347430b6009bb88053764f1f1b11d42f9bca3e4e27b54a1b62d1e00e",
         "log": "selected-proof/ordinary_lamps_only/primary/offline.log",
-        "log_sha256": "c36ada30a7326bf2da83a4bdb228e6e8b4aa1e98f7da05e31609d77593dc0d4a"
-      },
-      "compatibility": {
-        "receipt": "selected-proof/ordinary_lamps_only/primary/compatibility.json",
-        "sha256": "72547d7ade855ec7d184fcdba2e8706a99cc8a1aeebeca60904022d68c95ec1d",
-        "log": "selected-proof/ordinary_lamps_only/primary/analysis.log",
-        "negative_log": "selected-proof/ordinary_lamps_only/primary/negative.log"
-      },
-      "negative": {
-        "log": "selected-proof/ordinary_lamps_only/primary/negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "physical-proof/ordinary_lamps_only/proof.json",
-        "sha256": "f1b00deec7a3d858585546ea39f3a5ed07c18b198308cb5fe2cc6bf990feb57b"
+        "log_sha256": "973ae2002d4cdc31dc74599ccb22b9854d1e829c254659c8efe59480af0f65ac"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "delivery_acceptance": {
-        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --negative",
-        "script": "delivery_acceptance.py",
-        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
-        "test_exit_code": 0,
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing independent original Native and physical acceptance source",
-        "test_log": "delivery-proof/ordinary_lamps_only/positive.log",
-        "test_log_sha256": "dd6cdb7519eb3eca1e8a8ee8695772a0c518a5da3152cb473ede0748e69c2edf",
-        "negative_log": "delivery-proof/ordinary_lamps_only/negative.log",
-        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/ordinary_lamps_only/proof.json",
+        "sha256": "28a83c6b07beb3dc056d2ceefe93d0542f4862e69f73e498f1e60b69254a2833"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
         "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
-        "test_exit_code": 0,
         "test_log": "selected-proof/ordinary_lamps_only/primary/recorded-only.log",
-        "test_log_sha256": "3b9737998df8242cc9e86d08051da86e00da1dd566751a8028abb6038688a585"
+        "test_log_sha256": "3b9737998df8242cc9e86d08051da86e00da1dd566751a8028abb6038688a585",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_0",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "draft-candidates/sweep_0/primary/construction.json",
+      "construction_sha256": "527dc8bf0a4b0229c6be750da792c7fc3f5842a2d48ed3e8ea37b54be80be36b",
+      "measurement_contract": "selected-fixture/sweep_0/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c109028-saved-source-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/selected-fixture/sweep_0/recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A first original Native attempt is needed to measure route and lamp risk."
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_0 --output .runtime-work/c109028-sweep_0-offline-v6 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "527dc8bf0a4b0229c6be750da792c7fc3f5842a2d48ed3e8ea37b54be80be36b",
+        "log": "selected-proof/sweep_0/primary/offline.log",
+        "log_sha256": "a2827e3d4946e0243f82a68f1d5e5d6a19aadefcfe35ab5de5d906f25cd0beb9"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/sweep_0/proof.json",
+        "sha256": "8e69ce12d4d4fbf5bc74a6c25be46b1c633650dfc0af94736c8af28f8f5ea065"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_0 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_log": "selected-proof/sweep_0/primary/recorded-only.log",
+        "test_log_sha256": "b5b121ae04d81076aaeb69cce9eb23139bd7218938bbf842ff780c36e52e67cb",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_1",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "draft-candidates/sweep_1/primary/construction.json",
+      "construction_sha256": "f7ea4db9d1f8f393c114f0649f6b3e450a1fe129face5e8cfd19d62cf1f9948b",
+      "measurement_contract": "selected-fixture/sweep_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c109028-saved-source-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/selected-fixture/sweep_1/recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A first original Native attempt is needed to measure route and lamp risk."
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_1 --output .runtime-work/c109028-sweep_1-offline-v6 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "f7ea4db9d1f8f393c114f0649f6b3e450a1fe129face5e8cfd19d62cf1f9948b",
+        "log": "selected-proof/sweep_1/primary/offline.log",
+        "log_sha256": "b6fdee94b0f5b75a416b55be14c5bc7c28f625d9e924ec3de7307c511e204839"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/sweep_1/proof.json",
+        "sha256": "0841105baf9fe4303fff628bea637e5768c152aaa2471582b179f688ddde7564"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_log": "selected-proof/sweep_1/primary/recorded-only.log",
+        "test_log_sha256": "6fd31df2ef0c8063f99df8ec7580ab2cc25358256021fe9827303fbb13345886",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_2",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "draft-candidates/sweep_2/primary/construction.json",
+      "construction_sha256": "c82675b09e8b8044bd6d54b09aa23e3b9d7cdf4ba426ca5ddd8cb50b677144a9",
+      "measurement_contract": "selected-fixture/sweep_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c109028-saved-source-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/selected-fixture/sweep_2/recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A first original Native attempt is needed to measure route and lamp risk."
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_2 --output .runtime-work/c109028-sweep_2-offline-v6 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c82675b09e8b8044bd6d54b09aa23e3b9d7cdf4ba426ca5ddd8cb50b677144a9",
+        "log": "selected-proof/sweep_2/primary/offline.log",
+        "log_sha256": "6e2ee1b3edbf46b3a457c7d43bc76a60bf4de83964b2f59acc539da2496bd4a9"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/sweep_2/proof.json",
+        "sha256": "9eafcb15e9876d02b3bdd42ca4088476d828cba4bf87f2352abaa3a6a29bffe3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_log": "selected-proof/sweep_2/primary/recorded-only.log",
+        "test_log_sha256": "1923c2efc2d73926c548df4c18ac7bdf284f8cccbf9b7d1a82fc01a52aef39ce",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_3",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "draft-candidates/sweep_3/primary/construction.json",
+      "construction_sha256": "1f102a7af65ce827f0eacbd820384e02ce5a1fd826abfd29fb2c1fcf6a7cf320",
+      "measurement_contract": "selected-fixture/sweep_3/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c109028-saved-source-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/selected-fixture/sweep_3/recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A first original Native attempt is needed to measure route and lamp risk."
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/draft-execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_3 --output .runtime-work/c109028-sweep_3-offline-v6 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "1f102a7af65ce827f0eacbd820384e02ce5a1fd826abfd29fb2c1fcf6a7cf320",
+        "log": "selected-proof/sweep_3/primary/offline.log",
+        "log_sha256": "424896de7410be49448d4d7f64790e013f75c2d2b965820460c648dea2623308"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "siren_source": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent PCM source plus reviewed siren state joined by original Native frame",
+          "evidence": "original Native frame and microphone time"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original Native actor identity joined to authorization source",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.siren": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Independent 48 kHz PCM recording and source-hashed reviewer observation",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "sig.warning_lamp": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native Special1 lamp readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original dispatch document and per-frame response record",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native actor velocity and center",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "capture_native.py",
+          "method": "Original capture participant inventory by frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_native.py",
+          "method": "Original counterpart actor identity and body vertices",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "drv.approaching": {
+          "entrypoint": "capture_native.py",
+          "method": "Original ego body center relative to authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "observer_distance_ft": {
+          "entrypoint": "source_acquisition.py",
+          "method": "Original acoustic observer report joined to each Native frame",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "other_approach_distance_m": {
+          "entrypoint": "capture_native.py",
+          "method": "Original Native other vehicle center distance from authored intersection",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/sweep_3/proof.json",
+        "sha256": "8c8b89b1d811805c0fef76f2a14111b3c0a53c7655e55527c8b498f146add860"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__sweep_3 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_log": "selected-proof/sweep_3/primary/recorded-only.log",
+        "test_log_sha256": "38af93486dcb173a46754ce1f4eada0a8a9e6cc3eabb0b7e04de973aaef53458",
+        "test_exit_code": 0
       }
     }
   ]
