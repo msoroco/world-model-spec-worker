@@ -8,7 +8,7 @@
       "kind": "delivery",
       "construction": "construction.json",
       "construction_sha256": "556d398a922537b769dfc386429d35933d7775324ef5d3ecf414af1ffb438c90",
-      "status": "draft_exact_primary_and_fallback_offline_passed",
+      "status": "draft_first_primary_compatibility_and_saved_passed",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
@@ -89,6 +89,29 @@
       "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/diagnostic-recipe.json",
       "measurement_procedure": {
         "entrypoint": "lane_change_measurements.py"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "a3fc0bbf1b1ab43a03374c06f4f3241b220bbb349b47be5cf57bf907686cc896",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --output .runtime-work/c144550-compat-primary-contract-v9-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --attempt .runtime-work/c144550-compat-primary-contract-v9-20261123 --output .runtime-work/c144550-primary-saved-v1-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c144550-primary-saved-v1-20261123/v0001/feedback.json",
+        "test_log": "primary-saved-processing.json",
+        "test_log_sha256": "a63f9f6aa2383717e95bd33b117b50b0b1b0af52be822ad4eed2509fd238402b",
+        "test_exit_code": 0
+      },
+      "diagnostic_saved_processing": {
+        "receipt": "primary-saved-processing.json",
+        "sha256": "a63f9f6aa2383717e95bd33b117b50b0b1b0af52be822ad4eed2509fd238402b",
+        "predecessor_manifest_sha256": "43071634a205f32c9438dbb3301f97f1e4f4fed206a4ae5b23c4a4a4015066a9"
       }
     },
     {
