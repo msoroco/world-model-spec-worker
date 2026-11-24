@@ -859,9 +859,9 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
                                       source_regions=map_region_sources,
                                       cache=OUTPUT_ROOT/'state/cache/maps',
                                       complete_map=complete_generated_lanes(source_manifest,native_facts,sha(original/'road.xodr')))
-    from .user_road_profile import prepare_profile_source,project_source_profiles
+    from .user_road_profile import prepare_profile_source,project_source_profiles,source_user_profile_scope
     profile_source=prepare_profile_source(original/'road.xodr',{r['id']:map_sources[r['id']]for r in regions
-        if r['kind']in('roadway','one_way_roadway')and r['id']in map_sources})
+        if r['kind']in('roadway','one_way_roadway')and r['id']in map_sources},static_inventory=static_inventory)
     visibility_lane_ids=_visibility_lane_inventory(original/'road.xodr',source_manifest['sources']['road.xodr'])
     from .roadways import merge_highways
     highway_source_surfaces=[value for value in map_region_sources.values()if 'highway_geometry_method'in value]
@@ -1246,6 +1246,16 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
                 unresolved_grade=final_ids-height_ids if occupancy_single_plane or scoped else final_ids)
             report.setdefault('occupancy_coverage',[]).append(dict(frame=e['original_frame'],**coverage))
             geometry_source_scopes.append(set(occupancy_ids))
+            from .atom_contract import _road_measurement_assessment
+            profile_scope=source_user_profile_scope(scene,profile_source,occupancy_ids)
+            for atom in ('st.grade','st.curvature','st.sight_distance'):
+                assessment=_road_measurement_assessment(scene,atom,'exact',profile_source,occupancy_ids)
+                for track in assessment['not_applicable_tracks']:
+                    decision=dict(profile_scope[track],track=track,atom=atom,frame=e['original_frame'])
+                    if atom=='st.sight_distance':
+                        decision.update(method='complete_source_roadway_lane_domain_and_observed_subject_footprint_occupancy',
+                            reason='Source-verified complete physical lane/Roadway domain and observed subject footprint occupancy establish zero applicable attachments; point position alone is insufficient.')
+                    report.setdefault('evidence_decisions',[]).append(decision)
             report['occupancy_native_single_plane_verified']=occupancy_single_plane
             report['occupancy_native_driving_surface_verified']=occupancy_driving_surface is not None
             report['occupancy_native_contact_sources']=[band['source']for band in occupancy_contact_bands]
@@ -1275,11 +1285,11 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
         # Conversion already retains all original frames. A separate atom audit
         # validates required values, not only presence in a capability manifest.
         scenes=json.loads((output/'trace.json').read_text())['scenes']
-        original_coverage=required_coverage(required,capability,scenes,inventory_projection,entrance_refs,structure_source_ids=geometry_source_scopes)
+        original_coverage=required_coverage(required,capability,scenes,inventory_projection,entrance_refs,structure_source_ids=geometry_source_scopes,user_profile_source=profile_source)
         # Approved handoff 4.7 keeps human direction unsupported; never infer
         # no officer or make this deferred capability a common acquisition gate.
         deferred={'dev.human_direction'} & required if capability['atoms'].get('dev.human_direction')=='absent' else set()
-        coverage=required_coverage(required-deferred,capability,scenes,inventory_projection,entrance_refs,structure_source_ids=geometry_source_scopes)
+        coverage=required_coverage(required-deferred,capability,scenes,inventory_projection,entrance_refs,structure_source_ids=geometry_source_scopes,user_profile_source=profile_source)
         report['original_atom_coverage']=original_coverage
         report['original_explicit_requests_satisfied']=original_coverage['passed']
         report['deferred_required_observations']=sorted(deferred)
@@ -2010,6 +2020,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
     from .vehicle_configuration import load_single_chassis,project_single_chassis
     single_chassis=load_single_chassis(evidence)
     field_applicability=collections.Counter()
+    report_decisions=[]
     output.parent.mkdir(parents=True,exist_ok=True)
     lane_fields={ident:value['lane'] for ident,value in fields.items() if value.get('lane')}
     lane_entry_applicability={}
@@ -2020,10 +2031,10 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
     for ident,pieces in segments.items():
         for piece,_ in pieces:
             if ident in lane_entry_applicability:lane_entry_applicability[piece['id']]=lane_entry_applicability[ident]
-    from .user_road_profile import prepare_profile_source,project_source_profiles
+    from .user_road_profile import prepare_profile_source,project_source_profiles,source_user_profile_scope
     profile_source=prepare_profile_source(evidence.path('road.xodr'),
         {ident:value['_source_road_ids']for ident,value in fields.items()
-         if value.get('_source_road_ids')and value.get('_roadway_source')and'roadway'in value.get('_verified_structure_kinds',())})
+         if value.get('_source_road_ids')and value.get('_roadway_source')and'roadway'in value.get('_verified_structure_kinds',())},static_inventory=static_inventory)
     static_entrance=entrance.get('static',{})
     from shapely import prepare
     prepare([v['_way_geometry']for v in fields.values()if '_way_geometry'in v])
@@ -2211,7 +2222,19 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             missing.update(gaps(scene,set(required)-{'sig.hand_signal'},capability=capabilities,
                                 static_inventory=static_inventory,limitations=processing_limits,
                                 lane_entry_applicability=lane_entry_applicability,
-                                applicability=field_applicability,structure_source_ids=source_ids))
+                                applicability=field_applicability,structure_source_ids=source_ids,
+                                user_profile_source=profile_source))
+            from .atom_contract import _road_measurement_assessment
+            profile_scope=source_user_profile_scope(scene,profile_source,source_ids)
+            for atom in ('st.grade','st.curvature','st.sight_distance'):
+                assessment=_road_measurement_assessment(scene,atom,'exact',profile_source,source_ids)
+                for track in assessment['not_applicable_tracks']:
+                    field_applicability[atom+':verified_not_applicable']+=1
+                    decision=dict(profile_scope[track],track=track,atom=atom)
+                    if atom=='st.sight_distance':
+                        decision.update(method='complete_source_roadway_lane_domain_and_observed_subject_footprint_occupancy',
+                            reason='Source-verified complete physical lane/Roadway domain and observed subject footprint occupancy establish zero applicable attachments; point position alone is insufficient.')
+                    report_decisions.append(decision)
             if delta and stream is None:
                 stream=stack.enter_context(output.open('w'))
                 stream.write('{"scenes":[')
@@ -2256,7 +2279,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
         'occupancy_native_profile_surface_verified':profile_certificate is not None,
         'native_profile_surface_source':({key:profile_certificate[key] for key in ('source','sha256','road_id','coordinate_precision_decimals')} if profile_certificate else None),
         'region_replacements':replacements,
-        'region_geometry_sources':{ident:value.get('_road_edge_geometry_source',value.get('_centre_line_source',value.get('_stop_line_geometry_source',value.get('_crosswalk_geometry_source',value.get('_highway_geometry_source',value.get('_obstruction_geometry_source',value.get('_authored_surface_role_source',value.get('_authored_native_ground_source'))))))))for ident,value in fields.items()if any(key in value for key in ('_road_edge_geometry_source','_centre_line_source','_stop_line_geometry_source','_crosswalk_geometry_source','_highway_geometry_source','_obstruction_geometry_source','_authored_surface_role_source','_authored_native_ground_source'))},
+        'region_geometry_sources':{ident:value.get('_road_edge_geometry_source',value.get('_centre_line_source',value.get('_stop_line_geometry_source',value.get('_crosswalk_geometry_source',value.get('_highway_geometry_source',value.get('_obstruction_geometry_source',value.get('_authored_surface_role_source',value.get('_authored_native_ground_source',value.get('_shared_flat_lane_surface_source')))))))))for ident,value in fields.items()if any(key in value for key in ('_road_edge_geometry_source','_centre_line_source','_stop_line_geometry_source','_crosswalk_geometry_source','_highway_geometry_source','_obstruction_geometry_source','_authored_surface_role_source','_authored_native_ground_source','_shared_flat_lane_surface_source'))},
         'structural_identity':{
             'identity_replacements_per_frame_by_kind':dict(collections.Counter(
                 r['kind']for r in first.get('structures',[])if r['id']in replacements)),
@@ -2264,7 +2287,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             'source_verified_region_identities':len(identities)},
         'handoff':list(dict.fromkeys(issues)), 'required_field_gaps':dict(missing),
         'processing_limits':dict(processing_limits),
-        'field_applicability':dict(field_applicability),
+        'field_applicability':dict(field_applicability),'evidence_decisions':report_decisions,
         'coverage_units':{'required_field_gaps':'frames with at least one missing applicable supported value',
                           'processing_limits':'frames with the named capability, inventory, or applicability limitation'},
         'required_measurements_complete':not missing and not diagnostics.get('acceleration_comparison_unresolved') and not evidence.problems and not context.report().get('issues')

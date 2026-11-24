@@ -78,7 +78,7 @@ def project_user_profiles(scene,roads,bindings):
  return diagnostics
 
 
-def prepare_profile_source(path,roadway_sources):
+def prepare_profile_source(path,roadway_sources,*,static_inventory=None):
  """Compile existing Native Driving geometry once; no observer or simulator."""
  if path is None:return {'roads':{},'lanes':[],'roadway_sources':{},'missing_source':'missing_original_road_map'}
  from .geometry import static_map
@@ -89,7 +89,40 @@ def prepare_profile_source(path,roadway_sources):
   original=source.get(region['id'],{})
   if region['kind']=='lane'and original.get('road_id')is not None and region.get('boundary'):
    lanes.append((original['road_id'],Polygon(region['boundary'])))
- return {'roads':compile_profiles(path),'lanes':lanes,'roadway_sources':roadway_sources}
+ result={'roads':compile_profiles(path),'lanes':lanes,'roadway_sources':roadway_sources}
+ # The inventory was validated by the existing source reader, not inferred
+ # from an empty point query. Match its exact source map and all instances.
+ import hashlib
+ from shapely.ops import unary_union
+ receipt=static_inventory or {};contract=receipt.get('kind_inventory_contracts',{}).get('roadway',{})
+ method=contract.get('method');instances=contract.get('instances',[])
+ mapping={i['region']:set(i.get('native_road_ids',[]))for i in instances if type(i.get('region'))is int}
+ expected={int(k):set(v)for k,v in roadway_sources.items()};map_hash=hashlib.sha256(path.read_bytes()).hexdigest()
+ complete=(method in ('complete_native_roadway_surfaces_v1','complete_physical_role_roadway_surfaces_v1')
+  and receipt.get('scope')=='entire_recorded_map'and receipt.get('constant_during_recording')is True
+  and contract.get('scope')=='entire_recorded_map'and contract.get('constant_during_recording')is True
+  and receipt.get('map_sha256')==contract.get('map_sha256')==contract.get('evidence',{}).get('road.xodr')==map_hash
+  and not contract.get('unresolved')and not receipt.get('unresolved_kinds',{}).get('roadway')
+  and len(mapping)==len(instances)==receipt.get('kinds',{}).get('roadway',{}).get('count')
+  and mapping==expected and bool(mapping)
+  and all(i.get('kind')=='roadway'and isinstance(i.get('native_road_ids'),list)and i['native_road_ids']and all(type(v)is int for v in i['native_road_ids'])for i in instances)
+  and sum(len(i['native_road_ids'])for i in instances)==len(set().union(*mapping.values()))
+  and set().union(*mapping.values())==set(contract.get('native_road_ids',[])))
+ if complete:
+  from .adapter import rounded
+  # Use the exported Roadway geometry, rather than rebuilding it from Lane
+  # rings: their collinear sampling is simplified before serialization at
+  # different points, so rounding oblique lanes can otherwise create tiny
+  # differences that falsely make a complete roadway domain unknown.
+  domain_roads=[(source[r['id']]['road_id'],Polygon(rounded(r['boundary'])))
+   for r in native if r.get('kind')=='roadway'and r.get('boundary')
+   and source.get(r['id'],{}).get('road_id')is not None]
+  shapes={i:unary_union([shape for rid,shape in domain_roads if rid in ids])for i,ids in mapping.items()}
+  if all(not shape.is_empty and shape.is_valid for shape in shapes.values()):
+   result['roadway_domain']={'shapes':shapes,'time_window_s':contract.get('time_window_s'),
+    'method':method,'map_sha256':map_hash,'source_refs':{name:digest for name,digest in contract['evidence'].items()if name in ('road.xodr','runner.py','construction.json','scenario_geometry.json','actual_scene_identity.json')},
+    'lane_shapes':{r['id']:Polygon(rounded(r['boundary']))for r in native if r.get('kind')=='lane'and source.get(r['id'],{}).get('road_id')in set().union(*mapping.values())}}
+ return result
 
 def _station(road,point):
  candidates=[]
@@ -134,3 +167,44 @@ def project_source_profiles(scene,source):
  if source.get('missing_source'):
   for row in rows:row['reason']=source['missing_source']
  return rows
+
+
+def source_user_profile_scope(scene,source,source_ids):
+ """Assess a complete source Roadway domain, never guess an absent binding."""
+ from shapely.geometry import Point,Polygon
+ domain=(source or {}).get('roadway_domain');users=scene.get('users',[])
+ result={u['track']:{'status':'unknown','reason':'incomplete_roadway_domain'}for u in users}
+ if len(result)!=len(users):raise ValueError('Duplicate user identity in profile scope')
+ if not domain or source_ids is None:return result
+ period=domain.get('time_window_s')
+ if not isinstance(period,list)or len(period)!=2 or not all(finite(v)for v in period)or not finite(scene.get('t')) or not round(period[0]*1000)<=scene['t']<=round(period[1]*1000):return result
+ regions=scene.get('structures',[]);ids=[r['id']for r in regions]
+ if len(set(ids))!=len(ids):raise ValueError('Duplicate structure identity in profile scope')
+ roadways={r['id']:r for r in regions if r.get('kind')in('roadway','one_way_roadway')}
+ shapes=domain['shapes']
+ if set(roadways)!=set(shapes)or not set(shapes)<=set(source_ids):return result
+ for ident,region in roadways.items():
+  boundary=region.get('boundary')
+  if not isinstance(boundary,list)or len(boundary)<3 or any(not isinstance(p,list)or len(p)!=2 or not all(finite(v)for v in p)for p in boundary):return result
+  shape=Polygon(boundary)
+  if shape.is_empty or not shape.is_valid or not shape.equals(shapes[ident]):return result
+ from .compatibility import LANES
+ lane_shapes=domain.get('lane_shapes',{});lanes={r['id']:r for r in regions if r.get('kind')in LANES}
+ lane_complete=bool(lane_shapes)and set(lanes)==set(lane_shapes)and set(lanes)<=set(source_ids)
+ if lane_complete:
+  for ident,region in lanes.items():
+   boundary=region.get('boundary')
+   if not isinstance(boundary,list)or len(boundary)<3 or any(not isinstance(p,list)or len(p)!=2 or not all(finite(v)for v in p)for p in boundary):lane_complete=False;break
+   shape=Polygon(boundary)
+   if shape.is_empty or not shape.is_valid or not shape.equals(lane_shapes[ident]):lane_complete=False;break
+ for user in users:
+  pos=user.get('kin',{}).get('position')
+  if not isinstance(pos,list)or len(pos)!=2 or not all(finite(v)for v in pos):continue
+  candidates=sorted(i for i,shape in shapes.items()if shape.covers(Point(pos)))
+  result[user['track']]={'status':'not_applicable'if not candidates else'applicable',
+   'reason':'source_verified_off_all_roadways'if not candidates else'physical_roadway_contains_user',
+   'roadway_candidates':candidates,'t':scene['t'],'position':list(pos),
+   'source_refs':domain['source_refs'],'method':domain['method'],
+   'complete_physical_lane_domain':lane_complete,
+   'applicable_region_ids':sorted(set(shapes)|set(lane_shapes))}
+ return result

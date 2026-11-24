@@ -6,14 +6,16 @@ from batch_pipeline.speed_policy import MPH_MPS
 
 
 def measured_samples(trace, mapping, first, end):
+    from traffic_spec_adapter.adapter import measured_kinematics
     if len(trace)!=len(mapping):raise ValueError('Speed/video frame count mismatch')
     selected=[]
     for i in range(first,end):
         t,m=trace[i],mapping[i]
         if t['frame']!=m['carla_frame'] or abs(t['time_s']-m['time_s'])>1e-6:
             raise ValueError('Speed/video original frame join mismatch')
-        if not math.isfinite(t['speed_mps']):raise ValueError('Nonfinite measured speed')
-        selected.append(t['speed_mps'])
+        observed=measured_kinematics({'velocity_mps':t.get('velocity_mps')})
+        if 'speed' not in observed:raise ValueError('Measured horizontal speed requires original velocity')
+        selected.append(observed['speed'])
     return selected
 
 

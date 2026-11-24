@@ -180,9 +180,10 @@ def validate_required_atoms(required, library, source):
         raise ValueError('Unknown required atom IDs at '+str(source)+': '+', '.join(invalid))
 
 
-def required_coverage(required, capability, scenes, inventory_observations=None, entrance_references=None, *, structure_source_ids=None):
+def required_coverage(required, capability, scenes, inventory_observations=None, entrance_references=None, *, structure_source_ids=None, user_profile_source=None):
     """Check source scope plus per-frame values, never just a decoder receipt."""
     required=set(required)
+    if structure_source_ids is not None and len(structure_source_ids)!=len(scenes):raise ValueError('Source geometry scope does not cover every scene')
     checks = {}; missing = []; scopes=None
     for atom in sorted(set(required)):
         inventory = None
@@ -244,7 +245,10 @@ def required_coverage(required, capability, scenes, inventory_observations=None,
                     if domain is None or any(s.get('kind') == kind for s in scene.get(domain, [])):
                         raise ValueError('Verified absence contradicts current Core entities')
                     continue
-                if not _observed(scene, atom, cap,scopes[index]if scopes is not None else None):
+                known=(_road_measurement_assessment(scene,atom,cap,user_profile_source,
+                       structure_source_ids[index]if structure_source_ids is not None else None)['known']if atom in ('st.grade','st.curvature','st.sight_distance')else
+                       _observed(scene,atom,cap,scopes[index]if scopes is not None else None))
+                if not known:
                     reason = 'unknown_inventory' if receipt else 'missing_observation'; break
         checks[atom] = {'passed': reason is None, 'capability': cap, 'reason': reason}
         if inventory is not None:
@@ -299,6 +303,11 @@ def _observation_scope(scene, source_ids=None, geometry_required=False):
     return {'geometry':geometry,'roadway':status,'occupied_regions':[by[i]for i in occupied if i in by]}
 
 
+def _structure_kind_matches(kind, requested):
+    # Current Core: oneWayRoadway directly refines roadway (Structure.lean).
+    return kind == requested or requested == 'roadway' and kind == 'one_way_roadway'
+
+
 def observed(scene, atom, cap, *, structure_source_ids=None):
     scope=_observation_scope(scene,structure_source_ids,atom=='st.region_geometry')if atom=='st.region_geometry'else None
     return _observed(scene,atom,cap,scope)
@@ -336,9 +345,7 @@ def _observed(scene, atom, cap, scope=None):
                        if region.get('kind') in WAY_CARRIER_KINDS)
         if term=='region_geometry':return bool(scope['geometry'])
         if term in ('curvature','grade'):
-            field='road_'+term
-            return bool(users)and all(u.get(field)is not None and
-                (term!='grade'or u.get('kin',{}).get('heading')is not None)for u in users)
+            return _road_measurement_assessment(scene,atom,cap,None,None)['known']
         if term=='sight_distance':
             occupied={r for t,r in scene.get('occupies',[])if t==scene.get('subject')}
             relevant=[r for r in structures if r['id']in occupied and r.get('kind')in ('lane','roadway','one_way_roadway')]
@@ -352,7 +359,8 @@ def _observed(scene, atom, cap, scope=None):
             return bool(lanes) and all(s.get('lane',{}).get(field) is not None for s in lanes)
         # Presence assertions are supported only by observed entities; empty-domain
         # absence needs a separately verified complete inventory.
-        return any(s['kind']==term and term not in s.get('unobserved_kinds', []) for s in structures)
+        return any(_structure_kind_matches(s['kind'],term) and term not in s.get('unobserved_kinds', [])
+                   and s['kind'] not in s.get('unobserved_kinds', []) for s in structures)
     if family == 'dev':
         devices=scene.get('devices', [])
         if term in ('position','governs'):return all(d.get(term) is not None for d in devices)
@@ -370,7 +378,7 @@ def _observed(scene, atom, cap, scope=None):
     return False
 
 
-def gaps(scene, required, *, capability=None, static_inventory=None, limitations=None, lane_entry_applicability=None, applicability=None, structure_source_ids=None):
+def gaps(scene, required, *, capability=None, static_inventory=None, limitations=None, lane_entry_applicability=None, applicability=None, structure_source_ids=None, user_profile_source=None):
     """Conservative field diagnostics, separate from inventory and rule support."""
     required=set(required);scope=None
     out=[]
@@ -386,7 +394,8 @@ def gaps(scene, required, *, capability=None, static_inventory=None, limitations
         inventory=(static_inventory or {}).get('kinds',{}).get(inventory_kind)
         if family in ('st','dev') and inventory is not None and inventory['count']==0:
             entities=scene.get('devices' if family=='dev' else 'structures',[])
-            if any(entity.get('kind')==inventory_kind for entity in entities):
+            if any(_structure_kind_matches(entity.get('kind'),inventory_kind) if family=='st'
+                   else entity.get('kind')==inventory_kind for entity in entities):
                 raise ValueError('Verified zero inventory contradicts present '+inventory_kind)
             continue
         if atom in ('dev.stop_sign','dev.yield_sign','dev.regulatory_sign','dev.speed_limit_sign','dev.lane_control_signal') and not any(
@@ -406,9 +415,13 @@ def gaps(scene, required, *, capability=None, static_inventory=None, limitations
         elif atom=='st.entrance_of':
             marks=[r for r in scene.get('structures',[])if r['kind']in ('stop_line','crosswalk')]
             known=all(r.get('entrance_of')is not None for r in marks)
-        elif atom in ('st.grade','st.curvature'):
-            known=_observed(scene,atom,cap)
-            if applicability is not None:applicability[atom+':'+('observed_user_profiles'if known else'unknown_user_profile')]+=1
+        elif atom in ('st.grade','st.curvature','st.sight_distance'):
+            assessment=_road_measurement_assessment(scene,atom,cap,user_profile_source,structure_source_ids)
+            known=assessment['known']
+            if applicability is not None:
+                status=('unknown'if not known else'applicable_domain_complete_with_not_applicable'
+                        if assessment['not_applicable_tracks']else'observed_value')
+                applicability[atom+':'+status]+=1
         elif atom=='st.on_way':
             known=_observed(scene,atom,cap,scope)
         elif atom=='st.sight_along_way':
@@ -426,3 +439,31 @@ def gaps(scene, required, *, capability=None, static_inventory=None, limitations
         else:known=_observed(scene,atom,cap,scope)
         if not known:out.append(atom)
     return out
+
+
+
+def _road_measurement_assessment(scene,atom,cap,source,source_ids):
+ """One applicable-domain predicate for streaming/final coverage and reports."""
+ from .user_road_profile import finite,source_user_profile_scope
+ users=scene.get('users',[]);scope=source_user_profile_scope(scene,source,source_ids)
+ unknown={'known':False,'not_applicable_tracks':[]}
+ if atom=='st.sight_distance':
+  if _observed(scene,atom,cap):return {'known':True,'not_applicable_tracks':[]}
+  subject=scene.get('subject');decision=scope.get(subject,{})
+  if decision.get('status')!='not_applicable'or not decision.get('complete_physical_lane_domain')or subject not in scene.get('occupancy_observed',[]):return unknown
+  tracks={u['track']for u in users};ids={r['id']for r in scene.get('structures',[])}
+  pairs=scene.get('occupies',[])
+  if any(not isinstance(p,list)or len(p)!=2 or p[0]not in tracks or p[1]not in ids for p in pairs):return unknown
+  if any(t==subject and r in decision['applicable_region_ids']for t,r in pairs):return unknown
+  return {'known':True,'not_applicable_tracks':[subject]}
+ if cap=='subject':users=[u for u in users if u['track']==scene.get('subject')]
+ exempt=[];field='road_'+atom.split('.')[1]
+ for user in users:
+  heading=user.get('kin',{}).get('heading')
+  if atom=='st.grade'and (not isinstance(heading,list)or len(heading)!=2 or not all(finite(v)for v in heading)or not any(heading)):return unknown
+  value=user.get(field)
+  if value is not None:
+   if not finite(value)or atom=='st.curvature'and value<0:return unknown
+  elif scope.get(user['track'],{}).get('status')=='not_applicable':exempt.append(user['track'])
+  else:return unknown
+ return {'known':bool(users),'not_applicable_tracks':exempt}

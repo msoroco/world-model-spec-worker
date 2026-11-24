@@ -49,6 +49,7 @@ def audit_set(root, set_id):
     """
     import hashlib
     import json
+    from recording_store import sha as file_sha
     from pathlib import Path
     root = Path(root).resolve()
     sources, gaps = {}, []
@@ -106,8 +107,7 @@ def audit_set(root, set_id):
                     if result.get('diagnostic_fixture') or result.get('provenance_kind')=='synthetic_fixture':
                         gaps.append('Synthetic evidence cannot establish coverage: '+member['recording_id'])
                     if trace.exists():
-                        with trace.open('rb') as stream:
-                            checksum=hashlib.file_digest(stream,'sha256').hexdigest()
+                        checksum=file_sha(trace)
                         sources[str(trace.relative_to(root))]=checksum
                         if checksum!=metadata.get('trace_sha256'):gaps.append('Canonical trace hash differs: '+member['recording_id'])
             judgment=published.get('judgment_sweep') or case.get('target_type')=='judgment_sweep'

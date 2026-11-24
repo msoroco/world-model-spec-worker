@@ -1,4 +1,6 @@
-Read AGENT_PROMPT.md first. Its completion and scheduling policy supersedes conflicting continuation guidance below.
+# Start or resume
+
+Read AGENT_PROMPT.md and RUNTIME_REFRESH.md, then follow the current environment and package instructions below. For startup run runtime.py verify --runtime runtime and runtime.py preflight. Defer ordinary whole-batch worker_check.py and the whole-batch strict gate while PREVIOUS_READINESS.json contains retained completions; use assignment-scoped checks for the unfinished package you own. Retained completion migration is not a startup task.
 
 # Starting prompt
 

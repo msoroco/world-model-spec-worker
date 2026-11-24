@@ -432,7 +432,7 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                       for cell in catalog['cells']]})
         for value in partition_values:
             write(out / 'partitions' / (value['partition_id'] + '.json'), value)
-        runtime = _runtime(project, out)
+        runtime = _runtime(project, out, return_branch='worker/' + batch_id)
         batch = {'format': 'worker-batch', 'mode':'six_step_preparation', 'runtime':runtime,
                  'full_branch_coverage_required': True, 'gpu_ready_required': True,
                  'law_split_version': read(root/'sets/index.json').get('law_split_version') if (root/'sets/index.json').is_file() else None,
@@ -789,7 +789,7 @@ def import_return(root, repo, batch_id):
         pass  # shared implementation is materialized by canonical inline construction files
     # Preserve the worker's portable execution layout locally.  The flattened
     # assignment imports above support stage adoption; this complete checkout
-    # supplies runtime.py, overlay.py, inputs and work/_shared without Git or
+    # supplies runtime.py, inputs and work/_shared without Git or
     # access to the remote worker repository.  Runtime scratch stays in state/.
     local_checkout = operation_directory(root, batch_id, package, 'local-checkout')
     if local_checkout.exists():
@@ -821,7 +821,7 @@ def import_return(root, repo, batch_id):
     return receipt
 
 
-def _runtime(project, out):
+def _runtime(project, out, return_branch='worker/unassigned'):
     from .export_runtime import export as export_pipeline_runtime
     runtime = out/'runtime'
     export_pipeline_runtime(project, runtime)
@@ -832,13 +832,15 @@ def _runtime(project, out):
         _copy_text(project/'scenario_pipeline/docs'/doc, runtime/'docs'/doc)
     from batch_pipeline.stages import CONTRACTS
     write(runtime/'stage_contracts.json', CONTRACTS)
-    for filename in ('START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md',
+    for filename in ('README.md','START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md',
                      'worker_check.py','runtime_launcher.py','test_portable.py',
                      'run-worker.sh','auto-checkpoint.sh','checkpoint.sh'):
         target = out/('runtime.py' if filename=='runtime_launcher.py' else
                       'tests/test_portable.py' if filename=='test_portable.py' else
                       'scripts/'+filename if filename.endswith('.sh') else filename)
         _copy_text(MODULE/'templates'/filename, target)
+        if filename == 'README.md':
+            target.write_text(target.read_text().replace('__RETURN_BRANCH__', return_branch))
         if filename.endswith('.sh'):
             target.chmod(0o755)
     (out/'.gitignore').write_text('__pycache__/\n*.py[cod]\n.pytest_cache/\n.runtime-work/\n.venv*/\n')

@@ -10,7 +10,7 @@ class WebmExportTest(unittest.TestCase):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory);source=root/'raw.mkv'
    subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','color=c=green:s=320x180:r=20','-frames:v','4','-c:v','ffv1',str(source)],check=True)
-   trace=[{'frame':i+10,'time_s':(i+1)*.05,'speed_mps':2} for i in range(4)]
+   trace=[{'frame':i+10,'time_s':(i+1)*.05,'velocity_mps':[2,0,0]} for i in range(4)]
    mapping=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(trace)]
    for name,values in [('trace.jsonl',trace),('video_frames.jsonl',mapping)]:
     (root/name).write_text('\n'.join(json.dumps(r) for r in values)+'\n')
@@ -34,7 +34,7 @@ class WebmExportTest(unittest.TestCase):
    root=Path(directory);source=root/'raw.mkv'
    subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','color=c=green:s=320x180:r=20','-frames:v','2','-c:v','ffv1',str(source)],check=True)
    before=hashlib.sha256(source.read_bytes()).hexdigest()
-   trace=[{'frame':i+10,'time_s':(i+1)*.05,'speed_mps':2.0} for i in range(2)]
+   trace=[{'frame':i+10,'time_s':(i+1)*.05,'velocity_mps':[2,0,0]} for i in range(2)]
    mapping=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(trace)]
    for path,values in [('trace.jsonl',trace),('video_frames.jsonl',mapping)]:
     (root/path).write_text('\n'.join(json.dumps(r) for r in values)+'\n')
@@ -50,7 +50,7 @@ class WebmExportTest(unittest.TestCase):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory);source=root/'raw.mkv'
    subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','color=c=green:s=320x180:r=20','-frames:v','2','-c:v','ffv1',str(source)],check=True)
-   trace=[{'frame':i+10,'time_s':(i+1)*.05,'speed_mps':2.0} for i in range(2)]
+   trace=[{'frame':i+10,'time_s':(i+1)*.05,'velocity_mps':[2,0,0]} for i in range(2)]
    mapping=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(trace)]
    for path,values in [('trace.jsonl',trace),('video_frames.jsonl',mapping)]:
     (root/path).write_text('\n'.join(json.dumps(r) for r in values)+'\n')

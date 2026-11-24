@@ -298,7 +298,7 @@ def _render(case, attempt, data, *, preview=False):
              'source_frame_interval':[first,last],'source_simulation_window_s':window,
              'frame_map':str(map_path),'source_time_overlay':True,'target_attainment_window_overlay':bool(engineering_window),'trace_coverage':data['trace_coverage'],'excerpt_window_s':window,'coverage_kind':'preview' if preview else 'full_delivered_trace',
              'trace_sha256':digest(attempt/'traffic_spec/trace.json'),
-             'measured_speed_overlay':True,'speed_source':'trace.jsonl speed_mps joined by original frame and time',
+             'measured_speed_overlay':True,'speed_source':'Original trace.jsonl velocity_mps horizontal projection joined by original frame and time',
              'speed_overlay_sha256':overlay_sha,'scenario_overlay_sha256':scenario_sha,
              'recipe_sha256':recipe,'video_sha256':digest(video),'frame_map_sha256':digest(map_path)}
     archive_report(receipt_path)

@@ -23,6 +23,12 @@ def link_bytes(root, directory, data=None):
     root,directory=Path(root),Path(directory)
     canonical=canonical_path(root)
     if data is not None:
+        sight=json.loads(data).get('atoms',{}).get('st.sight_distance')
+        if isinstance(sight,str) and sight.startswith('estimate:'):
+            from traffic_spec_adapter.visibility import CAPABILITY_METHOD
+            if sight!=CAPABILITY_METHOD:
+                raise ValueError('Sight capability must use '+CAPABILITY_METHOD+
+                                 '; keep the implementation method in measurement provenance')
         if canonical.is_file() and canonical.read_bytes()!=data:
             checksum=hashlib.sha256(data).hexdigest()
             canonical=Path(root)/'inputs/shared/manifests'/(checksum+'.json')

@@ -29,13 +29,13 @@ need the source packets in START_HERE.md and actual converter coverage;
 unsupported paths need a tested repair or precise CPU blocker. Never remove a
 law requirement to make the converter pass.
 
-The lead may delegate at most batch.max_workers independent assignment owners.
-Each subagent writes only work/<assignment-id>/; only the lead integrates shared
-changes and commits/pushes the return branch. Frozen runtime helpers cannot be
-edited. Propose shared-helper repairs inside the owning assignment for local review
-and integration; readiness proofs must pass the pinned exported runtime. A shared demo/full assignment is one task even if multiple partitions
-reference it. Process remaining partitions in waves; do not wait for conversation
-when independent work is available.
+The lead chooses serial work or up to batch.max_workers independent owners according
+to completed-package throughput. Each owner retains one unfinished assignment
+until its strict gate passes or a demonstrated external dependency blocks further
+CPU work. Finish the nearest-to-ready packages first; do not rotate after small
+improvements. Only the lead integrates shared queue changes. The existing checkpoint
+script and timer publish work; do not invoke Git directly. Preserve completed work
+and its recorded validation revision rather than routinely regenerating proofs.
 
 Implement configuration-driven construction/controllers, capture checks and
 saved-only conversion/rendering/auditing as required by the assignment. Keep

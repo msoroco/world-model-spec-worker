@@ -6,7 +6,7 @@ from pathlib import Path
 from traffic_spec_adapter.visibility import sight_distance, attach_visibility, CONVENTION
 
 base = Path(__file__).resolve().parents[1]
-path = Path(os.environ.get('LAW_EVIDENCE_SOURCE', str(base.parent/'third_party/carla_scene_graphs/carla_sgg/law_evidence.py')))
+path = Path(os.environ.get('LAW_EVIDENCE_SOURCE', str(base/'python/carla_sgg/law_evidence.py')))
 spec = importlib.util.spec_from_file_location('visibility_capture', path)
 capture = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(capture)
@@ -42,6 +42,50 @@ def sdk_available():
 
 
 class VisibilityTests(unittest.TestCase):
+    def test_unselected_frames_keep_verified_actor_coverage(self):
+        import itertools, json, tempfile
+        from unittest.mock import patch
+        from traffic_spec_adapter import visibility
+        body = [list(v) for v in itertools.product((-1., 1.), repeat=3)]
+        margin = 64*2**-23
+        bounds = [{'actor_id': actor, 'low_m': [-1.-margin]*3,
+                   'high_m': [1.+margin]*3} for actor in (1, 2)]
+        participants = [{'actor_id': actor, 'blueprint': 'vehicle.test',
+                         'body_vertices_m': body} for actor in (1, 2)]
+        events = {i: {'actor_id': 1, 'recording_time_s': float(i),
+                      'participants': participants} for i in (10, 11)}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            recorder = root/'recorder.txt'
+            recorder.write_text(' Create 1: vehicle.test x\n Create 2: vehicle.test x\n Create 3: traffic.stop x\n')
+            enclosure = root/'enclosures.jsonl'
+            enclosure.write_text(''.join(json.dumps(dict(original_frame=i,
+                actor_id=1, recording_time_s=float(i), bounds=bounds))+'\n'
+                for i in (10, 11)))
+            certificate = {'opaque_vehicle_enclosures': {},
+                'opaque_enclosure_model': 'original_vehicle_body_bbox_v1',
+                'native_actor_registry': {'1': 'vehicle.test', '2': 'vehicle.test',
+                                          '3': 'traffic.stop'}}
+            inventory = {'observer_query_method': 'native_incoming_route_positions_v1',
+                'observer_query_recording_frame_count': 2,
+                'observer_query_frames': [{'original_frame': 10, 'lanes': []}]}
+            with patch('traffic_spec_adapter.body_capture.acquisition_contract'), patch.object(
+                    visibility, '_source_reference_component_models', return_value={}):
+                result, _ = visibility._source_vehicle_enclosures(certificate,
+                    {'capture/recorder_info.txt': recorder}, events,
+                    {'frames': [{'original_frame': 10}]}, lambda *args: enclosure,
+                    inventory, static_actors=(3,))
+                self.assertEqual(result[11], [bounds[1]])
+                self.assertEqual({1, 3} | {b['actor_id'] for b in result[11]}, {1, 2, 3})
+                self.assertNotIn('_source_reference_components', result[11][0])
+                invalid = dict(events, **{})
+                invalid[11] = dict(events[11], participants=participants[:1])
+                with self.assertRaisesRegex(ValueError, 'Missing or inconsistent'):
+                    visibility._source_vehicle_enclosures(certificate,
+                        {'capture/recorder_info.txt': recorder}, invalid,
+                        {'frames': [{'original_frame': 10}]}, lambda *args: enclosure,
+                        inventory, static_actors=(3,))
+
     def test_probe_checkpoint_resolves_boundary_bracket(self):
         def sample(d):
             return [{'clear': d < 152.4, 'blockers': [] if d < 152.4 else [{'label': 'wall'}]}]
@@ -150,9 +194,18 @@ class VisibilityTests(unittest.TestCase):
         v = measured([{'bound': 'route_limit', 'distance_m': 100, 'unknown': True}])
         self.assertIsNone(sight_distance(v)[0])
 
-    def test_threshold_uncertainty_and_short_search_unknown(self):
-        self.assertIsNone(sight_distance(measured([boundary(152.35)]))[0])
+    def test_finite_uncertainty_retained_and_short_search_unknown(self):
+        self.assertEqual(sight_distance(measured([boundary(152.35)]))[0],152.35)
         self.assertIsNone(sight_distance(measured([{'bound': 'at_least', 'distance_m': 100}]))[0])
+
+    def test_finite_interval_does_not_decide_unknown_probe(self):
+        v=measured([{'bound':'first_sampled_occlusion','bracket_m':[129.21875,160.]}])
+        v['horizon_tolerance_m']=30.78125
+        v['approaches'][0].pop('any_sample_clear_at_probe')
+        v['approaches'][0]['probe_unknown_reason']='Saved query has one unresolved sample'
+        before=repr(v)
+        self.assertEqual(sight_distance(v)[0],129.21875)
+        self.assertEqual(repr(v),before)
 
     def test_conflicting_probe_unknown(self):
         v = measured([boundary(170)])
@@ -200,6 +253,18 @@ class VisibilityTests(unittest.TestCase):
         self.assertNotIn('sight_distance',result[0])
         value.pop('eye_height_m')
         self.assertIsNone(sight_distance(value)[0])
+
+    def test_finite_minimum_is_not_censored_by_a_clear_other_direction(self):
+        from shapely.geometry import box
+        value = measured([
+            {'bound': 'first_sampled_occlusion', 'bracket_m': [9.75, 10.]},
+            {'bound': 'at_least', 'distance_m': 230.}])
+        result, mapping = attach_visibility(
+            [{'id': 1, 'kind': 'roadway'}], {1: box(0, 0, 10, 10)},
+            box(1, 1, 2, 2), value)
+        self.assertEqual(result[0]['sight_distance'], 9.75)
+        self.assertEqual(mapping['upper_bound_m'], 10.)
+        self.assertFalse(mapping['search_censored'])
 
     def test_declared_probe_is_not_hardcoded_to_500_feet(self):
         value=measured([{'bound':'at_least','distance_m':120}]);value['probe_distance_m']=100
@@ -277,7 +342,7 @@ class VisibilitySourceInventoryTests(unittest.TestCase):
         # Existing module-root library lookup is supplied by the suite runner when
         # testing an external candidate; installed tests use the repository root.
         import os
-        library=Path(os.environ.get('TRAFFIC_SPEC_TEST_LIBRARY',str(base.parent/'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/library')))
+        library=Path(os.environ.get('TRAFFIC_SPEC_TEST_LIBRARY',str(base/'library')))
         with patch('traffic_spec_adapter.geometry.retained_map',return_value=({},bindings,[],{},[])),patch('traffic_spec_adapter.adapter.source_packets',return_value={0:packet}),patch('traffic_spec_adapter.adapter.validate_scene'),patch('traffic_spec_adapter.native_road_profile.source_surface_certificate',return_value=None):
             adapter.reconstruct(trace,e,library,root/'out.json')
         result=json.loads((root/'out.json').read_text())['scenes'][0]
@@ -344,7 +409,7 @@ class SightDistanceIntegration(unittest.TestCase):
         from worker_exchange.common import read, write, sha
         from worker_exchange.runtime_cli import process, render
         from worker_exchange.media import audit
-        library = base/'library' if (base/'library').is_dir() else base.parent/'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/library'
+        library = base/'library' if (base/'library').is_dir() else base/'library'
         fixture = base/'fixtures/example.json' if (base/'fixtures/example.json').is_file() else base/'worker_exchange/templates/fixture-example.json'
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);attempt=root/'attempt';spec=read(fixture);generate(spec,attempt)
@@ -379,7 +444,10 @@ class SightDistanceIntegration(unittest.TestCase):
                 self.assertTrue(report['required_measurements_complete'])
                 self.assertTrue(report['decoder_validation']['passed'])
                 supplement=[json.loads(line) for line in (output/'supplementary_evidence.jsonl').read_text().splitlines()]
-                self.assertTrue(supplement[0]['visibility_mapping']['search_censored'])
+                mapping=supplement[0]['visibility_mapping']
+                self.assertFalse(mapping['search_censored'])
+                self.assertEqual(mapping['lower_bound_m'],160)
+                self.assertEqual(mapping['upper_bound_m'],160.125)
                 self.assertEqual(sha(initial),old_hash)
                 self.assertIn('/manifests/',str((output/'manifest.json').resolve()))
                 video=render(attempt,output,{'case_id':'sight-distance-diagnostic','target_law_id':None})
