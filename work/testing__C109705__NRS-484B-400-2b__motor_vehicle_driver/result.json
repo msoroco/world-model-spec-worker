@@ -9,17 +9,53 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-departure-tests.log",
-      "sha256": "56a368693f7fc00c6e2f8b595b09952ff22815aeac87c5ac9ab7a47b3f7c31a5"
+      "sha256": "becb84a98032e6f94aca92ddda73a170fe0ec7da739bd183ca2328b8db4b9acf"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-preflight.log",
-      "sha256": "393c588c6084aa35f95725816b7f2a311eab6d85e3937db5c5a36fbe6c4ec687"
+      "sha256": "0bb4d88702b636d21befbc514f736402247799402455553f8f3536dc7dd85534"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "f0d299bf832c8d5b5ee6d6d81443685e167d1689691b6302ca03ca933643e8b9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2b__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__near_centerline --output .runtime-work/c109705-offline-near_centerline-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-near_centerline.log",
+      "sha256": "77487d9576d7d5ecf736c71fc52ae9f34108055ae2e46a49e5c7155f94f3d054"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__farther_from_centerline --output .runtime-work/c109705-offline-farther_from_centerline-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-farther_from_centerline.log",
+      "sha256": "571cc96012c4d9e116835d559af623e269bf0e7d3acfc04690fee2f3f15f6a83"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__imaginary_near_centerline --output .runtime-work/c109705-offline-imaginary_near_centerline-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-imaginary_near_centerline.log",
+      "sha256": "97e5dbbcdc3f000148b5b8c898b5042790225b8d21b3784d065f3bf6ff2528d6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__imaginary_farther_from_centerline --output .runtime-work/c109705-offline-imaginary_farther_from_centerline-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-imaginary_farther_from_centerline.log",
+      "sha256": "d14cccddbd2da0d59747ca6d73b7eb44f4b9525f6a4cfee4fef9f7cca334cea4"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four exact prior-setting cases and two controlled comparisons are mapped. Source-bound full-body departure measurement, independent comparison audit, 900-frame Native capture contract, loaded OpenDRIVE readback, saved-source integrity and measurement finalization now include full decode of 3,600 indexed PNG images in the diagnostic CPU fixture; 30 focused tests and pinned preflight pass. Accepted export contains metadata only. Reviewed original survey/trace/video packets, concrete CARLA adapter, canonical semantic proposals, exact offline/compatibility and process-saved delivery receipts remain CPU preparation. No physical or legal-position finding is claimed."
+  "reason": "Four exact mapped/imaginary and near/far departure diagnostic bundles pass pinned offline checks with current Native capture, full-body saved measurement, 3,600-frame source decode and comparison audit code. Thirty-one focused CPU tests and pinned preflight pass. Frozen accepted recordings remain metadata-only in this export. Reviewed original survey/trace/media packets, concrete CARLA adapter, canonical proposals/manifest and source-shaped compatibility/process-saved/delivery receipts remain worker-owned CPU work. No physical centerline or legal-position finding is claimed."
 }

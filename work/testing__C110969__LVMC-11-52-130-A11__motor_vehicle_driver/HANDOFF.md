@@ -49,3 +49,11 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed in the refreshed CPU environment; the assignment static check passed; the assignment's 12 focused tests passed. These are CPU construction checks, not delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 saved-only case probe checkpoint
+
+`saved_delivery.py:process_saved` now runs the full source and 3,600-PNG decode audit, then writes one exact-case receipt with source-packet SHA256, measured minimum/maximum halt gap, complete contiguous halt intervals and an engineering half-foot construction-target observation. The 14/15/16-foot requested gaps remain case probes; the half-foot band is only a construction tolerance. Legal necessity and physical completion stay unresolved. Existing output is preserved, and a changed original pose hash leaves no processed receipt.
+
+Thirty-six focused CPU tests pass in `cpu-saved-process-tests.log` (SHA256 `45aa745ff39548ae8b303e59853c3c54a259cc08c78ac0b96f9b1aa1c7298dc5`). Scoped static exits 0 in `cpu-saved-process-static.log` (SHA256 `ef61bd0682043f33c3ccdb7fff017abd4400313e9b864bcc6b955e4ec627e5f3`). Exact scoped strict exits 1 on truthful partial status in `cpu-saved-process-strict.log` (SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`).
+
+Next CPU work: bind a reviewed intersection map/route/actor and original traffic, police or device context; complete canonical semantic proposals, exact offline and positive/negative compatibility bundles, canonical finalization and execution manifest. Review the parking alternative binding. Diagnostic PNG fixtures establish software behavior only.

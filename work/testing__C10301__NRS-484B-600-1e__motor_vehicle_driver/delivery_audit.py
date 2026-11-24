@@ -7,6 +7,7 @@ pixels, public-way status, physical completion, or a legal speed judgment.
 from __future__ import annotations
 
 import hashlib
+import math
 import json
 import subprocess
 from pathlib import Path
@@ -59,10 +60,16 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
         raise ValueError("speed and capture provenance differ")
     motion_path, motion_hash = _sealed(attempt, index.get("native_motion"), "Native motion")
     motion = _read(motion_path)
-    if (motion.get("case_id") != case_id or
+    if (motion.get("format") != "c10301-native-motion-v1" or
+            motion.get("case_id") != case_id or
             motion.get("native_run_id") != speed["native_run_id"] or
             motion.get("speed_source_sha256") != speed["source_sha256"] or
-            motion.get("diagnostic_fixture") != index["diagnostic_fixture"]):
+            motion.get("diagnostic_fixture") != index["diagnostic_fixture"] or
+            motion.get("sample_count") != EXPECTED_FRAMES or
+            type(motion.get("travel_m")) not in (int, float) or
+            not math.isfinite(motion["travel_m"]) or
+            motion["travel_m"] < 100 or
+            motion.get("physical_acceptance_claimed") is not False):
         raise ValueError("Native motion and capture index differ")
     map_path, map_hash = _sealed(attempt, index.get("frame_map"), "frame map")
     frame_map = _read(map_path)

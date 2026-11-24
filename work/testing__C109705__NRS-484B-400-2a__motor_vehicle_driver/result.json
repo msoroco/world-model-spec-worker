@@ -3,7 +3,7 @@
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "8a14a3e8f6c0ac470e16c0195b8a7bf2e20482edfcab4c6ec968edb174a69ace",
   "readiness_kind": "source_bound_construction_draft",
-  "reason": "Four exact source-review cases and two controlled comparisons are planned. Four pinned exact offline bundles and 20 focused CPU tests pass. Source-bound 20 Hz measurement verifies full-body right-half geometry, left-turn heading and camera frame joins. A Native adapter capture protocol binds the loaded OpenDRIVE map to an exact survey packet and records 900 ego frames with four original PNG camera archives; saved integrity and pixel audits verify hashes and decode all 3,600 images. Test captures are diagnostic. The accepted-source inventory verifies four metadata hashes, while original trace/video/audit assets and reviewed public-highway provenance are absent in this export, so no physical or legal completion is claimed. Draft source-hashed semantic relevance, template, bindings, four exact cases and judgment observables are staged. Reviewed source packets, exact compatibility/process-saved positives and negatives, candidate fallbacks and final physical and legal delivery acceptance remains CPU work; actual CARLA capture is also pending. Scoped static passes; scoped strict rejects truthful partial status. Paired saved comparison now decodes all 7,200 camera frames from two exact attempt sources and recomputes the measured difference while retaining diagnostic, physical, and legal uncertainty. Four exact offline bundles were resynced to current source files and rerun successfully; each manifest construction/log hash is current. Saved-only CLI runs the complete 3,600-frame original pixel audit and writes a replayable JSON receipt only after success; diagnostic input needs an explicit flag. Saved-only CLI now reopens both exact paired attempts, decodes all original images and writes a comparison receipt only after success; diagnostic input is rejected by default. CPU delivery receipts remain incomplete. Production original pixel audit now requires the exact declared 1080p overview and 720p auxiliary camera dimensions; diagnostic fixture dimensions require explicit opt-in. Native capture now stages each attempt, fully decodes all 3,600 original PNGs before atomic promotion, refuses an existing destination and removes partial output on failure; 23 focused tests and scoped static pass. Scoped strict remains partial. Four selected-requirement contracts bind all three statutory conditions to original source-hashed approach measurements; the pinned validator accepts them, the saved finalizer rejects wrong-case and missing-source inputs, and all four resynced bundles pass pinned offline. Compatibility and delivery proof work remains; status partial. Canonical video_frame, carla_frame, and native_frame identities are now recorded with each original synchronized camera frame; 24 focused tests and all four refreshed pinned offline checks pass. Native and delivery readiness remain incomplete. The saved approach verifier also rejects rebound canonical identities even when acquisition hashes are updated; 25 focused tests and four refreshed exact offline checks pass. Live map review can now bind a source document, loaded OpenDRIVE hash and both reviewed road IDs; unreviewed packets remain diagnostic. Twenty-six focused tests and all four current exact offline bundles pass.",
+  "reason": "Four exact cases and two comparisons remain partial. Saved finalizer now projects sealed original approach/body/map/camera rows into Native-shaped result.json, trace.jsonl and four 20 Hz channels; 29 focused tests pass. Four resynchronized exact bundles pass pinned offline. All four pinned compatibility attempts complete selected analysis and Native result validation but stop at Core conversion because the current five-frame diagnostic fixture omits capture/evidence.jsonl; a full source-bound diagnostic capture fixture, positive/negative compatibility and saved processing remain worker-owned CPU work. Reviewed public-highway source, Native realization, physical and legal acceptance remain unverified. Native capture now seals the exact loaded OpenDRIVE bytes and acquisition hash after the 900-frame capture, rejecting map drift; 9 focused capture tests pass. Core-compatible capture evidence and complete source-shaped diagnostic fixture remain CPU work.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -296,6 +296,84 @@
       "exit_code": 1,
       "log": "cpu-original-source-symlink-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-finalizer-runtime TMPDIR=$PWD/.runtime-work/c109705-finalizer-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-result-tests.log",
+      "sha256": "08cc6a32be9730d6c562cf2c7b871cf28039efdfeba838cb56f143ce74fefb1c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --output .runtime-work/c109705-native-result-offline-near_centerline",
+      "exit_code": 0,
+      "log": "cpu-native-result-offline-near_centerline.log",
+      "sha256": "4ad8b0cbdb3e55848f1fe429ecce6d5e5a371018ff61bb5af66aac01bceb8a97"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --output .runtime-work/c109705-native-result-compat-near --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-native-result-compat-near.log",
+      "sha256": "d010e9e4441e36c9885c82e52411139851d9bfe6e4b8af7fb00e437c9c571bc5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --output .runtime-work/c109705-native-result-offline-farther_from_centerline",
+      "exit_code": 0,
+      "log": "cpu-native-result-offline-farther_from_centerline.log",
+      "sha256": "9b57346c8788c381753412e2ad6a57279e1dd4480c39b33751b19bf88a00bba1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --output .runtime-work/c109705-native-result-compat-farther_from_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-native-result-compat-farther_from_centerline.log",
+      "sha256": "716c959138858b8e0625dbcff1975d7229f8729519ad828dd3d25d76d8132d0e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --output .runtime-work/c109705-native-result-offline-imaginary_near_centerline",
+      "exit_code": 0,
+      "log": "cpu-native-result-offline-imaginary_near_centerline.log",
+      "sha256": "a9ceb4b39c3de476446b11822a0bf97d160d93806ddea7de5c5adfa4d7c60299"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --output .runtime-work/c109705-native-result-compat-imaginary_near_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-native-result-compat-imaginary_near_centerline.log",
+      "sha256": "f35e533f2139cacb43cde0ffe0ec252c9e1440134f9744912f8d99b14d82d447"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --output .runtime-work/c109705-native-result-offline-imaginary_farther_from_centerline",
+      "exit_code": 0,
+      "log": "cpu-native-result-offline-imaginary_farther_from_centerline.log",
+      "sha256": "9ef0c18a8526f6ab063fa9c88868b567699a2f5f739cd9225a87bfa0b4c996e6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --output .runtime-work/c109705-native-result-compat-imaginary_farther_from_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-native-result-compat-imaginary_farther_from_centerline.log",
+      "sha256": "2a129417865ab927c6452a49a4d62e22dda3c109f5746c883f19ae330409795a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-native-result-static.log",
+      "sha256": "a1801a621406345b87a7b4d82ea1c8e9626c50bb5275088ad79c6466e9ca31a2"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-result-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-map-preservation PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -p test_native_capture.py -v",
+      "exit_code": 0,
+      "log": "cpu-native-map-preservation-tests.log",
+      "sha256": "45212d065af9f863b79e96a290cbd85307fb3c304febf9cba7334f16b98f59eb"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-map-preservation PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-map-preservation-all-tests.log",
+      "sha256": "45e8b56f330138271f73564e7aac059d31864dbbe3049d478a93bcbceb386930"
     }
   ]
 }

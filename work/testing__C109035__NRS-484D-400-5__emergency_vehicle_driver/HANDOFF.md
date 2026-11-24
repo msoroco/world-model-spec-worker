@@ -60,3 +60,23 @@ Proof: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s w
 `device_readback.py` now accepts original JSON bytes from a caller-supplied instrument reader on each Native frame. It requires exact frame identity, unique sample IDs, boolean siren/lamp states and a fixed independent instrument citation. It rejects command fields as readback and seals 900 source samples in `device_samples.jsonl` with a SHA-256 reference in the original capture receipt. `native_capture.py` uses this adapter when supplied. `saved_finalizer.py` and the independent `warning_audit.py` reopen and hash the sample file, then join each observation to its device trace frame, state and citation. CPU tests reject stale frames, reused IDs, command fields, changed source citations, incomplete samples and a rehashed state mismatch. These checks establish a verifiable original-source join; an actual instrument backend and evidence of its physical independence still require local integration. They do not establish 500-foot audibility, pedestrian hearing, warning purpose or legal compliance.
 
 The exact seven per-case canonical bundles, semantic proposals, manifest and offline/compatibility/saved-only/delivery receipts remain worker-owned CPU work. The reviewed map-specific site and real device instrument are physical integration inputs. This assignment remains partial until its strict delivery gate passes.
+
+## 2026-11-23 seven-case diagnostic bundle checkpoint
+
+`build_offline_draft.py` binds all seven exact case IDs to a source-hashed embedded plan, event and siren/lamp command choices, 20-Hz/900-frame four-camera profile, existing original-source capture, source-finalization, pixel and comparison modules. The bundled runner validates case identity and approach geometry, then refuses an unsourced Native launch. These constructions are diagnostic drafts, not canonical delivery manifests. All seven pinned `runtime.py offline` commands passed, with generated materializations under `.runtime-work/`. The 36-test focused suite and pinned preflight passed.
+
+Proof SHA-256 (all logs within this assignment):
+
+- `cpu-tests.log`: `be4b0c7708c97ec63386d0977a39089843ccc410c07c801f1f1ad317d70473e7` (exit 0)
+- `cpu-preflight-bundles.log`: `84b60b9df8f0a38248264dd32c7f667e514145f7c804793a41ba2c974d80d608` (exit 0)
+- `cpu-static-check.log`: `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d` (exit 0)
+- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-response_siren_pedestrian.log`: `3ba9e977272ec94ff847e42a608c9023fdd1f8bc47a8797fa074e881ba20d592` (exit 0)
+- `cpu-offline-response_lamps_only.log`: `c3eb4a5245593be7c84bfd7057483f08d67d41be474c26629ac8981cf0bf8007` (exit 0)
+- `cpu-offline-response_silent.log`: `c98723a8debc5a87b91515bfe76d43d1fede78042ee7efdbe1bc82d508757044` (exit 0)
+- `cpu-offline-pursuit_actual_siren.log`: `b3c5b37867f8a7c3887ecd473c850193001e70b0480de9beecf1d10923403268` (exit 0)
+- `cpu-offline-pursuit_suspected_siren.log`: `471f96c073c9fe968e7f6143ee690220077c6bc63e8212b4a1b4854ece5d1244` (exit 0)
+- `cpu-offline-unqualified_siren.log`: `433a4b2e4e0eee1c01561df714c150538468f59d5ebeb2d54b4e6a638590f8c8` (exit 0)
+- `cpu-offline-unqualified_lamps_only.log`: `7a3e50f751c88bd05858ea21a95e69a612978a76099624b18c17831749845a4b` (exit 0)
+
+Next CPU work: bind a real reviewed Native site and independent siren/lamp instrument and source documents to a production runner; author canonical proposals and execution manifest; run exact source-shaped positive/negative compatibility, saved-only processing and independent delivery/comparison checks for every selected case. Physical audibility and recipient hearing remain unverified. The scoped strict command fails on truthful `partial` status.

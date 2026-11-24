@@ -1,19 +1,37 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver",
   "input_sha256": "0baf1c8e5dbb996248c0c12187a0fcb2f425742814233ec065f3b78093fc292a",
-  "status": "partial",
   "readiness_kind": "partial_exact_cases_native_bundle_and_saved_source_audit",
-  "applied_update": 0,
+  "reason": "Seven exact cases and three comparisons remain planned. The synchronous Native bundle and independent saved audit fully decode all 3,600 original PNG frame sources. The new saved-only processor writes a source-bound case-specific halt-gap receipt only after that full audit passes, records the observed contiguous halt interval and 14/15/16-foot construction probe without legal inference, and leaves no output after a changed original source. Thirty-six CPU tests pass. Reviewed map/route/actor and context source bindings, canonical semantic proposals, exact offline/compatibility bundles, canonical finalization and execution manifest remain CPU work. The parking alternative needs binding review. No physical acceptance or external blocker is claimed.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-geometry-tests.log",
       "sha256": "554285301996314975aab59aa2195dc9aeca0890eb1b92177b833c10226d6b50"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-saved-process-tests.log",
+      "sha256": "45aa745ff39548ae8b303e59853c3c54a259cc08c78ac0b96f9b1aa1c7298dc5"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-saved-process-static.log",
+      "sha256": "ef61bd0682043f33c3ccdb7fff017abd4400313e9b864bcc6b955e4ec627e5f3"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-saved-process-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Seven exact cases and three comparisons remain planned. The synchronous Native bundle and independent saved audit now fully decode all 3,600 original PNG frame sources, reject repeated or corrupt images, and enforce the declared original camera resolutions; 34 CPU tests pass. This verifies source integrity only and does not establish physical visibility or necessity. Reviewed map/route/actor and context source bindings, canonical semantic proposals, exact offline/compatibility/process-saved bundles, finalization, and execution manifest remain CPU work. The parking alternative needs binding review. No physical acceptance or external blocker is claimed."
+  ]
 }

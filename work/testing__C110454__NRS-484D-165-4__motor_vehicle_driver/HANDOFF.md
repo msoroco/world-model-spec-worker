@@ -99,3 +99,19 @@ inspection before any physical acceptance claim.
 `camera_recorder.py` now attaches to four caller-owned CARLA camera sensors, requires each callback to match the current Native frame and valid BGRA dimensions, converts those original bytes to lossless PNG, and stores one ZIP archive per view under the attempt directory. Its `finish` method seals each archive with a SHA-256 and exact source-frame count. `native_capture.capture_interval` starts and closes this adapter, includes the four media references in its observational receipt, and releases listeners even when a camera frame drifts. A fake 4-frame Native run reopens and decodes original PNGs; a drifted callback rejects capture before actor-state sources are emitted. These are software tests, not a physical claim about light emission, beam aim or visibility.
 
 The same interface can now supply the `media` references required by the saved delivery integrity auditor after writing the Native receipt. Worker-owned CPU work remains: reviewed site packet and actor-spawn/world-ownership runner, actual depressed-beam-aim alternative if available, canonical semantic proposals, three exact inline bundles, offline/compatibility/process-saved proofs, and full independent source decode/physical review. Keep this assignment partial until the strict gate passes.
+
+## 2026-11-23 three-case diagnostic bundle checkpoint
+
+`build_offline_draft.py` binds the exact unlit, low-beam and high-beam cases to a plan hash, requested light mode, 20-Hz/900-frame capture profile and four original camera views. Each inline construction includes the current Native lamp/camera capture, saved measurement and independent audit code. The bundled runner checks source identity and mode and refuses unsourced Native capture. All three pinned `runtime.py offline` checks passed with materializations under `.runtime-work/`; the 19-test focused suite and pinned preflight passed. These diagnostic bundles are not a canonical execution manifest or original emission/beam-aim evidence.
+
+Proof SHA-256 (logs under this assignment):
+
+- `cpu-lamp-tests.log`: `c06660b0d57e801379e829a38763fc6ee6983f06378e239c147333dbec4cf4a9` (exit 0)
+- `cpu-preflight-bundles.log`: `c42488489970abf5debcd8711b4f463f79ab945382f2c8c97e72a78aacfa92f5` (exit 0)
+- `cpu-static-check.log`: `718f8cc5dcda62dcf0f81f4249dab89bbeec8a36ef2530dcfb1c01ed938f8e69` (exit 0)
+- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-unlit.log`: `cdaa8faeff6d6250c565da63f8acd364435904a03465414d36073ee5d5e03203` (exit 0)
+- `cpu-offline-low_beam.log`: `bd38bf0af6400083b7400ab1e58b0783dbeb855e006f3b8f8471851c65deb1bb` (exit 0)
+- `cpu-offline-high_beam.log`: `6a6d7ee6f402ce96210fad2bf7ed1548fb7e04b7828e26658fd7100742d5179b` (exit 0)
+
+Next CPU work: bind a surveyed Native site/parking actor to a production runner, construct and measure the physical depressed-aim alternative if supported, author canonical proposals and manifest, then source-shaped positive/negative compatibility, saved-only and independent delivery/comparison receipts for every case. Actual emitted intensity, aim, parking and camera visibility remain unverified. Scoped strict fails on truthful `partial` status.

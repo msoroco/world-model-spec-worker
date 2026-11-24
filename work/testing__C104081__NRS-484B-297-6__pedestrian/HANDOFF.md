@@ -58,3 +58,21 @@ Next CPU work: bind the surveyed CARLA map and actual adapter; implement synchro
 `delivery_audit.py --attempt PATH --case ID --decode-media` now uses FFprobe to count the original frames and verify 20 Hz, then FFmpeg to decode the entire first video stream of each of the four sealed camera files. Original attempts require the pinned overview 1920×1080 and three 1280×720 dimensions. Explicit `--diagnostic` permits a small synthetic video fixture and returns its profile-dimension mismatch, while still leaving `actual_pixels`, participant visibility and physical completion false. A sealed text file is rejected when decode is requested. The CLI's default provenance check rejects synthetic input. These are software proof branches; local Native ownership and scene content remain unverified.
 
 The focused suite now passes 62 tests. The CPU diagnostic videos are generated only in temporary test directories and are not returned files. The remaining CPU work still includes real CARLA map binding, synchronized capture and Native finalizer, canonical proposals, exact per-case compatibility and manifest post-capture integration, plus physical-content and lifecycle audit logic. The 900-frame source audit and full decode are reusable components for that work; this package remains partial.
+
+## 2026-11-23 five-case diagnostic bundle checkpoint
+
+`build_offline_draft.py` packages every exact planned bypass case with the current geometry, surveyed-map construction, measured Native walking controller, saved measurements and independent audits. Its bundled runner hashes the case plan, checks each case parameter and 20-Hz/900-frame/four-camera profile, constructs and audits the actual sidewalk obstruction, intervening barrier and bicycle-lane route as applicable, then refuses unsurveyed Native capture. The five pinned `runtime.py offline` runs passed with generated materializations under `.runtime-work/`. The 67-test focused suite and pinned preflight passed. This is a diagnostic draft, not a canonical delivery manifest or physical evidence.
+
+Proof SHA-256 (logs under this assignment):
+
+- `cpu-preflight.log`: `29ca0d02d380b4d67cec6fffcba275e9a10b606c3c1aad962136ec86aa7c8c11` (exit 0)
+- `cpu-tests.log`: `8e503fbdf3e4c71ce378256eb1a865ca17330adf93edbd59c48da880c8f2495c` (exit 0)
+- `cpu-static-check.log`: `f7ae058c828bf483f5ae261c3eeab547c77f7393c695b92673bf338ea14b63a4` (exit 0)
+- `cpu-strict-gate.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-clear_intervening.log`: `b134975dcdc076d4ff129270dcccc2610809d16d30784b0d289fc92f8e7efbf6` (exit 0)
+- `cpu-offline-blocked_intervening.log`: `5425f4fee5fe57f1f743432233e8e81a3fe82f75e8926bf006c0af3d86de4b73` (exit 0)
+- `cpu-offline-blocked_opposite.log`: `aa378dc7d2e0cbf4ceed29d82d7fa033f72994d208648a26d08ba60f2a141f56` (exit 0)
+- `cpu-offline-blocked_late_return.log`: `70611cf3d3a5e96acdc688342e50d016e1fd90a30eb7b976234105e4a0258e62` (exit 0)
+- `cpu-offline-missing_sidewalk.log`: `d933451a9090d94e3f0d92e0533c054e0ac593895b00bd3fcdb2a3c080ba28e0` (exit 0)
+
+Next CPU work: bind a surveyed Native hill-crest site and four-camera capture to the constructed pedestrian route; author canonical semantic proposals and manifest; run exact source-shaped positive/negative compatibility, saved-only and independent delivery/comparison receipts for each case. Actual route visibility, due care, side-as-possible and return practicability remain unverified. The scoped strict command fails on truthful `partial` status.

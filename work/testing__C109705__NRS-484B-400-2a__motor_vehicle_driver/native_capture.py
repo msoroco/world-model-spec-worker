@@ -106,9 +106,16 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
             raise
     try:
         context = json.loads(Path(map_packet_path).read_text())['context']
+        opendrive = adapter.world.get_map().to_opendrive()
+        if (not isinstance(opendrive, str) or
+                hashlib.sha256(opendrive.encode()).hexdigest() != binding['opendrive_sha256']):
+            raise ValueError('Native OpenDRIVE changed during capture')
+        road_bytes = opendrive.encode()
+        (root / 'road.xodr').write_bytes(road_bytes)
         context_bytes = (json.dumps(context, sort_keys=True, separators=(',', ':')) + '\n').encode()
         (root / 'intersection-context.json').write_bytes(context_bytes)
-        hashes = {'intersection-context.json': hashlib.sha256(context_bytes).hexdigest(),
+        hashes = {'road.xodr': hashlib.sha256(road_bytes).hexdigest(),
+                  'intersection-context.json': hashlib.sha256(context_bytes).hexdigest(),
                   'approach-history.jsonl': _write_jsonl(root / 'approach-history.jsonl', history),
                   'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
         acquisition = {'case_id': case_id,

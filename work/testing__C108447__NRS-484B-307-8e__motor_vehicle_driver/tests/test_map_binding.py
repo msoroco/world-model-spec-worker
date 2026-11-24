@@ -43,6 +43,20 @@ class MapBindingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'map seal differs'):
             module.bind(self.xodr, self.authority, **self.args)
 
+    def test_connector_crosses_property_between_sampled_points(self):
+        args = dict(self.args)
+        args['connector_routes'] = {'lot': [[-3, 5], [13, 5], [14, 5]]}
+        self.assertEqual(module.bind(self.xodr, self.authority, **args)['connector_routes']['lot'], args['connector_routes']['lot'])
+        args['connector_routes'] = {'lot': [[-3, -3], [13, -3], [14, -3]]}
+        with self.assertRaisesRegex(ValueError, 'does not traverse selected property'):
+            module.bind(self.xodr, self.authority, **args)
+
+    def test_degenerate_property_rejected(self):
+        self.parcels['properties'][0]['polygon_xy_m'] = [[0, 0], [1, 0], [2, 0]]
+        self.save()
+        with self.assertRaisesRegex(ValueError, 'nondegenerate original parcel polygon'):
+            module.bind(self.xodr, self.authority, **self.args)
+
     def test_unreviewed_authority_rejected(self):
         args = dict(self.args)
         args['review'] = {'reviewer': 'source reviewer', 'source': 'parcel register', 'decision': 'pending'}

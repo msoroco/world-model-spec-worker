@@ -39,3 +39,21 @@ Source a Native C111125 map/device/detector packet and an actor blueprint that s
 - `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete --require-delivery-ready` remains exit 1 because the package is partial. `strict-gate.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
 The capture writer still needs binding to the actual C111125 map/device/detector and bicycle actor, case-specific Native world ownership and device policy adapters, runtime `process-saved`, semantic proposals, per-case offline and compatibility receipts, and canonical delivery/comparison acceptance. No synthetic image or readback is claimed as a physical recording. The source-bound media path is a tested CPU component, not a ready delivery package.
+
+## 2026-11-23 five-case diagnostic bundle checkpoint
+
+`build_offline_draft.py` binds all five exact straight-bicycle red-signal cases to a source-hashed plan, exact case suffix, 20-Hz/900-frame clock and four original camera profile dimensions. The inline constructions embed the source-gated signal/detector planner, synchronized Native capture, saved attempt processor, full PNG media audit and independent comparison audit. The bundled runner checks exact identity and refuses unsourced Native capture. All five pinned `runtime.py offline` checks passed with materializations under `.runtime-work/`; the 22-test focused suite and pinned preflight passed. These are diagnostic drafts, not a canonical delivery manifest or evidence of actual signal cycles.
+
+Proof SHA-256 (logs under this assignment):
+
+- `cpu-tests.log`: `fd8761080e71859f186d4b8bb46be0046784c9bccc0a98aa88b0581ca8e3b9a2` (exit 0)
+- `cpu-preflight-bundles.log`: `0ad0074367601c50a2023e0edc39d71ee2548cc363e89fbd10bbd637c54fcdd1` (exit 0)
+- `assignment-check.log`: `4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035` (exit 0)
+- `strict-gate.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-two_cycles_failed_detection.log`: `13b7a98d58bb7302544e11e1fe3a7275e65cd17751c7adad1c9a681748d611a8` (exit 0)
+- `cpu-offline-one_cycle.log`: `9e5b0ca5bdd1245c3c962c2a8eae8fedbc180454a1c372339f5477cac3cc0d41` (exit 0)
+- `cpu-offline-signal_changes.log`: `2f9652f17395fdf091b852fb4aa47d912a45d374968f176d2ca486355d2ff013` (exit 0)
+- `cpu-offline-no_prior_stop.log`: `3f8eb26df53f7a5f9e737092f71137dd5e5122518c2c31e2c04728c9079d7d33` (exit 0)
+- `cpu-offline-fails_to_yield.log`: `c3fef82f3e41569807eeced7b3d848263c183b1f0a0dfa0f0723381082959388` (exit 0)
+
+Next CPU work: bind reviewed C111125 original map/device/detector and bicycle-with-rider sources to a production Native owner adapter; author canonical proposals/manifest; run exact source-shaped positive/negative compatibility, pinned process-saved and independent delivery/comparison receipts. Actual two complete cycles, detector-to-signal causality, directed-participant yield, rider visibility and statutory findings remain unverified. Scoped strict fails on truthful `partial` status.

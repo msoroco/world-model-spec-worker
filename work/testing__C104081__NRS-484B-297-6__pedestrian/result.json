@@ -9,13 +9,13 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-preflight.log",
-      "sha256": "17dcc542928b36a11f9c32ec4ad76fe4531207998a23bcd39d22f5a376d3914c"
+      "sha256": "29ca0d02d380b4d67cec6fffcba275e9a10b606c3c1aad962136ec86aa7c8c11"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C104081__NRS-484B-297-6__pedestrian/tests -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C104081__NRS-484B-297-6__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "88f94f386fef77e57dd7243d8b637206d1ae409e67546f5f2381cd9639ef2fb3"
+      "sha256": "8e503fbdf3e4c71ce378256eb1a865ca17330adf93edbd59c48da880c8f2495c"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104081__NRS-484B-297-6__pedestrian --complete",
@@ -28,10 +28,40 @@
       "exit_code": 1,
       "log": "cpu-strict-gate.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.draft.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --output .runtime-work/c104081-offline-clear_intervening-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-clear_intervening.log",
+      "sha256": "b134975dcdc076d4ff129270dcccc2610809d16d30784b0d289fc92f8e7efbf6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.draft.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --output .runtime-work/c104081-offline-blocked_intervening-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-blocked_intervening.log",
+      "sha256": "5425f4fee5fe57f1f743432233e8e81a3fe82f75e8926bf006c0af3d86de4b73"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.draft.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --output .runtime-work/c104081-offline-blocked_opposite-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-blocked_opposite.log",
+      "sha256": "aa378dc7d2e0cbf4ceed29d82d7fa033f72994d208648a26d08ba60f2a141f56"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.draft.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --output .runtime-work/c104081-offline-blocked_late_return-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-blocked_late_return.log",
+      "sha256": "70611cf3d3a5e96acdc688342e50d016e1fd90a30eb7b976234105e4a0258e62"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.draft.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --output .runtime-work/c104081-offline-missing_sidewalk-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-missing_sidewalk.log",
+      "sha256": "d933451a9090d94e3f0d92e0533c054e0ac593895b00bd3fcdb2a3c080ba28e0"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact cases and four comparisons are planned. Added a source-hash-bound 900-frame 20 Hz Native walking controller that transforms the constructed local bypass route through the reviewed survey, requests WalkerControl movement, requires actual continuous pose/frame/time readback, checks route departure, stall and endpoint completion, and stops on exit. Sixty-six focused CPU tests and pinned preflight pass. Full CARLA adapter/capture, original map binding, canonical proposals, per-case offline/compatibility receipts and manifest-bound saved/delivery proofs remain worker-owned CPU work; strict gate remains partial. Due care, side-as-possible, practicability and physical acceptance stay unresolved."
+  "reason": "Five exact case diagnostic bundles now pass pinned offline construction with checked sidewalk/intervening-area/bicycle-lane geometry, opposite direction and missing-surface variant. Sixty-seven focused CPU tests and pinned preflight pass. The package remains partial: surveyed Native map and camera/capture adapter, canonical semantic proposals and manifest, source-shaped compatibility, saved-only delivery and comparison receipts remain worker-owned CPU work. Due care, side-as-possible, practicability and physical acceptance remain unresolved."
 }

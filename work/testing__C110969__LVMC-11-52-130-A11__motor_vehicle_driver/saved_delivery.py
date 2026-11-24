@@ -7,6 +7,7 @@ legal necessity, or physical completion from a diagnostic fixture.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 
@@ -20,6 +21,7 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 PROFILE_DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
                       "reference_corner": (1280, 720),
                       "driver_reference": (1280, 720)}
+METERS_PER_FOOT = 0.3048
 
 
 def _source(root, binding):
@@ -148,6 +150,43 @@ def audit(attempt_path, *, allow_diagnostic=False):
         "physical_completion": False,
         "legal_necessity": "unresolved",
     }
+
+
+def process_saved(attempt_path, output_path, *, allow_diagnostic=False):
+    """Write one source-bound measurement receipt after full saved audit passes."""
+    output_path = Path(output_path)
+    if output_path.exists():
+        raise ValueError("Saved process receipt already exists")
+    source_audit = audit(attempt_path, allow_diagnostic=allow_diagnostic)
+    packet_bytes = Path(attempt_path).read_bytes()
+    packet = json.loads(packet_bytes)
+    requested_ft = packet["requested_front_body_gap_ft"]
+    minimum_m = source_audit["measurement"]["minimum_halt_body_gap_m"]
+    maximum_m = source_audit["measurement"]["maximum_halt_body_gap_m"]
+    if not all(math.isfinite(value) and value >= 0 for value in (minimum_m, maximum_m)):
+        raise ValueError("Observed halt gap is invalid")
+    target_m = requested_ft * METERS_PER_FOOT
+    # A half-foot band is a construction tolerance, never a legal threshold.
+    target_observed = (abs(minimum_m - target_m) <= 0.5 * METERS_PER_FOOT and
+                       abs(maximum_m - target_m) <= 0.5 * METERS_PER_FOOT)
+    result = {
+        "format": "c110969-saved-process-v1",
+        "case_id": source_audit["case_id"],
+        "attempt_id": source_audit["attempt_id"],
+        "recording_id": source_audit["recording_id"],
+        "attempt_packet_sha256": hashlib.sha256(packet_bytes).hexdigest(),
+        "source_audit": source_audit,
+        "requested_front_body_gap_ft": requested_ft,
+        "observed_halt_gap_m": {"minimum": minimum_m, "maximum": maximum_m},
+        "observed_halt_intervals": source_audit["measurement"]["halt_intervals"],
+        "construction_target_observed": target_observed,
+        "legal_necessity": "unresolved",
+        "physical_completion": False,
+    }
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n",
+                           encoding="utf-8")
+    return result
 
 
 if __name__ == "__main__":

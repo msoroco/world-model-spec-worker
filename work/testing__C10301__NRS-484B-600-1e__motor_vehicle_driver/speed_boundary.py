@@ -15,6 +15,7 @@ MPH_PER_MPS = 2.2369362920544
 BOUNDARY_MPH = 80.0
 EXPECTED_FRAMES = 900
 EXPECTED_HZ = 20.0
+PROBE_WINDOW_FRAMES = 20
 
 
 def _read_json(path: Path) -> dict:
@@ -79,6 +80,31 @@ def measure(attempt: Path, case_id: str) -> dict:
         sampled_relation = "some_sample_clearly_above"
     else:
         sampled_relation = "boundary_unresolved"
+    # A full second of consecutive original samples is more informative than
+    # one peak sample. Keep the relation observational: no intersample claim.
+    sample_classes = []
+    for value, uncertainty in zip(speed_mph, uncertainties_mph):
+        if value + uncertainty < BOUNDARY_MPH:
+            sample_classes.append("below")
+        elif value - uncertainty > BOUNDARY_MPH:
+            sample_classes.append("above")
+        else:
+            sample_classes.append("boundary_interval")
+    suffix = case_id.rsplit("__", 1)[-1]
+    expected_class = {"below": "below", "equal": "boundary_interval",
+                      "above": "above"}.get(suffix)
+    if expected_class is None:
+        raise ValueError("unknown exact speed probe case")
+    witness_start = next((start for start in range(20, EXPECTED_FRAMES - PROBE_WINDOW_FRAMES + 1)
+                          if all(item == expected_class for item in
+                                 sample_classes[start:start + PROBE_WINDOW_FRAMES])), None)
+    probe = {"expected_sample_class": expected_class,
+             "window_frames": PROBE_WINDOW_FRAMES,
+             "post_startup_window_found": witness_start is not None,
+             "first_window_frame": None if witness_start is None else origin + witness_start,
+             "sample_class_counts": {kind: sample_classes.count(kind) for kind in
+                                     ("below", "boundary_interval", "above")},
+             "interpretation": "sampled_only"}
     return {
         "format": "c10301-speed-measurement-v1", "case_id": case_id,
         "native_run_id": descriptor["native_run_id"], "source": "original-speed.jsonl",
@@ -86,6 +112,7 @@ def measure(attempt: Path, case_id: str) -> dict:
         "sample_rate_hz": EXPECTED_HZ, "peak_sample_frame": origin + peak_index,
         "peak_sample_mph": peak, "peak_uncertainty_mph": peak_uncertainty,
         "sampled_relation": sampled_relation,
+        "case_probe": probe,
         "between_sample_peaks": "unobserved", "diagnostic_fixture": descriptor.get("diagnostic_fixture") is True,
         "physical_acceptance_claimed": False, "legal_judgment": "unresolved",
     }

@@ -3,6 +3,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,7 +13,9 @@ from original_media_profile import CAMERAS, audit
 
 class MediaProfileTest(unittest.TestCase):
     def test_four_saved_profiles_and_wrong_rate(self):
-        with tempfile.TemporaryDirectory() as directory:
+        scratch = ROOT.parents[1] / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
             root = Path(directory)
             for name in CAMERAS:
                 width, height = (1920, 1080) if name == "overview" else (1280, 720)
@@ -22,6 +25,23 @@ class MediaProfileTest(unittest.TestCase):
                      "-frames:v", "2", "-an", "-c:v", "ffv1", "-threads", "1",
                      str(root / (name + ".mkv"))], check=True, capture_output=True)
             self.assertEqual(set(audit(root)["cameras"]), set(CAMERAS))
+            (root / "camera-frame-map.jsonl").write_text(
+                "\n".join(json.dumps({"frame": frame}) for frame in (1, 2)) + "\n")
+            self.assertEqual(audit(root)["frame_map_count"], 2)
+            (root / "camera-frame-map.jsonl").write_text(json.dumps({"frame": 1}) + "\n")
+            with self.assertRaisesRegex(ValueError, "decoded frame count differs"):
+                audit(root)
+            (root / "camera-frame-map.jsonl").unlink()
+            extra = root / "extra.mkv"
+            subprocess.run(
+                ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                 "-i", str(root / "approach.mkv"), "-f", "lavfi", "-i", "anullsrc=r=48000:cl=mono",
+                 "-frames:v", "2", "-t", "0.1", "-map", "0:v", "-map", "1:a",
+                 "-c:v", "copy", "-c:a", "pcm_s16le", str(extra)],
+                check=True, capture_output=True)
+            extra.replace(root / "approach.mkv")
+            with self.assertRaisesRegex(ValueError, "stream count invalid: approach"):
+                audit(root)
             subprocess.run(
                 ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
                  "-f", "lavfi", "-i", "color=c=red:s=1280x720:r=10",

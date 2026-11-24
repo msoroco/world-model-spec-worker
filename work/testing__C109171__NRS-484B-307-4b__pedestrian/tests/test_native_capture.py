@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, audit_frame_map, capture
 from saved_measurement import ASSIGNMENT
 from native_scene import SourceError
+from saved_process import process
 
 
 class Adapter:
@@ -128,6 +129,32 @@ class NativeCaptureTest(unittest.TestCase):
         path.write_bytes(b'corrupt')
         with self.assertRaisesRegex(SourceError, 'camera source hash mismatch'):
             audit_frame_map(self.root, result['frame_map_ref'], result['events_ref'], 4)
+
+    def test_saved_process_joins_entry_and_all_original_cameras_once(self):
+        captured = self.run_case('arrow_walk_entry', True, True)
+        output = self.root / 'processed' / 'receipt.json'
+        result = process(self.root, self.site_ref, captured['events_ref'],
+                         captured['frame_map_ref'],
+                         ASSIGNMENT + '__arrow_walk_entry', output,
+                         expected_frames=4)
+        self.assertEqual(result, json.loads(output.read_text()))
+        self.assertEqual(result['measurement']['first_highway_entry']['frame'], 2)
+        self.assertEqual(result['media_audit']['camera_frames_audited'], 16)
+        self.assertEqual(result['statutory_permission'], 'unresolved')
+        with self.assertRaisesRegex(SourceError, 'already exists'):
+            process(self.root, self.site_ref, captured['events_ref'],
+                    captured['frame_map_ref'], ASSIGNMENT + '__arrow_walk_entry',
+                    output, expected_frames=4)
+
+    def test_saved_process_rejects_changed_camera_without_output(self):
+        captured = self.run_case('arrow_wait', False, False)
+        (self.root / 'camera_png/0001_front.png').write_bytes(b'changed')
+        output = self.root / 'processed.json'
+        with self.assertRaisesRegex(SourceError, 'camera source hash mismatch'):
+            process(self.root, self.site_ref, captured['events_ref'],
+                    captured['frame_map_ref'], ASSIGNMENT + '__arrow_wait',
+                    output, expected_frames=4)
+        self.assertFalse(output.exists())
 
     def test_reject_diagnostic_site(self):
         site = dict(self.site, source_kind='diagnostic')

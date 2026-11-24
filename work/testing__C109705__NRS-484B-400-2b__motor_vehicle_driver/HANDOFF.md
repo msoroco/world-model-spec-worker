@@ -62,3 +62,20 @@ Next CPU work: author the concrete CARLA adapter and case finalizer, reviewed or
 `saved_pixels.py` decodes every indexed original PNG file for the four camera channels and 900 consecutive Native ticks. It binds each frame and channel to its SHA256, forbids a reused file within one stream, requires RGB/RGBA PNG, fully loads image pixels and checks fixed per-channel dimensions. For original Native delivery, the saved audit now requires `camera_media_kind: original_png_frames` and enforces the capture profile: dash 1920x1080; front/left/right 1280x720. Diagnostic fixtures may use smaller images. The saved report sets `full_source_decode` and `actual_pixels` only after decode; it still leaves full composed-video decoding, participant visibility, physical completion and statutory judgment unverified.
 
 The focused suite uses 3,600 separate small PNG files and verifies complete decode, mismatched delivery profile rejection and stale-image rejection. `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/tests -v` passed 30 tests in `cpu-departure-tests.log`. Pinned `runtime.py preflight` and assignment-scoped static check passed. The exact strict check remains partial. Next CPU work: concrete CARLA adapter and reviewed map survey; original media/trace receipts; canonical proposals; four exact offline/compatibility bundles; process-saved and independent delivery proof.
+
+## 2026-11-23 four-case diagnostic bundle checkpoint
+
+`build_offline_draft.py` binds the four exact accepted-setting case identities to a source-hashed plan, mapped versus source-derived imaginary destination centerline, near/far engineering departure targets and the 20-Hz/900-frame/four-camera capture profile. Each inline construction embeds current route policy, lazy Native capture, saved full-body departure measurement, original PNG decode, finalization and comparison audit. The bundled runner checks exact identity and refuses an unsourced Native launch. All four pinned `runtime.py offline` checks passed with materializations under `.runtime-work/`; the 31-test focused suite and pinned preflight passed. These are diagnostic reproduction drafts and do not replace the four accepted recordings or claim their original source availability.
+
+Proof SHA-256 (logs under this assignment):
+
+- `cpu-departure-tests.log`: `becb84a98032e6f94aca92ddda73a170fe0ec7da739bd183ca2328b8db4b9acf` (exit 0)
+- `cpu-preflight.log`: `0bb4d88702b636d21befbc514f736402247799402455553f8f3536dc7dd85534` (exit 0)
+- `cpu-static-check.log`: `f0d299bf832c8d5b5ee6d6d81443685e167d1689691b6302ca03ca933643e8b9` (exit 0)
+- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-near_centerline.log`: `77487d9576d7d5ecf736c71fc52ae9f34108055ae2e46a49e5c7155f94f3d054` (exit 0)
+- `cpu-offline-farther_from_centerline.log`: `571cc96012c4d9e116835d559af623e269bf0e7d3acfc04690fee2f3f15f6a83` (exit 0)
+- `cpu-offline-imaginary_near_centerline.log`: `97e5dbbcdc3f000148b5b8c898b5042790225b8d21b3784d065f3bf6ff2528d6` (exit 0)
+- `cpu-offline-imaginary_farther_from_centerline.log`: `d14cccddbd2da0d59747ca6d73b7eb44f4b9525f6a4cfee4fef9f7cca334cea4` (exit 0)
+
+Next CPU work: bind reviewed original map/survey, trace and camera packets to the accepted IDs or a separately reviewed Native execution; author canonical semantic proposals and manifest; run source-shaped positive/negative compatibility, pinned saved-only processing and independent delivery/comparison receipts for each case. The accepted export contains metadata but not the physical source packets, so no measured centerline or video conclusion follows. Scoped strict fails on truthful `partial` status.

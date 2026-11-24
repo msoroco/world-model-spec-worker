@@ -28,6 +28,13 @@ def check(config):
     return {"case_id": case, "offline_contract_passed": True,
             "native_map_survey_required": True, "physical_realization": "pending"}
 
+
+def run_capture(adapter, config, map_packet, output):
+    """Execute a reviewed exact case with an injected Native CARLA adapter."""
+    selected = check(config)['case_id']
+    from native_capture import capture
+    return capture(adapter, selected, Path(map_packet), Path(output))
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--check",action="store_true")

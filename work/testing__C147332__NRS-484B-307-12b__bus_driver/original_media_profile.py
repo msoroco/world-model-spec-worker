@@ -12,14 +12,21 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 def audit(attempt: Path) -> dict:
     attempt = Path(attempt)
+    frame_map = attempt / "camera-frame-map.jsonl"
+    expected_frames = None
+    if frame_map.is_file():
+        rows = [json.loads(line) for line in frame_map.read_text().splitlines() if line.strip()]
+        if not rows:
+            raise ValueError("original camera frame map empty")
+        expected_frames = len(rows)
     results = {}
     for name in CAMERAS:
         path = attempt / (name + ".mkv")
         if not path.is_file():
             raise ValueError("original camera missing: " + name)
         probe = subprocess.run(
-            ["ffprobe", "-v", "error", "-select_streams", "v:0",
-             "-show_entries", "stream=codec_name,width,height,r_frame_rate,avg_frame_rate",
+            ["ffprobe", "-v", "error", "-count_frames",
+             "-show_entries", "stream=codec_type,codec_name,width,height,r_frame_rate,avg_frame_rate,nb_read_frames",
              "-of", "json", str(path)],
             capture_output=True, text=True, timeout=90)
         if probe.returncode:
@@ -28,13 +35,22 @@ def audit(attempt: Path) -> dict:
         if len(streams) != 1:
             raise ValueError("original camera video stream count invalid: " + name)
         stream = streams[0]
+        if stream.get("codec_type") != "video":
+            raise ValueError("original camera stream is not video: " + name)
         width, height = (1920, 1080) if name == "overview" else (1280, 720)
         expected = {"codec_name": "ffv1", "width": width, "height": height,
                     "r_frame_rate": "20/1", "avg_frame_rate": "20/1"}
         if any(stream.get(key) != value for key, value in expected.items()):
             raise ValueError("original camera encoding profile differs: " + name)
-        results[name] = expected
+        try:
+            decoded_frames = int(stream["nb_read_frames"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("original camera decoded frame count missing: " + name) from exc
+        if decoded_frames < 1 or (expected_frames is not None and decoded_frames != expected_frames):
+            raise ValueError("original camera decoded frame count differs: " + name)
+        results[name] = {**expected, "decoded_frames": decoded_frames}
     return {"format": "red-x-original-camera-profile", "cameras": results,
+            "frame_map_count": expected_frames,
             "physical_acceptance_claimed": False}
 
 

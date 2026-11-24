@@ -9,7 +9,7 @@ from PIL import Image
 
 BASE = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE))
-from saved_delivery import audit, CAMERAS, PREFIX
+from saved_delivery import audit, process_saved, CAMERAS, PREFIX
 
 
 def sha(path):
@@ -98,6 +98,26 @@ class SavedDeliveryTests(unittest.TestCase):
         self.assertFalse(result["actual_pixels"])
         with self.assertRaisesRegex(ValueError, "Diagnostic source"):
             audit(self.attempt_path)
+
+    def test_saved_process_records_case_probe_after_full_decode(self):
+        output = self.root / "processed" / "receipt.json"
+        result = process_saved(self.attempt_path, output, allow_diagnostic=True)
+        self.assertEqual(result, json.loads(output.read_text()))
+        self.assertEqual(result["requested_front_body_gap_ft"], 14)
+        self.assertTrue(result["construction_target_observed"])
+        self.assertEqual(result["observed_halt_intervals"],
+                         [{"first_frame": 800, "last_frame": 899}])
+        self.assertEqual(result["source_audit"]["decoded_original_images"], 3600)
+        self.assertEqual(result["legal_necessity"], "unresolved")
+        with self.assertRaisesRegex(ValueError, "already exists"):
+            process_saved(self.attempt_path, output, allow_diagnostic=True)
+
+    def test_saved_process_rejects_changed_source_without_output(self):
+        output = self.root / "processed.json"
+        self.pose_path.write_bytes(self.pose_path.read_bytes() + b"changed")
+        with self.assertRaisesRegex(ValueError, "hash mismatch"):
+            process_saved(self.attempt_path, output, allow_diagnostic=True)
+        self.assertFalse(output.exists())
 
     def test_missing_camera_and_identity_change_rejected(self):
         del self.packet["cameras"]["approach"]

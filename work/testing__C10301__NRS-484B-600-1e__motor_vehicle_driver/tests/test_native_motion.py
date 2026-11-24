@@ -180,6 +180,19 @@ class NativeMotionTests(unittest.TestCase):
         result = audit_integrity(self.attempt, CASE, allow_diagnostic=True)
         self.assertTrue(result["source_integrity_passed"])
         self.assertFalse(result["full_video_decode"])
+        motion_path = self.attempt / "native-motion-receipt.json"
+        original_motion = motion_path.read_bytes()
+        for field, bad_value in (("travel_m", 2.0), ("format", "wrong-format"),
+                                 ("physical_acceptance_claimed", True)):
+            damaged = json.loads(original_motion)
+            damaged[field] = bad_value
+            index["native_motion"] = seal("native-motion-receipt.json",
+                                          json.dumps(damaged).encode())
+            (self.attempt / "capture-index.json").write_text(json.dumps(index))
+            with self.assertRaisesRegex(ValueError, "Native motion and capture index differ"):
+                audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+        index["native_motion"] = seal("native-motion-receipt.json", original_motion)
+        (self.attempt / "capture-index.json").write_text(json.dumps(index))
         (self.attempt / "rear.mp4").write_bytes(b"changed")
         with self.assertRaisesRegex(ValueError, "rear source hash differs"):
             audit_integrity(self.attempt, CASE, allow_diagnostic=True)

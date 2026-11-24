@@ -57,6 +57,10 @@ class SpeedBoundaryTests(unittest.TestCase):
         self.assertEqual(middle["between_sample_peaks"], "unobserved")
         self.assertTrue(middle["diagnostic_fixture"])
         self.assertFalse(above["physical_acceptance_claimed"])
+        self.assertTrue(below["case_probe"]["post_startup_window_found"])
+        self.assertFalse(middle["case_probe"]["post_startup_window_found"])
+        self.assertTrue(above["case_probe"]["post_startup_window_found"])
+        self.assertEqual(middle["case_probe"]["expected_sample_class"], "boundary_interval")
 
     def test_comparison_checks_fixed_setup_and_order(self):
         attempts = self.triple()
@@ -126,6 +130,7 @@ class SpeedBoundaryTests(unittest.TestCase):
         self.assertEqual(descriptor["sample_count"], 900)
         self.assertEqual(measure(folder, case_id)["sampled_relation"],
                          "boundary_unresolved")
+        self.assertEqual(measure(folder, case_id)["case_probe"]["first_window_frame"], 520)
         with self.assertRaisesRegex(ValueError, "already exists"):
             write_original_speed(folder, case_id, "run-2", rows)
         rows[4]["frame"] += 1

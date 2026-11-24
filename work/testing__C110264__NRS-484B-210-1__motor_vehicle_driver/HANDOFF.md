@@ -48,3 +48,19 @@ Next CPU work: collect a reviewed Native map packet and implementation-specific 
 ## 2026-11-24 saved full-media delivery integration
 
 `pass_right_audit.audit_delivery` now runs the existing source-bound map/route/trace/camera integrity audit and then `pass_right_media.audit_cameras` over every original camera archive. Its CLI `--full-media` applies this to an exact case or both sides of a controlled comparison. Production calls use fixed 1920x1080 front and 1280x720 rear/left/right dimensions; a fixture-only profile override is marked `production_camera_profile_verified: false`. A 900-frame-per-camera diagnostic ZIP integration fixture and altered-source rejection pass in the 25-test suite (`cpu-media-decode-tests.log`, SHA-256 `83605e4ead73ff43b49253989fd9f652c2cd1d4ba53b3be5d88bd9426be30dae`). This proves full PNG decoding in saved processing, not actual pixel visibility, Native provenance or legal acceptance. Exact runner, semantic proposals and canonical per-case offline/compatibility/process-saved receipts remain CPU work.
+
+## 2026-11-23 three-case diagnostic bundle checkpoint
+
+`build_offline_draft.py` binds the exact paragraph-(a) `left_signal`, `left_turn` and `neither` cases to the source-hashed plan, target behavior request, 20-Hz/900-frame and four-camera profile. The inline constructions embed the current source-gated right-pass route, live-map readback, Native actor/camera frame join, saved measurement, independent audit and full PNG media decoder. The runner checks exact variant identity and refuses unsourced Native capture. All three pinned `runtime.py offline` checks passed with materializations under `.runtime-work/`; the 26-test focused suite and pinned preflight passed. These are diagnostic drafts, not a canonical manifest or physical pass evidence.
+
+Proof SHA-256 (logs under this assignment):
+
+- `cpu-bundle-tests.log`: `8ef4b28d993ec663a726e44636a6c549a8bfe7cb2e4d6275744c271c0cf5f0e2` (exit 0)
+- `cpu-preflight-bundles.log`: `57621d4ab10c582ab9fdca672e60c39572c222cf383cc793837a5ae753f1ca10` (exit 0)
+- `cpu-static-check.log`: `571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04` (exit 0)
+- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-left_signal.log`: `0712d3c783da09b371518a7e6532701dbd755d885f605b357838efecf25665d0` (exit 0)
+- `cpu-offline-left_turn.log`: `3561ed9e5311d0c62fc1c85ea4134b9f3a2a53251ec8047aeb77438c42abd5dc` (exit 0)
+- `cpu-offline-neither.log`: `a72b1e51b003a10040bf7405264bc2df341d469c47bdc8d6d4da187fde85dbcd` (exit 0)
+
+Next CPU work: bind a reviewed Native map/paved corridor and actual actor/sensor adapters to a production runner; author canonical semantic proposals and manifest; run exact source-shaped positive/negative compatibility, pinned saved-only and independent delivery/comparison receipts. Actual right-pass motion, signal and turn readback, camera visibility and statutory findings remain unverified. Scoped strict fails on truthful `partial` status.

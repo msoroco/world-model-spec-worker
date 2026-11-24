@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from native_capture import capture
+from runner import run_capture
 from approach import measure
 from analysis import finalize
 from saved_delivery import audit, audit_original_pixels
@@ -81,6 +82,19 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_exact_bundle_runner_uses_reviewed_native_capture(self):
+        package = Path(__file__).resolve().parents[1]
+        construction = json.loads((package / 'cases/near_centerline/construction.json').read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            result = run_capture(FakeAdapter(), config, survey, root / 'attempt')
+            self.assertEqual(result['frame_count'], 900)
+            self.assertTrue((root / 'attempt' / 'road.xodr').is_file())
+
     def test_full_diagnostic_capture_and_saved_reopen(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -89,6 +103,11 @@ class NativeCaptureTests(unittest.TestCase):
             adapter = FakeAdapter()
             result = capture(adapter, CASE, survey, root / 'attempt')
             self.assertEqual(result['frame_count'], 900)
+            original_map = (root / 'attempt' / 'road.xodr').read_bytes()
+            self.assertEqual(original_map, b'<OpenDRIVE>surveyed</OpenDRIVE>')
+            acquisition = json.loads((root / 'attempt' / 'acquisition.json').read_text())
+            self.assertEqual(acquisition['road.xodr']['sha256'],
+                             hashlib.sha256(original_map).hexdigest())
             frames = [json.loads(line) for line in
                       (root / 'attempt' / 'video_frames.jsonl').read_text().splitlines()]
             self.assertEqual(len(frames), 900)
@@ -184,6 +203,25 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'already exists'):
                 capture(FakeAdapter(), CASE, survey, attempt)
             self.assertEqual(sentinel.read_text(), 'original')
+
+    def test_map_change_during_capture_does_not_publish(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            adapter = FakeAdapter()
+            calls = 0
+
+            def changing_map():
+                nonlocal calls
+                calls += 1
+                return ('<OpenDRIVE>surveyed</OpenDRIVE>' if calls == 1
+                        else '<OpenDRIVE>changed</OpenDRIVE>')
+
+            adapter.world.map.to_opendrive = changing_map
+            with self.assertRaisesRegex(ValueError, 'changed during capture'):
+                capture(adapter, CASE, survey, root / 'attempt')
+            self.assertFalse((root / 'attempt').exists())
 
     def test_adapter_cleanup_failure_does_not_publish_partial_capture(self):
         with tempfile.TemporaryDirectory() as temp:

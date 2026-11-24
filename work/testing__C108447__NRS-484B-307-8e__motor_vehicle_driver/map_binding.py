@@ -20,6 +20,37 @@ def _require(ok: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def _inside(point: tuple[float, float], polygon: list[list[float]]) -> bool:
+    x, y = point
+    inside = False
+    for a, b in zip(polygon, polygon[1:] + polygon[:1]):
+        if (a[1] > y) != (b[1] > y) and x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]:
+            inside = not inside
+    return inside
+
+
+def _crosses_interior(route: list[list[float]], polygon: list[list[float]]) -> bool:
+    for start, end in zip(route, route[1:]):
+        cuts = [0.0, 1.0]
+        dx, dy = end[0] - start[0], end[1] - start[1]
+        for a, b in zip(polygon, polygon[1:] + polygon[:1]):
+            ex, ey = b[0] - a[0], b[1] - a[1]
+            denominator = dx * ey - dy * ex
+            if abs(denominator) < 1e-10:
+                continue
+            rx, ry = a[0] - start[0], a[1] - start[1]
+            t = (rx * ey - ry * ex) / denominator
+            u = (rx * dy - ry * dx) / denominator
+            if 0 <= t <= 1 and 0 <= u <= 1:
+                cuts.append(t)
+        cuts = sorted(set(cuts))
+        for lo, hi in zip(cuts, cuts[1:]):
+            if hi - lo > 1e-8 and _inside((start[0] + dx * (lo + hi) / 2,
+                                          start[1] + dy * (lo + hi) / 2), polygon):
+                return True
+    return False
+
+
 def bind(opendrive: Path, parcel_authority: Path, *, property_id: str,
          intersecting_street_id: str, connector_routes: dict,
          review: dict) -> dict:
@@ -41,10 +72,14 @@ def bind(opendrive: Path, parcel_authority: Path, *, property_id: str,
         _require(item.get('status') in ('private', 'public') and item.get('authority'), 'parcel classification and authority required')
         polygon = item.get('polygon_xy_m', [])
         _require(len(polygon) >= 3 and all(len(point) == 2 and all(math.isfinite(float(v)) for v in point) for point in polygon), 'finite original parcel polygon required')
+        double_area = sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(polygon, polygon[1:] + polygon[:1]))
+        _require(abs(double_area) > 1e-8, 'nondegenerate original parcel polygon required')
     _require(property_id in ids, 'selected property absent from original authority')
     _require(property_id in connector_routes, 'selected connector route required')
     route = connector_routes[property_id]
     _require(len(route) >= 3 and all(len(point) == 2 and all(math.isfinite(float(v)) for v in point) for point in route), 'finite connector waypoints required')
+    selected = next(item for item in properties if item['id'] == property_id)
+    _require(_crosses_interior(route, selected['polygon_xy_m']), 'connector does not traverse selected property')
     return {
         'source': {'kind': 'original_native_map_and_property_authority',
                    'path': str(parcel_authority.resolve()), 'sha256': _sha(parcel_authority)},
