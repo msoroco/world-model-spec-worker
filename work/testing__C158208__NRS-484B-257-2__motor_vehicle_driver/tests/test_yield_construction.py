@@ -6,7 +6,8 @@ from types import SimpleNamespace as NS
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from yield_construction import stage_case
-from officer_source import BLUEPRINT_ID, spawn_candidate, write_candidate_packet
+from officer_source import (BLUEPRINT_ID, apply_direction_pose, read_direction_pose,
+                            spawn_candidate, write_candidate_packet)
 from yield_stage import PREFIX, primary
 
 
@@ -104,11 +105,39 @@ class ConstructionTests(unittest.TestCase):
             self.assertEqual(actors["officer"].id, 17)
             self.assertEqual(actors["officer"].get_location().x, 6.0)
             with __import__("tempfile").TemporaryDirectory() as tmp:
-                packet = write_candidate_packet(tmp, actors["officer"])
+                pose = {"bone": "crl_shoulder__R", "pitch_offset_deg": -70.0,
+                        "commanded_relative_rotation_deg":
+                            {"pitch": -70.0, "yaw": 0.0, "roll": 0.0}}
+                packet = write_candidate_packet(
+                    tmp, actors["officer"], pose_command=pose,
+                    pose_readback=pose["commanded_relative_rotation_deg"])
                 record = __import__("json").loads(packet.read_text())
                 self.assertEqual(record["actor_id"], 17)
+                self.assertEqual(record["blueprint_id"], "walker.pedestrian.0030")
+                self.assertEqual(record["direction_pose_command"], pose)
                 self.assertEqual(record["police_authority_judgment"], "unresolved")
         self.assertEqual(len(world.destroyed), 3)
+
+    def test_officer_direction_pose_requires_native_bone_readback(self):
+        baseline = NS(location=NS(x=0, y=0, z=0),
+                      rotation=NS(pitch=10.0, yaw=2.0, roll=3.0))
+        state = {"relative": baseline, "shown": False}
+        actor = NS(get_bones=lambda: NS(bone_transforms=[
+                       ("crl_shoulder__R", None, None, state["relative"])]),
+                   get_pose_from_animation=lambda: None,
+                   set_bones=lambda control: state.update(relative=control[0][1]),
+                   show_pose=lambda: state.update(shown=True))
+        command = apply_direction_pose(
+            actor, transform_factory=lambda location, rotation:
+                NS(location=location, rotation=rotation),
+            rotation_factory=lambda pitch, yaw, roll: NS(
+                pitch=pitch, yaw=yaw, roll=roll),
+            bone_control_factory=lambda rows: rows)
+        self.assertTrue(state["shown"])
+        self.assertEqual(read_direction_pose(actor, command)["pitch"], -60.0)
+        state["relative"].rotation.pitch = -40.0
+        with self.assertRaisesRegex(ValueError, "readback differs"):
+            read_direction_pose(actor, command)
 
 
 if __name__ == "__main__":

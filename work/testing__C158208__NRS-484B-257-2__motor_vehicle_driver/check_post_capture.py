@@ -19,7 +19,7 @@ from check_source_fixture import ensure_validator
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = Path(__file__).resolve().parent
-MANIFEST = PACKAGE / "probe-manifest.json"
+MANIFEST = PACKAGE / "execution-manifest.json"
 OUTPUT_ROOT = ROOT / ".runtime-work"
 VALIDATOR = OUTPUT_ROOT / "c158208-current-validator/.lake/build/bin/adapterCheck"
 

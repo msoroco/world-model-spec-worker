@@ -10,7 +10,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = Path(__file__).resolve().parent
 PREFIX = "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__"
-MANIFEST = PACKAGE / "probe-manifest.json"
+MANIFEST = PACKAGE / "execution-manifest.json"
 VALIDATOR = ROOT / ".runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
 
 

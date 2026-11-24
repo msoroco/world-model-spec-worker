@@ -49,8 +49,12 @@ def officer_template(attempt):
     candidate = json.loads(candidate_path.read_text())
     if (candidate.get("format") != "worker-officer-candidate-construction"
             or type(candidate.get("actor_id")) is not int
+            or candidate.get("blueprint_id") != "walker.pedestrian.0030"
+            or candidate.get("direction_pose_command", {}).get("bone") != "crl_shoulder__R"
+            or candidate.get("direction_pose_command", {}).get("pitch_offset_deg") != -70.0
+            or not isinstance(candidate.get("direction_pose_readback_deg"), dict)
             or candidate.get("police_authority_judgment") != "unresolved"):
-        raise ValueError("Missing source-identified Native person candidate")
+        raise ValueError("Missing source-identified Native police pose candidate")
     frames = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines()]
     if not frames:
         raise ValueError("No original officer-camera frames")
@@ -62,7 +66,7 @@ def officer_template(attempt):
             "officer_actor_id": candidate["actor_id"], "camera_sha256": cameras,
             "reviewed_carla_frames": [row["carla_frame"] for row in frames],
             "control_observed_at_entry": None, "authority_judgment": "unresolved",
-            "review_note": "Verify visible person, actual direction and authority from original cameras; do not infer either from the blueprint."}
+            "review_note": "Verify the visible police candidate and actual traffic direction from original cameras. Keep authority judgment unresolved until independently supported by source evidence."}
 
 
 def main():

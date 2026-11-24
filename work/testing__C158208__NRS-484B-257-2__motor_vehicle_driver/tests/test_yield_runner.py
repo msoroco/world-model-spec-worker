@@ -46,6 +46,11 @@ class RunnerTests(unittest.TestCase):
                 "case_id": PREFIX + "officer_control_exception"}) + "\n")
             (root / "officer-candidate.json").write_text(json.dumps({
                 "format": "worker-officer-candidate-construction", "actor_id": 17,
+                "blueprint_id": "walker.pedestrian.0030",
+                "direction_pose_command": {"bone": "crl_shoulder__R",
+                                           "pitch_offset_deg": -70.0},
+                "direction_pose_readback_deg": {"pitch": -70.0,
+                                                "yaw": 0.0, "roll": 0.0},
                 "police_authority_judgment": "unresolved"}) + "\n")
             (root / "video_frames.jsonl").write_text(json.dumps({"carla_frame": 101}) + "\n")
             for name in ("overview", "approach", "reference_corner", "driver_reference"):

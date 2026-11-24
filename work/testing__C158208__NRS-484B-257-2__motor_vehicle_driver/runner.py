@@ -9,7 +9,8 @@ from queue import Empty, Queue
 
 from camera_encoder import FFV1Writer
 from camera_setup import SIZES, source_cameras
-from officer_source import spawn_candidate, write_candidate_packet
+from officer_source import (apply_direction_pose, read_direction_pose,
+                            spawn_candidate, write_candidate_packet)
 from yield_capture import CAMERAS, EntrySourceWriter
 from yield_construction import stage_case
 from yield_context import build as build_context
@@ -128,8 +129,12 @@ def capture(args, config, stage):
             rotation_factory=carla.Rotation, transform_factory=carla.Transform))
         with stage_case(world, stage, location_factory=carla.Location,
                         officer_factory=officer_factory) as staging:
+            pose_command = None
             if staging["officer"] is not None:
-                write_candidate_packet(output, staging["officer"])
+                pose_command = apply_direction_pose(
+                    staging["officer"], transform_factory=carla.Transform,
+                    rotation_factory=carla.Rotation,
+                    bone_control_factory=carla.WalkerBoneControlIn)
             status_path = _write_status_review(output, stage, site)
             context = build_context(stage, site, status_path)
             reference = config["reference_plan"]
@@ -158,6 +163,13 @@ def capture(args, config, stage):
                                                    control_factory=carla.VehicleControl)
                             world.tick()
                             snap = world.get_snapshot()
+                            if tick == 0 and pose_command is not None:
+                                pose_readback = read_direction_pose(
+                                    staging["officer"], pose_command)
+                                write_candidate_packet(
+                                    output, staging["officer"],
+                                    pose_command=pose_command,
+                                    pose_readback=pose_readback)
                             camera_ids = {}
                             for name in CAMERAS:
                                 image = camera_frame(queues[name], snap.frame)

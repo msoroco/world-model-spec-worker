@@ -135,10 +135,21 @@ def audit(attempt, case_id, *, diagnostic_fixture=False):
             raise ValueError("Original officer-control source is incomplete or stale")
         if not diagnostic_fixture:
             candidate = read(root / "officer-candidate.json")
+            commanded = candidate.get("direction_pose_command", {}).get(
+                "commanded_relative_rotation_deg", {})
+            readback = candidate.get("direction_pose_readback_deg", {})
+            pose_matches = (isinstance(commanded, dict) and isinstance(readback, dict)
+                            and all(type(commanded.get(axis)) in (int, float)
+                                    and type(readback.get(axis)) in (int, float)
+                                    and abs(commanded[axis] - readback[axis]) <= 2.0
+                                    for axis in ("pitch", "yaw", "roll")))
             if (candidate.get("format") != "worker-officer-candidate-construction"
-                    or candidate.get("blueprint_id") != "walker.pedestrian.0001"
+                    or candidate.get("blueprint_id") != "walker.pedestrian.0030"
                     or type(candidate.get("actor_id")) is not int
                     or candidate["actor_id"] != officer.get("officer_actor_id")
+                    or candidate.get("direction_pose_command", {}).get("bone") != "crl_shoulder__R"
+                    or candidate.get("direction_pose_command", {}).get("pitch_offset_deg") != -70.0
+                    or not pose_matches
                     or officer.get("officer_candidate_sha256") != sha(root / "officer-candidate.json")):
                 raise ValueError("Original officer candidate and review actor differ")
     if not diagnostic_fixture:

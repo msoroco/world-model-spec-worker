@@ -20,7 +20,7 @@ from worker_exchange.semantic_delivery import validate  # noqa: E402
 
 def main():
     assignment = json.loads((ROOT / "inputs" / ASSIGNMENT_ID / "assignment.json").read_text())
-    manifest = json.loads((PACKAGE / "probe-manifest.json").read_text())
+    manifest = json.loads((PACKAGE / "execution-manifest.json").read_text())
     print(json.dumps(validate(PACKAGE, assignment, manifest), sort_keys=True))
 
 
