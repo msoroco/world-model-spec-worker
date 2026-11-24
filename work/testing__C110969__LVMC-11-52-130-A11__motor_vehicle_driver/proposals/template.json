@@ -1,0 +1,69 @@
+{
+  "template_id": "LVMC-11-52-130-A11@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A11",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: Within fifteen feet of an intersection.",
+  "structure": {
+    "law_id": "LVMC-11-52-130-A11",
+    "activation": {
+      "condition": "Vehicle stopping, standing or parking within fifteen feet of an intersection.",
+      "numeric_conditions": [
+        {
+          "variable": "front_body_intersection_gap",
+          "operator": "<",
+          "value": 15,
+          "unit": "ft"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park in the stated intersection proximity unless the stated exception applies.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device",
+        "effect": "The prohibition has an exception only where the applicable necessity and compliance or direction are established.",
+        "replacement_obligation": "Retain original conduct and applicable direction for independent review.",
+        "source_clause": "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      }
+    ],
+    "timing": {
+      "description": "Measure original approach, halt onset and dwell relative to the source-bound intersection boundary and governing context.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": "Original actor trajectories and feasible avoidance alternatives are required; necessity remains unjudged."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "Identify applicable law and observed conduct independently of a requested halt."
+      },
+      {
+        "phrase": "directions of a police officer or a traffic control device",
+        "note": "Retain original governing direction, facing actor and exact halt interval."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "front_body_intersection_gap",
+      "kind": "world_setup",
+      "range_or_domain": "requested body-to-boundary gap in feet; observed gap is measured from original source"
+    },
+    {
+      "name": "halt_activity",
+      "kind": "controller",
+      "range_or_domain": "destination stop or stand"
+    },
+    {
+      "name": "halt_cause",
+      "kind": "world_setup",
+      "range_or_domain": "ordinary destination, observed traffic conflict, police direction or device direction"
+    }
+  ]
+}

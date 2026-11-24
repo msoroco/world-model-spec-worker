@@ -27,7 +27,9 @@ cameras = module("camera_audit")
 
 class DualGreenTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = ROOT.parents[1] / ".runtime-work" / "c111125-dual-green-tests"
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         names = ["map", "route", "signal", "crosswalk", "permission"]
@@ -172,13 +174,17 @@ class DualGreenTests(unittest.TestCase):
         with self.assertRaisesRegex(compare.ComparisonError, "unsupported legal"):
             compare.audit_pair("vehicle_at_exhibition", clear, vehicle)
 
-    def native_fixture(self, other=False, with_cameras=False):
+    def native_fixture(self, other=False, with_cameras=False, with_pipeline_capture=False):
         class Actor:
             def __init__(self, actor_id, x, y):
                 self.id = actor_id
                 self.x, self.y = x, y
             def get_location(self):
-                return type("Location", (), {"x": self.x, "y": self.y})()
+                return type("Location", (), {"x": self.x, "y": self.y, "z": 0.0})()
+            def get_transform(self):
+                return type("Transform", (), {"rotation": type("Rotation", (), {"yaw": 0.0})()})()
+            def get_velocity(self):
+                return type("Velocity", (), {"x": 0.0, "y": 0.0, "z": 0.0})()
         ego = Actor(1, -10, 0)
         actors = [ego]
         if other:
@@ -216,10 +222,27 @@ class DualGreenTests(unittest.TestCase):
             image.save(buffer, format="PNG")
             payload = buffer.getvalue()
             camera_callback = lambda frame: {name: payload for name in cameras.CAMERAS}
+        capture_callback = None
+        if with_pipeline_capture:
+            attempt.mkdir()
+            def capture_callback(frame, time_s):
+                row = {"frame": frame, "time_s": time_s, "position": {
+                    "x": ego.x, "y": ego.y, "z": 0.0}, "heading_deg": 0.0,
+                    "speed_mps": 0.0}
+                with (attempt / "trace.jsonl").open("a") as stream:
+                    stream.write(json.dumps(row) + "\n")
+                return row
         receipt = native.run_native_attempt(self.site, self.root, World(), actors, controller,
             lambda frame: lamps[frame], lambda frame, user_id: lawful[frame], attempt, case_id, 3,
-            camera_frame_for_tick=camera_callback)
+            camera_frame_for_tick=camera_callback, capture_after_tick=capture_callback)
         return attempt, case_id, receipt
+
+    def test_native_attempt_joins_pipeline_owned_original_trace(self):
+        attempt, case_id, receipt = self.native_fixture(with_pipeline_capture=True)
+        self.assertEqual(receipt["trace_source"]["sha256"], hashlib.sha256(
+            (attempt / "trace.jsonl").read_bytes()).hexdigest())
+        measured = saved.measure_saved(self.site, self.root, attempt, case_id)
+        self.assertEqual(measured["frame_count"], 3)
 
     def test_four_camera_source_decode_and_join(self):
         attempt, case_id, receipt = self.native_fixture(with_cameras=True)
@@ -287,6 +310,17 @@ class DualGreenTests(unittest.TestCase):
     def test_native_attempt_and_saved_source_join(self):
         attempt, case_id, receipt = self.native_fixture(other=True)
         self.assertEqual(receipt["sample_hz"], 20)
+        traces = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()]
+        frame_map = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines()]
+        self.assertEqual(len(traces), 3)
+        self.assertEqual([row["frame"] for row in traces],
+                         [row["carla_frame"] for row in frame_map])
+        self.assertEqual([row["video_frame"] for row in frame_map], [0, 1, 2])
+        handoff = json.loads((attempt / receipt["source_handoff"]["path"]).read_text())
+        self.assertEqual(len(handoff["frames"]), 3)
+        self.assertEqual(handoff["frames"][1]["lawful_use"]["2"]["path"], "lawful-11.json")
+        self.assertEqual(receipt["source_handoff"]["sha256"], hashlib.sha256(
+            (attempt / "original-source-handoff.json").read_bytes()).hexdigest())
         measured = saved.measure_saved(self.site, self.root, attempt, case_id)
         self.assertEqual(measured["frame_count"], 3)
         self.assertEqual(measured["exhibition"]["other_users"][0]["region"], "adjacent_crosswalk")
@@ -361,6 +395,17 @@ class DualGreenTests(unittest.TestCase):
         rows.pop()
         event.write_text(json.dumps(rows))
         with self.assertRaisesRegex(green.EvidenceError, "hash mismatch"):
+            saved.measure_saved(self.site, self.root, attempt, case_id)
+
+    def test_saved_rejects_trace_frame_identity_mutation(self):
+        attempt, case_id, receipt = self.native_fixture()
+        path = attempt / "video_frames.jsonl"
+        mapping = [json.loads(line) for line in path.read_text().splitlines()]
+        mapping[1]["carla_frame"] = 99
+        path.write_text("".join(json.dumps(row) + "\n" for row in mapping))
+        receipt["frame_map_source"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        (attempt / "native-attempt.json").write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(green.EvidenceError, "trace/frame map identity differs"):
             saved.measure_saved(self.site, self.root, attempt, case_id)
 
     def test_native_rejects_wrong_lamp_packet(self):

@@ -1,0 +1,717 @@
+{
+  "cell_id": "C111125",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source-reviewed dual-aspect straight route without another user.",
+      "variable_assignments": {
+        "dual_aspect_setup": {
+          "kind": "world_setup",
+          "value": "source_observed_circular_green_with_turn_arrow",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_presence_at_exhibition": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Physical setup target; original source decides realization"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Independent frame-matched official-head aspect packets and original lamp image",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading, speed and intersection entry",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-vehicle pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed surveyed intersection polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed adjacent crosswalk polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-participant control and lawful-use packet references",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "original_lamp_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed original image showing the official facing head",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_source_survey",
+            "unit": "structured record",
+            "method": "Independent Native map, head, route and movement-restriction review"
+          }
+        ],
+        "limitations": [
+          "CARLA Green state alone does not establish simultaneous circular and arrow lamps.",
+          "Physical occupancy does not itself determine lawful use, right of way, or permission."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "such other movement as is permitted by the circular green signal",
+        "yield the right-of-way",
+        "lawfully within an adjacent crosswalk",
+        "lawfully using the intersection"
+      ]
+    },
+    {
+      "target_law_id": "NRS-484B-307-3a",
+      "target_type": "boundary_probe",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Independent frame-matched official-head aspect packets and original lamp image",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading, speed and intersection entry",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-vehicle pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed surveyed intersection polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed adjacent crosswalk polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-participant control and lawful-use packet references",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "original_lamp_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed original image showing the official facing head",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_source_survey",
+            "unit": "structured record",
+            "method": "Independent Native map, head, route and movement-restriction review"
+          }
+        ],
+        "limitations": [
+          "CARLA Green state alone does not establish simultaneous circular and arrow lamps.",
+          "Physical occupancy does not itself determine lawful use, right of way, or permission."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "such other movement as is permitted by the circular green signal",
+        "yield the right-of-way",
+        "lawfully within an adjacent crosswalk",
+        "lawfully using the intersection"
+      ],
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear",
+      "rationale": "Straight movement under circular green and concurrent green turn arrow, clear at exhibition",
+      "variable_assignments": {
+        "dual_aspect_setup": {
+          "kind": "world_setup",
+          "value": "source_observed_circular_green_with_turn_arrow",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_presence_at_exhibition": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Physical setup target; original source decides realization"
+        }
+      },
+      "paired_probe_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__vehicle_presence",
+      "deliberate_differences": [
+        "participant_kind",
+        "participant_presence_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "participant_presence_at_exhibition",
+        "comparison_or_standard": "Original source-backed participant presence at first dual-green exhibition; no legal cutoff",
+        "target_value_or_branch": "clear"
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-307-3a",
+      "target_type": "boundary_probe",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Independent frame-matched official-head aspect packets and original lamp image",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading, speed and intersection entry",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-vehicle pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed surveyed intersection polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed adjacent crosswalk polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-participant control and lawful-use packet references",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "original_lamp_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed original image showing the official facing head",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_source_survey",
+            "unit": "structured record",
+            "method": "Independent Native map, head, route and movement-restriction review"
+          }
+        ],
+        "limitations": [
+          "CARLA Green state alone does not establish simultaneous circular and arrow lamps.",
+          "Physical occupancy does not itself determine lawful use, right of way, or permission."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "such other movement as is permitted by the circular green signal",
+        "yield the right-of-way",
+        "lawfully within an adjacent crosswalk",
+        "lawfully using the intersection"
+      ],
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present",
+      "rationale": "Other vehicle in intersection at dual-green exhibition",
+      "variable_assignments": {
+        "dual_aspect_setup": {
+          "kind": "world_setup",
+          "value": "source_observed_circular_green_with_turn_arrow",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_kind": {
+          "kind": "world_setup",
+          "value": "motor_vehicle",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_presence_at_exhibition": {
+          "kind": "world_setup",
+          "value": "intersection",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Physical setup target; original source decides realization"
+        }
+      },
+      "paired_probe_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__vehicle_presence",
+      "deliberate_differences": [
+        "participant_kind",
+        "participant_presence_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "participant_presence_at_exhibition",
+        "comparison_or_standard": "Original source-backed participant presence at first dual-green exhibition; no legal cutoff",
+        "target_value_or_branch": "intersection"
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-307-3a",
+      "target_type": "boundary_probe",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Independent frame-matched official-head aspect packets and original lamp image",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading, speed and intersection entry",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-vehicle pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed surveyed intersection polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed adjacent crosswalk polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-participant control and lawful-use packet references",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "original_lamp_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed original image showing the official facing head",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_source_survey",
+            "unit": "structured record",
+            "method": "Independent Native map, head, route and movement-restriction review"
+          }
+        ],
+        "limitations": [
+          "CARLA Green state alone does not establish simultaneous circular and arrow lamps.",
+          "Physical occupancy does not itself determine lawful use, right of way, or permission."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "such other movement as is permitted by the circular green signal",
+        "yield the right-of-way",
+        "lawfully within an adjacent crosswalk",
+        "lawfully using the intersection"
+      ],
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present",
+      "rationale": "Pedestrian in adjacent crosswalk at dual-green exhibition",
+      "variable_assignments": {
+        "dual_aspect_setup": {
+          "kind": "world_setup",
+          "value": "source_observed_circular_green_with_turn_arrow",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_presence_at_exhibition": {
+          "kind": "world_setup",
+          "value": "adjacent_crosswalk",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Physical setup target; original source decides realization"
+        }
+      },
+      "paired_probe_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__pedestrian_exhibition_timing",
+      "deliberate_differences": [
+        "participant_presence_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "participant_presence_at_exhibition",
+        "comparison_or_standard": "Original source-backed participant presence at first dual-green exhibition; no legal cutoff",
+        "target_value_or_branch": "adjacent_crosswalk"
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-307-3a",
+      "target_type": "boundary_probe",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Independent frame-matched official-head aspect packets and original lamp image",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego pose, heading, speed and intersection entry",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original other-vehicle pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian pose and identity, if present",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed surveyed intersection polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed adjacent crosswalk polygon joined to frames",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-participant control and lawful-use packet references",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          },
+          {
+            "name": "original_lamp_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed original image showing the official facing head",
+            "time_window": "exhibition through intersection clearance",
+            "reference_frame": "original Native frame and world time",
+            "uncertainty": "20 Hz sample spacing and surveyed geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_source_survey",
+            "unit": "structured record",
+            "method": "Independent Native map, head, route and movement-restriction review"
+          }
+        ],
+        "limitations": [
+          "CARLA Green state alone does not establish simultaneous circular and arrow lamps.",
+          "Physical occupancy does not itself determine lawful use, right of way, or permission."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "such other movement as is permitted by the circular green signal",
+        "yield the right-of-way",
+        "lawfully within an adjacent crosswalk",
+        "lawfully using the intersection"
+      ],
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late",
+      "rationale": "Pedestrian outside crosswalk at exhibition and entering later",
+      "variable_assignments": {
+        "dual_aspect_setup": {
+          "kind": "world_setup",
+          "value": "source_observed_circular_green_with_turn_arrow",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_kind": {
+          "kind": "world_setup",
+          "value": "pedestrian",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "participant_presence_at_exhibition": {
+          "kind": "world_setup",
+          "value": "outside_then_entering",
+          "note": "Physical setup target; original source decides realization"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Physical setup target; original source decides realization"
+        }
+      },
+      "paired_probe_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__pedestrian_exhibition_timing",
+      "deliberate_differences": [
+        "participant_presence_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "participant_presence_at_exhibition",
+        "comparison_or_standard": "Original source-backed participant presence at first dual-green exhibition; no legal cutoff",
+        "target_value_or_branch": "outside"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111125-3a-1",
+      "target_law_id": "NRS-484B-307-3a",
+      "judgment_refs": [
+        {
+          "phrase": "such other movement as is permitted by the circular green signal",
+          "note": "Straight movement needs source-backed circular-green and local restriction review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original dual-aspect site and independent lawful-use sources must bound physical sweep feasibility.",
+      "missing_inputs": [
+        "Reviewed Native dual-aspect head and movement-restriction source",
+        "Independent original lawful-use context and feasible participant timing range"
+      ]
+    },
+    {
+      "sweep_id": "c111125-3a-2",
+      "target_law_id": "NRS-484B-307-3a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "The source supplies no numeric yielding boundary."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original dual-aspect site and independent lawful-use sources must bound physical sweep feasibility.",
+      "missing_inputs": [
+        "Reviewed Native dual-aspect head and movement-restriction source",
+        "Independent original lawful-use context and feasible participant timing range"
+      ]
+    },
+    {
+      "sweep_id": "c111125-3a-3",
+      "target_law_id": "NRS-484B-307-3a",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully within an adjacent crosswalk",
+          "note": "Lawful pedestrian presence needs independent crossing-control context."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original dual-aspect site and independent lawful-use sources must bound physical sweep feasibility.",
+      "missing_inputs": [
+        "Reviewed Native dual-aspect head and movement-restriction source",
+        "Independent original lawful-use context and feasible participant timing range"
+      ]
+    },
+    {
+      "sweep_id": "c111125-3a-4",
+      "target_law_id": "NRS-484B-307-3a",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully using the intersection",
+          "note": "Lawful other-traffic use needs independent approach-control context."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original dual-aspect site and independent lawful-use sources must bound physical sweep feasibility.",
+      "missing_inputs": [
+        "Reviewed Native dual-aspect head and movement-restriction source",
+        "Independent original lawful-use context and feasible participant timing range"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

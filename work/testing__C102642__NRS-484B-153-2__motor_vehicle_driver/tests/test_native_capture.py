@@ -164,6 +164,10 @@ class NativeCaptureTests(unittest.TestCase):
             receipt = native.capture(adapter, survey_path=survey, survey_sha256=digest,
                                      case_id=case, output=output)
             trace = json.loads((output / "native-trace.json").read_text())
+            door = json.loads((output / "door-source.json").read_text())
+            self.assertEqual(door["source_trace_sha256"], receipt["original_trace_sha256"])
+            self.assertEqual(door["survey_sha256"], digest)
+            self.assertEqual(door["selected_act"], native.CASE_ACTIONS[case_key][0])
             self.assertEqual(receipt["frame_count"], 900)
             self.assertEqual(receipt["camera_frame_count"], 3600)
             self.assertEqual(len(trace["frames"]), 900)

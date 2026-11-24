@@ -8,10 +8,30 @@
           "evidence": "four source-hashed RGB frames per world tick",
           "method": "capture"
         },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "source-hashed camera frame map",
+          "method": "capture"
+        },
         "door_envelope_xy": {
           "entrypoint": "carla_adapter.py",
           "evidence": "original_observer swept door or body vertices",
           "method": "observe"
+        },
+        "door_vertices": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer swept door vertices",
+          "method": "observe"
+        },
+        "driver_act_and_side": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer Native act and side",
+          "method": "observe"
+        },
+        "hill_crest_loading_site": {
+          "entrypoint": "native_capture.py",
+          "evidence": "site_survey in door-source.json",
+          "method": "capture"
         },
         "observed_driver_act": {
           "entrypoint": "carla_adapter.py",
@@ -22,6 +42,11 @@
           "entrypoint": "native_capture.py",
           "evidence": "native-trace.json frame and actor identity",
           "method": "capture"
+        },
+        "parked_vehicle_pose": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "parked Native actor pose",
+          "method": "observe"
         },
         "passing_body_xy": {
           "entrypoint": "carla_adapter.py",
@@ -37,20 +62,58 @@
           "entrypoint": "carla_adapter.py",
           "evidence": "passing Native actor velocity",
           "method": "observe"
+        },
+        "passing_traffic_body": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor bounding vertices",
+          "method": "observe"
+        },
+        "traffic_response": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor brake and acceleration",
+          "method": "observe"
         }
       },
       "candidate_risk": {
-        "reason": "Door articulation and boarding/alighting actor realization require original Native review; no failure-triggered fallback selected",
+        "reason": "Original door act may fail to appear at the 10 s command; delayed act command is predeclared and still requires Native review",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "Native act command tick moves from 10 s to 12 s"
+          ],
+          "compatibility": {
+            "log": "cases/open_near_overlap/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/open_near_overlap/fallback1-negative-analysis.log",
+            "receipt": "cases/open_near_overlap/fallback1-compatibility.json",
+            "sha256": "edbe3d4a0faf33f031f29a8fa50cb66d857556d4ec7bc9f3ef86a53b97819f3d"
+          },
+          "construction": "construction-open_near_overlap-fallback1.json",
+          "construction_sha256": "a4538249a0c92632e96535a8577d3e1f9650def3f423651fabf714fc76ae2373",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --candidate fallback1 --output .runtime-work/c102642-selected/offline-open_near_overlap-fallback1-v2 --python .venv-cpu/bin/python",
+            "construction_sha256": "a4538249a0c92632e96535a8577d3e1f9650def3f423651fabf714fc76ae2373",
+            "exit_code": 0,
+            "log": "cases/open_near_overlap/fallback1-offline.log",
+            "log_sha256": "54c9c1c36eee23221cfa5d3dae8796096d542ea1062e311f93849357bcefed73"
+          },
+          "trigger": {
+            "failure_condition": "primary 10 s command yielded no observed selected act",
+            "metric": "source-confirmed selected act frame IDs",
+            "source": "original Native act observation and capture failure"
+          }
+        }
+      ],
       "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
       "compatibility": {
-        "log": "cases/open_near_overlap/compatibility-analysis.log",
+        "log": "cases/open_near_overlap/positive-analysis.log",
         "receipt": "cases/open_near_overlap/compatibility.json",
-        "sha256": "2fcf6311543627ba45fbbe087d99239922a27bab679961d99b64b117d9126830"
+        "sha256": "c0528ee2a9b03de9bcac90c82b96845393f1e6d3d7cf388daac130ba9b2256c7"
       },
       "construction": "construction-open_near_overlap.json",
-      "construction_sha256": "b2c68bf3fc80b29ef4eff742e374cc7c83a7822cdabcda862e5ba33391b167c7",
+      "construction_sha256": "22fa7bc7bb1cf20f74f100bddef243bc7b855ff5917283a1c7876beebe7762ee",
       "delivery_acceptance": {
         "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
         "checks": [
@@ -61,8 +124,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-open_near_overlap-v3 --output cases/open_near_overlap/independent-cpu-audit.json",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_overlap-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_overlap-v1/independent-negative-output.json",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-open_near_overlap-v4 --output cases/open_near_overlap/independent-cpu-audit.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_overlap-v2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_overlap-v2/independent-negative-output.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing required source: door-source.json",
         "negative_log": "cases/open_near_overlap/independent-missing-source.log",
@@ -92,11 +155,15 @@
         "log": "cases/open_near_overlap/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.cpu-draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --output .runtime-work/c102642-selected/offline-open_near_overlap-v3 --python .venv-cpu/bin/python",
-        "construction_sha256": "b2c68bf3fc80b29ef4eff742e374cc7c83a7822cdabcda862e5ba33391b167c7",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --output .runtime-work/c102642-selected/offline-open_near_overlap-v4 --python .venv-cpu/bin/python",
+        "construction_sha256": "22fa7bc7bb1cf20f74f100bddef243bc7b855ff5917283a1c7876beebe7762ee",
         "exit_code": 0,
         "log": "cases/open_near_overlap/offline.log",
-        "log_sha256": "54c9c1c36eee23221cfa5d3dae8796096d542ea1062e311f93849357bcefed73"
+        "log_sha256": "5830138fba56dc5e0b2b5b5d5f040eb9c3a55a19813cf1f31ae89beaf2ed249b"
+      },
+      "physical_preparation": {
+        "receipt": "cases/open_near_overlap/physical/receipt.json",
+        "sha256": "6867616f7024e64a5329c2b23fd7f8c5c042716d45d4cc10137d6ca143daeeb6"
       }
     },
     {
@@ -106,10 +173,30 @@
           "evidence": "four source-hashed RGB frames per world tick",
           "method": "capture"
         },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "source-hashed camera frame map",
+          "method": "capture"
+        },
         "door_envelope_xy": {
           "entrypoint": "carla_adapter.py",
           "evidence": "original_observer swept door or body vertices",
           "method": "observe"
+        },
+        "door_vertices": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer swept door vertices",
+          "method": "observe"
+        },
+        "driver_act_and_side": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer Native act and side",
+          "method": "observe"
+        },
+        "hill_crest_loading_site": {
+          "entrypoint": "native_capture.py",
+          "evidence": "site_survey in door-source.json",
+          "method": "capture"
         },
         "observed_driver_act": {
           "entrypoint": "carla_adapter.py",
@@ -120,6 +207,11 @@
           "entrypoint": "native_capture.py",
           "evidence": "native-trace.json frame and actor identity",
           "method": "capture"
+        },
+        "parked_vehicle_pose": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "parked Native actor pose",
+          "method": "observe"
         },
         "passing_body_xy": {
           "entrypoint": "carla_adapter.py",
@@ -135,20 +227,58 @@
           "entrypoint": "carla_adapter.py",
           "evidence": "passing Native actor velocity",
           "method": "observe"
+        },
+        "passing_traffic_body": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor bounding vertices",
+          "method": "observe"
+        },
+        "traffic_response": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor brake and acceleration",
+          "method": "observe"
         }
       },
       "candidate_risk": {
-        "reason": "Door articulation and boarding/alighting actor realization require original Native review; no failure-triggered fallback selected",
+        "reason": "Original door act may fail to appear at the 10 s command; delayed act command is predeclared and still requires Native review",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "Native act command tick moves from 10 s to 12 s"
+          ],
+          "compatibility": {
+            "log": "cases/open_near_clear/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/open_near_clear/fallback1-negative-analysis.log",
+            "receipt": "cases/open_near_clear/fallback1-compatibility.json",
+            "sha256": "ffaaf2345808481a27f129f23876e8b752a9f9170d2c9cc0ea7e2462376ef287"
+          },
+          "construction": "construction-open_near_clear-fallback1.json",
+          "construction_sha256": "2e6a4b5d4749dcd4fc8fd64d8ef34247e6e410f68f23b58efa39181ccdbd7c49",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --candidate fallback1 --output .runtime-work/c102642-selected/offline-open_near_clear-fallback1-v2 --python .venv-cpu/bin/python",
+            "construction_sha256": "2e6a4b5d4749dcd4fc8fd64d8ef34247e6e410f68f23b58efa39181ccdbd7c49",
+            "exit_code": 0,
+            "log": "cases/open_near_clear/fallback1-offline.log",
+            "log_sha256": "cf61488fda5e4c1a3e681b83e12bd9827d6e0d9e768996d1e600bb6198c3ad3f"
+          },
+          "trigger": {
+            "failure_condition": "primary 10 s command yielded no observed selected act",
+            "metric": "source-confirmed selected act frame IDs",
+            "source": "original Native act observation and capture failure"
+          }
+        }
+      ],
       "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
       "compatibility": {
-        "log": "cases/open_near_clear/compatibility-analysis.log",
+        "log": "cases/open_near_clear/positive-analysis.log",
         "receipt": "cases/open_near_clear/compatibility.json",
-        "sha256": "109ccc1765f88a4b4acf91ef0b466f4519ab271004f074c3594d2630dee9e748"
+        "sha256": "2912c6699327b8ec0259673a56097348051b0ff1067b3089ba3793465d6ff8c2"
       },
       "construction": "construction-open_near_clear.json",
-      "construction_sha256": "c8d6683afc56d3488896c2f36adfd7749d36e6a5c4695166d18c4cc40175d363",
+      "construction_sha256": "2f9210a55fc4bbcca5605f0ba0c07a67fb6df7524d7aec74a8a3f49af61d33ac",
       "delivery_acceptance": {
         "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
         "checks": [
@@ -159,8 +289,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-open_near_clear-v3 --output cases/open_near_clear/independent-cpu-audit.json",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_clear-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_clear-v1/independent-negative-output.json",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-open_near_clear-v4 --output cases/open_near_clear/independent-cpu-audit.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_clear-v2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_near_clear-v2/independent-negative-output.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing required source: door-source.json",
         "negative_log": "cases/open_near_clear/independent-missing-source.log",
@@ -190,11 +320,15 @@
         "log": "cases/open_near_clear/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.cpu-draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --output .runtime-work/c102642-selected/offline-open_near_clear-v3 --python .venv-cpu/bin/python",
-        "construction_sha256": "c8d6683afc56d3488896c2f36adfd7749d36e6a5c4695166d18c4cc40175d363",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --output .runtime-work/c102642-selected/offline-open_near_clear-v4 --python .venv-cpu/bin/python",
+        "construction_sha256": "2f9210a55fc4bbcca5605f0ba0c07a67fb6df7524d7aec74a8a3f49af61d33ac",
         "exit_code": 0,
         "log": "cases/open_near_clear/offline.log",
-        "log_sha256": "0be57207816338d4a25066af6ba1081995d0bc5b5f8950212b80e85daa9397a4"
+        "log_sha256": "82afa225945c947ca2dbf676a2b202053fdfc7df86024b64d9632fbc6b2421ed"
+      },
+      "physical_preparation": {
+        "receipt": "cases/open_near_clear/physical/receipt.json",
+        "sha256": "457518f5b569e33030ebac1abf92356d6e6ac1ced2cef6a4c49657bb321d2d46"
       }
     },
     {
@@ -204,10 +338,30 @@
           "evidence": "four source-hashed RGB frames per world tick",
           "method": "capture"
         },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "source-hashed camera frame map",
+          "method": "capture"
+        },
         "door_envelope_xy": {
           "entrypoint": "carla_adapter.py",
           "evidence": "original_observer swept door or body vertices",
           "method": "observe"
+        },
+        "door_vertices": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer swept door vertices",
+          "method": "observe"
+        },
+        "driver_act_and_side": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer Native act and side",
+          "method": "observe"
+        },
+        "hill_crest_loading_site": {
+          "entrypoint": "native_capture.py",
+          "evidence": "site_survey in door-source.json",
+          "method": "capture"
         },
         "observed_driver_act": {
           "entrypoint": "carla_adapter.py",
@@ -218,6 +372,11 @@
           "entrypoint": "native_capture.py",
           "evidence": "native-trace.json frame and actor identity",
           "method": "capture"
+        },
+        "parked_vehicle_pose": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "parked Native actor pose",
+          "method": "observe"
         },
         "passing_body_xy": {
           "entrypoint": "carla_adapter.py",
@@ -233,20 +392,58 @@
           "entrypoint": "carla_adapter.py",
           "evidence": "passing Native actor velocity",
           "method": "observe"
+        },
+        "passing_traffic_body": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor bounding vertices",
+          "method": "observe"
+        },
+        "traffic_response": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor brake and acceleration",
+          "method": "observe"
         }
       },
       "candidate_risk": {
-        "reason": "Door articulation and boarding/alighting actor realization require original Native review; no failure-triggered fallback selected",
+        "reason": "Original door act may fail to appear at the 10 s command; delayed act command is predeclared and still requires Native review",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "Native act command tick moves from 10 s to 12 s"
+          ],
+          "compatibility": {
+            "log": "cases/open_far_side/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/open_far_side/fallback1-negative-analysis.log",
+            "receipt": "cases/open_far_side/fallback1-compatibility.json",
+            "sha256": "ae6e748d29c94763badd978067f3fa88928410a0975088216ff6d715b9d9c351"
+          },
+          "construction": "construction-open_far_side-fallback1.json",
+          "construction_sha256": "a882e2f569dea14d6a8abfc670ed0d8b4b8f8f05cfa0e7930527e5afa7b6d157",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --candidate fallback1 --output .runtime-work/c102642-selected/offline-open_far_side-fallback1-v2 --python .venv-cpu/bin/python",
+            "construction_sha256": "a882e2f569dea14d6a8abfc670ed0d8b4b8f8f05cfa0e7930527e5afa7b6d157",
+            "exit_code": 0,
+            "log": "cases/open_far_side/fallback1-offline.log",
+            "log_sha256": "efaa9607fafdee1df61080bbbfad3082709645f12e66cc0b9d02286e06da7978"
+          },
+          "trigger": {
+            "failure_condition": "primary 10 s command yielded no observed selected act",
+            "metric": "source-confirmed selected act frame IDs",
+            "source": "original Native act observation and capture failure"
+          }
+        }
+      ],
       "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
       "compatibility": {
-        "log": "cases/open_far_side/compatibility-analysis.log",
+        "log": "cases/open_far_side/positive-analysis.log",
         "receipt": "cases/open_far_side/compatibility.json",
-        "sha256": "84798fc55061f47e1b1a1694776763e1d9d46a746e49119fc52ecd0f617d7ca2"
+        "sha256": "4a1c6c3e0b8f368b5d9e27c6ba2a2b000f9d53d9feac09a3e173c1ac1e594959"
       },
       "construction": "construction-open_far_side.json",
-      "construction_sha256": "694253f83d44318a6d78cf25cfd1dead46f4a4a3ea08095ff891f909c2b1a445",
+      "construction_sha256": "1e4b5dbe9045c30fd6e49a83ee092ff3cb7abe55a78ad642a89b22d46d1a4488",
       "delivery_acceptance": {
         "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
         "checks": [
@@ -257,8 +454,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-open_far_side-v3 --output cases/open_far_side/independent-cpu-audit.json",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_far_side-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_far_side-v1/independent-negative-output.json",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-open_far_side-v4 --output cases/open_far_side/independent-cpu-audit.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_far_side-v2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-open_far_side-v2/independent-negative-output.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing required source: door-source.json",
         "negative_log": "cases/open_far_side/independent-missing-source.log",
@@ -288,11 +485,15 @@
         "log": "cases/open_far_side/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.cpu-draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --output .runtime-work/c102642-selected/offline-open_far_side-v3 --python .venv-cpu/bin/python",
-        "construction_sha256": "694253f83d44318a6d78cf25cfd1dead46f4a4a3ea08095ff891f909c2b1a445",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --output .runtime-work/c102642-selected/offline-open_far_side-v4 --python .venv-cpu/bin/python",
+        "construction_sha256": "1e4b5dbe9045c30fd6e49a83ee092ff3cb7abe55a78ad642a89b22d46d1a4488",
         "exit_code": 0,
         "log": "cases/open_far_side/offline.log",
-        "log_sha256": "2e7322344d8ac56dee04f41dc77d7591ebe7bcffd049101de4ff5f86181e54c7"
+        "log_sha256": "3f846d27afae27cb9ab7a6fe01b55775c12a0daf614cf3a335fe0ea749fbd81d"
+      },
+      "physical_preparation": {
+        "receipt": "cases/open_far_side/physical/receipt.json",
+        "sha256": "b4afd56be6c09b0ad311f1eebd466aa1b14ff6a15c13cca1617b90a0e8c7e6d3"
       }
     },
     {
@@ -302,10 +503,30 @@
           "evidence": "four source-hashed RGB frames per world tick",
           "method": "capture"
         },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "source-hashed camera frame map",
+          "method": "capture"
+        },
         "door_envelope_xy": {
           "entrypoint": "carla_adapter.py",
           "evidence": "original_observer swept door or body vertices",
           "method": "observe"
+        },
+        "door_vertices": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer swept door vertices",
+          "method": "observe"
+        },
+        "driver_act_and_side": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer Native act and side",
+          "method": "observe"
+        },
+        "hill_crest_loading_site": {
+          "entrypoint": "native_capture.py",
+          "evidence": "site_survey in door-source.json",
+          "method": "capture"
         },
         "observed_driver_act": {
           "entrypoint": "carla_adapter.py",
@@ -316,6 +537,11 @@
           "entrypoint": "native_capture.py",
           "evidence": "native-trace.json frame and actor identity",
           "method": "capture"
+        },
+        "parked_vehicle_pose": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "parked Native actor pose",
+          "method": "observe"
         },
         "passing_body_xy": {
           "entrypoint": "carla_adapter.py",
@@ -331,20 +557,58 @@
           "entrypoint": "carla_adapter.py",
           "evidence": "passing Native actor velocity",
           "method": "observe"
+        },
+        "passing_traffic_body": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor bounding vertices",
+          "method": "observe"
+        },
+        "traffic_response": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor brake and acceleration",
+          "method": "observe"
         }
       },
       "candidate_risk": {
-        "reason": "Door articulation and boarding/alighting actor realization require original Native review; no failure-triggered fallback selected",
+        "reason": "Original door act may fail to appear at the 10 s command; delayed act command is predeclared and still requires Native review",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "Native act command tick moves from 10 s to 12 s"
+          ],
+          "compatibility": {
+            "log": "cases/board_near/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/board_near/fallback1-negative-analysis.log",
+            "receipt": "cases/board_near/fallback1-compatibility.json",
+            "sha256": "c75b2868211e3d413244740f8963f86f17bf43121b8cc7536968d3f7e68995ae"
+          },
+          "construction": "construction-board_near-fallback1.json",
+          "construction_sha256": "ee16e75cf2f2f9e5cc7cec894dfbc923f32fe04ad5e785aaea1a98d934ac1ae0",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --candidate fallback1 --output .runtime-work/c102642-selected/offline-board_near-fallback1-v2 --python .venv-cpu/bin/python",
+            "construction_sha256": "ee16e75cf2f2f9e5cc7cec894dfbc923f32fe04ad5e785aaea1a98d934ac1ae0",
+            "exit_code": 0,
+            "log": "cases/board_near/fallback1-offline.log",
+            "log_sha256": "56cd15ddf1c47d70134cd2b482cc7af3bb109aaf038f317203af606664484394"
+          },
+          "trigger": {
+            "failure_condition": "primary 10 s command yielded no observed selected act",
+            "metric": "source-confirmed selected act frame IDs",
+            "source": "original Native act observation and capture failure"
+          }
+        }
+      ],
       "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
       "compatibility": {
-        "log": "cases/board_near/compatibility-analysis.log",
+        "log": "cases/board_near/positive-analysis.log",
         "receipt": "cases/board_near/compatibility.json",
-        "sha256": "0d2aff3ab4a7a751ad18316259d476185cbcbe7f805074325286db7026c8bbe7"
+        "sha256": "53afd1e17e631b96fa8c76e5dfbe1336472315c874a59d22179a6f594386558b"
       },
       "construction": "construction-board_near.json",
-      "construction_sha256": "230423bc67be822a7dfd3d1be489a9cf633d3dd2a15e40845e7e0f233199cc13",
+      "construction_sha256": "a27363d3a60f4652231fdbd8c73d86437f758c259e06f2bdeafcc1d123fefe7b",
       "delivery_acceptance": {
         "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
         "checks": [
@@ -355,8 +619,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-board_near-v3 --output cases/board_near/independent-cpu-audit.json",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-board_near-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-board_near-v1/independent-negative-output.json",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-board_near-v4 --output cases/board_near/independent-cpu-audit.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-board_near-v2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-board_near-v2/independent-negative-output.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing required source: door-source.json",
         "negative_log": "cases/board_near/independent-missing-source.log",
@@ -386,11 +650,15 @@
         "log": "cases/board_near/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.cpu-draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --output .runtime-work/c102642-selected/offline-board_near-v3 --python .venv-cpu/bin/python",
-        "construction_sha256": "230423bc67be822a7dfd3d1be489a9cf633d3dd2a15e40845e7e0f233199cc13",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --output .runtime-work/c102642-selected/offline-board_near-v4 --python .venv-cpu/bin/python",
+        "construction_sha256": "a27363d3a60f4652231fdbd8c73d86437f758c259e06f2bdeafcc1d123fefe7b",
         "exit_code": 0,
         "log": "cases/board_near/offline.log",
-        "log_sha256": "2162837af793a4749225afb275d8e951b5ad58b0cb30f35f6d1ce0a38bd8b628"
+        "log_sha256": "56cd15ddf1c47d70134cd2b482cc7af3bb109aaf038f317203af606664484394"
+      },
+      "physical_preparation": {
+        "receipt": "cases/board_near/physical/receipt.json",
+        "sha256": "255a26eade57dd52f78cd16c3db87b24c7c22121d747c017f204650a3680b3c9"
       }
     },
     {
@@ -400,10 +668,30 @@
           "evidence": "four source-hashed RGB frames per world tick",
           "method": "capture"
         },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "source-hashed camera frame map",
+          "method": "capture"
+        },
         "door_envelope_xy": {
           "entrypoint": "carla_adapter.py",
           "evidence": "original_observer swept door or body vertices",
           "method": "observe"
+        },
+        "door_vertices": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer swept door vertices",
+          "method": "observe"
+        },
+        "driver_act_and_side": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "original_observer Native act and side",
+          "method": "observe"
+        },
+        "hill_crest_loading_site": {
+          "entrypoint": "native_capture.py",
+          "evidence": "site_survey in door-source.json",
+          "method": "capture"
         },
         "observed_driver_act": {
           "entrypoint": "carla_adapter.py",
@@ -414,6 +702,11 @@
           "entrypoint": "native_capture.py",
           "evidence": "native-trace.json frame and actor identity",
           "method": "capture"
+        },
+        "parked_vehicle_pose": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "parked Native actor pose",
+          "method": "observe"
         },
         "passing_body_xy": {
           "entrypoint": "carla_adapter.py",
@@ -429,20 +722,58 @@
           "entrypoint": "carla_adapter.py",
           "evidence": "passing Native actor velocity",
           "method": "observe"
+        },
+        "passing_traffic_body": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor bounding vertices",
+          "method": "observe"
+        },
+        "traffic_response": {
+          "entrypoint": "carla_adapter.py",
+          "evidence": "passing Native actor brake and acceleration",
+          "method": "observe"
         }
       },
       "candidate_risk": {
-        "reason": "Door articulation and boarding/alighting actor realization require original Native review; no failure-triggered fallback selected",
+        "reason": "Original door act may fail to appear at the 10 s command; delayed act command is predeclared and still requires Native review",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "Native act command tick moves from 10 s to 12 s"
+          ],
+          "compatibility": {
+            "log": "cases/alight_near/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/alight_near/fallback1-negative-analysis.log",
+            "receipt": "cases/alight_near/fallback1-compatibility.json",
+            "sha256": "b14174b1ea0129857107dbe9e22c2383d5cfe1fe70a7562348bc8c336fe7777f"
+          },
+          "construction": "construction-alight_near-fallback1.json",
+          "construction_sha256": "4da53220a8fe5dafefe96394d3e04062ec76b37b28562e9c41d7dafb6d5cf6ca",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --candidate fallback1 --output .runtime-work/c102642-selected/offline-alight_near-fallback1-v2 --python .venv-cpu/bin/python",
+            "construction_sha256": "4da53220a8fe5dafefe96394d3e04062ec76b37b28562e9c41d7dafb6d5cf6ca",
+            "exit_code": 0,
+            "log": "cases/alight_near/fallback1-offline.log",
+            "log_sha256": "b7f2eed10e774f71314a939cfe286e649753809ccd9f5d5ce7ae0eea13757c5d"
+          },
+          "trigger": {
+            "failure_condition": "primary 10 s command yielded no observed selected act",
+            "metric": "source-confirmed selected act frame IDs",
+            "source": "original Native act observation and capture failure"
+          }
+        }
+      ],
       "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near",
       "compatibility": {
-        "log": "cases/alight_near/compatibility-analysis.log",
+        "log": "cases/alight_near/positive-analysis.log",
         "receipt": "cases/alight_near/compatibility.json",
-        "sha256": "ee7a02fc81df72b67bd125b4e3770a0e9268980219daacef973cb6ffc5415ae7"
+        "sha256": "48b4014e594058e794c8bd8f539f380565582840def8bac115c2dcd684a44c68"
       },
       "construction": "construction-alight_near.json",
-      "construction_sha256": "08d64e1d218e74ac81d577b190ffb1e983edc49d231cb94060be5b700c863b64",
+      "construction_sha256": "646469b3332a2bdffba810c7b3180380386561cb15ded8cd487889149a439199",
       "delivery_acceptance": {
         "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near",
         "checks": [
@@ -453,8 +784,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-alight_near-v3 --output cases/alight_near/independent-cpu-audit.json",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-alight_near-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-alight_near-v1/independent-negative-output.json",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/compat-alight_near-v4 --output cases/alight_near/independent-cpu-audit.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python independent_cpu_delivery.py --case-id testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-alight_near-v2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c102642-selected/independent-negative-alight_near-v2/independent-negative-output.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing required source: door-source.json",
         "negative_log": "cases/alight_near/independent-missing-source.log",
@@ -484,11 +815,15 @@
         "log": "cases/alight_near/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.cpu-draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --output .runtime-work/c102642-selected/offline-alight_near-v3 --python .venv-cpu/bin/python",
-        "construction_sha256": "08d64e1d218e74ac81d577b190ffb1e983edc49d231cb94060be5b700c863b64",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --output .runtime-work/c102642-selected/offline-alight_near-v4 --python .venv-cpu/bin/python",
+        "construction_sha256": "646469b3332a2bdffba810c7b3180380386561cb15ded8cd487889149a439199",
         "exit_code": 0,
         "log": "cases/alight_near/offline.log",
-        "log_sha256": "4504582c052b0b6876d4df5835b27b42e077b6f1c32fbaac1088b491475fc787"
+        "log_sha256": "dabc1c21e9f49b802c0df66ec78957a61a1e90eecab3132dfce5ace9cd465886"
+      },
+      "physical_preparation": {
+        "receipt": "cases/alight_near/physical/receipt.json",
+        "sha256": "363ac8cf448e19db1653ac983bf0c5773eb1cf8177440d5dffa34c699edb9cce"
       }
     }
   ],

@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver",
   "input_sha256": "0baf1c8e5dbb996248c0c12187a0fcb2f425742814233ec065f3b78093fc292a",
-  "readiness_kind": "partial_exact_seven_offline_intersection_bundles",
-  "reason": "Independent comparison audit now checks source-hashed traffic or direction observation contents against each claimed stop cause and original frame-range endpoints; a rehashed mismatched police observation is rejected. All 39 focused tests, pinned preflight, seven exact diagnostic offline bundles and scoped static pass. Reviewed map, actor and traffic/police/device sources, canonical semantic proposals, positive/negative compatibility, complete saved delivery and execution manifest remain incomplete. Parking alternative binding and physical necessity review remain unresolved.",
+  "readiness_kind": "partial_canonical_semantic_seven_offline_intersection_bundles",
+  "reason": "Current-runtime canonical semantic validation passes eight stages for all seven selected cases; 39 focused tests, selected Native runner handoff test, seven rebuilt offline constructions and scoped static pass. This remains partial because source-bound reviewed map/actor/traffic/police/device acquisition, canonical full execution manifest, positive/negative compatibility, saved-only runtime processing and independent delivery audits are unfinished. Original legal necessity and parking applicability are unresolved.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -200,6 +200,78 @@
       "exit_code": 1,
       "log": "cpu-context-join-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c110969-semantic-output .venv-cpu/bin/python work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/check_semantic.py",
+      "exit_code": 0,
+      "log": "cpu-semantic-stage.log",
+      "sha256": "98cd28eb66f427d349708ea35a52943a4813461ec66b38223ae80a54a2476fbc"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-semantic-tests.log",
+      "sha256": "5552f6743069859fb7de5751e010fb05a32c223e371fb1cb3ca6afc000111d20"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s .runtime-work/c110969-semantic-offline-runner/stop_14ft/tests -v",
+      "exit_code": 0,
+      "log": "cpu-semantic-runner-tests.log",
+      "sha256": "a1fe3fa989315d2a27bf8dda1b46fbdc78ea545196ba73d59b2135a986e7dab8"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-semantic-static.log",
+      "sha256": "ef61bd0682043f33c3ccdb7fff017abd4400313e9b864bcc6b955e4ec627e5f3"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-semantic-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__stop_14ft --output .runtime-work/c110969-semantic-offline-final/stop_14ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-stop_14ft.log",
+      "sha256": "749333dca39a4d5de488dd2b724d89a755ab1609c97abe3518e6dc27323d8a0a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__stop_15ft --output .runtime-work/c110969-semantic-offline-final/stop_15ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-stop_15ft.log",
+      "sha256": "c53a3871c9e65eb9dc8e2e8feee6e106cac8875b9148898df7a30c0f6c8b631c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__stop_16ft --output .runtime-work/c110969-semantic-offline-final/stop_16ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-stop_16ft.log",
+      "sha256": "b9ba3cf01f84de79521f221adb551d4297677520b257ab23fe36cf6b5cdc7927"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__stand_14ft --output .runtime-work/c110969-semantic-offline-final/stand_14ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-stand_14ft.log",
+      "sha256": "ac5f677a31378a3e40601475b51fa580032eb9ca9b79bd6c420aeeb3410ad35d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__traffic_14ft --output .runtime-work/c110969-semantic-offline-final/traffic_14ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-traffic_14ft.log",
+      "sha256": "1c608f13c8e399c430db0e5b14df9565f1f66d25fe720193162a1be8da01f6fc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__police_14ft --output .runtime-work/c110969-semantic-offline-final/police_14ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-police_14ft.log",
+      "sha256": "49637ea2f03d29b9e208095a75f1bd673ea410bbdbda9ac0ebc6455ae6f6ca6d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__device_14ft --output .runtime-work/c110969-semantic-offline-final/device_14ft --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-semantic-offline-device_14ft.log",
+      "sha256": "db1057bde33d54742f46a267d911ad1f741fcdd7579b7e794910c5753b840beb"
     }
   ]
 }

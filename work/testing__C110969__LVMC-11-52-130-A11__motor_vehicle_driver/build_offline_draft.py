@@ -9,7 +9,7 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCES = (
     "intersection_geometry.py", "stop_controller.py", "native_map.py",
-    "original_capture.py", "native_bundle.py", "measure_gap.py",
+    "original_capture.py", "native_bundle.py", "native_adapter.py", "finalize_capture.py", "measure_gap.py",
     "saved_delivery.py", "comparison_audit.py",
 )
 CAMERAS = ["overview", "approach", "reference_corner", "driver_reference"]
@@ -19,6 +19,8 @@ import argparse
 import hashlib
 import importlib
 import json
+import os
+import signal
 from pathlib import Path
 from saved_delivery import CAMERAS
 
@@ -62,19 +64,34 @@ def main():
     if args.check:
         print("diagnostic exact intersection bundle passed: " + case)
         return
-    if not args.output_dir or not args.map_packet or not args.adapter:
-        raise ValueError("Reviewed map packet and operator-owned Native adapter required")
+    packet_path = args.map_packet or os.environ.get("SCENARIO_INTERSECTION_MAP_PACKET")
+    adapter_name = args.adapter or os.environ.get("SCENARIO_INTERSECTION_ADAPTER", "native_adapter")
+    if not args.output_dir or not packet_path:
+        raise ValueError("Reviewed map packet required for original Native capture")
     from native_bundle import capture_bundle
-    adapter = importlib.import_module(args.adapter)
+    from finalize_capture import publish
+    adapter = importlib.import_module(adapter_name)
     if not hasattr(adapter, "open_session"):
         raise ValueError("Native adapter lacks owned open_session")
-    with adapter.open_session(case, args.map_packet, args.host, args.port) as session:
+    output_dir = Path(args.output_dir)
+    if not output_dir.is_dir():
+        raise ValueError("Executor output directory missing")
+    attempt_dir = output_dir / "original-attempt"
+    if attempt_dir.exists():
+        raise ValueError("Original Native attempt already exists")
+    def terminate(_signal, _frame):
+        raise SystemExit("Original Native capture interrupted")
+    signal.signal(signal.SIGTERM, terminate)
+    with adapter.open_session(case, packet_path, args.host, args.port) as session:
         capture_bundle(
-            session.world, session.ego, args.output_dir,
-            map_packet_path=args.map_packet, case_id=case,
+            session.world, session.ego, attempt_dir,
+            map_packet_path=packet_path, case_id=case,
             attempt_id=session.attempt_id, recording_id=session.recording_id,
             world_to_local=session.world_to_local, read_camera=session.read_camera,
             read_context=session.read_context, acquisition_kind="original_native")
+    publish(output_dir, case_id=case,
+            restoration={"restored": session.restored,
+                         "method": "owned actor and sensor teardown plus settings readback"})
 
 
 if __name__ == "__main__":
@@ -82,11 +99,16 @@ if __name__ == "__main__":
 '''
 
 TEST = '''import json
+import os
 from pathlib import Path
 import sys
+import tempfile
+import types
 import unittest
 from unittest.mock import patch
 import runner
+import native_bundle
+import finalize_capture
 
 
 class BundleTests(unittest.TestCase):
@@ -110,6 +132,35 @@ class BundleTests(unittest.TestCase):
                 runner.check()
         finally:
             source.write_bytes(before)
+
+    def test_executor_handoff_uses_precreated_directory_and_reviewed_env(self):
+        class Session:
+            def __enter__(self):
+                return types.SimpleNamespace(world=object(), ego=object(),
+                    attempt_id="test-attempt", recording_id="test-recording",
+                    restored=True,
+                    world_to_local=lambda value: value,
+                    read_camera=lambda name, frame: None,
+                    read_context=lambda frame: None)
+
+            def __exit__(self, *_):
+                return False
+
+        adapter = types.SimpleNamespace(open_session=lambda *args: Session())
+        with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR", ".runtime-work")) as temp:
+            env = {"SCENARIO_INTERSECTION_MAP_PACKET": "reviewed-map.json",
+                   "SCENARIO_INTERSECTION_ADAPTER": "reviewed_adapter"}
+            with patch.dict(os.environ, env), \\
+                    patch.object(sys, "argv", ["runner.py", "--output-dir", temp,
+                                               "--host", "native-host", "--port", "2001"]), \\
+                    patch.object(runner.importlib, "import_module", return_value=adapter), \\
+                    patch.object(native_bundle, "capture_bundle") as capture, \\
+                    patch.object(finalize_capture, "publish") as publish:
+                runner.main()
+            self.assertEqual(capture.call_args.args[2], Path(temp) / "original-attempt")
+            self.assertEqual(capture.call_args.kwargs["map_packet_path"], "reviewed-map.json")
+            self.assertEqual(capture.call_args.kwargs["acquisition_kind"], "original_native")
+            self.assertEqual(publish.call_args.kwargs["restoration"]["restored"], True)
 
 
 if __name__ == "__main__":

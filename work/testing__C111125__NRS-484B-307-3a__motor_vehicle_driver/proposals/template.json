@@ -1,0 +1,63 @@
+{
+  "template_id": "NRS-484B-307-3a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-3a",
+  "actor": "motor_vehicle_driver",
+  "quote": "Where the signal is circular green with a green turn arrow: Vehicular traffic facing the signal may proceed to make the movement indicated by the green turn arrow or such other movement as is permitted by the circular green signal, but the traffic must yield the right-of-way to pedestrians lawfully within an adjacent crosswalk and to other traffic lawfully using the intersection at the time the signal is exhibited. Drivers turning in the direction of the arrow when displayed with the circular green are thereby advised that so long as a turn arrow is illuminated, oncoming or opposing traffic simultaneously faces a steady red signal.",
+  "structure": {
+    "law_id": "NRS-484B-307-3a",
+    "activation": {
+      "condition": "Vehicular traffic faces circular green with a simultaneous green turn arrow.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Other movement permitted by circular green is conditional; traffic must yield to lawfully present pedestrians and intersection traffic.",
+      "type": "may_with_yield_duty",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Lawful-use context is tied to the time the dual signal is exhibited.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "such other movement as is permitted by the circular green signal",
+        "note": "Straight movement needs source-backed circular-green and local restriction review."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "The source supplies no numeric yielding boundary."
+      },
+      {
+        "phrase": "lawfully within an adjacent crosswalk",
+        "note": "Lawful pedestrian presence needs independent crossing-control context."
+      },
+      {
+        "phrase": "lawfully using the intersection",
+        "note": "Lawful other-traffic use needs independent approach-control context."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "dual_aspect_setup",
+      "kind": "world_setup",
+      "range_or_domain": "source-observed circular green and green turn arrow facing ego"
+    },
+    {
+      "name": "participant_kind",
+      "kind": "world_setup",
+      "range_or_domain": "none, motor vehicle, or pedestrian"
+    },
+    {
+      "name": "participant_presence_at_exhibition",
+      "kind": "world_setup",
+      "range_or_domain": "clear, intersection, adjacent crosswalk, or outside then entering"
+    },
+    {
+      "name": "commanded_straight_path",
+      "kind": "controller",
+      "range_or_domain": "straight route through the surveyed intersection"
+    }
+  ]
+}

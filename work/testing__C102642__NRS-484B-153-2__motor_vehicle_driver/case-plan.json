@@ -1,190 +1,292 @@
 {
-  "assignment_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
+  "assignment_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 source ticks",
+        "subject": "parked vehicle, selected driver and passing traffic",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 source ticks",
+        "subject": "moving vehicle approach and hill-crest context",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 source ticks",
+        "subject": "door sweep and side nearest traffic",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 source ticks",
+        "subject": "driver body, act and far-side comparison",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
+  "cases": [
+    {
+      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act.",
+        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
+        "status": "physical"
+      },
+      "purpose": "Driver opens door closest to passing traffic during loading while the moving vehicle approaches the door sweep",
+      "target_law_id": "NRS-484B-153-2"
+    },
+    {
+      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act.",
+        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
+        "status": "physical"
+      },
+      "purpose": "Same passing side and door act with the moving vehicle laterally clear",
+      "target_law_id": "NRS-484B-153-2"
+    },
+    {
+      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act.",
+        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
+        "status": "physical"
+      },
+      "purpose": "Driver opens the door on the opposite side while the other vehicle follows the fixed near-side route",
+      "target_law_id": "NRS-484B-153-2"
+    },
+    {
+      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act.",
+        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
+        "status": "physical"
+      },
+      "purpose": "Driver boards on the passing-traffic side with the moving vehicle near the boarding envelope",
+      "target_law_id": "NRS-484B-153-2"
+    },
+    {
+      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near",
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act.",
+        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
+        "status": "physical"
+      },
+      "purpose": "Driver alights on the passing-traffic side with the moving vehicle near the alighting envelope",
+      "target_law_id": "NRS-484B-153-2"
+    }
+  ],
   "cell_id": "C102642",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear"
+      ],
+      "comparison_id": "door_sweep_clearance",
+      "deliberate_differences": [
+        "measured passing vehicle lateral clearance from the opened near-side door sweep"
+      ],
+      "fixed_conditions": [
+        "same hill-crest map and surveyed loading location",
+        "same parked vehicle pose, driver identity, traffic route and moving vehicle blueprint",
+        "same four-camera and duration contract",
+        "original body, door and frame-joined traffic histories required"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side"
+      ],
+      "comparison_id": "door_side",
+      "deliberate_differences": [
+        "front door side commanded and measured; passing vehicle trajectory held fixed"
+      ],
+      "fixed_conditions": [
+        "same hill-crest map and surveyed loading location",
+        "same parked vehicle pose, driver identity, traffic route and moving vehicle blueprint",
+        "same four-camera and duration contract",
+        "original body, door and frame-joined traffic histories required"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
+      ],
+      "comparison_id": "selected_act",
+      "deliberate_differences": [
+        "driver opening, boarding, or alighting act; act window and relevant body envelope measured"
+      ],
+      "fixed_conditions": [
+        "same hill-crest map and surveyed loading location",
+        "same parked vehicle pose, driver identity, traffic route and moving vehicle blueprint",
+        "same four-camera and duration contract",
+        "original body, door and frame-joined traffic histories required"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_recording",
+        "requirement": "Original observed door/boarding/alighting act on qualifying side and moving-traffic interaction at the assigned hill-crest loading site",
+        "source": "NRS 484B.153(2); inputs/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "The frozen accepted recording inventory is empty."
+      }
+    ],
+    "method": "Reviewed the exact law, frozen assignment and empty accepted-recording inventory. The act alternatives and closest-to-passing-traffic qualifier require independent original observations; no accepted reuse is available.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
   "law_id": "NRS-484B-153-2",
+  "law_source": "NRS 484B.153(2)",
+  "law_text": "A person shall not open the door of or board or alight from the side of a vehicle which is closest to passing traffic in such a manner as to interfere with moving vehicular traffic.",
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "hill_crest_loading_site",
+      "sources": "original map grade and loading-site geometry"
+    },
+    {
+      "mandatory": true,
+      "name": "parked_vehicle_pose",
+      "sources": "original Native vehicle transform"
+    },
+    {
+      "mandatory": true,
+      "name": "driver_act_and_side",
+      "sources": "original door command/state and driver body or actor animation"
+    },
+    {
+      "mandatory": true,
+      "name": "door_vertices",
+      "sources": "original frame-synchronized door world vertices"
+    },
+    {
+      "mandatory": true,
+      "name": "passing_traffic_body",
+      "sources": "original frame-synchronized other vehicle bounding vertices and velocity"
+    },
+    {
+      "mandatory": true,
+      "name": "traffic_response",
+      "sources": "original speed, acceleration and brake history"
+    },
+    {
+      "mandatory": true,
+      "name": "camera_frame_map",
+      "sources": "sealed original four-view frame map"
+    }
+  ],
+  "planning_status": "exact_case_comparisons_drafted_cpu_geometry_in_progress",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side"
+      ],
+      "evidence_or_gap": "Original door command, articulation state and vertices are required; command alone is insufficient.",
+      "requirement": "Actor opens the door of a vehicle",
+      "source": "NRS 484B.153(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near"
+      ],
+      "evidence_or_gap": "Original driver boarding body/animation and vehicle-side binding are required.",
+      "requirement": "Actor boards from the side closest to passing traffic",
+      "source": "NRS 484B.153(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
+      ],
+      "evidence_or_gap": "Original driver alighting body/animation and vehicle-side binding are required.",
+      "requirement": "Actor alights from the side closest to passing traffic",
+      "source": "NRS 484B.153(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
+      ],
+      "evidence_or_gap": "Original traffic trajectory and parked vehicle heading determine the side; centerline crossing is ambiguous.",
+      "requirement": "Qualifying side is closest to passing traffic",
+      "source": "NRS 484B.153(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
+        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
+      ],
+      "evidence_or_gap": "Original moving vehicle path, door/body envelope, response and synchronized frames are required; no legal numeric interference cutoff is supplied.",
+      "requirement": "Moving vehicular traffic may be interfered with by the act",
+      "source": "NRS 484B.153(2) exact text",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Actual hill-crest/loading geometry, door articulation, boarding/alighting acts, passing-traffic response and camera coverage require original Native capture and later review.",
+    "door_interaction.py uses a conservative planning proxy; original door/body vertices and independent source-bound delivery/comparison audits are still CPU work."
+  ],
   "selected_branches": [
     {
-      "law_id": "NRS-484B-153-2",
-      "cell_id": "C102642",
       "actor": "motor_vehicle_driver",
       "branch": "Door opening during loading in a hill-crest scene",
-      "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-153-2.json",
-      "source_sha256": "1d052f334f83073bbb16477610d774f416074dea3328024cb1b4afe24b381ec7",
+      "cell_id": "C102642",
       "coverage_status": "pending_recording",
-      "relevance_review": "accept_conditional",
+      "law_id": "NRS-484B-153-2",
+      "law_partition": "training",
       "physical_feasibility": "unverified",
+      "recording_ids": [],
+      "relevance_review": "accept_conditional",
       "required_context": [
         "Realize the hill crest and a supported loading location with an explicit spatial relationship.",
         "Establish stopping position, applicable curb or zone governance, door side and passing-vehicle path.",
         "The selected driver personally opens the qualifying motor-vehicle door.",
         "The separate other vehicle is moving during the door interaction."
       ],
-      "law_partition": "training",
       "scenario_partition": "testing",
-      "recording_ids": []
+      "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-153-2.json",
+      "source_sha256": "1d052f334f83073bbb16477610d774f416074dea3328024cb1b4afe24b381ec7"
     }
   ],
-  "law_text": "A person shall not open the door of or board or alight from the side of a vehicle which is closest to passing traffic in such a manner as to interfere with moving vehicular traffic.",
-  "law_source": "NRS 484B.153(2)",
-  "topic_inventory": {
-    "exact-text": "A person shall not open the door of or board or alight from the side of a vehicle which is closest to passing traffic in such a manner as to interfere with moving vehicular traffic."
-  },
-  "cases": [
-    {
-      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-      "target_law_id": "NRS-484B-153-2",
-      "purpose": "Driver opens door closest to passing traffic during loading while the moving vehicle approaches the door sweep",
-      "gap_ids": [
-        "no_accepted_recording"
-      ],
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
-        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act."
-      }
-    },
-    {
-      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
-      "target_law_id": "NRS-484B-153-2",
-      "purpose": "Same passing side and door act with the moving vehicle laterally clear",
-      "gap_ids": [
-        "no_accepted_recording"
-      ],
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
-        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act."
-      }
-    },
-    {
-      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
-      "target_law_id": "NRS-484B-153-2",
-      "purpose": "Driver opens the door on the opposite side while the other vehicle follows the fixed near-side route",
-      "gap_ids": [
-        "no_accepted_recording"
-      ],
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
-        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act."
-      }
-    },
-    {
-      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
-      "target_law_id": "NRS-484B-153-2",
-      "purpose": "Driver boards on the passing-traffic side with the moving vehicle near the boarding envelope",
-      "gap_ids": [
-        "no_accepted_recording"
-      ],
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
-        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act."
-      }
-    },
-    {
-      "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near",
-      "target_law_id": "NRS-484B-153-2",
-      "purpose": "Driver alights on the passing-traffic side with the moving vehicle near the alighting envelope",
-      "gap_ids": [
-        "no_accepted_recording"
-      ],
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "CARLA door articulation, actor boarding/alighting animation and hill-crest loading-site geometry are not confirmed by the exported sources; Native body and door vertices plus video must be reviewed.",
-        "fallback_policy": "No fallback is selected until the exact Native failure is measured; a substitute closed-door flag cannot prove the act."
-      }
-    }
-  ],
-  "comparisons": [
-    {
-      "comparison_id": "door_sweep_clearance",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear"
-      ],
-      "fixed_conditions": [
-        "same hill-crest map and surveyed loading location",
-        "same parked vehicle pose, driver identity, traffic route and moving vehicle blueprint",
-        "same four-camera and duration contract",
-        "original body, door and frame-joined traffic histories required"
-      ],
-      "deliberate_differences": [
-        "measured passing vehicle lateral clearance from the opened near-side door sweep"
-      ]
-    },
-    {
-      "comparison_id": "door_side",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side"
-      ],
-      "fixed_conditions": [
-        "same hill-crest map and surveyed loading location",
-        "same parked vehicle pose, driver identity, traffic route and moving vehicle blueprint",
-        "same four-camera and duration contract",
-        "original body, door and frame-joined traffic histories required"
-      ],
-      "deliberate_differences": [
-        "front door side commanded and measured; passing vehicle trajectory held fixed"
-      ]
-    },
-    {
-      "comparison_id": "selected_act",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
-      ],
-      "fixed_conditions": [
-        "same hill-crest map and surveyed loading location",
-        "same parked vehicle pose, driver identity, traffic route and moving vehicle blueprint",
-        "same four-camera and duration contract",
-        "original body, door and frame-joined traffic histories required"
-      ],
-      "deliberate_differences": [
-        "driver opening, boarding, or alighting act; act window and relevant body envelope measured"
-      ]
-    }
-  ],
-  "observations": [
-    {
-      "name": "hill_crest_loading_site",
-      "mandatory": true,
-      "sources": "original map grade and loading-site geometry"
-    },
-    {
-      "name": "parked_vehicle_pose",
-      "mandatory": true,
-      "sources": "original Native vehicle transform"
-    },
-    {
-      "name": "driver_act_and_side",
-      "mandatory": true,
-      "sources": "original door command/state and driver body or actor animation"
-    },
-    {
-      "name": "door_vertices",
-      "mandatory": true,
-      "sources": "original frame-synchronized door world vertices"
-    },
-    {
-      "name": "passing_traffic_body",
-      "mandatory": true,
-      "sources": "original frame-synchronized other vehicle bounding vertices and velocity"
-    },
-    {
-      "name": "traffic_response",
-      "mandatory": true,
-      "sources": "original speed, acceleration and brake history"
-    },
-    {
-      "name": "camera_frame_map",
-      "mandatory": true,
-      "sources": "sealed original four-view frame map"
-    }
-  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/assignment.json",
@@ -207,98 +309,24 @@
       "sha256": "67392902bf1b8fe8a87f53bb580b3459e0258bb3c20b3d0f2b9793186f20ea4e"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Actual hill-crest/loading geometry, door articulation, boarding/alighting acts, passing-traffic response and camera coverage require original Native capture and later review.",
-    "door_interaction.py uses a conservative planning proxy; original door/body vertices and independent source-bound delivery/comparison audits are still CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed the exact law, frozen assignment and empty accepted-recording inventory. The act alternatives and closest-to-passing-traffic qualifier require independent original observations; no accepted reuse is available.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_recording",
-        "requirement": "Original observed door/boarding/alighting act on qualifying side and moving-traffic interaction at the assigned hill-crest loading site",
-        "source": "NRS 484B.153(2); inputs/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/evidence.json",
-        "why_existing_insufficient": "The frozen accepted recording inventory is empty."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "A person shall not open the door of or board or alight from the side of a vehicle which is closest to passing traffic in such a manner as to interfere with moving vehicular traffic."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "exact_case_comparisons_drafted_cpu_geometry_in_progress",
   "witness_review": [
     {
-      "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-153-2.json",
-      "source_index": null,
-      "source_sha256": "1d052f334f83073bbb16477610d774f416074dea3328024cb1b4afe24b381ec7",
       "branch": "Door opening during loading in a hill-crest scene",
-      "decision": null,
       "confidence": null,
+      "decision": null,
+      "reason": "A loading location in a hill-crest scene can support the specified act and moving-vehicle interaction.",
       "required_context": [
         "Realize the hill crest and a supported loading location with an explicit spatial relationship.",
         "Establish stopping position, applicable curb or zone governance, door side and passing-vehicle path.",
         "The selected driver personally opens the qualifying motor-vehicle door.",
         "The separate other vehicle is moving during the door interaction."
       ],
-      "reason": "A loading location in a hill-crest scene can support the specified act and moving-vehicle interaction."
-    }
-  ],
-  "requirement_dispositions": [
-    {
-      "status": "selected_required",
-      "requirement": "Actor opens the door of a vehicle",
-      "source": "NRS 484B.153(2) exact text",
-      "evidence_or_gap": "Original door command, articulation state and vertices are required; command alone is insufficient.",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side"
-      ]
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Actor boards from the side closest to passing traffic",
-      "source": "NRS 484B.153(2) exact text",
-      "evidence_or_gap": "Original driver boarding body/animation and vehicle-side binding are required.",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near"
-      ]
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Actor alights from the side closest to passing traffic",
-      "source": "NRS 484B.153(2) exact text",
-      "evidence_or_gap": "Original driver alighting body/animation and vehicle-side binding are required.",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
-      ]
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Qualifying side is closest to passing traffic",
-      "source": "NRS 484B.153(2) exact text",
-      "evidence_or_gap": "Original traffic trajectory and parked vehicle heading determine the side; centerline crossing is ambiguous.",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
-      ]
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Moving vehicular traffic may be interfered with by the act",
-      "source": "NRS 484B.153(2) exact text",
-      "evidence_or_gap": "Original moving vehicle path, door/body envelope, response and synchronized frames are required; no legal numeric interference cutoff is supplied.",
-      "case_ids": [
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near",
-        "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near"
-      ]
+      "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-153-2.json",
+      "source_index": null,
+      "source_sha256": "1d052f334f83073bbb16477610d774f416074dea3328024cb1b4afe24b381ec7"
     }
   ]
 }

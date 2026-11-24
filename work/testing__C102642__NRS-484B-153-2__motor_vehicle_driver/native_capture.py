@@ -126,6 +126,7 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
             "selected_side": site["selected_door_side"],
             "source_trace_sha256": hashlib.sha256(payload).hexdigest(),
             "survey_sha256": survey_sha256,
+            "site_survey": packet,
             "source_kind": "source_bound_native_door_observation",
             "diagnostic_fixture": False}, sort_keys=True, separators=(",", ":")) + "\n")
         return {"case_id": case_id, "original_trace_sha256": hashlib.sha256(payload).hexdigest(),

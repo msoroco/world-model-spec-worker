@@ -66,6 +66,7 @@ def native_result(root: Path, observed: dict) -> dict:
     description = construction["recording_description"]
     trace = json.loads((root / "native-trace.json").read_text())
     frames = trace["frames"]
+    context, _ = source(root, "door-source.json")
     projections = {
         "original_interaction": lambda r: {"act": r["observed_act"],
                                             "passing_center_xy": r["passing_center_xy"]},
@@ -78,6 +79,20 @@ def native_result(root: Path, observed: dict) -> dict:
         "passing_response": lambda r: r["passing_response"],
         "camera_frame_join": lambda r: {"frame_ids": r["camera_frames"],
                                           "pixel_sha256": r["camera_sha256"]},
+        "hill_crest_loading_site": lambda r: context.get("site_survey", {}),
+        "parked_vehicle_pose": lambda r: {
+            "center_xy": trace["parked_center_xy"],
+            "heading_xy": trace["parked_heading_xy"],
+            "position_m": r.get("parked_position_m")},
+        "driver_act_and_side": lambda r: {"act": r["observed_act"],
+                                          "side": r.get("act_side"),
+                                          "driver_id": r["selected_driver_id"]},
+        "door_vertices": lambda r: {"vertices_xy": r.get("act_envelope_xy")},
+        "passing_traffic_body": lambda r: {"vertices_xy": r["passing_body_xy"],
+                                           "speed_mps": r["passing_speed_mps"]},
+        "traffic_response": lambda r: r["passing_response"],
+        "camera_frame_map": lambda r: {"frame_ids": r["camera_frames"],
+                                       "pixel_sha256": r["camera_sha256"]},
     }
     channels = root / "channels"
     channels.mkdir(exist_ok=False)
@@ -93,7 +108,6 @@ def native_result(root: Path, observed: dict) -> dict:
                                          "value": projections[name](row)},
                                         separators=(",", ":"), allow_nan=False) + "\n")
         evidence.append({"name": name, "unit": item["unit"], "reference": relative})
-    context, _ = source(root, "door-source.json")
     for item in description["context_inputs"]:
         if item["name"] != "hill_crest_loading_site":
             raise ValueError("unknown selected site context")

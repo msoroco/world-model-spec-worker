@@ -79,6 +79,9 @@ def build():
         door_path = source_root / "door-source.json"
         write(door_path, {"case_id": case_id, "selected_act": act,
                           "selected_side": side, "source_trace_sha256": sha(trace_path),
+                          "site_survey": {"map_sha256": map_sha,
+                                          "loading_site_id": "diagnostic-only",
+                                          "governing_zone_source": "synthetic-only"},
                           "diagnostic_fixture": True,
                           "scope": "synthetic measurement and conversion preflight only"})
         trace_rows, mappings, evidence, native_frames, graphs = [], [], [], [], []

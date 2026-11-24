@@ -38,6 +38,7 @@ def finalize(site_path, source_root, attempt_dir, case_id, output_path, diagnost
               "exhibition_frame": measured["exhibition"]["frame"],
               "case_observation": measured["case_observation"],
               "camera_audit": measured.get("camera_audit"),
+              "source_handoff_sha256": measured.get("source_handoff_sha256"),
               "permission_verdict": None, "right_of_way_verdict": None,
               "physical_acceptance_claimed": False}
     output_path.parent.mkdir(parents=True, exist_ok=True)

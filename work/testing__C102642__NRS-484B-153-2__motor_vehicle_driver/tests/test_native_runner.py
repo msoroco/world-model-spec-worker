@@ -52,11 +52,13 @@ class RunnerTests(TestCase):
         seal = self.root / "capture-seal.json"
         seal.write_text('{"sealed":true}\n')
         with mock.patch.object(native_runner, "capture", return_value={"frame_count": 900}) as run, \
-             mock.patch.object(native_runner, "publish", return_value=seal) as publish:
+             mock.patch.object(native_runner, "publish", return_value=seal) as publish, \
+             mock.patch.object(native_runner, "analyze") as analyze:
             result = self.run_case()
         self.assertEqual(result["frame_count"], 900)
         self.assertEqual(result["capture_seal_sha256"], hashlib.sha256(seal.read_bytes()).hexdigest())
         self.assertTrue(publish.call_args.kwargs["restoration_verified"])
+        analyze.assert_called_once()
         self.assertEqual(self.world.applied, [(True, .05), (False, None)])
         self.assertEqual(run.call_args.args[0].map_sha256(),
                          hashlib.sha256(self.map_bytes).hexdigest())

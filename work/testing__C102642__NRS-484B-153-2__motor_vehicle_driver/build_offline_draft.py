@@ -22,10 +22,15 @@ RECORDING_DESCRIPTION = {
             ("passing_body_xy", "structured"),
             ("passing_speed_mps", "m/s"),
             ("passing_response", "structured"),
-            ("camera_frame_join", "structured"))],
-    "context_inputs": [
-        {"name": "hill_crest_loading_site", "unit": "structured",
-         "method": "source-hashed original map and loading-governance survey"}],
+            ("camera_frame_join", "structured"),
+            ("hill_crest_loading_site", "structured"),
+            ("parked_vehicle_pose", "structured"),
+            ("driver_act_and_side", "structured"),
+            ("door_vertices", "structured"),
+            ("passing_traffic_body", "structured"),
+            ("traffic_response", "structured"),
+            ("camera_frame_map", "structured"))],
+    "context_inputs": [],
     "limitations": ["Observed proximity and traffic response do not decide statutory interference."]}
 
 RUNNER = '''"""Exact door-action diagnostic entrypoint."""

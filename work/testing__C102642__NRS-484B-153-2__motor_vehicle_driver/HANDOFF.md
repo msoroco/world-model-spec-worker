@@ -1,3 +1,13 @@
+# Current C102642 handoff (2026-11-24)
+
+Status: partial. Selected current-runtime manifest SHA-256 `e03a5f7cf439aefcde9959257c94a922e8c1408f82257ab39735a3bfd183b427`. Five exact cases: `open_near_overlap`, `open_near_clear`, `open_far_side`, `board_near`, `alight_near`.
+
+Current CPU proofs: all five selected and all five fallback1 pinned offline plus positive/negative compatibility runs passed. Six semantic stages passed. Independent saved delivery decoded all four RGB streams and source joins for each case; removing `door-source.json` was rejected in each case. Three controlled comparison audits passed and each rejected a missing source. Pinned `check_receipts`, physical-preparation validation and delivery-case validation all passed; `cpu-selected-current-validators.log` records them. These are synthetic source-bound CPU proofs; they do not establish actual CARLA motion, hill-crest geometry or statutory interference.
+
+Pinned execution manifest validation: `ValueError: Expand sweeps with the main implementation before manifest generation`. `proposals/cases.json` intentionally retains `door_interference_physical_range` with `status: incomplete`. A reviewed original hill-crest survey packet and original range evidence are needed to define the realizable door/body clearance axis and below/inside/above physical sweep points. The packet must contain the original map identity/hash, lane/loading site and governing-zone source, sampled road grade and loading/road-edge XY, parked vehicle pose/heading, passing route, actor blueprints and driver actor; `site_contract.py` defines exact required fields and validation. A source-hashed operator module must supply `actor_factory`, `driver_act_controller`, and `original_observer` Native hooks. Resume by reviewing those bytes, expanding the physical sweep from observed geometry, regenerating exact constructions and receipts, then running `.venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready`. The latest exact strict command exits 1 with `Preparation acceptance failed: partial/missing packages remain`, consistent with the truthful partial result (`cpu-selected-strict.log`).
+
+## Prior checkpoints
+
 # testing__C102642__NRS-484B-153-2__motor_vehicle_driver
 
 Status: partial CPU construction draft. Five exact cases and three controlled comparisons are proposed; no recording has been executed or accepted.

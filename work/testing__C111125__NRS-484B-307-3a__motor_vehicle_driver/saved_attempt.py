@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dual_green import measure_original, read_source, require
 from camera_audit import audit_cameras
+from source_handoff import load_handoff
 
 
 CASE_EXPECTATIONS = {
@@ -58,12 +59,24 @@ def measure_saved(site, source_root, attempt_dir, case_id):
             "unsupported attempt verdict")
     event_ref = receipt["event_source"]
     events = json.loads(read_source(attempt, event_ref).read_text(encoding="utf-8"))
+    trace = [json.loads(line) for line in read_source(attempt, receipt["trace_source"])
+             .read_text(encoding="utf-8").splitlines()]
+    frame_map = [json.loads(line) for line in read_source(attempt, receipt["frame_map_source"])
+                 .read_text(encoding="utf-8").splitlines()]
     require(len(events) == receipt["frame_count"] >= 3, "incomplete saved attempt")
+    require(len(trace) == len(events) == len(frame_map),
+            "saved trace/frame map count mismatch")
     require(events[0]["frame"] == receipt["first_frame"] and events[-1]["frame"] == receipt["last_frame"],
             "saved frame bounds mismatch")
     previous_time = None
     previous_frame = None
-    for row in events:
+    for index, row in enumerate(events):
+        trace_row, mapped = trace[index], frame_map[index]
+        require(mapped["video_frame"] == index and mapped["carla_frame"] == row["frame"] and
+                trace_row["frame"] == row["frame"] and
+                abs(float(mapped["time_s"]) - float(row["elapsed_seconds"])) <= 1e-4 and
+                abs(float(trace_row["time_s"]) - float(row["elapsed_seconds"])) <= 1e-4,
+                "saved trace/frame map identity differs")
         lamp_ref = {"path": row["aspect_observation_source"],
                     "sha256": row["aspect_observation_sha256"]}
         packet = json.loads(read_source(source_root, lamp_ref).read_text(encoding="utf-8"))
@@ -97,5 +110,15 @@ def measure_delivery(site, source_root, attempt_dir, case_id):
     camera_receipt = audit_cameras(attempt_dir, case_id)
     require(measured["frame_count"] == camera_receipt["frame_count"],
             "delivery camera/event frame mismatch")
+    native = json.loads((Path(attempt_dir) / "native-attempt.json").read_text(encoding="utf-8"))
+    handoff_ref = native.get("source_handoff")
+    require(isinstance(handoff_ref, dict), "original source handoff missing")
+    handoff_path = read_source(attempt_dir, handoff_ref)
+    source_receipt = load_handoff(handoff_path, source_root, site, case_id,
+                                  expected_frames=measured["frame_count"])
+    require(source_receipt["first_frame"] == native["first_frame"] and
+            source_receipt["last_frame"] == native["last_frame"],
+            "original source handoff does not span saved attempt")
     measured["camera_audit"] = camera_receipt
+    measured["source_handoff_sha256"] = handoff_ref["sha256"]
     return measured

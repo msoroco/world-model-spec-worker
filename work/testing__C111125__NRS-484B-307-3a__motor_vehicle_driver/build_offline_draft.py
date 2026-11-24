@@ -11,8 +11,10 @@ ASSIGNMENT = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver"
 SUFFIXES = ("dual_clear", "dual_vehicle_present", "dual_pedestrian_present",
             "dual_pedestrian_late")
 SOURCES = ("dual_green.py", "native_attempt.py", "native_straight_controller.py",
+           "native_other_controller.py", "native_cameras.py",
            "saved_attempt.py", "saved_finalizer.py", "camera_audit.py",
-           "comparison_audit.py")
+           "comparison_audit.py", "source_handoff.py", "native_publication.py",
+           "analysis.py")
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 RUNNER = '''"""Exact dual-green diagnostic preflight; original sources required for capture."""
@@ -91,9 +93,14 @@ if __name__ == "__main__":
 def build():
     plan_bytes = (HERE / "case-plan.json").read_bytes()
     plan = json.loads(plan_bytes)
+    semantic = json.loads((HERE / "proposals/cases.json").read_text(encoding="utf-8"))
+    descriptions = {row["case_id"]: row["recording_description"] for row in semantic["cases"]
+                    if row["target_type"] != "baseline"}
     expected = {ASSIGNMENT + "__" + suffix for suffix in SUFFIXES}
     if {case["case_id"] for case in plan["cases"]} != expected or len(plan["cases"]) != 4:
         raise ValueError("exact dual-green case coverage changed")
+    if set(descriptions) != expected:
+        raise ValueError("semantic cases differ from exact dual-green construction")
     rows = []
     for item in plan["cases"]:
         case_id = item["case_id"]
@@ -116,13 +123,14 @@ def build():
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": case_id,
                         "entrypoint": "runner.py", "diagnostic_only": True,
-                        "recording_description": {"status": "original_sources_pending",
-                                                  "channels": list(CAMERAS)},
+                        "recording_description": descriptions[case_id],
                         "files": [{"path": name, "content": content} for name, content in files.items()]}
         path = HERE / ("construction-" + suffix + ".json")
         path.write_text(json.dumps(construction, indent=2) + "\n", encoding="utf-8")
         rows.append({"case_id": case_id, "construction": path.name,
                      "construction_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                     "measurement_contract": f"measurement-contract-{suffix}.json",
+                     "measurement_procedure": {"entrypoint": "analysis.py"},
                      "candidate_risk": item["physical_risk_assessment"]})
     (HERE / "execution-manifest.draft.json").write_text(json.dumps({
         "assignment_id": ASSIGNMENT, "status": "diagnostic_original_sources_pending",

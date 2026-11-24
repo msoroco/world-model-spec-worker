@@ -27,7 +27,8 @@ def _packet(root, ref, frame, site):
 
 def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_for_frame,
                        lawful_use_ref_for_frame, output_dir, case_id, frames,
-                       camera_frame_for_tick=None):
+                       camera_frame_for_tick=None, other_controller=None,
+                       capture_after_tick=None):
     """Drive and retain original frames; caller owns actor cleanup.
 
     ``controller`` applies control before each tick. ``lamp_ref_for_frame``
@@ -48,10 +49,17 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
     ego = actors[0]
     rows = []
     camera_rows = []
+    source_rows = []
+    trace_rows = []
+    frame_map = []
+    observer_methods = set()
     previous_frame = None
     previous_time = None
     for index in range(frames):
         controller(ego, index)
+        if other_controller is not None:
+            require(len(actors) == 2, "other-user controller without other actor")
+            other_controller(actors[1], index)
         frame = world.tick()
         snapshot = world.get_snapshot()
         elapsed = float(snapshot.timestamp.elapsed_seconds)
@@ -60,11 +68,30 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
             require(frame == previous_frame + 1, "Native frame gap")
             require(abs(elapsed - previous_time - 0.05) <= 1e-4, "Native timestamp gap")
         previous_frame, previous_time = frame, elapsed
+        if capture_after_tick is not None:
+            captured = capture_after_tick(frame, elapsed)
+            require(isinstance(captured, dict) and captured.get("frame") == frame and
+                    abs(float(captured.get("time_s", -1)) - elapsed) <= 1e-4,
+                    "PipelineCapture original frame/timestamp join failed")
         lamp_ref = lamp_ref_for_frame(frame)
         packet = _packet(source_root, lamp_ref, frame, site)
+        observer_methods.add(packet.get("observer_method", "pending_independent_observer"))
         pose = ego.get_location()
-        require(all(math.isfinite(float(v)) for v in (pose.x, pose.y)), "nonfinite ego pose")
+        orientation = ego.get_transform().rotation
+        velocity = ego.get_velocity()
+        x, y, z = float(pose.x), float(pose.y), float(pose.z)
+        yaw = float(orientation.yaw)
+        speed = math.sqrt(sum(float(v) ** 2 for v in
+                              (velocity.x, velocity.y, velocity.z)))
+        require(all(math.isfinite(value) for value in (x, y, z, yaw, speed)),
+                "nonfinite original ego kinematics")
+        trace_rows.append({"frame": frame, "time_s": elapsed,
+                           "position": {"x": x, "y": y, "z": z},
+                           "heading_deg": yaw, "speed_mps": speed})
+        frame_map.append({"video_frame": index, "carla_frame": frame,
+                          "time_s": elapsed})
         users = []
+        lawful_refs = {}
         if len(actors) == 2:
             other = actors[1]
             other_pose = other.get_location()
@@ -77,6 +104,9 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
             require(all(math.isfinite(float(v)) for v in (other_pose.x, other_pose.y)), "nonfinite other pose")
             users.append({"id": str(other.id), "kind": kind, "xy": [other_pose.x, other_pose.y],
                           "lawful_use_source": lawful_ref["path"], "lawful_use_sha256": lawful_ref["sha256"]})
+            lawful_refs[str(other.id)] = lawful_ref
+        source_rows.append({"carla_frame": frame, "lamp": lamp_ref,
+                            "lawful_use": lawful_refs})
         rows.append({"frame": frame, "elapsed_seconds": elapsed,
                      "official_head_id": site["official_head_id"],
                      "facing_approach_id": site["ego_approach_id"],
@@ -105,11 +135,45 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
     output.mkdir(parents=True, exist_ok=True)
     event_path = output / "original-events.json"
     event_path.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
+    for name, values in (("video_frames.jsonl", frame_map),):
+        path = output / name
+        with path.open("x", encoding="utf-8") as stream:
+            for value in values:
+                stream.write(json.dumps(value, allow_nan=False) + "\n")
+    trace_path = output / "trace.jsonl"
+    if capture_after_tick is None:
+        with trace_path.open("x", encoding="utf-8") as stream:
+            for value in trace_rows:
+                stream.write(json.dumps(value, allow_nan=False) + "\n")
+    else:
+        require(trace_path.is_file(), "PipelineCapture original trace missing")
+        captured_rows = [json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()]
+        require(len(captured_rows) == frames and all(
+            row.get("frame") == expected["frame"] and
+            abs(float(row.get("time_s", -1)) - expected["time_s"]) <= 1e-4
+            for row, expected in zip(captured_rows, trace_rows)),
+            "PipelineCapture original trace differs from Native attempt")
     event_ref = {"path": event_path.name, "sha256": hashlib.sha256(event_path.read_bytes()).hexdigest()}
+    trace_ref = {"path": "trace.jsonl",
+                 "sha256": hashlib.sha256((output / "trace.jsonl").read_bytes()).hexdigest()}
+    frame_map_ref = {"path": "video_frames.jsonl",
+                     "sha256": hashlib.sha256((output / "video_frames.jsonl").read_bytes()).hexdigest()}
     receipt = {"case_id": case_id, "event_source": event_ref, "frame_count": len(rows),
+               "trace_source": trace_ref, "frame_map_source": frame_map_ref,
                "first_frame": rows[0]["frame"], "last_frame": rows[-1]["frame"],
                "sample_hz": 20, "physical_acceptance_claimed": False,
                "permission_verdict": None, "right_of_way_verdict": None}
+    require(len(observer_methods) == 1, "lamp observer method changed across original frames")
+    handoff_path = output / "original-source-handoff.json"
+    handoff = {"format": "dual-green-original-source-handoff", "case_id": case_id,
+               "official_head_id": site["official_head_id"],
+               "facing_approach_id": site["ego_approach_id"],
+               "observer_method": next(iter(observer_methods)), "frames": source_rows}
+    handoff_path.write_text(json.dumps(handoff, indent=2) + "\n", encoding="utf-8")
+    receipt["source_handoff"] = {
+        "path": handoff_path.name,
+        "sha256": hashlib.sha256(handoff_path.read_bytes()).hexdigest(),
+    }
     if camera_frame_for_tick is not None:
         manifest_path = output / "original-cameras.json"
         manifest = {"case_id": case_id, "sample_hz": 20,
