@@ -1,0 +1,39 @@
+{
+  "format": "worker-adjacent-vehicle-position-measurement-contract",
+  "assignment_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator",
+  "case_modes": {
+    "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1": "beside",
+    "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2": "between"
+  },
+  "duration_s": 30,
+  "rate_hz": 20,
+  "source_cameras": ["overview", "rider_front", "lane_side", "traffic_rear"],
+  "comparison_variable": "measured motorcycle position between vehicles occupying adjacent traffic lanes",
+  "fixed_conditions": [
+    "same motorcycle and two surrounding vehicles",
+    "same adjacent lanes, forward route, speed request and cameras",
+    "only requested motorcycle lateral position changes"
+  ],
+  "native_source_requirements": [
+    "original Native lane-adjacency map readback and actor identities",
+    "original rider and two surrounding-vehicle body footprints for all 600 frames",
+    "original Native frame/time and four source-camera identities",
+    "surrounding-vehicle speed history, including moving and stationary branches",
+    "independent police-officer and performance-of-duty facts for the exception"
+  ],
+  "source_observation_terms_mapped": {
+    "ru.subject": "original rider identity",
+    "ru.motorcycle": "motorcycle actor identity and source classification",
+    "ru.moped": "alternative machine classification pending separate case",
+    "st.lane_adjacency": "Native map lane adjacency source",
+    "rel.occupies": "subject footprint position between sourced lane occupants",
+    "drv.straddles_marking": "motorcycle lateral trajectory and marking source pending",
+    "rel.bearing": "per-frame lateral ordering of three actor footprints",
+    "rel.longitudinal_overlap": "per-frame body x-overlap with both surrounding vehicles",
+    "ru.motor_vehicle": "two surrounding vehicle source identities",
+    "kin.velocity": "original speed history of both surrounding vehicles"
+  },
+  "legal_compliance": "unassessed",
+  "physical_result": "unobserved",
+  "note": "No persistence duration is asserted as a statutory threshold."
+}

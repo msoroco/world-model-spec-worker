@@ -1,0 +1,107 @@
+{
+  "format": "worker-cpu-adjacent-vehicle-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "beside": {
+      "format": "worker-source-adjacent-vehicle-position-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "between_vehicle_intervals": [],
+      "between_vehicle_frames": 0,
+      "left_vehicle_speed_mps_range": [
+        0.0,
+        0.0
+      ],
+      "right_vehicle_speed_mps_range": [
+        0.0,
+        0.0
+      ],
+      "police_duty_exception": "requires_independent_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lateral centre ordering and body overlap are measurements, not a legal lane-splitting cutoff",
+        "Lane adjacency, actor identity and police-duty status need original source review"
+      ]
+    },
+    "between_stationary": {
+      "format": "worker-source-adjacent-vehicle-position-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "between_vehicle_intervals": [
+        [
+          271,
+          329
+        ]
+      ],
+      "between_vehicle_frames": 59,
+      "left_vehicle_speed_mps_range": [
+        0.0,
+        0.0
+      ],
+      "right_vehicle_speed_mps_range": [
+        0.0,
+        0.0
+      ],
+      "police_duty_exception": "requires_independent_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lateral centre ordering and body overlap are measurements, not a legal lane-splitting cutoff",
+        "Lane adjacency, actor identity and police-duty status need original source review"
+      ]
+    },
+    "between_moving": {
+      "format": "worker-source-adjacent-vehicle-position-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "between_vehicle_intervals": [
+        [
+          0,
+          599
+        ]
+      ],
+      "between_vehicle_frames": 600,
+      "left_vehicle_speed_mps_range": [
+        2.0,
+        2.0
+      ],
+      "right_vehicle_speed_mps_range": [
+        2.0,
+        2.0
+      ],
+      "police_duty_exception": "requires_independent_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lateral centre ordering and body overlap are measurements, not a legal lane-splitting cutoff",
+        "Lane adjacency, actor identity and police-duty status need original source review"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_lane_source",
+      "rejected": "Missing source hash: lane_adjacency_sha256"
+    },
+    {
+      "test": "not_adjacent",
+      "rejected": "Adjacent traffic lanes not sourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "vehicle_wrong_lane",
+      "rejected": "Surrounding vehicles do not occupy sourced adjacent lanes"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "repeated_native_frame",
+      "rejected": "Native frame identity gap"
+    }
+  ]
+}

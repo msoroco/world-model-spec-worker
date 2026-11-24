@@ -1,0 +1,82 @@
+{
+  "format": "worker-cpu-sidewalk-fixture-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "outside": {
+      "format": "worker-source-sidewalk-fixture-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "rest_interval_frames": [
+        100,
+        599
+      ],
+      "side_clearance_m_range_at_rest": [
+        6.0,
+        6.0
+      ],
+      "within_five_foot_side_band_at_rest": false,
+      "directly_in_front_frame_count_at_rest": 0,
+      "physical_result": "pending_original_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Fixture identity and front orientation need independent source review",
+        "Traffic conflict, officer and device directions require separate source evidence",
+        "The side-band metric does not decide the separate directly-in-front branch"
+      ]
+    },
+    "side_band": {
+      "format": "worker-source-sidewalk-fixture-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "rest_interval_frames": [
+        100,
+        599
+      ],
+      "side_clearance_m_range_at_rest": [
+        1.0,
+        1.0
+      ],
+      "within_five_foot_side_band_at_rest": true,
+      "directly_in_front_frame_count_at_rest": 0,
+      "physical_result": "pending_original_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Fixture identity and front orientation need independent source review",
+        "Traffic conflict, officer and device directions require separate source evidence",
+        "The side-band metric does not decide the separate directly-in-front branch"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_fixture_identity",
+      "rejected": "Missing source hash: fixture_identity_sha256"
+    },
+    {
+      "test": "unknown_fixture",
+      "rejected": "Sidewalk elevator or chute identity not sourced"
+    },
+    {
+      "test": "fixture_outside_sidewalk",
+      "rejected": "Fixture not contained in sourced sidewalk"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "repeated_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "no_stop",
+      "rejected": "No measured five-second stop interval"
+    }
+  ]
+}
