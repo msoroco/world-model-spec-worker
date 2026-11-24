@@ -227,3 +227,52 @@ The batch update acknowledgment remains the exact integer version `0`; the const
 The 48-test suite passes (`cpu-full-diagnostic-tests.log`, SHA256 e3c921b3391d1923d97be81a061ef7449f7eb020a471ea5741afee0a5833277a). The 900-frame pinned Core join passes (`cpu-core-manifest-join.log`, SHA256 593c0831fb360c551e242a134d43527b969ed5c75fea16baa5811182081e1474). All four exact v3 offline constructions pass; their command/log/hash receipts are in `execution-manifest.json` and `result.json`. The full near-centerline 900-frame source-shaped diagnostic compatibility positive and missing-source negative pass (`cpu-full-compat-near-v7.log`, SHA256 0edf25e625d5b13c9d428fbd6e08128c47e03b1fd0859b1c6469727d170184dd). This is diagnostic compatibility, not physical completion or legal approval. The three other cases still need positive/negative compatibility, saved-only processing and independent delivery.
 
 Scoped static passes (`cpu-full-diagnostic-static.log`, SHA256 a1801a621406345b87a7b4d82ea1c8e9626c50bb5275088ad79c6466e9ca31a2). Exact scoped strict exits 1 because the truthful package status is partial (`cpu-full-diagnostic-strict.log`, SHA256 0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638). Continue construction; do not mark ready before the exact strict gate exits 0.
+
+## 2026-11-24 current-runtime four-case delivery construction checkpoint
+
+Current runtime/SOURCE-MANIFEST.json SHA256: 5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3. `runtime.py verify --runtime runtime` and `runtime.py preflight` pass with the pinned CPU environment. The status remains partial; no physical or legal acceptance is claimed.
+
+Exact selected cases:
+- `testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline`
+- `testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline`
+- `testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline`
+- `testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline`
+
+All four primary and all four slower/earlier fallback1 constructions pass exact `runtime.py offline` and 900-frame `runtime.py compatibility` positives plus missing `intersection-context.json` negatives on the current runtime. The four primary receipts pass pinned `package_compatibility.check_receipts`. Fallback1 keeps case, camera, duration and observation contract fixed; it changes the approach spawn from 8 m to 6 m and target speed from 7 to 5 m/s for measured overshoot or missing pre-entry sampling. All four exact entries pass `execution_manifest.validate`. The current 50-test suite passes.
+
+Synthetic physical outcome fixtures test `met`, `not_met` and `unverified` with 900 joined samples for every case. `physical_preparation.validate` passes all 12; `capture_lifecycle.run` blocks saved processing until encoders, world restoration, Native exit and owner release are observed. These are CPU fixtures and an ordering guard, not observations of CARLA motion.
+
+Marked and imaginary near/far source comparisons each measure a 1.0 m diagnostic body-edge difference. Full diagnostic original-PNG comparison decodes 7,200 frames per pair. Rehashed fixed controller-policy changes and missing camera archives are rejected. `semantic_delivery.validate` passes seven stages: exact law relevance, template, both judgment observables, bindings, baseline, two complete near/far sweeps and the four exact selected cases. Both highway status and nearest-portion interpretation remain unresolved.
+
+Current positive proof logs and SHA256 values:
+- `cpu-current-tests.log` SHA256 2becec2b11ec1b4cb57113e821fc13dbb94142f4f3a1c2b4a6958bfed21dbb02
+- `cpu-current-receipt-validation.log` SHA256 076ba33f9f7d954f3205c893a152f24aa96fc861f0fee774a199a32a9d506350
+- `cpu-physical-preparation-validation.log` SHA256 4c6a8d36841578adff614480f589f451de422b5c817c3087e978d32aab248d26
+- `cpu-physical-lifecycle-tests.log` SHA256 ebffd5baf4e2edd44b3f189e0faa520d73f1f07f4a2f91df2c7c7c5674d92125
+- `cpu-two-pair-pixel-comparison.log` SHA256 e2620ded768e929d5c1671a852d12af34387ed3ed0993b5de0151f57415415ef
+- `cpu-two-pair-comparison-negative.log` SHA256 54812cd1b84ec6f0bdd06dec8d932b45b1f5e05eb3baa7398995ea15a31d91c7
+- `cpu-semantic-current.log` SHA256 fcaa3524ea882e8fb915e86838013f2f6ddd1b9113cb1d4d2490fd8e4224a72b
+- `cpu-execution-current.log` SHA256 26235b331e9a905a9249691f85a81d294bc16b149bafcee0d352be313600013a
+
+Case-specific offline/compatibility commands, exit codes, receipt bindings and log SHA256 values are in `execution-manifest.json` and `result.json`. All diagnostic source trees, generated media and temporary directories are under `.runtime-work/`; no generated capture is returned under `work/`.
+
+The nearest remaining CPU gate is the independent `delivery_handoff.validate_case` contract: each of the four manifest entries still lacks source-bound positive/negative delivery acceptance proof. The production `runner.py` still raises on Native execution; a CARLA actor/sensor owner and source-bound full-body completion audit must be implemented and CPU-tested. A saved-only replay against an old attempt correctly rejected the changed manifest SHA256 (`cpu-current-saved-near.log`); a fresh current-manifest near attempt was materialized (`cpu-current-saved-materialize.log`) and its saved processing is running. Do not promote to ready until the exact scoped strict gate exits 0.
+
+## 2026-11-24 current-manifest saved replay and delivery audit checkpoint
+
+Final CPU manifest SHA256: 417988c8b31f31992b28a87aef74e38c21be3e7e5f4cd9ab5ec90e18eefecac6. All four current-manifest saved-only positive replays returned missing_evidence false; the near-centerline missing intersection context negative returned missing_evidence true. All retained current-attempt sources and generated versions are under `.runtime-work/`. The runtime never asserted physical or legal acceptance.
+
+All four independent delivery audit positives completed 900 frame/body/graph joins and decoded original-shaped pixels on synthetic CPU fixtures; all four rehashed missing-body-history negatives exited 1 with the expected error. Every positive says `delivery_accepted: false`. The pinned `delivery_handoff.validate_case` and `execution_manifest.validate` contracts passed all four exact entries. Source-bound actual Native body/road/survey capture and a production CARLA owner/runner are still unfinished CPU work; highway review and physical completion remain unverified.
+
+New proof SHA256 values:
+- `cpu-current-saved-near-valid.log`: e245eb089b02bda953e85e65a9a965cc4e6722ba1d0cb3296ebc43d98e7b130b
+- `cpu-current-saved-farther_from_centerline.log`: 6b69e6ad9e3e72aeaee32b5a984e221f0f0dfb39cb6558c50462fdfe38c41d41
+- `cpu-current-saved-imaginary_near_centerline.log`: 2376eda0c3da64ab43a9b5aa781a4acb221d08178fdc8043aaf6639334aca9cf
+- `cpu-current-saved-imaginary_farther_from_centerline.log`: b92a5dd1a3d64857598dd2a5c5457e5b3f32f7647a31d1565caf8cb2a79c0e11
+- `cpu-current-saved-near-negative.log`: 697c9c559d3de538f87e51f8648da01760281f5ac1ecce230cbb472806d5875e
+- `cpu-delivery-contract-validation.log`: 242982297ef56e6768589eb990cf085dd9efffb072094f9432bc90d955a7c2ca
+- `cpu-final-contract-validation.log`: d739d392aa5064b818ce6c4993c6cb6b62f80f08ac77901298b7d021de0f0296
+
+Per-case delivery positive and negative log hashes are in `execution-manifest.json`; positive test hashes and commands are in `result.json`. The status stays partial until exact scoped strict passes.
+
+Exact scoped static passed (`cpu-current-scoped-static.log`, SHA256 a1801a621406345b87a7b4d82ea1c8e9626c50bb5275088ad79c6466e9ca31a2). Exact scoped strict was run and exited 1 only because the package truthfully remains partial (`cpu-current-scoped-strict.log`, SHA256 0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638). Continue production CARLA source capture, adapter ownership and physical evidence preparation before another ready claim.

@@ -90,6 +90,46 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_full_body_and_survey_sources_are_retained_and_joined(self):
+        class BodyAdapter(FakeAdapter):
+            def read_body(self, frame):
+                xy = body(-.7)
+                return {'frame': frame, 'road_id': self.read_ego(frame)['road_id'],
+                        'body_vertices_m': [[x, y, 0] for x, y in xy]}
+
+            def read_road_geometry(self):
+                return {'intersection_xy_m': [[-5, -5], [5, -5], [5, 5], [-5, 5]],
+                        'approach_road_id': 'approach',
+                        'departure_road_id': 'departure'}
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(BodyAdapter(), CASE, survey, attempt)
+            acquisition = json.loads((attempt / 'acquisition.json').read_text())
+            self.assertTrue(acquisition['diagnostic_fixture'])
+            self.assertEqual((attempt / 'survey-packet.json').read_bytes(), survey.read_bytes())
+            for name in ('body_history.jsonl', 'road_geometry.json', 'survey-packet.json'):
+                self.assertEqual(acquisition[name]['sha256'],
+                                 hashlib.sha256((attempt / name).read_bytes()).hexdigest())
+            self.assertEqual(len((attempt / 'body_history.jsonl').read_text().splitlines()), 900)
+
+        class BadBodyAdapter(BodyAdapter):
+            def read_body(self, frame):
+                row = super().read_body(frame)
+                row['body_vertices_m'][0][0] += 1
+                return row
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            with self.assertRaisesRegex(ValueError, 'full body geometry differs'):
+                capture(BadBodyAdapter(), CASE, survey, root / 'attempt')
+            self.assertFalse((root / 'attempt').exists())
+
     def test_attested_live_world_graph_collection(self):
         class LiveWorld(FakeWorld):
             def __init__(self):

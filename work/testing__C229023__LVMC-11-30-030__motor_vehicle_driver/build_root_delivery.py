@@ -35,10 +35,10 @@ def build():
     cameras = [
         {'name': 'overview', 'width': 1920, 'height': 1080,
          'pose_strategy': 'elevated fixed intersection view including both vehicles, crosswalk and pedestrian',
-         'fov_deg': 90},
+         'fov_deg': 75},
         {'name': 'approach', 'width': 1280, 'height': 720,
          'pose_strategy': 'fixed rear approach view including ego and lead vehicle body extents',
-         'fov_deg': 80},
+         'fov_deg': 75},
         {'name': 'reference_corner', 'width': 1280, 'height': 720,
          'pose_strategy': 'fixed corner view across crossing markings and opposite sidewalks',
          'fov_deg': 75},
@@ -57,7 +57,8 @@ def build():
     source_names = [entry['path'] for entry in json.loads(
         (ROOT / 'construction-unmarked_wait.json').read_text())['files']]
     source_names = [name for name in source_names if (ROOT / name).is_file()]
-    source_names.extend(['runner.py', 'build_root_delivery.py', 'delivery_audit.py'])
+    source_names.extend(['runner.py', 'build_root_delivery.py',
+                         'run_root_runner_proof.py', 'delivery_audit.py'])
     files = [{'path': name, 'content': (ROOT / name).read_text()}
              for name in sorted(set(source_names))]
     source = json.loads((ROOT / 'construction-unmarked_wait.json').read_text())

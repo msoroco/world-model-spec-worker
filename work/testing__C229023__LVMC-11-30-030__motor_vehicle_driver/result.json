@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver",
   "input_sha256": "b075e6be7434d41e57e510466ca622da4f9d68ccdbbc506f3da74f38323a0759",
-  "status": "partial",
-  "readiness_kind": "crosswalk_geometry_blueprint_and_source_measurement",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -100,12 +100,6 @@
       "exit_code": 0,
       "log": "cpu-trigger-static.log",
       "sha256": "cc0634d76bab4ebe7685f30ec47975c999d0a86e219581dad0d777a5d29ec680"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-trigger-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     },
     {
       "command": "materialized diagnostic unmarked_pass saved analysis and pinned Native validation",
@@ -310,10 +304,23 @@
       "exit_code": 0,
       "log": "cases/unmarked_other_stop_pass/delivery-positive.log",
       "sha256": "8b628e2f1fcc38aed7e25952e57a77f1376c3a21398bb5c71160d3f9842cb425"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/lead-nov24-converter TMPDIR=$PWD/.runtime-work/lead-nov24-converter PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/tests -p test_*.py",
+      "exit_code": 0,
+      "log": "cpu-canonical-root-tests.log",
+      "sha256": "9c94a4edd1d53616557a718d52707df0d5211d76ede7a9aaf3f1feb378f12db3"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/run_root_runner_proof.py",
+      "exit_code": 0,
+      "log": "cpu-root-runner-selection.log",
+      "sha256": "f02508abc321bde6149e78d8becda28d574d1e8aa4f64de12bdcefc60210eeb0"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "All six exact primary and six fallback diagnostic compatibility, physical preparation, semantic delivery, and independent delivery-audit CPU positives/negatives pass. Canonical queue/integration and remaining package readiness checks are being completed; original physical/legal acceptance remains unverified."
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

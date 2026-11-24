@@ -1,15 +1,15 @@
 {
   "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "8296514c6ffd29a78c0e9711f292a5475cbac39a9eb5835e1a51b1a8f3246a1e",
-  "status": "partial",
-  "readiness_kind": "source_gated_native_and_selected_delivery_draft_partial",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-sight-tests.log",
-      "sha256": "4244fbd42d8b91190cf2e85e30a44912548f0a9ba851c90b2cb8ae843fb5c6f3"
+      "sha256": "be74cde964f76005fd5511134e4e8abdfe7dc9662ef2b4d632448ae3d68c022e"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
@@ -42,10 +42,10 @@
       "sha256": "37db8a8df14ca02c4d4541bfc3ec09b17d5332f179de106fccd848ecde2e5d3c"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference --attempt .runtime-work/c129731-compat-reference-v1 --output .runtime-work/c129731-saved-reference-v1 --library runtime/library --validator .runtime-work/c129731-decoder-v1/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference --attempt .runtime-work/c129731-saved-attempt-reference-v12 --output .runtime-work/c129731-saved-materialized-reference-v12 --library runtime/library --validator .runtime-work/c129731-decoder-v1/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "cpu-saved-reference.json",
-      "sha256": "c5d98c628f2cf50bf0c0f0625e6fe37251e22f96a58ebf1a81fb6293690946b6"
+      "sha256": "1216fe8727169403e6621579a74686320af696501e889077567134b4902d1093"
     },
     {
       "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/check_compat_receipts.py",
@@ -160,10 +160,47 @@
       "exit_code": 0,
       "log": "cpu-compatibility-fallback1-distance_above_500ft.json",
       "sha256": "1f364fd4560a8375dbf6fa5f34ca5f08ad56fa3561350af2ed3e421980d61786"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/prove_saved_case.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
+      "exit_code": 0,
+      "log": "cpu-saved-distance_below_500ft.json",
+      "sha256": "3748bbe0ed6c68f047324f4f9c4632c34b6b2cdc8984fbdbe22e28ee888df7d2"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/prove_saved_case.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
+      "exit_code": 0,
+      "log": "cpu-saved-distance_at_500ft.json",
+      "sha256": "424964a0674890c838dd352a674d9d2ac7d57b6b6428dd1ce42b0d40189f2518"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/prove_saved_case.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft",
+      "exit_code": 0,
+      "log": "cpu-saved-distance_above_500ft.json",
+      "sha256": "574a23ec3b8bd44c43586e6a609c2e2bbcfceec2e9191f1446d99ccbb40761cf"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c129731-compat-distance_below_500ft-v12 --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft --job cpu-fixture-below --attempt-number 1 --recording cpu-fixture-below --decode-receipt .runtime-work/c129731-audit-below-decode-v1.json --output .runtime-work/c129731-audit-below-v1.json --cpu-test",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-distance_below_500ft.log",
+      "sha256": "5a43c54a2bc92d78c0f6ccce62a7bb99e79460d0abb38e366d757c4b9d0a6ab8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c129731-compat-distance_at_500ft-v12 --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft --job cpu-fixture-at --attempt-number 1 --recording cpu-fixture-at --decode-receipt .runtime-work/c129731-audit-at-decode-v2.json --output .runtime-work/c129731-audit-at-v2.json --cpu-test",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-distance_at_500ft.log",
+      "sha256": "eb9eb2ae3cdfbbaacdcaee1a6db169d08ffd126d373d541419fe3526dbc7a346"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c129731-compat-distance_above_500ft-v12 --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft --job cpu-fixture-above --attempt-number 1 --recording cpu-fixture-above --decode-receipt .runtime-work/c129731-audit-above-decode-v1.json --output .runtime-work/c129731-audit-above-v1.json --cpu-test",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-distance_above_500ft.log",
+      "sha256": "510e352492e4339a6270b8c15c23855529d3c7e7fe007a43fcfc12efdcf90d3a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA reversal motion, two-direction 500-foot visibility geometry, four-camera pixel coverage and original physical capture quality after CPU preparation"
   ],
-  "reason": "All four exact source-gated diagnostic constructions pass fresh pinned offline checks. Each has a pinned 900-frame Core/Lean/four-view render/final-decode compatibility receipt with selected measurement and missing sight-source negative checks; these fixtures are synthetic diagnostic software evidence only. The reference case also passes pinned recorded-only process-saved with original acquisition preserved and no physical/legal acceptance claim. 69 focused tests, the materialized four-case source-shaped positive/negative proof, and scoped static check pass. A canonical selected delivery manifest, exact post-capture bindings and comparison/delivery audit proofs, original accepted trace/video/archive source review, reviewed Native site and physical realization remain incomplete. The exact scoped strict gate is expected to reject truthful partial until all CPU delivery contracts and source-bound proofs pass."
+  "reason": "CPU delivery package prepared and exact scoped strict gate pending; original Native physical acquisition remains for GPU delivery.",
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft --job $JOB_ID --db $DB --run $RUN --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

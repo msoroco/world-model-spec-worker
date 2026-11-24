@@ -71,6 +71,9 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     if case_id not in {PREFIX + suffix for suffix in SUFFIXES}:
         raise ValueError('unknown exact approach case')
     binding = verify_live_map(adapter.world, map_packet_path, case_id)
+    survey_bytes = Path(map_packet_path).read_bytes()
+    if hashlib.sha256(survey_bytes).hexdigest() != binding['survey_packet_sha256']:
+        raise ValueError('Native survey packet changed before capture')
     destination = Path(output_root)
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists():
@@ -80,6 +83,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     started = False
     opendrive = None
     history: list[dict] = []
+    body_history: list[dict] = []
     frame_map: list[dict] = []
     graph_map: list[dict] = []
     archives = {}
@@ -102,6 +106,20 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                 raise ValueError('Native ego frame/case readback differs')
             row = {**ego, 'frame': frame, 'time_s': time_s}
             history.append(row)
+            read_body = getattr(adapter, 'read_body', None)
+            if callable(read_body):
+                physical = read_body(frame)
+                if not isinstance(physical, dict) or physical.get('frame') != frame:
+                    raise ValueError('Native full body frame identity missing')
+                vertices = physical.get('body_vertices_m')
+                if (physical.get('road_id') != row.get('road_id') or
+                        not isinstance(vertices, list) or len(vertices) < 4 or
+                        any(not isinstance(vertex, list) or len(vertex) < 3 or
+                            any(type(value) not in (int, float) or not math.isfinite(value)
+                                for value in vertex[:3]) for vertex in vertices) or
+                        [vertex[:2] for vertex in vertices] != row.get('ego_body_vertices_xy_m')):
+                    raise ValueError('Native full body geometry differs from approach source')
+                body_history.append({**physical, 'frame': frame, 'time_s': time_s})
             camera_rows = adapter.read_cameras(frame)
             if not isinstance(camera_rows, dict) or set(camera_rows) != CAMERAS:
                 raise ValueError('Native four-camera callback set missing')
@@ -150,6 +168,12 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
         opendrive = adapter.world.get_map().to_opendrive()
         if graph_map and len(graph_map) != FRAMES:
             raise ValueError('Native adapter graph capture is incomplete')
+        if body_history and len(body_history) != FRAMES:
+            raise ValueError('Native full body capture is incomplete')
+        read_geometry = getattr(adapter, 'read_road_geometry', None)
+        geometry = read_geometry() if callable(read_geometry) else None
+        if geometry is not None and not isinstance(geometry, dict):
+            raise ValueError('Native road geometry is not an object')
         if (not isinstance(opendrive, str) or
                 hashlib.sha256(opendrive.encode()).hexdigest() != binding['opendrive_sha256']):
             raise ValueError('Native OpenDRIVE changed during capture')
@@ -178,11 +202,22 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                   'intersection-context.json': hashlib.sha256(context_bytes).hexdigest(),
                   'approach-history.jsonl': _write_jsonl(root / 'approach-history.jsonl', history),
                   'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
+        (root / 'survey-packet.json').write_bytes(survey_bytes)
+        hashes['survey-packet.json'] = hashlib.sha256(survey_bytes).hexdigest()
+        if body_history:
+            hashes['body_history.jsonl'] = _write_jsonl(root / 'body_history.jsonl', body_history)
+        if geometry is not None:
+            geometry_bytes = (json.dumps(geometry, sort_keys=True, separators=(',', ':')) + '\n').encode()
+            (root / 'road_geometry.json').write_bytes(geometry_bytes)
+            hashes['road_geometry.json'] = hashlib.sha256(geometry_bytes).hexdigest()
         if graph_map:
             hashes['graph-frames.jsonl'] = _write_jsonl(root / 'graph-frames.jsonl', graph_map)
+        complete_source = (getattr(adapter, 'native_attested', False) and
+                           binding['public_highway_reviewed'] is True and
+                           len(body_history) == FRAMES and geometry is not None and
+                           len(graph_map) == FRAMES)
         acquisition = {'case_id': case_id,
-                       'diagnostic_fixture': not (getattr(adapter, 'native_attested', False)
-                                                  and binding['public_highway_reviewed'] is True),
+                       'diagnostic_fixture': not complete_source,
                        'map_binding': binding,
                        'media': {name: {'kind': 'original_native', 'path': name + '.zip',
                                         'sha256': hashlib.sha256((root / (name + '.zip')).read_bytes()).hexdigest()}
