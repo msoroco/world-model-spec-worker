@@ -9,7 +9,7 @@ from geometry import ARC_M, check as geometry_check, open_drive
 
 RATE = 20
 FRAMES = 600
-TARGET_MPS = {'controlled_1': 29.0, 'controlled_2': 38.0}
+TARGET_MPS = {'controlled_1': 29.0, 'controlled_2': 38.0, 'controlled_3': 35.7632}
 CAMERAS = (
     ('roundabout_overview', 1280, 720, -30, -530, 28, -45, False),
     ('arc_entry', 1280, 720, -100, -515, 14, -25, False),

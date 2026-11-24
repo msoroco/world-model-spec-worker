@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import math
+from decimal import Decimal
 import subprocess
 from pathlib import Path
 
@@ -34,12 +35,16 @@ def frames(path):
     return int(run.stdout.strip())
 
 
-def audit(case_id, attempt, processing_path, diagnostic, review_path=None):
+def audit(case_id, attempt, processing_path, diagnostic, review_path=None,
+          candidate_id='primary'):
     manifest = read(HERE / 'execution-manifest.json')
     require(manifest['assignment_id'] == HERE.name, 'Wrong assignment')
     entry = next((c for c in manifest['cases'] if c['case_id'] == case_id), None)
     require(entry is not None and entry['kind'] == 'delivery', 'Unselected case')
-    require(sha(HERE / entry['construction']) == entry['construction_sha256'],
+    candidate = entry if candidate_id == 'primary' else next(
+        (item for item in entry['candidates'] if item['id'] == candidate_id), None)
+    require(candidate is not None, 'Unselected candidate')
+    require(sha(HERE / candidate['construction']) == candidate['construction_sha256'],
             'Selected construction hash differs')
     attempt = Path(attempt).resolve()
     processing_path = Path(processing_path).resolve()
@@ -50,13 +55,13 @@ def audit(case_id, attempt, processing_path, diagnostic, review_path=None):
             processing.get('timestamp_joins', {}).get('passed') is True and
             processing.get('timestamp_joins', {}).get('frames') == 600 and
             processing.get('case_id') == case_id and
-            processing.get('candidate_id') == 'primary' and
+            processing.get('candidate_id') == candidate_id and
             processing.get('physical_acceptance_claimed') is False and
             processing.get('legal_acceptance_claimed') is False,
             'Saved processing source chain incomplete')
     selection = read(attempt / 'candidate-selection.json')
-    require(selection.get('construction_sha256') == entry['construction_sha256'] and
-            selection.get('candidate_id') == 'primary',
+    require(selection.get('construction_sha256') == candidate['construction_sha256'] and
+            selection.get('candidate_id') == candidate_id,
             'Original selection differs from exact construction')
     required = ('roundabout-speed-history.jsonl', 'roundabout-survey.json',
                 'trace.jsonl', 'video_frames.jsonl', 'capture/manifest.json',
@@ -83,9 +88,11 @@ def audit(case_id, attempt, processing_path, diagnostic, review_path=None):
                 'source_shape_passed': True, 'physical_completion': False,
                 'legal_acceptance': False, 'synthetic': True,
                 'original_source_sha256': hashes, 'camera_frame_counts': counts,
-                'selected_construction_sha256': entry['construction_sha256'],
+                'selected_construction_sha256': candidate['construction_sha256'],
                 'processing_sha256': sha(processing_path)}
     require(not synthetic, 'Original Native roundabout source required')
+    require(selection.get('manifest_sha256') == sha(HERE / 'execution-manifest.json'),
+            'Original Native attempt selects an outdated delivery manifest')
     require(all(row.get('synthetic_diagnostic') is not True for row in rows),
             'Mixed diagnostic and original speed sources')
     require(len({row.get('subject_id') for row in rows}) == 1 and
@@ -101,15 +108,24 @@ def audit(case_id, attempt, processing_path, diagnostic, review_path=None):
             all(a < b for a, b in zip(native_frames, native_frames[1:])),
             'Original Native frame progression incomplete')
     speeds = []
+    above = []
     for row in rows:
         vector = row.get('velocity_xyz_mps')
         require(isinstance(vector, list) and len(vector) == 3 and
                 all(type(value) in (float, int) and math.isfinite(value)
                     for value in vector), 'Original velocity missing')
-        speeds.append(math.sqrt(sum(value * value for value in vector)) *
-                      2.2369362921)
-    speed_requirement = (max(speeds) <= 80 if case_id.endswith('__controlled_1')
-                         else max(speeds) > 80)
+        speeds.append(math.sqrt(sum(value * value for value in vector)) /
+                      0.44704)
+        above.append(sum(Decimal(str(value)) ** 2 for value in vector) >
+                     Decimal('35.7632') ** 2)
+    if case_id.endswith('__controlled_1'):
+        speed_requirement = not any(above)
+    elif case_id.endswith('__controlled_2'):
+        speed_requirement = any(above)
+    else:
+        speed_requirement = (not any(above) and
+                             any(sum(Decimal(str(value)) ** 2 for value in row['velocity_xyz_mps']) ==
+                                 Decimal('35.7632') ** 2 for row in rows))
     require(speed_requirement, 'Measured original speed boundary not achieved')
     result_path = Path(processing.get('result', '')).resolve()
     require(result_path.is_file() and processing.get('result_sha256') ==
@@ -144,7 +160,7 @@ def audit(case_id, attempt, processing_path, diagnostic, review_path=None):
                       'physical_completion')},
             'original_source_sha256': hashes,
             'camera_frame_counts': counts,
-            'selected_construction_sha256': entry['construction_sha256'],
+            'selected_construction_sha256': candidate['construction_sha256'],
             'processing_sha256': sha(processing_path),
             'result_sha256': sha(result_path),
             'pixel_review_sha256': sha(review_path),
@@ -154,6 +170,7 @@ def audit(case_id, attempt, processing_path, diagnostic, review_path=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', required=True)
+    parser.add_argument('--candidate', default='primary')
     parser.add_argument('--attempt', type=Path, required=True)
     parser.add_argument('--processing', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
@@ -162,7 +179,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     require(not args.output.exists(), 'Retain prior audit output')
     result = audit(args.case, args.attempt, args.processing,
-                   args.diagnostic, args.review)
+                   args.diagnostic, args.review, args.candidate)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(json.dumps({'source_shape_passed': result.get('source_shape_passed',

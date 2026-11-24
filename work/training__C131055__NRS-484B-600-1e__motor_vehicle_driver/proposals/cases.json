@@ -1,23 +1,156 @@
 {
+  "actor": "motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
-      "rationale": "Unselected roundabout speed CPU diagnostic",
-      "target_law_id": "NRS-484B-600-1e",
-      "target_type": "attempt",
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__neutral_baseline",
+      "rationale": "Unselected neutral context; no target outcome or recording selected.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "original_vehicle_velocity_position",
+            "reference_frame": "original frame/time and surveyed arc/exit",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; Native review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic source only; actual Native speed and lane retention unverified"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
-        "requested_speed_mps": 29
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 0
+        }
+      }
+    },
+    {
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering request margin; not a legal tolerance.",
+        "unit": "mph",
+        "value": 15.128847530422405
+      },
+      "paired_probe_id": "speed_80_mph",
+      "probe": {
+        "comparison_or_standard": "Original measured speed versus strict statutory 80 mph cap",
+        "operator": ">",
+        "primary_variable": "requested_speed_mps",
+        "target_value_or_branch": "below",
+        "test_value": 64.8711524695776,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "mph"
+      },
+      "rationale": "Planned below-80 request; classify only original measured speed.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "original_vehicle_velocity_position",
+            "reference_frame": "original frame/time and surveyed arc/exit",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; Native review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic source only; actual Native speed and lane retention unverified"
+        ]
+      },
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 29
+        }
       }
     },
     {
       "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
-      "rationale": "Unselected roundabout speed CPU diagnostic",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering request margin; not a legal tolerance.",
+        "unit": "mph",
+        "value": 5.003579098067192
+      },
+      "paired_probe_id": "speed_80_mph",
+      "probe": {
+        "comparison_or_standard": "Original measured speed versus strict statutory 80 mph cap",
+        "operator": ">",
+        "primary_variable": "requested_speed_mps",
+        "target_value_or_branch": "above",
+        "test_value": 85.00357909806719,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "mph"
+      },
+      "rationale": "Planned above-80 request; classify only original measured speed.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "original_vehicle_velocity_position",
+            "reference_frame": "original frame/time and surveyed arc/exit",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; Native review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic source only; actual Native speed and lane retention unverified"
+        ]
+      },
       "target_law_id": "NRS-484B-600-1e",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
       "variable_assignments": {
-        "requested_speed_mps": 38
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 38
+        }
       }
     }
   ],
-  "format": "worker-case-proposals"
+  "cell_id": "C131055",
+  "format": "worker-case-proposals",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Compare original measured velocity with the strict greater-than boundary; preserve sample timing and uncertainty.",
+          "phrase": "a rate of speed greater than 80 miles per hour"
+        }
+      ],
+      "missing_inputs": [
+        "Source-bound original Native velocity at exact 80 mph and physical arc/exit evidence."
+      ],
+      "rationale": "Original Native speed sweep remains unresolved at exact boundary.",
+      "status": "incomplete",
+      "sweep_id": "speed_source_sweep",
+      "target_law_id": "NRS-484B-600-1e"
+    }
+  ],
+  "unresolved_boundary": "Exact 80 mph source-hashed equivalence remains unproven for frozen accepted membership; no original recording replay claimed."
 }

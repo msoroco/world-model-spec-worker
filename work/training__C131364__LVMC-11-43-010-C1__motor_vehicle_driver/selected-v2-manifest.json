@@ -1,0 +1,197 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_partial_physical_unverified",
+  "selected_case_ids": [
+    "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+    "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2"
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "roundabout_exit_lane"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same map geometry except named comparison variable",
+        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "v2-native-draft/witness_1-construction.json",
+      "construction_sha256": "cfbb9ef4683645ad117b2e39747d1036234e7d4a97c09654987eb80510c20189",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "v2-fallback-draft/witness_1-fallback1-construction.json",
+          "construction_sha256": "3edee20578209a5641b063c29dc523d839df2e5c85f43df37597230c9d56c298",
+          "trigger": {
+            "source": "native-raw-actors.jsonl",
+            "metric": "ordered original road 10 -> 11 -> 12 history by frame 599",
+            "failure_condition": "No original road 12 sample after road 11 before capture termination"
+          },
+          "changed_knobs": [
+            "ego steering controller requested speed 6.0 to 7.5 m/s"
+          ],
+          "proofs": {
+            "offline": {
+              "path": "selected-v2/proofs/witness1-fallback1/offline.log",
+              "sha256": "d745bf2d5e88587d5df61f4b75feb719cf4c90205541507fbf59a0bd75ef0b57"
+            },
+            "compatibility": {
+              "path": "selected-v2/proofs/witness1-fallback1/compatibility.json",
+              "sha256": "3d563ce8d46f2500e499e2a516cb4a13f85b6fafd25f41c0350f5cddcfbcf922"
+            },
+            "missing_source_negative": {
+              "path": "selected-v2/proofs/witness1-fallback1/negative-analysis.log",
+              "sha256": "a4cb0576fd30acd6cbe5e1f5ba588df3d270155ba4d2fd798ebb3d1f1127baca"
+            },
+            "recorded_only_processing": {
+              "path": "selected-v2/proofs/witness1-fallback1/processing.json",
+              "sha256": "0c988579fc270cd65931a4be9f8f627e662a2f98f321021662881cce22235b3d"
+            }
+          }
+        }
+      ],
+      "measurement_contract": "v2-diagnostic/witness_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c131364-saved-analysis-v2"
+      },
+      "fixture_recipe": "work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/v2-diagnostic/witness_1/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary 6 m/s steering controller may not reach the authored exit connector within 600 original Native frames."
+      },
+      "preparation_status": "selected_cpu_proofs_physical_unverified",
+      "primary_proofs": {
+        "offline": {
+          "path": "selected-v2/proofs/witness1-primary/offline.log",
+          "sha256": "fdfee11cbfc93073a059d9be700bb9be715fc9dfd279bb037e35ecb9d57318d6"
+        },
+        "compatibility": {
+          "path": "selected-v2/proofs/witness1-primary/compatibility.json",
+          "sha256": "6217cb37921d938deeaf88abb9909dc3d80da73193d31f72107c66e67a9dde78"
+        },
+        "missing_source_negative": {
+          "path": "selected-v2/proofs/witness1-primary/negative-analysis.log",
+          "sha256": "9e5a5db294334b35c1e9a42642d1170029a7aaca5e7d8b8279a0e8d9d928f396"
+        },
+        "recorded_only_processing": {
+          "path": "selected-v2/proofs/witness1-primary/processing.json",
+          "sha256": "d8005cc405c574eb0fd14563bfedf2b452a32cfff8eeccdc9ece8c065d78cf0f"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\"",
+        "diagnostic_receipt": {
+          "path": "selected-v2/proofs/witness1-primary/processing.json",
+          "sha256": "d8005cc405c574eb0fd14563bfedf2b452a32cfff8eeccdc9ece8c065d78cf0f"
+        }
+      }
+    },
+    {
+      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "v2-native-draft/witness_2-construction.json",
+      "construction_sha256": "21ed4237685af259655e59d8681141656a3d1de09d1703f8a680e5824d01805c",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "v2-fallback-draft/witness_2-fallback1-construction.json",
+          "construction_sha256": "8e6566d89aba99b887fd1f76c22c146ebf68fc84eff05c620afe0332fa1c1688",
+          "trigger": {
+            "source": "native-raw-actors.jsonl",
+            "metric": "ordered original road 10 -> 11 -> 12 history by frame 599",
+            "failure_condition": "No original road 12 sample after road 11 before capture termination"
+          },
+          "changed_knobs": [
+            "ego steering controller requested speed 6.0 to 7.5 m/s"
+          ],
+          "proofs": {
+            "offline": {
+              "path": "selected-v2/proofs/witness2-fallback1/offline.log",
+              "sha256": "c6db678aaf1ac31aa7b5f1d57f6a20d1e448fe27b8474b832f84b4e94a0ddd38"
+            },
+            "compatibility": {
+              "path": "selected-v2/proofs/witness2-fallback1/compatibility.json",
+              "sha256": "5e7215a4c5bed2c3c74b399e920c17a3d1d816aa94cbda0dfbcb5f16dd7cde41"
+            },
+            "missing_source_negative": {
+              "path": "selected-v2/proofs/witness2-fallback1/negative-analysis.log",
+              "sha256": "eeb0f28a921055c13fe85d8bbefe6bed13f6cb981bb44179847dbfa0c42e5368"
+            },
+            "recorded_only_processing": {
+              "path": "selected-v2/proofs/witness2-fallback1/processing.json",
+              "sha256": "69835622629021721e686fb88546e19cf24b874dd13e2f277722d85b7f230e7c"
+            }
+          }
+        }
+      ],
+      "measurement_contract": "v2-diagnostic/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c131364-saved-analysis-v2"
+      },
+      "fixture_recipe": "work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/v2-diagnostic/witness_2/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary 6 m/s steering controller may not reach the authored exit connector within 600 original Native frames."
+      },
+      "preparation_status": "selected_cpu_proofs_physical_unverified",
+      "primary_proofs": {
+        "offline": {
+          "path": "selected-v2/proofs/witness2-primary/offline.log",
+          "sha256": "501ace81698ea1c864c7c6714d48336235d7fb14f47aea87260cb66df4859c42"
+        },
+        "compatibility": {
+          "path": "selected-v2/proofs/witness2-primary/compatibility.json",
+          "sha256": "74e3c7f5f704faa821cf3874ba9e3a8b3a2c7e6f5c6e91a5155369da7720515c"
+        },
+        "missing_source_negative": {
+          "path": "selected-v2/proofs/witness2-primary/negative-analysis.log",
+          "sha256": "51815a9923505216abb6c3b3961bdb2ad569ffd955690b534698636f42fbd7df"
+        },
+        "recorded_only_processing": {
+          "path": "selected-v2/proofs/witness2-primary/processing.json",
+          "sha256": "724da88bccb3ac02de7d376c22f9e1b8a150887b769a1f364e59f56bd63804c6"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\"",
+        "diagnostic_receipt": {
+          "path": "selected-v2/proofs/witness2-primary/processing.json",
+          "sha256": "724da88bccb3ac02de7d376c22f9e1b8a150887b769a1f364e59f56bd63804c6"
+        }
+      }
+    }
+  ],
+  "independent_cpu_audits": [
+    {
+      "path": "v2-native-draft/audit.json",
+      "sha256": "ed8e1d0bcfdf90416c64ff0d10cdfcedc011185e90e2321a917f6f7c235ded7c"
+    },
+    {
+      "path": "v2-fallback-draft/audit.json",
+      "sha256": "477ce77d2e9ce4dd2410d28307435a6d023590e095aa3cb3ea89f5da738e54e4"
+    },
+    {
+      "path": "v2-native-draft/fake-native-test.log",
+      "sha256": "9b2c19a7d779f0953308de0f0d9dc2f746fec74eabd55bb253a9c8036df88f3b"
+    }
+  ],
+  "physical_acceptance_claimed": false,
+  "legal_verdict_claimed": false
+}

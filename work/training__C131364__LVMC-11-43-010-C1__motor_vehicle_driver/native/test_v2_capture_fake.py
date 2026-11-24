@@ -4,6 +4,7 @@ The fake world verifies runner plumbing only; it does not verify CARLA physics.
 All temporary attempts are created under .runtime-work.
 """
 import json
+import hashlib
 import os
 from pathlib import Path
 import sys
@@ -20,7 +21,10 @@ SCRATCH.mkdir(parents=True, exist_ok=True)
 os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(SCRATCH.resolve())
 os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 import v2_native_capture as native
+import v2_native_finalize as finalizer
+import v2_source_audit as source_audit
 
 
 class Position:
@@ -91,7 +95,11 @@ class Map:
         self.lane = lane
 
     def get_waypoint(self, location, **kwargs):
-        road = (10, 11, 12)[self.calls] if self.calls < 3 else 11
+        if self.calls < 3:
+            road = (10, 11, 12)[self.calls]
+        else:
+            index = self.calls - 3
+            road = 10 if index < 99 else 11 if index < 224 else 12
         self.calls += 1
         return types.SimpleNamespace(road_id=road, lane_id=self.lane)
 
@@ -231,8 +239,16 @@ class CaptureStateMachine(unittest.TestCase):
             return {'restored': True}
         restore.restore = restore_world
         output = types.ModuleType('worker_exchange.native_output')
-        output.seal_capture = lambda root, **kwargs: (Path(root) / 'capture-seal.json').write_text(
-            json.dumps({'frames': kwargs['frames'], 'restoration': kwargs['restoration']}) + '\n')
+        def seal_fake(root, **kwargs):
+            root = Path(root)
+            sources = {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                       for name in source_audit.REQUIRED}
+            (root / 'capture-seal.json').write_text(json.dumps({
+                'provenance_kind': 'native', 'diagnostic_fixture': False,
+                'frames': kwargs['frames'], 'restoration': kwargs['restoration'],
+                'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
+                'sources': sources}) + '\n')
+        output.seal_capture = seal_fake
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
             root = Path(temporary)
             materialize(root, witness)
@@ -262,6 +278,27 @@ class CaptureStateMachine(unittest.TestCase):
                 self.assertTrue((root / 'capture-seal.json').is_file())
                 self.assertEqual(len((root / 'roundabout-track.jsonl').read_text().splitlines()), 600)
                 self.assertEqual(len((root / 'video_frames.jsonl').read_text().splitlines()), 600)
+                with patch.object(finalizer, 'validate_video'):
+                    measured = finalizer.measure_native(root)
+                    self.assertTrue(measured['ordered_entry_circulation_exit_observed'])
+                    self.assertEqual(measured['circulating_lane_ids'], [lane])
+                    report = finalizer.finalize_native(root, root / 'analysis-report.json')
+                    self.assertFalse(report['physical_acceptance_claimed'])
+                    self.assertTrue((root / 'result.json').is_file())
+                    with patch.object(source_audit, 'decode_cameras'):
+                        audit = source_audit.audit(root)
+                        self.assertTrue(audit['source_verified'])
+                        self.assertFalse(audit['physical_acceptance_claimed'])
+                    path = root / 'roundabout-track.jsonl'
+                    lines = path.read_text().splitlines()
+                    changed = json.loads(lines[201])
+                    changed['native_frame'] += 1
+                    lines[201] = json.dumps(changed)
+                    path.write_text('\n'.join(lines) + '\n')
+                    with self.assertRaisesRegex(ValueError, 'source/frame join differs'):
+                        finalizer.measure_native(root)
+                    with self.assertRaisesRegex(ValueError, 'Sealed original source differs'):
+                        source_audit.audit(root)
 
     def test_full_four_camera_capture_and_restore(self):
         self.run_case('witness_1', False)

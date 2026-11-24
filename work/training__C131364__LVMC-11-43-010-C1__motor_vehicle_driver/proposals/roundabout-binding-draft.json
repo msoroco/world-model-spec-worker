@@ -1,0 +1,65 @@
+{
+  "format": "c131364-source-bound-semantic-draft",
+  "status": "draft_unselected",
+  "assignment_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver",
+  "source_law": {
+    "source": "LVMC 11.43.010(C)(1)",
+    "text": "The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle who intends to exit a roundabout: Shall use the left lane to turn left or complete a U-turn.",
+    "sha256": "a56b54311412be61ab77ce4947afc17c66b8790525402d8508f3d64ece514e5b"
+  },
+  "source_references": {
+    "case_plan_sha256": "b508fd3e448c5d3faac89abf62e9dcb4074450476223c492f49a4d8aab9236ee",
+    "assignment_sha256": "4dcdfa64a0cff2e2bd3ce50ee41fdf9eb5dbc97d2b73c143d09ba3fd62644be3"
+  },
+  "branch_review": [
+    {
+      "branch": "left-turn exit",
+      "scope": "frozen left_turn cell",
+      "case_ids": [
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2"
+      ],
+      "comparison_variable": "roundabout_exit_lane",
+      "status": "CPU construction proved, physical and legal review pending"
+    },
+    {
+      "branch": "U-turn exit",
+      "scope": "exact statutory alternative",
+      "case_ids": [],
+      "status": "separate compatible-cell binding and CPU construction pending"
+    }
+  ],
+  "measurement_binding": {
+    "activation": [
+      "original map is a multilane roundabout",
+      "observed route is a left-turn exit or U-turn"
+    ],
+    "required_original_sources": [
+      "native-raw-actors.jsonl",
+      "roundabout-track.jsonl",
+      "video_frames.jsonl",
+      "native-map-readback.json",
+      "four original camera streams"
+    ],
+    "continuous_observations": [
+      "road and lane identity throughout circulation",
+      "lane transitions",
+      "entry-to-exit heading and path"
+    ],
+    "judgment_calls": [
+      "intent is not directly observed; route taken is a limited observable substitute",
+      "left lane relative to lane adjacency needs original map and direction review"
+    ],
+    "legal_numeric_thresholds": [],
+    "physical_claims_from_fixture": false,
+    "legal_outcome_from_fixture": null
+  },
+  "selected_case_count": 0,
+  "canonical_semantic_stage_chain_complete": false,
+  "additional_original_source_audit": {
+    "script": "native/v2_source_audit.py",
+    "sha256": "5fc77690964bd9c61ca65d0c5a4c5979e003d7b8deca7c5c62e82a0a66a4a352",
+    "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/native/v2_source_audit.py --attempt $ORIGINAL_NATIVE_ATTEMPT",
+    "scope": "sealed original source/lifecycle integrity only; no physical or legal acceptance"
+  }
+}

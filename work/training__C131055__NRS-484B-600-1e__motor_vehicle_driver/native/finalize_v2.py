@@ -31,7 +31,8 @@ def finalize(attempt,output):
     construction=json.loads((attempt/'construction.json').read_text())
     if config['case_id']!=construction['case_id'] or config['case_id'] not in (
         'training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1',
-        'training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2'):
+        'training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2',
+        'training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3'):
         raise ValueError('Exact diagnostic case differs')
     metric=measure_speed(attempt)
     rows=[json.loads(x) for x in (attempt/'roundabout-speed-history.jsonl').read_text().splitlines()]
@@ -48,10 +49,12 @@ def finalize(attempt,output):
           'sources':{name:sha(attempt/name) for name in SOURCES}}},
         'source_complete':True,'diagnostic_fixture':True,'physical_or_legal_acceptance':False}
     high=config['case_id'].endswith('__controlled_2')
+    at=config['case_id'].endswith('__controlled_3')
+    matched=(metric['maximum_full_trace_mph']==80.0 and metric['samples_above_80_mph']==0) if at else ((metric['samples_above_80_mph']>0)==high)
     result={'case_id':config['case_id'],'measured_values':metric,
-        'target_checks':[{'target':'synthetic saved speed crosses 80 mph' if high else 'synthetic saved speed remains at or below 80 mph',
-          'requested':high,'measured':metric['samples_above_80_mph']>0,'method':'measure_speed',
-          'tolerance':0,'matched':(metric['samples_above_80_mph']>0)==high,
+        'target_checks':[{'target':'synthetic saved speed exactly 80 mph' if at else ('synthetic saved speed crosses 80 mph' if high else 'synthetic saved speed remains at or below 80 mph'),
+          'requested':True,'measured':matched,'method':'measure_speed',
+          'tolerance':0,'matched':matched,
           'physical_cause_confirmed':False,'cause_evidence':list(SOURCES)}],
         'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,
         'termination_reason':'600-frame synthetic CPU diagnostic',

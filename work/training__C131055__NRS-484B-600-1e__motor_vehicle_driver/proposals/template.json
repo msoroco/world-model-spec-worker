@@ -1,0 +1,55 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "parameter_refs": [
+    {
+      "kind": "subject_behavior",
+      "name": "native_velocity_history",
+      "range_or_domain": "original three-axis post-tick velocity at 20 Hz for 600 frames; physical unverified"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_speed_mps",
+      "range_or_domain": "29 or 38 m/s engineering request; not observed speed"
+    },
+    {
+      "kind": "world_setup",
+      "name": "roundabout_route",
+      "range_or_domain": "two-lane roundabout arc and exit; original survey readback pending"
+    }
+  ],
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "person drives or operates a vehicle of any kind or character",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [
+      {
+        "note": "Compare original measured velocity with the strict greater-than boundary; preserve sample timing and uncertainty.",
+        "phrase": "a rate of speed greater than 80 miles per hour"
+      }
+    ],
+    "obligation": {
+      "description": "drive or operate at a rate greater than 80 mph in any event",
+      "numeric_conditions": [
+        {
+          "operator": ">",
+          "source_clause": "a rate of speed greater than 80 miles per hour",
+          "unit": "mph",
+          "value": 80,
+          "variable": "ego_speed"
+        }
+      ],
+      "source_clause": "In any event, a rate of speed greater than 80 miles per hour.",
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "while driving or operating",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-600-1e@motor_vehicle_driver"
+}

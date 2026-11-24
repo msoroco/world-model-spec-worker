@@ -1,0 +1,42 @@
+{
+  "format": "c188094-candidate-risk-review",
+  "status": "partial",
+  "case_ids": [
+    "training__C188094__LVMC-11-30-070-B__pedestrian__probe_1",
+    "training__C188094__LVMC-11-30-070-B__pedestrian__probe_2"
+  ],
+  "primary_selected_by_default": true,
+  "native_physical_observed": false,
+  "risks": [
+    {
+      "risk": "Walker lateral drift from requested crossing x could change the law-relevant point/body crossing location.",
+      "source": "original actor-poses.jsonl and requested_path in both exact cases",
+      "metric": "max absolute pedestrian_x_m minus requested_path.x_m during roadway frames",
+      "failure_condition": "Any source frame crosses the surveyed crosswalk boundary contrary to requested case, or lateral error persists through roadway entry.",
+      "candidate": "fallback1",
+      "changed_knobs": [
+        "lateral correction clamp from 0.2 to 0.4 in Native walker direction only"
+      ],
+      "fixed_conditions": [
+        "law, actor, cell, case IDs, crossing x targets, route y and speed policy, 600 frames at 20 Hz, four camera identities and dimensions, required observations"
+      ],
+      "selection_rule": "Use fallback1 only after original Native source-measured primary lateral drift triggers failure; select both linked cases with same controller policy; never select by desired legal result.",
+      "candidate_status": "exact_offline_public_compatibility_saved_and_independent_cpu_audit_passed;_original_Native_trigger_unobserved",
+      "proof": "v2-fallback1-independent-audit.json",
+      "proof_sha256": "2e4ef60786c1ccebc8ba1ad783095643a3f4707a56d05fe44938e46a4f6b1ef0"
+    },
+    {
+      "risk": "Business-district applicability and complete marked/unmarked crossing inventory are unsupported by original map readback.",
+      "source": "crossing-context.json and crossing-survey.json",
+      "metric": "original source evidence completeness",
+      "failure_condition": "Missing independently sourced district frontage/boundary or complete crossing inventory.",
+      "candidate": null,
+      "selection_rule": "Repair source geometry/evidence and audit before finalization; a controller fallback cannot resolve source absence.",
+      "candidate_status": "source_work_required"
+    }
+  ],
+  "unreviewed_candidates": [
+    "fallback1"
+  ],
+  "legal_result": "unassessed"
+}

@@ -15,6 +15,8 @@ manifest_path = CASE / 'v2-native-draft-manifest.json'
 manifest = json.loads(manifest_path.read_text())
 assert manifest['status'] == 'native_execution_draft_unselected'
 assert len(manifest['cases']) == 2
+fake_log = (HERE / 'fake-native-test.log').read_text()
+assert 'Ran 2 tests' in fake_log and 'OK' in fake_log
 results = []
 for entry in manifest['cases']:
     witness = entry['case_id'].rsplit('__', 1)[-1]
@@ -43,4 +45,5 @@ for entry in manifest['cases']:
         'compatibility_sha256': sha(proof / 'compatibility.json'),
         'processing_sha256': sha(proof / 'processing.json')})
 print(json.dumps({'passed': True, 'manifest_sha256': sha(manifest_path),
-    'cases': results, 'physical_acceptance_claimed': False}))
+    'cases': results, 'fake_native_test_log_sha256': sha(HERE / 'fake-native-test.log'),
+    'physical_acceptance_claimed': False}))

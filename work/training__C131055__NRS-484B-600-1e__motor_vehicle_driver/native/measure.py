@@ -2,10 +2,12 @@
 import argparse
 import json
 import math
+from decimal import Decimal
 from pathlib import Path
 
-MPH_PER_MPS = 2.2369362921
+MPH_PER_MPS = 1 / 0.44704
 LIMIT_MPH = 80.0
+LIMIT_MPS_SQUARED = Decimal('35.7632') ** 2
 
 def measure(history_path, survey_path):
     rows = [json.loads(line) for line in Path(history_path).read_text().splitlines()]
@@ -25,13 +27,16 @@ def measure(history_path, survey_path):
     if roads[0] != 1 or 2 not in roads or roads[-1] != 2 or any(v not in (-1,-2) for v in lanes):
         raise ValueError('original roundabout exit traversal missing')
     speeds = []
+    above = []
     for r in rows:
         vec = r.get('velocity_xyz_mps')
         if not isinstance(vec, list) or len(vec) != 3 or not all(type(x) in (int,float) and math.isfinite(x) for x in vec):
             raise ValueError('original velocity vector missing')
-        speeds.append(math.sqrt(sum(x*x for x in vec)) * MPH_PER_MPS)
+        magnitude = math.sqrt(sum(x*x for x in vec))
+        speeds.append(magnitude * MPH_PER_MPS)
+        above.append(sum(Decimal(str(x)) ** 2 for x in vec) > LIMIT_MPS_SQUARED)
     exit_frame = next(i for i, road in enumerate(roads) if road == 2)
-    return {'frames': 600, 'first_exit_road_frame': exit_frame, 'maximum_full_trace_mph': max(speeds), 'maximum_on_arc_mph': max(s for s, road in zip(speeds, roads) if road == 1), 'maximum_on_exit_mph': max(s for s, road in zip(speeds, roads) if road == 2), 'samples_above_80_mph': sum(s > LIMIT_MPH for s in speeds), 'speed_samples_mph': speeds, 'legal_conclusion': None, 'physical_review_required': True}
+    return {'frames': 600, 'first_exit_road_frame': exit_frame, 'maximum_full_trace_mph': max(speeds), 'maximum_on_arc_mph': max(s for s, road in zip(speeds, roads) if road == 1), 'maximum_on_exit_mph': max(s for s, road in zip(speeds, roads) if road == 2), 'samples_above_80_mph': sum(above), 'speed_samples_mph': speeds, 'boundary_comparison': 'Decimal original velocity magnitude squared > (35.7632 m/s)^2', 'legal_conclusion': None, 'physical_review_required': True}
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
