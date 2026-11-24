@@ -1,10 +1,10 @@
 # training__C102304__NRS-484B-127-1__motor_vehicle_driver
 
-Status: partial. This is a source-grounded authored CPU construction, not a deployable delivery package. Both comparison cases remain unverified and unselected.
+Status: partial. Two exact following-gap cases are now selected for CPU delivery preparation. Current-runtime source-bound proofs are being rebound to the frozen selected manifest; no physical or legal outcome is asserted.
 
 Exact law: The driver of a vehicle shall not follow another vehicle more closely than is reasonable and prudent, having due regard for the speed of such vehicles and the traffic upon and the condition of the highway.
 
-Selected witness scope: Vehicle following. The case plan inventories 2 source topics and drafts one controlled comparison on `realized_following_gap`. Neither case has a Native realization or legal outcome. The authored 500 m OpenDRIVE proposal has a 4 m hill crest and same-lane moving ego/apparatus requests at 8 m/s for 45 seconds.
+Selected witness scope: Vehicle following. The case plan inventories 2 source topics and selects one controlled comparison on `realized_following_gap`. Neither case has a Native realization or legal outcome. The authored 500 m OpenDRIVE proposal has a 4 m hill crest and same-lane moving ego/apparatus requests at 8 m/s for 45 seconds.
 
 The local snapshot lists 44 accepted membership rows. No source-hashed equivalence receipt was available, so no historical recording is claimed reusable.
 

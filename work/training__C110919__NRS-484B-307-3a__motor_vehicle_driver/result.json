@@ -1,30 +1,63 @@
 {
   "assignment_id": "training__C110919__NRS-484B-307-3a__motor_vehicle_driver",
   "input_sha256": "c7919cc03861a48c5fad5cb659055bb052df662af274e83596c78ff5bb85897a",
-  "status": "partial",
-  "reason": "Both exact 600-frame unselected witnesses pass current v2 source-hashed public compatibility and recorded-only process-saved; witness_1 fallback1 also passes public compatibility and saved processing under a separately identified 5.0 m to 3.0 m route-lookahead change. Synthetic route-error trigger crosses 0.45 m at 0.60 m but original Native trigger remains unobserved. Other fallbacks, selected delivery, independent physical audits, and queue remain; actual arrow glyph and lawful-user yields remain unobserved.",
-  "readiness_kind": null,
+  "status": "ready",
+  "reason": "Selected CPU delivery preparation for both exact 600-frame right-arrow turn witnesses: six current-runtime primary/fallback public positive and missing-source negative compatibility receipts, six recorded-only saved positives and missing-road negatives, semantic, physical diagnostic, independent delivery and comparison audits pass. Actual Native arrow glyph, opposing red pixels, lawful pedestrian/traffic status and physical yield remain unobserved for local GPU acceptance.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
   "comparison_count": 1,
-  "candidate_count": 0,
-  "source_law_review": "exact four-topic statutory source review completed; physical arrow/advisory coverage unproven",
+  "candidate_count": 4,
+  "source_law_review": "Four exact statutory topics reviewed; physical arrow, opposing-red and lawful-user facts require original recording review",
   "accepted_membership_count": 0,
   "reuse_count": 0,
-  "unresolved_branch_count": 4,
+  "unresolved_branch_count": 0,
   "applied_update": 16,
-  "cases_selected": 0,
+  "cases_selected": 2,
   "cpu_draft_candidate_bundles": 8,
-  "delivery_cases_prepared": 0,
+  "delivery_cases_prepared": 2,
   "tests": [
-    "8/8 exact 30-second pinned offline bundles: pass",
-    "Native preflight and 5 unit tests: pass",
-    "2 source-only saved positives and 2 missing-geometry negatives: pass",
-    "2 primary current Core/Lean/render diagnostics and independent audit: pass",
-    "raw-channel and finalizer boundary positives/negatives: pass",
-    "2 current v2 source-hashed public primary compatibility passes: 11 checks each",
-    "2 recorded-only process-saved positives and 2 missing-geometry analyzer negatives: pass",
-    "selected/fallback delivery compatibility and physical acceptance: pending",
-    "witness_1 fallback1 current v2 public compatibility and recorded-only saved processing: pass"
+    {
+      "command": "PYTHONPATH=<assignment> .venv-cpu/bin/python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "selected-root-native-tests.log",
+      "sha256": "f7477b4609a71ee8a2f18ed24fcf11b69a4d82746fcdd9ffac426a43451b809d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/prove-current-runtime-candidates.py",
+      "exit_code": 0,
+      "log": "selected-runtime-candidate-matrix.json",
+      "sha256": "db62d0614745973592f3e2fbc1d697c19f19e24a7103dbde35c641ab73c30c24"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/prove-current-v2-saved.py --candidate primary",
+      "exit_code": 0,
+      "log": "selected-current-runtime-primary-saved-proof.json",
+      "sha256": "e3746e30d5d4ee538c05fe8de8e75092fedb95a0312b49b43508d452f3d8a49e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/prove-current-v2-saved.py --candidate fallback1",
+      "exit_code": 0,
+      "log": "selected-current-runtime-fallback1-saved-proof.json",
+      "sha256": "f0c71ff2bf8317a2f902581d82c164d26254b2f698aa029621c7580db68d7de4"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/prove-current-v2-saved.py --candidate fallback3",
+      "exit_code": 0,
+      "log": "selected-current-runtime-fallback3-saved-proof.json",
+      "sha256": "73c7ec2eea44cece367a3f1313bc456d5790c4edcc8d106365047ef1832d7771"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110919__NRS-484B-307-3a__motor_vehicle_driver/audit-selected-comparison.py",
+      "exit_code": 0,
+      "log": "selected-comparison-audit.json",
+      "sha256": "dbe6e72de658cfa3f74a490148d0738adf6cac4f2c043ac0287a538036ad971a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C110919__NRS-484B-307-3a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "selected-scoped-strict.log",
+      "sha256": "3100c2175f453d5e43c7ca732418bddfa22ddb592b1983d3ad2c4d0a7d5be74c"
+    }
   ],
   "finalizer_channel_boundary_proof_sha256": "e93bd405dee719c686bf96f717680ea8224f5f6e11995d32fd4185acff6942c1",
   "raw_channel_derivation_proof": {
@@ -89,5 +122,38 @@
     "public_compatibility_receipt_sha256": "990077ceebf3655618b7298300b3ca18336ddc0243b9599567a7610db153afcf",
     "recorded_only_saved_proof_sha256": "dee2cc42f8dc5c8aa6d48b079334750b5d19d1b150f2b3bb8880891e24018e76",
     "selected": false
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C110919__NRS-484B-307-3a__motor_vehicle_driver --case training__C110919__NRS-484B-307-3a__motor_vehicle_driver__witness_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "selected_runtime_proofs": {
+    "manifest": "execution-manifest.json",
+    "manifest_sha256": "27060308655b5cff46293c62f3a7207a3025abf02e14cdc5260fdc474dc52add",
+    "public_matrix": "selected-runtime-candidate-matrix.json",
+    "public_matrix_sha256": "db62d0614745973592f3e2fbc1d697c19f19e24a7103dbde35c641ab73c30c24",
+    "public_receipts": 6,
+    "saved_proofs": [
+      {
+        "path": "selected-current-runtime-primary-saved-proof.json",
+        "sha256": "e3746e30d5d4ee538c05fe8de8e75092fedb95a0312b49b43508d452f3d8a49e"
+      },
+      {
+        "path": "selected-current-runtime-fallback1-saved-proof.json",
+        "sha256": "f0c71ff2bf8317a2f902581d82c164d26254b2f698aa029621c7580db68d7de4"
+      },
+      {
+        "path": "selected-current-runtime-fallback3-saved-proof.json",
+        "sha256": "73c7ec2eea44cece367a3f1313bc456d5790c4edcc8d106365047ef1832d7771"
+      }
+    ],
+    "semantic_index_sha256": "87bfe9c8d3ff0277f596004edf759a480a3ced32649c369cec3be874aad5ef1c",
+    "comparison_audit_sha256": "dbe6e72de658cfa3f74a490148d0738adf6cac4f2c043ac0287a538036ad971a",
+    "original_native_observed": false,
+    "physical_acceptance_claimed": false
+  },
+  "strict_gate": {
+    "command": ".venv-cpu/bin/python worker_check.py --assignment training__C110919__NRS-484B-307-3a__motor_vehicle_driver --complete --require-delivery-ready",
+    "exit_code": 0,
+    "log": "selected-scoped-strict.log",
+    "sha256": "3100c2175f453d5e43c7ca732418bddfa22ddb592b1983d3ad2c4d0a7d5be74c",
+    "runtime_manifest_sha256": "27060308655b5cff46293c62f3a7207a3025abf02e14cdc5260fdc474dc52add"
   }
 }

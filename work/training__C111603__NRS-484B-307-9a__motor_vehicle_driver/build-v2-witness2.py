@@ -1,6 +1,7 @@
 """Bind the existing witness_2 Native construction to a current v2 CPU draft."""
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -106,6 +107,8 @@ class SignalIdentity(unittest.TestCase):
         trace.append({'frame': number, 'time_s': time_s,
             'position': dict(zip(('x', 'y', 'z'), centre)), 'position_m': centre,
             'heading_deg': ego['yaw_deg'], 'speed_mps': speed,
+            'velocity_mps': [speed * math.cos(math.radians(ego['yaw_deg'])),
+                             speed * math.sin(math.radians(ego['yaw_deg'])), 0.0],
             'speed_mph': speed / .44704, 'speed_provenance': 'synthetic_native_sample',
             'control': {'throttle': 0, 'brake': 0}})
         evidence.append({'original_frame': number, 'recording_time_s': time_s,
@@ -174,7 +177,7 @@ class SignalIdentity(unittest.TestCase):
     plan = json.loads((HERE / 'case-plan.json').read_text())
     cases.write_text(json.dumps({'cases': plan['cases']}, indent=2) + '\n')
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': HERE.name,
-        'runtime_manifest_sha256': sha(ROOT / 'runtime/pipeline/SOURCE-MANIFEST.json'),
+        'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),
         'status': 'unselected_current_v2_cpu_primary_draft',
         'cases': [{'case_id': CASE, 'kind': 'unselected_cpu_diagnostic',
                    'construction': str(path.relative_to(HERE)),

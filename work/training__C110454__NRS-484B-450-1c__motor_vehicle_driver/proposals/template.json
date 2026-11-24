@@ -1,0 +1,81 @@
+{
+  "template_id": "NRS-484B-450-1c@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1c",
+  "actor": "motor_vehicle_driver",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within an intersection.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-450-1c",
+    "activation": {
+      "condition": "A person stops, stands or parks a vehicle within an intersection.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not stop, stand or park there when no statutory exception applies.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "necessary to avoid conflict with other traffic",
+        "description": "A halt necessary to avoid conflict with other traffic; causal necessity remains unresolved."
+      },
+      {
+        "source_clause": "in compliance with law",
+        "description": "A stop complying with applicable law; source and applicability remain unresolved."
+      },
+      {
+        "source_clause": "the directions of a police officer",
+        "description": "A stop directed by a police officer; authority and original direction remain unresolved."
+      },
+      {
+        "source_clause": "official traffic-control device",
+        "description": "A stop directed by an applicable official traffic-control device; original display remains unresolved."
+      }
+    ],
+    "timing": {
+      "description": "Assess original parked or stopped footprint throughout the rest interval, preserving 20 Hz sample uncertainty.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": "Original conflict actors, trajectory and causal necessity require review; no numeric necessity threshold is supplied."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "An applicable legal direction and reason for stopping cannot be inferred from the parking controller."
+      },
+      {
+        "phrase": "the directions of a police officer",
+        "note": "Original officer identity, authority, communication and applicability require independent source review."
+      },
+      {
+        "phrase": "official traffic-control device",
+        "note": "Original official device identity, display, applicability and direction require independent source review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_parking_target_x_m",
+      "kind": "controller",
+      "range_or_domain": "authored intersection coordinate in metres"
+    },
+    {
+      "name": "observed_intersection_body_overlap_m2",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured full-body sampled overlap area, originally unknown"
+    },
+    {
+      "name": "observed_parked_duration_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured continuous rest interval, originally unknown"
+    },
+    {
+      "name": "original_exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-qualified conflict, applicable law, officer and official-device context"
+    }
+  ]
+}
