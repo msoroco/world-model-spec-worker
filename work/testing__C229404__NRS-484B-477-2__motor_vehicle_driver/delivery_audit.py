@@ -6,9 +6,12 @@ physical/legal review remain separate local acceptance steps.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import zipfile
 from pathlib import Path
+
+from PIL import Image
 
 from access_measurement import measure
 from native_capture import CAMERAS, FRAMES
@@ -38,8 +41,18 @@ def audit(attempt: Path, case_id: str, *, require_original: bool = True) -> dict
             expected = [f"{i:04d}-{row['frame']}.png" for i, row in enumerate(frame_map)]
             if archive.namelist() != expected:
                 raise ValueError("original camera frame join changed: " + name)
-            if any(not archive.read(member).startswith(b"\x89PNG\r\n\x1a\n") for member in expected):
-                raise ValueError("original camera PNG missing: " + name)
+            dimensions = (1920, 1080) if name == "overview" else (1280, 720)
+            for member in expected:
+                raw = archive.read(member)
+                if not raw.startswith(b"\x89PNG\r\n\x1a\n"):
+                    raise ValueError("original camera PNG missing: " + name)
+                try:
+                    with Image.open(io.BytesIO(raw)) as image:
+                        if image.format != "PNG" or (require_original and image.size != dimensions):
+                            raise ValueError("original camera dimensions/format differ: " + name)
+                        image.verify()
+                except (OSError, SyntaxError) as error:
+                    raise ValueError("original camera PNG decode failed: " + name) from error
     return {"format": "c229404-saved-source-audit-v1", "case_id": case_id,
             "frame_count": FRAMES, "media_sha256": {name: media[name]["sha256"] for name in sorted(CAMERAS)},
             "measurement_source_sha256": measurement["source_sha256"],

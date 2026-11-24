@@ -16,8 +16,9 @@ import zipfile
 from pathlib import Path
 
 from access_measurement import ASSIGNMENT, measure
+from alley_construction import build_plan
 
-CAMERAS = frozenset(("front", "rear", "left", "right"))
+CAMERAS = frozenset(("overview", "approach", "reference_corner", "driver_reference"))
 FRAMES = 900
 
 
@@ -30,7 +31,7 @@ def _write(path: Path, value: dict) -> str:
 def capture(adapter, case_id: str, output: Path) -> dict:
     """Write a complete immutable attempt, or remove it on any acquisition error.
 
-    Adapter methods: get_map_packet, start(case_id), tick, read_footprint(frame),
+    Adapter methods: get_map_packet, start(plan), tick, read_footprint(frame),
     read_activity(frame), read_cameras(frame), brake, cleanup. The map packet
     contains source identity and qualifying-alley provenance; a static map tag
     alone is insufficient to mark a road legally qualifying.
@@ -56,6 +57,7 @@ def capture(adapter, case_id: str, output: Path) -> dict:
         raise ValueError("alley/access source provenance missing")
     if geometry.get("highway_status") is not True or geometry.get("cul_de_sac") is not False:
         raise ValueError("qualifying connected highway alley unverified")
+    plan = build_plan(geometry, case_id)
     map_bytes = adapter.get_opendrive_bytes()
     if not isinstance(map_bytes, bytes) or hashlib.sha256(map_bytes).hexdigest() != geometry["map_sha256"]:
         raise ValueError("Native map bytes differ from alley packet")
@@ -66,7 +68,7 @@ def capture(adapter, case_id: str, output: Path) -> dict:
     try:
         _write(root / "alley_geometry.json", geometry)
         (root / "road.xodr").write_bytes(map_bytes)
-        adapter.start(case_id)
+        adapter.start(plan)
         started = True
         archives = {name: zipfile.ZipFile(root / (name + ".zip"), "w", zipfile.ZIP_STORED)
                     for name in sorted(CAMERAS)}

@@ -2,7 +2,7 @@
   "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
   "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
   "status": "partial",
-  "readiness_kind": "partial_two_exact_offline_bundles_and_saved_finalizer",
+  "readiness_kind": "partial_two_exact_offline_bundles_with_checked_measurement_contracts",
   "applied_update": 0,
   "tests": [
     {
@@ -64,10 +64,52 @@
       "exit_code": 0,
       "log": "cpu-bundle-tests.log",
       "sha256": "17757b200aca44cd2a5bab020dd71e07979f2f3491c923199448a05f12fe0cf3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-nov23.log",
+      "sha256": "0a40a3663ba8a1fe1c107bb9117387db703d329cb7742789a6b1e5ef113bd6e9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-contract-build.log",
+      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-contract-tests.log",
+      "sha256": "1e13b77ae021a8b766a9ba1a9c117db3a228fd9fe3ae55510f07e4d38b42e113"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-nov23/offline-steady",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-steady.log",
+      "sha256": "c074d3109cba60de8f9585b91c22f31e9c84818de812c0d1fa5d1db12c198297"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-nov23/offline-variation",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-variation.log",
+      "sha256": "b7aa8b6bfb5606cf07a4c940d88a3ff8fdfa3e18b15e2f8af38f68899c9efe79"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-contract-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-contract-static.log",
+      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Both exact alley cases now have pinned diagnostic bundles that pass runtime.py offline, bind their distinct control profiles and four-camera 900-frame plan, and refuse Native capture without a reviewed site. The saved finalizer independently audits 900 original frames and 3,600 camera PNGs while preserving interior attention and legal judgment as unresolved. Twenty-three focused tests and pinned preflight pass. Canonical manifest, semantic proposals, source-shaped positive/negative compatibility, process-saved and independent delivery proofs, and reviewed Native site realization remain unfinished CPU work."
+  "reason": "Both exact cases have source-specific measurement contracts embedded in their refreshed offline bundles. The saved finalizer checks all four original source hashes, 900 operation frames, 3,600 decoded PNGs, exact case identity, and unresolved interior attention before returning a measurement. Twenty-three CPU tests, preflight and both pinned offline constructions pass. Strict readiness still fails on truthful partial status. Source-shaped compatibility, canonical manifest and semantic proposals, process-saved and independent delivery proofs, and reviewed Native site realization remain CPU work."
 }

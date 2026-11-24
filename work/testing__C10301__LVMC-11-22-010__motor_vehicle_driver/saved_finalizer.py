@@ -13,6 +13,7 @@ from pathlib import Path
 from attention_measurement import measure
 from native_operation import CASE_PROFILES
 from saved_delivery import audit
+from measurement_contract import check as check_measurement_contract
 
 
 def finalize(attempt: Path, case_id: str, allow_diagnostic: bool = False) -> dict:
@@ -26,7 +27,7 @@ def finalize(attempt: Path, case_id: str, allow_diagnostic: bool = False) -> dic
         raise ValueError("measured operation is not the audited original source")
     if measured["frame_count"] != original["original_frames"]:
         raise ValueError("measured and audited original frame counts differ")
-    return {
+    result = {
         "format": "worker-alley-exact-saved-measurement-v1",
         "case_id": case_id,
         "selected_requirement": "LVMC-11-22-010",
@@ -39,6 +40,9 @@ def finalize(attempt: Path, case_id: str, allow_diagnostic: bool = False) -> dic
         "attention_state": "unobserved",
         "legal_judgment": "unresolved",
     }
+    contract = Path(__file__).resolve().parent / ("measurement-contract-" + case_id.rsplit("__", 1)[1] + ".json")
+    check_measurement_contract(contract, attempt, result)
+    return result
 
 
 def main(argv=None) -> int:

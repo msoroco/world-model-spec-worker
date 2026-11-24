@@ -23,7 +23,8 @@ def _bind(attempt: Path, path: Path) -> dict:
 
 
 def finalize_capture(attempt: Path, case_id: str, camera_frames: list[dict],
-                     camera_media: dict[str, Path]) -> dict:
+                     camera_media: dict[str, Path], *,
+                     site_source: Path | None = None) -> dict:
     """Write source index once, only after all original sources pass joins."""
     attempt = Path(attempt)
     if case_id not in {CASE_PREFIX + suffix for suffix in ("below", "equal", "above")}:
@@ -70,6 +71,14 @@ def finalize_capture(attempt: Path, case_id: str, camera_frames: list[dict],
              "frame_map": {"path": map_path.name,
                            "sha256": hashlib.sha256(raw).hexdigest()},
              "cameras": bindings}
+    if site_source is not None:
+        source_binding = _bind(attempt, Path(site_source))
+        site = json.loads(Path(site_source).read_text(encoding='utf-8'))
+        if (site.get('case_id') != case_id or
+                site.get('diagnostic_fixture') != speed['diagnostic_fixture'] or
+                site.get('format') != 'c10301-native-site-v1'):
+            raise ValueError('original Native site source differs')
+        index['native_site'] = source_binding
     map_path.write_bytes(raw)
     index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n",
                           encoding="utf-8")

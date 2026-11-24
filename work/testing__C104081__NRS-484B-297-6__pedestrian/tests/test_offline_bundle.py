@@ -26,11 +26,13 @@ class OfflineBundleTests(unittest.TestCase):
                 config = json.loads(files["config.json"])
                 self.assertEqual(config["selected_case_id"], row["case_id"])
                 self.assertEqual(config["plan_sha256"], hashlib.sha256(files["case-plan.json"].encode()).hexdigest())
-                self.assertEqual(config["cameras"], ["front", "rear", "left", "right"])
+                self.assertEqual(config["cameras"], ["overview", "approach", "reference_corner", "driver_reference"])
                 self.assertEqual(config["frame_count"], 900)
                 self.assertEqual(config["rate_hz"], 20)
                 self.assertEqual(files["geometry.py"], (ROOT / "geometry.py").read_text())
                 self.assertEqual(files["native_walking.py"], (ROOT / "native_walking.py").read_text())
+                self.assertEqual(files["native_source_packet.py"], (ROOT / "native_source_packet.py").read_text())
+                self.assertEqual(files["native_readback.py"], (ROOT / "native_readback.py").read_text())
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from comparison_audit import audit, audit_saved_pair
-from comparison_source_guard import audit_guarded_pair, check_record
+from comparison_source_guard import audit_guarded_pair, audit_saved_attempts, check_record
 
 
 AID = "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator"
@@ -106,6 +106,65 @@ class ComparisonAuditTest(unittest.TestCase):
         right["samples"][0]["speed_mps"] = float("nan")
         with self.assertRaisesRegex(ValueError, "invalid original speed"):
             check_record(right)
+
+    def test_saved_attempts_recompute_original_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            attempts = []
+            receipts = []
+            for suffix, speed in (("reference", 3.0), ("faster", 5.0)):
+                attempt = base / suffix
+                attempt.mkdir()
+                case = AID + "__" + suffix
+                frames = [{"frame": 1000 + n, "time_s": (n + 1) / 20}
+                          for n in range(900)]
+                motion = {"case_id": case, "samples": [dict(row, velocity_mps=[speed, 0, 0])
+                                                       for row in frames]}
+                context = {"case_id": case, "jurisdiction": {"city_of_las_vegas": True,
+                           "source": "test source"}, "bicycle_classification": {"human_powered": True,
+                           "moped": False, "source": "test source"},
+                           "alley_route": {"source": "test source"},
+                           "rack_geometry": {"source": "test source"},
+                           "samples": [dict(row, weather="clear", surface="dry", visibility="clear",
+                                            pedestrians="none", curvature="straight") for row in frames]}
+                sources = {}
+                for key, name, value in (("frame_map", "frame-map.json", {"frames": frames}),
+                                         ("bicycle_motion", "bicycle-motion.json", motion),
+                                         ("context", "context.json", context)):
+                    path = attempt / name
+                    path.write_text(json.dumps(value))
+                    sources[key] = {"path": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+                (attempt / "inventory.json").write_text(json.dumps({"case_id": case,
+                    "source_kind": "original_native", "sources": sources}))
+                native = attempt / "result.json"
+                native.write_text(json.dumps({"case_id": case, "diagnostic_fixture": False}))
+                receipt = attempt / "delivery-audit.json"
+                receipt.write_text(json.dumps({"format": "worker-delivery-audit", "passed": True,
+                    "case_id": case, "native_result_sha256": hashlib.sha256(native.read_bytes()).hexdigest(),
+                    "checks": ["native_source", "all_participants", "time_join",
+                               "full_video_decode", "actual_pixels", "physical_completion"]}))
+                attempts.append(attempt)
+                receipts.append(receipt)
+            result = audit_saved_attempts(self.plan, "speed_under_clear_conditions",
+                                          *attempts, *receipts)
+            self.assertTrue(result["independent_delivery_audits"])
+            self.assertEqual(len(result["original_inventory_sha256"]), 2)
+            inventory_path = attempts[0] / "inventory.json"
+            inventory = json.loads(inventory_path.read_text())
+            inventory["diagnostic_fixture"] = True
+            inventory_path.write_text(json.dumps(inventory))
+            with self.assertRaisesRegex(ValueError, "non-diagnostic original inventory"):
+                audit_saved_attempts(self.plan, "speed_under_clear_conditions",
+                                     *attempts, *receipts)
+            inventory.pop("diagnostic_fixture")
+            inventory_path.write_text(json.dumps(inventory))
+            motion_path = attempts[1] / "bicycle-motion.json"
+            changed = json.loads(motion_path.read_text())
+            changed["samples"][2]["velocity_mps"][0] = 12
+            motion_path.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError, "stale required source"):
+                audit_saved_attempts(self.plan, "speed_under_clear_conditions",
+                                     *attempts, *receipts)
 
 
 if __name__ == "__main__":

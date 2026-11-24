@@ -55,6 +55,20 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
         raise ValueError("capture index identity or frame count differs")
     if index["diagnostic_fixture"] and not allow_diagnostic:
         raise ValueError("diagnostic fixture cannot enter delivery audit")
+    site_binding = index.get('native_site')
+    site_hash = None
+    if site_binding is not None:
+        site_path, site_hash = _sealed(attempt, site_binding, 'Native site')
+        site = _read(site_path)
+        if (site.get('format') != 'c10301-native-site-v1' or
+                site.get('case_id') != case_id or
+                site.get('cell_id') != 'C10301' or
+                site.get('actor') != 'motor_vehicle_driver' or
+                site.get('layout') != 'alley' or
+                site.get('control') != 'access_aisle' or
+                site.get('maneuver') != 'travel' or
+                site.get('diagnostic_fixture') != index['diagnostic_fixture']):
+            raise ValueError('Native site and capture index differ')
     speed = measure(attempt, case_id)
     if speed["diagnostic_fixture"] != index["diagnostic_fixture"]:
         raise ValueError("speed and capture provenance differ")
@@ -88,6 +102,8 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
     camera_readback_hash = motion.get("camera_frame_readback_sha256")
     if camera_readback_hash is None and not allow_diagnostic:
         raise ValueError("original camera readback required for delivery")
+    if site_binding is None and not allow_diagnostic:
+        raise ValueError('original Native site source required for delivery')
     if camera_readback_hash is not None:
         readback_path = attempt / "camera-frame-readback.json"
         raw = readback_path.read_bytes()
@@ -107,6 +123,7 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
     return {"format": "c10301-source-integrity-v1", "case_id": case_id,
             "native_run_id": speed["native_run_id"], "frame_count": EXPECTED_FRAMES,
             "motion_sha256": motion_hash, "frame_map_sha256": map_hash,
+            "native_site_sha256": site_hash,
             "camera_sha256": camera_hashes,
             "diagnostic_fixture": index["diagnostic_fixture"],
             "source_integrity_passed": True, "full_video_decode": False,

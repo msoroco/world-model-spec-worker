@@ -8,7 +8,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
-    "geometry.py", "native_construction.py", "native_walking.py",
+    "geometry.py", "native_construction.py", "native_walking.py", "native_source_packet.py",
+    "native_readback.py",
     "saved_measurement.py", "delivery_audit.py", "comparison_audit.py",
 )
 
@@ -35,7 +36,7 @@ def check():
         raise ValueError("Case parameters changed")
     if config["rate_hz"] != FPS or config["frame_count"] != 900 or config["duration_s"] != 45:
         raise ValueError("Original frame contract changed")
-    if config["cameras"] != ["front", "rear", "left", "right"]:
+    if config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]:
         raise ValueError("Four-camera contract changed")
     p = config["construction_parameters"]
     scene = construct(case, direction=p["direction"], area_blocked=p["area_blocked"],
@@ -102,7 +103,7 @@ def build():
             "plan_sha256": hashlib.sha256(plan_data).hexdigest(),
             "construction_parameters": item["construction_parameters"],
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
-            "cameras": ["front", "rear", "left", "right"],
+            "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
             "required_atoms": [], "diagnostic_only": True,
         }
         files = {name: (HERE / name).read_text() for name in SOURCE_FILES}

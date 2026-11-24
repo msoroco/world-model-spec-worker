@@ -28,7 +28,7 @@ def world_route(local_route, transform):
 
 
 def run_constructed(world, walker, carla, constructed: dict, survey_path: Path,
-                    case_id: str, *, speed_m_s=1.4):
+                    case_id: str, *, speed_m_s=1.4, on_sample=None):
     """Bind the walking request to the exact constructed case and survey bytes."""
     raw = Path(survey_path).read_bytes()
     if hashlib.sha256(raw).hexdigest() != constructed.get("survey_sha256"):
@@ -39,7 +39,8 @@ def run_constructed(world, walker, carla, constructed: dict, survey_path: Path,
             world.get_map().name != survey.get("map_id")):
         raise ValueError("constructed walking route case/map mismatch")
     route = world_route(constructed.get("route_local_xy_m"), survey.get("local_to_world"))
-    return run_walking_route(world, walker, carla, route, speed_m_s=speed_m_s)
+    return run_walking_route(world, walker, carla, route, speed_m_s=speed_m_s,
+                             on_sample=on_sample)
 
 
 def _xy(value):
@@ -50,7 +51,7 @@ def _xy(value):
 
 
 def run_walking_route(world, walker, carla, route, *, speed_m_s=1.4,
-                      frames=900, waypoint_tolerance_m=.25):
+                      frames=900, waypoint_tolerance_m=.25, on_sample=None):
     """Walk the surveyed-world route, rejecting stalled, stale or off-route motion.
 
     The caller owns world restoration and actor destruction. `route` must already
@@ -110,11 +111,14 @@ def run_walking_route(world, walker, carla, route, *, speed_m_s=1.4,
                 raise ValueError("walker departed surveyed bypass route")
             if index >= FPS and math.dist((ox, oy), (initial_x, initial_y)) < .5:
                 raise ValueError("walker failed measured-motion check")
-            samples.append({"frame": frame, "time_s": time_s,
+            sample = {"frame": frame, "time_s": time_s,
                             "position_world_xy_m": [ox, oy],
                             "requested_speed_m_s": requested_speed,
                             "route_waypoint_index": min(target_index, len(points) - 1),
-                            "route_completed": completed})
+                            "route_completed": completed}
+            if on_sample is not None:
+                on_sample(sample)
+            samples.append(sample)
             prior_frame, prior_time = frame, time_s
         if not completed:
             raise ValueError("walker did not complete surveyed bypass route")

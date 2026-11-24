@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from native_capture import capture
+from core_packet import project as project_core_packet
 from runner import run_capture
 from approach import measure
 from analysis import finalize
@@ -85,6 +86,34 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_diagnostic_core_packet_joins_saved_original_frames(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            receipt = project_core_packet(attempt, root / 'core-packet')
+            self.assertEqual(receipt['frames'], 900)
+            self.assertTrue(receipt['graph_capture_required'])
+            self.assertFalse(receipt['physical_completion'])
+            trace = [json.loads(line) for line in (root / 'core-packet/trace.jsonl').read_text().splitlines()]
+            evidence = [json.loads(line) for line in
+                        (root / 'core-packet/capture/evidence.jsonl').read_text().splitlines()]
+            frames = [json.loads(line) for line in
+                      (root / 'core-packet/capture/native/frames.jsonl').read_text().splitlines()]
+            self.assertEqual([row['frame'] for row in trace],
+                             [row['original_frame'] for row in evidence])
+            self.assertEqual([row['frame'] for row in trace], [row['frame'] for row in frames])
+            self.assertTrue(all(row['ego']['speed_provenance'] == 'synthetic_native_sample'
+                                for row in evidence))
+            with self.assertRaisesRegex(ValueError, 'overwrite'):
+                project_core_packet(attempt, root / 'core-packet')
+            original = attempt / 'approach-history.jsonl'
+            original.write_bytes(original.read_bytes() + b'{}\n')
+            with self.assertRaisesRegex(ValueError, 'hash|Hash|source'):
+                project_core_packet(attempt, root / 'tampered')
+
     def test_exact_bundle_runner_uses_reviewed_native_capture(self):
         package = Path(__file__).resolve().parents[1]
         construction = json.loads((package / 'cases/near_centerline/construction.json').read_text())

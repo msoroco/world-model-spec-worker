@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT))
 import native_capture
 import saved_delivery
 import saved_finalizer
+import measurement_contract
 
 SITE = {"fps": 20, "site_source_sha256": "b" * 64,
         "alley_route_source_sha256": "c" * 64,
@@ -99,6 +100,19 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertEqual(finalized["decoded_original_pngs"], 3600)
             self.assertEqual(finalized["attention_state"], "unobserved")
             self.assertEqual(finalized["legal_judgment"], "unresolved")
+            contract = ROOT / ("measurement-contract-" + case_id.rsplit("__", 1)[1] + ".json")
+            checked = measurement_contract.check(contract, output, finalized)
+            self.assertTrue(checked["passed"])
+            operation_source = output / "operation.jsonl"
+            missing_source = output / "operation.hidden"
+            operation_source.rename(missing_source)
+            with self.assertRaisesRegex(ValueError, "Missing required source: operation.jsonl"):
+                measurement_contract.check(contract, output, finalized)
+            missing_source.rename(operation_source)
+            operation_source.write_bytes(operation_source.read_bytes() + b" ")
+            with self.assertRaisesRegex(ValueError, "original source hash mismatch: operation.jsonl"):
+                measurement_contract.check(contract, output, finalized)
+            operation_source.write_bytes(operation_source.read_bytes()[:-1])
             measurement_path = output / "saved-measurement.json"
             self.assertEqual(saved_finalizer.main(["--attempt", str(output),
                 "--case", case_id, "--output", str(measurement_path),

@@ -12,6 +12,7 @@ from pathlib import Path
 
 from delivery_audit import CAMERAS
 from native_motion import CASE_PREFIX
+from native_media import PROFILE
 
 MIN_ROUTE_M = 1800.0
 SENSOR_ID = 'sensor.camera.rgb'
@@ -103,7 +104,14 @@ def construct(world, packet_path, case_id, transform_factory):
                             ('x_m', 'y_m', 'z_m', 'pitch_deg', 'yaw_deg', 'roll_deg')) or
                     spec['z_m'] <= 0):
                 raise ValueError('original camera construction spec invalid')
-            sensor = world.spawn_actor(library.find(SENSOR_ID),
+            blueprint = library.find(SENSOR_ID)
+            if not hasattr(blueprint, 'set_attribute'):
+                raise ValueError('Native camera blueprint lacks attribute control')
+            width, height = PROFILE[camera]
+            blueprint.set_attribute('image_size_x', str(width))
+            blueprint.set_attribute('image_size_y', str(height))
+            blueprint.set_attribute('sensor_tick', '0.05')
+            sensor = world.spawn_actor(blueprint,
                                        transform_factory(spec), attach_to=actor)
             if sensor is None:
                 raise ValueError('Native camera spawn failed')

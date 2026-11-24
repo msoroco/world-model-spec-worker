@@ -113,9 +113,14 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
     suffix = case_id[len(assignment_id) + 2:]
     expected_left = suffix != 'right_crest_obstructed'
     expected_blocked = suffix != 'left_crest_clear'
+    # A left-side and obstruction observation must describe the same original
+    # frame. Separate episodes cannot establish the intended crest condition.
+    target_frames = blocked_frames if expected_blocked else clear_frames
+    coincident_frames = sorted(set(left_frames if expected_left else frame_ids)
+                               & set(target_frames))
     target_observed = (bool(left_frames) == expected_left and
-                       bool(blocked_frames) == expected_blocked and
-                       (expected_blocked or bool(clear_frames)))
+                       bool(coincident_frames) and
+                       (expected_blocked or not blocked_frames))
     return {
         'case_id': case_id,
         'source_sha256': {name: source_hashes[name] for name in
@@ -128,6 +133,7 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
         'opposing_body_distance_m': {'minimum': min(distances), 'maximum': max(distances)},
         'all_corner_rays_blocked_frames': blocked_frames,
         'all_corner_rays_clear_frames': clear_frames,
+        'body_and_view_target_frames': coincident_frames,
         'construction_target_observed': target_observed,
         'hazard_distance_judgment': 'unresolved',
         'limitations': 'Signed body corners and Native ray packets are observations. Neither sampled geometry nor video filenames establish actual driver perception, public highway law, or a legal hazard distance.',

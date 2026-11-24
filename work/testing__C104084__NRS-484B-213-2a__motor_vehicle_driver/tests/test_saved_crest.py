@@ -68,8 +68,31 @@ class SavedCrestTests(unittest.TestCase):
                                    expected_frames=3)
             self.assertEqual(result['ego_body_left_side_frames'], [0, 1, 2])
             self.assertEqual(result['all_corner_rays_blocked_frames'], [0, 1, 2])
+            self.assertEqual(result['body_and_view_target_frames'], [0, 1, 2])
             self.assertTrue(result['construction_target_observed'])
             self.assertEqual(result['hazard_distance_judgment'], 'unresolved')
+
+    def test_separate_left_side_and_blocked_episodes_do_not_meet_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt = Path(temp)
+            hashes = fixture(attempt)
+            frames_path = attempt / 'frames.jsonl'
+            frames = [json.loads(line) for line in frames_path.read_text().splitlines()]
+            frames[1]['ego_body_corners_signed_m'] = [-2, -1, -0.5, -0.1]
+            frames[2]['ego_body_corners_signed_m'] = [-2, -1, -0.5, -0.1]
+            frames_path.write_text('\n'.join(json.dumps(row) for row in frames) + '\n')
+            hashes[frames_path.name] = hashlib.sha256(frames_path.read_bytes()).hexdigest()
+            rays_path = attempt / 'crest-rays.jsonl'
+            rays = [json.loads(line) for line in rays_path.read_text().splitlines()]
+            rays[0]['body_corner_ray_hits'] = [False] * 4
+            rays_path.write_text('\n'.join(json.dumps(row) for row in rays) + '\n')
+            hashes[rays_path.name] = hashlib.sha256(rays_path.read_bytes()).hexdigest()
+            observed = saved.measure(attempt, hashes, case_id=CASE,
+                                     assignment_id=ASSIGNMENT, expected_frames=3)
+            self.assertEqual(observed['ego_body_left_side_frames'], [0])
+            self.assertEqual(observed['all_corner_rays_blocked_frames'], [1, 2])
+            self.assertEqual(observed['body_and_view_target_frames'], [])
+            self.assertFalse(observed['construction_target_observed'])
 
     def test_rejects_changed_source_and_missing_camera(self):
         with tempfile.TemporaryDirectory() as temp:

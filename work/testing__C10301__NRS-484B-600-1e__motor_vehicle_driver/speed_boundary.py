@@ -135,6 +135,8 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
         raise ValueError("three distinct exact case attempts required")
     setups = []
     measurements = []
+    original_sites = []
+    site_hashes = []
     for case_id in case_ids:
         attempt = Path(attempts[case_id])
         setup = _read_json(attempt / "authored-setup.json")
@@ -150,7 +152,37 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
         if target < 0:
             raise ValueError("negative requested speed")
         setups.append(setup)
-        measurements.append(measure(attempt, case_id))
+        measurement = measure(attempt, case_id)
+        measurements.append(measurement)
+        capture_index = attempt / 'capture-index.json'
+        if capture_index.exists():
+            index = _read_json(capture_index)
+            binding = index.get('native_site')
+            if (index.get('case_id') != case_id or
+                    not isinstance(binding, dict) or
+                    set(binding) != {'path', 'sha256'} or
+                    not isinstance(binding['path'], str) or
+                    Path(binding['path']).is_absolute() or
+                    '..' in Path(binding['path']).parts):
+                raise ValueError('original Native site comparison binding missing')
+            site_path = attempt / binding['path']
+            if (not site_path.is_file() or site_path.is_symlink() or
+                    not site_path.resolve().is_relative_to(attempt.resolve())):
+                raise ValueError('original Native site comparison source missing')
+            site_raw = site_path.read_bytes()
+            site_hash = hashlib.sha256(site_raw).hexdigest()
+            if site_hash != binding['sha256']:
+                raise ValueError('original Native site comparison hash differs')
+            site = json.loads(site_raw)
+            if (site.get('case_id') != case_id or
+                    site.get('format') != 'c10301-native-site-v1' or
+                    site.get('diagnostic_fixture') != measurement['diagnostic_fixture']):
+                raise ValueError('original Native site comparison identity differs')
+            original_sites.append({key: value for key, value in site.items()
+                                   if key != 'case_id'})
+            site_hashes.append(site_hash)
+        elif not measurement['diagnostic_fixture']:
+            raise ValueError('original Native site comparison source required')
     fixed = set(setups[0]) - {"case_id", "requested_speed_mph"}
     if any(set(item) != set(setups[0]) or any(item[key] != setups[0][key] for key in fixed)
            for item in setups[1:]):
@@ -164,10 +196,15 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
         raise ValueError("original sampled speed ordering differs")
     if len({item["native_run_id"] for item in measurements}) != 3:
         raise ValueError("comparison reuses an original Native run")
+    if original_sites and (len(original_sites) != 3 or
+                           any(site != original_sites[0] for site in original_sites[1:])):
+        raise ValueError('fixed original Native site differs')
     return {
         "format": "c10301-speed-comparison-v1", "comparison_id": "strict_rate_boundary",
         "case_ids": case_ids, "plan_sha256": hashlib.sha256(plan_bytes).hexdigest(),
         "source_sha256": [item["source_sha256"] for item in measurements],
+        "native_site_sha256": site_hashes,
+        "fixed_original_site_passed": len(original_sites) == 3,
         "requested_speed_mph": targets, "peak_sample_mph": observed,
         "sampled_relations": [item["sampled_relation"] for item in measurements],
         "fixed_setup_passed": True, "observed_order_passed": True,

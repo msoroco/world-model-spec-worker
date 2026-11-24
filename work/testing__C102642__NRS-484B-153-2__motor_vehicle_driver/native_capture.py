@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from site_contract import CASE_ACTIONS, read_packet, validate_site
+from delivery_measure import measure
 
 
 CAMERAS = ("front", "rear", "left", "right")
@@ -87,6 +88,13 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
                  "parked_center_xy": packet["parked_center_xy"],
                  "parked_heading_xy": packet["parked_heading_xy"],
                  "frames": frames}
+        if adapter.map_sha256() != packet["map_sha256"]:
+            raise ValueError("loaded Native map changed during acquisition")
+        observed_measurement = measure(trace, expected_case_id=case_id,
+                                       expected_act=site["selected_act"],
+                                       expected_side=site["selected_door_side"])
+        if observed_measurement["act_on_closest_side"] != (CASE_ACTIONS[key][1] == "near"):
+            raise ValueError("observed act side differs from selected passing-side relation")
         payload = (json.dumps(trace, sort_keys=True, separators=(",", ":")) + "\n").encode()
         (output / "native-trace.json").write_bytes(payload)
         return {"case_id": case_id, "original_trace_sha256": hashlib.sha256(payload).hexdigest(),

@@ -49,14 +49,24 @@ class FakeWorld:
         return self.map
 
     def get_blueprint_library(self):
-        return SimpleNamespace(find=lambda name: name)
+        return SimpleNamespace(find=lambda name: FakeBlueprint(name))
 
     def spawn_actor(self, blueprint, transform, attach_to=None):
         if len(self.spawned) == self.fail_at:
             return None
         actor = Spawned()
+        actor.blueprint = blueprint
         self.spawned.append(actor)
         return actor
+
+
+class FakeBlueprint:
+    def __init__(self, name):
+        self.name = name
+        self.attributes = {}
+
+    def set_attribute(self, key, value):
+        self.attributes[key] = value
 
 
 def transform(spec):
@@ -96,6 +106,11 @@ class NativeSiteTests(unittest.TestCase):
         self.assertEqual(len(site.cameras), 4)
         self.assertEqual(site.packet_sha256, hashlib.sha256(self.path.read_bytes()).hexdigest())
         self.assertEqual(len(self.world.spawned), 5)
+        self.assertEqual(self.world.spawned[1].blueprint.attributes,
+                         {'image_size_x': '1920', 'image_size_y': '1080',
+                          'sensor_tick': '0.05'})
+        self.assertEqual(self.world.spawned[2].blueprint.attributes['image_size_x'],
+                         '1280')
         site.close()
         self.assertTrue(all(item.destroyed for item in self.world.spawned))
 

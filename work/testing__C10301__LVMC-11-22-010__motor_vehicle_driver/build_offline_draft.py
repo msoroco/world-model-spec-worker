@@ -92,6 +92,8 @@ def build() -> None:
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
                  "saved_delivery.py": (HERE / "saved_delivery.py").read_text(),
                  "saved_finalizer.py": (HERE / "saved_finalizer.py").read_text(),
+                 "measurement_contract.py": (HERE / "measurement_contract.py").read_text(),
+                 "measurement-contract-" + kind + ".json": (HERE / ("measurement-contract-" + kind + ".json")).read_text(),
                  "attention_measurement.py": (HERE / "attention_measurement.py").read_text(),
                  "alley-scene.json": scene,
                  "config.json": json.dumps(config, indent=2) + "\n",

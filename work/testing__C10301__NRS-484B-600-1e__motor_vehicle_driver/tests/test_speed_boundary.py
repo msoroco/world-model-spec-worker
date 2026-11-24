@@ -88,6 +88,39 @@ class SpeedBoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "cell or actor differs"):
             compare(ROOT / "case-plan.json", keyed)
 
+    def test_comparison_checks_original_site_not_only_authored_setup(self):
+        attempts = self.triple()
+        keyed = {ASSIGNMENT + '__' + key: value
+                 for key, value in attempts.items()}
+        for suffix, attempt in attempts.items():
+            site = {'format': 'c10301-native-site-v1',
+                    'case_id': ASSIGNMENT + '__' + suffix,
+                    'diagnostic_fixture': True,
+                    'map_name': 'diagnostic-map',
+                    'route': [{'x_m': 0}, {'x_m': 1800}],
+                    'cameras': {'front': {'x_m': 0}}}
+            raw = (json.dumps(site, sort_keys=True) + '\n').encode()
+            (attempt / 'native-site-source.json').write_bytes(raw)
+            (attempt / 'capture-index.json').write_text(json.dumps({
+                'case_id': site['case_id'],
+                'native_site': {'path': 'native-site-source.json',
+                                'sha256': hashlib.sha256(raw).hexdigest()}}))
+        result = compare(ROOT / 'case-plan.json', keyed)
+        self.assertTrue(result['fixed_original_site_passed'])
+        site_path = attempts['above'] / 'native-site-source.json'
+        changed = json.loads(site_path.read_text())
+        changed['route'][-1]['x_m'] = 1900
+        raw = (json.dumps(changed, sort_keys=True) + '\n').encode()
+        site_path.write_bytes(raw)
+        with self.assertRaisesRegex(ValueError, 'comparison hash differs'):
+            compare(ROOT / 'case-plan.json', keyed)
+        index_path = attempts['above'] / 'capture-index.json'
+        index = json.loads(index_path.read_text())
+        index['native_site']['sha256'] = hashlib.sha256(raw).hexdigest()
+        index_path.write_text(json.dumps(index))
+        with self.assertRaisesRegex(ValueError, 'fixed original Native site differs'):
+            compare(ROOT / 'case-plan.json', keyed)
+
     def test_rejects_missing_stale_and_noncanonical_source(self):
         attempt = make_attempt(self.root, "below", 75, "a")
         (attempt / "original-speed.jsonl").unlink()

@@ -76,3 +76,21 @@ Proof SHA-256 (logs under this assignment):
 - `cpu-offline-missing_sidewalk.log`: `d933451a9090d94e3f0d92e0533c054e0ac593895b00bd3fcdb2a3c080ba28e0` (exit 0)
 
 Next CPU work: bind a surveyed Native hill-crest site and four-camera capture to the constructed pedestrian route; author canonical semantic proposals and manifest; run exact source-shaped positive/negative compatibility, saved-only and independent delivery/comparison receipts for each case. Actual route visibility, due care, side-as-possible and return practicability remain unverified. The scoped strict command fails on truthful `partial` status.
+
+## 2026-11-23 synchronized Native source packet checkpoint
+
+`native_walking.py` now invokes an observer after each measured world tick and stops the walker if a source read fails. `native_source_packet.py` joins all four original-shaped readbacks to that tick, rejects frame/time discontinuity, requires the SHA-bound original C104081 survey and exact case, and seals the five sources expected by `saved_measurement.py` after exactly 900 samples. `capture_constructed_sources` connects the measured route to a caller-supplied Native source reader. The writer does not replace observed positions with route targets. The caller must still supply actual CARLA actor, obstacle, traffic and camera readbacks and own lifecycle cleanup; its original-source label requires local ownership review and cannot itself authenticate provenance.
+
+The builder regenerated all five exact diagnostic constructions with this bridge and refreshed their manifest hashes. Pinned preflight, 72 focused tests, five exact `runtime.py offline` runs, and the scoped static check pass. The scoped strict delivery check still exits 1 on truthful `partial` status; no physical or legal acceptance follows. Current proof commands, exit codes, log paths and SHA-256 values are in `result.json`.
+
+Next CPU actions: implement the concrete CARLA source reader and four-camera acquisition/encoding; bind source packet output into Native finalization, then author canonical proposals, exact positive/negative compatibility recipes, saved-only processing and delivery/comparison receipts for all five cases. Rerun the exact strict assignment command after those proofs.
+
+## 2026-11-23 observed actor and camera frame checkpoint
+
+`native_readback.py` is a lazy CARLA-facing readback from actual actor bounding boxes, observed obstacle/barrier handles, original surveyed missing-surface polygon, live traffic roster and four synchronized camera sensor frame IDs. It derives the sidewalk obstruction end from observed world vertices and the source-bound transform, and rejects a stale camera, absent traffic roster, missing actor or body position that differs from the walking controller's measured tick. It can feed `capture_constructed_sources` for all five exact cases. The camera synchronizer still has to retain original pixel payloads; this layer checks frame identity only.
+
+The five offline bundles were regenerated and their hashes refreshed. Current `result.json` binds passing pinned preflight, 76 focused tests, five exact offline constructions and scoped static check. The exact scoped strict gate exits 1 because status remains partial. The next CPU construction step is a concrete camera payload collector/encoder and Native lifecycle/finalizer, followed by canonical proposals, compatibility, saved-only processing, and delivery/comparison receipts for each exact case. No physical visibility, legal due care, side-as-possible or practicability has been established.
+
+## 2026-11-23 camera contract alignment
+
+The five exact diagnostic bundles and `native_readback.py` now require `overview`, `approach`, `reference_corner` and `driver_reference`, matching the independent delivery auditor's sealed media names and intended 1920×1080/1280×720 profile. Earlier front/rear/left/right draft names would have failed saved delivery. All five offline constructions were regenerated and retested; current passing receipts and hashes are in `result.json`. The camera synchronizer must still retain pixel payloads and encode original videos before delivery can pass.

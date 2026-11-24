@@ -23,11 +23,14 @@ audit_spec.loader.exec_module(audit)
 
 
 class Adapter:
-    def __init__(self, source, *, drift=False, missing_camera=False):
+    def __init__(self, source, *, drift=False, missing_camera=False,
+                 missing_act=False, changed_map=False):
         self.source = source
         self.index = -1
         self.drift = drift
         self.missing_camera = missing_camera
+        self.missing_act = missing_act
+        self.changed_map = changed_map
         self.commands = []
         self.cleaned = False
         stream = io.BytesIO()
@@ -35,6 +38,8 @@ class Adapter:
         self.image = stream.getvalue()
 
     def map_sha256(self):
+        if self.changed_map and self.index >= 0:
+            return "0" * 64
         return self.source["map_sha256"]
 
     def configure_site(self, source, site):
@@ -61,7 +66,7 @@ class Adapter:
         return self.index, self.index / 20 + (0.1 if self.drift else 0)
 
     def observe(self, frame_id, driver, parked, passing):
-        active = frame_id == 201
+        active = frame_id == 201 and not self.missing_act
         return {"selected_driver_id": driver, "observed_act":
                 self.site["selected_act"] if active else "none",
                 "act_side": self.site["selected_door_side"] if active else None,
@@ -81,21 +86,24 @@ class Adapter:
 
 
 class NativeCaptureTests(unittest.TestCase):
-    def run_case(self, *, case_key="board_near", drift=False, missing_camera=False):
+    def run_case(self, *, case_key="board_near", drift=False, missing_camera=False,
+                 missing_act=False, changed_map=False):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
             source = packet()
             survey = base / "survey.json"
             survey.write_text(json.dumps(source))
             digest = hashlib.sha256(survey.read_bytes()).hexdigest()
-            adapter = Adapter(source, drift=drift, missing_camera=missing_camera)
+            adapter = Adapter(source, drift=drift, missing_camera=missing_camera,
+                              missing_act=missing_act, changed_map=changed_map)
             output = base / "out"
             case = ROOT.name + "__" + case_key
-            if drift or missing_camera:
+            if drift or missing_camera or missing_act or changed_map:
                 with self.assertRaises(ValueError):
                     native.capture(adapter, survey_path=survey, survey_sha256=digest,
                                    case_id=case, output=output)
                 self.assertTrue(adapter.cleaned)
+                self.assertFalse((output / "native-trace.json").exists())
                 return
             receipt = native.capture(adapter, survey_path=survey, survey_sha256=digest,
                                      case_id=case, output=output)
@@ -146,6 +154,12 @@ class NativeCaptureTests(unittest.TestCase):
 
     def test_missing_camera_rejected_with_cleanup(self):
         self.run_case(missing_camera=True)
+
+    def test_unobserved_act_rejected_before_sealing(self):
+        self.run_case(missing_act=True)
+
+    def test_map_change_rejected_before_sealing(self):
+        self.run_case(changed_map=True)
 
 
 if __name__ == "__main__":

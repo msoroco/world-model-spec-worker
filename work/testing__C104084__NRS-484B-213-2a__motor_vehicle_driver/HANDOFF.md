@@ -1,6 +1,6 @@
 # testing__C104084__NRS-484B-213-2a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Four exact crest cases are planned; no recording has been proposed as physically accepted.
 
 Exact law: NRS 484B.213(2)(a); with 484B.213(3) — A vehicle must not be driven to the left side of the highway at any time: When approaching the crest of a grade or upon a curve in the highway where the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction. Subsection 2 does not apply upon a one-way highway.
 Assigned branch(es): Approaching a crest; obstructed-view condition; one-way exception absent by setup..
@@ -129,3 +129,36 @@ The latest `.venv-cpu/bin/python worker_check.py --assignment testing__C104084__
 The positive fixture and negative resealed-broken-media/unplanned-source cases pass with the existing suite: 29 CPU tests, `cpu-saved-delivery-tests.log` SHA256 `e4c9a1bfbece84c284d4fc276ef6832dbb9573283a9fdff7e2ee6e09119ac228`. Scoped static exits 0 (`cpu-saved-delivery-static.log`, SHA256 `f7103607cf441b4b4422aedc645f5c195966afff4737211c9e74cf1887c18534`). Exact scoped strict exits 1 on truthful partial status (`cpu-saved-delivery-strict.log`, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`).
 
 Next CPU work: implement concrete CARLA adapter and reviewed highway/one-way source authority, exact canonical case bundles and finalizers, positive/negative compatibility, semantic proposals and canonical processing integration. The curve branch still requires a compatible cell binding by the batch lead; actual camera visibility and physical crest behavior remain unverified.
+
+### Saved Native finalizer and same-frame target proof (2026-11-24)
+
+`analysis.py` now reads the sealed `source-hashes.json`, joins the exact case's
+original body/ray/context/frame packets through `saved_crest.measure`, rejects
+unplanned manifest entries, rechecks original source hashes, and emits
+derived `trace.jsonl`, canonical `video_frames.jsonl`, and a
+`native_output.validate_result`-checked `result.json`. It retains all original
+source bytes, rejects prior derived outputs and changed original sources, and
+leaves physical setup, behavior, maneuver, hazard distance and legal judgment
+unconfirmed. It is an executable saved finalizer component; its empty recording
+evidence and lack of a complete runtime package mean it is not yet a Core
+compatibility receipt or accepted delivery.
+
+`saved_crest.measure` now requires the relevant body position and four-corner
+proxy-ray state on at least one *same* original frame. Separate left-side and
+blocked-ray episodes no longer satisfy the construction target. The added CPU
+test deliberately separates those episodes and verifies rejection. No claim is
+made that a single coincident frame establishes the statutory hazard phrase.
+
+Pinned `.venv-cpu/bin/python runtime.py preflight` exited 0 in
+`cpu-finalizer-preflight.log`. The focused assignment suite passed 33 tests in
+`cpu-finalizer-tests.log`; scoped static exited 0 in
+`cpu-finalizer-static.log`; exact scoped strict exited 1 in
+`cpu-finalizer-strict.log` because the package is still partial. Hashes and
+reproduction commands are in `result.json`.
+
+Next CPU actions: add exact case constructions, concrete lazy CARLA adapter and
+world restoration, original road/one-way authority packets, declared recording
+channels, four source-hashed diagnostic recipes with positive/negative runtime
+compatibility, semantic proposals and independent delivery/comparison audits.
+The lead owns any shared curve-cell binding. No GPU dependency is claimed for
+these remaining preparation steps.

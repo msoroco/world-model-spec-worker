@@ -55,10 +55,22 @@ ROUTE = [(0, 0), (2, 0), (2, 2)]
 class WalkingTests(unittest.TestCase):
     def test_completes_original_measured_route_and_stops(self):
         walker = Walker()
-        rows = run_walking_route(World(walker), walker, CARLA, ROUTE, speed_m_s=2)
+        observed = []
+        rows = run_walking_route(World(walker), walker, CARLA, ROUTE, speed_m_s=2,
+                                 on_sample=observed.append)
         self.assertEqual(len(rows), 900)
+        self.assertEqual(rows, observed)
         self.assertTrue(rows[-1]["route_completed"])
         self.assertLess(abs(rows[-1]["position_world_xy_m"][1] - 2), .25)
+        self.assertEqual(walker.controls[-1]["speed"], 0)
+
+    def test_observation_failure_stops_walker(self):
+        walker = Walker()
+        def fail(sample):
+            raise ValueError("camera source unavailable")
+        with self.assertRaisesRegex(ValueError, "camera source unavailable"):
+            run_walking_route(World(walker), walker, CARLA, ROUTE,
+                              speed_m_s=2, on_sample=fail)
         self.assertEqual(walker.controls[-1]["speed"], 0)
 
     def test_stall_departure_and_time_gap_fail_closed(self):
