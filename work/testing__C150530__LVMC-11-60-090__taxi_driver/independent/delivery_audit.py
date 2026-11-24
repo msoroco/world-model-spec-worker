@@ -21,6 +21,7 @@ assert SOURCE_SPEC.loader is not None
 SOURCE_SPEC.loader.exec_module(SOURCE_AUDIT)
 audit_source_chain = SOURCE_AUDIT.audit_source_chain
 verify_decode_receipt = SOURCE_AUDIT.verify_decode_receipt
+from original_motion_consistency import check as check_motion_consistency
 
 ASSIGNMENT = ROOT.name
 CASES = ("near_stand", "far_stand", "near_stand_straight")
@@ -123,6 +124,8 @@ def main() -> None:
     if args.physical_receipt.resolve() != (args.attempt / "result.json").resolve():
         raise ValueError("physical receipt must be the sealed Native result")
     source = audit_source_chain(args.attempt, args.case, args.map, args.layout)
+    motion_consistency = check_motion_consistency(args.attempt, args.case,
+                                                  args.map, args.layout)
     decode = verify_decode_receipt(source, args.attempt, args.decode_receipt,
                                    args.composition_receipt, args.media_auditor)
     physical = read(args.physical_receipt)
@@ -132,6 +135,7 @@ def main() -> None:
     core_path = args.attempt / "traffic_spec" / "trace.json"
     audit = verify_evidence(case_id, source, decode, physical, pixels,
                             read(core_path), args.attempt)
+    audit["motion_consistency"] = motion_consistency
     audit.update(job_id=args.job_id, attempt=args.attempt_number,
                  recording_id=args.recording_id,
                  source_result_sha256=sha(args.attempt / "result.json"),

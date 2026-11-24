@@ -132,6 +132,24 @@ class NativeMotionTests(unittest.TestCase):
                           "native-1", -0.1)
         self.assertEqual(world.frame, 100)
 
+    def test_existing_original_artifact_rejected_before_native_motion(self):
+        for name in ("original-speed.jsonl", "speed-source.json",
+                     "native-motion-receipt.json", "camera-frame-readback.json"):
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as directory:
+                    attempt = Path(directory)
+                    (attempt / name).write_text("existing original evidence")
+                    actor = FakeActor()
+                    world = FakeWorld(actor)
+                    with self.assertRaisesRegex(ValueError, "already exists"):
+                        capture_speed(world, actor, control, attempt, CASE,
+                                      "native-repeat", 0.05,
+                                      diagnostic_fixture=True,
+                                      camera_frame_reader=lambda frame: {})
+                    self.assertEqual(world.frame, 100)
+                    self.assertEqual((attempt / name).read_text(),
+                                     "existing original evidence")
+
     def test_source_integrity_audit_rejects_missing_and_changed_media(self):
         actor = FakeActor()
         capture_speed(FakeWorld(actor), actor, control, self.attempt, CASE,
@@ -196,6 +214,29 @@ class NativeMotionTests(unittest.TestCase):
                         ["source_integrity_passed"])
         with self.assertRaisesRegex(ValueError, "already exists"):
             finalize_capture(self.attempt, CASE, frames, media)
+
+    def test_native_camera_readback_seals_and_audit_reopens(self):
+        actor = FakeActor()
+        cameras = ("front", "front_left", "front_right", "rear")
+        receipt = capture_speed(FakeWorld(actor), actor, control, self.attempt,
+                                CASE, "native-cameras", 0.05,
+                                diagnostic_fixture=True,
+                                camera_frame_reader=lambda frame:
+                                {camera: frame for camera in cameras})
+        self.assertEqual(len(receipt["camera_frame_readback_sha256"]), 64)
+        readback_path = self.attempt / "camera-frame-readback.json"
+        frames = json.loads(readback_path.read_text())["frames"]
+        media = {}
+        for camera in cameras:
+            path = self.attempt / (camera + ".mp4")
+            path.write_bytes(camera.encode())
+            media[camera] = path
+        finalize_capture(self.attempt, CASE, frames, media)
+        self.assertTrue(audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+                        ["source_integrity_passed"])
+        readback_path.write_text("{}")
+        with self.assertRaisesRegex(ValueError, "camera readback hash differs"):
+            audit_integrity(self.attempt, CASE, allow_diagnostic=True)
 
 
 

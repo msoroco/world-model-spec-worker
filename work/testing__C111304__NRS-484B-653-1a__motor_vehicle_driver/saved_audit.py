@@ -68,3 +68,68 @@ def audit_comparison(left: Mapping, right: Mapping, difference: str) -> dict:
             'difference': difference, 'source_hashes': [left['original_history_sha256'],
                                                          right['original_history_sha256']],
             'legal_judgment': None}
+
+
+def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
+    """Rejoin sealed original source packets, actor rows and camera readbacks."""
+    expected = ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl')
+    keys = ('original_history_sha256', 'original_packets_sha256', 'original_cameras_sha256')
+    tables = []
+    for name, key in zip(expected, keys):
+        path = attempt / name
+        if not path.is_file() or path.is_symlink():
+            raise ValueError(f'{name} missing or redirected')
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != receipt.get(key):
+            raise ValueError(f'{name} hash mismatch')
+        try:
+            tables.append([json.loads(line) for line in raw.decode('utf-8').splitlines() if line])
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ValueError(f'{name} decode failed') from exc
+    histories, packets, cameras = tables
+    count = receipt.get('frame_count')
+    if count != 900 or any(len(table) != count for table in tables):
+        raise ValueError('original acquisition frame count mismatch')
+    first = receipt.get('first_original_frame')
+    if type(first) is not int or receipt.get('last_original_frame') != first + count - 1:
+        raise ValueError('original acquisition frame range mismatch')
+    for offset, (row, packet, camera) in enumerate(zip(histories, packets, cameras)):
+        frame = first + offset
+        if any(item.get('original_frame') != frame for item in (row, packet, camera)):
+            raise ValueError('original acquisition frame join mismatch')
+        source = json.dumps(packet, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+        if row.get('source_sha256') != hashlib.sha256(source).hexdigest():
+            raise ValueError('actor source packet mismatch')
+        controls = packet.get('control')
+        if not isinstance(controls, dict):
+            raise ValueError('control source packet missing')
+        control_source = json.dumps(controls, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+        if row.get('control_command_source_sha256') != hashlib.sha256(control_source).hexdigest():
+            raise ValueError('control source packet mismatch')
+        for role, key in (('ego', 'ego_id'), ('crossing_vehicle', 'crossing_vehicle_id'),
+                          ('occupant', 'occupant_id'), ('property', 'property_id')):
+            actor = packet.get('actors', {}).get(role, {})
+            if str(actor.get('id')) != row.get(key):
+                raise ValueError(f'{role} original actor join mismatch')
+            if role in ('ego', 'occupant', 'property') and actor.get('xy') != row.get(role + '_xy'):
+                raise ValueError(f'{role} original position join mismatch')
+            if role in ('ego', 'crossing_vehicle') and actor.get('speed_mps') != row.get('ego_speed_mps' if role == 'ego' else 'crossing_speed_mps'):
+                raise ValueError(f'{role} original speed join mismatch')
+            if role in ('ego', 'crossing_vehicle', 'property') and actor.get('blueprint') != row.get('crossing_blueprint' if role == 'crossing_vehicle' else role + '_blueprint'):
+                raise ValueError(f'{role} original blueprint join mismatch')
+        if str(packet['actors']['occupant'].get('vehicle_id')) != row.get('occupant_vehicle_id'):
+            raise ValueError('occupant original vehicle join mismatch')
+        if row.get('map_sha256') != receipt.get('map_sha256') or row.get('camera_plan_sha256') != receipt.get('camera_plan_sha256'):
+            raise ValueError('map or camera plan source mismatch')
+        if abs(row.get('elapsed_seconds', float('nan')) - histories[0].get('elapsed_seconds', float('nan')) - offset / 20) > 0.001:
+            raise ValueError('original elapsed-time join mismatch')
+        camera_hashes = camera.get('camera_sha256')
+        if not isinstance(camera_hashes, dict) or set(camera_hashes) != {'front', 'rear', 'left', 'right'} or not all(isinstance(h, str) and len(h) == 64 for h in camera_hashes.values()):
+            raise ValueError('four original camera hashes missing')
+        if row.get('case_id') != receipt.get('case_id') or row.get('site_sha256') != receipt.get('site_sha256'):
+            raise ValueError('case or site source mismatch')
+    return {'case_id': receipt['case_id'], 'frame_count': count,
+            'original_history_sha256': receipt['original_history_sha256'],
+            'original_cameras_sha256': receipt['original_cameras_sha256'],
+            'full_video_decode': False, 'actual_pixels': False,
+            'physical_completion': False, 'legal_judgment': None}

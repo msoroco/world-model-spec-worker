@@ -27,3 +27,11 @@ The frozen cell is C111301 (intersection, travel, pedestrian control), with moto
 5. Rerun the seven CPU tests and exact strict gate. Mark ready only after the gate passes.
 
 Actual CARLA motion and camera visibility remain later GPU checks; the listed package work is worker-owned CPU preparation. No external blocker is asserted.
+
+## 2026-11-24 saved-only source join checkpoint
+
+`saved_backing.py` now accepts only the two exact case IDs and a declared non-diagnostic Native original acquisition. It verifies the SHA-256 and confined path of the original map packet, 900 telemetry rows, 900 original frame-map rows, and four named media files. It checks contiguous original frame identities, 20 Hz time steps, four camera frame readbacks per tick, and measured backing plus a moving pedestrian in the backing corridor. It outputs a source-bound measurement and explicitly leaves video decode, pixels, physical completion, and legal judgment unresolved. The media fixture is textual and proves only hash joining.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v` passed 13 tests, including source tamper, missing media, camera frame drift, time gap, diagnostic source, identity mismatch, and path escape rejection. See `cpu-backing-tests.log` and its result.json hash.
+
+Remaining CPU work: connect this saved join to original Native capture and finalizer, validate full media pixels with the runtime auditor, implement independent delivery/comparison audits and canonical bundles/proposals/receipts. The selected C111301 map source and physical vehicle/pedestrian interaction still need local verification.

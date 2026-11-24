@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import json
 import math
+import hashlib
 from pathlib import Path
 
 from speed_capture import write_original_speed
+from delivery_audit import CAMERAS
 
 FRAMES = 900
 HZ = 20
@@ -39,7 +41,8 @@ def _position(actor) -> tuple[float, float, float]:
 
 def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                   native_run_id: str, uncertainty_mps: float, *,
-                  diagnostic_fixture: bool = False) -> dict:
+                  diagnostic_fixture: bool = False,
+                  camera_frame_reader=None) -> dict:
     """Tick at 20 Hz, retain original speeds, and stop the actor on every exit.
 
     ``uncertainty_mps`` is supplied by the reviewed acquisition plan. It is not
@@ -53,11 +56,19 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
         raise ValueError("invalid reviewed speed uncertainty")
     if type(diagnostic_fixture) is not bool:
         raise ValueError("invalid diagnostic fixture flag")
+    attempt = Path(attempt)
+    reserved = ["original-speed.jsonl", "speed-source.json",
+                "native-motion-receipt.json"]
+    if camera_frame_reader is not None:
+        reserved.append("camera-frame-readback.json")
+    if any((attempt / name).exists() for name in reserved):
+        raise ValueError("original Native attempt artifact already exists")
     settings = world.get_settings()
     if not settings.synchronous_mode or abs(settings.fixed_delta_seconds - 1 / HZ) > 1e-9:
         raise ValueError("Native world must tick synchronously at 20 Hz")
     target = TARGETS[suffix] / MPH_PER_MPS
     rows = []
+    camera_rows = []
     first_elapsed = None
     first_position = None
     previous_frame = None
@@ -85,18 +96,36 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
             rows.append({"frame": frame, "time_s": index / HZ,
                          "speed_mps": _speed(actor),
                          "speed_uncertainty_mps": float(uncertainty_mps)})
+            if camera_frame_reader is not None:
+                camera_frames = camera_frame_reader(frame)
+                if (not isinstance(camera_frames, dict) or
+                        camera_frames != {camera: frame for camera in CAMERAS}):
+                    raise ValueError("original four-camera frame readback differs")
+                camera_rows.append({"frame": frame,
+                                    "camera_frames": camera_frames})
             previous_frame = frame
         travel_m = math.dist(first_position, _position(actor))
         if travel_m < 100:
             raise ValueError("Native ego did not travel the reviewed route")
         descriptor = write_original_speed(attempt, case_id, native_run_id, rows,
                                           diagnostic_fixture=diagnostic_fixture)
+        camera_hash = None
+        if camera_frame_reader is not None:
+            camera_bytes = (json.dumps({"case_id": case_id,
+                                         "native_run_id": native_run_id,
+                                         "frames": camera_rows},
+                                        sort_keys=True, separators=(",", ":")) + "\n").encode()
+            camera_path = attempt / "camera-frame-readback.json"
+            camera_path.write_bytes(camera_bytes)
+            camera_hash = hashlib.sha256(camera_bytes).hexdigest()
         receipt = {"format": "c10301-native-motion-v1", "case_id": case_id,
                    "native_run_id": native_run_id, "sample_count": FRAMES,
                    "travel_m": travel_m, "speed_source_sha256": descriptor["sha256"],
                    "diagnostic_fixture": diagnostic_fixture,
                    "physical_acceptance_claimed": False}
-        (Path(attempt) / "native-motion-receipt.json").write_text(
+        if camera_hash is not None:
+            receipt["camera_frame_readback_sha256"] = camera_hash
+        (attempt / "native-motion-receipt.json").write_text(
             json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return receipt
     finally:

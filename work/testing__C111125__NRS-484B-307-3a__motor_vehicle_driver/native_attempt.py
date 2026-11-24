@@ -39,7 +39,10 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
     require(settings.synchronous_mode is True, "Native world must be synchronous")
     require(abs(float(settings.fixed_delta_seconds) - 0.05) < 1e-9, "Native tick must be 20 Hz")
     require(isinstance(frames, int) and frames >= 3, "insufficient original frames")
-    require(case_id.startswith("testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__"), "wrong exact case")
+    prefix = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__"
+    require(case_id in {prefix + suffix for suffix in
+            ("dual_clear", "dual_vehicle_present", "dual_pedestrian_present", "dual_pedestrian_late")},
+            "wrong exact case")
     require(len(actors) in (1, 2), "expected ego and optional other user")
     ego = actors[0]
     rows = []

@@ -162,11 +162,19 @@ class CameraBank:
     def append(self, frame):
         if self.errors:
             raise RuntimeError("; ".join(self.errors))
-        for name, _, _ in self.SPECS:
+        images = {}
+        for name, width, height in self.SPECS:
             image = self.queues[name].get(timeout=15)
             if image.frame != frame:
                 raise RuntimeError(name + " camera frame differs from world frame")
-            self.encoders[name].stdin.write(image.raw_data)
+            if image.width != width or image.height != height:
+                raise RuntimeError(name + " camera dimensions differ from capture contract")
+            raw = image.raw_data
+            if not isinstance(raw, (bytes, bytearray, memoryview)) or len(raw) != width * height * 4:
+                raise RuntimeError(name + " camera BGRA byte count differs from capture contract")
+            images[name] = raw
+        for name, _, _ in self.SPECS:
+            self.encoders[name].stdin.write(images[name])
 
     def close(self):
         if self.closed:

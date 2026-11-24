@@ -1,6 +1,6 @@
 # testing__C111260__NRS-484B-270-5a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial construction and saved-source checkpoint. Six exact cases are proposed; no physical recording or legal conclusion is claimed.
 
 Exact law: NRS 484B.270(5)(a) — The driver of a motor vehicle shall: Exercise due care to avoid a collision with a person riding a bicycle, an electric bicycle or an electric scooter.
 Assigned branch(es): Person riding a bicycle.
@@ -30,3 +30,11 @@ Six exact cases now map bicycle, electric bicycle and electric scooter to observ
 CPU proof: `.venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/tests -v` passed 12 tests; `cpu-tests.log` SHA256 316da4e1f72eace539616763d1255a5baf84c234d222725e7cd6f9e30118210c. Assignment strict command `.venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete --require-delivery-ready` fails `Preparation acceptance failed: partial/missing packages remain`; log `strict-gate.log` SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.
 
 Remaining CPU work: wire the selected Native map packet into the canonical runner/config/construction and per-case bundles; implement source-hashed case-specific finalizer, full 900-frame capture and delivery audit; run exact offline, positive/negative compatibility and saved-only proofs for every case; write semantic stage proposals and execution manifest. Physical CARLA motion, rider visibility and video quality remain later verification.
+
+## 2026-11-24 saved encounter finalizer checkpoint
+
+`saved_encounter.py` now joins an exact-case original Native encounter packet to SHA256-bound site, 900-frame 20 Hz history and four camera frame maps. It confines all source paths to the attempt directory, revalidates the map's crossing route and statutory rider classification with `cyclist_encounter.py`, and checks the observed rider identity, mounted state, response, gap/contact and frame continuity. It rejects a changed case, missing/tampered source, nonoriginal request history, missing camera, frame mismatch and path escape. The returned observation explicitly leaves full video decode, actual pixels, physical completion and due-care judgment unresolved. The local tests use synthetic small text packets solely to exercise software checks. The packet is not yet bound to a canonical Native receipt; that is CPU work.
+
+`.venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/tests -v` passed 17 tests; `cpu-tests.log` SHA256 9e0c0dc97d200f893871f3b7e4387ea0559d98e055605bdb65a5543e4976b24e. `.venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete` passed; `static-gate.log` SHA256 f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366. The exact command with `--require-delivery-ready` exited 1 because this result remains partial; `strict-gate.log` SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.
+
+Next CPU steps: bind this packet to a canonical sealed Native result, implement actual 900-frame sensor acquisition and source readback, wire the runner and all six exact case bundles, implement semantic proposals, compatibility and saved-only proofs, then independent delivery and comparison audits and manifest. Actual motion and camera visibility require later local physical review.

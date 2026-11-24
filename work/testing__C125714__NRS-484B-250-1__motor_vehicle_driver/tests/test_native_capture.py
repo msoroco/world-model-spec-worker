@@ -119,7 +119,10 @@ class SourceAndCameraTests(unittest.TestCase):
         world = World(); ego = object(); encoders = []
         def start(*args, **kwargs):
             encoder = Encoder(); encoders.append(encoder); return encoder
-        with tempfile.TemporaryDirectory() as directory, patch("native_capture.subprocess.Popen", side_effect=start):
+        small_specs = tuple((name, 2, 2) for name, _, _ in CameraBank.SPECS)
+        with tempfile.TemporaryDirectory() as directory, \
+                patch("native_capture.subprocess.Popen", side_effect=start), \
+                patch.object(CameraBank, "SPECS", small_specs):
             bank = CameraBank(world, ego, directory, Carla,
                               {"crossing": {"bounds_xy_m": [9,19,11,21]},
                                "ego_route_xy_m": [[5,20],[10,20],[15,20]]})
@@ -127,14 +130,46 @@ class SourceAndCameraTests(unittest.TestCase):
             self.assertEqual(world.attachments, [None,None,None,ego])
             self.assertEqual(world.transforms[0][0]["x"], 10)
             self.assertEqual(world.transforms[0][0]["y"], 20)
-            self.assertEqual(world.library.blueprints[0].attributes["image_size_x"], "1920")
+            self.assertEqual(world.library.blueprints[0].attributes["image_size_x"], "2")
+            payload = bytes(range(16))
             for sensor in world.sensors:
-                sensor.callback(type("Image", (), {"frame": 41, "raw_data": b"original"})())
+                sensor.callback(type("Image", (), {"frame": 41, "width": 2,
+                                                    "height": 2, "raw_data": payload})())
             bank.append(41)
-            self.assertTrue(all(encoder.stdin.data == b"original" for encoder in encoders))
+            self.assertTrue(all(encoder.stdin.data == payload for encoder in encoders))
             bank.close()
             self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in world.sensors))
             self.assertTrue(all(encoder.stdin.closed for encoder in encoders))
+
+    def test_camera_rejects_malformed_fourth_image_before_any_encoder_write(self):
+        from queue import Queue
+
+        class Pipe:
+            def __init__(self): self.data = b""
+            def write(self, data): self.data += data
+        class Encoder:
+            def __init__(self): self.stdin = Pipe()
+
+        bank = CameraBank.__new__(CameraBank)
+        bank.SPECS = tuple((name, 2, 2) for name, _, _ in CameraBank.SPECS)
+        bank.errors = []
+        bank.queues = {name: Queue() for name, _, _ in bank.SPECS}
+        bank.encoders = {name: Encoder() for name, _, _ in bank.SPECS}
+        def enqueue(*, bad_size=False, bad_dimensions=False):
+            for index, (name, _, _) in enumerate(bank.SPECS):
+                payload = bytes(range(15 if bad_size and index == 3 else 16))
+                image = type("Image", (), {"frame": 41,
+                    "width": 3 if bad_dimensions and index == 3 else 2,
+                    "height": 2, "raw_data": payload})()
+                bank.queues[name].put(image)
+        enqueue(bad_size=True)
+        with self.assertRaisesRegex(RuntimeError, "BGRA byte count"):
+            bank.append(41)
+        self.assertTrue(all(not encoder.stdin.data for encoder in bank.encoders.values()))
+        enqueue(bad_dimensions=True)
+        with self.assertRaisesRegex(RuntimeError, "dimensions"):
+            bank.append(41)
+        self.assertTrue(all(not encoder.stdin.data for encoder in bank.encoders.values()))
 
     def test_other_route_actuates_steering_and_stops_at_endpoint(self):
         class Actor:

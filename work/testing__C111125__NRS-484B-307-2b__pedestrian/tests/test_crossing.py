@@ -89,6 +89,20 @@ class CrossingTests(unittest.TestCase):
         result = crossing.measure(self.site, self.root, self.events('DONT_WALK'))
         self.assertEqual(result['first_highway_entry']['other_device_indication'], 'DONT_WALK')
 
+    def test_device_mode_and_countdown_retained_from_original(self):
+        self.events('DONT_WALK')
+        rows = json.loads((self.root / 'frames.json').read_text())
+        for row in rows:
+            row['other_device_mode'] = 'flashing_countdown'
+            row['other_device_countdown'] = 8
+        ref = self.write('frames.json', json.dumps(rows))
+        facts = crossing.measure(self.site, self.root, ref)
+        self.assertEqual(facts['first_highway_entry']['other_device_countdown'], 8)
+        rows[1]['other_device_countdown'] = None
+        ref = self.write('frames.json', json.dumps(rows))
+        with self.assertRaisesRegex(ValueError, 'countdown lacks observed'):
+            crossing.measure(self.site, self.root, ref)
+
     def test_outside_route_and_entry(self):
         self.site['route_crosswalk_expected'] = False
         self.site['pedestrian_route_xy'] = [[-2,8],[2,8],[11,8]]
@@ -287,6 +301,23 @@ class CrossingTests(unittest.TestCase):
                 'marked_cross', bad_head, device, lambda **kw: kw,
                 lambda *xyz: xyz, self.root / 'signal-attempt', ticks=2)
         self.assertEqual(actor.command['speed'], 0)
+
+    def test_saved_measurement_requires_matching_native_receipt(self):
+        actor, world, head, device = self.native_fakes()
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            self.root, ticks=40)
+        site_ref = self.write('site.json', json.dumps(self.site))
+        events_ref = receipt['original_frames']
+        receipt_ref = {'path': 'capture-receipt.json',
+            'sha256': hashlib.sha256((self.root / 'capture-receipt.json').read_bytes()).hexdigest()}
+        result = measurement.build_sealed(site_ref, events_ref, receipt_ref, self.root)
+        self.assertEqual(result['facts']['first_highway_entry']['frame'], 34)
+        self.assertEqual(result['native_capture_receipt_source'], receipt_ref)
+        receipt['frame_count'] += 1
+        receipt_ref = self.write('capture-receipt.json', json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, 'frame count mismatch'):
+            measurement.build_sealed(site_ref, events_ref, receipt_ref, self.root)
 
 
 if __name__ == '__main__':

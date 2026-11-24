@@ -29,16 +29,44 @@ def build(site_ref, events_ref, attempt_root):
     }
 
 
+def build_sealed(site_ref, events_ref, capture_receipt_ref, attempt_root):
+    """Require a source-hashed Native receipt before saved-only measurement."""
+    receipt_path = source(capture_receipt_ref, attempt_root)
+    receipt = json.loads(receipt_path.read_text())
+    if receipt.get('format') != 'worker-original-crossing-capture':
+        raise ValueError('wrong Native capture receipt format')
+    if receipt.get('assignment_id') != 'testing__C111125__NRS-484B-307-2b__pedestrian':
+        raise ValueError('wrong Native capture assignment')
+    if receipt.get('original_frames') != events_ref:
+        raise ValueError('Native receipt does not bind original frames')
+    result = build(site_ref, events_ref, attempt_root)
+    facts = result['facts']
+    if receipt.get('frame_count') != facts['frame_count']:
+        raise ValueError('Native receipt frame count mismatch')
+    first = facts['measurements'][0]['frame']
+    last = facts['measurements'][-1]['frame']
+    if receipt.get('first_frame') != first or receipt.get('last_frame') != last:
+        raise ValueError('Native receipt frame range mismatch')
+    if receipt.get('first_highway_entry_frame') != (
+        facts['first_highway_entry']['frame'] if facts['first_highway_entry'] else None
+    ):
+        raise ValueError('Native receipt highway entry mismatch')
+    result['native_capture_receipt_source'] = capture_receipt_ref
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt-root', required=True)
     parser.add_argument('--site-ref', required=True)
     parser.add_argument('--events-ref', required=True)
+    parser.add_argument('--capture-receipt-ref', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     site_ref = json.loads(Path(args.site_ref).read_text())
     events_ref = json.loads(Path(args.events_ref).read_text())
-    result = build(site_ref, events_ref, args.attempt_root)
+    capture_receipt_ref = json.loads(Path(args.capture_receipt_ref).read_text())
+    result = build_sealed(site_ref, events_ref, capture_receipt_ref, args.attempt_root)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     tmp = output.with_suffix(output.suffix + '.tmp')

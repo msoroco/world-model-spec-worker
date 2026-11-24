@@ -1,19 +1,24 @@
 import hashlib
 import importlib.util
+import importlib
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 def module(name):
     spec = importlib.util.spec_from_file_location(name, ROOT / (name + ".py"))
     loaded = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(loaded)
     return loaded
 
-green = module("dual_green")
+green = importlib.import_module("dual_green")
 compare = module("comparison_audit")
+native = module("native_attempt")
+saved = module("saved_attempt")
 
 
 class DualGreenTests(unittest.TestCase):
@@ -145,6 +150,81 @@ class DualGreenTests(unittest.TestCase):
         vehicle["right_of_way_verdict"] = "yielded"
         with self.assertRaisesRegex(compare.ComparisonError, "unsupported legal"):
             compare.audit_pair("vehicle_at_exhibition", clear, vehicle)
+
+    def native_fixture(self, other=False):
+        class Actor:
+            def __init__(self, actor_id, x, y):
+                self.id = actor_id
+                self.x, self.y = x, y
+            def get_location(self):
+                return type("Location", (), {"x": self.x, "y": self.y})()
+        ego = Actor(1, -10, 0)
+        actors = [ego]
+        if other:
+            actors.append(Actor(2, 0, 4))
+            self.site["other_user_kind"] = "pedestrian"
+        class World:
+            frame = 9
+            def get_settings(self):
+                return type("Settings", (), {"synchronous_mode": True, "fixed_delta_seconds": .05})()
+            def tick(self):
+                self.frame += 1
+                return self.frame
+            def get_snapshot(self):
+                return type("Snapshot", (), {"frame": self.frame,
+                        "timestamp": type("Timestamp", (), {"elapsed_seconds": self.frame * .05})()})()
+        def ref_for(prefix, frame, content):
+            path = self.root / f"{prefix}-{frame}.json"
+            path.write_text(json.dumps(content))
+            return {"path": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        lamps = {}
+        lawful = {}
+        for frame in (10, 11, 12):
+            lamps[frame] = ref_for("lamp", frame, {"frame": frame, "official_head_id": "5",
+                "facing_approach_id": "east", "lit_aspects": ["circular_green", "green_left_arrow"]})
+            if other:
+                lawful[frame] = ref_for("lawful", frame, {"frame": frame, "user_id": "2", "review": "pending"})
+        def controller(actor, index):
+            actor.x = (-10, 0, 10)[index]
+        case_id = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present" if other else "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear"
+        attempt = self.root / "attempt"
+        receipt = native.run_native_attempt(self.site, self.root, World(), actors, controller,
+            lambda frame: lamps[frame], lambda frame, user_id: lawful[frame], attempt, case_id, 3)
+        return attempt, case_id, receipt
+
+    def test_native_attempt_and_saved_source_join(self):
+        attempt, case_id, receipt = self.native_fixture(other=True)
+        self.assertEqual(receipt["sample_hz"], 20)
+        measured = saved.measure_saved(self.site, self.root, attempt, case_id)
+        self.assertEqual(measured["frame_count"], 3)
+        self.assertEqual(measured["exhibition"]["other_users"][0]["region"], "adjacent_crosswalk")
+        self.assertIsNone(measured["right_of_way_verdict"])
+
+    def test_saved_rejects_lamp_mutation_and_wrong_case(self):
+        attempt, case_id, _ = self.native_fixture()
+        with self.assertRaisesRegex(green.EvidenceError, "attempt case mismatch"):
+            saved.measure_saved(self.site, self.root, attempt, case_id + "_wrong")
+        (self.root / "lamp-11.json").write_text("{}")
+        with self.assertRaisesRegex(green.EvidenceError, "hash mismatch"):
+            saved.measure_saved(self.site, self.root, attempt, case_id)
+
+    def test_saved_rejects_event_mutation_and_missing_frame(self):
+        attempt, case_id, _ = self.native_fixture()
+        event = attempt / "original-events.json"
+        rows = json.loads(event.read_text())
+        rows.pop()
+        event.write_text(json.dumps(rows))
+        with self.assertRaisesRegex(green.EvidenceError, "hash mismatch"):
+            saved.measure_saved(self.site, self.root, attempt, case_id)
+
+    def test_native_rejects_wrong_lamp_packet(self):
+        attempt, case_id, _ = self.native_fixture()
+        class NoTick:
+            def get_settings(self):
+                return type("Settings", (), {"synchronous_mode": False, "fixed_delta_seconds": .05})()
+        with self.assertRaisesRegex(green.EvidenceError, "synchronous"):
+            native.run_native_attempt(self.site, self.root, NoTick(), [object()], lambda *_: None,
+                lambda *_: None, lambda *_: None, attempt, case_id, 3)
 
 
 if __name__ == "__main__":

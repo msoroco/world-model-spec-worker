@@ -39,6 +39,17 @@ def finalize_capture(attempt: Path, case_id: str, camera_frames: list[dict],
             motion.get("speed_source_sha256") != speed["source_sha256"] or
             motion.get("diagnostic_fixture") != speed["diagnostic_fixture"]):
         raise ValueError("Native motion and original speed differ")
+    original_camera_hash = motion.get("camera_frame_readback_sha256")
+    if original_camera_hash is not None:
+        readback_path = attempt / "camera-frame-readback.json"
+        readback_raw = readback_path.read_bytes()
+        if hashlib.sha256(readback_raw).hexdigest() != original_camera_hash:
+            raise ValueError("original camera readback hash differs")
+        readback = json.loads(readback_raw)
+        if (readback.get("case_id") != case_id or
+                readback.get("native_run_id") != speed["native_run_id"] or
+                readback.get("frames") != camera_frames):
+            raise ValueError("original camera readback and finalization differ")
     if (not isinstance(camera_frames, list) or len(camera_frames) != EXPECTED_FRAMES or
             not isinstance(camera_media, dict) or set(camera_media) != set(CAMERAS)):
         raise ValueError("four camera sources and 900 original frames required")

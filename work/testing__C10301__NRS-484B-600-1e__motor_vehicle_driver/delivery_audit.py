@@ -77,6 +77,17 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
         if (not isinstance(row, dict) or row.get("frame") != origin + i or
                 row.get("camera_frames") != {camera: origin + i for camera in CAMERAS}):
             raise ValueError("camera and original frame join differs")
+    camera_readback_hash = motion.get("camera_frame_readback_sha256")
+    if camera_readback_hash is not None:
+        readback_path = attempt / "camera-frame-readback.json"
+        raw = readback_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != camera_readback_hash:
+            raise ValueError("original camera readback hash differs")
+        readback = json.loads(raw)
+        if (readback.get("case_id") != case_id or
+                readback.get("native_run_id") != speed["native_run_id"] or
+                readback.get("frames") != frames):
+            raise ValueError("original camera readback and frame map differ")
     cameras = index.get("cameras")
     if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
         raise ValueError("four camera bindings required")

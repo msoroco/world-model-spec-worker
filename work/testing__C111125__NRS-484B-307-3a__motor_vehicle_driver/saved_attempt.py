@@ -21,6 +21,7 @@ def measure_saved(site, source_root, attempt_dir, case_id):
     require(events[0]["frame"] == receipt["first_frame"] and events[-1]["frame"] == receipt["last_frame"],
             "saved frame bounds mismatch")
     previous_time = None
+    previous_frame = None
     for row in events:
         lamp_ref = {"path": row["aspect_observation_source"],
                     "sha256": row["aspect_observation_sha256"]}
@@ -36,7 +37,9 @@ def measure_saved(site, source_root, attempt_dir, case_id):
         elapsed = float(row["elapsed_seconds"])
         if previous_time is not None:
             require(abs(elapsed - previous_time - 0.05) <= 1e-4, "saved 20 Hz timing gap")
+            require(row["frame"] == previous_frame + 1, "saved frame gap")
         previous_time = elapsed
+        previous_frame = row["frame"]
     measured = measure_original(site, source_root, event_ref, event_root=attempt)
     return {"case_id": case_id, "frame_count": receipt["frame_count"],
             "exhibition": measured["exhibition"], "records": measured["records"],

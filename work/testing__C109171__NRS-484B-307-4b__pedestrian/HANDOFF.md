@@ -40,3 +40,9 @@ The new `RouteFollower` retains waypoint progress across Native ticks, rejects n
 Remaining CPU work is the source-bound Native site and exact bundles, finalization and diagnostic recipes, semantic proposals, saved-only and delivery audits, and their strict-gate proof.
 
 The site verifier also now parses all three hash-bound original packets. It requires the highway polygon, pedestrian route and route ID to match the map source, the official sole-arrow head to match its signal source, and the separate pedestrian device to govern that exact route. Synthetic positive and altered-route, altered-arrow, altered-device rejection tests exercise these joins. These fixtures validate software behavior; no reviewed Native source packet has been supplied for this cell. The focused suite now has 23 passing tests.
+
+## 2026-11-24 sealed saved timeline checkpoint
+
+`saved_measurement.py` reads SHA-bound original Native site and per-frame event packets for all four exact cases. It requires contiguous frames, 20 Hz original simulation timestamps, sole arrow throughout, a separate-device timeline, and case-specific measured entry. The WALK-entry case requires a separate WALK sample strictly before the entry sample and at entry; waiting and no-WALK cases are checked across the full history. The output retains source hashes, the sampled entry bracket, and no legal or physical verdict. Five focused positive/negative tests bring the suite to 28 passing tests. Synthetic packets validate software checks only.
+
+Still needed: reviewed actual Native map/head/device packet, executable exact capture and four-camera frame map, canonical bundles/manifest and semantic proposals, saved-only runtime processing/compatibility, media delivery audit, and physical review. The cited NRS 484B.283 permission alternatives remain for legal review; an observed WALK string alone is not asserted statutory permission.

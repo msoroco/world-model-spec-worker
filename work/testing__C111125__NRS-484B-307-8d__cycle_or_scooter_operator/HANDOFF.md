@@ -1,6 +1,6 @@
 # C111125 / NRS 484B.307(8)(d) / cycle or scooter operator
 
-Status: **partial CPU construction and measurement checkpoint**. The fixed assigned witness is a bicycle proceeding straight after failed detection. Zero accepted recordings are listed in the frozen evidence inventory. No physical or legal outcome is claimed.
+Status: **partial CPU construction, measurement and saved-processing checkpoint**. The fixed assigned witness is a bicycle proceeding straight after failed detection. Zero accepted recordings are listed in the frozen evidence inventory. No physical or legal outcome is claimed.
 
 ## Exact cases and comparisons
 
@@ -16,12 +16,14 @@ The statute also names device malfunction, pedestrians and other traffic, three 
 
 `tests/test_signal_trial.py` and `tests/test_comparison_audit.py` cover positive construction, source rejection, all five measurements, actor cleanup and all four comparisons. The fixtures are synthetic CPU packets and do not prove Native execution or video visibility.
 
+`saved_attempt.py` is a CARLA-free saved attempt processor and CLI. It reads an exact `attempt.json` receipt, verifies the packet hash and its four original Native/device/detector/geometry source hashes, checks capture completion, actor readback, detector/device policy authority, frame count and case identity, and then invokes the original measurement path. Its default mode rejects diagnostic fixtures. Diagnostic mode is explicit, retains `diagnostic_fixture: true`, and always returns `physical_acceptance: false` and `legal_verdict: null`. The CLI writes measurement output outside the sealed attempt tree. `tests/test_saved_attempt.py` exercises the CLI plus source tampering, identity, incomplete Native exit, path escape and frame-count rejection. This is a CPU saved-processing component, not the full runtime `process-saved` delivery path.
+
 ## Proofs and exact gate
 
-- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/tests -v` passed 8 tests. `cpu-tests.log` SHA256 `4fdb7a6cc6f6d3919e14a5168c98aa37530776255c897e5c00f5455d4c13b495`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/tests -v` passed 13 tests. `cpu-tests.log` SHA256 `31c0e06306808a77360f72834458bda3cd7f831d9a9b243e88efb85e896bf0e6`.
 - `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete` passed static checks. `assignment-check.log` SHA256 `4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035`.
 - `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete --require-delivery-ready` failed, as expected for truthful partial status, at `Preparation acceptance failed: partial/missing packages remain`. See `strict-gate.log`.
 
 ## Exact remaining CPU work
 
-Source a Native C111125 map/device/detector packet and an actor blueprint that substantively represents a bicycle with rider; make the policy adapter observe the detector-to-signal causal link. Author full canonical semantic proposals and `semantic-index.json`, exact per-case configurations, source-hashed diagnostics, manifest, offline and positive/negative compatibility receipts, saved-only processor, independent delivery audit and video/source decode proofs. Assess whether malfunction and separate participant variants remain within the assigned branch. For the fixed straight cell, refer turns to the lead's branch binding review. Keep status partial until the exact strict gate passes. Then run the prepared GPU queue locally for actual motion, sensor behavior, camera visibility and full video review.
+Source a Native C111125 map/device/detector packet and an actor blueprint that substantively represents a bicycle with rider; make the policy adapter observe the detector-to-signal causal link. Connect the saved processor to a capture-time seal and the runtime process-saved finalizer. Author full canonical semantic proposals and `semantic-index.json`, exact per-case configurations, source-hashed diagnostics, manifest, offline and positive/negative compatibility receipts, runtime process-saved integration, independent delivery audit and video/source decode proofs. Assess whether malfunction and separate participant variants remain within the assigned branch. For the fixed straight cell, refer turns to the lead's branch binding review. Keep status partial until the exact strict gate passes. Then run the prepared GPU queue locally for actual motion, sensor behavior, camera visibility and full video review.

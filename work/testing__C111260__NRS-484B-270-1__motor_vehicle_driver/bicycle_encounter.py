@@ -51,6 +51,21 @@ def verify_site(site, root):
     bicycle_packet=json.loads(source_paths[site['bicycle_classification_source_path']].read_text())
     rider_rules_packet=json.loads(source_paths[site['rider_rules_source_path']].read_text())
     require(map_packet.get('native_map_name')==site['native_map_name'] and map_packet.get('ego_route_xy')==site['ego_route_xy'] and map_packet.get('rider_route_xy')==site['rider_route_xy'], 'surveyed map/route packet mismatch')
+    if 'native_opendrive' in map_packet:
+        raw = map_packet['native_opendrive']
+        require(raw in refs and raw['path'] in source_paths, 'surveyed Native map source unbound')
+        readbacks = map_packet.get('waypoint_readbacks', {})
+        limit = float(map_packet.get('max_waypoint_snap_m', 0))
+        require(math.isfinite(limit) and 0 < limit <= 2, 'surveyed waypoint limit invalid')
+        for role, route_key in (('ego', 'ego_route_xy'), ('rider', 'rider_route_xy')):
+            samples = readbacks.get(role, [])
+            require(len(samples) == len(site[route_key]), 'surveyed waypoint count mismatch')
+            for sample, point in zip(samples, site[route_key]):
+                require(sample['requested_xy'] == point, 'surveyed requested point mismatch')
+                snap = math.dist(point, sample['native_waypoint_xy'])
+                require(math.isfinite(snap) and snap <= limit and abs(snap - sample['snap_m']) < 1e-6, 'surveyed waypoint readback mismatch')
+                require(isinstance(sample['road_id'], int) and isinstance(sample['lane_id'], int), 'surveyed road/lane missing')
+        require(any(sample['is_junction'] for samples in readbacks.values() for sample in samples), 'surveyed junction readback missing')
     require(bicycle_packet.get('blueprint_id')==site['bicycle_blueprint_id'] and bicycle_packet.get('classification')==site['bicycle_classification'], 'bicycle classification packet mismatch')
     require(rider_rules_packet.get('applicable_rules') and rider_rules_packet.get('jurisdiction')==site['jurisdiction'], 'rider rules/jurisdiction packet mismatch')
     require(site['native_map_name'] and site['ego_blueprint_id'] and site['bicycle_blueprint_id'], 'map/blueprint identity missing')
