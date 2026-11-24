@@ -10,7 +10,9 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "emergency_scene.py", "native_scene.py", "native_capture.py",
+    "actor_readback.py",
     "camera_recorder.py", "device_readback.py", "original_adapters.py",
+    "native_handoff.py", "native_camera_rig.py",
     "saved_finalizer.py",
     "warning_audit.py", "pixel_audit.py", "comparison_audit.py",
 )
@@ -78,11 +80,12 @@ import runner
 class BundleTests(unittest.TestCase):
     def test_exact_case_preflight(self):
         root = Path(__file__).resolve().parents[1]
-        self.assertEqual(runner.check(), json.loads((root / "config.json").read_text())["selected_case_id"])
+        self.assertEqual(runner.check_bundle()["case_id"],
+                         json.loads((root / "config.json").read_text())["selected_case_id"])
 
     def test_refuses_unsourced_native_run(self):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
-            with self.assertRaisesRegex(ValueError, "Reviewed original dispatch"):
+            with self.assertRaises(SystemExit):
                 runner.main()
 
 
@@ -111,7 +114,8 @@ def build():
             "required_atoms": [], "diagnostic_only": True,
         }
         files = {name: (HERE / name).read_text() for name in SOURCE_FILES}
-        files.update({"runner.py": RUNNER, "case-plan.json": source.decode(),
+        files.update({"runner.py": (HERE / "runner.py").read_text(),
+                      "case-plan.json": source.decode(),
                       "config.json": json.dumps(config, indent=2) + "\n",
                       "tests/test_bundle.py": TEST})
         construction = {

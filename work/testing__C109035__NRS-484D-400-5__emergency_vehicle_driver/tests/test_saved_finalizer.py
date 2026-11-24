@@ -18,12 +18,13 @@ class SavedFinalizerTests(unittest.TestCase):
         self.folder = Path(self.temp.name)
         self.receipt = {
             "case_id": CASE, "source_kind": "original_capture",
-            "site_packet_sha256": hashlib.sha256(b"reviewed-site-fixture").hexdigest(),
+            "site_packet_sha256": None,
             "native_first_frame": 101, "native_last_frame": 1000,
             "physical_acceptance_claimed": False, "sources": {},
         }
         rows = []
         cameras = []
+        actors = []
         for tick in range(900):
             on = 160 <= tick <= 440
             rows.append({"frame": tick, "native_frame": 101 + tick,
@@ -35,8 +36,22 @@ class SavedFinalizerTests(unittest.TestCase):
             cameras.append({"frame": tick, "native_frame": 101 + tick,
                             "sources": {key: f"fixture-{key}-{tick}" for key in
                                         ("overview", "approach", "reference_corner", "driver_reference")}})
+            actors.append({"frame": tick, "native_frame": 101 + tick,
+                           "ego": {"role": "ego", "actor_id": 1,
+                                   "x_m": float(tick) / 20, "y_m": 0.0, "z_m": 0.0,
+                                   "roll_deg": 0.0, "pitch_deg": 0.0, "yaw_deg": 0.0},
+                           "pedestrian": {"role": "pedestrian", "actor_id": 2,
+                                          "x_m": 20.0, "y_m": 3.0, "z_m": 0.0,
+                                          "roll_deg": 0.0, "pitch_deg": 0.0,
+                                          "yaw_deg": 0.0}})
         self.write_source("device_trace", rows, "jsonl")
         self.write_source("camera_trace", cameras, "jsonl")
+        self.write_source("actor_trace", actors, "jsonl")
+        self.write_source("site_packet", {
+            "case_id": CASE, "cell_id": "C109035", "actor": "emergency_vehicle_driver",
+            "reviewer": "CPU fixture", "source_citation": "synthetic site",
+            "approach": "eastbound", "pedestrian_role": "approach_warning_recipient"}, "json")
+        self.receipt["site_packet_sha256"] = self.receipt["sources"]["site_packet"]["sha256"]
         self.write_source("dispatch_context", {
             "case_id": CASE, "source_kind": "dispatch_context", "reviewer": "CPU fixture",
             "source_citation": "synthetic CPU fixture", "source_status": "documented",
@@ -63,10 +78,25 @@ class SavedFinalizerTests(unittest.TestCase):
     def test_positive_saved_measurement_stays_observational(self):
         result = saved_finalizer.finalize(self.folder, case_id=CASE)
         self.assertEqual(result["native_frame_count"], 900)
+        self.assertEqual(result["original_actor_ids"], {"ego": 1, "pedestrian": 2})
         self.assertEqual(result["commanded_siren_frames"], 281)
         self.assertEqual(result["observed"]["observed_siren_frames"], 281)
         self.assertEqual(result["physical_completion"], "unverified")
         self.assertIsNone(result["legal_conclusion"])
+
+    def test_rehashed_actor_identity_drift_rejected(self):
+        rows = [json.loads(line) for line in
+                (self.folder / "actor_trace.jsonl").read_text().splitlines()]
+        rows[450]["pedestrian"]["actor_id"] = 3
+        self.write_source("actor_trace", rows, "jsonl")
+        self.save_receipt()
+        with self.assertRaisesRegex(ValueError, "actor identity changed"):
+            saved_finalizer.finalize(self.folder, case_id=CASE)
+
+    def test_missing_original_actor_trace_rejected(self):
+        (self.folder / "actor_trace.jsonl").unlink()
+        with self.assertRaisesRegex(ValueError, "Original source absent"):
+            saved_finalizer.finalize(self.folder, case_id=CASE)
 
     def test_cross_case_document_rejected(self):
         value = json.loads((self.folder / "equipment_record.json").read_text())

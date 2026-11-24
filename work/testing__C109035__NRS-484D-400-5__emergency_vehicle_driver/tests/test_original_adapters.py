@@ -76,6 +76,7 @@ class OriginalAdapterTests(unittest.TestCase):
             image.frame = frame
             return {key: image for key in CAMERAS}
         commands = []
+        bound = []
         receipt = capture_with_original_adapters(
             self.fixture.world, self.fixture.api, case_id=CASE,
             site_packet=self.fixture.site, dispatch_document=self.fixture.dispatch,
@@ -88,12 +89,15 @@ class OriginalAdapterTests(unittest.TestCase):
             drive_step=lambda ego, pedestrian, tick: None,
             camera_frame_reader=camera_read,
             camera_source_ids={key: "fixture-" + key for key in CAMERAS},
-            camera_sizes={key: (2, 2) for key in CAMERAS}, diagnostic=True)
+            camera_sizes={key: (2, 2) for key in CAMERAS}, diagnostic=True,
+            camera_binding=lambda world, ego: bound.append((world, ego)))
         self.assertEqual(receipt["native_last_frame"], 900)
         self.assertIn("device_samples", receipt["sources"])
         self.assertTrue((self.fixture.folder / "out" / "camera_media.json").exists())
         self.assertEqual(finalize(self.fixture.folder / "out", case_id=CASE)["native_frame_count"], 900)
         self.assertEqual(commands[-1], (False, False))
+        self.assertEqual(len(bound), 1)
+        self.assertIs(bound[0][0], self.fixture.world)
 
     def test_production_rejects_diagnostic_camera_dimensions_before_spawn(self):
         with self.assertRaisesRegex(ValueError, "pinned profile"):

@@ -170,6 +170,9 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(receipt['capture_index']['frame_count'], 900)
         self.assertEqual(receipt['capture_index']['native_site']['sha256'],
                          receipt['site_packet_sha256'])
+        authored = json.loads((self.attempt / 'authored-setup.json').read_text())
+        self.assertEqual(authored['requested_speed_mph'], 85.0)
+        self.assertEqual(authored['native_site_sha256'], receipt['site_packet_sha256'])
         decoded = audit_decoded_media(self.attempt, CASE,
                                       allow_diagnostic=True)
         self.assertTrue(decoded['full_video_decode'])

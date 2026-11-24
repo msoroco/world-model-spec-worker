@@ -173,6 +173,8 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
             site_hash = hashlib.sha256(site_raw).hexdigest()
             if site_hash != binding['sha256']:
                 raise ValueError('original Native site comparison hash differs')
+            if setup.get('native_site_sha256') is not None and setup['native_site_sha256'] != site_hash:
+                raise ValueError('authored setup Native site hash differs')
             site = json.loads(site_raw)
             if (site.get('case_id') != case_id or
                     site.get('format') != 'c10301-native-site-v1' or
@@ -183,7 +185,7 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
             site_hashes.append(site_hash)
         elif not measurement['diagnostic_fixture']:
             raise ValueError('original Native site comparison source required')
-    fixed = set(setups[0]) - {"case_id", "requested_speed_mph"}
+    fixed = set(setups[0]) - {"case_id", "requested_speed_mph", "native_site_sha256"}
     if any(set(item) != set(setups[0]) or any(item[key] != setups[0][key] for key in fixed)
            for item in setups[1:]):
         raise ValueError("fixed authored setup differs")

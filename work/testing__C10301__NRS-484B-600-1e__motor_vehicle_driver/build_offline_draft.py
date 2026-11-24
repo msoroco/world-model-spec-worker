@@ -8,9 +8,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 AID = ROOT.name
 MODULES = (
-    "capture_finalizer.py", "delivery_audit.py", "native_capture.py",
+    "analysis.py", "capture_finalizer.py", "delivery_audit.py", "native_capture.py",
     "native_media.py", "native_motion.py", "native_site.py", "owned_capture.py",
     "saved_speed.py", "speed_boundary.py", "speed_capture.py",
+    "source_binding.py",
 )
 EXPECTED = {"below": 75, "equal": 80, "above": 85}
 
@@ -65,6 +66,8 @@ def main():
         raise ValueError("Reviewed C10301 Native site packet provenance or case differs")
     if not packet.get("route_source_ref") or not packet.get("access_aisle_source_ref"):
         raise ValueError("Reviewed C10301 route and access-aisle sources required")
+    from source_binding import verify_site_sources
+    verify_site_sources(packet, packet_path)
     attempt = Path(args.output_dir)
     if attempt.exists() and any((attempt / name).exists() for name in (
             "native-site-source.json", "capture-index.json", "native-motion-receipt.json",
@@ -94,7 +97,8 @@ if __name__ == "__main__":
     main()
 '''
 
-TEST = '''import json
+TEST = '''import hashlib
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -122,11 +126,17 @@ class BundleTests(unittest.TestCase):
             Transform=MagicMock(), VehicleControl=MagicMock())
         with tempfile.TemporaryDirectory() as directory:
             packet = Path(directory) / "reviewed-site.json"
+            route = Path(directory) / "route.json"
+            aisle = Path(directory) / "aisle.json"
+            route.write_text("route source\\n")
+            aisle.write_text("aisle source\\n")
+            route_ref = {"path": str(route), "sha256": hashlib.sha256(route.read_bytes()).hexdigest()}
+            aisle_ref = {"path": str(aisle), "sha256": hashlib.sha256(aisle.read_bytes()).hexdigest()}
             packet.write_text(json.dumps({
                 "case_id": config["selected_case_id"],
                 "diagnostic_fixture": False,
-                "route_source_ref": "reviewed-route-source",
-                "access_aisle_source_ref": "reviewed-aisle-source"}) + "\\n")
+                "route_source_ref": route_ref,
+                "access_aisle_source_ref": aisle_ref}) + "\\n")
             args = ["runner.py", "--output-dir", str(Path(directory) / "attempt"),
                     "--site-packet", str(packet), "--native-run-id", "original-1",
                     "--uncertainty-mps", "0.1"]
@@ -138,10 +148,17 @@ class BundleTests(unittest.TestCase):
             self.assertEqual(capture.call_args.args[3], config["selected_case_id"])
             self.assertEqual(capture.call_args.args[4], "original-1")
             self.assertFalse(capture.call_args.kwargs)
+            route.write_text("tampered route\\n")
+            with patch.dict(sys.modules, {"carla": carla}), \\
+                    patch("owned_capture.capture_owned") as capture, \\
+                    patch("sys.argv", args):
+                with self.assertRaisesRegex(ValueError, "source SHA-256 differs"):
+                    runner.main()
+            capture.assert_not_called()
             packet.write_text(json.dumps({
                 "case_id": "wrong", "diagnostic_fixture": False,
-                "route_source_ref": "reviewed-route-source",
-                "access_aisle_source_ref": "reviewed-aisle-source"}) + "\\n")
+                "route_source_ref": route_ref,
+                "access_aisle_source_ref": aisle_ref}) + "\\n")
             with patch.dict(sys.modules, {"carla": carla}), \\
                     patch("owned_capture.capture_owned") as capture, \\
                     patch("sys.argv", args):
@@ -156,9 +173,14 @@ class BundleTests(unittest.TestCase):
             Transform=MagicMock(), VehicleControl=MagicMock())
         with tempfile.TemporaryDirectory() as directory:
             packet = Path(directory) / "reviewed-site.json"
+            route = Path(directory) / "route.json"
+            aisle = Path(directory) / "aisle.json"
+            route.write_text("route source\\n")
+            aisle.write_text("aisle source\\n")
             packet.write_text(json.dumps({
                 "case_id": config["selected_case_id"], "diagnostic_fixture": False,
-                "route_source_ref": "reviewed-route", "access_aisle_source_ref": "reviewed-aisle"}) + "\\n")
+                "route_source_ref": {"path": str(route), "sha256": hashlib.sha256(route.read_bytes()).hexdigest()},
+                "access_aisle_source_ref": {"path": str(aisle), "sha256": hashlib.sha256(aisle.read_bytes()).hexdigest()}}) + "\\n")
             attempt = Path(directory) / "materialized"
             attempt.mkdir()
             (attempt / "config.json").write_text("{}\\n")

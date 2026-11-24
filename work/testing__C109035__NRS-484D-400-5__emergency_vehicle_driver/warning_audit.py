@@ -27,7 +27,7 @@ def audit(folder: Path, source_manifest: dict) -> dict:
         raise ValueError("Only original capture sources are auditable")
     refs = source_manifest.get("sources", {})
     required = {"device_trace", "dispatch_context", "equipment_record"}
-    if not required.issubset(refs) or set(refs) - (required | {"camera_trace", "device_samples"}):
+    if not required.issubset(refs) or set(refs) - (required | {"site_packet", "camera_trace", "actor_trace", "device_samples"}):
         raise ValueError("Required source inventory incomplete")
     documents = {}
     for key, ref in refs.items():
@@ -48,6 +48,14 @@ def audit(folder: Path, source_manifest: dict) -> dict:
         for device, camera in zip(samples, camera_samples):
             if camera.get("native_frame") != device.get("native_frame") or set(camera.get("sources", {})) != {"overview", "approach", "reference_corner", "driver_reference"}:
                 raise ValueError("Original camera/source synchronization mismatch")
+    if "actor_trace" in documents:
+        actor_samples = [json.loads(line) for line in documents["actor_trace"].splitlines()]
+        if len(actor_samples) != 900:
+            raise ValueError("Original actor frame sequence incomplete")
+        for device, actor in zip(samples, actor_samples):
+            if (actor.get("frame") != device.get("frame") or
+                    actor.get("native_frame") != device.get("native_frame")):
+                raise ValueError("Original actor/source synchronization mismatch")
     if "device_samples" in documents:
         original_samples = [json.loads(line) for line in documents["device_samples"].splitlines()]
         if len(original_samples) != 900:

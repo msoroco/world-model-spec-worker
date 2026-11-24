@@ -148,6 +148,25 @@ class NativeSiteTests(unittest.TestCase):
             construct(self.world, self.path, CASE, transform)
         self.assertEqual(self.world.spawned, [])
 
+    def test_production_site_requires_bound_route_and_aisle_files(self):
+        route = self.path.parent / 'route-source.json'
+        aisle = self.path.parent / 'aisle-source.json'
+        route.write_text('route source\n')
+        aisle.write_text('aisle source\n')
+        self.packet['diagnostic_fixture'] = False
+        self.packet['route_source_ref'] = {
+            'path': route.name, 'sha256': hashlib.sha256(route.read_bytes()).hexdigest()}
+        self.packet['access_aisle_source_ref'] = {
+            'path': aisle.name, 'sha256': hashlib.sha256(aisle.read_bytes()).hexdigest()}
+        self.save()
+        site = construct(self.world, self.path, CASE, transform)
+        site.close()
+        self.world.spawned.clear()
+        aisle.write_text('changed aisle source\n')
+        with self.assertRaisesRegex(ValueError, 'source SHA-256 differs'):
+            construct(self.world, self.path, CASE, transform)
+        self.assertEqual(self.world.spawned, [])
+
     def test_route_coordinates_must_match_loaded_map_centerline(self):
         self.world.map.centerline_offset = 20
         self.save()

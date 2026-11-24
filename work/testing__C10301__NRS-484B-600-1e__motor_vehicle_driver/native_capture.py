@@ -8,6 +8,7 @@ import hashlib
 from capture_finalizer import finalize_capture
 from native_media import NativeMedia
 from native_motion import capture_speed
+from native_motion import CASE_PREFIX, TARGETS
 from native_site import construct
 
 
@@ -23,6 +24,9 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
     packet = json.loads(Path(packet_path).read_text(encoding='utf-8'))
     if packet.get('diagnostic_fixture') is not diagnostic_fixture:
         raise ValueError('Native site and capture provenance differ')
+    suffix = case_id.removeprefix(CASE_PREFIX)
+    if case_id != CASE_PREFIX + suffix or suffix not in TARGETS:
+        raise ValueError('unknown exact speed case')
     site = construct(world, packet_path, case_id, transform_factory)
     media = None
     try:
@@ -34,6 +38,14 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
             raise ValueError('Native site packet changed after construction')
         with site_source.open('xb') as stream:
             stream.write(source_bytes)
+        setup = {'case_id': case_id, 'law_id': 'NRS-484B-600-1e',
+                 'cell_id': packet['cell_id'], 'actor': packet['actor'],
+                 'layout': packet['layout'], 'control': packet['control'],
+                 'maneuver': packet['maneuver'],
+                 'requested_speed_mph': TARGETS[suffix],
+                 'native_site_sha256': site.packet_sha256}
+        with (attempt / 'authored-setup.json').open('x', encoding='utf-8') as stream:
+            stream.write(json.dumps(setup, indent=2, sort_keys=True) + '\n')
         media = media_factory(site.cameras, attempt,
                               diagnostic_fixture=diagnostic_fixture)
         motion = capture_speed(world, site.actor, control_factory, attempt,

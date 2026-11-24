@@ -80,6 +80,13 @@ def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
             velocity = actor.get_velocity()
             speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
             _require(math.isfinite(speed), "nonfinite Native velocity")
+            pose = actor.get_transform()
+            location = pose.location
+            heading = float(pose.rotation.yaw)
+            position = [float(location.x), float(location.y), float(getattr(location, "z", 0.0))]
+            velocity_xyz = [float(velocity.x), float(velocity.y), float(velocity.z)]
+            _require(all(math.isfinite(v) for v in position + velocity_xyz + [heading]),
+                     "nonfinite Native pose or velocity")
             observed = observer.observe(snapshot, actor)
             _require(isinstance(observed, dict) and observed.get("source_ref") and
                      observed.get("activity_observation") is not None and
@@ -92,6 +99,8 @@ def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
                 media_writer.capture(snapshot, actor)
             samples.append({"frame": frame, "time_s": time_s,
                             "body_footprint": body_footprint(actor), "speed_mps": speed,
+                            "position_m": position, "heading_deg": heading,
+                            "velocity_mps": velocity_xyz,
                             "controller_request": requested})
             activities.append({"frame": frame, **observed})
     except BaseException:

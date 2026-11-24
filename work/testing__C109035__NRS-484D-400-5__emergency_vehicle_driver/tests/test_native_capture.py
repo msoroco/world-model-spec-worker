@@ -18,9 +18,19 @@ CASE = subject.PREFIX + 'response_siren_pedestrian'
 
 
 class Actor:
-    def __init__(self): self.destroyed = False
+    def __init__(self, identity, transform):
+        self.destroyed = False
+        self.id = identity
+        self.transform = transform
     def set_autopilot(self, value): self.autopilot = value
     def destroy(self): self.destroyed = True
+    def get_transform(self):
+        location, rotation = self.transform
+        return types.SimpleNamespace(
+            location=types.SimpleNamespace(x=location[0], y=location[1],
+                                           z=location[2]),
+            rotation=types.SimpleNamespace(pitch=rotation[0],
+                                           yaw=rotation[1], roll=rotation[2]))
 
 
 class World:
@@ -32,7 +42,9 @@ class World:
     def get_blueprint_library(self):
         return types.SimpleNamespace(find=lambda key: types.SimpleNamespace(id=key))
     def try_spawn_actor(self, bp, transform):
-        actor = Actor(); self.actors.append(actor); return actor
+        actor = Actor(len(self.actors) + 1, transform)
+        self.actors.append(actor)
+        return actor
     def tick(self): self.frame += 1; return self.frame
     def get_snapshot(self):
         return types.SimpleNamespace(frame=self.frame,
@@ -89,6 +101,11 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(all(a.destroyed for a in self.world.actors))
         for source in receipt['sources'].values():
             self.assertEqual(hashlib.sha256((self.folder/'out'/source['path']).read_bytes()).hexdigest(), source['sha256'])
+        actors = [json.loads(line) for line in
+                  (self.folder/'out/actor_trace.jsonl').read_text().splitlines()]
+        self.assertEqual(len(actors), 900)
+        self.assertEqual(actors[0]['ego']['actor_id'], 1)
+        self.assertEqual(actors[0]['pedestrian']['actor_id'], 2)
         observed = warning_audit.audit(self.folder/'out', receipt)
         self.assertEqual(observed['observed_siren_frames'], 281)
         self.assertTrue(observed['all_siren_frames_within_documented_event'])

@@ -13,6 +13,7 @@ from pathlib import Path
 from delivery_audit import CAMERAS
 from native_motion import CASE_PREFIX
 from native_media import PROFILE
+from source_binding import verify_site_sources
 
 MIN_ROUTE_M = 1800.0
 SENSOR_ID = 'sensor.camera.rgb'
@@ -86,6 +87,8 @@ def construct(world, packet_path, case_id, transform_factory):
             not packet.get('access_aisle_source_ref') or
             not packet.get('route_source_ref')):
         raise ValueError('exact site identity or provenance missing')
+    if not packet['diagnostic_fixture']:
+        verify_site_sources(packet, packet_path)
     original_map = world.get_map()
     if (not packet.get('map_name') or packet['map_name'] != original_map.name or
             hashlib.sha256(original_map.to_opendrive().encode()).hexdigest() !=

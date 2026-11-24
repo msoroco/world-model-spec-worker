@@ -69,7 +69,7 @@ def capture_with_original_adapters(world, carla_api, *, case_id: str,
                                    instrument_source_citation: str, output: Path,
                                    device_command, drive_step, camera_frame_reader,
                                    camera_source_ids: dict, camera_sizes: dict | None = None,
-                                   diagnostic: bool = False):
+                                   diagnostic: bool = False, camera_binding=None):
     """Connect the original instrument and four camera sources to Native capture.
 
     camera_frame_reader must return four original CARLA Image objects for the
@@ -86,7 +86,8 @@ def capture_with_original_adapters(world, carla_api, *, case_id: str,
         instrument.sample, source_type=instrument_source_type,
         source_citation=instrument_source_citation)
     recorder = CameraRecorder(output, camera_frame_reader, case_id=case_id,
-                              source_ids=camera_source_ids, sizes=camera_sizes)
+                              source_ids=camera_source_ids, sizes=camera_sizes,
+                              binding=camera_binding)
     receipt = capture(
         world, carla_api, case_id=case_id, site_packet=site_packet,
         dispatch_document=dispatch_document,

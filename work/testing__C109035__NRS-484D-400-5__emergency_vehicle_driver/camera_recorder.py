@@ -27,7 +27,7 @@ class CameraRecorder:
     """
 
     def __init__(self, output: Path, frame_reader, *, case_id: str,
-                 source_ids: dict, sizes: dict | None = None):
+                 source_ids: dict, sizes: dict | None = None, binding=None):
         self.output = Path(output)
         self.frame_reader = frame_reader
         self.case_id = case_id
@@ -42,6 +42,11 @@ class CameraRecorder:
         self.archives = None
         self.frames = 0
         self.closed = False
+        self.binding = binding
+
+    def bind(self, world, ego):
+        if self.binding is not None:
+            self.binding(world, ego)
 
     def _open(self):
         self.output.mkdir(parents=True, exist_ok=True)

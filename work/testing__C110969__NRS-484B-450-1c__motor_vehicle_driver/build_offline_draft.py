@@ -11,7 +11,7 @@ SOURCES = (
     "intersection_observables.py", "finalize_observables.py",
     "native_acquisition.py", "native_scene.py", "native_media.py",
     "native_camera_adapter.py", "native_scene_factory.py",
-    "native_capture_entrypoint.py",
+    "native_capture_entrypoint.py", "native_export.py",
     "finalize_delivery.py", "analysis.py", "audit_finalized.py", "comparison_audit.py",
 )
 

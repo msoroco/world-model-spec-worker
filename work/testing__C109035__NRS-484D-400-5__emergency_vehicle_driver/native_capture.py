@@ -13,6 +13,7 @@ from pathlib import Path
 
 from emergency_scene import control_plan
 from native_scene import create
+from actor_readback import sample_actor
 
 PREFIX = "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__"
 FRAMES = 900
@@ -71,9 +72,12 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
     ego, pedestrian = actors["ego"], actors["pedestrian"]
     rows = []
     cameras = []
+    actors_trace = []
     first_timestamp = None
     prior_frame = None
     try:
+        if hasattr(camera_capture, "bind"):
+            camera_capture.bind(world, ego)
         for tick in range(FRAMES):
             elapsed = tick / HZ
             siren = bool(plan["siren_command_window_s"] and plan["siren_command_window_s"][0] <= elapsed <= plan["siren_command_window_s"][1])
@@ -102,6 +106,9 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
             if not isinstance(camera_ref, dict) or set(camera_ref) != {"overview", "approach", "reference_corner", "driver_reference"} or not all(camera_ref.values()):
                 raise ValueError("Four synchronized camera source references missing")
             cameras.append({"frame": tick, "native_frame": native_frame, "sources": camera_ref})
+            actors_trace.append({"frame": tick, "native_frame": native_frame,
+                                 "ego": sample_actor(ego, "ego"),
+                                 "pedestrian": sample_actor(pedestrian, "pedestrian")})
             rows.append({"frame": tick, "native_frame": native_frame, "elapsed_s": elapsed,
                          "siren_commanded": siren, "warning_lamp_commanded": lamps,
                          "siren_active": observed["siren_active"],
@@ -110,12 +117,17 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
                          "device_source_citation": observed["source_citation"]})
         trace = ''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows).encode()
         camera_data = ''.join(json.dumps(row, sort_keys=True) + '\n' for row in cameras).encode()
+        actor_data = ''.join(json.dumps(row, sort_keys=True) + '\n' for row in actors_trace).encode()
         sources = {
+            "site_packet": _source(out, "site_packet.json", Path(site_packet).read_bytes()),
             "device_trace": _source(out, "device_trace.jsonl", trace),
             "camera_trace": _source(out, "camera_trace.jsonl", camera_data),
+            "actor_trace": _source(out, "actor_trace.jsonl", actor_data),
             "dispatch_context": _source(out, "dispatch_context.json", dispatch),
             "equipment_record": _source(out, "equipment_record.json", equipment),
         }
+        if sources["site_packet"]["sha256"] != actors["site_packet_sha256"]:
+            raise ValueError("Reviewed site packet changed during Native capture")
         if hasattr(device_readback, "seal"):
             sources["device_samples"] = device_readback.seal(
                 out, rows[0]["native_frame"], rows[-1]["native_frame"])

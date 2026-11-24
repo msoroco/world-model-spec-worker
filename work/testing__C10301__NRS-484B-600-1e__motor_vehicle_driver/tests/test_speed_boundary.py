@@ -105,8 +105,21 @@ class SpeedBoundaryTests(unittest.TestCase):
                 'case_id': site['case_id'],
                 'native_site': {'path': 'native-site-source.json',
                                 'sha256': hashlib.sha256(raw).hexdigest()}}))
+            setup_path = attempt / 'authored-setup.json'
+            setup = json.loads(setup_path.read_text())
+            setup['native_site_sha256'] = hashlib.sha256(raw).hexdigest()
+            setup_path.write_text(json.dumps(setup))
         result = compare(ROOT / 'case-plan.json', keyed)
         self.assertTrue(result['fixed_original_site_passed'])
+        setup_path = attempts['above'] / 'authored-setup.json'
+        setup = json.loads(setup_path.read_text())
+        setup['native_site_sha256'] = '0' * 64
+        setup_path.write_text(json.dumps(setup))
+        with self.assertRaisesRegex(ValueError, 'authored setup Native site hash differs'):
+            compare(ROOT / 'case-plan.json', keyed)
+        setup['native_site_sha256'] = json.loads(
+            (attempts['above'] / 'capture-index.json').read_text())['native_site']['sha256']
+        setup_path.write_text(json.dumps(setup))
         site_path = attempts['above'] / 'native-site-source.json'
         changed = json.loads(site_path.read_text())
         changed['route'][-1]['x_m'] = 1900
@@ -118,6 +131,10 @@ class SpeedBoundaryTests(unittest.TestCase):
         index = json.loads(index_path.read_text())
         index['native_site']['sha256'] = hashlib.sha256(raw).hexdigest()
         index_path.write_text(json.dumps(index))
+        with self.assertRaisesRegex(ValueError, 'authored setup Native site hash differs'):
+            compare(ROOT / 'case-plan.json', keyed)
+        setup['native_site_sha256'] = index['native_site']['sha256']
+        setup_path.write_text(json.dumps(setup))
         with self.assertRaisesRegex(ValueError, 'fixed original Native site differs'):
             compare(ROOT / 'case-plan.json', keyed)
 

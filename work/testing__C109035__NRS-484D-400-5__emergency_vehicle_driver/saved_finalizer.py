@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from emergency_scene import CASE_KNOBS
@@ -14,7 +15,8 @@ from warning_audit import audit
 
 
 PREFIX = "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__"
-SOURCES = {"device_trace", "camera_trace", "dispatch_context", "equipment_record"}
+SOURCES = {"site_packet", "device_trace", "camera_trace", "actor_trace",
+           "dispatch_context", "equipment_record"}
 
 
 def _read(folder: Path, reference: dict) -> bytes:
@@ -56,6 +58,11 @@ def finalize(folder: Path, *, case_id: str) -> dict:
     if source_keys not in (SOURCES, SOURCES | {"device_samples"}) or not receipt.get("site_packet_sha256"):
         raise ValueError("Original capture source inventory incomplete")
     originals = {key: _read(folder, ref) for key, ref in receipt["sources"].items()}
+    if hashlib.sha256(originals["site_packet"]).hexdigest() != receipt["site_packet_sha256"]:
+        raise ValueError("Reviewed original site source differs")
+    site = json.loads(originals["site_packet"])
+    if site.get("case_id") != case_id or not site.get("reviewer") or not site.get("source_citation"):
+        raise ValueError("Original reviewed site identity missing")
     dispatch = json.loads(originals["dispatch_context"])
     equipment = json.loads(originals["equipment_record"])
     for kind, document in (("dispatch_context", dispatch), ("equipment_record", equipment)):
@@ -73,9 +80,10 @@ def finalize(folder: Path, *, case_id: str) -> dict:
         raise ValueError("Documented event interval invalid")
     rows = [json.loads(line) for line in originals["device_trace"].splitlines()]
     cameras = [json.loads(line) for line in originals["camera_trace"].splitlines()]
+    actors = [json.loads(line) for line in originals["actor_trace"].splitlines()]
     samples = ([json.loads(line) for line in originals["device_samples"].splitlines()]
                if "device_samples" in originals else None)
-    if len(rows) != 900 or len(cameras) != 900:
+    if len(rows) != 900 or len(cameras) != 900 or len(actors) != 900:
         raise ValueError("Original frame count incomplete")
     if samples is not None and len(samples) != 900:
         raise ValueError("Independent device sample count incomplete")
@@ -87,11 +95,28 @@ def finalize(folder: Path, *, case_id: str) -> dict:
     first_native = receipt.get("native_first_frame")
     if type(first_native) is not int or receipt.get("native_last_frame") != first_native + 899:
         raise ValueError("Original native frame bounds invalid")
-    for tick, (row, camera) in enumerate(zip(rows, cameras)):
+    actor_ids = None
+    for tick, (row, camera, actor_row) in enumerate(zip(rows, cameras, actors)):
         if row.get("frame") != tick or row.get("native_frame") != first_native + tick:
             raise ValueError("Original native device frame gap")
         if camera.get("frame") != tick or camera.get("native_frame") != first_native + tick:
             raise ValueError("Original native camera frame gap")
+        if (actor_row.get("frame") != tick or
+                actor_row.get("native_frame") != first_native + tick):
+            raise ValueError("Original native actor frame gap")
+        ids = []
+        for role in ("ego", "pedestrian"):
+            actor = actor_row.get(role, {})
+            if actor.get("role") != role or type(actor.get("actor_id")) is not int:
+                raise ValueError("Original actor identity missing")
+            ids.append(actor["actor_id"])
+            if any(type(actor.get(key)) not in (int, float) or
+                   not math.isfinite(actor[key]) for key in (
+                       "x_m", "y_m", "z_m", "roll_deg", "pitch_deg", "yaw_deg")):
+                raise ValueError("Original actor pose invalid")
+        if ids[0] == ids[1] or (actor_ids is not None and ids != actor_ids):
+            raise ValueError("Original actor identity changed")
+        actor_ids = ids
         if any(type(row.get(key)) is not bool for key in (
                 "siren_commanded", "warning_lamp_commanded", "siren_active", "warning_lamp_active")):
             raise ValueError("Original command or device readback missing")
@@ -120,6 +145,9 @@ def finalize(folder: Path, *, case_id: str) -> dict:
         "commanded_siren_frames": commanded_siren,
         "commanded_warning_lamp_frames": commanded_lamps,
         "observed": observed,
+        "original_actor_ids": {"ego": actor_ids[0], "pedestrian": actor_ids[1]},
+        "original_actor_start": actors[0],
+        "original_actor_end": actors[-1],
         "physical_completion": "unverified",
         "actual_camera_pixels": "unverified",
         "legal_conclusion": None,
