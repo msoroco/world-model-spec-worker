@@ -175,7 +175,7 @@
       "kind": "delivery",
       "construction": "cases/left_signal_late_clear_gap/construction.json",
       "construction_sha256": "38f20ff77f7a9bf6cd219acfe6edf6480c84d458b736ed1e2017f8e5050b9ea6",
-      "status": "draft_late_signal_source_recipe_constructed",
+      "status": "draft_late_primary_compatibility_and_saved_passed",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
@@ -313,6 +313,28 @@
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "lane_change_measurements.py"
+      },
+      "compatibility": {
+        "receipt": "cases/left_signal_late_clear_gap/primary-compatibility.json",
+        "sha256": "93bcc77899840177f16f7a58dd9a55c79eea84adf17b0fb5193abe39e5c27456",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "cases/left_signal_late_clear_gap/primary-negative-analysis.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap --output .runtime-work/c144550-late-compat-v3-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/left_signal_late_clear_gap/primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap --attempt .runtime-work/c144550-late-compat-v3-20261123 --output .runtime-work/c144550-late-saved-v1-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c144550-late-saved-v1-20261123/v0001/feedback.json",
+        "test_log": "cases/left_signal_late_clear_gap/primary-saved-processing.json",
+        "test_log_sha256": "25e136e95b76990e7106d0772e1a51d276107e250499ddb0bc8d7e0ffc3dde40",
+        "test_exit_code": 0
+      },
+      "diagnostic_saved_processing": {
+        "receipt": "cases/left_signal_late_clear_gap/primary-saved-processing.json",
+        "sha256": "25e136e95b76990e7106d0772e1a51d276107e250499ddb0bc8d7e0ffc3dde40"
       }
     },
     {
@@ -453,6 +475,11 @@
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
         }
+      },
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_wrong_signal_clear_gap/diagnostic-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
       }
     },
     {

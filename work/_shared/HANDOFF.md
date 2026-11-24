@@ -1,3 +1,24 @@
+## 2026-11-23 additional lossless return-capacity archives
+
+The following archives preserve historical logs that are not referenced by active manifest or result JSON. Recover a member with `tar -xOf ARCHIVE MEMBER > TARGET`. Each member was verified against its SHA256 before source removal. C144550 and C158190 scoped nonready complete checks pass; C125751 passed its scoped strict delivery-ready check after archival (log `.runtime-work/c125751-post-archive-strict.log`, SHA256 `24e8163fd00d48d9fc3c3f3913b708f29dbcf78a6ab0a573758caad219eb9203`).
+
+- `work/_shared/c144550-pre-fallback-offline-20261123.tar.xz` SHA256 `eee0dad34a6614b90039579d4197f3e5b19c45879636007a5c602827485466c7`:
+  - `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_signal_before_close_gap/offline.log` SHA256 `9b1c58f5c191426a5fad1a198cdc8538a1ca3fc6380a36225fcffddab9e1084e`
+  - `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_signal_late_clear_gap/offline.log` SHA256 `4f4b8dea3a84256217d9422d443722f94e0edb20a2235cb5aa257071082a0bc2`
+  - `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/left_wrong_signal_clear_gap/offline.log` SHA256 `bfccbdbcf5268a7a902f7d066dc839e344f5abaf917ca5d55037b15604c5ee38`
+  - `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/right_signal_before_clear_gap/offline.log` SHA256 `0d508796e39b98640ad005c759846e51747adc3deee9e83ff72caa570057631b`
+- `work/_shared/c158190-unbound-audit-20261123.tar.xz` SHA256 `a20acb30830960541c452806a3fc65d48a9238e068dfc69ac983b8b489ec8fd2`:
+  - `work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/stop_sign_comparison_1-audit-negative.log` SHA256 `a7677f553f312e341854c3a57e93eb7d3ac0c9e0538660802348a2aa4519dc24`
+  - `work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/stop_sign_comparison_1-audit-positive.log` SHA256 `411e69c663b181c6e66c633be14c65ebad9baa846ab53f3330fc4f9ce965645f`
+  - `work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/stop_sign_comparison_2-audit-positive.log` SHA256 `f7f8ba57fca7d2d695516ced22f1685ce9990f159ad0712f1815ad121c7ef5b9`
+  - `work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/stop_sign_comparison_3-audit-positive.log` SHA256 `b3bf2566f150ec893f5e9914f8bf1c9e362f986fd8c4fb390cc9d07abc7c723f`
+- `work/_shared/c125751-unbound-offline-20261123.tar.xz` SHA256 `657762f229eea53739fbfdec0bf1f307d4c2d56eee481489f09a494da27e62d6`:
+  - `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-turn-v2-fallback1-offline.log` SHA256 `a445ea54a0a141e9015315f120b482b64f1b126d075301cdad37a90dd119c688`
+  - `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-turn-v2-fallback2-offline.log` SHA256 `cc7ea55b0d00c5dd9ff14cac81769a488d8b87e604713c541227b38785c3c5c4`
+  - `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-turn-v2-fallback3-offline.log` SHA256 `003f3b971a6d97e5c468a58b5e30ee68db8eab0978fb405908d5915d9064748a`
+  - `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-turn-v2-primary-offline.log` SHA256 `b779a4e8818f56e61d65de7f02285319f02e365708a0c41a0f822979c055ffcb`
+  - `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/straight-fallback-offline-proof.log` SHA256 `b03b80441e244de058afc36e495c864f9c4e4858adfaaec69d5dd29c47bf97d9`
+
 ## 2026-11-23 archived ready-package strict revalidation
 
 The seven ready packages touched by the 73-member lossless return-capacity archive each passed `.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready` after archival. Their exact command uses the full assignment ID named by each short ID below; logs remain in ignored `.runtime-work/`.
