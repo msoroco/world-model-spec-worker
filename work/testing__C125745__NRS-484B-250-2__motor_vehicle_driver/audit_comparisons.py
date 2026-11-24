@@ -88,7 +88,8 @@ def audit(root,attempts):
     sweeps=audit_exact_sweeps()
     require(sweeps['source_integrity_passed'] and len(sweeps['axes'])==2,
             'Source-bound sweep comparison proof missing')
-    opposite=audit_bound_comparisons()['opposite_context']
+    bound=audit_bound_comparisons()
+    opposite=bound['opposite_context']
     require(opposite['opposite_approach_contrast_passed'] and
             opposite['turn_intention_judgment']=='unresolved',
             'Source-bound opposite-context comparison proof missing')
@@ -96,5 +97,6 @@ def audit(root,attempts):
             'software_comparisons_passed':True,'comparisons':results,
             'sweep_comparisons':sweeps,
             'opposite_context_comparison':opposite,
+            'qualitative_comparisons':bound['qualitative_comparisons'],
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
             'delivery_ready':False}

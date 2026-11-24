@@ -85,13 +85,15 @@ class AuditTests(unittest.TestCase):
     def test_exact_sweep_comparison_rejects_changed_source_and_fixed_actor(self):
         plan=json.loads((ROOT/'case-plan.json').read_text())
         declared=require_sweep_declarations(plan)
-        self.assertEqual(len(declared),5)
+        self.assertEqual(len(declared),7)
         broken=copy.deepcopy(plan)
-        broken['comparisons'][-2]['case_ids'].reverse()
+        next(row for row in broken['comparisons'] if
+             row['comparison_id']=='stop_sign_ego_hold_timing_sweep')['case_ids'].reverse()
         with self.assertRaisesRegex(ValueError,'sweep comparison declaration'):
             require_sweep_declarations(broken)
         broken=copy.deepcopy(plan)
-        broken['comparisons'][-1]['case_ids'].reverse()
+        next(row for row in broken['comparisons'] if
+             row['comparison_id']=='stop_sign_opposite_approach_context')['case_ids'].reverse()
         with self.assertRaisesRegex(ValueError,'opposite-context comparison declaration'):
             require_sweep_declarations(broken)
         report=audit_exact_sweeps()

@@ -21,15 +21,15 @@ def audit(root):
     root = Path(root)
     names = {
         PRESENT: ('site.json', 'construction.json',
-                  'first-camera-plan-supported-compatibility.json',
-                  'first-camera-plan-supported-analysis.log',
-                  'first-camera-plan-supported-negative.log',
-                  'first-camera-plan-supported-saved.json'),
+                  'stop_ego_left_near_time-selected-compatibility.json',
+                  'stop_ego_left_near_time-selected-analysis.log',
+                  'stop_ego_left_near_time-selected-negative.log',
+                  'stop_ego_left_near_time-selected-processing.json'),
         ABSENT: ('absent-site.json', 'absent-construction.json',
-                 'stop_no_device-primary-compatibility.json',
-                 'stop_no_device-primary-analysis.log',
-                 'stop_no_device-primary-negative.log',
-                 'stop_no_device-primary-saved.json')}
+                 'stop_ego_left_near_time_no_device-selected-compatibility.json',
+                 'stop_ego_left_near_time_no_device-selected-analysis.log',
+                 'stop_ego_left_near_time_no_device-selected-negative.log',
+                 'stop_ego_left_near_time_no_device-selected-processing.json')}
     scenes, receipts = {}, {}
     for suffix, (site_name, construction_name, receipt_name, analysis_name,
                  negative_name, saved_name) in names.items():

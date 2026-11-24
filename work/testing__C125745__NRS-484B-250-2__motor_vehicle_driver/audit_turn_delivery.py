@@ -26,10 +26,10 @@ def audit(root):
                'stop_opposite_left_turn-primary-current-runtime-negative.log',
                'fourth-primary-saved-v1.log'),
         STRAIGHT: ('straight-site.json', 'straight-construction.json',
-                   'stop_opposite_straight-primary-compatibility.json',
-                   'stop_opposite_straight-primary-analysis.log',
-                   'stop_opposite_straight-primary-negative.log',
-                   'stop_opposite_straight-primary-saved.json')}
+                   'stop_opposite_straight-selected-compatibility.json',
+                   'stop_opposite_straight-selected-analysis.log',
+                   'stop_opposite_straight-selected-negative.log',
+                   'stop_opposite_straight-selected-processing.json')}
     scenes, receipts, saved = {}, {}, {}
     for suffix, (site_name, construction_name, receipt_name, analysis_name,
                  negative_name, saved_name) in names.items():

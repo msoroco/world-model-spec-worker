@@ -465,11 +465,23 @@ def audit():
         suffix: all_receipts[HERE.name + '__' + suffix]
         for suffix in DEVICE_CASES})
     sweep_comparisons = audit_exact_sweeps()
+    from audit_turn_delivery import audit as audit_turn_pair
+    from audit_device_delivery import audit as audit_device_pair
+    qualitative = {
+        'stop_sign_opposite_turn_intent': audit_turn_pair(HERE),
+        'stop_sign_entrance_device_presence': audit_device_pair(HERE),
+    }
+    for name, proof in qualitative.items():
+        require(proof['case_ids'] == declared[name]['case_ids'] and
+                proof['recorded_only_passed'] is True and
+                proof['physical_acceptance_claimed'] is False,
+                'Selected qualitative comparison proof differs')
     return {'format': 'worker-c125745-compatibility-comparison-audit',
             'software_comparisons_passed': True, 'comparisons': pairs,
             'sweep_comparisons': sweep_comparisons,
             'opposite_context': opposite_context,
             'device_context': device_context,
+            'qualitative_comparisons': qualitative,
             'scope': 'retained synthetic original-source compatibility receipts',
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
             'delivery_ready': False}

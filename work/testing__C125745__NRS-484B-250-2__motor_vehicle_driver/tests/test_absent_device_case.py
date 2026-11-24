@@ -10,17 +10,17 @@ from audit_device_delivery import audit
 
 HERE = Path(__file__).resolve().parents[1]
 FILES = ('site.json', 'construction.json',
-         'first-camera-plan-supported-compatibility.json',
-         'first-camera-plan-supported-analysis.log',
-         'first-camera-plan-supported-negative.log',
-         'first-camera-plan-supported-saved.json',
+         'stop_ego_left_near_time-selected-compatibility.json',
+         'stop_ego_left_near_time-selected-analysis.log',
+         'stop_ego_left_near_time-selected-negative.log',
+         'stop_ego_left_near_time-selected-processing.json',
          'absent-site.json', 'absent-construction.json',
          'absent-review/sign_governance_source.json',
          'absent-review/sign_face_video_source.json',
-         'stop_no_device-primary-compatibility.json',
-         'stop_no_device-primary-analysis.log',
-         'stop_no_device-primary-negative.log',
-         'stop_no_device-primary-saved.json')
+         'stop_ego_left_near_time_no_device-selected-compatibility.json',
+         'stop_ego_left_near_time_no_device-selected-analysis.log',
+         'stop_ego_left_near_time_no_device-selected-negative.log',
+         'stop_ego_left_near_time_no_device-selected-processing.json')
 
 
 def control_module():
@@ -58,7 +58,7 @@ class AbsentDeviceCaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'site binding'):
                 audit(root)
             shutil.copyfile(HERE / 'absent-site.json', site)
-            saved = root / 'stop_no_device-primary-saved.json'
+            saved = root / 'stop_ego_left_near_time_no_device-selected-processing.json'
             data = json.loads(saved.read_text())
             data['physical_acceptance_claimed'] = True
             saved.write_text(json.dumps(data) + '\n')

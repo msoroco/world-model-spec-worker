@@ -14,10 +14,10 @@ FILES = ('fourth-site.json', 'fourth-construction.json',
          'stop_opposite_left_turn-primary-current-runtime-negative.log',
          'fourth-primary-saved-v1.log',
          'straight-site.json', 'straight-construction.json',
-         'stop_opposite_straight-primary-compatibility.json',
-         'stop_opposite_straight-primary-analysis.log',
-         'stop_opposite_straight-primary-negative.log',
-         'stop_opposite_straight-primary-saved.json')
+         'stop_opposite_straight-selected-compatibility.json',
+         'stop_opposite_straight-selected-analysis.log',
+         'stop_opposite_straight-selected-negative.log',
+         'stop_opposite_straight-selected-processing.json')
 
 
 class TurnDeliveryAuditTests(unittest.TestCase):
@@ -44,7 +44,7 @@ class TurnDeliveryAuditTests(unittest.TestCase):
             root.mkdir()
             for name in FILES:
                 shutil.copyfile(HERE / name, root / name)
-            path = root / 'stop_opposite_straight-primary-saved.json'
+            path = root / 'stop_opposite_straight-selected-processing.json'
             saved = json.loads(path.read_text())
             saved['physical_acceptance_claimed'] = True
             path.write_text(json.dumps(saved) + '\n')
