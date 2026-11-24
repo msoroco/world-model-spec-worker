@@ -19,18 +19,16 @@ def _finite(value, label):
     return float(value)
 
 
-def _xy(point):
-    return [_finite(point.x, "body x"), _finite(point.y, "body y")]
-
-
 def _vertices(actor):
     vertices = actor.bounding_box.get_world_vertices(actor.get_transform())
     if len(vertices) < 4:
         raise ValueError("Native actor has no complete body")
-    footprint = sorted(set(tuple(_xy(vertex)) for vertex in vertices))
+    body = [[_finite(vertex.x, "body x"), _finite(vertex.y, "body y"),
+             _finite(vertex.z, "body z")] for vertex in vertices]
+    footprint = sorted(set((point[0], point[1]) for point in body))
     if len(footprint) < 4:
         raise ValueError("Native actor has degenerate body")
-    return [list(point) for point in footprint]
+    return [list(point) for point in footprint], body
 
 
 def _boundary(review):
@@ -77,10 +75,21 @@ class EntrySourceWriter:
         self.previous_frame = -1
         self.previous_time = -math.inf
         self.count = 0
-        for name in ("intersection_context.json", "entry_history.jsonl", "video_frames.jsonl"):
+        polygon = context.get("intersection_polygon_xy_m")
+        if (not isinstance(polygon, list) or len(polygon) < 4
+                or any(not isinstance(point, list) or len(point) != 2
+                       or any(not isinstance(value, (int, float)) or not math.isfinite(value)
+                              for value in point) for point in polygon)):
+            raise ValueError("Missing finite source-reviewed intersection polygon")
+        for name in ("intersection_context.json", "control_context.json",
+                     "entry_history.jsonl", "interaction_history.jsonl", "video_frames.jsonl"):
             if (self.root / name).exists():
                 raise ValueError("Source already exists: " + name)
         (self.root / "intersection_context.json").write_text(json.dumps(context, sort_keys=True, indent=2) + "\n")
+        (self.root / "control_context.json").write_text(json.dumps({
+            "intersection_polygon_xy_m": polygon,
+            "source": "intersection_context.json: original Native site and authored-map polygon",
+            "engineering_extent_not_legal_line": True}, sort_keys=True, indent=2) + "\n")
 
     def add(self, world, frame, time_s, camera_frame_ids):
         """Record a synchronized tick; camera_frame_ids are sensor callback frames."""
@@ -93,8 +102,8 @@ class EntrySourceWriter:
             raise ValueError("Four original cameras required")
         if any(type(value) is not int or value != frame for value in camera_frame_ids.values()):
             raise ValueError("Camera callback frame differs from Native tick")
-        ego_body = _vertices(self.ego)
-        other_body = _vertices(self.other)
+        ego_body, ego_body_xyz = _vertices(self.ego)
+        other_body, other_body_xyz = _vertices(self.other)
         velocity = self.ego.get_velocity()
         speed = math.sqrt(sum(_finite(getattr(velocity, axis), "ego velocity") ** 2
                               for axis in ("x", "y", "z")))
@@ -111,7 +120,12 @@ class EntrySourceWriter:
                "other_body_vertices_xy_m": other_body}
         join = {"video_frame": self.count, "carla_frame": frame, "time_s": time_s,
                 "camera_frame_ids": camera_frame_ids}
-        for name, value in (("entry_history.jsonl", row), ("video_frames.jsonl", join)):
+        interaction = {"frame": frame, "time_s": time_s,
+                       "ego": {"actor_id": self.ego.id, "body_vertices_m": ego_body_xyz},
+                       "other": {"actor_id": self.other.id, "body_vertices_m": other_body_xyz}}
+        for name, value in (("entry_history.jsonl", row),
+                            ("interaction_history.jsonl", interaction),
+                            ("video_frames.jsonl", join)):
             with (self.root / name).open("a") as handle:
                 handle.write(json.dumps(value, sort_keys=True) + "\n")
         self.previous_frame, self.previous_time = frame, time_s

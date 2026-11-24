@@ -40,7 +40,8 @@ class Body:
 class CaptureTests(unittest.TestCase):
     def inputs(self):
         context = {"native_yield_sign_id": 25, "ego_entrance_device": "yield",
-                   "non_through_highway": True, "ego_approach_road_id": 7}
+                   "non_through_highway": True, "ego_approach_road_id": 7,
+                   "intersection_polygon_xy_m": [[10, -5], [20, -5], [20, 5], [10, 5]]}
         review = {"method": "original_source_camera_frame_review",
                   "reviewer": "CPU diagnostic fixture, no physical claim",
                   "native_yield_sign_id": 25, "sign_face_observed": "yield",
@@ -72,6 +73,12 @@ class CaptureTests(unittest.TestCase):
             self.assertTrue(rows[0]["ego_body_before_yield_reference"])
             self.assertFalse(rows[1]["ego_body_before_yield_reference"])
             self.assertEqual([row["carla_frame"] for row in joins], [100, 101])
+            interactions = [json.loads(line) for line in (root / "interaction_history.jsonl").read_text().splitlines()]
+            self.assertEqual([row["frame"] for row in interactions], [100, 101])
+            self.assertEqual(interactions[0]["ego"]["actor_id"], 1)
+            self.assertEqual(len(interactions[0]["ego"]["body_vertices_m"]), 8)
+            self.assertEqual(json.loads((root / "control_context.json").read_text())["intersection_polygon_xy_m"],
+                             context["intersection_polygon_xy_m"])
             with self.assertRaisesRegex(ValueError, "monotone"):
                 writer.add(world, 101, 1.1, cameras)
             for name in capture.CAMERAS:

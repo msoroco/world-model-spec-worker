@@ -1279,3 +1279,13 @@ C158208-2 remains partial. Added `work/testing__C158208__NRS-484B-257-2__motor_v
 ### Runtime sweep expansion recorded
 
 Ran active `runtime.py expand` on the C158208-2 semantic case proposal, exact template and bindings. It produced six cases total: the one baseline and the same five selected exact IDs, with no changed case fields or added sweep cases. The only case-proposal change is `sweeps_expanded: true`, accurately recording mechanical expansion of the explicitly incomplete sweep. Updated the semantic index hash, reran the semantic validator and all five positive/negative saved-only fixture replays, refreshed both proof hashes, and passed the assignment-scoped `--complete` check. The physical sweep remains incomplete; package status remains partial.
+
+### 2026-11-24 C158208-2 comparison checkpoint
+
+The `other_obligation`, `other_presence` and `yield_response` independent CPU comparison audits pass with missing/changed-source negative checks; 10 of 43 assignments remain partial. C158208-2 remains partial pending selected delivery, physical preparation, officer construction, fallbacks and strict assignment gate.
+
+Current-runtime verify and CPU preflight pass. C158208-2 scoped `--complete` passes, and work-file hygiene scans clean across 10,317 files. The batch strict gate remains unpassed with 10 partial assignments.
+
+### 2026-11-24 C158208-2 source-audit checkpoint
+
+All five exact cases pass independent software delivery-source audit diagnostics, with changed/missing-source rejection and four-camera full decode. Three-frame fixtures fail the normal physical path. C158208-2 remains partial; the strict delivery gate is unpassed with 10 incomplete assignments.

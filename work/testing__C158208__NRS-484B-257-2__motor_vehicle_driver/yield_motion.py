@@ -34,7 +34,7 @@ def apply_motion(world, staging, tick, *, control_factory=None):
             or other_waypoint is None or other_waypoint.road_id not in (158212, 158213, 158214)):
         raise ValueError("Native actor left the connected signed-intersection routes")
     before = all(sum((point[i] - origin[i]) * forward[i] for i in (0, 1)) < 0
-                 for point in _vertices(ego))
+                 for point in _vertices(ego)[0])
     other_clear = other_point.y <= -12.0
     ego_target = 0.0 if ego_point.x >= 55.0 else stage.target_ego_speed(
         before_reference=before, other_body_clear=other_clear)
