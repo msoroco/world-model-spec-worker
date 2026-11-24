@@ -22,7 +22,7 @@ class DraftTests(unittest.TestCase):
             path = ROOT / row["construction"]
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), row["construction_sha256"])
             construction = json.loads(path.read_text())
-            self.assertTrue(construction["diagnostic_only"])
+            self.assertFalse(construction["diagnostic_only"])
             self.assertEqual(construction["case_id"], row["case_id"])
             files = {item["path"]: item["content"] for item in construction["files"]}
             config = json.loads(files["config.json"])

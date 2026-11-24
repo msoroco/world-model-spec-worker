@@ -50,13 +50,40 @@ def analyze(attempt: Path, case_id: str) -> tuple[dict, dict]:
     from runtime_publication import _recording_evidence, _rows
     from worker_exchange.native_output import physical_result, validate_result
 
-    for name in ("capture.json", "operation.jsonl", "trace.jsonl",
-                 "video_frames.jsonl", "camera-frame-map.jsonl"):
+    diagnostic_video_only = ((attempt / "fixture-provenance.json").is_file()
+                             and not (attempt / "capture.json").exists())
+    for name in ("operation.jsonl", "trace.jsonl", "video_frames.jsonl",
+                 "ego.jsonl", "context.jsonl", "camera-frame-map.jsonl"):
         if not (attempt / name).is_file():
             raise ValueError("Missing required source: " + name)
-    capture = json.loads((attempt / "capture.json").read_text())
-    diagnostic = capture.get("diagnostic_fixture") is True
-    measurement = finalize(attempt, case_id, allow_diagnostic=diagnostic)
+    if diagnostic_video_only:
+        marker = json.loads((attempt / "fixture-provenance.json").read_text())
+        provenance = json.loads((attempt / "acquisition-provenance.json").read_text())
+        if ("CPU diagnostic only" not in marker.get("scope", "") or
+                provenance.get("diagnostic_fixture") is not True or
+                provenance.get("provenance_kind") != "fixture"):
+            raise ValueError("Diagnostic video fixture provenance required")
+        rows = _rows(attempt / "operation.jsonl")
+        measured = measure(attempt / "operation.jsonl", case_id)
+        if len(rows) != len(_rows(attempt / "trace.jsonl")) or len(rows) != len(_rows(attempt / "video_frames.jsonl")):
+            raise ValueError("Diagnostic operation/frame source count differs")
+        hashes = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                  for name in ("ego.jsonl", "context.jsonl", "operation.jsonl", "camera-frame-map.jsonl")}
+        measurement = {"original_frames": len(rows), "decoded_original_pngs": 0,
+                       "operation_measurement": measured, "source_sha256": hashes,
+                       "attention_state": "unobserved", "legal_judgment": "unresolved"}
+        capture = {"diagnostic_fixture": True,
+                   "municipal_jurisdiction_source_sha256": hashes["context.jsonl"],
+                   "alley_route_source_sha256": hashes["context.jsonl"],
+                   "access_aisle_source_sha256": hashes["context.jsonl"],
+                   "parking_designation_source_sha256": hashes["context.jsonl"]}
+        diagnostic = True
+    else:
+        if not (attempt / "capture.json").is_file():
+            raise ValueError("Missing required source: capture.json")
+        capture = json.loads((attempt / "capture.json").read_text())
+        diagnostic = capture.get("diagnostic_fixture") is True
+        measurement = finalize(attempt, case_id, allow_diagnostic=diagnostic)
     construction = json.loads((attempt / "construction.json").read_text())
     recording = construction["recording_description"]
     if (attempt / "channels").exists():

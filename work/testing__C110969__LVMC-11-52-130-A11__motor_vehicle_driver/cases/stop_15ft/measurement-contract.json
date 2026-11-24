@@ -1,0 +1,78 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__stop_15ft",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "No person shall stop or stand a vehicle",
+      "source": "LVMC 11.52.130(A)(11)",
+      "output_key": "observed_activity",
+      "method": "measure_activity",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/attempt.json",
+        "original-attempt/pose.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Within fifteen feet of an intersection",
+      "source": "LVMC 11.52.130(A)(11)",
+      "output_key": "observed_intersection_gap",
+      "method": "measure_boundary",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/attempt.json",
+        "original-attempt/map-geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Except when necessary to avoid conflict with other traffic in compliance with law",
+      "source": "LVMC 11.52.130(A)(11)",
+      "output_key": "observed_traffic",
+      "method": "measure_traffic",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/attempt.json",
+        "original-attempt/context.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Or the directions of a police officer",
+      "source": "LVMC 11.52.130(A)(11)",
+      "output_key": "observed_police_direction",
+      "method": "measure_police",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/attempt.json",
+        "original-attempt/context.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Or the directions of a traffic control device",
+      "source": "LVMC 11.52.130(A)(11)",
+      "output_key": "observed_device_direction",
+      "method": "measure_device",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/attempt.json",
+        "original-attempt/context.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-attempt/context.jsonl"
+    ],
+    "error_contains": "Missing required source: original-attempt/context.jsonl"
+  },
+  "legal_necessity": "unresolved"
+}

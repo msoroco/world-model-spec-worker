@@ -97,7 +97,9 @@ def build(attempt):
     handoff = load_handoff(source(root, "original-source-handoff.json"),
                            root, site, case_id,
                            expected_frames=len(measured["records"]),
-                           diagnostic_fixture=config.get("diagnostic_only") is True)
+                           diagnostic_fixture=(root / "capture" / "manifest.json").is_file() and
+                           json.loads((root / "capture" / "manifest.json").read_text(
+                               encoding="utf-8")).get("diagnostic_fixture") is True)
     require([row["frame"] for row in measured["records"]] ==
             list(range(handoff["first_frame"], handoff["last_frame"] + 1)),
             "original source handoff/event frame join differs")

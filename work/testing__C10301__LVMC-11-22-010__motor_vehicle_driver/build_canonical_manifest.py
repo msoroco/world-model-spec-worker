@@ -35,6 +35,7 @@ def build() -> None:
                       "construction_sha256": digest(construction),
                       "measurement_contract": "measurement-contract-" + kind + ".json",
                       "measurement_procedure": {"entrypoint": "saved_finalizer.py"},
+                      "fixture_recipe": "work/" + AID + "/fixture-recipe-" + kind + ".json",
                       "candidate_risk": {"status": "none",
                           "reason": "No case-specific Native failure has been measured; same reviewed alley route and controller variation preserve the comparison."},
                       "candidates": [],
@@ -42,12 +43,12 @@ def build() -> None:
                           "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
                               "/execution-manifest.draft.json --case " + case +
                               " --output .runtime-work/c10301-010-nov24b/offline-" +
-                              ("steady" if kind == "steady_travel" else "variation") + "-v10",
+                              ("steady" if kind == "steady_travel" else "variation") + "-v11",
                           "exit_code": 0,
-                          "log": "cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v10.log",
-                          "log_sha256": digest(HERE / ("cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v10.log"))},
+                          "log": "cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log",
+                          "log_sha256": digest(HERE / ("cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log"))},
                       "missing_proofs": ["case-specific positive and negative runtime compatibility",
-                                         "recorded-only process-saved proof",
+                                         "recorded-only process-saved proof on current analyzer revision",
                                          "independent delivery audit positive and negative",
                                          "source-bound comparison audit",
                                          "reviewed original site source binding"]})

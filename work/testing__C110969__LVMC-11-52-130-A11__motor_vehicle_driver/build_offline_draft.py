@@ -10,7 +10,7 @@ AID = HERE.name
 SOURCES = (
     "intersection_geometry.py", "stop_controller.py", "native_map.py",
     "original_capture.py", "native_bundle.py", "native_adapter.py", "finalize_capture.py", "measure_gap.py",
-    "saved_delivery.py", "comparison_audit.py",
+    "saved_delivery.py", "comparison_audit.py", "analysis.py",
 )
 CAMERAS = ["overview", "approach", "reference_corner", "driver_reference"]
 
@@ -68,6 +68,11 @@ def main():
     adapter_name = args.adapter or os.environ.get("SCENARIO_INTERSECTION_ADAPTER", "native_adapter")
     if not args.output_dir or not packet_path:
         raise ValueError("Reviewed map packet required for original Native capture")
+    fallback_role = json.loads((Path(__file__).resolve().parent / "config.json").read_text()).get("fallback_route_role")
+    if fallback_role:
+        packet = json.loads(Path(packet_path).read_text())
+        if packet.get("reviewed_route_role") != fallback_role:
+            raise ValueError("Fallback requires a separately reviewed alternate approach packet")
     from native_bundle import capture_bundle
     from finalize_capture import publish
     adapter = importlib.import_module(adapter_name)
@@ -148,7 +153,10 @@ class BundleTests(unittest.TestCase):
 
         adapter = types.SimpleNamespace(open_session=lambda *args: Session())
         with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR", ".runtime-work")) as temp:
-            env = {"SCENARIO_INTERSECTION_MAP_PACKET": "reviewed-map.json",
+            packet = Path(temp) / "reviewed-map.json"
+            config = json.loads((Path(__file__).resolve().parents[1] / "config.json").read_text())
+            packet.write_text(json.dumps({"reviewed_route_role": config.get("fallback_route_role")}))
+            env = {"SCENARIO_INTERSECTION_MAP_PACKET": str(packet),
                    "SCENARIO_INTERSECTION_ADAPTER": "reviewed_adapter"}
             with patch.dict(os.environ, env), \\
                     patch.object(sys, "argv", ["runner.py", "--output-dir", temp,
@@ -158,7 +166,7 @@ class BundleTests(unittest.TestCase):
                     patch.object(finalize_capture, "publish") as publish:
                 runner.main()
             self.assertEqual(capture.call_args.args[2], Path(temp) / "original-attempt")
-            self.assertEqual(capture.call_args.kwargs["map_packet_path"], "reviewed-map.json")
+            self.assertEqual(capture.call_args.kwargs["map_packet_path"], str(packet))
             self.assertEqual(capture.call_args.kwargs["acquisition_kind"], "original_native")
             self.assertEqual(publish.call_args.kwargs["restoration"]["restored"], True)
 
@@ -183,6 +191,7 @@ def build():
             "cell_id": plan["cell_id"], "actor": plan["actor"],
             "selected_case_id": case,
             "requested_front_body_gap_ft": row["requested_front_body_gap_ft"],
+            "recording_description": row["recording_description"],
             "activity": row["activity"], "halt_cause": row["halt_cause"],
             "plan_sha256": plan_sha, "rate_hz": 20,
             "frame_count": 900, "duration_s": 45, "cameras": CAMERAS,
@@ -206,6 +215,25 @@ def build():
         entries.append({"case_id": case, "construction": str(output.relative_to(HERE)),
                         "construction_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
                         "candidate_risk": row["candidate_risk"]})
+        alternate = json.loads(json.dumps(construction))
+        for item in alternate["files"]:
+            if item["path"] == "config.json":
+                fallback_config = json.loads(item["content"])
+                fallback_config["fallback_route_role"] = "alternate_reviewed_intersection_approach"
+                item["content"] = json.dumps(fallback_config, indent=2) + "\n"
+        fallback_path = HERE / "cases" / suffix / "fallback1-construction.json"
+        fallback_path.write_text(json.dumps(alternate, indent=2) + "\n")
+        entries[-1]["fallback1_construction"] = str(fallback_path.relative_to(HERE))
+        entries[-1]["fallback1_construction_sha256"] = hashlib.sha256(fallback_path.read_bytes()).hexdigest()
+        entries[-1]["candidates"] = [{
+            "id": "fallback1",
+            "construction": entries[-1]["fallback1_construction"],
+            "construction_sha256": entries[-1]["fallback1_construction_sha256"],
+            "trigger": {"source": "original-attempt/map-source.json",
+                        "metric": "source-bound route spawn and front-body gap feasibility",
+                        "failure_condition": "Primary reviewed route has no safe spawn or cannot realize requested halt gap"},
+            "changed_knobs": ["reviewed_route_role=alternate_reviewed_intersection_approach",
+                              "alternate source-reviewed spawn and approach packet"]}]
     (HERE / "execution-manifest.draft.json").write_text(json.dumps({
         "assignment_id": AID, "status": "diagnostic_offline_only_original_site_pending",
         "cases": entries}, indent=2) + "\n")

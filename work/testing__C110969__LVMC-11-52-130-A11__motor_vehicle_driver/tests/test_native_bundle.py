@@ -14,6 +14,7 @@ sys.path.insert(0, str(BASE))
 from native_bundle import capture_bundle
 from native_map import PREFIX, SUFFIXES
 from saved_delivery import audit
+from analysis import finalize, write_recording_channels
 
 
 class World:
@@ -60,7 +61,7 @@ class Ego:
 
 class NativeBundleTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        self.temp = tempfile.TemporaryDirectory(dir=pathlib.Path.cwd() / ".runtime-work")
         self.addCleanup(self.temp.cleanup)
         self.root = pathlib.Path(self.temp.name)
         self.map_path = self.root / "map-packet.json"
@@ -104,6 +105,34 @@ class NativeBundleTests(unittest.TestCase):
             capture_bundle(World(), self.ego, self.root / "attempt", **self.args)
         self.assertEqual(self.ego.controls[-1].brake, 1)
         self.assertFalse((self.root / "attempt" / "attempt.json").exists())
+
+    def test_selected_analysis_joins_five_statutory_observations(self):
+        from pathlib import Path
+        sys.path.insert(0, str(Path.cwd() / "runtime/scenario_pipeline"))
+        from worker_exchange.measurement_contract import verify_report
+        stage = self.root / "selected"
+        stage.mkdir()
+        capture_bundle(World(), self.ego, stage / "original-attempt", **self.args)
+        (stage / "acquisition-provenance.json").write_text(json.dumps({
+            "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True}) + "\n")
+        report = finalize(stage, self.args["case_id"])
+        plan = json.loads((BASE / "case-plan.json").read_text())
+        description = plan["cases"][0]["recording_description"]
+        evidence = write_recording_channels(stage, description)
+        from batch_pipeline.validation import recording_evidence
+        recording_evidence({"recording_description": description,
+                            "recording_evidence": evidence}, description,
+                           lambda relative: stage / relative)
+        self.assertEqual(len(evidence), 8)
+        contract = json.loads((BASE / "cases/stop_14ft/measurement-contract.json").read_text())
+        values = verify_report(contract, report, stage)
+        self.assertEqual(len(values), 5)
+        self.assertAlmostEqual(values["observed_intersection_gap"]["value"]["minimum_halt_body_gap_m"], 14 * 0.3048)
+        self.assertEqual(values["observed_traffic"]["value"]["necessity_judgment"],
+                         "unresolved_from_original_traffic_geometry")
+        (stage / "original-attempt/context.jsonl").unlink()
+        with self.assertRaisesRegex(ValueError, "source missing|Missing required source"):
+            finalize(stage, self.args["case_id"])
 
 
 if __name__ == "__main__":

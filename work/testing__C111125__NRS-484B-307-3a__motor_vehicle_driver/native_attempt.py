@@ -73,6 +73,22 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
             require(isinstance(captured, dict) and captured.get("frame") == frame and
                     abs(float(captured.get("time_s", -1)) - elapsed) <= 1e-4,
                     "PipelineCapture original frame/timestamp join failed")
+        camera_refs = None
+        if camera_frame_for_tick is not None:
+            views = camera_frame_for_tick(frame)
+            require(isinstance(views, dict) and set(views) ==
+                    {"overview", "approach", "reference_corner", "driver_reference"},
+                    "four original camera callbacks required")
+            output = Path(output_dir)
+            output.mkdir(parents=True, exist_ok=True)
+            camera_refs = {}
+            for name, data in views.items():
+                require(isinstance(data, bytes) and data, "missing camera bytes")
+                source_path = output / f"original-{name}-{index:06d}.png"
+                with source_path.open("xb") as stream:
+                    stream.write(data)
+                camera_refs[name] = {"path": source_path.name,
+                                     "sha256": hashlib.sha256(data).hexdigest()}
         lamp_ref = lamp_ref_for_frame(frame)
         packet = _packet(source_root, lamp_ref, frame, site)
         observer_methods.add(packet.get("observer_method", "pending_independent_observer"))
@@ -114,23 +130,9 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
                      "aspect_observation_sha256": lamp_ref["sha256"],
                      "lit_aspects": packet["lit_aspects"],
                      "ego_xy": [pose.x, pose.y], "other_users": users})
-        if camera_frame_for_tick is not None:
-            views = camera_frame_for_tick(frame)
-            require(isinstance(views, dict) and set(views) ==
-                    {"overview", "approach", "reference_corner", "driver_reference"},
-                    "four original camera callbacks required")
-            output = Path(output_dir)
-            output.mkdir(parents=True, exist_ok=True)
-            source_refs = {}
-            for name, data in views.items():
-                require(isinstance(data, bytes) and data, "missing camera bytes")
-                source_path = output / f"original-{name}-{index:06d}.png"
-                with source_path.open("xb") as stream:
-                    stream.write(data)
-                source_refs[name] = {"path": source_path.name,
-                                     "sha256": hashlib.sha256(data).hexdigest()}
+        if camera_refs is not None:
             camera_rows.append({"video_frame": index, "carla_frame": frame,
-                                "time_s": elapsed, "views": source_refs})
+                                "time_s": elapsed, "views": camera_refs})
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     event_path = output / "original-events.json"

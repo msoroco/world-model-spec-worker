@@ -11,7 +11,7 @@ ASSIGNMENT = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver"
 SUFFIXES = ("dual_clear", "dual_vehicle_present", "dual_pedestrian_present",
             "dual_pedestrian_late")
 SOURCES = ("dual_green.py", "native_attempt.py", "native_straight_controller.py",
-           "native_other_controller.py", "native_cameras.py",
+           "native_other_controller.py", "native_cameras.py", "native_runner.py",
            "saved_attempt.py", "saved_finalizer.py", "camera_audit.py",
            "comparison_audit.py", "source_handoff.py", "native_publication.py",
            "analysis.py")
@@ -55,12 +55,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--host")
+    parser.add_argument("--port", type=int)
     args = parser.parse_args()
     case_id = check()
     if args.check:
         print("diagnostic dual-green case passed: " + case_id)
         return
-    raise ValueError("Reviewed original dual-aspect site, lamp, lawful-use and camera sources required")
+    if not __import__("os").environ.get("SCENARIO_DUAL_GREEN_SOURCE_ROOT"):
+        raise ValueError("Reviewed original dual-aspect site, lamp, lawful-use and camera sources required")
+    from native_runner import run
+    run(args.host, args.port, args.output_dir, case_id)
 
 
 if __name__ == "__main__":
@@ -113,7 +118,7 @@ def build():
                   "plan_sha256": hashlib.sha256(plan_bytes).hexdigest(),
                   "code_sha256": {name: hashlib.sha256(data).hexdigest() for name, data in code.items()},
                   "fps": 20, "frame_count": 900, "cameras": list(CAMERAS),
-                  "diagnostic_only": True, "required_atoms": [],
+                  "diagnostic_only": False, "required_atoms": [],
                   "required_sources": ["surveyed_native_site", "official_dual_aspect_lamp_packets",
                                        "original_camera_png", "lawful_use_packets"]}
         files = {name: data.decode("utf-8") for name, data in code.items()}
@@ -122,7 +127,7 @@ def build():
                       "tests/test_bundle.py": TEST})
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": case_id,
-                        "entrypoint": "runner.py", "diagnostic_only": True,
+                        "entrypoint": "runner.py", "diagnostic_only": False,
                         "recording_description": descriptions[case_id],
                         "files": [{"path": name, "content": content} for name, content in files.items()]}
         path = HERE / ("construction-" + suffix + ".json")
@@ -133,7 +138,7 @@ def build():
                      "measurement_procedure": {"entrypoint": "analysis.py"},
                      "candidate_risk": item["physical_risk_assessment"]})
     (HERE / "execution-manifest.draft.json").write_text(json.dumps({
-        "assignment_id": ASSIGNMENT, "status": "diagnostic_original_sources_pending",
+        "assignment_id": ASSIGNMENT, "status": "production_source_gated_cpu_partial",
         "cases": rows}, indent=2) + "\n", encoding="utf-8")
     print("built", len(rows), "exact dual-green diagnostic constructions")
 

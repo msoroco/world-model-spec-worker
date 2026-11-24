@@ -68,6 +68,7 @@ class OtherControllerTests(unittest.TestCase):
             "intersection_polygon_xy": [[-2, -2], [2, -2], [2, 2], [-2, 2]],
             "adjacent_crosswalk_polygon_xy": [[-4, 3], [4, 3], [4, 5], [-4, 5]],
             "other_user_target_xy": [0, 4], "late_start_frame_index": 2,
+            "other_user_release_frame_index": 40, "other_user_exit_xy": [5, 6],
         }
         self.other = Actor(0, 6)
 
@@ -92,6 +93,20 @@ class OtherControllerTests(unittest.TestCase):
         self.assertTrue(self.other.controls[-1].hand_brake)
         with self.assertRaisesRegex(EvidenceError, "tick order"):
             controller(self.other, 0)
+
+    def test_vehicle_release_is_finite(self):
+        self.site["other_user_release_frame_index"] = 1
+        controller = self.controller("dual_vehicle_present")
+        self.assertTrue(controller(self.other, 0)["engineering_stationary_request"])
+        released = controller(self.other, 1)
+        self.assertFalse(released["engineering_stationary_request"])
+        self.assertGreater(self.other.controls[-1].throttle, 0)
+        self.assertFalse(self.other.controls[-1].hand_brake)
+
+    def test_missing_release_rejected(self):
+        del self.site["other_user_release_frame_index"]
+        with self.assertRaisesRegex(EvidenceError, "finite release frame"):
+            self.controller("dual_vehicle_present")
 
     def test_missing_late_target_rejected(self):
         del self.site["other_user_target_xy"]
