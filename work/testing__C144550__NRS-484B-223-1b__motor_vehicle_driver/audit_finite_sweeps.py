@@ -63,6 +63,12 @@ def audit(kind, negative=False):
         normalize = normalize_signal
         variable = "appropriate_signal_lead_frames"
         expected = [-1, 1, 0]
+    elif kind == "signal_departure_boundary":
+        suffixes = ["left_signal_late_clear_gap", "left_signal_at_departure_clear_gap",
+                    "left_signal_before_clear_gap"]
+        normalize = normalize_signal
+        variable = "appropriate_signal_lead_frames"
+        expected = [-1, 0, 1]
     else:
         suffixes = ["safety-ascertainment-pending-" + str(i).zfill(4) for i in range(2)]
         normalize = normalize_gap
@@ -96,7 +102,8 @@ def audit(kind, negative=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--comparison", choices=("signal_lead_finite_sweep", "target_gap_finite_sweep"), required=True)
+    parser.add_argument("--comparison", choices=("signal_departure_boundary", "signal_lead_finite_sweep",
+                                                   "target_gap_finite_sweep"), required=True)
     parser.add_argument("--negative", action="store_true")
     args = parser.parse_args()
     print(json.dumps(audit(args.comparison, args.negative), sort_keys=True))

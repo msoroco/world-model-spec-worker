@@ -85,7 +85,52 @@
       ],
       "deliberate_differences": [
         "appropriate signal timing and direction before first body departure"
-      ]
+      ],
+      "cpu_diagnostic_audit": {
+        "status": "passed_synthetic_source_comparison",
+        "script": "audit_original_comparisons.py",
+        "script_sha256": "7ffa58c414e4f02f18ee816c331ee6819c3f72014737162a7ca9ccc6cd87e06f",
+        "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_original_comparisons.py --comparison signal_order",
+        "positive_log": "signal_order-current-positive.log",
+        "positive_sha256": "4a95e9c3eb8d35d38a14affdc00622c70870aee84dbb7b92330796f208684644",
+        "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_original_comparisons.py --comparison signal_order --negative",
+        "negative_log": "signal_order-current-negative.log",
+        "negative_sha256": "599263fe0d4539fbea1b8d032f9b7e4915d716a0cd6c5ad79057cc2c1e7e0b21",
+        "negative_expected_error": "Signal comparison changed non-lamp capture",
+        "original_frames": 900,
+        "original_source_sha256": {
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap": {
+            "capture/evidence.jsonl": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353",
+            "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "lane_history.jsonl": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+            "trace.jsonl": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          },
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap": {
+            "capture/evidence.jsonl": "bb0d62cbf730b2d82fe43bba22d6d73a4b6068862311ba61ec9f966af07989c0",
+            "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "lane_history.jsonl": "ecb4b32d1763ee2840c247f95c2c415334557afbdb95c973b14481dcb6831894",
+            "trace.jsonl": "9655d7e3372b93078765b6ef32c70798664693065b4edde1c14ee9ac6ccc878c",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          },
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap": {
+            "capture/evidence.jsonl": "aa5dc0fcf7a42bf1ad3ce414695b8d6e7e76bed406329ce33a04edd9691c9a4c",
+            "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "lane_history.jsonl": "05e78dffc989c1fe5174e1e84762f177eb0efb976bfd72a7b15ae56b2b42eb2c",
+            "trace.jsonl": "a784e95ba068d1fbd1a2a128f940e028cd37d53635734003ae33a1db95cea3d3",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          }
+        },
+        "diagnostic_contrast": {
+          "baseline_indicator_at_movement": "left",
+          "frames": 900,
+          "late_body_departure_frame": 101,
+          "late_indicator_at_movement": "off",
+          "late_signal_frame": 102,
+          "wrong_indicator_at_movement": "right"
+        },
+        "limitations": "Synthetic source comparison; Native original, independent pixels and legal judgment remain open."
+      }
     },
     {
       "comparison_id": "target_lane_gap",
@@ -101,25 +146,39 @@
       ],
       "cpu_diagnostic_audit": {
         "status": "passed_synthetic_source_comparison",
-        "frame_count": 900,
-        "fixed_originals": [
-          "ego body and lane history",
-          "indicator schedule",
-          "road and lane context",
-          "trace",
-          "video frame map",
-          "capture timing and ego observations"
-        ],
-        "changed_original": "target actor body longitudinal position shifted 5.0 m closer in all 900 lane-history, capture-observation and base-graph rows",
-        "clear_gap_m": 8.0,
-        "close_gap_m": 3.0,
-        "source_sha256": {
-          "clear_lane_history": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
-          "close_lane_history": "67cd05fa62e7905bef0a94b63382b8c5f904c26eca097dc26068a7f095308b52",
-          "clear_capture_evidence": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353",
-          "close_capture_evidence": "5177aa55075c7fdbce8d2e1b2476223a28846a2a7c03387a23965395afc88e8b"
+        "script": "audit_original_comparisons.py",
+        "script_sha256": "7ffa58c414e4f02f18ee816c331ee6819c3f72014737162a7ca9ccc6cd87e06f",
+        "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_original_comparisons.py --comparison target_lane_gap",
+        "positive_log": "target_lane_gap-current-positive.log",
+        "positive_sha256": "abd90486366a5d6d207245487388e50f9f75c5922da060c12e5185a22702a55f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_original_comparisons.py --comparison target_lane_gap --negative",
+        "negative_log": "target_lane_gap-current-negative.log",
+        "negative_sha256": "2001c411463804910739284555113ad97f6a730f2731374d9d46fde829216a3a",
+        "negative_expected_error": "Target body shift differs",
+        "original_frames": 900,
+        "original_source_sha256": {
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap": {
+            "capture/evidence.jsonl": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353",
+            "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "lane_history.jsonl": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+            "trace.jsonl": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          },
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap": {
+            "capture/evidence.jsonl": "5177aa55075c7fdbce8d2e1b2476223a28846a2a7c03387a23965395afc88e8b",
+            "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "lane_history.jsonl": "67cd05fa62e7905bef0a94b63382b8c5f904c26eca097dc26068a7f095308b52",
+            "trace.jsonl": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          }
         },
-        "limitations": "Synthetic CPU diagnostic only; no statutory safe-gap threshold or Native safety ascertainment claimed."
+        "diagnostic_contrast": {
+          "clear_gap_m": 8.0,
+          "close_gap_m": 3.0,
+          "frames": 900,
+          "target_body_shift_m": 5.0
+        },
+        "limitations": "Synthetic source comparison; Native original, independent pixels and legal judgment remain open."
       }
     },
     {
@@ -136,24 +195,39 @@
       ],
       "cpu_diagnostic_audit": {
         "status": "passed_synthetic_source_comparison",
-        "frame_count": 900,
-        "fixed_originals": [
-          "longitudinal ego and target trajectories",
-          "frame and camera map",
-          "capture timing",
-          "target longitudinal body gap"
-        ],
-        "deliberate_transform": "reflect lateral coordinates as y_right = 0.5 - y_left, exchange source and target Native lane IDs, and replace left indication with right in original state, trace and graph evidence",
-        "left_gap_m": 8.0,
-        "right_gap_m": 8.0,
-        "right_signal_before_movement": true,
-        "source_sha256": {
-          "left_lane_history": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
-          "right_lane_history": "199d764441945a356bdf3e8514101f574f40606455ff0c71a51e1ff6fa4d69ff",
-          "left_context": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
-          "right_context": "f6a915d0b44cec57a6b9eb7d1f714d43355f0f0e2c0d94d298af20857fa48ec3"
+        "script": "audit_original_comparisons.py",
+        "script_sha256": "7ffa58c414e4f02f18ee816c331ee6819c3f72014737162a7ca9ccc6cd87e06f",
+        "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_original_comparisons.py --comparison lane_change_direction",
+        "positive_log": "lane_change_direction-current-positive.log",
+        "positive_sha256": "6cedce17eaf10b2e071cad1dc310c363c1f19f06b45c24d8a03effaaa68a3018",
+        "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_original_comparisons.py --comparison lane_change_direction --negative",
+        "negative_log": "lane_change_direction-current-negative.log",
+        "negative_sha256": "bc837a2bd439b65f7b79d012309156694cbf040271454cf07150422a8ac30c41",
+        "negative_expected_error": "Ego lateral mirror differs",
+        "original_frames": 900,
+        "original_source_sha256": {
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap": {
+            "capture/evidence.jsonl": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353",
+            "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "lane_history.jsonl": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+            "trace.jsonl": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          },
+          "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap": {
+            "capture/evidence.jsonl": "3403e01c16cd0aab1b75a452657f3e9643c8131eb4af29386ad0145f57143b41",
+            "lane_context.json": "f6a915d0b44cec57a6b9eb7d1f714d43355f0f0e2c0d94d298af20857fa48ec3",
+            "lane_history.jsonl": "199d764441945a356bdf3e8514101f574f40606455ff0c71a51e1ff6fa4d69ff",
+            "trace.jsonl": "aa1afaa117f5db462f3dbe556d208cfa9bb2a5a35e4708f5c6a6e9b6ed220618",
+            "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          }
         },
-        "limitations": "Synthetic CPU source comparison only; Native lane appearance and actual driver safety ascertainment remain unresolved."
+        "diagnostic_contrast": {
+          "frames": 900,
+          "lateral_reflection_axis_y_m": 0.25,
+          "left_gap_m": 8.0,
+          "right_gap_m": 8.0
+        },
+        "limitations": "Synthetic source comparison; Native original, independent pixels and legal judgment remain open."
       }
     },
     {
@@ -168,7 +242,48 @@
       ],
       "deliberate_differences": [
         "first appropriate left lamp relative to original first body departure: one frame after, at departure, and one frame before; no statutory lead-time cutoff inferred"
-      ]
+      ],
+      "cpu_diagnostic_audit": {
+        "status": "passed_synthetic_source_comparison",
+        "script": "audit_finite_sweeps.py",
+        "script_sha256": "47707da75ae3a5bf5f37282f87435a0dfc3ac8ff159ab8fc55a77938ee3ef392",
+        "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_departure_boundary",
+        "positive_log": "signal_departure_boundary-positive.log",
+        "positive_sha256": "b42f342d5bf9b822fd74f4f03d073bd4bbd32c0f1c3a72467abec069da160776",
+        "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_departure_boundary --negative",
+        "negative_log": "signal_departure_boundary-negative.log",
+        "negative_sha256": "7aebccb2f91015d4ce503430a2b2287844503e728dfd43b9ff6f9f128926079c",
+        "negative_expected_error": "Selected sweep changed fixed original fields: lane_history.jsonl",
+        "original_frames": 900,
+        "original_source_sha256": {
+          "capture/evidence.jsonl": {
+            "left_signal_at_departure_clear_gap": "fd95caa10f34d4a5a5cbc783ab311864ffaa2287d3fc226bf211b60ece110d83",
+            "left_signal_before_clear_gap": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353",
+            "left_signal_late_clear_gap": "bb0d62cbf730b2d82fe43bba22d6d73a4b6068862311ba61ec9f966af07989c0"
+          },
+          "lane_context.json": {
+            "left_signal_at_departure_clear_gap": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "left_signal_before_clear_gap": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "left_signal_late_clear_gap": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae"
+          },
+          "lane_history.jsonl": {
+            "left_signal_at_departure_clear_gap": "f2d9b0912bac577b0a7cc1085755d653e875e8d0482d2eb786c2b65c5b18fe49",
+            "left_signal_before_clear_gap": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+            "left_signal_late_clear_gap": "ecb4b32d1763ee2840c247f95c2c415334557afbdb95c973b14481dcb6831894"
+          },
+          "trace.jsonl": {
+            "left_signal_at_departure_clear_gap": "f8d5685d402c28198bb7810787e5510f7b562b3ae4eff5ef1f2c5213229dd7e0",
+            "left_signal_before_clear_gap": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "left_signal_late_clear_gap": "9655d7e3372b93078765b6ef32c70798664693065b4edde1c14ee9ac6ccc878c"
+          },
+          "video_frames.jsonl": {
+            "left_signal_at_departure_clear_gap": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+            "left_signal_before_clear_gap": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+            "left_signal_late_clear_gap": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          }
+        },
+        "limitations": "Synthetic diagnostic source comparison only; Native physical realization, independent pixels and legal judgment remain open."
+      }
     },
     {
       "comparison_id": "signal_lead_finite_sweep",
@@ -186,13 +301,13 @@
       "cpu_diagnostic_audit": {
         "status": "passed_synthetic_source_comparison",
         "script": "audit_finite_sweeps.py",
-        "script_sha256": "4c6eb1795bad725d93cd7cec42056e2f11efc908a817300d8d8a3557f273c6f6",
+        "script_sha256": "47707da75ae3a5bf5f37282f87435a0dfc3ac8ff159ab8fc55a77938ee3ef392",
         "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_lead_finite_sweep",
         "positive_log": "signal_lead_finite_sweep-positive.log",
         "positive_sha256": "a7e1a34817a3eba7a55d8ec2c37b63ba54efe5381abb4b4f7e90ad70754a8923",
         "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_lead_finite_sweep --negative",
         "negative_log": "signal_lead_finite_sweep-negative.log",
-        "negative_sha256": "280711f603f7539f6e66d63815ea2141db31fff9030b54da03a0b09ff5561314",
+        "negative_sha256": "7aebccb2f91015d4ce503430a2b2287844503e728dfd43b9ff6f9f128926079c",
         "negative_expected_error": "Selected sweep changed fixed original fields: lane_history.jsonl",
         "original_frames": 900,
         "original_source_sha256": {
@@ -240,13 +355,13 @@
       "cpu_diagnostic_audit": {
         "status": "passed_synthetic_source_comparison",
         "script": "audit_finite_sweeps.py",
-        "script_sha256": "4c6eb1795bad725d93cd7cec42056e2f11efc908a817300d8d8a3557f273c6f6",
+        "script_sha256": "47707da75ae3a5bf5f37282f87435a0dfc3ac8ff159ab8fc55a77938ee3ef392",
         "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison target_gap_finite_sweep",
         "positive_log": "target_gap_finite_sweep-positive.log",
         "positive_sha256": "8c03cc2f50a2955c8b5eba17fbf56800b44d298280cbef7461d42f9b2103e648",
         "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison target_gap_finite_sweep --negative",
         "negative_log": "target_gap_finite_sweep-negative.log",
-        "negative_sha256": "280711f603f7539f6e66d63815ea2141db31fff9030b54da03a0b09ff5561314",
+        "negative_sha256": "7aebccb2f91015d4ce503430a2b2287844503e728dfd43b9ff6f9f128926079c",
         "negative_expected_error": "Selected sweep changed fixed original fields: lane_history.jsonl",
         "original_frames": 900,
         "original_source_sha256": {

@@ -16,6 +16,6 @@ from worker_exchange.delivery_handoff import validate_case  # noqa: E402
 
 
 for entry in json.loads((HERE / "execution-manifest.json").read_text())["cases"]:
-    validate_case(HERE, entry, expected_sets=["demo-test"])
+    validate_case(HERE, entry, expected_sets=["demo-test", "full-test"])
     print("PASS", entry["case_id"])
 print("All 11 exact delivery contracts validated")

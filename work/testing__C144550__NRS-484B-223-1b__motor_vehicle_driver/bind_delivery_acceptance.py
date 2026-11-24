@@ -29,7 +29,7 @@ for entry in data["cases"]:
     base = ".venv-cpu/bin/python work/" + HERE.name + "/prove_delivery_acceptance.py --case " + case
     entry["delivery_acceptance"] = {
         "case_id": case,
-        "sets": ["demo-test"],
+        "sets": ["demo-test", "full-test"],
         "checks": CHECKS,
         "script": "delivery_acceptance.py",
         "script_sha256": digest(HERE / "delivery_acceptance.py"),
