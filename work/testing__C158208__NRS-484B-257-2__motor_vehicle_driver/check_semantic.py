@@ -13,6 +13,7 @@ output_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
 if not output_root or not Path(output_root).resolve().is_relative_to(ROOT / ".runtime-work"):
     raise ValueError("Use an output root under .runtime-work before importing runtime")
 
+sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / "runtime" / "scenario_pipeline"))
 from worker_exchange.semantic_delivery import validate  # noqa: E402
 

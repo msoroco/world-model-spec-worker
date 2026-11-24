@@ -729,3 +729,23 @@ Quick whole-workspace check after archive cleanup reached retained prior-ready r
 C158208-2 now owns a small text-only `diagnostic-recipe.json` and generator specification. Runtime materialization generated and decoded four FFV1 cameras; its real saved finalizer passed six source-hash measurements and the exact missing `entry_history.jsonl` negative test. See package `diagnostic-check.log`. Continue with semantic proposals, selected manifest, Core compatibility/render, officer construction, fallbacks and independent audits; status is still partial.
 
 C158208-2 now has five passing exact current-runtime canonical compatibility probes with case-specific diagnostic recipes, current Lean decoder, Core conversion, FFV1/video checks and negative source rejection. See package HANDOFF and per-case receipts. The manifest and proposal list are still draft compatibility scaffolding; finish canonical semantic stages, actual Native officer construction, risk fallbacks, physical preparation and independent audits before claiming ready. Ten of 43 batch results remain partial.
+
+## 2026-11-24 C158208-2 semantic progress
+
+C158208-2 remains partial. Its exact subsection-2 semantic chain now has 11 source-hashed stage artifacts and passes the current runtime stage validator for a baseline plus five selected cases; see `work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/semantic-check.log`. All five previous offline and compatibility probes remain bound to unchanged constructions. The fixed physical judgment sweep is explicitly incomplete. Native officer authority, selected delivery manifest, fallbacks, saved-only processing and independent audits remain worker-owned. Assignment-scoped complete static check passes; the strict ready check has not passed. No newly ready assignment this turn.
+
+### 2026-11-24 work-file hygiene and CPU rerun
+
+The C158208-2 24-test suite passed again with `PYTHONDONTWRITEBYTECODE=1`; its fresh passing log and SHA-256 replaced the stale failure log/receipt. Removed two generated `__pycache__` directories. A full read of 10,310 returned files found zero non-UTF-8 files, files above the 2 MiB/5 MiB limits, trailing whitespace, or conflict markers. The quick whole-return checker was started separately and is still running at this checkpoint. No Git command was run.
+
+### Whole-return quick checker result
+
+The no-flags `.venv-cpu/bin/python worker_check.py` completed with exit 1. It reached execution-manifest validation and raised `ValueError: Execution manifest binds another runtime` for a retained prior-ready package; it did **not** raise `UnicodeDecodeError`. The package-scoped C158208-2 `--complete` check passes. Per `AGENT_PROMPT.md` and `RUNTIME_REFRESH.md`, retained prior-ready packages are preserved on their recorded runtime and are not bulk migrated merely to clear this whole-return check. The batch strict delivery gate remains unpassed with 10 partial assignments. The exact whole-check traceback is in `.runtime-work/worker-quick-20261124.log`.
+
+## 2026-11-24 C158208-2 saved-only CPU proof
+
+C158208-2 remains partial. Added `work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py` and `post-capture-check.log`: all five exact selected cases passed fresh manifest-bound, recorded-only CPU fixture processing through the finalizer, Core/Lean conversion, rendering and final video decode. All five missing-`entry_history.jsonl` negative replays returned missing-evidence feedback without requesting Native replay; original diagnostic sources remained unchanged. The semantic chain still has an explicitly incomplete fixed physical sweep. Exact selected manifest, officer source, fallbacks and independent audits remain worker-owned. Assignment-scoped `--complete` check passes, but no new assignment is ready. Work scan: 10,314 UTF-8 returned files, zero size/whitespace/conflict issues.
+
+### Runtime sweep expansion recorded
+
+Ran active `runtime.py expand` on the C158208-2 semantic case proposal, exact template and bindings. It produced six cases total: the one baseline and the same five selected exact IDs, with no changed case fields or added sweep cases. The only case-proposal change is `sweeps_expanded: true`, accurately recording mechanical expansion of the explicitly incomplete sweep. Updated the semantic index hash, reran the semantic validator and all five positive/negative saved-only fixture replays, refreshed both proof hashes, and passed the assignment-scoped `--complete` check. The physical sweep remains incomplete; package status remains partial.
