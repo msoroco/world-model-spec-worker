@@ -20,9 +20,169 @@
   "topic_inventory": {
     "exact-text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_original_entry_measurement_cpu_tested",
+      "requested_ego_response": "yield_before_entry",
+      "requested_entry_difference_s": -0.02500000037252903,
+      "timing_probe_band": "inside",
+      "physical_risk": {
+        "risk": "median opening or official signal can change legal applicability and crossing geometry",
+        "trigger": "original map, signal or actor route readback fails",
+        "candidate_plan": "repair source-backed construction; no unverified fallback"
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_original_entry_measurement_cpu_tested",
+      "requested_ego_response": "advance_before_other_exit",
+      "requested_entry_difference_s": -0.02500000037252903,
+      "timing_probe_band": "inside",
+      "physical_risk": {
+        "risk": "median opening or official signal can change legal applicability and crossing geometry",
+        "trigger": "original map, signal or actor route readback fails",
+        "candidate_plan": "repair source-backed construction; no unverified fallback"
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__timing_below",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_original_entry_measurement_cpu_tested",
+      "requested_ego_response": "yield_before_entry",
+      "requested_entry_difference_s": -2.860000042617321,
+      "timing_probe_band": "below",
+      "physical_risk": {
+        "risk": "median opening or official signal can change legal applicability and crossing geometry",
+        "trigger": "original map, signal or actor route readback fails",
+        "candidate_plan": "repair source-backed construction; no unverified fallback"
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__timing_inside",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_original_entry_measurement_cpu_tested",
+      "requested_ego_response": "yield_before_entry",
+      "requested_entry_difference_s": -0.02500000037252903,
+      "timing_probe_band": "inside",
+      "physical_risk": {
+        "risk": "median opening or official signal can change legal applicability and crossing geometry",
+        "trigger": "original map, signal or actor route readback fails",
+        "candidate_plan": "repair source-backed construction; no unverified fallback"
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__timing_above",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_behavior_probe",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "preparation_status": "source_gated_original_entry_measurement_cpu_tested",
+      "requested_ego_response": "yield_before_entry",
+      "requested_entry_difference_s": 2.810000041872263,
+      "timing_probe_band": "above",
+      "physical_risk": {
+        "risk": "median opening or official signal can change legal applicability and crossing geometry",
+        "trigger": "original map, signal or actor route readback fails",
+        "candidate_plan": "repair source-backed construction; no unverified fallback"
+      },
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "precedence_response",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__precedence",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__advance"
+      ],
+      "fixed_conditions": [
+        "same reviewed map and physical median crossing",
+        "same distinct highways and approach geometry",
+        "same original governing-device context",
+        "same requested entry timing target and camera policy"
+      ],
+      "deliberate_differences": [
+        "requested ego yielding response; actual entry order and time measured from original footprints"
+      ],
+      "status": "planning_only_source_bound_measurement_cpu_tested",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "approximately_same_time_brackets",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__timing_below",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__timing_inside",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__timing_above"
+      ],
+      "fixed_conditions": [
+        "same reviewed map and physical median crossing",
+        "same governing-device context",
+        "same actor roads, route and requested ego yielding response",
+        "same 20 Hz source and camera policy"
+      ],
+      "deliberate_differences": [
+        "requested ego-minus-other crossing entry time; measured source brackets retained without interpolation"
+      ],
+      "status": "planning_only_source_bound_measurement_cpu_tested",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_entry_bracket",
+      "source": "SHA-bound original Native actor footprint/clock and reviewed crossing survey",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "other_entry_bracket",
+      "source": "SHA-bound original Native actor footprint/clock and reviewed crossing survey",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "ego_minus_other_upper_entry_s",
+      "source": "SHA-bound original Native actor footprint/clock and reviewed crossing survey",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "other_approach_side_of_ego",
+      "source": "SHA-bound original Native actor footprint/clock and reviewed crossing survey",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    },
+    {
+      "name": "governing_device_states",
+      "source": "SHA-bound original Native actor footprint/clock and reviewed crossing survey",
+      "status": "measurement_code_cpu_tested_original_source_pending"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
@@ -66,8 +226,9 @@
     "34ee2226dfeeb9de360f4afe20f9e0a9e290937b9aa8fd50f61564314a24750f"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Accepted metadata lacks original trace/video and cannot establish entry timing, priority or physical comparison isolation.",
+    "The traffic-light cell may fall under the official-device exclusion; subsection-4 applicability remains unresolved pending exact source review.",
+    "The five timing targets are engineering probes from frozen training bounds, not legal cutoffs; no Native acquisition or delivery proof yet."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -129,7 +290,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "five_exact_cases_two_comparisons_entry_timing_measurement_cpu_tested",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",

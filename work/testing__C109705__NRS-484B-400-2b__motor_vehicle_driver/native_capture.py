@@ -56,7 +56,7 @@ def _state(raw, frame, previous_frame, expected_case):
             'elapsed_seconds': float(elapsed)}
 
 
-def capture(adapter, case_id, survey, map_source_path, output_dir):
+def capture(adapter, case_id, survey, map_source_path, output_dir, *, camera_source=None):
     """Execute a 45 s, 20 Hz capture using an injected synchronous Native adapter.
 
     Adapter methods: spawn_ego, configure_cameras, resolve_waypoint, apply_control,
@@ -70,6 +70,8 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
     output = Path(output_dir)
     if output.exists() and any(output.iterdir()):
         raise ValueError('refusing to overwrite original Native capture')
+    if camera_source is not None and Path(camera_source.output).resolve().parent != output.resolve():
+        raise ValueError('original camera sources must be attempt local')
     output.mkdir(parents=True, exist_ok=True)
     ego = None
     samples = []
@@ -79,7 +81,10 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
     entered = departed = False
     try:
         ego = adapter.spawn_ego(plan['ego_blueprint_id'], survey['map_name'], case_id)
-        adapter.configure_cameras(ego, CAMERAS, fps=20)
+        if camera_source is None:
+            adapter.configure_cameras(ego, CAMERAS, fps=20)
+        else:
+            camera_source.configure_cameras(ego, CAMERAS, fps=20)
         for tick_index in range(900):
             waypoint_ids = plan['left_turn_route_waypoint_ids']
             if waypoint_index < len(waypoint_ids):
@@ -114,7 +119,8 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
                 raise ValueError('Native route regressed after departure')
             samples.append(sample)
             for name in CAMERAS:
-                camera = adapter.camera_frame(name, frame)
+                camera = (adapter.camera_frame(name, frame) if camera_source is None
+                          else camera_source.camera_frame(name, frame))
                 if not isinstance(camera, dict) or camera.get('frame') != frame or camera.get('channel') != name:
                     raise ValueError('Native four-camera frame missing or unsynchronized')
                 if not camera.get('source_path') or not camera.get('source_sha256'):
@@ -143,6 +149,12 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
                 'map_source_sha256': plan['survey_source_sha256'], 'frames': len(samples),
                 'physical_acceptance_claimed': False}
     finally:
-        if ego is not None:
-            adapter.emergency_stop(ego)
-            adapter.destroy(ego)
+        try:
+            if camera_source is not None:
+                camera_source.close()
+        finally:
+            if ego is not None:
+                try:
+                    adapter.emergency_stop(ego)
+                finally:
+                    adapter.destroy(ego)

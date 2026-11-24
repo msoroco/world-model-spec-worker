@@ -89,3 +89,11 @@ Added `saved_audit.audit_saved_property_pair` for the exact `property_near` and 
 - `cpu-preflight-property-pair.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
 - `cpu-static-property-pair.log` SHA256 `474d50a70a3c70eb63d92525483a56f036392efa4cd4bd434fe9f4b3e25ab296`.
 - `strict-property-pair.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
+
+## 2026-11-24 saved approach-direction comparison checkpoint
+
+`saved_audit.audit_saved_approach_pair` now independently reopens the exact highway `person_north_early` and `person_south_early` sealed Native attempts. It rejoins original actor/control/camera packets through the existing saved finalizer, requires identical site, map, camera, public-access, speed, release, frame-rate and actor context, and computes original ego start-to-end displacement from the 900-frame histories. It rejects negligible motion and requires the measured vectors to oppose each other. The returned cosine and displacements are engineering observations, not a physical safety or willful/wanton legal finding.
+
+Two new tests prove the positive diagnostic comparison and reject reversed case identity, modified original packets, same-direction motion and changed map. The full 29-test suite passed. All eight exact diagnostic constructions were regenerated to carry the updated audit and passed pinned offline; pinned preflight and scoped static passed. Exact scoped strict exited 1 on truthful partial status. The thirteen current command/log SHA-256 receipts are in `result.json`.
+
+Next CPU work: source-reviewed original highway and public-access premises site packets, concrete CARLA actor/sensor/controller binding, canonical semantic proposals and execution manifest, exact positive/negative compatibility, saved processing and complete delivery/video comparison receipts. Actual Native motion, camera visibility and legal state of mind remain unverified.

@@ -532,10 +532,46 @@
       "exit_code": 1,
       "log": "cpu-permission-hardening-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C147332__NRS-484B-307-12a__bus_driver/tests -p test_permission_semantic_validation.py -v",
+      "exit_code": 0,
+      "log": "cpu-permission-join-focused.log",
+      "sha256": "b847913a1371cd1432e1ebb4d570025d4a6209c323aadff0a59471ecdab32216"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/permission_semantic_validation.py",
+      "exit_code": 0,
+      "log": "cpu-permission-join-proof.log",
+      "sha256": "7fb1eab916ab6fdfd374174428ccea184859192c564c78894261cf51d6646728"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C147332__NRS-484B-307-12a__bus_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-permission-join-all-tests.log",
+      "sha256": "84359de112637935ea4233ca4f8609bbc13933ef6adb1b0f9ab480f4eb56b3f5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-permission-join-preflight.log",
+      "sha256": "31892ece3aef0c64ac1bad836fe7af0a9be0c2316c155426d2a58403f5eca5b1"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147332__NRS-484B-307-12a__bus_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-permission-join-static.log",
+      "sha256": "630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147332__NRS-484B-307-12a__bus_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-permission-join-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Worker-only permission validator proposal now rejects duplicate proposal cases and omitted planned cases while retaining exact source-bound permission meaning. Thirty-one assignment tests, pinned preflight and scoped static pass. Strict stays partial: pinned semantic validator still requires an unsupported violation pair, and reviewed highway/device provenance and original Native motion/pixels are absent."
+  "reason": "Four exact permission-boundary cases and both controlled pairs have construction, offline, compatibility, saved-only and synthetic physical/delivery CPU proofs. The worker-only permission validator now rejects duplicate comparison IDs and declared probe/description drift; 33 tests, pinned preflight and scoped static pass. Pinned semantic validator still requires an unsupported violation pair for this permission clause; worker repair is proposed but not integrated. Reviewed public-highway and official-device originals and Native bus motion/pixels remain incomplete, so status is partial."
 }

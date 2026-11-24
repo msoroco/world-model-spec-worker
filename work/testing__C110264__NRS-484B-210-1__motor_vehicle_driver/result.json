@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver",
   "input_sha256": "752aff8ff477cdc19bcbbbaffcdfcba97de8bfe1c29e46d1988f93f8ba3647ec",
-  "status": "partial",
   "readiness_kind": "native_actor_sampler_cpu_draft",
-  "applied_update": 0,
+  "reason": "Native session now checks original loaded OpenDRIVE source, selected map packet and route, synchronous 20 Hz clock, actor/sensor ownership and trace sealing; reviewed map, actual actor/controller implementation, canonical semantic manifest and delivery receipts remain incomplete.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/tests -v",
@@ -46,10 +50,60 @@
       "exit_code": 1,
       "log": "cpu-actor-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/tests -p test_pass_right_session.py -v",
+      "exit_code": 0,
+      "log": "cpu-session-focused.log",
+      "sha256": "bc5e9a4e6a4d4071ff3099184907ba3bcfaf68fe3b097e52f656c13dcdacbdb4"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-session-build.log",
+      "sha256": "173b89227261207aa8e24e942be334d5e6b9d80ab49eb60930c5fe010c49bb9c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-session-tests.log",
+      "sha256": "be6f46fa321df65c47a48512042e067f6c24166763f58e6f5491fc0c85ea18d1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-session-preflight.log",
+      "sha256": "be60259acc2efb24b02cdcec875cfae9d9be480f3dfcc7ef50f7db71a0271396"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --output .runtime-work/c110264-session/left_signal --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-session-offline-left_signal.log",
+      "sha256": "b9aa7e814903b287b6a85dafba0f506920ed5269ca35ef4ca44b6f7077648910"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --output .runtime-work/c110264-session/left_turn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-session-offline-left_turn.log",
+      "sha256": "0efdf5aa31390a6269c15ae54497771e2b26f0f82f7ad2348a1483ac0828ce7c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --output .runtime-work/c110264-session/neither --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-session-offline-neither.log",
+      "sha256": "ffa9f291cd7fa5befe9ecd96d1670cc7901b888490a02465ee6bb39b079bb27e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110264__NRS-484B-210-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-session-static.log",
+      "sha256": "571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110264__NRS-484B-210-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-session-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Source-map station projection and actual Native actor snapshot/light-state sampler now feed the synchronized original camera adapter. Diagnostic bundles include the sampler; 36 focused CPU tests, pinned preflight, three exact offline checks and scoped static pass. Reviewed Native map/world anchors, actor spawn/controller, canonical semantic proposals and manifest, compatibility/process-saved and independent delivery/comparison receipts remain worker-owned CPU work. Physical motion and camera visibility remain unverified."
+  ]
 }

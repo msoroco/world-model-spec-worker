@@ -76,6 +76,14 @@ class PropertyAdapter(Adapter):
         return packet
 
 
+class DirectionAdapter(Adapter):
+    def read_actor(self, actor):
+        packet = super().read_actor(actor)
+        if actor == 'ego' and self.case.approach == 'southbound':
+            packet['xy'][0] = -packet['xy'][0]
+        return packet
+
+
 def site():
     return {'site_sha256': 'a' * 64, 'map_sha256': 'b' * 64,
             'camera_plan_sha256': 'c' * 64, 'public_access_basis': 'highway'}
@@ -88,6 +96,42 @@ def actors(case):
 
 
 class NativeAcquisitionTests(unittest.TestCase):
+    def test_saved_approach_pair_reopens_opposed_original_motion(self):
+        north, south = encounter.CASES[0], encounter.CASES[2]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'north', Path(tmp) / 'south'
+            left.mkdir(); right.mkdir()
+            native.capture(DirectionAdapter(case=north), actors(north), north, site(), left)
+            native.capture(DirectionAdapter(case=south), actors(south), south, site(), right)
+            result = saved_audit.audit_saved_approach_pair(left, right)
+            self.assertEqual(result['comparison_id'], 'highway_person_approach_direction')
+            self.assertAlmostEqual(result['direction_cosine'], -1.0)
+            self.assertFalse(result['physical_completion'])
+            with self.assertRaisesRegex(ValueError, 'exact case mismatch'):
+                saved_audit.audit_saved_approach_pair(right, left)
+            packet = right / 'original-packets.jsonl'
+            packet.write_bytes(packet.read_bytes() + b'\n')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                saved_audit.audit_saved_approach_pair(left, right)
+
+    def test_saved_approach_pair_rejects_same_motion_and_changed_site(self):
+        north, south = encounter.CASES[0], encounter.CASES[2]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'north', Path(tmp) / 'south'
+            left.mkdir(); right.mkdir()
+            native.capture(Adapter(case=north), actors(north), north, site(), left)
+            native.capture(Adapter(case=south), actors(south), south, site(), right)
+            with self.assertRaisesRegex(ValueError, 'directions not opposed'):
+                saved_audit.audit_saved_approach_pair(left, right)
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'north', Path(tmp) / 'south'
+            left.mkdir(); right.mkdir()
+            native.capture(DirectionAdapter(case=north), actors(north), north, site(), left)
+            changed = site(); changed['map_sha256'] = 'd' * 64
+            native.capture(DirectionAdapter(case=south), actors(south), south, changed, right)
+            with self.assertRaisesRegex(ValueError, 'fixed condition changed: map_sha256'):
+                saved_audit.audit_saved_approach_pair(left, right)
+
     def test_saved_property_pair_reopens_sources_and_measures_position(self):
         near, far = encounter.CASES[4:6]
         with TemporaryDirectory() as tmp:

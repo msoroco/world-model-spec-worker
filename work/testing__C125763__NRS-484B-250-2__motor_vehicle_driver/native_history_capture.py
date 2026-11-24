@@ -7,11 +7,16 @@ it never chooses a legal timing threshold or rewrites a recorded trajectory.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import math
 from pathlib import Path
 
+from PIL import Image
+
 from native_construction import reviewed_scene
+
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def _bytes(path: Path, content: bytes) -> str:
@@ -47,7 +52,8 @@ def _vertices(actor) -> list[list[float]]:
     return [list(point) for point in lower[:-1] + upper[:-1]]
 
 
-def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int = 900) -> dict:
+def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int = 900,
+            *, camera_readers=None, camera_dimensions=None) -> dict:
     """Capture one 20 Hz synchronous run; output directory must be new and empty.
 
     The reviewed packet binds the live map and source bytes. An independent
@@ -70,7 +76,16 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise ValueError("Capture destination must be a new empty directory")
     output.mkdir(parents=True, exist_ok=True)
+    if camera_readers is not None:
+        if (not isinstance(camera_readers, dict) or set(camera_readers) != set(CAMERAS)
+                or not all(callable(camera_readers[name]) for name in CAMERAS)):
+            raise ValueError('four original camera readers required')
+        if not isinstance(camera_dimensions, dict) or set(camera_dimensions) != set(CAMERAS):
+            raise ValueError('four original camera dimensions required')
+        media_root = output / 'original-frames'
+        media_root.mkdir()
     histories = {"ego": [], "other": []}
+    camera_rows = []
     previous = None
     for _ in range(frame_count):
         tick_frame = world.tick()
@@ -83,6 +98,26 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
                                      not .049 <= time_s - previous[1] <= .051):
             raise ValueError("World did not preserve a contiguous 20 Hz original clock")
         previous = frame, time_s
+        if camera_readers is not None:
+            views = {}
+            for name in CAMERAS:
+                image = camera_readers[name](frame)
+                if (not isinstance(image, dict) or image.get('frame') != frame or
+                        not isinstance(image.get('png_bytes'), bytes)):
+                    raise ValueError('original camera frame identity or pixels missing')
+                content = image['png_bytes']
+                try:
+                    with Image.open(io.BytesIO(content)) as decoded:
+                        decoded.load()
+                        if (decoded.format != 'PNG' or decoded.size != tuple(camera_dimensions[name])
+                                or decoded.mode not in ('RGB', 'RGBA')):
+                            raise ValueError('original camera PNG profile differs')
+                except (OSError, TypeError) as error:
+                    raise ValueError('original camera PNG decode failed') from error
+                path = media_root / f'{name}-{len(camera_rows):06d}.png'
+                views[name] = {'path': str(path.relative_to(output)),
+                               'sha256': _bytes(path, content)}
+            camera_rows.append({'frame': frame, 'time_s': time_s, 'views': views})
         for name, actor in (("ego", ego), ("other", other)):
             histories[name].append({"frame": frame, "time_s": time_s,
                                     "actor_id": actor.id,
@@ -95,8 +130,54 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     for name, rows in histories.items():
         files[name + "-body-history.jsonl"] = "".join(
             json.dumps(row, sort_keys=True) + "\n" for row in rows).encode()
+    if camera_readers is not None:
+        files['camera-frame-map.jsonl'] = ''.join(
+            json.dumps(row, sort_keys=True) + '\n' for row in camera_rows).encode()
     for name, content in files.items():
         manifest[name] = {"kind": "original_native", "sha256": _bytes(output / name, content)}
     _bytes(output / "source-manifest.json", (json.dumps(manifest, sort_keys=True) + "\n").encode())
     return {"frame_count": frame_count, "first_frame": histories["ego"][0]["frame"],
-            "last_frame": histories["ego"][-1]["frame"], "source_manifest": manifest}
+            "last_frame": histories["ego"][-1]["frame"], "source_manifest": manifest,
+            "camera_view_frames": len(camera_rows) * len(CAMERAS)}
+
+
+def audit_media(attempt, *, camera_dimensions):
+    """Reopen every camera PNG and join its original clock to both bodies."""
+    root = Path(attempt)
+    manifest = json.loads((root / 'source-manifest.json').read_text(encoding='utf-8'))
+    if set(camera_dimensions) != set(CAMERAS):
+        raise ValueError('four original camera dimensions required')
+    sources = {}
+    for name in ('ego-body-history.jsonl', 'other-body-history.jsonl', 'camera-frame-map.jsonl'):
+        binding = manifest.get(name)
+        if not isinstance(binding, dict) or binding.get('kind') != 'original_native':
+            raise ValueError('original camera/body source missing')
+        data = (root / name).read_bytes()
+        if hashlib.sha256(data).hexdigest() != binding.get('sha256'):
+            raise ValueError('original camera/body source changed')
+        sources[name] = [json.loads(line) for line in data.decode('utf-8').splitlines()]
+    ego, other, cameras = (sources[name] for name in
+                           ('ego-body-history.jsonl', 'other-body-history.jsonl',
+                            'camera-frame-map.jsonl'))
+    if not ego or len(ego) != len(other) or len(ego) != len(cameras):
+        raise ValueError('original camera/body frame count differs')
+    for index, (a, b, row) in enumerate(zip(ego, other, cameras)):
+        if (a['frame'], a['time_s']) != (b['frame'], b['time_s']) or (
+                row.get('frame'), row.get('time_s')) != (a['frame'], a['time_s']):
+            raise ValueError('original camera/body clock differs')
+        if not isinstance(row.get('views'), dict) or set(row['views']) != set(CAMERAS):
+            raise ValueError('four original camera views required')
+        for name in CAMERAS:
+            ref = row['views'][name]
+            expected = f'original-frames/{name}-{index:06d}.png'
+            if ref.get('path') != expected:
+                raise ValueError('original camera frame path differs')
+            content = (root / expected).read_bytes()
+            if hashlib.sha256(content).hexdigest() != ref.get('sha256'):
+                raise ValueError('original camera frame bytes changed')
+            with Image.open(io.BytesIO(content)) as image:
+                image.load()
+                if image.format != 'PNG' or image.size != tuple(camera_dimensions[name]):
+                    raise ValueError('original camera frame decode/profile differs')
+    return {'joined_original_frames': len(ego), 'decoded_camera_frames': len(ego) * len(CAMERAS),
+            'physical_acceptance': False, 'legal_verdict_claimed': False}

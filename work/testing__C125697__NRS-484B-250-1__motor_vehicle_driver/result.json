@@ -46,10 +46,46 @@
       "exit_code": 1,
       "log": "cpu-native-clock-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-bundle-preflight.log",
+      "sha256": "b67a7c0a4d29219ab47de0e102ab0756e38126abacc60b026b9c6a66eafe22a8"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-bundle-tests.log",
+      "sha256": "435de2acc6d859eb321505e372dbb2a3c4ff5a0f1c5a7edd181df90517d600a1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125697-bundle-proof-precedence --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-bundle-offline-precedence.log",
+      "sha256": "4964dca23697fd980631c14b80b0a794166cd70410ec648d3989071f181f1bbf"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c125697-bundle-proof-advance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-bundle-offline-advance.log",
+      "sha256": "8e5138afedf5ce3451cddb2ccbfe123f4a30ea843f7f795cca8954b0cea74cd4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-bundle-static.log",
+      "sha256": "088e7a005ce45dff0d4d24f8de0ddd93dba1026ade7720469c05952f82eda357"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-bundle-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "After all CPU delivery proofs pass: actual median-opening crossing geometry, live signal readback, both actor trajectories, 20 Hz capture and four-camera physical visibility."
   ],
-  "reason": "Saved crossing measurement now requires original Native frame IDs and elapsed timestamps throughout 900 frames, independent of attempt-relative indices, rejecting missing, stale and discontinuous source clocks. Seven focused tests, pinned preflight and scoped static pass. Exact strict exits 1 on truthful partial. Canonical runner/config/construction, semantics, offline/compatibility, saved delivery and independent canonical acceptance remain CPU work; two accepted recordings still need original source review."
+  "reason": "Two exact source-gated diagnostic construction bundles for precedence and advance now pass pinned offline materialization. The SHA-bound plan retains a median roadway crossing, inoperative governing signal, 900 original frames at 20 Hz and four cameras. Eight focused CPU tests, pinned preflight and scoped static pass; exact strict exits 1 on truthful partial. Native acquisition, canonical semantics, compatibility, saved-only processing and independent delivery/comparison remain CPU work; original accepted traces/videos and legal priority are unverified."
 }

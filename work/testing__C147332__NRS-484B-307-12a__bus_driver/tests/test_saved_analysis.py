@@ -122,6 +122,32 @@ def sealed_fixture(root):
 
 
 class SavedAnalysisTests(unittest.TestCase):
+    def test_review_packet_and_source_symlink_escape_rejected(self):
+        scratch = ROOT.parents[1] / '.runtime-work' / 'c147332-source-review-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            root = Path(directory) / 'attempt'
+            root.mkdir()
+            fixture(root)
+            packet_path = root / 'reviewed-context.json'
+            self.assertEqual(validate_site(packet_path, source_root=root)['highway_id'],
+                             'fixture-highway')
+            outside = Path(directory) / 'outside.json'
+            outside.write_bytes(packet_path.read_bytes())
+            packet_path.unlink()
+            packet_path.symlink_to(outside)
+            with self.assertRaisesRegex(ValueError, 'review packet must be retained'):
+                validate_site(packet_path, source_root=root)
+            packet_path.unlink()
+            packet_path.write_bytes(outside.read_bytes())
+            highway = root / 'synthetic-highway.txt'
+            outside_highway = Path(directory) / 'outside-highway.txt'
+            outside_highway.write_bytes(highway.read_bytes())
+            highway.unlink()
+            highway.symlink_to(outside_highway)
+            with self.assertRaisesRegex(ValueError, 'highway original source missing or changed'):
+                validate_site(packet_path, source_root=root)
+
     def test_reviewed_native_display_mapping_is_required(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

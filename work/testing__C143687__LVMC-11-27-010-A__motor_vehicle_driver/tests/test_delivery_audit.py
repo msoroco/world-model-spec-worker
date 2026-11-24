@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,6 +40,41 @@ def fixture(root, case='all_prerequisites'):
 
 
 class DeliveryAuditTests(unittest.TestCase):
+    def test_full_video_decode_joins_sealed_trail_source(self):
+        scratch = MODULE.parents[2] / '.runtime-work' / 'c143687-decoded-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
+            root = Path(tmp)
+            path, data = fixture(root)
+            for camera in audit.CAMERAS:
+                video = root / (camera + '.mp4')
+                completed = subprocess.run([
+                    'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                    'color=c=black:s=16x16:r=20:d=45', '-frames:v', '900',
+                    '-c:v', 'mpeg4', '-y', str(video)], capture_output=True, text=True)
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+                data['camera_media'][camera]['sha256'] = sha(video.read_bytes())
+            path.write_text(json.dumps(data), encoding='utf-8')
+            report = audit.audit_decoded(root, path, data['case_id'],
+                                         expected_dimensions={name: (16, 16) for name in audit.CAMERAS})
+            self.assertTrue(report['full_video_decode'])
+            self.assertEqual(report['decoded_view_frames'], 3600)
+            self.assertFalse(report['physical_completion'])
+            with (root / 'front.mp4').open('ab') as stream:
+                stream.write(b'changed')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                audit.audit_decoded(root, path, data['case_id'])
+            completed = subprocess.run([
+                'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                'color=c=black:s=16x16:r=10:d=90', '-frames:v', '900',
+                '-c:v', 'mpeg4', '-y', str(root / 'front.mp4')],
+                capture_output=True, text=True)
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            data['camera_media']['front']['sha256'] = sha((root / 'front.mp4').read_bytes())
+            path.write_text(json.dumps(data), encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'rate differs'):
+                audit.audit_decoded(root, path, data['case_id'])
+
     def test_source_inventory_withholds_physical_acceptance(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

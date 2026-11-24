@@ -54,6 +54,22 @@ class PermissionSemanticTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "plan case identity"):
             validate(self.template, self.cases, plan, self.assignment)
 
+    def test_duplicate_comparison_and_probe_declaration_rejected(self):
+        plan = copy.deepcopy(self.plan)
+        plan['comparisons'].append(copy.deepcopy(plan['comparisons'][0]))
+        with self.assertRaisesRegex(ValueError, 'duplicate permission comparison'):
+            validate(self.template, self.cases, plan, self.assignment)
+        cases = copy.deepcopy(self.cases)
+        cases['cases'][2]['probe']['primary_variable'] = 'bus_lane_request'
+        with self.assertRaisesRegex(ValueError, 'probe declaration'):
+            validate(self.template, cases, self.plan, self.assignment)
+
+    def test_comparison_description_drift_rejected(self):
+        plan = copy.deepcopy(self.plan)
+        plan['comparisons'][0]['deliberate_differences'] = ['another change']
+        with self.assertRaisesRegex(ValueError, 'description differs'):
+            validate(self.template, self.cases, plan, self.assignment)
+
 
 if __name__ == "__main__":
     unittest.main()

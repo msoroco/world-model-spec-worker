@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver",
   "input_sha256": "14e3671aa1bbf6b91db9a2f99f9cd4a36e9aa62f72aabadd5809a86cb8c36209",
-  "status": "partial",
   "readiness_kind": "partial_exact_offline_diagnostic_bundles_and_saved_property_comparison",
-  "applied_update": 0,
+  "reason": "Saved approach-direction audit now independently reopens north/south original attempts, holds source and actor conditions fixed, and requires opposed measured ego motion. Reviewed Native site, CARLA binding, canonical semantic and delivery receipts remain incomplete.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early --output .runtime-work/c111304-offline-person_north_early-v1",
@@ -148,10 +152,84 @@
       "exit_code": 1,
       "log": "strict-property-pair.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-direction-build.log",
+      "sha256": "dd57f5eea22750fc2b928d8c854dd82af9ea24d42fc7a20b5c869db6d40d9703"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-direction-tests.log",
+      "sha256": "1f9228e39391009719ca50cef970ceab39aa849509ba1c9ba4608d750e5903f3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-direction-preflight.log",
+      "sha256": "3f59921ef6a368f5be5d7585a2ff22047abc39fd0d8424da74379c2226d52b25"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early --output .runtime-work/c111304-direction/person_north_early --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-person_north_early.log",
+      "sha256": "e12774fa42616f9a2e24946f1226e3a5bff31d0592d46e61b7c9da9249a35ec1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_late --output .runtime-work/c111304-direction/person_north_late --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-person_north_late.log",
+      "sha256": "21d5e9ad6d64d570b9600974409ac9a63ee86be1483ea676dbc3c32d16464eb4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_early --output .runtime-work/c111304-direction/person_south_early --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-person_south_early.log",
+      "sha256": "d0af1620d4bdb3c0aa98d3cae24fb39a3b7f38e8d0144994fcb9d259eaff32e9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_late --output .runtime-work/c111304-direction/person_south_late --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-person_south_late.log",
+      "sha256": "980064e20c1ad1307bc27d0905546ec727d941f1af79095eb774918f7e9a829f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_near --output .runtime-work/c111304-direction/property_near --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-property_near.log",
+      "sha256": "75178693e0728fe0b9c96d7d691e1c3259a414f86e311244a0f766fe6b2d12c7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_far --output .runtime-work/c111304-direction/property_far --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-property_far.log",
+      "sha256": "28031aabdca85efb0decfee77fc4cb4c2c246e5098465b160a479adb52ab3806"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_early --output .runtime-work/c111304-direction/premises_person_early --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-premises_person_early.log",
+      "sha256": "29464430f57f9f2e3eb624a08196b5e419e8ff0c384479519210f35ad4ea3dc2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_late --output .runtime-work/c111304-direction/premises_person_late --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-direction-offline-premises_person_late.log",
+      "sha256": "e4fe53b4c6baf833b5435f02fff5a73b386641dd25a465ae641ae28c0669ffc4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111304__NRS-484B-653-1a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-direction-static.log",
+      "sha256": "474d50a70a3c70eb63d92525483a56f036392efa4cd4bd434fe9f4b3e25ab296"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111304__NRS-484B-653-1a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-direction-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Eight exact diagnostic bundles rebuilt and offline-checked; 27 focused tests, pinned preflight, and scoped static pass. Saved property near/far audit reopens both sealed original sources and proves position and measured-distance order with fixed site/control/camera/actor conditions. Exact scoped strict remains partial pending canonical delivery, reviewed original site, Native capture and compatibility."
+  ]
 }

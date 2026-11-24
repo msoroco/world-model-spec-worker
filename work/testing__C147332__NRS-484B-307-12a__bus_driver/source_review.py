@@ -19,8 +19,10 @@ def retained(root, item, label):
     rel = item.get("source_path")
     if not isinstance(rel, str) or not rel or Path(rel).is_absolute() or ".." in Path(rel).parts:
         raise ValueError(label + " source path must be retained locally")
+    root = Path(root).resolve()
     path = root / rel
-    if not path.is_file() or sha(path) != item.get("source_sha256"):
+    if (path.is_symlink() or root not in path.resolve().parents or
+            not path.is_file() or sha(path) != item.get("source_sha256")):
         raise ValueError(label + " original source missing or changed")
     if not item.get("reviewer") or not item.get("source_citation"):
         raise ValueError(label + " review provenance missing")
@@ -29,6 +31,10 @@ def retained(root, item, label):
 
 def validate(packet_path, *, source_root):
     packet_path, root = Path(packet_path), Path(source_root)
+    root = root.resolve()
+    if (packet_path.is_symlink() or root not in packet_path.resolve().parents or
+            not packet_path.is_file()):
+        raise ValueError("review packet must be retained within source root")
     packet = json.loads(packet_path.read_text())
     if packet.get("review_status") != "reviewed":
         raise ValueError("highway and official-device review not completed")

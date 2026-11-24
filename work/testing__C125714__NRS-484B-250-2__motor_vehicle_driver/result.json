@@ -3,7 +3,7 @@
   "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
   "input_sha256": "7bc27994f2b7e7339898faac896f16b7d19f55e49d7099d8106d557e4e2399d0",
   "readiness_kind": "partial_five_exact_cpu_bundles_reviewed_context_join",
-  "reason": "Independent saved delivery auditor now requires controller-history.jsonl in the Native seal and acquisition manifest, joins every controller frame/time to the video and body sources, and rejects invalid original ego brake values even when the changed source is resealed. Seven focused audit tests and 34 full tests pass; pinned preflight and scoped static pass. Exact strict exits 1 on truthful partial. Reviewed original median-opening site, complete exception coverage, canonical saved-only delivery command receipts and source-backed physical evidence remain CPU work.",
+  "reason": "Independent controlled-yield comparison now requires contiguous 20 Hz original Native frame/time cadence and rejects a jointly resealed skipped tick; reviewed site, exception case coverage and canonical saved delivery remain incomplete.",
   "remaining_gpu_checks": [
     "Actual reviewed CARLA original motion, camera visibility, physical setup and saved-delivery audit after remaining CPU preparation"
   ],
@@ -194,6 +194,48 @@
       "exit_code": 1,
       "log": "cpu-controller-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/tests -p test_policy_comparison_audit.py -v",
+      "exit_code": 0,
+      "log": "cpu-policy-cadence-focused.log",
+      "sha256": "4ba09024486253655634191c55529b5f1816722e690f9179b229d8a952942074"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-policy-cadence-tests.log",
+      "sha256": "21c227ff2d630b8cedba477943d7ece04126502501df7a2edae5e35215d63268"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-policy-cadence-preflight.log",
+      "sha256": "d47b1cdef5a1ee1df8fc439c03a97fb2b992bf54a310ddf88f2a4177903be21a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/policy_comparison_audit.py --wait-attempt .runtime-work/c125714-policy/yield_wait_for_other_clear --advance-attempt .runtime-work/c125714-policy/advance_at_release --output .runtime-work/c125714-policy/policy-receipt.json && cat .runtime-work/c125714-policy/policy-receipt.json",
+      "exit_code": 0,
+      "log": "cpu-policy-cadence-cli-positive.log",
+      "sha256": "c78bc8edf018870c02b328c91ab1a1dd96720ad3b80bc1ebab2b87f8b7f85893"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/policy_comparison_audit.py --wait-attempt .runtime-work/c125714-policy/yield_wait_for_other_clear --advance-attempt .runtime-work/c125714-policy/advance_at_release --output .runtime-work/c125714-policy/should-not-exist.json",
+      "exit_code": 1,
+      "log": "cpu-policy-cadence-cli-negative.log",
+      "sha256": "e0695e8e54101eac6703b2a19faec7dbf503a2f3311a2857f84e56bf07d96dff"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-policy-cadence-static.log",
+      "sha256": "cc5926eaa4badf150cb317b2f4af80f7a581d99334be67c65f61d736bbe79873"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-policy-cadence-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]
 }

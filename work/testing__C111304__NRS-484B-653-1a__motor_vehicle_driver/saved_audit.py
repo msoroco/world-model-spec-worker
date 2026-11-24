@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Mapping
 
@@ -281,3 +282,59 @@ def audit_saved_property_pair(near_attempt: Path, far_attempt: Path) -> dict:
             'min_ego_property_center_distance_m': [a, b],
             'actual_pixels': False, 'physical_completion': False,
             'legal_judgment': None}
+
+
+def audit_saved_approach_pair(north_attempt: Path, south_attempt: Path) -> dict:
+    """Reopen sealed highway attempts and compare observed ego approach vectors.
+
+    Opposite motion is a measured contrast only. It does not establish that
+    either maneuver was physically safe or legally willful or wanton.
+    """
+    from encounter import CASES
+
+    by_id = {case.case_id: case for case in CASES}
+    north = finalize_saved_measurements(north_attempt, by_id['person_north_early'])
+    south = finalize_saved_measurements(south_attempt, by_id['person_south_early'])
+    receipts = [json.loads((path / 'native-receipt.json').read_text(encoding='utf-8'))
+                for path in (north_attempt, south_attempt)]
+    fixed_receipt = ('site_sha256', 'map_sha256', 'camera_plan_sha256',
+                     'public_access_basis', 'ego_target_speed_mps',
+                     'crossing_target_speed_mps', 'crossing_release_s',
+                     'frame_count', 'original_fps')
+    for key in fixed_receipt:
+        if receipts[0].get(key) != receipts[1].get(key):
+            raise ValueError(f'comparison fixed condition changed: {key}')
+    if receipts[0].get('public_access_basis') != 'highway':
+        raise ValueError('approach comparison requires sourced highway context')
+    endpoints = []
+    for path in (north_attempt, south_attempt):
+        with (path / 'original-history.jsonl').open(encoding='utf-8') as source:
+            rows = [json.loads(line) for line in source]
+        endpoints.append((rows[0], rows[-1]))
+    fixed_actor = ('ego_blueprint', 'crossing_blueprint', 'property_blueprint',
+                   'ego_id', 'crossing_vehicle_id', 'occupant_id',
+                   'occupant_vehicle_id', 'property_id', 'occupant_xy', 'property_xy')
+    for key in fixed_actor:
+        if endpoints[0][0].get(key) != endpoints[1][0].get(key):
+            raise ValueError(f'comparison fixed condition changed: {key}')
+    vectors = []
+    for first, last in endpoints:
+        a, b = first['ego_xy'], last['ego_xy']
+        vector = (b[0] - a[0], b[1] - a[1])
+        length = math.hypot(*vector)
+        if length <= 1.0:
+            raise ValueError('comparison original ego approach motion missing')
+        vectors.append((vector, length))
+    cosine = sum(a * b for a, b in zip(vectors[0][0], vectors[1][0])) / (
+        vectors[0][1] * vectors[1][1])
+    if cosine >= -0.5:
+        raise ValueError('comparison observed approach directions not opposed')
+    return {'comparison_id': 'highway_person_approach_direction',
+            'case_ids': [north['case_id'], south['case_id']],
+            'original_history_sha256': [north['original_history_sha256'],
+                                        south['original_history_sha256']],
+            'native_receipt_sha256': [north['native_receipt_sha256'],
+                                      south['native_receipt_sha256']],
+            'ego_displacement_xy_m': [list(vectors[0][0]), list(vectors[1][0])],
+            'direction_cosine': cosine, 'actual_pixels': False,
+            'physical_completion': False, 'legal_judgment': None}

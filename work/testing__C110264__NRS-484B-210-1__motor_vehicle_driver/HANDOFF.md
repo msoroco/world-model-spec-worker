@@ -111,3 +111,11 @@ SHA-256 source and proof index:
 - `cpu-actor-offline-neither.log`: `7d4ea04c1a7356d4be7d994b448eb0b15562ca0e6ebe8404e05a064b0f433ffb`
 - `cpu-actor-static.log`: `571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04`
 - `cpu-actor-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
+
+## 2026-11-24 source-gated Native session integration
+
+`pass_right_session.py` now connects the reviewed map packet, exact route request, source-world actor sampler and four-camera acquisition adapter. Before mutating the borrowed CARLA world it verifies loaded original OpenDRIVE bytes against the packet's `source_opendrive_sha256`; it sets and reads back synchronous 20 Hz settings, invokes operator actor/sensor/controller factories, captures the same-tick original actor and camera sources, rechecks the loaded map, writes a sealed trace in the scratch attempt, destroys owned actors/sensors and restores the original world settings. Requested signal/turn behavior remains separate from sampled motion and light-state readback. Factories must clean up any objects they create before returning if they themselves raise or return an incomplete group.
+
+Five new focused tests cover successful sealing/restoration, changed map before mutation, capture failure, missing camera and clock readback refusal. The full 41-test suite passed. All three exact diagnostic constructions were rebuilt with the session and passed pinned offline. Pinned preflight and scoped static passed. Exact scoped strict exited 1 because status remains truthfully partial. Nine SHA-bound command receipts are in `result.json`.
+
+Next CPU work: acquire and review an original map packet with world anchors and public-highway provenance; implement the local CARLA spawn, controller and sensor callbacks against it; author canonical semantic proposals and manifest, positive/negative compatibility, saved processing and independent delivery/comparison receipts. Native right-pass motion, signal/turn readback, production camera visibility and legal outcome remain unverified.

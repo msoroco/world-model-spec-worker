@@ -39,6 +39,9 @@ def validate(template, proposal, plan, assignment):
     if set(cases) != expected or any(c["target_law_id"] != assignment["law_id"] or
                                      c["target_type"] != "boundary_probe" for c in cases.values()):
         raise ValueError("permission boundary case identity/type mismatch")
+    comparison_ids = [c.get("comparison_id") for c in plan["comparisons"]]
+    if len(comparison_ids) != len(set(comparison_ids)):
+        raise ValueError("duplicate permission comparison identity")
     comparisons = {c["comparison_id"]: c for c in plan["comparisons"]}
     if set(comparisons) != set(PAIRS):
         raise ValueError("permission comparisons incomplete")
@@ -50,6 +53,14 @@ def validate(template, proposal, plan, assignment):
         first, second = (cases[ident] for ident in ids)
         if first.get("paired_probe_id") != pair_id or second.get("paired_probe_id") != pair_id:
             raise ValueError("permission probe link missing")
+        if any(case.get("probe", {}).get("primary_variable") != changed or
+               [item.get("variable") for item in case.get("deliberate_differences", [])] != [changed]
+               for case in (first, second)):
+            raise ValueError("permission probe declaration differs from comparison")
+        descriptions = {case["deliberate_differences"][0].get("description")
+                        for case in (first, second)}
+        if len(descriptions) != 1 or comp["deliberate_differences"] != list(descriptions):
+            raise ValueError("permission comparison description differs from probes")
         a = {key: value["value"] for key, value in first["variable_assignments"].items()}
         b = {key: value["value"] for key, value in second["variable_assignments"].items()}
         if set(a) != set(b) or {key for key in a if a[key] != b[key]} != {changed}:

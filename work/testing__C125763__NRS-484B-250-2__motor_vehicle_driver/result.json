@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver",
   "input_sha256": "20a769f714bec7bac5427a6837490c4fdda42b8862ec30470e21f0020d99436d",
-  "readiness_kind": "construction_checkpoint",
-  "reason": "Exact 250(2) timing probes remain partial. New saved-only finalizer seals each original source manifest, reprocesses body-history entry times, binds exact probe identity and records diagnostic/physical/legal limits; 13 focused tests pass including stale source and overwrite rejection. Pinned preflight and scoped static pass. Subsection 4 applicability at this yield-sign cell, synchronized cameras, three canonical case bundles, semantic proposals, offline/compatibility and independent delivery audits remain CPU work.",
+  "readiness_kind": "partial_synchronized_camera_source_and_entry_finalizer_tested",
+  "reason": "Original body-history capture now optionally seals four same-world-frame PNG camera views per 20 Hz tick into a source-hashed frame map; independent saved audit reopens every image and joins its original frame/time to both vehicle histories. Fifteen focused tests, pinned preflight and scoped static pass; exact strict remains partial. Subsection 4 applicability in this fixed yield-sign cell, full CARLA sensor/controller lifecycle, three canonical bundles/proposals, offline/compatibility and complete delivery remain CPU work; physical motion/pixels unverified.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -56,6 +56,30 @@
       "exit_code": 1,
       "log": "cpu-finalizer-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c125763-camera/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-camera/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-camera-join-tests.log",
+      "sha256": "48351e8118c54fcb5636f252b7db4936ffab1f0ea41f684ff2f93c340322f3b8"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c125763-camera/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-camera/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-camera-join-preflight.log",
+      "sha256": "a349e6395a77377e9ec855462c8b073acbd9b7f8867f8ee0606199918c21d98d"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c125763-camera/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-camera/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-camera-join-static.log",
+      "sha256": "e86abda95bb7765cb72cb835dc61ab64d11c0e50f4d86142b2e0f50e209899d6"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c125763-camera/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-camera/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-camera-join-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]
 }

@@ -1,4 +1,5 @@
 import hashlib
+import io
 import importlib.util
 import json
 from pathlib import Path
@@ -6,10 +7,12 @@ import sys
 import tempfile
 import unittest
 
+from PIL import Image
+
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
-from native_history_capture import capture
+from native_history_capture import capture, audit_media, CAMERAS
 from crossing_timing import measure
 from saved_finalizer import finalize
 
@@ -152,6 +155,35 @@ class CaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'stale original Native source'):
             finalize(attempt, self.root / 'result.json',
                      expected_manifest_sha256=digest, probe_id='entry_inside')
+
+    def test_four_camera_original_clock_and_saved_decode(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2), (1, 2, 3)).save(stream, format='PNG')
+        body = stream.getvalue()
+        readers = {name: lambda frame, image=body: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        dims = {name: (2, 2) for name in CAMERAS}
+        output = self.root / 'camera-capture'
+        receipt = capture(self.world, self.packet, self.ego, self.other, output, 4,
+                          camera_readers=readers, camera_dimensions=dims)
+        self.assertEqual(receipt['camera_view_frames'], 16)
+        self.assertEqual(audit_media(output, camera_dimensions=dims)['decoded_camera_frames'], 16)
+        path = output / 'original-frames/approach-000001.png'
+        path.write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'bytes changed'):
+            audit_media(output, camera_dimensions=dims)
+
+    def test_rejects_camera_tick_mismatch(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2)).save(stream, format='PNG')
+        body = stream.getvalue()
+        readers = {name: lambda frame, image=body: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        readers['approach'] = lambda frame: {'frame': frame+1, 'png_bytes': body}
+        with self.assertRaisesRegex(ValueError, 'camera frame identity'):
+            capture(self.world, self.packet, self.ego, self.other,
+                    self.root / 'wrong-camera', 4, camera_readers=readers,
+                    camera_dimensions={name: (2, 2) for name in CAMERAS})
 
 
 if __name__ == "__main__":

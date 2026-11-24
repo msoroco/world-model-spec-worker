@@ -3,7 +3,7 @@
   "assignment_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver",
   "input_sha256": "545d571b598d72cc8a16461803998c2565e7d7768f70dc095646071d94f298aa",
   "readiness_kind": "five_exact_diagnostic_offline_constructions_with_saved_site_join",
-  "reason": "Native acquisition now binds parked, passing and selected driver to stable CARLA actor IDs, rejects actor ID collisions and rejects a spawned driver that differs from the original surveyed driver before ticking. Five diagnostic bundles rebuilt; focused tests, pinned preflight, five exact offline checks and scoped static pass. Exact strict exits 1 on truthful partial. Real surveyed site and controller integration, canonical semantics/manifest, case-specific positive/negative compatibility and runtime saved-delivery receipts remain CPU work.",
+  "reason": "Native CARLA world session now source-gates loaded map bytes and 20 Hz synchronous readback, with restoration on success/failure; original surveyed site, operator controllers/observer, canonical semantics and saved delivery remain incomplete.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -302,6 +302,66 @@
       "exit_code": 1,
       "log": "cpu-identity-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-runner-build.log",
+      "sha256": "150a8753e60bc7626b406e747436a701fa419bcd6d8595ad04ccd07eb6938ace"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-runner-tests.log",
+      "sha256": "c2548f317248ec89246e4664396471d96290d1f72702e995d15336796949f330"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-runner-preflight.log",
+      "sha256": "2b9e8c47fe34a79af65e7850b3a88ec3be14c3334a16cbb751b52014b5002613"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --output .runtime-work/c102642-runner/open_near_overlap --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-open_near_overlap.log",
+      "sha256": "b6e5c7822305c9620fb8464dbdf5298c906b27d03c4972181977700c791bc13f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --output .runtime-work/c102642-runner/open_near_clear --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-open_near_clear.log",
+      "sha256": "b634c6db9ac3f1db05ca23ee6e3dd1caa79250bf0fe3782a54b15a25cf6bed68"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --output .runtime-work/c102642-runner/open_far_side --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-open_far_side.log",
+      "sha256": "40497c2f230e690d1f4a7ae40f6c3447e703cb0b820285b2145ee6e7fcb21df1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --output .runtime-work/c102642-runner/board_near --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-board_near.log",
+      "sha256": "6d370a5b091549907819ca76d20cbb55d599cc9c18539d7b1fcfea92745f6492"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --output .runtime-work/c102642-runner/alight_near --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-alight_near.log",
+      "sha256": "efa2ad76b56fbe41d8fe5b81b625518fdba559c64ccc9bb7b5f24bb5eea20b77"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-runner-static.log",
+      "sha256": "f495045bad815c4cb4863d7062e1398268583d6288251332a3927ded251b6f21"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-runner-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]
 }

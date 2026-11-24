@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from entry_timing import intersects, polygon
 
@@ -47,7 +48,7 @@ def one(attempt,case):
     if not controls or len(controls)!=len(bodies) or len(bodies)!=len(mapping):
         raise ValueError('complete original controller/actor/frame history required')
     region=polygon(site['intersection_polygon_xy_m'])
-    inside=[];policy=None
+    inside=[];policy=None;previous=None
     for i,(control,body,frame) in enumerate(zip(controls,bodies,mapping)):
         if (frame.get('video_frame')!=i or
                 (control.get('frame'),control.get('time_s'))!=
@@ -56,6 +57,13 @@ def one(attempt,case):
                 (frame.get('carla_frame'),frame.get('time_s')) or
                 body.get('actor_id')!=site['other_actor_id']):
             raise ValueError('original controller/actor/frame join differs')
+        native,time_s=frame.get('carla_frame'),frame.get('time_s')
+        if (type(native) is not int or type(time_s) not in (int,float) or
+                not math.isfinite(time_s) or time_s<0 or
+                (previous is not None and
+                 (native!=previous[0]+1 or abs(time_s-previous[1]-.05)>1e-4))):
+            raise ValueError('original controlled-policy 20 Hz cadence differs')
+        previous=(native,time_s)
         current=control.get('control_policy')
         if policy is None:policy=current
         if current!=policy:

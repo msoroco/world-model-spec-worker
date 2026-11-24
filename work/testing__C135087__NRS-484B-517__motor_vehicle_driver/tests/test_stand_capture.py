@@ -12,6 +12,7 @@ sys.path.insert(0, str(PACKAGE))
 from stand import SourceError, audit_saved_attempt
 from stand_capture import capture
 from stand_media_audit import audit as audit_media
+from stand_delivery import audit as audit_delivery
 
 
 class Actor:
@@ -117,6 +118,26 @@ class CaptureTest(unittest.TestCase):
             stream.write(b'changed')
         with self.assertRaisesRegex(SourceError, 'hash mismatch'):
             audit_media(attempt, self.root, expected_frames=4)
+
+    def test_sealed_full_capture_and_video_delivery_join(self):
+        for name in ('front', 'rear', 'left', 'right'):
+            path = self.root / (name + '.mkv')
+            result = subprocess.run([
+                'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                'color=c=black:s=16x16:r=20:d=45', '-frames:v', '900',
+                '-c:v', 'ffv1', '-y', str(path)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+        capture(self.world, self.actors, observe, 'case-a', 'Town', self.root)
+        report = audit_delivery(self.root,
+                                dimensions={name: (16, 16) for name in
+                                            ('front', 'rear', 'left', 'right')})
+        self.assertEqual(report['original_frame_count'], 900)
+        self.assertEqual(report['decoded_camera_frames'], 3600)
+        self.assertFalse(report['physical_completion'])
+        with (self.root / 'front.mkv').open('ab') as stream:
+            stream.write(b'changed')
+        with self.assertRaisesRegex(SourceError, 'hash mismatch'):
+            audit_delivery(self.root)
 
 
 if __name__ == "__main__":

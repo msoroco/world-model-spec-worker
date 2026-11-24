@@ -9,6 +9,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
 
 
 _spec = importlib.util.spec_from_file_location('trail_saved_audit', Path(__file__).with_name('saved_audit.py'))
@@ -76,3 +77,45 @@ def audit_saved(attempt: Path, acquisition_path: Path, case_id: str) -> dict:
         'physical_completion': False,
         'legal_judgment': None,
     }
+
+
+def audit_decoded(attempt: Path, acquisition_path: Path, case_id: str,
+                  *, expected_dimensions=None) -> dict:
+    """Join the sealed source audit with complete original 20 Hz video decode."""
+    report = audit_saved(attempt, acquisition_path, case_id)
+    root = Path(attempt).resolve()
+    streams = {}
+    for camera, ref in report['camera_media'].items():
+        if (root / ref['path']).is_symlink():
+            raise ValueError('camera symlink rejected')
+        path = _confined(root, ref['path'])
+        probe = subprocess.run(
+            ['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+             '-show_entries', 'stream=width,height,r_frame_rate:frame=best_effort_timestamp_time',
+             '-show_frames', '-of', 'json', str(path)],
+            capture_output=True, text=True, check=False)
+        if probe.returncode:
+            raise ValueError('camera probe failed')
+        data = json.loads(probe.stdout)
+        stream = data.get('streams', [{}])[0]
+        if stream.get('r_frame_rate') != '20/1':
+            raise ValueError('camera rate differs from 20 Hz')
+        if expected_dimensions is not None and (
+            stream.get('width'), stream.get('height')) != tuple(expected_dimensions[camera]):
+            raise ValueError('camera dimensions differ')
+        try:
+            times = [float(row['best_effort_timestamp_time']) for row in data['frames']]
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError('camera frame timestamp missing') from exc
+        if len(times) != 900 or any(abs((time - times[0]) - i / 20) > .001
+                                     for i, time in enumerate(times)):
+            raise ValueError('camera frame/time continuity failed')
+        decoded = subprocess.run(
+            ['ffmpeg', '-v', 'error', '-i', str(path), '-map', '0:v:0',
+             '-f', 'null', '-'], capture_output=True, text=True, check=False)
+        if decoded.returncode:
+            raise ValueError('camera full decode failed')
+        streams[camera] = {'sha256': ref['sha256'], 'decoded_frames': len(times),
+                           'first_pts_s': times[0], 'last_pts_s': times[-1]}
+    return {**report, 'full_video_decode': True, 'decoded_view_frames': 3600,
+            'camera_streams': streams}
