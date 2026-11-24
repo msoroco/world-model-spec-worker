@@ -76,13 +76,42 @@ def main():
     client.set_timeout(20.0)
     adapter = CarlaNativeAdapter(client,carla,survey)
     attempt = Path(args.output_dir).resolve()
-    capture(adapter,survey_path,survey_sha256,map_path,case,attempt)
+    from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
+    from scenario_pipeline.worker_exchange.native_output import seal_capture
     from runtime_source_bridge import export
     from analysis import run as analyze
     import shutil
-    export(attempt,survey_path,attempt/'runtime-export')
-    shutil.copy2(attempt/'runtime-export/overview.mkv',attempt/'raw.mkv')
-    analyze(attempt,attempt/'analysis-report.json')
+    saved_world = snapshot(client)
+    failure = None
+    restoration = None
+    try:
+        capture(adapter,survey_path,survey_sha256,map_path,case,attempt)
+        (attempt/'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind':'native','diagnostic_fixture':False},indent=2)+'\\n')
+        export(attempt,survey_path,attempt/'runtime-export')
+        for name in ('overview.mkv','approach.mkv','reference_corner.mkv',
+                     'driver_reference.mkv','trace.jsonl'):
+            shutil.copy2(attempt/'runtime-export'/name,attempt/name)
+        shutil.copy2(attempt/'overview.mkv',attempt/'raw.mkv')
+        analyze(attempt,attempt/'analysis-report.json')
+    except Exception as error:
+        failure = error
+    finally:
+        try:
+            restoration = restore(client,saved_world)
+        except Exception as error:
+            if failure is None:
+                failure = error
+    if failure is not None:
+        (attempt/'native-run-status.json').write_text(json.dumps({
+            'errors':[str(failure)],'restoration':restoration},indent=2)+'\\n')
+        raise failure
+    try:
+        seal_capture(attempt,frames=900,restoration=restoration,errors=[],encoder_exit_codes={})
+    except Exception as error:
+        (attempt/'native-run-status.json').write_text(json.dumps({
+            'errors':[str(error)],'restoration':restoration},indent=2)+'\\n')
+        raise
 
 
 if __name__ == '__main__':
@@ -90,7 +119,12 @@ if __name__ == '__main__':
 '''
 
 TEST = '''import json
+import hashlib
+import os
+import sys
+import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 import runner
@@ -103,8 +137,60 @@ class BundleTests(unittest.TestCase):
 
     def test_unsourced_launch_rejected(self):
         with patch('sys.argv', ['runner.py','--output-dir','.']):
-            with self.assertRaisesRegex(ValueError, 'Reviewed original crossing'):
+            with patch.dict(os.environ, {'C125751_SURVEY':'',
+                                      'C125751_SURVEY_SHA256':'',
+                                      'C125751_MAP_SOURCE':''}):
+                with self.assertRaisesRegex(ValueError, 'Reviewed original crossing'):
+                    runner.main()
+
+    def test_environment_source_handoff_requires_existing_files(self):
+        with patch('sys.argv', ['runner.py','--output-dir','.']):
+            with patch.dict(os.environ, {'C125751_SURVEY':'/missing/survey.json',
+                                      'C125751_SURVEY_SHA256':'0'*64,
+                                      'C125751_MAP_SOURCE':'/missing/map.xodr'}):
+                with self.assertRaisesRegex(ValueError, 'source file missing'):
+                    runner.main()
+
+    def test_native_closure_requires_restoration_before_sealing(self):
+        scratch = Path(__file__).resolve().parents[2]/'c125751-bundle-tests'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
+            root = Path(tmp)
+            survey = root/'survey.json'
+            source_map = root/'map.xodr'
+            source_map.write_bytes(b'original map')
+            survey.write_text(json.dumps({'opendrive_sha256':hashlib.sha256(source_map.read_bytes()).hexdigest()})+'\\n')
+            attempt = root/'attempt'
+            attempt.mkdir()
+            events = []
+            client = SimpleNamespace(set_timeout=lambda _:None)
+            def fake_export(_attempt,_survey,destination):
+                events.append('export')
+                destination.mkdir()
+                for name in ('overview.mkv','approach.mkv','reference_corner.mkv',
+                             'driver_reference.mkv','trace.jsonl'):
+                    (destination/name).write_bytes(b'source')
+            def fake_restore(_client,_saved):
+                events.append('restore')
+                return {'restored':True}
+            def fake_seal(_attempt,**kwargs):
+                events.append('seal')
+                self.assertTrue(kwargs['restoration']['restored'])
+            argv = ['runner.py','--output-dir',str(attempt),'--survey',str(survey),
+                    '--survey-sha256',hashlib.sha256(survey.read_bytes()).hexdigest(),
+                    '--map-source',str(source_map)]
+            with patch('sys.argv',argv), patch.dict(sys.modules,{'carla':SimpleNamespace(Client=lambda *_:client)}), \\
+                 patch('carla_native_adapter.CarlaNativeAdapter',return_value=object()), \\
+                 patch('native_capture.capture',side_effect=lambda *_:events.append('capture')), \\
+                 patch('runtime_source_bridge.export',side_effect=fake_export), \\
+                 patch('analysis.run',side_effect=lambda *_:events.append('analysis')), \\
+                 patch('scenario_pipeline.worker_exchange.world_restore.snapshot',return_value=object()), \\
+                 patch('scenario_pipeline.worker_exchange.world_restore.restore',side_effect=fake_restore), \\
+                 patch('scenario_pipeline.worker_exchange.native_output.seal_capture',side_effect=fake_seal):
                 runner.main()
+            self.assertEqual(events,['capture','export','analysis','restore','seal'])
+            self.assertTrue((attempt/'acquisition-provenance.json').is_file())
+            self.assertTrue((attempt/'raw.mkv').is_file())
 
 
 if __name__ == '__main__':

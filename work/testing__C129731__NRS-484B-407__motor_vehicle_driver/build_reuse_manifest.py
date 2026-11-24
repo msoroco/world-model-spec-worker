@@ -20,7 +20,8 @@ SCRIPTS = ("selected_delivery.py", "original_source_acquisition.py",
            "native_case_constructor.py", "reversal_route_controller.py",
            "build_selected_delivery_draft.py",
            "build_exact_bundles.py",
-           "distance_probe_audit.py", "selected_analysis.py")
+           "distance_probe_audit.py", "selected_analysis.py",
+           "build_sight_fixture.py", "prove_sight_fixture.py")
 
 
 def _sha(path: Path) -> str:

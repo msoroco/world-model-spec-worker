@@ -30,7 +30,12 @@ class ComparisonAuditTest(unittest.TestCase):
             {"comparison_id": "visibility_at_reference_speed", "case_ids": [AID + "__reference", AID + "__reduced_visibility"]},
             {"comparison_id": "pedestrian_at_reference_speed", "case_ids": [AID + "__reference", AID + "__pedestrian_near_rack"]},
             {"comparison_id": "surface_at_reference_speed", "case_ids": [AID + "__reference", AID + "__wet_surface"]},
-        ]}
+        ], "cases": [{"case_id": AID + "__" + suffix,
+                      "controller": {"target_speed_mps": speed}}
+                     for suffix, speed in (("reference", 3.0), ("faster", 5.0),
+                                           ("reduced_visibility", 3.0),
+                                           ("pedestrian_near_rack", 3.0),
+                                           ("wet_surface", 3.0))]}
 
     def test_speed_change(self):
         self.assertTrue(audit(self.plan, "speed_under_clear_conditions", record("reference"), record("faster", 5.0))["passed"])
@@ -154,7 +159,9 @@ class ComparisonAuditTest(unittest.TestCase):
                 (attempt / "inventory.json").write_text(json.dumps({"case_id": case,
                     "source_kind": "original_native", "sources": sources}))
                 native = attempt / "result.json"
-                native.write_text(json.dumps({"case_id": case, "diagnostic_fixture": False}))
+                native.write_text(json.dumps({"case_id": case, "diagnostic_fixture": False,
+                    "target_checks": [{"target": "bicycle_speed_mps", "requested": speed,
+                                       "matched": True}]}))
                 receipt = attempt / "delivery-audit.json"
                 receipt.write_text(json.dumps({"format": "worker-delivery-audit", "passed": True,
                     "case_id": case, "native_result_sha256": hashlib.sha256(native.read_bytes()).hexdigest(),
@@ -166,6 +173,14 @@ class ComparisonAuditTest(unittest.TestCase):
                                           *attempts, *receipts)
             self.assertTrue(result["independent_delivery_audits"])
             self.assertEqual(len(result["original_inventory_sha256"]), 2)
+            changed_native = json.loads((attempts[1] / "result.json").read_text())
+            changed_native["target_checks"][0]["requested"] = 3.0
+            (attempts[1] / "result.json").write_text(json.dumps(changed_native))
+            with self.assertRaisesRegex(ValueError, "speed target differs"):
+                audit_saved_attempts(self.plan, "speed_under_clear_conditions",
+                                     *attempts, *receipts)
+            changed_native["target_checks"][0]["requested"] = speed
+            (attempts[1] / "result.json").write_text(json.dumps(changed_native))
             inventory_path = attempts[0] / "inventory.json"
             inventory = json.loads(inventory_path.read_text())
             inventory["diagnostic_fixture"] = True

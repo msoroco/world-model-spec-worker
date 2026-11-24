@@ -12,7 +12,7 @@ HERE = Path(__file__).resolve().parent
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = (
     "carla_sight_adapter.py", "native_case_constructor.py", "native_sight_capture.py",
-    "native_sight_cameras.py", "reversal_phase.py", "reversal_route_controller.py",
+    "native_sight_cameras.py", "native_camera_audit.py", "reversal_phase.py", "reversal_route_controller.py",
     "sight_measurement.py", "selected_analysis.py",
 )
 
@@ -201,7 +201,8 @@ def build() -> list[dict]:
                      "candidate_risk": case["physical_risk"],
                      "measurement_contract_draft": "selected-measurement-contract.draft.json",
                      "measurement_procedure": {"entrypoint": "analysis.py"},
-                     "compatibility_status": "source_shaped_cpu_unit_only_canonical_fixture_pending"})
+                     "fixture_recipe_draft": "fixtures/" + suffix + "/fixture-recipe.json",
+                     "compatibility_status": "source_shaped_measurement_positive_negative_passed_full_core_pending"})
     manifest = {"assignment_id": ASSIGNMENT,
                 "status": "diagnostic_offline_only_original_source_and_delivery_proofs_pending",
                 "cases": rows}

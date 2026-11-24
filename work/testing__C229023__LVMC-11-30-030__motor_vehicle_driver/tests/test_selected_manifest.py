@@ -15,7 +15,7 @@ from crosswalk_measurements import ASSIGNMENT_ID
 
 class SelectedManifestTests(unittest.TestCase):
     def test_six_selected_entries_bind_saved_analysis_and_contracts(self):
-        manifest = build()
+        manifest = build(seal_offline=True)
         self.assertEqual(manifest["status"], "partial_selected_delivery")
         self.assertEqual({row["case_id"] for row in manifest["cases"]},
                          {ASSIGNMENT_ID + "__" + suffix for suffix in CASES})
@@ -23,6 +23,7 @@ class SelectedManifestTests(unittest.TestCase):
             self.assertEqual(row["measurement_procedure"]["entrypoint"], "analysis.py")
             self.assertTrue((HERE / row["construction"]).is_file())
             self.assertTrue((HERE / row["measurement_contract"]).is_file())
+            self.assertEqual(row["offline"]["exit_code"], 0)
             self.assertEqual(len(row["missing_proofs"]), 4)
         self.assertEqual(json.loads((HERE / "execution-manifest.json").read_text()), manifest)
 

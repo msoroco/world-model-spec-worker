@@ -190,3 +190,23 @@ The exact diagnostic runner now checks configured output-root containment and th
 - Added `selected_analysis.py`, which invokes the existing original Native sight verifier and reports hash-bound heading change, turn frame count, curve/crest context, blocked rays in each approach direction and complete two-direction ray count. It leaves legal visibility unresolved. A source-shaped synthetic packet is used only for CPU method testing; removal and stale-byte tests fail as specified.
 - Rebuilt all four diagnostic constructions, the exact offline manifest, selected delivery draft and reuse manifest after the plan/code change. All four pinned offline checks passed with fresh `.runtime-work/c129731-offline-v3-*` outputs; 66 focused tests passed. Scoped complete static check passed; exact scoped strict still exits 1 because this package remains truthful `partial`.
 - Remaining selected delivery work is the runtime's canonical analysis/result/fixture compatibility path, acquisition maps and receipts, followed by original source review, physical Native proof and acceptance. Neither the synthetic packet nor offline proof is original physical evidence.
+
+## 2026-11-24 canonical result and pinned source-shaped fixture proof
+
+- `selected_analysis.py` now has a saved-only canonical Native result builder using the pinned `native_output.physical_result` and `validate_result`. It preserves physical statuses as unverified when trace/turn/Core sources are absent; its CLI test produces `result.json` and `analysis-report.json` without a legal verdict.
+- `build_sight_fixture.py` inventories four exact per-case source-shaped diagnostic packets and SHA-bound worker fixture recipes. Their `diagnostic_fixture` marker and proof scope explicitly exclude original Native/physical acceptance. `prove_sight_fixture.py` uses pinned fixture materialization, contract validation and report verification for all four cases, then removes `sight_rays.json` in a negative fixture and verifies the exact expected failure. This positive/negative measurement compatibility proof passed.
+- The diagnostic execution draft now binds each case's analysis entrypoint, measurement contract draft and fixture recipe draft. Rebuilt all four constructions and selected/reuse drafts, reran all four fresh offline v4 checks, 67 focused tests, scoped static check and scoped strict check. Offline/tests/static pass; scoped strict remains a truthful partial failure. Full Core/video compatibility receipts and original Native proof remain to be constructed.
+
+## 2026-11-24 Core and sight timeline consistency
+
+- Canonical result finalization now rejects a Core trace or video map supplied alone, any non-900-frame join, or frame/time identity mismatch with the original sight frame map. A short diagnostic Core fixture therefore cannot be substituted for the original 900-frame sight timeline.
+- Rebuilt and resealed four exact constructions and both draft inventories. Fresh offline v5 cases, the pinned four-case source-shaped fixture proof, 68 focused tests and scoped static check pass. Exact scoped strict remains partial because original evidence and full Core/video compatibility are not present.
+
+## 2026-11-24 materialized selected analysis positive/negative
+
+- The source-shaped proof now materializes each exact construction with the pinned runtime CLI, copies only SHA-bound diagnostic source packets, runs its bundled `analysis.py`, validates the produced canonical `result.json`, and verifies all six report measurements against the fixture bytes. It separately runs a materialized negative bundle after removing `sight_rays.json`; all four fail with the declared error. The three 499/500/501-foot probes also reject tampered approach packets against the capture inventory hash.
+- Fresh offline v6 for all four cases, 68 focused tests, scoped static check and fixture proof pass. Scoped strict remains a truthful partial failure. This is source-shaped analysis compatibility, not the runtime's full Core/video compatibility receipt or original physical acceptance.
+
+## 2026-11-24 finalizer scope checkpoint
+
+- The selected analysis report now explicitly states diagnostic versus original source scope, analysis completeness, limitations and no legal verdict. All exact constructions and drafts were resealed. The four fresh offline v7 checks, 68 focused tests, materialized positive/negative analysis proof and scoped static check pass. The exact scoped strict command still fails on truthful `partial`; no ready claim was made.

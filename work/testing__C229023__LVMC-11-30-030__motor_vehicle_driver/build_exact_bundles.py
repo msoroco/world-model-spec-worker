@@ -21,6 +21,7 @@ SOURCES = (
     "native_crosswalk_media.py", "saved_video_audit.py", "saved_crosswalk_finalizer.py",
     "saved_comparison_audit.py", "native_crosswalk_actors.py", "native_crosswalk_session.py",
     "analysis.py", "canonical_evidence.py", "build_semantic_draft.py",
+    "fallback_selection.py",
 )
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -53,6 +54,9 @@ def check():
             config['duration_s'] != 45 or config['cameras'] !=
             ['overview','approach','reference_corner','driver_reference']):
         raise ValueError('Original capture profile changed')
+    cap = config.get('engineering_speed_cap_mps')
+    if cap is not None and (type(cap) not in (float, int) or not 0 < cap <= 5):
+        raise ValueError('Bounded fallback ego speed cap required')
     return config['selected_case_id']
 
 
@@ -73,6 +77,8 @@ def main():
     from case_construction import construct
     from native_crosswalk_session import capture_case
     proposal = construct(args.site, case, plan_path=Path(__file__).with_name('case-plan.json'))
+    if 'engineering_speed_cap_mps' in json.loads((Path(__file__).with_name('config.json')).read_text()):
+        proposal['engineering_speed_cap_mps'] = json.loads((Path(__file__).with_name('config.json')).read_text())['engineering_speed_cap_mps']
     import carla
     client = carla.Client(args.carla_host, args.carla_port)
     client.set_timeout(30.0)

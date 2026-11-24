@@ -34,11 +34,11 @@ def _check_fresh_destination(output, case_id):
         if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
             raise ValueError('materialized bundle path invalid')
         path = output/relative
-        if not path.is_file() or path.read_text() != item.get('content'):
+        if path.is_symlink() or not path.is_file() or path.read_text() != item.get('content'):
             raise ValueError('materialized bundle file differs')
         allowed.add(relative)
     observed = {str(path.relative_to(output)) for path in output.rglob('*') if path.is_file()}
-    if observed != allowed:
+    if observed != allowed or any(path.is_symlink() for path in output.rglob('*')):
         raise ValueError('refusing to overwrite original crossing attempt')
 
 

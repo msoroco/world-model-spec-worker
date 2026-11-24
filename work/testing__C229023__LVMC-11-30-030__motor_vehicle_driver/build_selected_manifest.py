@@ -29,6 +29,7 @@ def build(seal_offline: bool = False) -> dict:
     plan = json.loads((HERE / "case-plan.json").read_text())
     if {row["case_id"] for row in plan["cases"]} != expected:
         raise ValueError("selected case plan differs")
+    fallback = json.loads((HERE / "fallback-draft.json").read_text()) if (HERE / "fallback-draft.json").is_file() else {"candidates": {}}
     rows = []
     for row in draft["cases"]:
         case_id = row["case_id"]
@@ -57,6 +58,10 @@ def build(seal_offline: bool = False) -> dict:
                        + " --python $PWD/.venv-cpu/bin/python",
                        "exit_code": 0, "construction_sha256": row["construction_sha256"],
                        "log": log_name, "log_sha256": _sha(log)}
+        candidates = [fallback["candidates"][case_id]] if case_id in fallback["candidates"] else []
+        for candidate in candidates:
+            if _sha(HERE / candidate["construction"]) != candidate["construction_sha256"]:
+                raise ValueError("fallback construction changed")
         selected = {
             "case_id": case_id, "kind": "delivery",
             "construction": row["construction"],
@@ -65,12 +70,12 @@ def build(seal_offline: bool = False) -> dict:
             "measurement_contract_sha256": _sha(contract),
             "measurement_procedure": {"entrypoint": "analysis.py"},
             "candidate_risk": row["candidate_risk"],
-            "candidates": [],
+            "candidates": candidates,
             "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
             "offline": offline,
             "missing_proofs": [
-                "physical-risk fallback construction and exact offline check",
+                "physical-risk fallback source-shaped compatibility and original motion review",
                 "source-shaped positive/negative compatibility and selected measurement",
                 "saved-only processing and independent delivery/comparison acceptance",
                 "reviewed original road intersection, stopped-purpose and Native camera source packets",

@@ -20,7 +20,8 @@ SCRIPTS = ("native_case_constructor.py", "reversal_route_controller.py",
            "native_sight_capture.py", "distance_probe_audit.py",
            "sight_measurement.py", "selected_delivery.py",
            "delivery_audit.py", "comparison_audit.py",
-           "build_exact_bundles.py", "selected_analysis.py")
+           "build_exact_bundles.py", "selected_analysis.py",
+           "build_sight_fixture.py", "prove_sight_fixture.py")
 MEASUREMENT = "selected-measurement-contract.draft.json"
 
 
@@ -83,8 +84,10 @@ def build(package: Path) -> dict:
             "measurement_analysis": "selected_analysis.py",
             "measurement_contract_draft": MEASUREMENT,
             "measurement_contract_sha256": _sha(package / MEASUREMENT),
+            "fixture_recipe_draft": built["fixture_recipe_draft"],
+            "fixture_recipe_sha256": _sha(package / built["fixture_recipe_draft"]),
             "offline_proof": "diagnostic_only_passed; selected delivery proof pending",
-            "compatibility_proof": "pending_exact_bundle_and_sources",
+            "compatibility_proof": "source_shaped_measurement_positive_negative_passed; full Core/video pending",
             "delivery_acceptance": "pending_original_sources_and_review",
             "legal_visibility_judgment": "unresolved",
         })

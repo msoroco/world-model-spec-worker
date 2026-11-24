@@ -6,92 +6,110 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "build_exact_bundles.py; build_fallbacks.py --seal-offline; build_measurement_contracts.py; build_selected_manifest.py --seal-offline",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "8d44a451750484a6bb4cee1ff67be8369823709670f3671d968a1c24324bf48f"
+      "log": "cpu-trigger-build.log",
+      "sha256": "a4c797451ce4b8b9d9a55f552b61ec8669dcc3807c8afedc847bb007c82012ee"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/build_semantic_draft.py",
+      "command": "pinned candidate_constructions.validate on six exact primary/fallback pairs",
       "exit_code": 0,
-      "log": "cpu-semantic-build.log",
-      "sha256": "878b83c336c43145f05b614abd963b9473804a8c8cb7ad1486805ecc433ecc26"
+      "log": "cpu-trigger-candidate-validation.log",
+      "sha256": "5c84981a8dcc78909024dc20557abad0c509f854a051ff2ab9e9245e5bb348b1"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/build_exact_bundles.py",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-semantic-bundles.log",
-      "sha256": "49cb09f4e2a6a9908fedf2a0853098aeb119c743f487b4331ada452db2e343f7"
+      "log": "cpu-trigger-tests.log",
+      "sha256": "63ae75dc8bfb0bdc285c3e1a893c6e627fab55013b0738904f36b6ef14ae9a0a"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/lead-nov24-fifth .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/validate_semantic_draft.py",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --candidate primary --output .runtime-work/lead-nov24-trigger/primary-unmarked_wait --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-validate.log",
-      "sha256": "3ce2d651e087179e1ff050bb4a8fd169009f8bd2b8822660664e19fb150bfa1a"
+      "log": "cpu-selected-offline-unmarked_wait.log",
+      "sha256": "514a26f8c95b48863aba738e20e188ffd9e128127aa8a4f01bd973ccc367ba5d"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/build_measurement_contracts.py",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --candidate fallback1 --output .runtime-work/lead-nov24-trigger/fallback1-unmarked_wait --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-measurement-build.log",
-      "sha256": "e05a927ab1c17af01523f18f96a738b1a8f4199dd105de6725b707bf8f4c7468"
+      "log": "cpu-fallback-offline-unmarked_wait.log",
+      "sha256": "bac7f7bc831dc67cf2057404dd5a71603f1058976e9d67e00000369faffae135"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/lead-nov24-fifth .venv-cpu/bin/python -m unittest discover -s work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --candidate primary --output .runtime-work/lead-nov24-trigger/primary-unmarked_pass --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-tests.log",
-      "sha256": "959d84318698e2037d5833ca2a3cd9d6fc6a29bbde61259f572b5b6e78112815"
+      "log": "cpu-selected-offline-unmarked_pass.log",
+      "sha256": "21c3a04d043e121438de8c8fee6a0fc1963cc09d535c4d00e523bc55a09c1717"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --candidate fallback1 --output .runtime-work/lead-nov24-trigger/fallback1-unmarked_pass --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-static.log",
-      "sha256": "cc0634d76bab4ebe7685f30ec47975c999d0a86e219581dad0d777a5d29ec680"
+      "log": "cpu-fallback-offline-unmarked_pass.log",
+      "sha256": "0a71bd3ed1078a9134a38319e86a0d1a36508a79bfee06c7c741b2d82fa2127c"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.draft.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --output .runtime-work/lead-nov24-fifth/offline-analysis-unmarked_wait --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --candidate primary --output .runtime-work/lead-nov24-trigger/primary-marked_wait --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-offline-unmarked_wait.log",
-      "sha256": "401e6cefba4a62b7b286c50bd2d0a67035d4cdec1ae987f922e28609592f9bdf"
+      "log": "cpu-selected-offline-marked_wait.log",
+      "sha256": "8f69a70fb3ba0164f22b4c3badc825deb2cb8730c1845e56f743df3589420303"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.draft.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --output .runtime-work/lead-nov24-fifth/offline-analysis-unmarked_pass --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --candidate fallback1 --output .runtime-work/lead-nov24-trigger/fallback1-marked_wait --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-offline-unmarked_pass.log",
-      "sha256": "d9f1cfbcff59199f3b8de98739d16e5983a1958a7bb7ce49243527b24663a2c0"
+      "log": "cpu-fallback-offline-marked_wait.log",
+      "sha256": "22762fc0e943465a7f46f1db10226184e7a9a8a1be97fb98ff08ac637921a39b"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.draft.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --output .runtime-work/lead-nov24-fifth/offline-analysis-marked_wait --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --candidate primary --output .runtime-work/lead-nov24-trigger/primary-marked_pass --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-offline-marked_wait.log",
-      "sha256": "ce37c3ecea63cf5e1c006e2d7c2aa2fb8ebdf64da001d4b5ebf9449add926dcd"
+      "log": "cpu-selected-offline-marked_pass.log",
+      "sha256": "d4b00a251352f1c5961ba079687ca797e5b283f10925a16b9b075138fdf61dbb"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.draft.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --output .runtime-work/lead-nov24-fifth/offline-analysis-marked_pass --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --candidate fallback1 --output .runtime-work/lead-nov24-trigger/fallback1-marked_pass --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-offline-marked_pass.log",
-      "sha256": "517045ec172d5d8e7c6749136e746ce7cd9ef3879ae28d41e57a18d35ea78c86"
+      "log": "cpu-fallback-offline-marked_pass.log",
+      "sha256": "a09bc323187735c66678b25d04b50c46b7d9b7a8ad002cd6b38b1bca9266b7ea"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.draft.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --output .runtime-work/lead-nov24-fifth/offline-analysis-unmarked_other_stop_wait --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --candidate primary --output .runtime-work/lead-nov24-trigger/primary-unmarked_other_stop_wait --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-offline-unmarked_other_stop_wait.log",
-      "sha256": "d5c74dd0daaa0eb62f49155046220f8ff23e678edef83759f414053089569f7d"
+      "log": "cpu-selected-offline-unmarked_other_stop_wait.log",
+      "sha256": "d6cc8a3efc805f713410887466dde368728f2d6c13a5044fb99449ffaf2edbee"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.draft.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --output .runtime-work/lead-nov24-fifth/offline-analysis-unmarked_other_stop_pass --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --candidate fallback1 --output .runtime-work/lead-nov24-trigger/fallback1-unmarked_other_stop_wait --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-semantic-offline-unmarked_other_stop_pass.log",
-      "sha256": "b7f8eb60deeb80b6565017dffbee1e551a8964bc5c5365807f5ff074e30d75b1"
+      "log": "cpu-fallback-offline-unmarked_other_stop_wait.log",
+      "sha256": "de5f9f15e9545ee1e2cce63528963250ff87166ffb77c6473d881daf65a1a59e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --candidate primary --output .runtime-work/lead-nov24-trigger/primary-unmarked_other_stop_pass --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-selected-offline-unmarked_other_stop_pass.log",
+      "sha256": "5e6b1c261d6712441c0a750f1a183a1bbd0818d8c3be7fbd735d1ccf9a7a11ef"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --candidate fallback1 --output .runtime-work/lead-nov24-trigger/fallback1-unmarked_other_stop_pass --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-fallback-offline-unmarked_other_stop_pass.log",
+      "sha256": "9106e56e5ccfa11fb6374e24c448070fa5f290cc248c82e335d64c89862e5ebc"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver",
+      "exit_code": 0,
+      "log": "cpu-trigger-static.log",
+      "sha256": "02fd8b8e5415027fb8521b2183f3e6c1db3a6701e36dea8177c0ac8c7ee1faf5"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
-      "log": "cpu-semantic-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+      "log": "cpu-trigger-strict.log",
+      "sha256": "780f8af2f95afa7a743dc32919fd70af8c32f91b51eecaad1b0a88306f300933"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six exact diagnostic constructions embed a saved-only canonical native result and source-bound 900-frame actor/camera evidence. The selected whole-text law disposition is now in the actual case plan and all six measurement contracts validate against it. Fifty-seven focused tests, six exact offline checks, and pinned semantic validation pass. Physical/legal status remains unresolved. Selected canonical delivery, reviewed site, positive/negative compatibility, and delivery acceptance audit remain unfinished."
+  "reason": "Six exact selected primary and six source-measured speed-capped fallback diagnostic constructions pass pinned offline checks. The fallback trigger derives crossing-entry and pedestrian-clearance timing from sealed actor/context/receipt bytes, with source-tamper rejection. The actual selected law disposition, measurement contracts, native projection and partial selected manifest remain. Sixty-three focused tests and pinned structural fallback validation pass. Selected and fallback full runtime compatibility, saved delivery/comparison acceptance, reviewed original site, physical motion/visibility and legal judgment remain unresolved."
 }

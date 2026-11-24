@@ -9,13 +9,16 @@ from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
-from selected_analysis import measure_original_sight
+sys.path.insert(0, str(PACKAGE.parents[1] / "runtime" / "scenario_pipeline"))
+from selected_analysis import _check_core_alignment, measure_original_sight
 from sight_measurement import ASSIGNMENT, DIRECTIONS, STATIONS_M
 
 
 class SelectedAnalysisTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory()
+        scratch = PACKAGE.parents[1] / ".runtime-work" / "c129731-test-tmp"
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temporary = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.case = ASSIGNMENT + "__distance_reference"
@@ -107,6 +110,50 @@ class SelectedAnalysisTests(unittest.TestCase):
         self.assertFalse(result["maneuver_completed"])
         self.assertEqual(result["physical_checks"]["maneuver"]["status"], "unverified")
         self.assertIn("measurements", report)
+
+    def test_core_timeline_must_join_all_original_sight_frames(self):
+        self.assertFalse(_check_core_alignment(self.root))
+        (self.root / "video_frames.jsonl").write_text("{}\n")
+        with self.assertRaisesRegex(ValueError, "supplied together"):
+            _check_core_alignment(self.root)
+        frames = json.loads((self.root / "frame_map.json").read_text())["frames"]
+        mapping = [{"video_frame": n, "carla_frame": row["frame"],
+                    "time_s": row["time_s"]} for n, row in enumerate(frames)]
+        trace = [{"frame": row["frame"], "time_s": row["time_s"]} for row in frames]
+        (self.root / "video_frames.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in mapping))
+        (self.root / "trace.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in trace))
+        self.assertTrue(_check_core_alignment(self.root))
+        trace.pop()
+        (self.root / "trace.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in trace))
+        with self.assertRaisesRegex(ValueError, "frame counts differ"):
+            _check_core_alignment(self.root)
+        trace.append({"frame": frames[-1]["frame"], "time_s": frames[-1]["time_s"]})
+        trace[101]["time_s"] += 0.05
+        (self.root / "trace.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in trace))
+        with self.assertRaisesRegex(ValueError, "frame identity differs"):
+            _check_core_alignment(self.root)
+
+    def test_core_finalization_requires_original_four_view_sources(self):
+        from selected_analysis import build_canonical_result
+        construction = json.loads((PACKAGE / "construction-distance_reference.json").read_text())
+        (self.root / "construction.json").write_text(json.dumps(construction))
+        config = json.loads(next(item["content"] for item in construction["files"]
+                                 if item["path"] == "config.json"))
+        (self.root / "config.json").write_text(json.dumps(config))
+        frames = json.loads((self.root / "frame_map.json").read_text())["frames"]
+        mapping = [{"video_frame": n, "carla_frame": row["frame"],
+                    "time_s": row["time_s"]} for n, row in enumerate(frames)]
+        (self.root / "video_frames.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in mapping))
+        (self.root / "trace.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in frames))
+        report = measure_original_sight(self.root, self.case)
+        with self.assertRaisesRegex(ValueError, "exact four original camera sources required"):
+            build_canonical_result(self.root, report)
 
 
 if __name__ == "__main__":

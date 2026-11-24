@@ -21,6 +21,8 @@ from analysis import finalize
 from saved_delivery import audit, audit_original_pixels
 from test_approach import body, context
 from test_native_map import CASE, FakeWorld
+from test_original_graph import Actor, World
+from types import SimpleNamespace as NS
 
 
 buffer = io.BytesIO()
@@ -88,6 +90,44 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_attested_live_world_graph_collection(self):
+        class LiveWorld(FakeWorld):
+            def __init__(self):
+                super().__init__()
+                self.ego = Actor(7, 12)
+                self.actors = World([self.ego])
+                self.snapshot = None
+
+            def get_actors(self):
+                return self.actors.get_actors()
+
+            def get_snapshot(self):
+                return self.snapshot
+
+        class LiveAdapter(FakeAdapter):
+            def __init__(self):
+                super().__init__()
+                self.world = LiveWorld()
+                self.ego_actor = self.world.ego
+                self.native_attested = True
+
+            def tick(self):
+                row = super().tick()
+                self.world.snapshot = NS(frame=row['frame'],
+                                         timestamp=NS(elapsed_seconds=row['time_s']))
+                return row
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(LiveAdapter(), CASE, survey, attempt)
+            graph = json.loads((attempt / 'graphs/abstract/00000100.adapter.json').read_text())
+            self.assertEqual(graph['nodes'][0]['attributes']['actor_id'], 7)
+            self.assertEqual(graph['metadata']['source'], 'live_carla_world_snapshot')
+            self.assertEqual(len(list((attempt / 'graphs/abstract').glob('*.adapter.json'))), 900)
+
     def test_graph_envelope_rejects_duplicate_and_invalid_edges(self):
         graph = {'format': 'native-adapter-graph-v1', 'multigraph': False,
                  'metadata': {'frame': 100, 'simulation_time_s': 0.0},
@@ -121,6 +161,14 @@ class NativeCaptureTests(unittest.TestCase):
             capture(GraphAdapter(), CASE, survey, attempt)
             receipt = project_core_packet(attempt, root / 'core-packet')
             self.assertFalse(receipt['graph_capture_required'])
+            manifest = json.loads((root / 'core-packet/capture/manifest.json').read_text())
+            self.assertEqual(manifest['status'], 'diagnostic')
+            self.assertEqual(manifest['frames'], 900)
+            self.assertFalse(manifest['physical_completion'])
+            self.assertEqual(manifest['sources']['road.xodr'],
+                             hashlib.sha256((root / 'core-packet/road.xodr').read_bytes()).hexdigest())
+            self.assertEqual(manifest['sources']['trace.jsonl'],
+                             hashlib.sha256((root / 'core-packet/trace.jsonl').read_bytes()).hexdigest())
             self.assertEqual(len(list((root / 'core-packet/graphs/abstract').glob('*.adapter.json'))), 900)
             self.assertEqual(json.loads((root / 'core-packet/graphs/abstract/00000100.adapter.json').read_text())['metadata']['frame'], 100)
             original = attempt / 'graphs/abstract/00000100.adapter.json'

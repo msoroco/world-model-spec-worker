@@ -128,3 +128,23 @@ Exact scoped strict still exits 1 on the truthful partial package. See `cpu-entr
 ## 2026-11-24 source completion assessment checkpoint
 
 `delivery_audit.assess_source_completion` now checks the sealed original case, full 900-frame trace and 3,600 decoded camera sources, both body entries and exits, and both measured target matches. It reports a source-completion candidate while explicitly leaving actual pixel visibility, physical acceptance and legal judgment unclaimed. The new CPU test proves a diagnostic positive and rejection of incomplete decode, missing body exit and changed case. Five v9 selected offline checks, 23 focused tests and scoped static passed. Exact scoped strict remains partial; see `cpu-source-completion-strict.log`. Current logs are SHA-bound in `result.json`.
+
+## 2026-11-24 materialized capture and saved-source root checkpoint
+
+The pinned `runtime.py capture` materializes its inline construction into the attempt before launching the runner. `native_capture.py` now accepts that exact byte-for-byte materialized bundle, verifies its selected construction SHA and case identity, and rejects changed bundle bytes, symlinks and any prior acquisition files. A direct check with `runtime_cli.materialize` confirmed the exact precedence bundle passes this guard. The runner accepts explicitly SHA-verified `C125751_SURVEY`, `C125751_SURVEY_SHA256` and `C125751_MAP_SOURCE` environment inputs because the pinned capture CLI forwards no source flags. It copies four source-audited role videos and the trace to the attempt root expected by pinned saved processing, while retaining the export receipt and original source directory.
+
+All five exact selected v12 offline commands in `execution-manifest.json` pass. The full 24-test CPU suite in `cpu-capture-integration-tests.log` passed, including materialized bundle integrity and environment source handoff rejection; the scoped static check in `cpu-capture-integration-static.log` passed. The exact scoped strict command exited 1 in `cpu-capture-integration-strict.log` on truthful partial status. These eight current logs are SHA-bound in `result.json`.
+
+Next CPU work: implement source-shaped positive/negative runtime compatibility; complete the pinned Native capture-seal, native-exit and owner-release chain without asserting restoration that was not read back; exercise a recorded-only `process-saved` fixture and its independent delivery/comparison audits. Reviewed production actor, control, mount and crossing source packets remain required for a real capture. The frozen official-device exclusion and subsection-4 qualification remain unresolved for the traffic-light cell; do not infer subsection-2 applicability from a requested timing target.
+
+## 2026-11-24 verified Native closure path checkpoint
+
+The selected runner now snapshots the operator-owned CARLA world before acquisition and invokes the pinned `world_restore.restore` after capture and four-view export. It writes Native provenance before finalization, places the four role videos and derived trace at the saved-processing root, and calls the pinned `seal_capture` only after restoration readback succeeds. Failure in capture, export, analysis, restoration or sealing leaves an explicit `native-run-status.json` error for the runtime Native-exit path. This code is source-gated and has no real CARLA run or source-shaped lifecycle proof yet.
+
+Five exact selected v14 offline checks passed, three v14 manifest-binding tests passed, scoped static passed, and exact scoped strict exited 1 on truthful partial status. The full 24-test suite covered the preceding tested source modules; Native closure requires further CPU fake-client testing and source-shaped positive/negative runtime compatibility. Current logs are SHA-bound in `result.json`.
+
+## 2026-11-24 fake-client Native closure ordering proof
+
+The exact bundled runner now has a CPU fake-client test for the successful source-gated lifecycle. It asserts capture, source export, selected analysis, pinned world restoration, and pinned sealing execute in that order; it also checks Native provenance and attempt-root video placement. All five v15 exact selected `runtime.py offline` runs pass four bundle tests each, including this closure test. Three manifest binding tests, scoped static and the exact scoped strict command were rerun. Strict exits 1 on truthful partial status. Proof logs and hashes are current in `result.json`.
+
+Next CPU work is an exact source-shaped positive/negative runtime fixture and recorded-only `process-saved` proof, followed by independent acceptance and comparison receipts. The fake-client closure check does not establish a physical CARLA execution or original media visibility.

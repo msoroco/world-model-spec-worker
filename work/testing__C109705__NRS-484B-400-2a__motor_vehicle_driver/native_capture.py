@@ -127,9 +127,19 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
             read_graph = getattr(adapter, 'read_graph', None)
             if read_graph is None:
                 if getattr(adapter, 'native_attested', False):
-                    raise ValueError('Attested Native capture requires original adapter graph')
+                    ego_actor = getattr(adapter, 'ego_actor', None)
+                    if ego_actor is None:
+                        raise ValueError('Attested Native capture requires original adapter graph')
+                    from original_graph import collect
+                    graph_raw = collect(adapter.world, ego_actor,
+                                        adapter.world.get_snapshot(),
+                                        expected_frame=frame,
+                                        expected_time_s=time_s)
+                else:
+                    graph_raw = None
             else:
                 graph_raw = read_graph(frame)
+            if graph_raw is not None:
                 _checked_graph(graph_raw, frame, time_s)
                 graph_path = root / 'graphs/abstract' / f'{frame:08d}.adapter.json'
                 graph_path.parent.mkdir(parents=True, exist_ok=True)

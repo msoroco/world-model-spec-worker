@@ -64,6 +64,8 @@ def audit_saved_attempts(plan: dict, comparison_id: str, left_attempt: Path,
     records = []
     native_hashes = []
     audit_hashes = []
+    planned = {case["case_id"]: case["controller"]["target_speed_mps"]
+               for case in plan["cases"]}
     for attempt, audit_path in ((Path(left_attempt), Path(left_audit)),
                                 (Path(right_attempt), Path(right_audit))):
         native_path = attempt / "result.json"
@@ -75,6 +77,13 @@ def audit_saved_attempts(plan: dict, comparison_id: str, left_attempt: Path,
         case_id = native.get("case_id")
         if native.get("diagnostic_fixture") is not False:
             raise ValueError("comparison requires non-diagnostic Native result")
+        target_checks = native.get("target_checks")
+        if (case_id not in planned or not isinstance(target_checks, list) or
+                len(target_checks) != 1 or
+                target_checks[0].get("target") != "bicycle_speed_mps" or
+                target_checks[0].get("requested") != planned[case_id] or
+                target_checks[0].get("matched") is not True):
+            raise ValueError("saved Native speed target differs from exact planned case")
         if (receipt.get("format") != "worker-delivery-audit" or
                 receipt.get("passed") is not True or
                 receipt.get("case_id") != case_id or

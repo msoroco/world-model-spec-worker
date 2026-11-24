@@ -73,6 +73,12 @@ class NativeCrosswalkActors:
         self.carla = carla
         self.proposal = proposal
         self.plan = _source_plan(proposal)
+        cap = proposal.get("engineering_speed_cap_mps")
+        if cap is not None:
+            if not _finite(cap) or not 0 < cap <= self.plan["ego_target_speed_mps"]:
+                raise ValueError("bounded fallback ego speed cap required")
+            self.plan = dict(self.plan)
+            self.plan["ego_target_speed_mps"] = cap
         self.actors = {}
         self.destroyed = False
         starts = {"ego": proposal["ego_route"][0], "lead": proposal["lead_stop_center"],

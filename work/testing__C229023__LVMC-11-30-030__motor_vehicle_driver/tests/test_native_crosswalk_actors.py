@@ -127,6 +127,23 @@ class NativeActorTests(unittest.TestCase):
             module.NativeCrosswalkActors(world=world, carla=Carla, proposal=self.proposal)
         self.assertTrue(all(actor.destroyed for actor in world.spawned))
 
+    def test_fallback_speed_cap_changes_live_control_and_rejects_increase(self):
+        primary = module.NativeCrosswalkActors(world=World(), carla=Carla, proposal=self.proposal)
+        primary.actors["ego"].velocity = Vec(2.5, 0, 0)
+        primary.control()
+        primary_throttle = primary.actors["ego"].controls[-1]["throttle"]
+        primary.close()
+        fallback = dict(self.proposal, engineering_speed_cap_mps=3.0)
+        actors = module.NativeCrosswalkActors(world=World(), carla=Carla, proposal=fallback)
+        actors.actors["ego"].velocity = Vec(2.5, 0, 0)
+        actors.control()
+        self.assertLess(actors.actors["ego"].controls[-1]["throttle"], primary_throttle)
+        self.assertEqual(actors.plan["ego_target_speed_mps"], 3.0)
+        actors.close()
+        with self.assertRaisesRegex(ValueError, "bounded fallback"):
+            module.NativeCrosswalkActors(world=World(), carla=Carla,
+                                         proposal=dict(self.proposal, engineering_speed_cap_mps=6.0))
+
 
 if __name__ == "__main__":
     unittest.main()

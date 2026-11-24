@@ -3,7 +3,7 @@
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "8a14a3e8f6c0ac470e16c0195b8a7bf2e20482edfcab4c6ec968edb174a69ace",
   "readiness_kind": "source_bound_construction_draft",
-  "reason": "Diagnostic Core projection now binds its actor ID to the retained original adapter graph at every frame and rejects a rehashed mismatch. Physical public-highway source, production CARLA adapter, canonical Core manifest, compatibility, saved processing, and independent delivery acceptance remain incomplete.",
+  "reason": "An attested Native adapter can now collect source-reading CARLA world actor graphs with exact snapshot frame/time joins; 47 CPU tests and all four exact offline constructions pass. Production CARLA actor/sensor ownership, canonical Core manifest, case-specific positive/negative compatibility, saved processing and independent delivery acceptance remain CPU work. Reviewed public-highway source and physical realization remain unconfirmed.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -692,6 +692,36 @@
       "exit_code": 1,
       "log": "cpu-core-actor-join-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --output .runtime-work/c109705-original-graph/offline-near_centerline",
+      "exit_code": 0,
+      "log": "cpu-original-graph-offline-near_centerline.log",
+      "sha256": "399d31a8731502d94c66b3bf12fff7321e296db7f384a39172cdedb060148b02"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --output .runtime-work/c109705-original-graph/offline-farther_from_centerline",
+      "exit_code": 0,
+      "log": "cpu-original-graph-offline-farther_from_centerline.log",
+      "sha256": "15d46fabbf971fd7772291a460725f58deaed6cb03efdf9296f25a90179b67f3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --output .runtime-work/c109705-original-graph/offline-imaginary_near_centerline",
+      "exit_code": 0,
+      "log": "cpu-original-graph-offline-imaginary_near_centerline.log",
+      "sha256": "07b0403b61502cc9e47752bf7203a1bb037f5f9cfe264cf5b8d082808dda8273"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --output .runtime-work/c109705-original-graph/offline-imaginary_farther_from_centerline",
+      "exit_code": 0,
+      "log": "cpu-original-graph-offline-imaginary_farther_from_centerline.log",
+      "sha256": "b7b63c6e504262bb4cf31b9d1040d2d7ce24759234cde111d14b5fb44e371a76"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -p test_*.py -q",
+      "exit_code": 0,
+      "log": "cpu-original-graph-integration-tests.log",
+      "sha256": "d3bce04d4de33bbe8bd11a8a3089a8c9d7cadcf98108ce76ae61dca993b4bd90"
     }
   ]
 }

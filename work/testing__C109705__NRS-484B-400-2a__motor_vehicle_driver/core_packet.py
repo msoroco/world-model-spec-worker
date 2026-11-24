@@ -41,7 +41,7 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
     if acquisition.get('diagnostic_fixture') is not True:
         raise ValueError('diagnostic bridge requires explicit diagnostic source')
-    _, road_sha = _verified(attempt, 'road.xodr', acquisition)
+    road_path, road_sha = _verified(attempt, 'road.xodr', acquisition)
     _, context_sha = _verified(attempt, 'intersection-context.json', acquisition)
     history_path, history_sha = _verified(attempt, 'approach-history.jsonl', acquisition)
     mapping_path, mapping_sha = _verified(attempt, 'video_frames.jsonl', acquisition)
@@ -123,6 +123,27 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
         hashes = {'trace.jsonl': _save(stage / 'trace.jsonl', trace),
                   'capture/evidence.jsonl': _save(stage / 'capture/evidence.jsonl', evidence),
                   'capture/native/frames.jsonl': _save(stage / 'capture/native/frames.jsonl', frames)}
+        (stage / 'road.xodr').write_bytes(road_path.read_bytes())
+        source_manifest = {
+            'status': 'diagnostic',
+            'acquisition': 'diagnostic_original_native_projection',
+            'case_id': acquisition['case_id'],
+            'source_run': 'diagnostic:' + hashlib.sha256(
+                (attempt / 'acquisition.json').read_bytes()).hexdigest(),
+            'map': acquisition['map_binding']['map_name'],
+            'frames': FRAMES,
+            'required_observations': [],
+            'extraction_confirmed': True,
+            'sources': {'road.xodr': road_sha, 'trace.jsonl': hashes['trace.jsonl']},
+            'observation_contract_version': 2,
+            'road_user_visibility_observed': False,
+            'speed_source': 'synthetic_native_sample',
+            'frame_join': 'same saved diagnostic Native frame',
+            'physical_completion': False,
+            'legal_judgment': 'unresolved',
+        }
+        (stage / 'capture/manifest.json').write_text(
+            json.dumps(source_manifest, indent=2, allow_nan=False) + '\n')
         if graph_sources:
             for index, raw in graph_sources:
                 target = stage / frames[index]['adapter_graph']

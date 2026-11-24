@@ -8,7 +8,7 @@
       "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait",
       "kind": "delivery",
       "construction": "construction-unmarked_wait.json",
-      "construction_sha256": "5a19c0a5ba1f18f8b72f482629cd86defde9af3844a1e2fe5692d9e185bb8f1f",
+      "construction_sha256": "3f413c65ab4b5c800b83800616193de1d085728fe80dfa7c4acc4e61b951dbe3",
       "measurement_contract": "cases/unmarked_wait/measurement-contract.json",
       "measurement_contract_sha256": "a913338d194829a541b2667ef2917b2fc68a1e8cfadfe11283dc1f1fe2d146f8",
       "measurement_procedure": {
@@ -18,17 +18,49 @@
         "status": "physical",
         "reason": "The broad road cell may lack an actual road intersection, opposite sidewalk lines or laterally clear pass lane; source map and motion readback required."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-unmarked_wait-fallback1.json",
+          "construction_sha256": "cde23d00f9c5dd379daa636d15c9b370fcde9b902fd2380743961552e0d7dc60",
+          "trigger": {
+            "source": "sealed original Native ego/pedestrian actor trace and four-view frame map",
+            "metric": "ego crossing entry time minus pedestrian clearance time, seconds",
+            "failure_condition": "ego enters the crossing before the original pedestrian has cleared; select a slower approach for a new original attempt"
+          },
+          "changed_knobs": [
+            {
+              "name": "engineering_speed_cap_mps",
+              "primary": "reviewed original actor target up to 15 m/s",
+              "fallback": 3.0
+            }
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --candidate fallback1 --output .runtime-work/lead-nov24-fallback/fallback-unmarked_wait --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "cde23d00f9c5dd379daa636d15c9b370fcde9b902fd2380743961552e0d7dc60",
+            "log": "cpu-fallback-offline-unmarked_wait.log",
+            "log_sha256": "bac7f7bc831dc67cf2057404dd5a71603f1058976e9d67e00000369faffae135"
+          },
+          "compatibility": {
+            "status": "pending source-shaped positive and missing-source negative"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending selected-manifest proof"
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --output .runtime-work/lead-nov24-sixth/selected-unmarked_wait --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3f413c65ab4b5c800b83800616193de1d085728fe80dfa7c4acc4e61b951dbe3",
+        "log": "cpu-selected-offline-unmarked_wait.log",
+        "log_sha256": "514a26f8c95b48863aba738e20e188ffd9e128127aa8a4f01bd973ccc367ba5d"
       },
       "missing_proofs": [
-        "physical-risk fallback construction and exact offline check",
+        "physical-risk fallback source-shaped compatibility and original motion review",
         "source-shaped positive/negative compatibility and selected measurement",
         "saved-only processing and independent delivery/comparison acceptance",
         "reviewed original road intersection, stopped-purpose and Native camera source packets"
@@ -38,7 +70,7 @@
       "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass",
       "kind": "delivery",
       "construction": "construction-unmarked_pass.json",
-      "construction_sha256": "87ead0ce1f39e06b5d722be3550c2f2f1ba320d28de2f764141d267d7e95fc0d",
+      "construction_sha256": "5f7478832f1616747f5edfb6919aeef3d2728b366b95b5735cc590d88c4b9bde",
       "measurement_contract": "cases/unmarked_pass/measurement-contract.json",
       "measurement_contract_sha256": "dccc93995024da054eb55cca0111912fb01bad7e10926400d4c17d3403464cfd",
       "measurement_procedure": {
@@ -48,17 +80,49 @@
         "status": "physical",
         "reason": "The broad road cell may lack an actual road intersection, opposite sidewalk lines or laterally clear pass lane; source map and motion readback required."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-unmarked_pass-fallback1.json",
+          "construction_sha256": "2bfe185e745b935a7f54250f5da4235bf0230a98d3d550392b940dfde598eac8",
+          "trigger": {
+            "source": "sealed original Native ego/pedestrian actor trace and four-view frame map",
+            "metric": "ego crossing entry time minus pedestrian clearance time, seconds",
+            "failure_condition": "ego enters the crossing before the original pedestrian has cleared; select a slower approach for a new original attempt"
+          },
+          "changed_knobs": [
+            {
+              "name": "engineering_speed_cap_mps",
+              "primary": "reviewed original actor target up to 15 m/s",
+              "fallback": 3.0
+            }
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --candidate fallback1 --output .runtime-work/lead-nov24-fallback/fallback-unmarked_pass --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2bfe185e745b935a7f54250f5da4235bf0230a98d3d550392b940dfde598eac8",
+            "log": "cpu-fallback-offline-unmarked_pass.log",
+            "log_sha256": "0a71bd3ed1078a9134a38319e86a0d1a36508a79bfee06c7c741b2d82fa2127c"
+          },
+          "compatibility": {
+            "status": "pending source-shaped positive and missing-source negative"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending selected-manifest proof"
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --output .runtime-work/lead-nov24-sixth/selected-unmarked_pass --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "5f7478832f1616747f5edfb6919aeef3d2728b366b95b5735cc590d88c4b9bde",
+        "log": "cpu-selected-offline-unmarked_pass.log",
+        "log_sha256": "21c3a04d043e121438de8c8fee6a0fc1963cc09d535c4d00e523bc55a09c1717"
       },
       "missing_proofs": [
-        "physical-risk fallback construction and exact offline check",
+        "physical-risk fallback source-shaped compatibility and original motion review",
         "source-shaped positive/negative compatibility and selected measurement",
         "saved-only processing and independent delivery/comparison acceptance",
         "reviewed original road intersection, stopped-purpose and Native camera source packets"
@@ -68,7 +132,7 @@
       "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait",
       "kind": "delivery",
       "construction": "construction-marked_wait.json",
-      "construction_sha256": "ffdaa7b99e7f8028442553fcf0b4fd096188e9bc8d2dc1a71ad7f0eee678b7ba",
+      "construction_sha256": "02f2033768caae61ffce3ed7b3f050107e3dba9734324cba1c554857d2f94690",
       "measurement_contract": "cases/marked_wait/measurement-contract.json",
       "measurement_contract_sha256": "7ac8bcaff1a2ff6f5d88cd847b0170bc82cc84e01afe2c199b8a3df394a3fac9",
       "measurement_procedure": {
@@ -78,17 +142,49 @@
         "status": "physical",
         "reason": "The broad road cell may lack an actual road intersection, opposite sidewalk lines or laterally clear pass lane; source map and motion readback required."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-marked_wait-fallback1.json",
+          "construction_sha256": "491589d34eb571f8d65bc8b6a4e0ec8369197bfdcccb8d27a6a246723c9d916d",
+          "trigger": {
+            "source": "sealed original Native ego/pedestrian actor trace and four-view frame map",
+            "metric": "ego crossing entry time minus pedestrian clearance time, seconds",
+            "failure_condition": "ego enters the crossing before the original pedestrian has cleared; select a slower approach for a new original attempt"
+          },
+          "changed_knobs": [
+            {
+              "name": "engineering_speed_cap_mps",
+              "primary": "reviewed original actor target up to 15 m/s",
+              "fallback": 3.0
+            }
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --candidate fallback1 --output .runtime-work/lead-nov24-fallback/fallback-marked_wait --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "491589d34eb571f8d65bc8b6a4e0ec8369197bfdcccb8d27a6a246723c9d916d",
+            "log": "cpu-fallback-offline-marked_wait.log",
+            "log_sha256": "22762fc0e943465a7f46f1db10226184e7a9a8a1be97fb98ff08ac637921a39b"
+          },
+          "compatibility": {
+            "status": "pending source-shaped positive and missing-source negative"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending selected-manifest proof"
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --output .runtime-work/lead-nov24-sixth/selected-marked_wait --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "02f2033768caae61ffce3ed7b3f050107e3dba9734324cba1c554857d2f94690",
+        "log": "cpu-selected-offline-marked_wait.log",
+        "log_sha256": "8f69a70fb3ba0164f22b4c3badc825deb2cb8730c1845e56f743df3589420303"
       },
       "missing_proofs": [
-        "physical-risk fallback construction and exact offline check",
+        "physical-risk fallback source-shaped compatibility and original motion review",
         "source-shaped positive/negative compatibility and selected measurement",
         "saved-only processing and independent delivery/comparison acceptance",
         "reviewed original road intersection, stopped-purpose and Native camera source packets"
@@ -98,7 +194,7 @@
       "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass",
       "kind": "delivery",
       "construction": "construction-marked_pass.json",
-      "construction_sha256": "f2ed9ad11aaab04d8ade24eb72b3d97f737c6c8ebe9af2c3d4f478f47eb4a010",
+      "construction_sha256": "15d741825cd6c97df3886b10df06fd79dd1d13531759394a0d3828316e9dec87",
       "measurement_contract": "cases/marked_pass/measurement-contract.json",
       "measurement_contract_sha256": "20297bf6cdad5d1589a6e4c347679656313c2e99eb589b64795623e0d1662138",
       "measurement_procedure": {
@@ -108,17 +204,49 @@
         "status": "physical",
         "reason": "The broad road cell may lack an actual road intersection, opposite sidewalk lines or laterally clear pass lane; source map and motion readback required."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-marked_pass-fallback1.json",
+          "construction_sha256": "8d2492ae8b7d3b5d1b0f36c89fe08f64808155070adaea9c9e51951add8e5a28",
+          "trigger": {
+            "source": "sealed original Native ego/pedestrian actor trace and four-view frame map",
+            "metric": "ego crossing entry time minus pedestrian clearance time, seconds",
+            "failure_condition": "ego enters the crossing before the original pedestrian has cleared; select a slower approach for a new original attempt"
+          },
+          "changed_knobs": [
+            {
+              "name": "engineering_speed_cap_mps",
+              "primary": "reviewed original actor target up to 15 m/s",
+              "fallback": 3.0
+            }
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --candidate fallback1 --output .runtime-work/lead-nov24-fallback/fallback-marked_pass --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "8d2492ae8b7d3b5d1b0f36c89fe08f64808155070adaea9c9e51951add8e5a28",
+            "log": "cpu-fallback-offline-marked_pass.log",
+            "log_sha256": "a09bc323187735c66678b25d04b50c46b7d9b7a8ad002cd6b38b1bca9266b7ea"
+          },
+          "compatibility": {
+            "status": "pending source-shaped positive and missing-source negative"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending selected-manifest proof"
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --output .runtime-work/lead-nov24-sixth/selected-marked_pass --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "15d741825cd6c97df3886b10df06fd79dd1d13531759394a0d3828316e9dec87",
+        "log": "cpu-selected-offline-marked_pass.log",
+        "log_sha256": "d4b00a251352f1c5961ba079687ca797e5b283f10925a16b9b075138fdf61dbb"
       },
       "missing_proofs": [
-        "physical-risk fallback construction and exact offline check",
+        "physical-risk fallback source-shaped compatibility and original motion review",
         "source-shaped positive/negative compatibility and selected measurement",
         "saved-only processing and independent delivery/comparison acceptance",
         "reviewed original road intersection, stopped-purpose and Native camera source packets"
@@ -128,7 +256,7 @@
       "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait",
       "kind": "delivery",
       "construction": "construction-unmarked_other_stop_wait.json",
-      "construction_sha256": "966aab028b3b42ef28916bff4db883bf841b6b9ebd34ddf927d7d391871ac5b5",
+      "construction_sha256": "803f037a922fdbca2a4383bbfa52048951fccac1c128bb0ae66295420af2207f",
       "measurement_contract": "cases/unmarked_other_stop_wait/measurement-contract.json",
       "measurement_contract_sha256": "95b45c513e95ddfe0e938f8d7acdf41de8363ce090c9a5f16c823958747e643c",
       "measurement_procedure": {
@@ -138,17 +266,49 @@
         "status": "physical",
         "reason": "The broad road cell may lack an actual road intersection, opposite sidewalk lines or laterally clear pass lane; source map and motion readback required."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-unmarked_other_stop_wait-fallback1.json",
+          "construction_sha256": "001e6bcc06cae01851412adb2050b29533545990cbb34daa37ba0edb09fd5432",
+          "trigger": {
+            "source": "sealed original Native ego/pedestrian actor trace and four-view frame map",
+            "metric": "ego crossing entry time minus pedestrian clearance time, seconds",
+            "failure_condition": "ego enters the crossing before the original pedestrian has cleared; select a slower approach for a new original attempt"
+          },
+          "changed_knobs": [
+            {
+              "name": "engineering_speed_cap_mps",
+              "primary": "reviewed original actor target up to 15 m/s",
+              "fallback": 3.0
+            }
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --candidate fallback1 --output .runtime-work/lead-nov24-fallback/fallback-unmarked_other_stop_wait --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "001e6bcc06cae01851412adb2050b29533545990cbb34daa37ba0edb09fd5432",
+            "log": "cpu-fallback-offline-unmarked_other_stop_wait.log",
+            "log_sha256": "de5f9f15e9545ee1e2cce63528963250ff87166ffb77c6473d881daf65a1a59e"
+          },
+          "compatibility": {
+            "status": "pending source-shaped positive and missing-source negative"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending selected-manifest proof"
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --output .runtime-work/lead-nov24-sixth/selected-unmarked_other_stop_wait --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "803f037a922fdbca2a4383bbfa52048951fccac1c128bb0ae66295420af2207f",
+        "log": "cpu-selected-offline-unmarked_other_stop_wait.log",
+        "log_sha256": "d6cc8a3efc805f713410887466dde368728f2d6c13a5044fb99449ffaf2edbee"
       },
       "missing_proofs": [
-        "physical-risk fallback construction and exact offline check",
+        "physical-risk fallback source-shaped compatibility and original motion review",
         "source-shaped positive/negative compatibility and selected measurement",
         "saved-only processing and independent delivery/comparison acceptance",
         "reviewed original road intersection, stopped-purpose and Native camera source packets"
@@ -158,7 +318,7 @@
       "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass",
       "kind": "delivery",
       "construction": "construction-unmarked_other_stop_pass.json",
-      "construction_sha256": "ddf5c9c3ba62b461cf523af8294d3ae527549e5ec1e924bf8911563e5f3d3ebb",
+      "construction_sha256": "36e4ca60e7a6d745ba14e35a94bc1a7cd793228b9cc1106e742ceac63068033e",
       "measurement_contract": "cases/unmarked_other_stop_pass/measurement-contract.json",
       "measurement_contract_sha256": "11921c77efc397843cafb73995834522d6245eff6fe071b480dc3e9dffb0ba94",
       "measurement_procedure": {
@@ -168,17 +328,49 @@
         "status": "physical",
         "reason": "The broad road cell may lack an actual road intersection, opposite sidewalk lines or laterally clear pass lane; source map and motion readback required."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-unmarked_other_stop_pass-fallback1.json",
+          "construction_sha256": "9c0aba09ba8f7552b8217766754b89f807c7080be3fddbfa59f5867a6771d03e",
+          "trigger": {
+            "source": "sealed original Native ego/pedestrian actor trace and four-view frame map",
+            "metric": "ego crossing entry time minus pedestrian clearance time, seconds",
+            "failure_condition": "ego enters the crossing before the original pedestrian has cleared; select a slower approach for a new original attempt"
+          },
+          "changed_knobs": [
+            {
+              "name": "engineering_speed_cap_mps",
+              "primary": "reviewed original actor target up to 15 m/s",
+              "fallback": 3.0
+            }
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --candidate fallback1 --output .runtime-work/lead-nov24-fallback/fallback-unmarked_other_stop_pass --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9c0aba09ba8f7552b8217766754b89f807c7080be3fddbfa59f5867a6771d03e",
+            "log": "cpu-fallback-offline-unmarked_other_stop_pass.log",
+            "log_sha256": "9106e56e5ccfa11fb6374e24c448070fa5f290cc248c82e335d64c89862e5ebc"
+          },
+          "compatibility": {
+            "status": "pending source-shaped positive and missing-source negative"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending selected-manifest proof"
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/execution-manifest.json --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --output .runtime-work/lead-nov24-sixth/selected-unmarked_other_stop_pass --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "36e4ca60e7a6d745ba14e35a94bc1a7cd793228b9cc1106e742ceac63068033e",
+        "log": "cpu-selected-offline-unmarked_other_stop_pass.log",
+        "log_sha256": "5e6b1c261d6712441c0a750f1a183a1bbd0818d8c3be7fbd735d1ccf9a7a11ef"
       },
       "missing_proofs": [
-        "physical-risk fallback construction and exact offline check",
+        "physical-risk fallback source-shaped compatibility and original motion review",
         "source-shaped positive/negative compatibility and selected measurement",
         "saved-only processing and independent delivery/comparison acceptance",
         "reviewed original road intersection, stopped-purpose and Native camera source packets"

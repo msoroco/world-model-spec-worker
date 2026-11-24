@@ -20,6 +20,33 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def _check_core_alignment(attempt: Path) -> bool:
+    """Join any supplied Core timeline to every original sight frame and time."""
+    mapping_path = attempt / "video_frames.jsonl"
+    trace_path = attempt / "trace.jsonl"
+    if not mapping_path.exists() and not trace_path.exists():
+        return False
+    if not mapping_path.is_file() or not trace_path.is_file():
+        raise ValueError("Core trace and video frame map must be supplied together")
+    sight = json.loads((attempt / "frame_map.json").read_text())["frames"]
+    mapping = _jsonl(mapping_path)
+    trace = _jsonl(trace_path)
+    if not (len(sight) == len(mapping) == len(trace) == 900):
+        raise ValueError("Core and sight frame counts differ")
+    for index, (original, frame, motion) in enumerate(zip(sight, mapping, trace)):
+        if (frame.get("video_frame") != index or
+                frame.get("carla_frame") != original["frame"] or
+                frame.get("time_s") != original["time_s"] or
+                motion.get("frame") != original["frame"] or
+                motion.get("time_s") != original["time_s"]):
+            raise ValueError("Core and sight frame identity differs")
+    return True
+
+
 def measure_original_sight(attempt: Path, case_id: str) -> dict:
     """Measure observed reversal and two-direction rays from sealed packets."""
     attempt = Path(attempt).resolve()
@@ -43,8 +70,15 @@ def measure_original_sight(attempt: Path, case_id: str) -> dict:
         "following_blocked_ray_count": measured["blocked_ray_counts"]["behind_same_direction"],
         "two_direction_ray_count": measured["rays_checked"],
     }
+    scope = ("diagnostic software fixture only; no Native or legal acceptance"
+             if inventory.get("diagnostic_fixture") is True else
+             "source-bound original sight measurement; legal judgment unresolved")
     return {"format": "c129731-selected-analysis-v1", "case_id": case_id,
-            "scope": "source-bound sight measurement; legal judgment unresolved",
+            "scope": scope,
+            "analysis_complete": True, "legal_verdict_claimed": False,
+            "limitations": ["A diagnostic fixture proves software wiring only",
+                            "Original media and physical completion need independent review",
+                            "Statutory driver visibility remains unresolved"],
             "measurements": {key: {"value": value,
                                    "method": "measure_original_sight",
                                    "sources": sources}
@@ -64,6 +98,13 @@ def build_canonical_result(attempt: Path, report: dict) -> dict:
             config.get("cell_id") != "C129731" or
             config.get("actor") != "motor_vehicle_driver"):
         raise ValueError("Exact canonical reversal configuration changed")
+    core_supplied = _check_core_alignment(attempt)
+    if core_supplied:
+        from native_camera_audit import audit as audit_native_cameras
+        camera_audit = audit_native_cameras(attempt)
+        if camera_audit.get("case_id") != report["case_id"]:
+            raise ValueError("Original camera case differs from selected sight case")
+        report["original_camera_audit"] = camera_audit
     values = report["measurements"]
     heading = values["heading_change_deg"]["value"]
     sources = values["heading_change_deg"]["sources"]
@@ -78,6 +119,11 @@ def build_canonical_result(attempt: Path, report: dict) -> dict:
         probe = attempt / "approach_motion.json"
         if not probe.is_file():
             raise ValueError("Missing required source: approach_motion.json")
+        inventory = json.loads((attempt / "inventory.json").read_text())
+        reference = inventory.get("approach_probe", {})
+        if (reference.get("path") != probe.name or
+                reference.get("sha256") != _sha(probe)):
+            raise ValueError("Original approach probe hash differs")
         packet = json.loads(probe.read_text())
         if packet.get("case_id") != report["case_id"] or packet.get("source_kind") != "original_native":
             raise ValueError("Original approach probe identity changed")

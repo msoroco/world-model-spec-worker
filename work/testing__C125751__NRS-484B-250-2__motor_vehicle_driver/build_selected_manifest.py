@@ -47,7 +47,7 @@ def build(seal_offline=False):
                 raise ValueError('Exact selected offline check missing: '+suffix)
             command = ('.venv-cpu/bin/python runtime.py offline --manifest '
                        f'work/{AID}/execution-manifest.json --case {case} '
-                       f'--output .runtime-work/c125751-selected-offline-v9-{suffix} '
+                       f'--output .runtime-work/c125751-selected-offline-v15-{suffix} '
                        '--python "$PWD/.venv-cpu/bin/python"')
             entry['offline'] = {'command':command, 'exit_code':0,
                                 'construction_sha256':sha(construction),
