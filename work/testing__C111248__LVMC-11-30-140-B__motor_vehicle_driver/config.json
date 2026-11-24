@@ -9,7 +9,77 @@
     "cue": "white_cane",
     "encounter": "approach",
     "response": "full_stop",
-    "precaution": "wait_until_clear"
+    "precaution": "wait_until_clear",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "driver_speed_mps",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "original Native driver velocity magnitude",
+          "time_window": "45-second original encounter window",
+          "reference_frame": "original Native world and frame",
+          "uncertainty": "Physical source and visibility require local review."
+        },
+        {
+          "name": "body_gap_m",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "original participant body-gap proxy",
+          "time_window": "45-second original encounter window",
+          "reference_frame": "original Native world and frame",
+          "uncertainty": "Physical source and visibility require local review."
+        },
+        {
+          "name": "precaution_observation",
+          "unit": "categorical",
+          "sampling_rate_hz": 20,
+          "method": "original independent person-clear and precaution context",
+          "time_window": "45-second original encounter window",
+          "reference_frame": "original Native world and frame",
+          "uncertainty": "Physical source and visibility require local review."
+        },
+        {
+          "name": "contact_observation",
+          "unit": "categorical",
+          "sampling_rate_hz": 20,
+          "method": "original collision/contact context",
+          "time_window": "45-second original encounter window",
+          "reference_frame": "original Native world and frame",
+          "uncertainty": "Physical source and visibility require local review."
+        },
+        {
+          "name": "original_camera_frames",
+          "unit": "frame",
+          "sampling_rate_hz": 20,
+          "method": "four synchronized original camera images",
+          "time_window": "45-second original encounter window",
+          "reference_frame": "original Native world and frame",
+          "uncertainty": "Physical source and visibility require local review."
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "blindness_attestation",
+          "unit": "source record",
+          "method": "independently reviewed original basis and issuer with SHA256"
+        },
+        {
+          "name": "reviewed_map_route",
+          "unit": "source record",
+          "method": "independently reviewed Native map route and actor source with SHA256"
+        },
+        {
+          "name": "carried_cue",
+          "unit": "source record",
+          "method": "independently reviewed actually carried cue original with SHA256"
+        }
+      ],
+      "limitations": [
+        "Blindness and cue status cannot be inferred from a CARLA prop or fixture.",
+        "Immediacy and necessary precautions require later legal and physical review."
+      ]
+    }
   },
   "hz": 20,
   "rate_hz": 20,
@@ -54,7 +124,7 @@
     "original_camera_pixels"
   ],
   "required_atoms": [],
-  "diagnostic_only": true,
+  "diagnostic_only": false,
   "supported_case_ids": [
     "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_full_stop_wait",
     "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_roll_through",

@@ -103,6 +103,39 @@ def build():
                     'receipt': f'cases/{name}/physical/receipt.json',
                     'sha256': sha(physical),
                 }
+        saved_log = ROOT / f'cpu-saved-positive-{name}.log'
+        if saved_log.is_file() and '"analysis_complete": true' in saved_log.read_text():
+            entry['post_capture'] = {
+                'recorded_only': True,
+                'command': f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json --case {case} --attempt $SAVED_ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck',
+                'feedback_command': f'find $SAVED_OUTPUT -name feedback.json -type f -print # {case}',
+                'test_exit_code': 0,
+                'test_log': saved_log.name,
+                'test_log_sha256': sha(saved_log),
+            }
+        delivery_positive = ROOT / f'cpu-delivery-positive-{name}.log'
+        delivery_negative = ROOT / f'cpu-delivery-negative-{name}.log'
+        delivery_script = ROOT / 'delivery_audit.py'
+        if (delivery_positive.is_file() and delivery_negative.is_file() and
+                delivery_script.is_file() and
+                '"delivery_accepted": false' in delivery_positive.read_text() and
+                'trace source file missing' in delivery_negative.read_text()):
+            entry['delivery_acceptance'] = {
+                'case_id': case,
+                'sets': ['demo-test', 'full-test'],
+                'checks': ['native_source', 'all_participants', 'time_join',
+                           'full_video_decode', 'actual_pixels', 'physical_completion'],
+                'test_exit_code': 0, 'negative_exit_code': 1,
+                'negative_expected_error': 'trace source file missing',
+                'command': f'PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python work/{ROOT.name}/delivery_audit.py --case {case} --attempt .runtime-work/c109705-2b-nov24/delivery-{name} --output .runtime-work/c109705-2b-nov24/delivery-{name}-audit.json --allow-diagnostic',
+                'negative_command': f'PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python work/{ROOT.name}/delivery_audit.py --case {case} --attempt .runtime-work/c109705-2b-nov24/delivery-{name} --output .runtime-work/c109705-2b-nov24/delivery-{name}-negative.json --allow-diagnostic',
+                'script': 'delivery_audit.py', 'script_sha256': sha(delivery_script),
+                'test_log': delivery_positive.name,
+                'test_log_sha256': sha(delivery_positive),
+                'negative_log': delivery_negative.name,
+                'negative_log_sha256': sha(delivery_negative),
+                'scope': 'synthetic CPU fixture; delivery_accepted false; original Native highway and media review pending',
+            }
         fallback_source = proof_dir / 'fallback1-construction.json'
         if fallback_source.is_file():
             fallback = {

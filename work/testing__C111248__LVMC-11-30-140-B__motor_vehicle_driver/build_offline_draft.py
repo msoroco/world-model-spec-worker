@@ -10,6 +10,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "blind_encounter.py", "native_capture.py", "native_operation.py", "carla_adapter.py",
     "saved_encounter.py", "delivery_audit.py", "reviewed_sources.py", "analysis.py",
+    "native_factories.py",
 )
 
 RUNNER = '''"""Exact blind-person encounter diagnostic bundle preflight."""
@@ -122,23 +123,25 @@ def build():
             "assignment_id": AID, "law_id": "LVMC-11-30-140-B", "cell_id": "C111248",
             "actor": "motor_vehicle_driver", "selected_case_id": case_id,
             "plan_sha256": hashlib.sha256(source).hexdigest(),
-            "case": {key: item[key] for key in ("cue", "encounter", "response", "precaution")},
+            "case": {**{key: item[key] for key in ("cue", "encounter", "response", "precaution")},
+                     "recording_description": semantic_by_id[case_id]["recording_description"]},
             "hz": 20, "rate_hz": 20, "frame_count": 900, "duration_s": 45,
             "approach_speed_cap_mps": 2.0,
-            "cameras": ["front", "left", "right", "rear"],
+            "cameras": json.loads((HERE / "config.json").read_text())["cameras"],
+            "supported_case_ids": [case["case_id"] for case in plan["cases"]],
             "required_sources": ["reviewed_map_route", "blindness_attestation",
                                  "actually_carried_cue", "original_body_history",
                                  "original_camera_pixels"],
-            "required_atoms": [], "diagnostic_only": True,
+            "required_atoms": [], "diagnostic_only": False,
         }
         files = {name: (HERE / name).read_text() for name in SOURCE_FILES}
-        files.update({"runner.py": RUNNER, "case-plan.json": source.decode(),
+        files.update({"runner.py": (HERE / "runner.py").read_text(), "case-plan.json": source.decode(),
                       "config.json": json.dumps(config, indent=2) + "\n",
                       "tests/test_bundle.py": TEST})
         construction = {
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case_id,
-            "entrypoint": "runner.py", "status": "draft", "diagnostic_only": True,
+            "entrypoint": "runner.py", "status": "draft", "diagnostic_only": False,
             "recording_description": semantic_by_id[case_id]["recording_description"],
             "measurement_plan": {"entrypoint": "saved_encounter.py",
                                  "source": "closed original history and reviewed source packet"},
@@ -148,7 +151,7 @@ def build():
                                   "emergency brake, reverse actor cleanup and world restoration"],
             "mechanisms": {"construction": "reviewed-source actor and cue adapter",
                            "capture": "original per-camera PNG and 20 Hz body history",
-                           "readiness": "diagnostic construction; canonical video finalization pending"},
+                           "readiness": "Native original and PipelineCapture path; physical outcome unconfirmed"},
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         output = HERE / ("construction-" + suffix + ".json")

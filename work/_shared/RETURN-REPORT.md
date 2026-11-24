@@ -3313,3 +3313,7 @@ C202480 completed six current saved-only proofs, 82 tests, pinned execution-mani
 
 - C202480 refreshed acquisition map names the five mandatory source-derived channels. All twelve exact offline/compatibility paths pass; first of six new saved-only processing runs passes. Remaining saved runs and direct validators are underway, then exact strict gate.
 - C111248 six saved-only process-saved paths pass; missing blindness attestation is rejected. Independent comparison auditor passes five planned pairs with fixed participant/attestation/frame/map checks and rejects missing original history. Root artifacts and four-camera plan have passing preflight; owner is implementing independent delivery audit proofs. Strict currently rejects truthful partial.
+
+- C111248 independent delivery audit now has six positive and six missing-PNG negative proofs bound in manifest. Direct execution manifest, semantic, compatibility and delivery validators pass. Owner found `_control` emitted zero throttle for unobstructed approach and is repairing bounded motion plus source-bound CARLA factory/runner before strict readiness.
+- C109705 NRS-484B-400-2b now has four of four primary positive/negative compatibility paths passing through Native/Core/Lean/final decode. Four actual slower-controller fallback constructions pass offline; fallback compatibility is running. Four physical three-outcome receipts and 52 focused tests pass.
+- C202480 has four of six refreshed selected saved-only proofs passing after all twelve offline/compatibility paths passed.

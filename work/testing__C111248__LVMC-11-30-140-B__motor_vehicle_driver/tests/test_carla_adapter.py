@@ -99,6 +99,30 @@ class CarlaAdapterTests(unittest.TestCase):
         self.assertTrue(all(sensor.stopped for sensor in self.sensors.values()))
         self.assertEqual(self.driver.controls[-1].brake, 1.0)
 
+    def test_pipeline_capture_uses_same_native_frame_and_closes(self):
+        from native_factories import CaptureAdapter
+        class Pipeline:
+            def __init__(self):
+                self.frames = []
+                self.closed = False
+
+            def capture(self, frame, time_s):
+                self.frames.append((frame, time_s))
+
+            def close(self):
+                self.closed = True
+
+        pipeline = Pipeline()
+        collision = Sensor()
+        adapter = CaptureAdapter(self.world, self.driver, self.person,
+                                 self.sensors, collision, self.context,
+                                 self.control, pipeline)
+        frame, time_s = adapter.tick()
+        adapter.observe(frame)
+        self.assertEqual(pipeline.frames, [(frame, time_s)])
+        adapter.close()
+        self.assertTrue(pipeline.closed and collision.stopped and collision.destroyed)
+
     def test_wrong_actor_context_and_camera_frame_rejected(self):
         adapter = self.adapter(lambda frame: dict(self.context(frame), person_actor_id=999))
         frame, _ = adapter.tick()

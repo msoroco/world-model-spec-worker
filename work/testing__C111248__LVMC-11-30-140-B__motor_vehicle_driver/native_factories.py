@@ -82,10 +82,16 @@ class ConstructionAdapter:
 
 class CaptureAdapter(CarlaAdapter):
     def __init__(self, world, driver, person, sensors, collision_sensor,
-                 context_reader, control_factory):
+                 context_reader, control_factory, pipeline):
         self.collision_sensor = collision_sensor
+        self.pipeline = pipeline
         super().__init__(world, driver, person, sensors, context_reader,
                          control_factory, destroy_sensors=True)
+
+    def observe(self, frame):
+        result = super().observe(frame)
+        self.pipeline.capture(frame, self.last_time)
+        return result
 
     def close(self):
         if self.closed:
@@ -93,16 +99,20 @@ class CaptureAdapter(CarlaAdapter):
         try:
             super().close()
         finally:
-            self.collision_sensor.stop()
-            self.collision_sensor.destroy()
+            try:
+                self.pipeline.close()
+            finally:
+                self.collision_sensor.stop()
+                self.collision_sensor.destroy()
 
 
 def construction_adapter_factory(world, plan):
     return ConstructionAdapter(world, plan)
 
 
-def capture_adapter_factory(world, plan, constructed):
+def capture_adapter_factory(world, plan, constructed, *, client, output, case_id):
     import carla
+    from pipeline_capture import PipelineCapture
     driver = world.get_actor(plan['driver_actor_id'])
     person = world.get_actor(plan['pedestrian_actor_id'])
     if driver is None or person is None:
@@ -115,7 +125,6 @@ def capture_adapter_factory(world, plan, constructed):
         raise ValueError('reviewed route direction unavailable')
     ux, uy = dx / length, dy / length
     person_start = person.get_location()
-    camera = world.get_blueprint_library().find('sensor.camera.rgb')
     poses = {
         'front': (carla.Transform(carla.Location(
             x=(route[0]['x'] + route[-1]['x']) / 2,
@@ -132,6 +141,7 @@ def capture_adapter_factory(world, plan, constructed):
     }
     sensors = {}
     collision = None
+    pipeline = None
     try:
         for name, (pose, parent, width, height) in poses.items():
             blueprint = world.get_blueprint_library().find('sensor.camera.rgb')
@@ -165,9 +175,12 @@ def capture_adapter_factory(world, plan, constructed):
                     'person_clear': clear, 'contact': frame in contacts,
                     'precaution': speed <= 0.05 and in_path}
 
+        pipeline = PipelineCapture(client, driver, output, case_id)
         return CaptureAdapter(world, driver, person, sensors, collision,
-                              context_reader, carla.VehicleControl)
+                              context_reader, carla.VehicleControl, pipeline)
     except BaseException:
+        if pipeline is not None:
+            pipeline.close(confirmed=False)
         for sensor in sensors.values():
             sensor.destroy()
         if collision is not None:
