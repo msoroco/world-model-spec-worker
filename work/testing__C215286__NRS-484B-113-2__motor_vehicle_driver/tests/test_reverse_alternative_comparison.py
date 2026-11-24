@@ -20,7 +20,8 @@ def make_attempt(root, alternative, *, expected_entry):
         centers = [(16 - min(i, 8), 0) for i in range(900)]
         headings = [0] * 900
         if alternative == "street_corner":
-            headings = [0 if i < 7 else 45 for i in range(900)]
+            centers = [(16 - min(i * .5, 10), 0) for i in range(900)]
+            headings = [5 * min(max(i - 10, 0), 9) for i in range(900)]
     else:
         centers = [(16 - min(i, 2), 0) for i in range(900)]
         headings = [0] * 900
@@ -88,6 +89,19 @@ class ComparisonTests(unittest.TestCase):
                 row["heading_deg"] = 0
             history.write_text("".join(json.dumps(row) + "\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "heading did not change"):
+                audit(positive, stop, "street_corner")
+
+    def test_corner_pair_rejects_single_frame_heading_jump(self):
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            positive = make_attempt(root / "positive", "street_corner", expected_entry=True)
+            stop = make_attempt(root / "stop", "street_corner", expected_entry=False)
+            history = positive / "reverse_history.jsonl"
+            rows = [json.loads(row) for row in history.read_text().splitlines()]
+            for row in rows:
+                row["heading_deg"] = 0 if row["frame"] < 112 else 45
+            history.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "turn was not continuous"):
                 audit(positive, stop, "street_corner")
 
 

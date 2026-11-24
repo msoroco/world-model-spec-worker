@@ -64,6 +64,8 @@ def audit(positive, stop_before, alternative):
     if alternative == "street_corner":
         if abs(reports[0]["heading_change_while_in_corner_deg"]) <= 0:
             raise ValueError("Positive reverse corner heading did not change")
+        if not reports[0]["continuous_reverse_turn_in_corner"]:
+            raise ValueError("Positive reverse corner turn was not continuous")
         if abs(reports[1]["heading_change_while_in_corner_deg"]) > 0:
             raise ValueError("Stop-before corner case changed heading in region")
     return {

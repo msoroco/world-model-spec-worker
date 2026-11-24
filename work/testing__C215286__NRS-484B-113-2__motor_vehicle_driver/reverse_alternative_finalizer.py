@@ -55,11 +55,20 @@ def finalize(attempt, output):
             site.get("native_map_id") != context.get("native_map_id")):
         raise ValueError("Saved site context differs from selected construction")
     report = analyze(attempt, alternative)
+    if config.get("rate_hz") != 20 or config.get("duration_s") != 45:
+        raise ValueError("Selected alternative requires 20 Hz for 45 seconds")
+    if len(report["samples"]) != 900:
+        raise ValueError("Selected alternative requires 900 joined original frames")
+    description = config.get("recording_description")
+    if not isinstance(description, dict) or not description.get("channels"):
+        raise ValueError("Selected recording description required")
     observed_entry = report["reverse_body_enters_region"]
     observed_turn = (abs(report["heading_change_while_in_corner_deg"]) > 0
                      if alternative == "street_corner" else None)
     matched = (observed_entry == expected_entry and report["backward_motion_observed"]
-               and (alternative != "street_corner" or observed_turn == expected_entry))
+               and (alternative != "street_corner" or
+                    (observed_turn == expected_entry and
+                     (not expected_entry or report["continuous_reverse_turn_in_corner"]))))
     channels = attempt / "channels"
     channels.mkdir()
     extract = {
@@ -82,9 +91,6 @@ def finalize(attempt, output):
         json.dumps({"reverse_site_context": context}, indent=2) + "\n")
     evidence.append({"name": "reverse_site_context", "unit": "structured record",
                      "reference": "channels/reverse_site_context.json"})
-    description = config.get("recording_description")
-    if not isinstance(description, dict) or not description.get("channels"):
-        raise ValueError("Selected recording description required")
     check = {
         "target": "observed backward body entry into sourced " + alternative + " region",
         "requested": expected_entry, "measured": bool(observed_entry),

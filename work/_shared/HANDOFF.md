@@ -813,3 +813,5 @@ C215286 update: exact intersection and corner alternative offline bundles now pa
 C215286 remains partial. Four exact intersection/corner entry and stop-before diagnostic bundles pass runtime offline; independent 900-frame synthetic comparison receipts and changed-fixed-site/no-corner-turn negative tests pass. The package suite passes 27 tests. The selected execution manifest still contains the crosswalk pair; alternative semantic, full delivery and real Native site-source work remains. Whole-batch quick check got past the former binary archive error and now fails on a retained prior-ready execution manifest binding the previous runtime (`.runtime-work/worker-check-quick-20261124.log`); 34 results ready, 9 partial. Scoped C215286 `--complete` passes.
 
 Final return-tree check this turn: 10,452 files under work/, zero non-UTF-8 files, zero files over size limits, zero trailing-whitespace lines and zero conflict markers. No Git command was run.
+
+C215286 2026-11-24: corner continuity and full-duration finalizer guard added; 28 tests and four refreshed alternative offline proofs pass. Status partial. See assignment HANDOFF.md.

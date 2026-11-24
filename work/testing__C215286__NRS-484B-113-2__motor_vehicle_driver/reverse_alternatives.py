@@ -133,9 +133,27 @@ def analyze(root, alternative):
                   sample["body_intersects_region"] for sample in reverse),
               "legal_conclusion": "unresolved pending original site and camera review"}
     if alternative == "street_corner":
+        turning = [sample for sample in reverse
+                   if sample["body_region_overlap_area_m2"] > 0
+                   and sample["heading_change_deg"] is not None
+                   and abs(sample["heading_change_deg"]) > 1e-6]
+        runs = []
+        run = []
+        for sample in turning:
+            if (run and (sample["frame"] != run[-1]["frame"] + 1
+                         or sample["heading_change_deg"] * run[-1]["heading_change_deg"] <= 0)):
+                runs.append(run)
+                run = []
+            run.append(sample)
+        if run:
+            runs.append(run)
+        continuous = any(len(run) >= 3 and all(
+            abs(sample["heading_change_deg"]) <= 15 for sample in run)
+            for run in runs)
         result["reverse_heading_change_deg"] = _delta_degrees(
             samples[0]["heading_deg"], samples[-1]["heading_deg"])
         result["heading_change_while_in_corner_deg"] = sum(
             sample["heading_change_deg"] for sample in reverse
-            if sample["body_intersects_region"])
+            if sample["body_region_overlap_area_m2"] > 0)
+        result["continuous_reverse_turn_in_corner"] = continuous
     return result

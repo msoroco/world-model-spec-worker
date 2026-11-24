@@ -64,6 +64,7 @@ class AlternativeTests(unittest.TestCase):
             result = analyze(root, "street_corner")
             self.assertEqual(result["reverse_heading_change_deg"], 45)
             self.assertEqual(result["heading_change_while_in_corner_deg"], 45)
+            self.assertFalse(result["continuous_reverse_turn_in_corner"])
             frames = root / "video_frames.jsonl"
             frames.write_text(frames.read_text().replace('"carla_frame": 101', '"carla_frame": 999'))
             with self.assertRaisesRegex(ValueError, "frame join differs"):
@@ -81,8 +82,9 @@ class AlternativeTests(unittest.TestCase):
     def test_saved_finalizer_uses_original_sources_and_rejects_site_change(self):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
-            write_case(root, "intersection", body_centers=[(4, 0), (2, 0), (0, 0)],
-                       headings=[0, 0, 0])
+            write_case(root, "intersection",
+                       body_centers=[(4, 0), (2, 0)] + [(0, 0)] * 898,
+                       headings=[0] * 900)
             site = {"alternative": "intersection", "expected_entry": True,
                     "native_map_id": "native-signed-site",
                     "region_polygon_xy_m": [[-3, -3], [1, -3], [1, 3], [-3, 3]]}
@@ -96,6 +98,7 @@ class AlternativeTests(unittest.TestCase):
             case = ASSIGNMENT + "__reverse_into_intersection"
             (root / "config.json").write_text(json.dumps({
                 "selected_case_id": case,
+                "rate_hz": 20, "duration_s": 45,
                 "recording_description": {"channels": [{"name": "region_overlap"}]}}) + "\n")
             (root / "trace.jsonl").write_text("{}\n")
             (root / "capture").mkdir()
@@ -115,6 +118,32 @@ class AlternativeTests(unittest.TestCase):
                 result = finalize(root, root / "analysis.json")
             self.assertTrue(result["source_report"]["reverse_body_enters_region"])
             self.assertFalse(result["legal_verdict_asserted"])
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            write_case(root, "intersection", body_centers=[(4, 0), (2, 0), (0, 0)],
+                       headings=[0, 0, 0])
+            site = {"alternative": "intersection", "expected_entry": True,
+                    "native_map_id": "native-signed-site",
+                    "region_polygon_xy_m": [[-3, -3], [1, -3], [1, 3], [-3, 3]]}
+            (root / "intersection_site.json").write_text(json.dumps(site) + "\n")
+            context = json.loads((root / "reverse_site_context.json").read_text())
+            context["expected_entry"] = True
+            context["site_packet_source"] = {
+                "path": "intersection_site.json",
+                "sha256": hashlib.sha256((root / "intersection_site.json").read_bytes()).hexdigest()}
+            (root / "reverse_site_context.json").write_text(json.dumps(context) + "\n")
+            (root / "config.json").write_text(json.dumps({
+                "selected_case_id": ASSIGNMENT + "__reverse_into_intersection",
+                "rate_hz": 20, "duration_s": 45,
+                "recording_description": {"channels": [{"name": "region_overlap"}]}}) + "\n")
+            (root / "trace.jsonl").write_text("{}\n")
+            (root / "capture").mkdir()
+            (root / "capture/evidence.jsonl").write_text("{}\n")
+            for camera in ("overview.mkv", "approach.mkv", "reference_corner.mkv",
+                           "driver_reference.mkv"):
+                (root / camera).write_bytes(b"fixture placeholder")
+            with self.assertRaisesRegex(ValueError, "900 joined original frames"):
+                finalize(root, root / "analysis.json")
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             write_case(root, "intersection", body_centers=[(4, 0), (2, 0), (0, 0)],
