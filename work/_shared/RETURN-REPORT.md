@@ -979,3 +979,15 @@ Pinned CPU preflight passed. C125745 now has seven validated physical preparatio
 Historical files moved byte-exactly to `work/_shared/unreferenced-and-historical-diagnostics-20261124.tar.xz` (SHA-256 `b669bffe1a57a69a736e0eef352a49570ad1a2f1020528019727dff45c73df32`): one unreferenced C125751 audit, one unreferenced C136559 processing manifest and two C144550 source-audit logs. C125751 and C136559 each passed its scoped strict gate after relocation. The C144550 diagnostic/preflight archive now holds ten prior logs at SHA-256 `c0d5d732561fba053471d9fee13a8482a4518aefbe06327880c45904b8cd1aca`; C144550 remains partial and must restore proof-named standalone log paths before ready.
 
 The supplied automatic checkpoint failure is a remote pack write/rename and push rejection, not a local whitespace finding. The worker did not run Git or alter the remote. Local work/ size and formatting were scanned separately.
+
+### Later C125745 proof replay
+
+Twenty current-manifest synthetic fallback physical commands passed with exact result and stdout hashes matching retained evidence. Five physical plans and frame24 fallback bindings were rebound after construction/receipt hash checks. The 75-test suite now passes (`cpu-tests.log` SHA-256 `82418b81549ee839258129197d96eb347644ada656d488d3f7ef74dacc179eb6`). C125745 remains partial pending three returned staged physical receipts and the remaining saved, comparison and queue integration checks.
+
+## 2026-11-24 C125745 returned physical receipts and exact readiness gap
+
+All ten C125745 selected cases now have returned synthetic physical preparation receipts. The three remaining hold-axis cases each reran complete, incomplete, missing-evidence and lifecycle fixtures; all twelve results reproduced their staged SHA-256 values. The manifest binds their receipt hashes. No Native motion, physical acceptance or legal judgment is claimed.
+
+The pinned runtime changed during this continuation. CPU preflight passed for source manifest `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`, and C125745 was rebound to it. The canonical semantic proposal was repaired with the exact source-hashed same-law template, exact selected sweep point/order bindings, and measured entry-frame observables. The official-device and left-turn judgment dimensions remain marked as incomplete worker-owned CPU construction plans.
+
+C125745's current scoped nonready static check passes, but its ready-state audit reaches a missing `delivery_acceptance` contract for `c125745-1-0000`. Its fresh 75-test run has seven failures: six stale manifest-bound physical diagnostic plans and one prior sweep-layout assertion. The earlier 75-pass log is retained as historical evidence only. C125745 stays partial, and no new assignment is marked ready. Next work: author the six exact source-bound delivery audits and remaining controlled judgment constructions, bind comparison and queue entries, replay the six stale diagnostics, then run the exact scoped strict gate. The supplied automatic checkpoint push rejection concerns remote pack write/rename; no Git command was run by the worker.

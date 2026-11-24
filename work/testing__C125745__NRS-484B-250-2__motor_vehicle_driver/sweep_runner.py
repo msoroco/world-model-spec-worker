@@ -19,8 +19,7 @@ CASE_IDS={ASSIGNMENT+'__'+suffix for suffix in (
     'stop_ego_left_near_time','stop_ego_right_near_time',
     'stop_ego_left_separated','stop_opposite_left_turn')}
 CASE_IDS.update({f'c125745-{sweep}-{point:04d}' for sweep in (1,2) for point in range(3)})
-CASE_IDS.update({ASSIGNMENT+f'__c125745-{sweep}-{point:04d}'
-                 for sweep in (1,2) for point in range(3)})
+CASE_IDS.update({ASSIGNMENT+'__'+f'c125745-{sweep}-{point:04d}' for sweep in (1,2) for point in range(3)})
 
 
 def load_config(path):
