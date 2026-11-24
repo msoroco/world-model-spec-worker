@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Mapping
 
@@ -118,3 +119,50 @@ def audit_pair(left: Mapping, right: Mapping, deliberate_difference: str) -> dic
             'difference': deliberate_difference,
             'source_hashes': [left['original_history_sha256'], right['original_history_sha256']],
             'legal_judgment': None}
+
+
+def audit_packet_join(history_path, history_sha256, packet_path, packet_sha256,
+                      corridor_box, case_id):
+    """Independently bind every observed trail row to its original tick packet."""
+    history_path, packet_path = Path(history_path), Path(packet_path)
+    if hashlib.sha256(history_path.read_bytes()).hexdigest() != history_sha256:
+        raise ValueError('original history hash mismatch')
+    packet_bytes = packet_path.read_bytes()
+    if hashlib.sha256(packet_bytes).hexdigest() != packet_sha256:
+        raise ValueError('original packet stream hash mismatch')
+    history = [json.loads(line) for line in history_path.read_text().splitlines() if line]
+    packets = packet_bytes.splitlines(keepends=True)
+    if len(history) != len(packets) or len(history) != 900:
+        raise ValueError('original packet/history frame count mismatch')
+    if (not isinstance(corridor_box, list) or len(corridor_box) != 4 or
+            any(type(v) not in (int, float) or not math.isfinite(v) for v in corridor_box) or
+            corridor_box[0] >= corridor_box[2] or corridor_box[1] >= corridor_box[3]):
+        raise ValueError('reviewed corridor geometry missing')
+    previous = None
+    for index, (row, raw) in enumerate(zip(history, packets)):
+        if hashlib.sha256(raw).hexdigest() != row.get('native_packet_sha256'):
+            raise ValueError('history/packet hash join mismatch')
+        packet = json.loads(raw)
+        if (row.get('case_id') != case_id or row.get('original_frame') != packet.get('frame') or
+                row.get('time_s') != packet.get('time_s') or
+                row.get('vehicle_id') != packet.get('vehicle_id') or
+                row.get('sign_face_visible') != packet.get('sign_face_visible')):
+            raise ValueError('history/original packet identity or clock mismatch')
+        point = packet.get('location_xy')
+        if (not isinstance(point, list) or len(point) != 2 or
+                any(type(v) not in (int, float) or not math.isfinite(v) for v in point)):
+            raise ValueError('original packet location missing')
+        inside = (corridor_box[0] <= point[0] <= corridor_box[2] and
+                  corridor_box[1] <= point[1] <= corridor_box[3])
+        if row.get('vehicle_inside_corridor') is not inside:
+            raise ValueError('history/original packet corridor observation mismatch')
+        frame, time_s = packet['frame'], packet['time_s']
+        if previous is not None and (frame != previous[0] + 1 or
+                                     not .049 <= time_s - previous[1] <= .051):
+            raise ValueError('original packet 20 Hz clock discontinuity')
+        previous = frame, time_s
+    audited = audit_history(history_path, history_sha256, case_id)
+    return {'case_id': case_id, 'original_history_sha256': history_sha256,
+            'original_packets_sha256': packet_sha256, 'joined_frames': len(history),
+            'entered_corridor': audited['entered_corridor'],
+            'physical_video_visibility_verified': False, 'legal_judgment': None}

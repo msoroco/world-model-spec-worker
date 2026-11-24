@@ -31,6 +31,9 @@ def _read_source(root, binding, label):
     path = Path(binding['path'])
     if path.is_absolute() or not path.parts or any(part in ('.', '..') for part in path.parts):
         raise ValueError(f'{label} path escapes attempt')
+    if any((root / Path(*path.parts[:index])).is_symlink()
+           for index in range(1, len(path.parts) + 1)):
+        raise ValueError(f'{label} source path is symlinked')
     resolved = (root / path).resolve()
     if not resolved.is_relative_to(root.resolve()) or not resolved.is_file():
         raise ValueError(f'{label} source file missing')

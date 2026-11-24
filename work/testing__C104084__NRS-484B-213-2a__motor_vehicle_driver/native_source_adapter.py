@@ -13,7 +13,8 @@ from pathlib import Path
 from native_capture import ONE_WAY_AUTHORITY
 
 
-def _read_source(root: Path, item: dict, kind: str) -> tuple[bytes, str]:
+def _read_source(root: Path, item: dict, kind: str, case_id: str,
+                 map_sha256: str) -> tuple[bytes, str]:
     if not isinstance(item, dict) or not item.get("reviewer") or not item.get("source_citation"):
         raise ValueError("Reviewed source provenance missing: " + kind)
     name = item.get("path")
@@ -27,8 +28,17 @@ def _read_source(root: Path, item: dict, kind: str) -> tuple[bytes, str]:
     if digest != item.get("sha256"):
         raise ValueError("Original source hash mismatch: " + kind)
     document = json.loads(data)
-    if document.get("source_kind") != kind or not document.get("source_citation"):
+    if (document.get("source_kind") != kind or
+            document.get("source_citation") != item["source_citation"] or
+            document.get("case_id") != case_id or
+            document.get("map_opendrive_sha256") != map_sha256):
         raise ValueError("Original source claim mismatch: " + kind)
+    required_facts = {"highway": "public_highway",
+                      "center_reference": "center_reference_present",
+                      "opposing_lane": "opposing_direction_present",
+                      "one_way_authority": "one_way_designation"}
+    if document.get(required_facts[kind]) is not True:
+        raise ValueError("Original source fact missing: " + kind)
     return data, digest
 
 
@@ -53,7 +63,8 @@ class ReviewedAdapter:
         sources = packet.get("sources")
         if not isinstance(sources, dict) or set(sources) != set(required):
             raise ValueError("Exact crest source inventory missing")
-        retained = {kind: _read_source(self.source_root, sources[kind], kind) for kind in required}
+        retained = {kind: _read_source(self.source_root, sources[kind], kind,
+                                      case_id, map_digest) for kind in required}
         context = self.delegate.begin(case_id)
         if (not isinstance(context, dict) or context.get("case_id") != case_id
                 or context.get("law_id") != packet["law_id"]

@@ -8,7 +8,7 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_scene import ASSIGNMENT, run_scene_capture, spawn_scene
+from native_scene import ASSIGNMENT, managed_world, run_managed_scene_capture, run_scene_capture, spawn_scene
 from native_capture import CAMERA_DIMENSIONS, VIEWS
 import test_native_capture as fixture
 import test_carla_runner as runner_fixture
@@ -192,6 +192,53 @@ class NativeSceneTests(unittest.TestCase):
         self.assertFalse(receipt['physical_acceptance_claimed'])
         self.assertTrue(all(actor.destroyed for actor in actors))
         self.assertTrue(all(sensor.stopped for sensor in sensors.values()))
+
+    def test_managed_world_restores_settings_and_weather_after_failure(self):
+        class ManagedWorld:
+            def __init__(self):
+                self.settings = SimpleNamespace(synchronous_mode=False,
+                                                fixed_delta_seconds=.1)
+                self.weather = 'rain'
+            def get_settings(self):
+                return SimpleNamespace(**vars(self.settings))
+            def apply_settings(self, settings):
+                self.settings = SimpleNamespace(**vars(settings))
+            def get_weather(self):
+                return self.weather
+            def set_weather(self, weather):
+                self.weather = weather
+        world = ManagedWorld()
+        with self.assertRaisesRegex(RuntimeError, 'capture failed'):
+            with managed_world(world):
+                self.assertTrue(world.settings.synchronous_mode)
+                self.assertEqual(world.settings.fixed_delta_seconds, .05)
+                world.weather = 'clear'
+                raise RuntimeError('capture failed')
+        self.assertFalse(world.settings.synchronous_mode)
+        self.assertEqual(world.settings.fixed_delta_seconds, .1)
+        self.assertEqual(world.weather, 'rain')
+
+    def test_managed_entrypoint_uses_world_lease(self):
+        from unittest.mock import patch
+        class ManagedWorld:
+            def __init__(self):
+                self.settings = SimpleNamespace(synchronous_mode=False,
+                                                fixed_delta_seconds=.1)
+                self.weather = 'rain'
+            def get_settings(self):
+                return SimpleNamespace(**vars(self.settings))
+            def apply_settings(self, settings):
+                self.settings = SimpleNamespace(**vars(settings))
+            def get_weather(self):
+                return self.weather
+            def set_weather(self, weather):
+                self.weather = weather
+        world = ManagedWorld()
+        with patch('native_scene.run_scene_capture') as capture:
+            capture.side_effect = lambda **kw: (kw['world'].settings.synchronous_mode,
+                                                kw['world'].settings.fixed_delta_seconds)
+            self.assertEqual(run_managed_scene_capture(world=world), (True, .05))
+        self.assertFalse(world.settings.synchronous_mode)
 
 
 if __name__ == '__main__':

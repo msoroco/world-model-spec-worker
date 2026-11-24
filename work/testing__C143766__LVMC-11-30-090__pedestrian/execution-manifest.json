@@ -1,116 +1,85 @@
 {
-  "format": "worker-execution-manifest",
   "assignment_id": "testing__C143766__LVMC-11-30-090__pedestrian",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
   "cases": [
     {
-      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
-      "kind": "delivery",
-      "construction": "cases/roadway_walk/construction.json",
-      "construction_sha256": "819f574409423fced25dc106ccf9441f41957b7eda21ce3135f2de6f854401be",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Native walker footprint or route may leave the authored band"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/roadway_walk/fallback1-construction.json",
-          "construction_sha256": "1f06c6368ec27a15430537488d3bb21d78c5a82e4fd8adfca663dde4473e3553",
-          "changed_knobs": [
-            "walker requested speed 1.2 to 1.05 m/s"
-          ],
-          "trigger": {
-            "source": "original walker-body-history.jsonl",
-            "metric": "whole-body band occupancy or forward progress",
-            "failure_condition": "primary original body leaves band or misses 20 m progress"
-          },
-          "offline": {
-            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --candidate fallback1 --output .runtime-work/c143766-offline-roadway_walk-fallback1-v8 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "1f06c6368ec27a15430537488d3bb21d78c5a82e4fd8adfca663dde4473e3553",
-            "log": "cases/roadway_walk/fallback1-offline.log",
-            "log_sha256": "ab0792f72efc373979e6797e73a17dd7c65aa70ca2147ce9f4ecf28236b57e2c"
-          },
-          "compatibility": {
-            "receipt": "cases/roadway_walk/fallback1-compatibility.json",
-            "sha256": "d2c1ad6fc6c1aa6c15ae4152aabb1b17b2399440e4d121b43d2f7db35dee8073",
-            "log": "cases/roadway_walk/fallback1-compat-analysis.log",
-            "negative_log": "cases/roadway_walk/fallback1-compat-negative.log",
-            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --candidate fallback1 --output .runtime-work/c143766-compat-roadway_walk-fallback1-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "cases/roadway_walk/fallback1-compat-command.log",
-            "command_log_sha256": "d2c1ad6fc6c1aa6c15ae4152aabb1b17b2399440e4d121b43d2f7db35dee8073"
-          }
-        }
-      ],
-      "measurement_contract": "cases/roadway_walk/measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
-      "fixture_recipe": "work/testing__C143766__LVMC-11-30-090__pedestrian/cases/roadway_walk/fixture-recipe.json",
-      "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-offline-roadway_walk-v8 --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "819f574409423fced25dc106ccf9441f41957b7eda21ce3135f2de6f854401be",
-        "log": "construction-check-roadway_walk.log",
-        "log_sha256": "5d308652980957c83dcd140e995489cd0fcaaf0142b8f5b418a1ac857db0a2d2"
-      },
       "acquisition": {
-        "walker_body_xy_m": {
-          "entrypoint": "native_capture.py",
-          "method": "world-space original walker vertices each tick",
-          "evidence": "walker-body-history.jsonl body_xy_m"
-        },
-        "walker_route_progress": {
-          "entrypoint": "runner.py",
-          "method": "original walker telemetry joined to each world tick",
-          "evidence": "trace.jsonl position and speed"
+        "sidewalk_and_roadway_boundaries": {
+          "entrypoint": "analysis.py",
+          "evidence": "candidate-corridor.xodr and channels/sidewalk_and_roadway_boundaries.jsonl",
+          "method": "source-hashed authored OpenDRIVE bands joined to original body frames"
         },
         "sidewalk_roadway_shoulder_trail_context": {
           "entrypoint": "runner.py",
-          "method": "authored OpenDRIVE plus four RGB cameras",
-          "evidence": "candidate-corridor.xodr and four .mkv sources"
-        },
-        "sidewalk_and_roadway_boundaries": {
-          "entrypoint": "analysis.py",
-          "method": "source-hashed authored OpenDRIVE bands joined to original body frames",
-          "evidence": "candidate-corridor.xodr and channels/sidewalk_and_roadway_boundaries.jsonl"
+          "evidence": "candidate-corridor.xodr and four .mkv sources",
+          "method": "authored OpenDRIVE plus four RGB cameras"
         },
         "trail_access_and_purpose": {
           "entrypoint": "analysis.py",
-          "method": "source-hashed authored trail with explicitly unreviewed status joined to original body frames",
-          "evidence": "candidate-corridor.xodr and channels/trail_access_and_purpose.jsonl"
+          "evidence": "candidate-corridor.xodr and channels/trail_access_and_purpose.jsonl",
+          "method": "source-hashed authored trail with explicitly unreviewed status joined to original body frames"
+        },
+        "walker_body_xy_m": {
+          "entrypoint": "native_capture.py",
+          "evidence": "walker-body-history.jsonl body_xy_m",
+          "method": "world-space original walker vertices each tick"
+        },
+        "walker_route_progress": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl position and speed",
+          "method": "original walker telemetry joined to each world tick"
         }
       },
-      "proof_status": "primary_offline_and_positive_negative_compatibility_passed_physical_review_pending",
+      "candidate_risk": {
+        "reason": "Native walker footprint or route may leave the authored band",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed 1.2 to 1.05 m/s"
+          ],
+          "compatibility": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --candidate fallback1 --output .runtime-work/c143766-compat-roadway_walk-fallback1-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "cases/roadway_walk/fallback1-compat-command.log",
+            "command_log_sha256": "d2c1ad6fc6c1aa6c15ae4152aabb1b17b2399440e4d121b43d2f7db35dee8073",
+            "exit_code": 0,
+            "log": "cases/roadway_walk/fallback1-compat-analysis.log",
+            "negative_log": "cases/roadway_walk/fallback1-compat-negative.log",
+            "receipt": "cases/roadway_walk/fallback1-compatibility.json",
+            "sha256": "d2c1ad6fc6c1aa6c15ae4152aabb1b17b2399440e4d121b43d2f7db35dee8073"
+          },
+          "construction": "cases/roadway_walk/fallback1-construction.json",
+          "construction_sha256": "1f06c6368ec27a15430537488d3bb21d78c5a82e4fd8adfca663dde4473e3553",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --candidate fallback1 --output .runtime-work/c143766-offline-roadway_walk-fallback1-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "1f06c6368ec27a15430537488d3bb21d78c5a82e4fd8adfca663dde4473e3553",
+            "exit_code": 0,
+            "log": "cases/roadway_walk/fallback1-offline.log",
+            "log_sha256": "ab0792f72efc373979e6797e73a17dd7c65aa70ca2147ce9f4ecf28236b57e2c"
+          },
+          "trigger": {
+            "failure_condition": "primary original body leaves band or misses 20 m progress",
+            "metric": "whole-body band occupancy or forward progress",
+            "source": "original walker-body-history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
       "compatibility": {
-        "receipt": "cases/roadway_walk/primary-compatibility.json",
-        "sha256": "9edab40b974421217f683282c4f9e87373384ad72508121707588d9e5c3ebe71",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C143766__LVMC-11-30-090__pedestrian/case0-v2 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "cases/roadway_walk/primary-compat-command.log",
+        "command_log_sha256": "20d4465bc71b1e765a4c343ff706087261e2c0b3762a40b76f574dcd793d3c02",
+        "exit_code": 0,
         "log": "cases/roadway_walk/primary-compat-analysis.log",
         "negative_log": "cases/roadway_walk/primary-compat-negative.log",
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-compat-roadway_walk-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "cases/roadway_walk/primary-compat-command.log",
-        "command_log_sha256": "9edab40b974421217f683282c4f9e87373384ad72508121707588d9e5c3ebe71"
+        "receipt": "cases/roadway_walk/primary-compatibility.json",
+        "sha256": "20d4465bc71b1e765a4c343ff706087261e2c0b3762a40b76f574dcd793d3c02"
       },
-      "negative": {
-        "log": "cases/roadway_walk/primary-compat-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/roadway_walk/physical-preparation.json",
-        "sha256": "4dd39b1af72fefb93ebb36ebc46da45bfc63bbedb9a3ffd3ad41ca8a6d0233cd"
-      },
+      "construction": "cases/roadway_walk/construction.json",
+      "construction_sha256": "819f574409423fced25dc106ccf9441f41957b7eda21ce3135f2de6f854401be",
       "delivery_acceptance": {
         "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -119,139 +88,139 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "ebcef80dfb1572ef635323cd540432ec5521906ba13dccd00aa9c8cafc9f4095",
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-delivery-probe-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_probe.py --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-delivery-roadway_walk-positive-v4",
-        "test_exit_code": 0,
-        "test_log": "cases/roadway_walk/delivery-positive.log",
-        "test_log_sha256": "63d2c343255c50fd1af6778f691649b02f5e6f70bceaf87a2344a72a86609904",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-delivery-probe-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_probe.py --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-delivery-roadway_walk-negative-v4 --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original source hash differs: walker-body-history.jsonl",
         "negative_log": "cases/roadway_walk/delivery-negative.log",
         "negative_log_sha256": "82de5f818deec8341a55705d188272e8843864bcd420a38cc4c526211a024045",
-        "scope": "synthetic source-bound full-media audit; actual walker pixel visibility and Native physical acceptance unverified"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
-        "feedback_command": ".venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_audit.py --attempt \"$SAVED_OUTPUT/v0001/analysis\"",
-        "recorded_only": true,
+        "scope": "synthetic source-bound full-media audit; actual walker pixel visibility and Native physical acceptance unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "ebcef80dfb1572ef635323cd540432ec5521906ba13dccd00aa9c8cafc9f4095",
+        "sets": [
+          "full-test"
+        ],
         "test_exit_code": 0,
-        "test_log": "cases/roadway_walk/saved-positive.log",
-        "test_log_sha256": "330271fce46be2853a2ecf7f601812d792740e85751fd04e72c298d8c14b6bfd",
-        "negative_log": "cases/roadway_walk/saved-missing.log",
-        "negative_log_sha256": "7af9549cc0cf26edebd4b1310fe8a286677097f505452c63bd6c573bb5dd5429",
-        "test_scope": "Pinned saved-only positive and missing-body-source diagnostic processing; source bytes preserved, full media rebuilt, physical and legal acceptance unclaimed."
-      }
-    },
-    {
-      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
-      "kind": "delivery",
-      "construction": "cases/sidewalk_walk/construction.json",
-      "construction_sha256": "a06994bb40705d04e41bf46109f62cf22c1054de1eb4689f984f2a720705fbcf",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Native walker footprint or route may leave the authored band"
+        "test_log": "cases/roadway_walk/delivery-positive.log",
+        "test_log_sha256": "63d2c343255c50fd1af6778f691649b02f5e6f70bceaf87a2344a72a86609904"
       },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/sidewalk_walk/fallback1-construction.json",
-          "construction_sha256": "c18b0a2e92c40054e9ef07d048068f3e08c07255535668e40967184fb8b3c9ba",
-          "changed_knobs": [
-            "walker requested speed 1.2 to 1.05 m/s"
-          ],
-          "trigger": {
-            "source": "original walker-body-history.jsonl",
-            "metric": "whole-body band occupancy or forward progress",
-            "failure_condition": "primary original body leaves band or misses 20 m progress"
-          },
-          "offline": {
-            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --candidate fallback1 --output .runtime-work/c143766-offline-sidewalk_walk-fallback1-v8 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "c18b0a2e92c40054e9ef07d048068f3e08c07255535668e40967184fb8b3c9ba",
-            "log": "cases/sidewalk_walk/fallback1-offline.log",
-            "log_sha256": "032d8925e4241bc344302da5f33585575a88000a92823a38bb2b5bb9c3eef374"
-          },
-          "compatibility": {
-            "receipt": "cases/sidewalk_walk/fallback1-compatibility.json",
-            "sha256": "da846a53c0c36682bfcc68936784febd218a881bb0ea896a4a34a225f7b0474b",
-            "log": "cases/sidewalk_walk/fallback1-compat-analysis.log",
-            "negative_log": "cases/sidewalk_walk/fallback1-compat-negative.log",
-            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --candidate fallback1 --output .runtime-work/c143766-compat-sidewalk_walk-fallback1-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "cases/sidewalk_walk/fallback1-compat-command.log",
-            "command_log_sha256": "da846a53c0c36682bfcc68936784febd218a881bb0ea896a4a34a225f7b0474b"
-          }
-        }
-      ],
-      "measurement_contract": "cases/sidewalk_walk/measurement-contract.json",
+      "fixture_recipe": "work/testing__C143766__LVMC-11-30-090__pedestrian/cases/roadway_walk/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/roadway_walk/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
-      "fixture_recipe": "work/testing__C143766__LVMC-11-30-090__pedestrian/cases/sidewalk_walk/fixture-recipe.json",
+      "negative": {
+        "log": "cases/roadway_walk/primary-compat-negative.log"
+      },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-offline-sidewalk_walk-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --output .runtime-work/c143766-offline-roadway_walk-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "819f574409423fced25dc106ccf9441f41957b7eda21ce3135f2de6f854401be",
         "exit_code": 0,
-        "construction_sha256": "a06994bb40705d04e41bf46109f62cf22c1054de1eb4689f984f2a720705fbcf",
-        "log": "construction-check-sidewalk_walk.log",
-        "log_sha256": "032d8925e4241bc344302da5f33585575a88000a92823a38bb2b5bb9c3eef374"
+        "log": "construction-check-roadway_walk.log",
+        "log_sha256": "5d308652980957c83dcd140e995489cd0fcaaf0142b8f5b418a1ac857db0a2d2"
       },
+      "physical_preparation": {
+        "receipt": "cases/roadway_walk/physical-preparation.json",
+        "sha256": "4dd39b1af72fefb93ebb36ebc46da45bfc63bbedb9a3ffd3ad41ca8a6d0233cd"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_audit.py --attempt \"$SAVED_OUTPUT/v0001/analysis\"",
+        "negative_log": "cases/roadway_walk/saved-missing.log",
+        "negative_log_sha256": "7af9549cc0cf26edebd4b1310fe8a286677097f505452c63bd6c573bb5dd5429",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/roadway_walk/saved-positive.log",
+        "test_log_sha256": "330271fce46be2853a2ecf7f601812d792740e85751fd04e72c298d8c14b6bfd",
+        "test_scope": "Pinned saved-only positive and missing-body-source diagnostic processing; source bytes preserved, full media rebuilt, physical and legal acceptance unclaimed."
+      },
+      "proof_status": "primary_offline_and_positive_negative_compatibility_passed_physical_review_pending"
+    },
+    {
       "acquisition": {
-        "walker_body_xy_m": {
-          "entrypoint": "native_capture.py",
-          "method": "world-space original walker vertices each tick",
-          "evidence": "walker-body-history.jsonl body_xy_m"
-        },
-        "walker_route_progress": {
-          "entrypoint": "runner.py",
-          "method": "original walker telemetry joined to each world tick",
-          "evidence": "trace.jsonl position and speed"
+        "sidewalk_and_roadway_boundaries": {
+          "entrypoint": "analysis.py",
+          "evidence": "candidate-corridor.xodr and channels/sidewalk_and_roadway_boundaries.jsonl",
+          "method": "source-hashed authored OpenDRIVE bands joined to original body frames"
         },
         "sidewalk_roadway_shoulder_trail_context": {
           "entrypoint": "runner.py",
-          "method": "authored OpenDRIVE plus four RGB cameras",
-          "evidence": "candidate-corridor.xodr and four .mkv sources"
-        },
-        "sidewalk_and_roadway_boundaries": {
-          "entrypoint": "analysis.py",
-          "method": "source-hashed authored OpenDRIVE bands joined to original body frames",
-          "evidence": "candidate-corridor.xodr and channels/sidewalk_and_roadway_boundaries.jsonl"
+          "evidence": "candidate-corridor.xodr and four .mkv sources",
+          "method": "authored OpenDRIVE plus four RGB cameras"
         },
         "trail_access_and_purpose": {
           "entrypoint": "analysis.py",
-          "method": "source-hashed authored trail with explicitly unreviewed status joined to original body frames",
-          "evidence": "candidate-corridor.xodr and channels/trail_access_and_purpose.jsonl"
+          "evidence": "candidate-corridor.xodr and channels/trail_access_and_purpose.jsonl",
+          "method": "source-hashed authored trail with explicitly unreviewed status joined to original body frames"
+        },
+        "walker_body_xy_m": {
+          "entrypoint": "native_capture.py",
+          "evidence": "walker-body-history.jsonl body_xy_m",
+          "method": "world-space original walker vertices each tick"
+        },
+        "walker_route_progress": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl position and speed",
+          "method": "original walker telemetry joined to each world tick"
         }
       },
-      "proof_status": "primary_offline_and_positive_negative_compatibility_passed_physical_review_pending",
+      "candidate_risk": {
+        "reason": "Native walker footprint or route may leave the authored band",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed 1.2 to 1.05 m/s"
+          ],
+          "compatibility": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --candidate fallback1 --output .runtime-work/c143766-compat-sidewalk_walk-fallback1-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "cases/sidewalk_walk/fallback1-compat-command.log",
+            "command_log_sha256": "da846a53c0c36682bfcc68936784febd218a881bb0ea896a4a34a225f7b0474b",
+            "exit_code": 0,
+            "log": "cases/sidewalk_walk/fallback1-compat-analysis.log",
+            "negative_log": "cases/sidewalk_walk/fallback1-compat-negative.log",
+            "receipt": "cases/sidewalk_walk/fallback1-compatibility.json",
+            "sha256": "da846a53c0c36682bfcc68936784febd218a881bb0ea896a4a34a225f7b0474b"
+          },
+          "construction": "cases/sidewalk_walk/fallback1-construction.json",
+          "construction_sha256": "c18b0a2e92c40054e9ef07d048068f3e08c07255535668e40967184fb8b3c9ba",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --candidate fallback1 --output .runtime-work/c143766-offline-sidewalk_walk-fallback1-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "c18b0a2e92c40054e9ef07d048068f3e08c07255535668e40967184fb8b3c9ba",
+            "exit_code": 0,
+            "log": "cases/sidewalk_walk/fallback1-offline.log",
+            "log_sha256": "032d8925e4241bc344302da5f33585575a88000a92823a38bb2b5bb9c3eef374"
+          },
+          "trigger": {
+            "failure_condition": "primary original body leaves band or misses 20 m progress",
+            "metric": "whole-body band occupancy or forward progress",
+            "source": "original walker-body-history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
       "compatibility": {
-        "receipt": "cases/sidewalk_walk/primary-compatibility.json",
-        "sha256": "7c68b40a606943eeabb062e67c4f27cc5f4cccd259da7d7ca23b5bb52ec3a27c",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C143766__LVMC-11-30-090__pedestrian/case1-v2 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "cases/sidewalk_walk/primary-compat-command.log",
+        "command_log_sha256": "d39a687eebabcd7c86846fef7140a6411c1e65005242d0215acf3399c1213b3c",
+        "exit_code": 0,
         "log": "cases/sidewalk_walk/primary-compat-analysis.log",
         "negative_log": "cases/sidewalk_walk/primary-compat-negative.log",
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-compat-sidewalk_walk-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "cases/sidewalk_walk/primary-compat-command.log",
-        "command_log_sha256": "7c68b40a606943eeabb062e67c4f27cc5f4cccd259da7d7ca23b5bb52ec3a27c"
+        "receipt": "cases/sidewalk_walk/primary-compatibility.json",
+        "sha256": "d39a687eebabcd7c86846fef7140a6411c1e65005242d0215acf3399c1213b3c"
       },
-      "negative": {
-        "log": "cases/sidewalk_walk/primary-compat-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/sidewalk_walk/physical-preparation.json",
-        "sha256": "7524d6cbb0c2eea06e9dcf76e15489fcd9633154afdd54403df1a2fa6de8eefb"
-      },
+      "construction": "cases/sidewalk_walk/construction.json",
+      "construction_sha256": "a06994bb40705d04e41bf46109f62cf22c1054de1eb4689f984f2a720705fbcf",
       "delivery_acceptance": {
         "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -260,139 +229,139 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "ebcef80dfb1572ef635323cd540432ec5521906ba13dccd00aa9c8cafc9f4095",
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-delivery-probe-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_probe.py --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-delivery-sidewalk_walk-positive-v4",
-        "test_exit_code": 0,
-        "test_log": "cases/sidewalk_walk/delivery-positive.log",
-        "test_log_sha256": "8cd613b6770a2664aebfc04294de3a1a226407a4ecf6d6736685a5b344b7f920",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-delivery-probe-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_probe.py --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-delivery-sidewalk_walk-negative-v4 --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original source hash differs: walker-body-history.jsonl",
         "negative_log": "cases/sidewalk_walk/delivery-negative.log",
         "negative_log_sha256": "82de5f818deec8341a55705d188272e8843864bcd420a38cc4c526211a024045",
-        "scope": "synthetic source-bound full-media audit; actual walker pixel visibility and Native physical acceptance unverified"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
-        "feedback_command": ".venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_audit.py --attempt \"$SAVED_OUTPUT/v0001/analysis\"",
-        "recorded_only": true,
+        "scope": "synthetic source-bound full-media audit; actual walker pixel visibility and Native physical acceptance unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "ebcef80dfb1572ef635323cd540432ec5521906ba13dccd00aa9c8cafc9f4095",
+        "sets": [
+          "full-test"
+        ],
         "test_exit_code": 0,
-        "test_log": "cases/sidewalk_walk/saved-positive.log",
-        "test_log_sha256": "81c510c3d6f0637f6e9ea48eb3d555b6cb47a1b9c957e60cd080a990e005e20b",
-        "negative_log": "cases/sidewalk_walk/saved-missing.log",
-        "negative_log_sha256": "c11d6ea8a2201b81e4c5f2445efbfebfb1ceb05822aac0eb1d69c15a83275c1d",
-        "test_scope": "Pinned saved-only positive and missing-body-source diagnostic processing; source bytes preserved, full media rebuilt, physical and legal acceptance unclaimed."
-      }
-    },
-    {
-      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk",
-      "kind": "delivery",
-      "construction": "cases/shoulder_walk/construction.json",
-      "construction_sha256": "61f96e15273360621f4a5a39877de0286045fd1d381d2b1f9c4989353e32e7a0",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Native walker footprint or route may leave the authored band"
+        "test_log": "cases/sidewalk_walk/delivery-positive.log",
+        "test_log_sha256": "8cd613b6770a2664aebfc04294de3a1a226407a4ecf6d6736685a5b344b7f920"
       },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/shoulder_walk/fallback1-construction.json",
-          "construction_sha256": "5b39e1f006315a660d1b3b2fc44fb65197eb6c2d5d3ba0a107a4bee3c4295f96",
-          "changed_knobs": [
-            "walker requested speed 1.2 to 1.05 m/s"
-          ],
-          "trigger": {
-            "source": "original walker-body-history.jsonl",
-            "metric": "whole-body band occupancy or forward progress",
-            "failure_condition": "primary original body leaves band or misses 20 m progress"
-          },
-          "offline": {
-            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --candidate fallback1 --output .runtime-work/c143766-offline-shoulder_walk-fallback1-v8 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "5b39e1f006315a660d1b3b2fc44fb65197eb6c2d5d3ba0a107a4bee3c4295f96",
-            "log": "cases/shoulder_walk/fallback1-offline.log",
-            "log_sha256": "207e8241814399b1fa30be9e7644f9ed79067ba503043100af2975f7415c0154"
-          },
-          "compatibility": {
-            "receipt": "cases/shoulder_walk/fallback1-compatibility.json",
-            "sha256": "f791b1ed5a44b15619c415d3896c577e16529e0c6baddc1018bf7ab8bc96e576",
-            "log": "cases/shoulder_walk/fallback1-compat-analysis.log",
-            "negative_log": "cases/shoulder_walk/fallback1-compat-negative.log",
-            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --candidate fallback1 --output .runtime-work/c143766-compat-shoulder_walk-fallback1-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "cases/shoulder_walk/fallback1-compat-command.log",
-            "command_log_sha256": "f791b1ed5a44b15619c415d3896c577e16529e0c6baddc1018bf7ab8bc96e576"
-          }
-        }
-      ],
-      "measurement_contract": "cases/shoulder_walk/measurement-contract.json",
+      "fixture_recipe": "work/testing__C143766__LVMC-11-30-090__pedestrian/cases/sidewalk_walk/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/sidewalk_walk/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
-      "fixture_recipe": "work/testing__C143766__LVMC-11-30-090__pedestrian/cases/shoulder_walk/fixture-recipe.json",
+      "negative": {
+        "log": "cases/sidewalk_walk/primary-compat-negative.log"
+      },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-offline-shoulder_walk-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --output .runtime-work/c143766-offline-sidewalk_walk-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "a06994bb40705d04e41bf46109f62cf22c1054de1eb4689f984f2a720705fbcf",
         "exit_code": 0,
-        "construction_sha256": "61f96e15273360621f4a5a39877de0286045fd1d381d2b1f9c4989353e32e7a0",
-        "log": "construction-check-shoulder_walk.log",
-        "log_sha256": "8be767212f9489127e69f53626c9512e2e1784230a932c4f4a43ba26e76f674e"
+        "log": "construction-check-sidewalk_walk.log",
+        "log_sha256": "032d8925e4241bc344302da5f33585575a88000a92823a38bb2b5bb9c3eef374"
       },
+      "physical_preparation": {
+        "receipt": "cases/sidewalk_walk/physical-preparation.json",
+        "sha256": "7524d6cbb0c2eea06e9dcf76e15489fcd9633154afdd54403df1a2fa6de8eefb"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_audit.py --attempt \"$SAVED_OUTPUT/v0001/analysis\"",
+        "negative_log": "cases/sidewalk_walk/saved-missing.log",
+        "negative_log_sha256": "c11d6ea8a2201b81e4c5f2445efbfebfb1ceb05822aac0eb1d69c15a83275c1d",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/sidewalk_walk/saved-positive.log",
+        "test_log_sha256": "81c510c3d6f0637f6e9ea48eb3d555b6cb47a1b9c957e60cd080a990e005e20b",
+        "test_scope": "Pinned saved-only positive and missing-body-source diagnostic processing; source bytes preserved, full media rebuilt, physical and legal acceptance unclaimed."
+      },
+      "proof_status": "primary_offline_and_positive_negative_compatibility_passed_physical_review_pending"
+    },
+    {
       "acquisition": {
-        "walker_body_xy_m": {
-          "entrypoint": "native_capture.py",
-          "method": "world-space original walker vertices each tick",
-          "evidence": "walker-body-history.jsonl body_xy_m"
-        },
-        "walker_route_progress": {
-          "entrypoint": "runner.py",
-          "method": "original walker telemetry joined to each world tick",
-          "evidence": "trace.jsonl position and speed"
+        "sidewalk_and_roadway_boundaries": {
+          "entrypoint": "analysis.py",
+          "evidence": "candidate-corridor.xodr and channels/sidewalk_and_roadway_boundaries.jsonl",
+          "method": "source-hashed authored OpenDRIVE bands joined to original body frames"
         },
         "sidewalk_roadway_shoulder_trail_context": {
           "entrypoint": "runner.py",
-          "method": "authored OpenDRIVE plus four RGB cameras",
-          "evidence": "candidate-corridor.xodr and four .mkv sources"
-        },
-        "sidewalk_and_roadway_boundaries": {
-          "entrypoint": "analysis.py",
-          "method": "source-hashed authored OpenDRIVE bands joined to original body frames",
-          "evidence": "candidate-corridor.xodr and channels/sidewalk_and_roadway_boundaries.jsonl"
+          "evidence": "candidate-corridor.xodr and four .mkv sources",
+          "method": "authored OpenDRIVE plus four RGB cameras"
         },
         "trail_access_and_purpose": {
           "entrypoint": "analysis.py",
-          "method": "source-hashed authored trail with explicitly unreviewed status joined to original body frames",
-          "evidence": "candidate-corridor.xodr and channels/trail_access_and_purpose.jsonl"
+          "evidence": "candidate-corridor.xodr and channels/trail_access_and_purpose.jsonl",
+          "method": "source-hashed authored trail with explicitly unreviewed status joined to original body frames"
+        },
+        "walker_body_xy_m": {
+          "entrypoint": "native_capture.py",
+          "evidence": "walker-body-history.jsonl body_xy_m",
+          "method": "world-space original walker vertices each tick"
+        },
+        "walker_route_progress": {
+          "entrypoint": "runner.py",
+          "evidence": "trace.jsonl position and speed",
+          "method": "original walker telemetry joined to each world tick"
         }
       },
-      "proof_status": "primary_offline_and_positive_negative_compatibility_passed_physical_review_pending",
+      "candidate_risk": {
+        "reason": "Native walker footprint or route may leave the authored band",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed 1.2 to 1.05 m/s"
+          ],
+          "compatibility": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --candidate fallback1 --output .runtime-work/c143766-compat-shoulder_walk-fallback1-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "cases/shoulder_walk/fallback1-compat-command.log",
+            "command_log_sha256": "f791b1ed5a44b15619c415d3896c577e16529e0c6baddc1018bf7ab8bc96e576",
+            "exit_code": 0,
+            "log": "cases/shoulder_walk/fallback1-compat-analysis.log",
+            "negative_log": "cases/shoulder_walk/fallback1-compat-negative.log",
+            "receipt": "cases/shoulder_walk/fallback1-compatibility.json",
+            "sha256": "f791b1ed5a44b15619c415d3896c577e16529e0c6baddc1018bf7ab8bc96e576"
+          },
+          "construction": "cases/shoulder_walk/fallback1-construction.json",
+          "construction_sha256": "5b39e1f006315a660d1b3b2fc44fb65197eb6c2d5d3ba0a107a4bee3c4295f96",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --candidate fallback1 --output .runtime-work/c143766-offline-shoulder_walk-fallback1-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "5b39e1f006315a660d1b3b2fc44fb65197eb6c2d5d3ba0a107a4bee3c4295f96",
+            "exit_code": 0,
+            "log": "cases/shoulder_walk/fallback1-offline.log",
+            "log_sha256": "207e8241814399b1fa30be9e7644f9ed79067ba503043100af2975f7415c0154"
+          },
+          "trigger": {
+            "failure_condition": "primary original body leaves band or misses 20 m progress",
+            "metric": "whole-body band occupancy or forward progress",
+            "source": "original walker-body-history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk",
       "compatibility": {
-        "receipt": "cases/shoulder_walk/primary-compatibility.json",
-        "sha256": "8ea697e1c0ff486860d644aee93dc5d418bd184f5ecdb66ffa3b26b4a502021b",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C143766__LVMC-11-30-090__pedestrian/case2-v2 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "cases/shoulder_walk/primary-compat-command.log",
+        "command_log_sha256": "b2965d77f51aa20ffc918463a92894c23dc24ceebf4c31c0a4a51c15003b8f1d",
+        "exit_code": 0,
         "log": "cases/shoulder_walk/primary-compat-analysis.log",
         "negative_log": "cases/shoulder_walk/primary-compat-negative.log",
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-compat-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-compat-shoulder_walk-v7 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "cases/shoulder_walk/primary-compat-command.log",
-        "command_log_sha256": "8ea697e1c0ff486860d644aee93dc5d418bd184f5ecdb66ffa3b26b4a502021b"
+        "receipt": "cases/shoulder_walk/primary-compatibility.json",
+        "sha256": "b2965d77f51aa20ffc918463a92894c23dc24ceebf4c31c0a4a51c15003b8f1d"
       },
-      "negative": {
-        "log": "cases/shoulder_walk/primary-compat-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/shoulder_walk/physical-preparation.json",
-        "sha256": "816a7812b9128849d75c7397de9a0add9437e6373e18029abf63db65db21c546"
-      },
+      "construction": "cases/shoulder_walk/construction.json",
+      "construction_sha256": "61f96e15273360621f4a5a39877de0286045fd1d381d2b1f9c4989353e32e7a0",
       "delivery_acceptance": {
         "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -401,31 +370,62 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "ebcef80dfb1572ef635323cd540432ec5521906ba13dccd00aa9c8cafc9f4095",
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-delivery-probe-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_probe.py --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-delivery-shoulder_walk-positive-v4",
-        "test_exit_code": 0,
-        "test_log": "cases/shoulder_walk/delivery-positive.log",
-        "test_log_sha256": "11e98549420441fb0a0f2ae8acc5b8346ee2f94a065afb9b80dcc5072186f8f7",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-delivery-probe-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_probe.py --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-delivery-shoulder_walk-negative-v4 --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original source hash differs: walker-body-history.jsonl",
         "negative_log": "cases/shoulder_walk/delivery-negative.log",
         "negative_log_sha256": "82de5f818deec8341a55705d188272e8843864bcd420a38cc4c526211a024045",
-        "scope": "synthetic source-bound full-media audit; actual walker pixel visibility and Native physical acceptance unverified"
+        "scope": "synthetic source-bound full-media audit; actual walker pixel visibility and Native physical acceptance unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "ebcef80dfb1572ef635323cd540432ec5521906ba13dccd00aa9c8cafc9f4095",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/shoulder_walk/delivery-positive.log",
+        "test_log_sha256": "11e98549420441fb0a0f2ae8acc5b8346ee2f94a065afb9b80dcc5072186f8f7"
+      },
+      "fixture_recipe": "work/testing__C143766__LVMC-11-30-090__pedestrian/cases/shoulder_walk/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/shoulder_walk/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/shoulder_walk/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143766-offline-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/draft-offline-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --output .runtime-work/c143766-offline-shoulder_walk-v8 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "61f96e15273360621f4a5a39877de0286045fd1d381d2b1f9c4989353e32e7a0",
+        "exit_code": 0,
+        "log": "construction-check-shoulder_walk.log",
+        "log_sha256": "8be767212f9489127e69f53626c9512e2e1784230a932c4f4a43ba26e76f674e"
+      },
+      "physical_preparation": {
+        "receipt": "cases/shoulder_walk/physical-preparation.json",
+        "sha256": "816a7812b9128849d75c7397de9a0add9437e6373e18029abf63db65db21c546"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143766__LVMC-11-30-090__pedestrian/execution-manifest.json --case testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
         "feedback_command": ".venv-cpu/bin/python work/testing__C143766__LVMC-11-30-090__pedestrian/delivery_audit.py --attempt \"$SAVED_OUTPUT/v0001/analysis\"",
+        "negative_log": "cases/shoulder_walk/saved-missing.log",
+        "negative_log_sha256": "517ba2d963b5f7cabc058b7cc0ad2cf54945e980f01560feb7e6cebe7b7dc67b",
         "recorded_only": true,
         "test_exit_code": 0,
         "test_log": "cases/shoulder_walk/saved-positive.log",
         "test_log_sha256": "f30558f4081f34c4ae8c7f02040f04d2c4f343b3421f5019cc227bdc49a5baa1",
-        "negative_log": "cases/shoulder_walk/saved-missing.log",
-        "negative_log_sha256": "517ba2d963b5f7cabc058b7cc0ad2cf54945e980f01560feb7e6cebe7b7dc67b",
         "test_scope": "Pinned saved-only positive and missing-body-source diagnostic processing; source bytes preserved, full media rebuilt, physical and legal acceptance unclaimed."
-      }
+      },
+      "proof_status": "primary_offline_and_positive_negative_compatibility_passed_physical_review_pending"
     }
   ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "status": "draft_delivery_cpu_probe_passed_native_site_review_pending"
 }

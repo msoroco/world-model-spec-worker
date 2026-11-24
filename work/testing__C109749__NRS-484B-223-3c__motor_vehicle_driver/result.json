@@ -3,7 +3,7 @@
   "assignment_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver",
   "input_sha256": "a075af65f30abe7a02001955c3f07d5682f57d72a3014fa71a36f485b7a2665a",
   "readiness_kind": "partial_exact_case_construction",
-  "reason": "Native scene cleanup now attempts every camera stop and actor destroy even if a sensor stop fails; failed partial spawn preserves its original error while releasing all prior actors. Fifty-three assignment CPU tests pass, including stop-failure and spawn-failure cleanup negatives. Pinned preflight and scoped static pass; exact strict exits 1 on truthful partial. Reviewed center-turn lane/highway site, owned world lease, canonical semantic/case bundles, compatibility, saved-only and delivery receipts remain CPU work; physical 50-foot distance and legal interpretation unverified.",
+  "reason": "Source-gated Native scene and capture now have a managed production entrypoint that snapshots world settings/weather, applies synchronous 20 Hz with readback, and restores settings/weather after capture or failure. Fifty-five assignment CPU tests and pinned preflight pass. Reviewed center-turn lane/highway site, canonical semantic/case bundles, compatibility and saved delivery receipts remain CPU work; exact strict remains partial.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -74,6 +74,24 @@
       "exit_code": 1,
       "log": "cpu-scene-cleanup-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-managed-world-tests.log",
+      "sha256": "1a84a06d2b9fde1f7d02245f0f2dc693d09a53b57803ccc43e27ccb300a24baa"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-managed-world-preflight.log",
+      "sha256": "a3644fa8cf807a6b5b9357f6d79bb177bd7aaf148e6e461770865e2af3440a70"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-223-3c__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-managed-world-static.log",
+      "sha256": "cb95f25b10f771bfa51450f07236b2ab969a45d747cfdf7f16ca965fc9a4d574"
     }
   ]
 }

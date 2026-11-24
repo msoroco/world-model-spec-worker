@@ -17,7 +17,9 @@ spec.loader.exec_module(saved)
 
 class SavedTurnTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = ROOT.parents[1] / '.runtime-work/c111610-9a-saved-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         original = {

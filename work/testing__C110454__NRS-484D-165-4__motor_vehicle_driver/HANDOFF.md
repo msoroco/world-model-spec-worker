@@ -154,3 +154,27 @@ The focused suite passes 27 tests (`cpu-owned-tests.log` SHA256 `54d19c95d624ecc
 `acquisition_finalizer.py` now reads `native-source-receipt.json` from the exact attempt, requires its case/mode and 900-frame duration, and checks all four original camera path and SHA-256 seals before constructing `acquisition.json`. It invokes the existing saved delivery auditor and removes the new manifest if source or audit validation fails. Diagnostic fixtures require explicit `allow_diagnostic=True`; they cannot pass as Native production acquisitions. The finalizer is embedded in all three exact diagnostic bundles. Neither it nor the fixture establishes emitted brightness, physical beam depression/dimming or legal parking.
 
 Proof: 30 focused tests, pinned preflight, three rebuilt exact offline checks and scoped static pass. Exact scoped strict exits 1 on truthful partial. SHA-bound commands and logs are in `result.json` under `cpu-acquisition-*`. Reviewed original site/beam sources, canonical manifest, positive/negative compatibility and true Native saved-delivery receipts remain CPU work; physical emission and aim require later review.
+
+## 2026-11-24 original lamp-region pixel checkpoint
+
+`lamp_photometry.py` now measures original RGB pixels from a sealed camera ZIP using source-hashed fixed lamp and background polygons. It checks the reviewed ROI source identity, frame-by-frame Native camera join, original ZIP inventory and image dimensions, then reports per-frame lamp minus background pixel luma. A controlled comparison requires identical ROI and frame identities and distinct original media. Its output does not equate 8-bit pixel brightness to emitted intensity or physical beam depression/dimming, and no legal result is inferred. The ROI in CPU tests is explicitly a fixture; a reviewed Native site and actual ROI source are still needed.
+
+The module is embedded in all three exact diagnostic constructions. Thirty-three focused tests, pinned preflight, three exact offline checks and scoped static passed. The exact scoped strict gate exited 1 on truthful `partial`. Next CPU work is source-reviewed site and ROI integration, real beam-aim capability investigation, canonical manifest and positive/negative compatibility/process-saved and complete delivery/comparison receipts.
+
+SHA-256 source and proof index:
+
+- `lamp_photometry.py`: `89ba68213ef2c55e36b72c9d7b074efcf82b7f1fa25391be985ab66e39796482`
+- `tests/test_lamp_photometry.py`: `20d5225cd3b46b720de6e5d481b56491957ae53000bc518293f731a5359870ac`
+- `build_offline_draft.py`: `47e605ce43717782d909d0feebc587afccc791ff0018fb50b9464ba25d869b8a`
+- `execution-manifest.draft.json`: `4334d451fdfbdfc239f3221219b11e6c482060966964cf67264859d46588fa8a`
+- `construction-unlit.json`: `1c234a0963eedcf64212274be3ebd9e3dd12cf8addd00716c3ba12731dcb7742`
+- `construction-low_beam.json`: `03037c6a78fd77582f009d0c7cf946250443ff64006c4fc510e72449ddc2b8ce`
+- `construction-high_beam.json`: `eb0a65b30e2281095d765331ba443924563d97076346663c859774e49473975e`
+- `cpu-photometry-build.log`: `00beba5ec219a22edc73458ecda127ad8537ac3a73791c9b7da7808559b2b82b`
+- `cpu-photometry-tests.log`: `d7e93a8c597dd666c9192bd8ee2d93f55e76e40716d323926363885137ed9566`
+- `cpu-photometry-preflight.log`: `c6b3c06ef7d65e81bdf7ee6a658d5d1c74d1c2b96ac706a60d0089e5e7f91e14`
+- `cpu-photometry-offline-unlit.log`: `fbfd87b1059d391f2d7ea4b07bc789445699a46d73855ae1cca319e72fe36189`
+- `cpu-photometry-offline-low_beam.log`: `6134f2f79b3e8ec8b47bd71db4a89f7005d20812a7e6133f0df9ce0f3de87b14`
+- `cpu-photometry-offline-high_beam.log`: `fcd6bcee56ed9dd52080464c4ef851e614e05c6b6fe0b235caff1d462100c4f8`
+- `cpu-photometry-static.log`: `718f8cc5dcda62dcf0f81f4249dab89bbeec8a36ef2530dcfb1c01ed938f8e69`
+- `cpu-photometry-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`

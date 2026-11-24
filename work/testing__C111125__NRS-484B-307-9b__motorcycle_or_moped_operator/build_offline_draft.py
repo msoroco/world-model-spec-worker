@@ -7,7 +7,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
-SOURCES = ('signal_exception.py', 'original_capture.py', 'native_session.py', 'saved_measurement.py',
+SOURCES = ('signal_exception.py', 'original_capture.py', 'native_session.py', 'camera_capture.py', 'saved_measurement.py',
            'comparison_audit.py', 'delivery_audit.py', 'media_decode.py')
 
 RUNNER = '''"""C111125 exact diagnostic preflight; unsourced Native launch is refused."""

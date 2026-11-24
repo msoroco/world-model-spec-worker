@@ -55,7 +55,15 @@ def audit(packet_path):
             raise ValueError("Diagnostic or unclassified source cannot establish delivery comparison")
         if not context.get("observation_source"):
             raise ValueError("Observed traffic and direction context source missing")
-        _source(packet_path.parent, context["observation_source"])
+        observation = _source(packet_path.parent, context["observation_source"])
+        observed_frames = observation.get("frames") if isinstance(observation, dict) else None
+        if (not isinstance(observation, dict) or
+                observation.get("cause_observed") != context.get("halt_cause") or
+                not isinstance(observed_frames, list) or len(observed_frames) < 2 or
+                observed_frames[0] != 0 or observed_frames[-1] != 899 or
+                any(type(frame) is not int for frame in observed_frames) or
+                any(right <= left for left, right in zip(observed_frames, observed_frames[1:]))):
+            raise ValueError("Observed cause or frame coverage differs from context")
         context["context_source_sha256"] = context["observation_source"]["sha256"]
         for key in FIXED:
             if context.get(key) in (None, ""):

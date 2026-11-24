@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver",
   "input_sha256": "5297ef583966747789b3491b972252a1cd7ed75e96b5fad7937987fe081352af",
-  "readiness_kind": "cpu_construction_checkpoint",
-  "reason": "Six exact cases and four controlled comparisons are planned. Source-gated Native construction, controller and original-frame measurement are implemented. The saved_turn auditor now verifies source hashes, all original 20 Hz frames, four synchronized PNG streams with full pixel decode, and emits measured comparison rows; 13 focused CPU tests pass, including a full 600-frame/2400-image source decode. Canonical semantic proposals, executable exact manifest, offline/compatibility receipts, saved runtime integration and delivery acceptance remain CPU work; no ready claim.",
+  "readiness_kind": "cpu_original_capture_and_saved_replay_in_progress",
+  "reason": "Six exact cases and four comparisons remain planned. New 600-tick Native writer seals reviewed site sources, original frame map, telemetry and four same-frame PNG sources; saved_turn checks resealed Native clock continuity and fully decodes 2400 images. Full fake-adapter capture/replay and gap rejection pass 17 focused tests; pinned preflight/static pass. Original CARLA binding, semantic proposals, exact canonical manifest, per-case offline/compatibility and saved delivery acceptance remain; strict rejects truthful partial.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -14,6 +14,54 @@
       "exit_code": 0,
       "log": "cpu-tests.log",
       "sha256": "36e38a62404f7d7d9d619c00727fa709239f79cafe901f6e17a0acffdb2a230c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-saved-pair-tests.log",
+      "sha256": "3cc1d5d68ba3dab5db980e07808723a8abc1ec3e60ebd4a41ec86e2697add622"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-saved-pair-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-9a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-saved-pair-static.log",
+      "sha256": "cbd77509d01cb15b05036197174cddb2d279f619acbb525346642c11f14e4dff"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-9a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-saved-pair-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-capture-tests.log",
+      "sha256": "8c9880505f85850930a920e7de145e61dd589252ffbcfd07462e0415ea6eb3b4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-native-capture-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-9a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-native-capture-static.log",
+      "sha256": "cbd77509d01cb15b05036197174cddb2d279f619acbb525346642c11f14e4dff"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-9a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-capture-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]
 }

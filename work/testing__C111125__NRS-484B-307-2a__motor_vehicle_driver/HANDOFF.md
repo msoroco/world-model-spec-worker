@@ -62,3 +62,18 @@ Next CPU work: connect actual route control, camera acquisition and world restor
 Two focused tests cover all 900 frame joins and fail-closed stale or missing camera callbacks. The full assignment suite passes 21 tests (`cpu-camera-join-tests.log`, SHA-256 `a6e53f2b8ce140c31be250a7b13cc78895dedaee8dbc4ff6712fc76f838dffe2`). Pinned preflight passes (`cpu-camera-join-preflight.log`, SHA-256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`). Scoped static passes (`cpu-camera-join-static.log`, SHA-256 `48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c`). Exact scoped strict exits 1 because the status remains partial (`cpu-camera-join-strict.log`, SHA-256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`).
 
 Next CPU work is a Native runner that owns four sensor streams, actual route control, world settings and restoration, then creates source-bound media and all four exact construction bundles. Selected-requirement finalization, diagnostics, semantic proposals, manifest, offline and compatibility proofs, and canonical saved processing remain. No legal or physical acceptance is claimed by this frame join.
+
+## Original lossless camera recorder continuation, 2026-11-24
+
+`original_camera_recorder.py` now owns the four original camera listeners for an attempt. It receives callback BGRA images on independent queues, rejects missing/stale frames, wrong source dimensions or malformed buffers before publishing an image, writes ordered lossless PNG scratch, then encodes each view to 20 Hz FFV1 video and returns a sealed attempt-relative source reference. `close` stops listeners, and a failed encode deletes completed partial media. The adapter can be passed as `camera_frame_reader=recorder.read` to existing `native_capture.capture`; the operator-owned runner and final receipt wiring remain CPU work. Its tests use 8×4 fixture images and do not demonstrate real signal or actor visibility.
+
+Twenty-three focused tests including four-view encode/full decode and callback failure cases passed. Pinned preflight and scoped static passed; exact scoped strict exited 1 on truthful `partial`. No exact offline manifest exists yet, so no offline bundle proof can be claimed. Next CPU work: operator-owned runner, integration of sealed media refs with the 900-row Native frame map, exact bundles and offline/compatibility/saved-only proof chain, semantic proposals and independent audits.
+
+SHA-256 source and proof index:
+
+- `original_camera_recorder.py`: `691d3482a74d8301cf79c0aeef2facbef1fe2919a400bfbe148d28c2b62c5a4e`
+- `tests/test_original_camera_recorder.py`: `586faffa07f1dc574b99374dce282d619d322ce675941634412c195df572273f`
+- `cpu-recorder-tests.log`: `5b5e9ec91c9b65f8ea5b99316902ad3c80c298112bb7601a45434a2e4ee41630`
+- `cpu-recorder-preflight.log`: `cac705a2fd913031abca5a004ae61ac7a6cfbe835828722d7c494045ae927b66`
+- `cpu-recorder-static.log`: `48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c`
+- `cpu-recorder-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`

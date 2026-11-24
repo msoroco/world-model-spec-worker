@@ -9,6 +9,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import math
 from pathlib import Path
 
 from PIL import Image
@@ -65,6 +66,24 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
     rows = measured['measurements']
     require(len(rows) == expected_frames, 'original telemetry frame count mismatch')
     require([r['frame'] for r in rows] == list(range(expected_frames)), 'original telemetry frame sequence mismatch')
+    if 'frame_map' in manifest:
+        frame_map = json.loads(source_bytes(root, manifest['frame_map']))
+        require(isinstance(frame_map, list) and len(frame_map) == expected_frames,
+                'original Native frame map incomplete')
+        first_native_time = None
+        last_native_frame = None
+        for index, entry in enumerate(frame_map):
+            frame = entry.get('native_frame')
+            time = entry.get('native_elapsed_s')
+            require(entry.get('frame') == index and type(frame) is int and
+                    type(time) in (int, float) and math.isfinite(time),
+                    'original Native frame map identity invalid')
+            if first_native_time is None:
+                first_native_time = time
+            require((last_native_frame is None or frame == last_native_frame + 1) and
+                    abs(time - first_native_time - index / fps) <= .001,
+                    'original Native frame map clock gap')
+            last_native_frame = frame
     cameras = manifest['cameras']
     require(set(cameras) == {'front', 'left', 'right', 'rear'}, 'four original cameras required')
     decoded = {}

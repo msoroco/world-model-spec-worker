@@ -58,3 +58,19 @@ Exact outputs: `cpu-tests.log` SHA-256 `2d3b7632cff9fe9a60906a58d76666d2332138ae
 `signal_exception.py:measure` now independently verifies the saved source hashes, a source-bound original Native signal readback saying that a traffic-control signal governs the ego approach, and a complete 20 Hz join to the original case frames. It rejects an officer-controlled case, changed nearest-view site geometry, stale signal bytes, absent governance and incomplete signal frame history. `saved_comparison.py:audit` now covers the third `governing_signal_exception` comparison against `nearest_view_continue`; it checks fixed context and all nonsignal source hashes as well as the signal-control difference and common frame window. This is an applicability contrast, not a verdict on conduct under other traffic rules. The diagnostic test also rejects a recomputed-hash changed Native map source.
 
 Pinned preflight passed, 23 focused tests passed in `cpu-signal-tests.log`, and the existing active-signal exact offline construction passed in `cpu-signal-offline.log`. The offline bundle predates this new source comparison and is not a production compatibility receipt. Scoped static passed; exact scoped strict exited 1 on truthful partial status. Log hashes are in `result.json`. Remaining CPU work: embed exception measurement into canonical saved processing, reviewed Native site and four-camera acquisition, semantic proposals, selected measurement contracts, positive/negative pinned compatibility, independent delivery/pixel audit, and risk-based fallback proof.
+
+## 2026-11-24 per-frame signal-governance checkpoint
+
+The active-signal exception saved measurement now requires an original Native signal readback for each original frame: frame ID, a governing-ego-approach flag and red/yellow/green state. A resealed packet that loses governance on one frame is rejected. The measurement counts observed states; it makes no legal verdict under other rules.
+
+### Receipts
+
+- `cpu-per-frame-signal-tests.log` exit 0, SHA256 `3e4c034cf4cda3979da2ba99012b003031cbd80c2a9f1df5fd5ff02387e00075`
+- `cpu-per-frame-signal-preflight.log` exit 0, SHA256 `c0d5b83645df692350f089ea57865c7674eeda30217865e55f31a772d5be2749`
+- `cpu-per-frame-signal-offline.log` exit 0, SHA256 `a404e021ffb35f75de5f1476e9bacfeb000390a1f0f1b523eeb8a62e26e4c29b`
+- `cpu-per-frame-signal-static.log` exit 0, SHA256 `f68e6484bcb8af1b65fb5655bd4140699952f3953d41b143091614f95b51ddaf`
+- `cpu-per-frame-signal-strict.log` exit 1, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+- `signal_exception.py` SHA256 `9bbfd0735a639119a071d0a910dacbdc613dfe50f38c3bc9dc6d90a804927731`
+- `tests/test_signal_exception.py` SHA256 `e2d65af7cc2d7cfeca55eb876038df5186974099058ce7c32cb4d8e31d3fd3f8`
+
+Twenty-four focused tests, pinned preflight, active-signal offline construction and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: production saved processing for the exception, canonical proposals/contracts, four-camera Native acquisition, compatibility and decoded delivery audits.

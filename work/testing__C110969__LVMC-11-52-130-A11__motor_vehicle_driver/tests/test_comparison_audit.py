@@ -84,7 +84,20 @@ class SavedComparisonTests(unittest.TestCase):
 
     def test_wrong_exception_cause_rejected(self):
         self._change_context("police_14ft", "halt_cause", "ordinary_destination")
-        with self.assertRaisesRegex(ValueError, "Exception cause"):
+        with self.assertRaisesRegex(ValueError, "Observed cause|Exception cause"):
+            audit(self.packet_path)
+
+    def test_rehashed_observation_disagrees_with_claimed_cause(self):
+        item = next(x for x in self.packet["cases"] if x["case_id"].endswith("__police_14ft"))
+        context_path = self.root / item["context_source"]["path"]
+        context = json.loads(context_path.read_text())
+        observation_path = self.root / context["observation_source"]["path"]
+        observation = json.loads(observation_path.read_text())
+        observation["cause_observed"] = "ordinary_destination"
+        context["observation_source"] = self._write(observation_path.name, observation)
+        item["context_source"] = self._write(context_path.name, context)
+        self._save()
+        with self.assertRaisesRegex(ValueError, "Observed cause"):
             audit(self.packet_path)
 
     def test_diagnostic_source_rejected(self):

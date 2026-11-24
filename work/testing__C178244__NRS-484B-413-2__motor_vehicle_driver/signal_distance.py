@@ -48,9 +48,14 @@ def verify_source_bindings(packet: dict, source_root: Path) -> list[str]:
     require(sources["frame_map"]["sha256"] == packet.get("frame_map_sha256"),
             "frame map binding mismatch")
     light = json.loads((root / sources["light_readback"]["path"]).read_text())
+    frame_map = json.loads((root / sources["frame_map"]["path"]).read_text())
     onset = json.loads((root / sources["turn_onset"]["path"]).read_text())
     district = json.loads((root / sources["district_context"]["path"]).read_text())
     require(light.get("samples") == packet.get("samples"), "light/position samples disagree with source")
+    expected_frames = [{"frame": row.get("frame"), "time_s": row.get("time_s")}
+                       for row in packet.get("samples", [])]
+    require(frame_map.get("frames") == expected_frames,
+            "original frame map disagrees with signal samples")
     require(onset.get("turn_onset_frame") == packet.get("turn_onset_frame"), "turn onset disagrees with source")
     for key in ("district_class", "district_source", "weather"):
         require(district.get(key) == packet.get(key), f"{key} disagrees with source")

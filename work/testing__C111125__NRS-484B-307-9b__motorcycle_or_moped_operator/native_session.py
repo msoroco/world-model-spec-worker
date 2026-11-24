@@ -2,7 +2,7 @@
 
 The operator owns world settings, traffic actors, sensors and restoration. This
 module copies original source packets into the attempt and destroys its ego.
-It does not claim that event readback supplies the four camera streams.
+It records four independently returned original camera frames on each event tick.
 """
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ import json
 from pathlib import Path
 
 from original_capture import capture_original
+from camera_capture import FourViewRecorder
+from media_decode import audit_manifest
 from signal_exception import construct_native, sealed, verify_site
 
 
@@ -25,7 +27,9 @@ def capture_events(session, site_path, case_id, attempt):
     attempt = Path(attempt)
     if not attempt.is_dir():
         raise ValueError("Materialized attempt directory required")
-    reserved = {"native-site.json", "original-events.json", "event-receipt.json"}
+    reserved = {"native-site.json", "original-events.json", "event-receipt.json",
+                "media-manifest.json", "media-receipt.json"} | {name + ".mkv" for name in
+                                          ("overview", "approach", "reference_corner", "driver_reference")}
     source_paths = {}
     for key, ref in site["original_sources"].items():
         relative = Path(ref["path"])
@@ -37,6 +41,7 @@ def capture_events(session, site_path, case_id, attempt):
     if any((attempt / name).exists() for name in reserved | set(source_paths)):
         raise ValueError("Original attempt source already exists")
     native = None
+    recorder = None
     try:
         native = construct_native(site, source_root, session.world, session.carla,
                                   session.blueprint_library)
@@ -45,14 +50,20 @@ def capture_events(session, site_path, case_id, attempt):
             target = attempt / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(source.read_bytes())
+        recorder = FourViewRecorder(attempt, session.camera_adapter, case_id)
         receipt = capture_original(site, attempt, session.event_adapter,
-                                   attempt / "original-events.json")
+                                   attempt / "original-events.json", on_frame=recorder.record)
+        media_ref = recorder.finish()
+        audit_manifest(attempt, media_ref, attempt / "media-receipt.json")
         receipt.update({"case_id": case_id,
                         "site_packet_sha256": hashlib.sha256(site_bytes).hexdigest(),
                         "original_source_sha256": {key: ref["sha256"] for key, ref in site["original_sources"].items()},
-                        "camera_media_status": "not_acquired_by_event_session"})
+                        "camera_media_status": "four_original_views_recorded_unreviewed",
+                        "media_manifest_ref": media_ref})
         (attempt / "event-receipt.json").write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n")
         return receipt
     finally:
+        if recorder is not None and not (attempt / "event-receipt.json").exists():
+            recorder.abort()
         if native is not None:
             native["ego"].destroy()

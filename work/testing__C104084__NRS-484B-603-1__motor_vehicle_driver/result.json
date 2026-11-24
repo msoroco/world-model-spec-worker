@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver",
   "input_sha256": "38b13d9d59685358ed7300890a61ea22fbf1c240b4e98c1d2fe79c3cc6af41f0",
-  "status": "partial",
   "readiness_kind": "partial_saved_crest_bundle_and_context_tested",
-  "applied_update": 0,
+  "reason": "Observed-source crest bundle now has an independent published-attempt delivery integrity audit: it reopens the sealed manifest, reruns saved finalization and four-camera decode, rejects extra files and a rewritten physical-completion claim. Forty-one focused tests, pinned preflight and scoped static pass; exact strict remains partial. Canonical three-case constructions, semantic proposals, runtime compatibility/process-saved proof and actual Native capture runner remain CPU work; physical motion and pixels remain unverified.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": "TMPDIR=$PWD/.runtime-work/p08-c104084 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/tests -v",
@@ -40,10 +44,30 @@
       "exit_code": 1,
       "log": "cpu-atomic-bundle-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-tests.log",
+      "sha256": "db66a47cf6f13726f75dafcb7a37e1f8389556eedc8e58fbea723645d66f1abd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-preflight.log",
+      "sha256": "baedb8a1697c1587d2c2db0916dd052b3d755e1aaebc63dcb613469193129d30"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-603-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-static.log",
+      "sha256": "7ace128df65b22b23fbbb0b08e986dffa5d4589ba2d422b32e7a436a453be5c6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-603-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-delivery-audit-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Observed-source saved crest bundle assembly now stages sources, four camera files, full finalizer result and SHA bindings in a scratch sibling; it publishes the attempt only after all verification succeeds. Failed map/camera checks leave no partial destination or staged files. The focused two-test bundle suite and full 41-test assignment suite pass, as do pinned preflight and scoped static. Exact strict exits 1 on truthful partial. Canonical case constructions, semantic proposals, runtime compatibility/process-saved proof, complete delivery audit and Native capture runner remain CPU work; actual motion and pixels remain unverified."
+  ]
 }

@@ -10,6 +10,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
 from trail import CASES
 from trail_capture import capture
+from saved_audit import audit_packet_join
 from test_source_packet import fixture
 
 
@@ -49,7 +50,9 @@ class World:
 
 class CaptureTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        scratch = PACKAGE.parents[1] / '.runtime-work' / 'c143687-packet-join-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.world = World()
@@ -93,6 +96,37 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, '20 Hz'):
             self.run_capture()
         self.assertEqual(self.world.index, -1)
+
+    def test_saved_original_packet_join_and_tamper(self):
+        self.run_capture()
+        history = self.output
+        packets = self.root / 'original-history-packets.jsonl'
+        hdigest = hashlib.sha256(history.read_bytes()).hexdigest()
+        pdigest = hashlib.sha256(packets.read_bytes()).hexdigest()
+        report = audit_packet_join(history, hdigest, packets, pdigest,
+                                   self.site['corridor_box_xy'],
+                                   'testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites')
+        self.assertEqual(report['joined_frames'], 900)
+        self.assertTrue(report['entered_corridor'])
+        self.assertFalse(report['physical_video_visibility_verified'])
+        with packets.open('ab') as stream:
+            stream.write(b'changed\n')
+        with self.assertRaisesRegex(ValueError, 'packet stream hash mismatch'):
+            audit_packet_join(history, hdigest, packets, pdigest,
+                              self.site['corridor_box_xy'], report['case_id'])
+
+    def test_resealed_history_corridor_observation_rejected(self):
+        self.run_capture()
+        history = self.output
+        packets = self.root / 'original-history-packets.jsonl'
+        rows = [json.loads(line) for line in history.read_text().splitlines()]
+        rows[15]['vehicle_inside_corridor'] = False
+        history.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+        with self.assertRaisesRegex(ValueError, 'corridor observation mismatch'):
+            audit_packet_join(history, hashlib.sha256(history.read_bytes()).hexdigest(),
+                              packets, hashlib.sha256(packets.read_bytes()).hexdigest(),
+                              self.site['corridor_box_xy'],
+                              'testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites')
 
 
 if __name__ == '__main__':

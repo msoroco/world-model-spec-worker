@@ -72,3 +72,18 @@ Pinned preflight, 51 focused CPU tests and scoped static check pass in `cpu-spaw
 `NativeScene.close` now tries to stop every camera and destroy every spawned vehicle and sensor even when a sensor stop or actor destruction fails, then reports the first cleanup error. Partial-spawn cleanup likewise preserves the original spawn failure while attempting release of every actor already created. Two new CPU tests force sensor-stop failures at normal close and during a failed camera spawn; all spawned actors are destroyed in both paths. This is a Native resource lifecycle invariant, not an original physical or legal observation.
 
 The full assignment suite passes 53 tests (`cpu-scene-cleanup-tests.log`). Pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial. Four SHA-bound logs are in `result.json`. Next CPU work remains reviewed original highway and exclusive bidirectional center-turn lane source, owned world snapshot/restore, canonical semantic proposals and case bundles, compatibility, saved-only processing and delivery receipts. Actual 50-foot travel measurement and vehicle reference convention remain unverified.
+
+## 2026-11-24 managed world lease checkpoint
+
+`native_scene.py::run_managed_scene_capture` now owns world state around the existing source-gated scene and capture path. It snapshots settings/weather, applies synchronous 20 Hz with readback, and restores the prior state after success or an exception. CPU tests verify the managed entrypoint and failure restoration; actor and sensor cleanup remains in the nested scene path. The fakes do not establish physical lane designation or measured merge distance.
+
+### Receipts
+
+- `cpu-managed-world-tests.log` exit 0, SHA256 `1a84a06d2b9fde1f7d02245f0f2dc693d09a53b57803ccc43e27ccb300a24baa`
+- `cpu-managed-world-preflight.log` exit 0, SHA256 `a3644fa8cf807a6b5b9357f6d79bb177bd7aaf148e6e461770865e2af3440a70`
+- `cpu-managed-world-static.log` exit 0, SHA256 `cb95f25b10f771bfa51450f07236b2ab969a45d747cfdf7f16ca965fc9a4d574`
+- `cpu-managed-world-strict.log` exit 1, SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
+- `native_scene.py` SHA256 `3faf4d25142683c4f90892055d0aab0d8da20389c1d5df39a8cb959f243dd930`
+- `tests/test_native_scene.py` SHA256 `ae099befe98ffa4147f19bfe531528fbcb9288e0d4d1b764f888387a91833a95`
+
+Pinned preflight and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: reviewed original highway/lane source, canonical semantic and case bundles, compatibility, saved-only delivery receipts.

@@ -64,7 +64,14 @@ def build(site_path: str | Path, *, crosswalk_kind: str, ego_behavior: str) -> d
         pass_y = site.get("pass_lane_y")
         if isinstance(pass_y, bool) or not isinstance(pass_y, (int, float)) or not road[0] <= pass_y <= road[1]:
             raise ValueError("supported road passing lane required")
-        if abs(pass_y - lead[1]) < site.get("combined_vehicle_half_width_m", 2.4):
+        ego_half_width = site.get("ego_half_width_m")
+        combined_half_width = site.get("combined_vehicle_half_width_m")
+        if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0
+               for v in (ego_half_width, combined_half_width)):
+            raise ValueError("positive source vehicle half widths required")
+        if not road[0] + ego_half_width <= pass_y <= road[1] - ego_half_width:
+            raise ValueError("passing vehicle footprint leaves road bounds")
+        if abs(pass_y - lead[1]) < combined_half_width:
             raise ValueError("lateral passing clearance inadequate")
         ego_route = [ego, [lead[0] - 3, float(pass_y)], [max(p[0] for p in polygon) + 3, float(pass_y)]]
     else:

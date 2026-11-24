@@ -26,7 +26,11 @@ def active_attempt(root):
     source.write_text(json.dumps({'source_kind': 'original_native_signal_readback',
                                   'device_kind': 'traffic_control_signal',
                                   'governs_ego_approach': True,
-                                  'observed_frame_ids': frames}) + '\n', encoding='utf-8')
+                                  'observed_frame_ids': frames,
+                                  'observed_signal_states': [
+                                      {'frame': frame, 'governs_ego_approach': True,
+                                       'state': 'red'} for frame in frames]}) + '\n',
+                      encoding='utf-8')
     packet['sources']['signal_state_readback']['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
     packet_path.write_text(json.dumps(packet, sort_keys=True) + '\n', encoding='utf-8')
     return packet_path
@@ -41,6 +45,7 @@ class SignalExceptionTests(unittest.TestCase):
             active = active_attempt(right)
             proof = signal_exception.measure(json.loads(active.read_text()), right)
             self.assertEqual(proof['frame_count'], 7)
+            self.assertEqual(proof['observed_signal_states']['red'], 7)
             self.assertTrue(proof['subsection_1_exception_observed'])
             result = saved_comparison.audit(left, right, 'governing_signal_exception')
             self.assertEqual(result['right']['signal_state_source_sha256'],
@@ -83,6 +88,19 @@ class SignalExceptionTests(unittest.TestCase):
             source.write_text(json.dumps(state) + '\n')
             packet['sources']['signal_state_readback']['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, 'does not span'):
+                signal_exception.measure(packet, root)
+
+    def test_rejects_resealed_changed_per_frame_governance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            packet_path = active_attempt(root)
+            packet = json.loads(packet_path.read_text())
+            source = root / packet['sources']['signal_state_readback']['path']
+            state = json.loads(source.read_text())
+            state['observed_signal_states'][3]['governs_ego_approach'] = False
+            source.write_text(json.dumps(state) + '\n')
+            packet['sources']['signal_state_readback']['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'per-frame governing'):
                 signal_exception.measure(packet, root)
 
 

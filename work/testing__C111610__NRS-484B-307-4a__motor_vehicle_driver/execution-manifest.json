@@ -1,60 +1,140 @@
 {
-  "format": "worker-execution-manifest",
   "assignment_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
   "cases": [
     {
-      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
-      "kind": "delivery",
-      "construction": "construction.json",
-      "construction_sha256": "028133f8e90b598b4eb80bebe261be0822dc94b78aa7b1bca07ed4502f94e70a",
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/crosswalk_geometry.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "intersection_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "pedestrian_entry_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        }
+      },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends."
+        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "fallback-crosswalk_clear_turn-construction.json",
-          "construction_sha256": "3fff65b3bda69d968a35c1958a138d33f8fcc4ea2cd3b54ee72a138ac8b54bd2",
-          "trigger": {
-            "source": "original Native turn-history.jsonl and trace.jsonl",
-            "metric": "30 s sampled left-turn heading change and travel progress",
-            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m"
-          },
           "changed_knobs": [
             "bounded route steering error divisor: 45 -> 35 degrees"
           ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-clear-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "compat-crosswalk_clear_turn-fallback1-analysis.log",
+            "negative_log": "compat-crosswalk_clear_turn-fallback1-negative.log",
+            "receipt": "compat-crosswalk_clear_turn-fallback1-receipt.json",
+            "sha256": "a450efa76a3f18566c269ab2f716e9ff64ff96268a110ce8f22fd230b47b9093"
+          },
+          "construction": "fallback-crosswalk_clear_turn-construction.json",
+          "construction_sha256": "3fff65b3bda69d968a35c1958a138d33f8fcc4ea2cd3b54ee72a138ac8b54bd2",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_clear_turn-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
-            "exit_code": 0,
             "construction_sha256": "3fff65b3bda69d968a35c1958a138d33f8fcc4ea2cd3b54ee72a138ac8b54bd2",
+            "exit_code": 0,
             "log": "proof-crosswalk_clear_turn-fallback1.log",
             "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
           },
-          "compatibility": {
-            "receipt": "compat-crosswalk_clear_turn-fallback1-receipt.json",
-            "sha256": "a450efa76a3f18566c269ab2f716e9ff64ff96268a110ce8f22fd230b47b9093",
-            "log": "compat-crosswalk_clear_turn-fallback1-analysis.log",
-            "negative_log": "compat-crosswalk_clear_turn-fallback1-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-clear-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          "trigger": {
+            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m",
+            "metric": "30 s sampled left-turn heading change and travel progress",
+            "source": "original Native turn-history.jsonl and trace.jsonl"
           }
         }
       ],
-      "measurement_contract": "measurement-contract.json",
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/case0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary",
+        "log": "compat-crosswalk_clear_turn-primary-analysis.log",
+        "negative_log": "compat-crosswalk_clear_turn-primary-negative.log",
+        "receipt": "compat-crosswalk_clear_turn-primary-receipt.json",
+        "sha256": "4b8cd2673a81dce34426ff89ac9676f3813d908167b66a443cb17d4d421b34b2"
+      },
+      "construction": "construction.json",
+      "construction_sha256": "028133f8e90b598b4eb80bebe261be0822dc94b78aa7b1bca07ed4502f94e70a",
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_clear_turn-positive",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_clear_turn-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-crosswalk_clear_turn-negative.log",
+        "negative_log_sha256": "7f0231c49a2fb434085ce2d43646d06c1cd74c1cb0bc29c149fbd32cc61a8126",
+        "script": "delivery_audit.py",
+        "script_sha256": "238242ce45d574624d73b3ee4d8c72e7e820c4f6bc87f159bb036c39c72a31b5",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "audit-crosswalk_clear_turn-positive.log",
+        "test_log_sha256": "9970d05273d6a2b2af649c10fb084f49220123c2897019681bece9da08e3148d"
+      },
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/diagnostic-crosswalk_clear_turn-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-crosswalk_clear_turn-primary-negative.log"
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_clear_turn-primary-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
-        "exit_code": 0,
         "construction_sha256": "028133f8e90b598b4eb80bebe261be0822dc94b78aa7b1bca07ed4502f94e70a",
+        "exit_code": 0,
         "log": "proof-crosswalk_clear_turn-primary.log",
         "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
       },
@@ -62,26 +142,108 @@
         "receipt": "physical-crosswalk_clear_turn-proof.json",
         "sha256": "ade17677cc3bc658e2aa71e06c86512175f1f553b8c047d1dbf10d87cfcbb572"
       },
-      "compatibility": {
-        "receipt": "compat-crosswalk_clear_turn-primary-receipt.json",
-        "sha256": "800b4721897aeb4203bd3ddae8a8edff6e7014e823ca93870a22862e063de9ef",
-        "log": "compat-crosswalk_clear_turn-primary-analysis.log",
-        "negative_log": "compat-crosswalk_clear_turn-primary-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-clear-v3 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
-      },
       "post_capture": {
-        "recorded_only": true,
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_clear_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
         "test_log": "saved-crosswalk_clear_turn.log",
-        "test_log_sha256": "36213ccefdd15e212db566196bb6066549aac0eb021d8b455cb216e59002b3e2",
-        "test_exit_code": 0
+        "test_log_sha256": "36213ccefdd15e212db566196bb6066549aac0eb021d8b455cb216e59002b3e2"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/crosswalk_geometry.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "intersection_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "pedestrian_entry_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        }
       },
+      "candidate_risk": {
+        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "bounded route steering error divisor: 45 -> 35 degrees"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-occupied-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "compat-crosswalk_occupied_yield-fallback1-analysis.log",
+            "negative_log": "compat-crosswalk_occupied_yield-fallback1-negative.log",
+            "receipt": "compat-crosswalk_occupied_yield-fallback1-receipt.json",
+            "sha256": "2b98f9ad755d7a281a932314563859a58a9fef2a114360c0d206f659241874fa"
+          },
+          "construction": "fallback-crosswalk_occupied_yield-construction.json",
+          "construction_sha256": "cae1cb63762484c2662e890c599cc1db2ce87804ea0b85aa48787d559f4d853e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_occupied_yield-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "cae1cb63762484c2662e890c599cc1db2ce87804ea0b85aa48787d559f4d853e",
+            "exit_code": 0,
+            "log": "proof-crosswalk_occupied_yield-fallback1.log",
+            "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
+          },
+          "trigger": {
+            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m",
+            "metric": "30 s sampled left-turn heading change and travel progress",
+            "source": "original Native turn-history.jsonl and trace.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/case1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary",
+        "log": "compat-crosswalk_occupied_yield-primary-analysis.log",
+        "negative_log": "compat-crosswalk_occupied_yield-primary-negative.log",
+        "receipt": "compat-crosswalk_occupied_yield-primary-receipt.json",
+        "sha256": "627e30847b77c33ff6a0f2c73d42fbd36872aee1f07eb4772400a268b04c6511"
+      },
+      "construction": "cases/crosswalk_occupied_yield/construction.json",
+      "construction_sha256": "ab4aa8d84cf50d655bba480b1bbde3c23be60c4e8208cf608bd830fabe0d0c37",
       "delivery_acceptance": {
-        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn",
-        "sets": [
-          "full-test"
-        ],
+        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
         "checks": [
           "native_source",
           "all_participants",
@@ -90,121 +252,39 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "238242ce45d574624d73b3ee4d8c72e7e820c4f6bc87f159bb036c39c72a31b5",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_clear_turn-positive",
-        "test_exit_code": 0,
-        "test_log": "audit-crosswalk_clear_turn-positive.log",
-        "test_log_sha256": "9970d05273d6a2b2af649c10fb084f49220123c2897019681bece9da08e3148d",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_clear_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_clear_turn-negative --negative",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_occupied_yield-positive",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_occupied_yield-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original missing or changed",
-        "negative_log": "audit-crosswalk_clear_turn-negative.log",
-        "negative_log_sha256": "7f0231c49a2fb434085ce2d43646d06c1cd74c1cb0bc29c149fbd32cc61a8126"
+        "negative_log": "audit-crosswalk_occupied_yield-negative.log",
+        "negative_log_sha256": "7f0231c49a2fb434085ce2d43646d06c1cd74c1cb0bc29c149fbd32cc61a8126",
+        "script": "delivery_audit.py",
+        "script_sha256": "238242ce45d574624d73b3ee4d8c72e7e820c4f6bc87f159bb036c39c72a31b5",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "audit-crosswalk_occupied_yield-positive.log",
+        "test_log_sha256": "dabfca17dd5af169eb404970eb7f61f0b207be6119494773fa4f933a01c9f01c"
       },
-      "acquisition": {
-        "ego_body_heading_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/ego_body_heading_history.jsonl"
-        },
-        "facing_arrow_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/facing_arrow_history.jsonl"
-        },
-        "pedestrian_body_lawful_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/pedestrian_body_lawful_history.jsonl"
-        },
-        "other_traffic_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/other_traffic_history.jsonl"
-        },
-        "crosswalk_geometry": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/crosswalk_geometry.jsonl"
-        },
-        "turn_route": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/turn_route.jsonl"
-        },
-        "camera_frame_map": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/camera_frame_map.jsonl"
-        },
-        "intersection_context": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context",
-          "evidence": "channels/context.json"
-        },
-        "pedestrian_entry_context": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context",
-          "evidence": "channels/context.json"
-        }
-      },
-      "negative": {
-        "log": "compat-crosswalk_clear_turn-primary-negative.log"
-      }
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
-      "kind": "delivery",
-      "construction": "cases/crosswalk_occupied_yield/construction.json",
-      "construction_sha256": "ab4aa8d84cf50d655bba480b1bbde3c23be60c4e8208cf608bd830fabe0d0c37",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends."
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "fallback-crosswalk_occupied_yield-construction.json",
-          "construction_sha256": "cae1cb63762484c2662e890c599cc1db2ce87804ea0b85aa48787d559f4d853e",
-          "trigger": {
-            "source": "original Native turn-history.jsonl and trace.jsonl",
-            "metric": "30 s sampled left-turn heading change and travel progress",
-            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m"
-          },
-          "changed_knobs": [
-            "bounded route steering error divisor: 45 -> 35 degrees"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_occupied_yield-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
-            "exit_code": 0,
-            "construction_sha256": "cae1cb63762484c2662e890c599cc1db2ce87804ea0b85aa48787d559f4d853e",
-            "log": "proof-crosswalk_occupied_yield-fallback1.log",
-            "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
-          },
-          "compatibility": {
-            "receipt": "compat-crosswalk_occupied_yield-fallback1-receipt.json",
-            "sha256": "2b98f9ad755d7a281a932314563859a58a9fef2a114360c0d206f659241874fa",
-            "log": "compat-crosswalk_occupied_yield-fallback1-analysis.log",
-            "negative_log": "compat-crosswalk_occupied_yield-fallback1-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-occupied-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
-        }
-      ],
-      "measurement_contract": "cases/crosswalk_occupied_yield/measurement-contract.json",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/diagnostic-crosswalk_occupied_yield-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/crosswalk_occupied_yield/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-crosswalk_occupied_yield-primary-negative.log"
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-crosswalk_occupied_yield-primary-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
-        "exit_code": 0,
         "construction_sha256": "ab4aa8d84cf50d655bba480b1bbde3c23be60c4e8208cf608bd830fabe0d0c37",
+        "exit_code": 0,
         "log": "proof-crosswalk_occupied_yield-primary.log",
         "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
       },
@@ -212,26 +292,108 @@
         "receipt": "physical-crosswalk_occupied_yield-proof.json",
         "sha256": "53db0386936124702199a9131eb4e70c19110ef6633b836c567f86d94db642fd"
       },
-      "compatibility": {
-        "receipt": "compat-crosswalk_occupied_yield-primary-receipt.json",
-        "sha256": "f62445c1fccaa9ed18bad41c6606a613a95abe05610ef14a37352803a45aae4f",
-        "log": "compat-crosswalk_occupied_yield-primary-analysis.log",
-        "negative_log": "compat-crosswalk_occupied_yield-primary-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-occupied-primary-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
-      },
       "post_capture": {
-        "recorded_only": true,
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-crosswalk_occupied_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
         "test_log": "saved-crosswalk_occupied_yield.log",
-        "test_log_sha256": "ed2b2ee954fbf96381908fa40da227aef136ee766da2b19607f29176b63549c4",
-        "test_exit_code": 0
+        "test_log_sha256": "ed2b2ee954fbf96381908fa40da227aef136ee766da2b19607f29176b63549c4"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/crosswalk_geometry.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "intersection_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        },
+        "pedestrian_entry_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources"
+        }
       },
+      "candidate_risk": {
+        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "bounded route steering error divisor: 45 -> 35 degrees"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-traffic-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "compat-lawful_traffic_yield-fallback1-analysis.log",
+            "negative_log": "compat-lawful_traffic_yield-fallback1-negative.log",
+            "receipt": "compat-lawful_traffic_yield-fallback1-receipt.json",
+            "sha256": "1fc4db1e295e51c1261cbd66a1e30d68c500c0b6f28a6e96e97cb99662ab7789"
+          },
+          "construction": "fallback-lawful_traffic_yield-construction.json",
+          "construction_sha256": "406cda155a8ae4fddded0cf428fe4c75a7034221bbc49aa79d59748f40089c2b",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-lawful_traffic_yield-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "406cda155a8ae4fddded0cf428fe4c75a7034221bbc49aa79d59748f40089c2b",
+            "exit_code": 0,
+            "log": "proof-lawful_traffic_yield-fallback1.log",
+            "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
+          },
+          "trigger": {
+            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m",
+            "metric": "30 s sampled left-turn heading change and travel progress",
+            "source": "original Native turn-history.jsonl and trace.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/case2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary",
+        "log": "compat-lawful_traffic_yield-primary-analysis.log",
+        "negative_log": "compat-lawful_traffic_yield-primary-negative.log",
+        "receipt": "compat-lawful_traffic_yield-primary-receipt.json",
+        "sha256": "a4aba2eed91423ffa9339a912d2486e535b1761d2b127522ad928d4f84a7a855"
+      },
+      "construction": "cases/lawful_traffic_yield/construction.json",
+      "construction_sha256": "33648aa706e6b27ada31cc7fde311de292b327408f8007329f2bbb24b35b49b5",
       "delivery_acceptance": {
-        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield",
-        "sets": [
-          "full-test"
-        ],
+        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield",
         "checks": [
           "native_source",
           "all_participants",
@@ -240,121 +402,39 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "238242ce45d574624d73b3ee4d8c72e7e820c4f6bc87f159bb036c39c72a31b5",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_occupied_yield-positive",
-        "test_exit_code": 0,
-        "test_log": "audit-crosswalk_occupied_yield-positive.log",
-        "test_log_sha256": "dabfca17dd5af169eb404970eb7f61f0b207be6119494773fa4f933a01c9f01c",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__crosswalk_occupied_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-crosswalk_occupied_yield-negative --negative",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-lawful_traffic_yield-positive",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-lawful_traffic_yield-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original missing or changed",
-        "negative_log": "audit-crosswalk_occupied_yield-negative.log",
-        "negative_log_sha256": "7f0231c49a2fb434085ce2d43646d06c1cd74c1cb0bc29c149fbd32cc61a8126"
+        "negative_log": "audit-lawful_traffic_yield-negative.log",
+        "negative_log_sha256": "7f0231c49a2fb434085ce2d43646d06c1cd74c1cb0bc29c149fbd32cc61a8126",
+        "script": "delivery_audit.py",
+        "script_sha256": "238242ce45d574624d73b3ee4d8c72e7e820c4f6bc87f159bb036c39c72a31b5",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "audit-lawful_traffic_yield-positive.log",
+        "test_log_sha256": "b18166f8c62044baa000144cbbc4d2718744837d8564cdbb9f682734442b114b"
       },
-      "acquisition": {
-        "ego_body_heading_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/ego_body_heading_history.jsonl"
-        },
-        "facing_arrow_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/facing_arrow_history.jsonl"
-        },
-        "pedestrian_body_lawful_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/pedestrian_body_lawful_history.jsonl"
-        },
-        "other_traffic_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/other_traffic_history.jsonl"
-        },
-        "crosswalk_geometry": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/crosswalk_geometry.jsonl"
-        },
-        "turn_route": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/turn_route.jsonl"
-        },
-        "camera_frame_map": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/camera_frame_map.jsonl"
-        },
-        "intersection_context": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context",
-          "evidence": "channels/context.json"
-        },
-        "pedestrian_entry_context": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context",
-          "evidence": "channels/context.json"
-        }
-      },
-      "negative": {
-        "log": "compat-crosswalk_occupied_yield-primary-negative.log"
-      }
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield",
-      "kind": "delivery",
-      "construction": "cases/lawful_traffic_yield/construction.json",
-      "construction_sha256": "33648aa706e6b27ada31cc7fde311de292b327408f8007329f2bbb24b35b49b5",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The simple bounded steering gain may not complete the connected left turn before the 30 s capture ends."
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "fallback-lawful_traffic_yield-construction.json",
-          "construction_sha256": "406cda155a8ae4fddded0cf428fe4c75a7034221bbc49aa79d59748f40089c2b",
-          "trigger": {
-            "source": "original Native turn-history.jsonl and trace.jsonl",
-            "metric": "30 s sampled left-turn heading change and travel progress",
-            "failure_condition": "primary left turn has heading change below 45 degrees or travel progress below 5 m"
-          },
-          "changed_knobs": [
-            "bounded route steering error divisor: 45 -> 35 degrees"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-lawful_traffic_yield-fallback1-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
-            "exit_code": 0,
-            "construction_sha256": "406cda155a8ae4fddded0cf428fe4c75a7034221bbc49aa79d59748f40089c2b",
-            "log": "proof-lawful_traffic_yield-fallback1.log",
-            "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
-          },
-          "compatibility": {
-            "receipt": "compat-lawful_traffic_yield-fallback1-receipt.json",
-            "sha256": "1fc4db1e295e51c1261cbd66a1e30d68c500c0b6f28a6e96e97cb99662ab7789",
-            "log": "compat-lawful_traffic_yield-fallback1-analysis.log",
-            "negative_log": "compat-lawful_traffic_yield-fallback1-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-traffic-fallback1-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
-        }
-      ],
-      "measurement_contract": "cases/lawful_traffic_yield/measurement-contract.json",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/diagnostic-lawful_traffic_yield-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/lawful_traffic_yield/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-lawful_traffic_yield-primary-negative.log"
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-offline-lawful_traffic_yield-primary-refresh --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
-        "exit_code": 0,
         "construction_sha256": "33648aa706e6b27ada31cc7fde311de292b327408f8007329f2bbb24b35b49b5",
+        "exit_code": 0,
         "log": "proof-lawful_traffic_yield-primary.log",
         "log_sha256": "4e66a8fc5c8a72e78563e0b843459b0b7a75d5bd98970e3cb935b04f8b4ee506"
       },
@@ -362,96 +442,16 @@
         "receipt": "physical-lawful_traffic_yield-proof.json",
         "sha256": "6fbc97ddae9694f76eb1edf07e5671a5967691d4a94bf34bb5589b45d81e1985"
       },
-      "compatibility": {
-        "receipt": "compat-lawful_traffic_yield-primary-receipt.json",
-        "sha256": "8b82416f2ecec467afee398384ed7f53ac8c6076eb28986789f31b3b5cce3973",
-        "log": "compat-lawful_traffic_yield-primary-analysis.log",
-        "negative_log": "compat-lawful_traffic_yield-primary-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-compat-traffic-primary-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
-      },
       "post_capture": {
-        "recorded_only": true,
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-lawful_traffic_yield-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-lawful_traffic_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-lawful_traffic_yield-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-lawful_traffic_yield --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "test_log": "saved-lawful_traffic_yield.log",
-        "test_log_sha256": "068eb33ed25ccb2d4ffd314cdcb8e3b86ab21601c111579a548090417599985d",
-        "test_exit_code": 0
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "delivery_audit.py",
-        "script_sha256": "238242ce45d574624d73b3ee4d8c72e7e820c4f6bc87f159bb036c39c72a31b5",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-lawful_traffic_yield-positive",
+        "recorded_only": true,
         "test_exit_code": 0,
-        "test_log": "audit-lawful_traffic_yield-positive.log",
-        "test_log_sha256": "b18166f8c62044baa000144cbbc4d2718744837d8564cdbb9f682734442b114b",
-        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-4a__motor_vehicle_driver/audit_probe.py --case testing__C111610__NRS-484B-307-4a__motor_vehicle_driver__lawful_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-audit-lawful_traffic_yield-negative --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "sealed original missing or changed",
-        "negative_log": "audit-lawful_traffic_yield-negative.log",
-        "negative_log_sha256": "7f0231c49a2fb434085ce2d43646d06c1cd74c1cb0bc29c149fbd32cc61a8126"
-      },
-      "acquisition": {
-        "ego_body_heading_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/ego_body_heading_history.jsonl"
-        },
-        "facing_arrow_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/facing_arrow_history.jsonl"
-        },
-        "pedestrian_body_lawful_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/pedestrian_body_lawful_history.jsonl"
-        },
-        "other_traffic_history": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/other_traffic_history.jsonl"
-        },
-        "crosswalk_geometry": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/crosswalk_geometry.jsonl"
-        },
-        "turn_route": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/turn_route.jsonl"
-        },
-        "camera_frame_map": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native turn, context and frame-map sources",
-          "evidence": "channels/camera_frame_map.jsonl"
-        },
-        "intersection_context": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context",
-          "evidence": "channels/context.json"
-        },
-        "pedestrian_entry_context": {
-          "entrypoint": "analysis.py",
-          "method": "Saved projection of SHA256-verified original Native intersection and pedestrian-entry context",
-          "evidence": "channels/context.json"
-        }
-      },
-      "negative": {
-        "log": "compat-lawful_traffic_yield-primary-negative.log"
+        "test_log": "saved-lawful_traffic_yield.log",
+        "test_log_sha256": "068eb33ed25ccb2d4ffd314cdcb8e3b86ab21601c111579a548090417599985d"
       }
     }
-  ]
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
 }

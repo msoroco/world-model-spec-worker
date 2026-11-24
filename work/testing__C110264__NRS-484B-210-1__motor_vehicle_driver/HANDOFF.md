@@ -88,3 +88,26 @@ SHA-256 bound check logs:
 - `cpu-sensor-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
 
 Next CPU work: acquire and review a source Native map packet; implement the CARLA actor spawn, source-station-to-world placement, right-pass controller and live pose/signal sampler; connect this adapter and saved finalizer to a canonical selected-case manifest; author semantic proposals and complete positive/negative compatibility, process-saved, independent delivery and controlled-comparison receipts. Preserve the partial status until the exact scoped strict gate passes.
+
+## 2026-11-24 original actor sampler checkpoint
+
+`pass_right_actor.py` now maps actual Native snapshot actor positions, velocities and target light-state readback into the original 20 Hz row schema. It requires each source map cross section to carry a world XY center point, reconciles centerline length with source station spacing, projects to a right-positive lateral coordinate, interpolates paved bounds, reads both actors from the same Native snapshot, and rejects missing actors, ambiguous/off-corridor geometry or invalid source shape. A caller supplies CARLA's left blinker bit mask; this module does not import CARLA or infer a signal from a requested controller setting. The three exact diagnostic offline constructions now embed this adapter. Their fixture map still has no reviewed world anchors, so none demonstrates physical acquisition.
+
+The 36-test CPU suite, pinned preflight, three exact `runtime.py offline` cases and scoped static check passed. The exact scoped strict gate exited 1 on truthful `partial`. The saved source audit and full-media finalizer remain diagnostic pending a reviewed Native map, actor spawn/controller, semantic proposals, canonical case manifest, compatibility/process-saved and independent delivery/comparison receipts.
+
+SHA-256 source and proof index:
+
+- `pass_right_actor.py`: `c2aba314606d1d7cb392d1304258b3d31f99083dee77c011cdc3f47b8d963f17`
+- `tests/test_pass_right_actor.py`: `d17dc36627825adfc7aeff6acd937aba915117e0f4ad61d7a656d3f9395c8fec`
+- `build_offline_draft.py`: `abf3afa81ce82f5efc0c32acc5cbca8f6f0926191bdee1d20d7f236ca36fe72e`
+- `execution-manifest.draft.json`: `b5515786877c8f2868a3f771d1a924400c744a828b36617540d7dbe8ab79f399`
+- `construction-left_signal.json`: `66453b661b441f85edd2ec97aafbd2295a4cc0037c824e3339bd13ed8900d4ac`
+- `construction-left_turn.json`: `fe7936c23787a295b7a988b50aef4e6f90aa682d55b75019be581e9d100490ff`
+- `construction-neither.json`: `1bf3ec3c1674d64c6b76531aa919525e7bca1cba5f2e3b4e11772ecc07f8e034`
+- `cpu-actor-tests.log`: `cecb33c3ca1e7ffcef3d8c79d9de6b12c6cdca0379eb9d8f97c3bae23cf0f828`
+- `cpu-actor-preflight.log`: `068c7131d8360344105cd12bcee66d4a175d61e49b506788e5eeaf1efa891183`
+- `cpu-actor-offline-left_signal.log`: `4b5b9837ff67b8334fea242bbdbbfafda423a49f4a4fc3dc1763c9255ea93db5`
+- `cpu-actor-offline-left_turn.log`: `74a0d1aa3227066551eba01d2f3dd97a51ab1a633f51a4e5151170ce4ff28862`
+- `cpu-actor-offline-neither.log`: `7d4ea04c1a7356d4be7d994b448eb0b15562ca0e6ebe8404e05a064b0f433ffb`
+- `cpu-actor-static.log`: `571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04`
+- `cpu-actor-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`

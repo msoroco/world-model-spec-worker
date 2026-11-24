@@ -1,114 +1,81 @@
 {
-  "format": "worker-execution-manifest",
   "assignment_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
   "cases": [
     {
-      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
-      "kind": "delivery",
-      "construction": "cases/passage_clear_view/construction.json",
-      "construction_sha256": "631257d4fc8e5a5a4898b74beb04cc498cbe64f30b2582db9a959a7b5c943db7",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Native car and road footprint may differ from authored clearance"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/passage_clear_view/fallback1-construction.json",
-          "construction_sha256": "c51d23876af36f4c2b650aa3a5ccd99b8cff59a5a825bd84629a8608384dfc1a",
-          "changed_knobs": [
-            "standing body lateral position"
-          ],
-          "trigger": {
-            "source": "standing-measurement.json",
-            "metric": "original body passage or two-sided sight geometry",
-            "failure_condition": "primary original measurement misses the requested physical contrast"
-          },
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_clear_view/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "construction_sha256": "c51d23876af36f4c2b650aa3a5ccd99b8cff59a5a825bd84629a8608384dfc1a",
-            "log": "cases/passage_clear_view/fallback1-offline.log",
-            "log_sha256": "cb1191b440c882a18a5a957a93489832de9b3a5c333c241fc6ad1e10966f5d0f",
-            "runtime_offline_log_sha256": "5e64939bd262a79c4616730b5f4770e64e86f3c946d288af0a1eecb8b388aa52"
-          },
-          "compatibility": {
-            "receipt": "cases/passage_clear_view/fallback1-compatibility.json",
-            "sha256": "f341603358a54c06c6fd9fae31942d173bbc3788d17c90954618909b588f498f",
-            "log": "cases/passage_clear_view/fallback1-compat-analysis.log",
-            "negative_log": "cases/passage_clear_view/fallback1-compat-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/passage_clear_view/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "cases/passage_clear_view/fallback1-compat-command.log",
-            "command_log_sha256": "f341603358a54c06c6fd9fae31942d173bbc3788d17c90954618909b588f498f"
-          }
-        }
-      ],
-      "measurement_contract": "cases/passage_clear_view/measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
       "acquisition": {
-        "standing_body_xy_m": {
+        "mechanical_failure_attempt": {
           "entrypoint": "native_capture.py",
-          "evidence": "standing-body-history.jsonl body_vertices_xy_m",
-          "method": "original actor body each world tick"
+          "evidence": "mechanical-attempt-history.jsonl physics disable and brake request",
+          "method": "original worker mechanism command joined to standing actor each world tick"
         },
         "other_vehicle_body_xy_m": {
           "entrypoint": "native_capture.py",
           "evidence": "passing-body-history.jsonl body_vertices_xy_m",
           "method": "original westbound actor body each world tick"
         },
+        "standing_body_xy_m": {
+          "entrypoint": "native_capture.py",
+          "evidence": "standing-body-history.jsonl body_vertices_xy_m",
+          "method": "original actor body each world tick"
+        },
         "two_sided_200ft_sight": {
           "entrypoint": "native_capture.py",
           "evidence": "approach.mkv and reference_corner.mkv plus occluder-body-history.jsonl",
           "method": "two original 60.96 m cameras and actual prop bodies each world tick"
-        },
-        "mechanical_failure_attempt": {
-          "entrypoint": "native_capture.py",
-          "evidence": "mechanical-attempt-history.jsonl physics disable and brake request",
-          "method": "original worker mechanism command joined to standing actor each world tick"
         }
       },
-      "proof_status": "offline_compatibility_delivery_audit_cpu_passed_physical_review_pending",
-      "fixture_recipe": "work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/cases/passage_clear_view/fixture-recipe.json",
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_clear_view/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "631257d4fc8e5a5a4898b74beb04cc498cbe64f30b2582db9a959a7b5c943db7",
-        "log": "cases/passage_clear_view/primary-offline.log",
-        "log_sha256": "829a6a01a1b2c21cca1178c91daaaddeea016bf5c293fcc280290d618731a1eb",
-        "runtime_offline_log_sha256": "b321021ff6c59f2742fcb4e97056f59df33c53300e83b039e990eb333b1ddbb0"
+      "candidate_risk": {
+        "reason": "Native car and road footprint may differ from authored clearance",
+        "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "standing body lateral position"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/passage_clear_view/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "cases/passage_clear_view/fallback1-compat-command.log",
+            "command_log_sha256": "f341603358a54c06c6fd9fae31942d173bbc3788d17c90954618909b588f498f",
+            "exit_code": 0,
+            "log": "cases/passage_clear_view/fallback1-compat-analysis.log",
+            "negative_log": "cases/passage_clear_view/fallback1-compat-negative.log",
+            "receipt": "cases/passage_clear_view/fallback1-compatibility.json",
+            "sha256": "f341603358a54c06c6fd9fae31942d173bbc3788d17c90954618909b588f498f"
+          },
+          "construction": "cases/passage_clear_view/fallback1-construction.json",
+          "construction_sha256": "c51d23876af36f4c2b650aa3a5ccd99b8cff59a5a825bd84629a8608384dfc1a",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_clear_view/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "c51d23876af36f4c2b650aa3a5ccd99b8cff59a5a825bd84629a8608384dfc1a",
+            "exit_code": 0,
+            "log": "cases/passage_clear_view/fallback1-offline.log",
+            "log_sha256": "cb1191b440c882a18a5a957a93489832de9b3a5c333c241fc6ad1e10966f5d0f",
+            "runtime_offline_log_sha256": "5e64939bd262a79c4616730b5f4770e64e86f3c946d288af0a1eecb8b388aa52"
+          },
+          "trigger": {
+            "failure_condition": "primary original measurement misses the requested physical contrast",
+            "metric": "original body passage or two-sided sight geometry",
+            "source": "standing-measurement.json"
+          }
+        }
+      ],
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
       "compatibility": {
-        "receipt": "cases/passage_clear_view/primary-compatibility.json",
-        "sha256": "f412a6a3410156887768d205011be23700ddd1bd7441fc6f7b75e6293418591e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/c135705-compat-refresh/case0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "cases/passage_clear_view/primary-compat-command.log",
+        "command_log_sha256": "1333764d2cf6637d8d19d77b1a05b01724f69f29f36df53ea56e0e64bf7704ee",
+        "exit_code": 0,
         "log": "cases/passage_clear_view/primary-compat-analysis.log",
         "negative_log": "cases/passage_clear_view/primary-compat-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/passage_clear_view/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "cases/passage_clear_view/primary-compat-command.log",
-        "command_log_sha256": "f412a6a3410156887768d205011be23700ddd1bd7441fc6f7b75e6293418591e"
+        "receipt": "cases/passage_clear_view/primary-compatibility.json",
+        "sha256": "1333764d2cf6637d8d19d77b1a05b01724f69f29f36df53ea56e0e64bf7704ee"
       },
-      "negative": {
-        "log": "cases/passage_clear_view/primary-compat-negative.log",
-        "sha256": "3871a9701f3eca6f9a7fafac8851f10c49acb1991a2d4ae7056e8c4e3dde6228"
-      },
-      "physical_preparation": {
-        "receipt": "cases/passage_clear_view/physical-preparation.json",
-        "sha256": "9967ccf1764a6de2379e8310b432900512317790bec83573db0ca6db05170dd5"
-      },
+      "construction": "cases/passage_clear_view/construction.json",
+      "construction_sha256": "631257d4fc8e5a5a4898b74beb04cc498cbe64f30b2582db9a959a7b5c943db7",
       "delivery_acceptance": {
         "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -117,18 +84,44 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "b541c3a3d69ffd6adf023b470b9779c3e990c42db3ab7a1367b9f79605981129",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/delivery_probe.py --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_clear_view-positive",
-        "test_exit_code": 0,
-        "test_log": "cases/passage_clear_view/delivery-positive.log",
-        "test_log_sha256": "99a4572fc7b9540c1d666c8603eb5db0f17c8a8d19eae1877797b3e3ee3ee256",
         "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/delivery_probe.py --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_clear_view-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "missing or stale original source: standing-body-history.jsonl",
         "negative_log": "cases/passage_clear_view/delivery-negative.log",
         "negative_log_sha256": "68fd9d33533181889ec759000273e7058c989062c6b8e9ce483d867da02c1cad",
-        "scope": "synthetic source-bound CPU audit with full-decoded camera fixtures; live CARLA visibility and physical acceptance remain unverified"
+        "scope": "synthetic source-bound CPU audit with full-decoded camera fixtures; live CARLA visibility and physical acceptance remain unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "b541c3a3d69ffd6adf023b470b9779c3e990c42db3ab7a1367b9f79605981129",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/passage_clear_view/delivery-positive.log",
+        "test_log_sha256": "99a4572fc7b9540c1d666c8603eb5db0f17c8a8d19eae1877797b3e3ee3ee256"
+      },
+      "fixture_recipe": "work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/cases/passage_clear_view/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/passage_clear_view/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/passage_clear_view/primary-compat-negative.log",
+        "sha256": "3871a9701f3eca6f9a7fafac8851f10c49acb1991a2d4ae7056e8c4e3dde6228"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_clear_view/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "631257d4fc8e5a5a4898b74beb04cc498cbe64f30b2582db9a959a7b5c943db7",
+        "exit_code": 0,
+        "log": "cases/passage_clear_view/primary-offline.log",
+        "log_sha256": "829a6a01a1b2c21cca1178c91daaaddeea016bf5c293fcc280290d618731a1eb",
+        "runtime_offline_log_sha256": "b321021ff6c59f2742fcb4e97056f59df33c53300e83b039e990eb333b1ddbb0"
       },
       "offline_negative": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/prove_offline_negative.py",
@@ -136,6 +129,10 @@
         "log": "cases/passage_clear_view/negative-offline.log",
         "log_sha256": "b890549e0a133fa612f9daeff9bb583a89d8b1191126d5379e9d433a4441089a",
         "nonzero_exit_verified": true
+      },
+      "physical_preparation": {
+        "receipt": "cases/passage_clear_view/physical-preparation.json",
+        "sha256": "9967ccf1764a6de2379e8310b432900512317790bec83573db0ca6db05170dd5"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_clear_view --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
@@ -145,114 +142,84 @@
         "test_log": "cases/passage_clear_view/saved-processing-proof.log",
         "test_log_sha256": "324a598e898fdd2755f62e0b4d9e99c78787accaefb9fec933df8b2ada784547",
         "test_scope": "Pinned process-saved executed on current exact-case diagnostic original-source package, including converter, Lean, renderer and full media decode; physical and legal acceptance unclaimed."
-      }
+      },
+      "proof_status": "offline_compatibility_delivery_audit_cpu_passed_physical_review_pending"
     },
     {
-      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
-      "kind": "delivery",
-      "construction": "cases/passage_blocked/construction.json",
-      "construction_sha256": "191c1b500f5df9e9a14a9384125b9525836e5a1cedd6cde8b0a8c0dbce0ebba3",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Native driver may steer around the standing vehicle instead of exposing blocked passage"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/passage_blocked/fallback1-construction.json",
-          "construction_sha256": "c70c9620c253656bb19666b07ac94d9c2fc92c0f05c44960f880d9f673eb97ac",
-          "changed_knobs": [
-            "standing body lateral position"
-          ],
-          "trigger": {
-            "source": "standing-measurement.json",
-            "metric": "original body passage or two-sided sight geometry",
-            "failure_condition": "primary original measurement misses the requested physical contrast"
-          },
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_blocked/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "construction_sha256": "c70c9620c253656bb19666b07ac94d9c2fc92c0f05c44960f880d9f673eb97ac",
-            "log": "cases/passage_blocked/fallback1-offline.log",
-            "log_sha256": "af76f2de900979eeb24bdd261b0f24383aa8fa03c2369417ee4f9123aab3ecc2",
-            "runtime_offline_log_sha256": "a2ef3d620e386af104e477afab18753227a46ac381d3bdd24241bc82ee43f6a9"
-          },
-          "compatibility": {
-            "receipt": "cases/passage_blocked/fallback1-compatibility.json",
-            "sha256": "4bd3d883f890e469db41098b225d3ad59354127b0fb6ec7b7f10890b3864825a",
-            "log": "cases/passage_blocked/fallback1-compat-analysis.log",
-            "negative_log": "cases/passage_blocked/fallback1-compat-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/passage_blocked/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "cases/passage_blocked/fallback1-compat-command.log",
-            "command_log_sha256": "4bd3d883f890e469db41098b225d3ad59354127b0fb6ec7b7f10890b3864825a"
-          }
-        }
-      ],
-      "measurement_contract": "cases/passage_blocked/measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
       "acquisition": {
-        "standing_body_xy_m": {
+        "mechanical_failure_attempt": {
           "entrypoint": "native_capture.py",
-          "evidence": "standing-body-history.jsonl body_vertices_xy_m",
-          "method": "original actor body each world tick"
+          "evidence": "mechanical-attempt-history.jsonl physics disable and brake request",
+          "method": "original worker mechanism command joined to standing actor each world tick"
         },
         "other_vehicle_body_xy_m": {
           "entrypoint": "native_capture.py",
           "evidence": "passing-body-history.jsonl body_vertices_xy_m",
           "method": "original westbound actor body each world tick"
         },
+        "standing_body_xy_m": {
+          "entrypoint": "native_capture.py",
+          "evidence": "standing-body-history.jsonl body_vertices_xy_m",
+          "method": "original actor body each world tick"
+        },
         "two_sided_200ft_sight": {
           "entrypoint": "native_capture.py",
           "evidence": "approach.mkv and reference_corner.mkv plus occluder-body-history.jsonl",
           "method": "two original 60.96 m cameras and actual prop bodies each world tick"
-        },
-        "mechanical_failure_attempt": {
-          "entrypoint": "native_capture.py",
-          "evidence": "mechanical-attempt-history.jsonl physics disable and brake request",
-          "method": "original worker mechanism command joined to standing actor each world tick"
         }
       },
-      "proof_status": "offline_compatibility_delivery_audit_cpu_passed_physical_review_pending",
-      "fixture_recipe": "work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/cases/passage_blocked/fixture-recipe.json",
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_blocked/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "191c1b500f5df9e9a14a9384125b9525836e5a1cedd6cde8b0a8c0dbce0ebba3",
-        "log": "cases/passage_blocked/primary-offline.log",
-        "log_sha256": "880843f82ebe32fb40cf9486c9e63736fa2845e38c920fe46e51ab76bf3f34f9",
-        "runtime_offline_log_sha256": "a2ef3d620e386af104e477afab18753227a46ac381d3bdd24241bc82ee43f6a9"
+      "candidate_risk": {
+        "reason": "Native driver may steer around the standing vehicle instead of exposing blocked passage",
+        "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "standing body lateral position"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/passage_blocked/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "cases/passage_blocked/fallback1-compat-command.log",
+            "command_log_sha256": "4bd3d883f890e469db41098b225d3ad59354127b0fb6ec7b7f10890b3864825a",
+            "exit_code": 0,
+            "log": "cases/passage_blocked/fallback1-compat-analysis.log",
+            "negative_log": "cases/passage_blocked/fallback1-compat-negative.log",
+            "receipt": "cases/passage_blocked/fallback1-compatibility.json",
+            "sha256": "4bd3d883f890e469db41098b225d3ad59354127b0fb6ec7b7f10890b3864825a"
+          },
+          "construction": "cases/passage_blocked/fallback1-construction.json",
+          "construction_sha256": "c70c9620c253656bb19666b07ac94d9c2fc92c0f05c44960f880d9f673eb97ac",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_blocked/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "c70c9620c253656bb19666b07ac94d9c2fc92c0f05c44960f880d9f673eb97ac",
+            "exit_code": 0,
+            "log": "cases/passage_blocked/fallback1-offline.log",
+            "log_sha256": "af76f2de900979eeb24bdd261b0f24383aa8fa03c2369417ee4f9123aab3ecc2",
+            "runtime_offline_log_sha256": "a2ef3d620e386af104e477afab18753227a46ac381d3bdd24241bc82ee43f6a9"
+          },
+          "trigger": {
+            "failure_condition": "primary original measurement misses the requested physical contrast",
+            "metric": "original body passage or two-sided sight geometry",
+            "source": "standing-measurement.json"
+          }
+        }
+      ],
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
       "compatibility": {
-        "receipt": "cases/passage_blocked/primary-compatibility.json",
-        "sha256": "1476120672b1f51b844f3ad46a616841109d5b801cab1a573a2a41a3da021555",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/c135705-compat-refresh/case1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "cases/passage_blocked/primary-compat-command.log",
+        "command_log_sha256": "3c60e80849d3f462d60d525daeff736da21cca5cc4992ea5e4bf44178ad51d1c",
+        "exit_code": 0,
         "log": "cases/passage_blocked/primary-compat-analysis.log",
         "negative_log": "cases/passage_blocked/primary-compat-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/passage_blocked/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "cases/passage_blocked/primary-compat-command.log",
-        "command_log_sha256": "1476120672b1f51b844f3ad46a616841109d5b801cab1a573a2a41a3da021555"
+        "receipt": "cases/passage_blocked/primary-compatibility.json",
+        "sha256": "3c60e80849d3f462d60d525daeff736da21cca5cc4992ea5e4bf44178ad51d1c"
       },
-      "negative": {
-        "log": "cases/passage_blocked/primary-compat-negative.log",
-        "sha256": "392cead57ef2b5b9c17952e63c3ccdb7748be33d711df644be4d408082e49c5c"
-      },
-      "physical_preparation": {
-        "receipt": "cases/passage_blocked/physical-preparation.json",
-        "sha256": "342226dfc95dd178bf3883b5ddc353f49effc71d2dd1dd8fb71b5324039d21a0"
-      },
+      "construction": "cases/passage_blocked/construction.json",
+      "construction_sha256": "191c1b500f5df9e9a14a9384125b9525836e5a1cedd6cde8b0a8c0dbce0ebba3",
       "delivery_acceptance": {
         "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -261,18 +228,44 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "b541c3a3d69ffd6adf023b470b9779c3e990c42db3ab7a1367b9f79605981129",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/delivery_probe.py --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_blocked-positive",
-        "test_exit_code": 0,
-        "test_log": "cases/passage_blocked/delivery-positive.log",
-        "test_log_sha256": "e3965d0872f9a771c0ba3bca51fd7dc324e9b9c231cb63a6fe7e4bcaea1f8aa0",
         "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/delivery_probe.py --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_blocked-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "missing or stale original source: standing-body-history.jsonl",
         "negative_log": "cases/passage_blocked/delivery-negative.log",
         "negative_log_sha256": "68fd9d33533181889ec759000273e7058c989062c6b8e9ce483d867da02c1cad",
-        "scope": "synthetic source-bound CPU audit with full-decoded camera fixtures; live CARLA visibility and physical acceptance remain unverified"
+        "scope": "synthetic source-bound CPU audit with full-decoded camera fixtures; live CARLA visibility and physical acceptance remain unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "b541c3a3d69ffd6adf023b470b9779c3e990c42db3ab7a1367b9f79605981129",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/passage_blocked/delivery-positive.log",
+        "test_log_sha256": "e3965d0872f9a771c0ba3bca51fd7dc324e9b9c231cb63a6fe7e4bcaea1f8aa0"
+      },
+      "fixture_recipe": "work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/cases/passage_blocked/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/passage_blocked/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/passage_blocked/primary-compat-negative.log",
+        "sha256": "392cead57ef2b5b9c17952e63c3ccdb7748be33d711df644be4d408082e49c5c"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/passage_blocked/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "191c1b500f5df9e9a14a9384125b9525836e5a1cedd6cde8b0a8c0dbce0ebba3",
+        "exit_code": 0,
+        "log": "cases/passage_blocked/primary-offline.log",
+        "log_sha256": "880843f82ebe32fb40cf9486c9e63736fa2845e38c920fe46e51ab76bf3f34f9",
+        "runtime_offline_log_sha256": "a2ef3d620e386af104e477afab18753227a46ac381d3bdd24241bc82ee43f6a9"
       },
       "offline_negative": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/prove_offline_negative.py",
@@ -280,6 +273,10 @@
         "log": "cases/passage_blocked/negative-offline.log",
         "log_sha256": "b408ecc33a000100084f8edacbde4db80a10974656385cd769c2452f0e3bf756",
         "nonzero_exit_verified": true
+      },
+      "physical_preparation": {
+        "receipt": "cases/passage_blocked/physical-preparation.json",
+        "sha256": "342226dfc95dd178bf3883b5ddc353f49effc71d2dd1dd8fb71b5324039d21a0"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__passage_blocked --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
@@ -289,114 +286,84 @@
         "test_log": "cases/passage_blocked/saved-processing-proof.log",
         "test_log_sha256": "c8c9a27420c0d781ae80a4abca6050b779917e67bfdd2bff0fd8a2650bc43601",
         "test_scope": "Pinned process-saved executed on current exact-case diagnostic original-source package, including converter, Lean, renderer and full media decode; physical and legal acceptance unclaimed."
-      }
+      },
+      "proof_status": "offline_compatibility_delivery_audit_cpu_passed_physical_review_pending"
     },
     {
-      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both",
-      "kind": "delivery",
-      "construction": "cases/view_occluded_both/construction.json",
-      "construction_sha256": "531773f60386a2bbabe54c2d54d17b5bc5765c4044808e27970307d586858b91",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Authored occluders may not block camera sight lines in live CARLA"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/view_occluded_both/fallback1-construction.json",
-          "construction_sha256": "e32e1afa7025092322726a4a7495c0b687ef617467659a48df24f883b23b915e",
-          "changed_knobs": [
-            "two occluder lateral positions"
-          ],
-          "trigger": {
-            "source": "standing-measurement.json",
-            "metric": "original body passage or two-sided sight geometry",
-            "failure_condition": "primary original measurement misses the requested physical contrast"
-          },
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/view_occluded_both/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "construction_sha256": "e32e1afa7025092322726a4a7495c0b687ef617467659a48df24f883b23b915e",
-            "log": "cases/view_occluded_both/fallback1-offline.log",
-            "log_sha256": "5ad889f5df2da721ced15fc0efa40886b6fab3166d204e64eb86a923ff1c4f01",
-            "runtime_offline_log_sha256": "c2055b04473bbca6c11a932b52d8ed7d8c35dc4a5ccc54cc747db9412e51f9e5"
-          },
-          "compatibility": {
-            "receipt": "cases/view_occluded_both/fallback1-compatibility.json",
-            "sha256": "4ccb1932e304e70fbf5ce1e792d7d2ef876c98ac6f0e303255b5de4a0dbe1756",
-            "log": "cases/view_occluded_both/fallback1-compat-analysis.log",
-            "negative_log": "cases/view_occluded_both/fallback1-compat-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/view_occluded_both/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "cases/view_occluded_both/fallback1-compat-command.log",
-            "command_log_sha256": "4ccb1932e304e70fbf5ce1e792d7d2ef876c98ac6f0e303255b5de4a0dbe1756"
-          }
-        }
-      ],
-      "measurement_contract": "cases/view_occluded_both/measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
       "acquisition": {
-        "standing_body_xy_m": {
+        "mechanical_failure_attempt": {
           "entrypoint": "native_capture.py",
-          "evidence": "standing-body-history.jsonl body_vertices_xy_m",
-          "method": "original actor body each world tick"
+          "evidence": "mechanical-attempt-history.jsonl physics disable and brake request",
+          "method": "original worker mechanism command joined to standing actor each world tick"
         },
         "other_vehicle_body_xy_m": {
           "entrypoint": "native_capture.py",
           "evidence": "passing-body-history.jsonl body_vertices_xy_m",
           "method": "original westbound actor body each world tick"
         },
+        "standing_body_xy_m": {
+          "entrypoint": "native_capture.py",
+          "evidence": "standing-body-history.jsonl body_vertices_xy_m",
+          "method": "original actor body each world tick"
+        },
         "two_sided_200ft_sight": {
           "entrypoint": "native_capture.py",
           "evidence": "approach.mkv and reference_corner.mkv plus occluder-body-history.jsonl",
           "method": "two original 60.96 m cameras and actual prop bodies each world tick"
-        },
-        "mechanical_failure_attempt": {
-          "entrypoint": "native_capture.py",
-          "evidence": "mechanical-attempt-history.jsonl physics disable and brake request",
-          "method": "original worker mechanism command joined to standing actor each world tick"
         }
       },
-      "proof_status": "offline_compatibility_delivery_audit_cpu_passed_physical_review_pending",
-      "fixture_recipe": "work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/cases/view_occluded_both/fixture-recipe.json",
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/view_occluded_both/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "531773f60386a2bbabe54c2d54d17b5bc5765c4044808e27970307d586858b91",
-        "log": "cases/view_occluded_both/primary-offline.log",
-        "log_sha256": "ab3961ce36866f631834566db1d76a4adff2c1015b615ec9a29dcf594f6a61aa",
-        "runtime_offline_log_sha256": "c2055b04473bbca6c11a932b52d8ed7d8c35dc4a5ccc54cc747db9412e51f9e5"
+      "candidate_risk": {
+        "reason": "Authored occluders may not block camera sight lines in live CARLA",
+        "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "two occluder lateral positions"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/view_occluded_both/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "cases/view_occluded_both/fallback1-compat-command.log",
+            "command_log_sha256": "4ccb1932e304e70fbf5ce1e792d7d2ef876c98ac6f0e303255b5de4a0dbe1756",
+            "exit_code": 0,
+            "log": "cases/view_occluded_both/fallback1-compat-analysis.log",
+            "negative_log": "cases/view_occluded_both/fallback1-compat-negative.log",
+            "receipt": "cases/view_occluded_both/fallback1-compatibility.json",
+            "sha256": "4ccb1932e304e70fbf5ce1e792d7d2ef876c98ac6f0e303255b5de4a0dbe1756"
+          },
+          "construction": "cases/view_occluded_both/fallback1-construction.json",
+          "construction_sha256": "e32e1afa7025092322726a4a7495c0b687ef617467659a48df24f883b23b915e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/view_occluded_both/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "e32e1afa7025092322726a4a7495c0b687ef617467659a48df24f883b23b915e",
+            "exit_code": 0,
+            "log": "cases/view_occluded_both/fallback1-offline.log",
+            "log_sha256": "5ad889f5df2da721ced15fc0efa40886b6fab3166d204e64eb86a923ff1c4f01",
+            "runtime_offline_log_sha256": "c2055b04473bbca6c11a932b52d8ed7d8c35dc4a5ccc54cc747db9412e51f9e5"
+          },
+          "trigger": {
+            "failure_condition": "primary original measurement misses the requested physical contrast",
+            "metric": "original body passage or two-sided sight geometry",
+            "source": "standing-measurement.json"
+          }
+        }
+      ],
+      "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both",
       "compatibility": {
-        "receipt": "cases/view_occluded_both/primary-compatibility.json",
-        "sha256": "ed5975fa232c576e0ade5f397318f8762fca9f0aadf9857239f7b5fc63b3cefd",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/c135705-compat-refresh/case2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "cases/view_occluded_both/primary-compat-command.log",
+        "command_log_sha256": "d5fbbdfaaa7cb194db02623766e3842f8a6f421e71f05000587cb376135afe31",
+        "exit_code": 0,
         "log": "cases/view_occluded_both/primary-compat-analysis.log",
         "negative_log": "cases/view_occluded_both/primary-compat-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-compat-yQ0cUj/view_occluded_both/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "cases/view_occluded_both/primary-compat-command.log",
-        "command_log_sha256": "ed5975fa232c576e0ade5f397318f8762fca9f0aadf9857239f7b5fc63b3cefd"
+        "receipt": "cases/view_occluded_both/primary-compatibility.json",
+        "sha256": "d5fbbdfaaa7cb194db02623766e3842f8a6f421e71f05000587cb376135afe31"
       },
-      "negative": {
-        "log": "cases/view_occluded_both/primary-compat-negative.log",
-        "sha256": "5f217cb1ce8bc8120b3ac42431f18674683df32aea75121222839316beea1245"
-      },
-      "physical_preparation": {
-        "receipt": "cases/view_occluded_both/physical-preparation.json",
-        "sha256": "24695b1d884b12383e23bc29b53edbb8f42043fd028ac595e92ada5617807c80"
-      },
+      "construction": "cases/view_occluded_both/construction.json",
+      "construction_sha256": "531773f60386a2bbabe54c2d54d17b5bc5765c4044808e27970307d586858b91",
       "delivery_acceptance": {
         "case_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -405,18 +372,44 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "b541c3a3d69ffd6adf023b470b9779c3e990c42db3ab7a1367b9f79605981129",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/delivery_probe.py --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/view_occluded_both-positive",
-        "test_exit_code": 0,
-        "test_log": "cases/view_occluded_both/delivery-positive.log",
-        "test_log_sha256": "0290700fbf078b56130d74eb7921e956139264ef628eb1ae90e11f0e6cd2efda",
         "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/delivery_probe.py --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/view_occluded_both-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "missing or stale original source: standing-body-history.jsonl",
         "negative_log": "cases/view_occluded_both/delivery-negative.log",
         "negative_log_sha256": "68fd9d33533181889ec759000273e7058c989062c6b8e9ce483d867da02c1cad",
-        "scope": "synthetic source-bound CPU audit with full-decoded camera fixtures; live CARLA visibility and physical acceptance remain unverified"
+        "scope": "synthetic source-bound CPU audit with full-decoded camera fixtures; live CARLA visibility and physical acceptance remain unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "b541c3a3d69ffd6adf023b470b9779c3e990c42db3ab7a1367b9f79605981129",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/view_occluded_both/delivery-positive.log",
+        "test_log_sha256": "0290700fbf078b56130d74eb7921e956139264ef628eb1ae90e11f0e6cd2efda"
+      },
+      "fixture_recipe": "work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/cases/view_occluded_both/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/view_occluded_both/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/view_occluded_both/primary-compat-negative.log",
+        "sha256": "5f217cb1ce8bc8120b3ac42431f18674683df32aea75121222839316beea1245"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-offline-OPcQBc/view_occluded_both/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "531773f60386a2bbabe54c2d54d17b5bc5765c4044808e27970307d586858b91",
+        "exit_code": 0,
+        "log": "cases/view_occluded_both/primary-offline.log",
+        "log_sha256": "ab3961ce36866f631834566db1d76a4adff2c1015b615ec9a29dcf594f6a61aa",
+        "runtime_offline_log_sha256": "c2055b04473bbca6c11a932b52d8ed7d8c35dc4a5ccc54cc747db9412e51f9e5"
       },
       "offline_negative": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/prove_offline_negative.py",
@@ -424,6 +417,10 @@
         "log": "cases/view_occluded_both/negative-offline.log",
         "log_sha256": "44c23b18c7a3cff5a06115c3eb76be0d2a2a046ec0285843083ed8589f5e0332",
         "nonzero_exit_verified": true
+      },
+      "physical_preparation": {
+        "receipt": "cases/view_occluded_both/physical-preparation.json",
+        "sha256": "24695b1d884b12383e23bc29b53edbb8f42043fd028ac595e92ada5617807c80"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case testing__C135705__NRS-484B-440-1__motor_vehicle_driver__view_occluded_both --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
@@ -433,26 +430,29 @@
         "test_log": "cases/view_occluded_both/saved-processing-proof.log",
         "test_log_sha256": "c2a3e126015f9b4cc3d0ea0cde8a3c54dfcbcd7f51ae348f00884da42111ca99",
         "test_scope": "Pinned process-saved executed on current exact-case diagnostic original-source package, including converter, Lean, renderer and full media decode; physical and legal acceptance unclaimed."
-      }
+      },
+      "proof_status": "offline_compatibility_delivery_audit_cpu_passed_physical_review_pending"
     }
   ],
   "comparison_audit_commands": [
     {
       "assignment_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver",
-      "comparison_id": "passage_width_with_fixed_view",
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/comparison_audit.py passage_width_with_fixed_view /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_clear_view-positive /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_blocked-positive --diagnostic-test",
+      "comparison_id": "passage_width_with_fixed_view",
+      "test_exit_code": 0,
       "test_log": "comparison-width-proof.log",
-      "test_log_sha256": "5fe986d0ac535cbe9b899e7e247946538d4274d01db0554a9fbf767b36bba7be",
-      "test_exit_code": 0
+      "test_log_sha256": "5fe986d0ac535cbe9b899e7e247946538d4274d01db0554a9fbf767b36bba7be"
     },
     {
       "assignment_id": "testing__C135705__NRS-484B-440-1__motor_vehicle_driver",
-      "comparison_id": "two_sided_visibility_with_fixed_passage",
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/comparison_audit.py two_sided_visibility_with_fixed_passage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/passage_clear_view-positive /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c135705-delivery-probe-Z5HVcN/view_occluded_both-positive --diagnostic-test",
+      "comparison_id": "two_sided_visibility_with_fixed_passage",
+      "test_exit_code": 0,
       "test_log": "comparison-sight-proof.log",
-      "test_log_sha256": "c2bfac957b3aeaedcb1fc187e45269bd3d41398ace397d2d791c9ccf8d23dd07",
-      "test_exit_code": 0
+      "test_log_sha256": "c2bfac957b3aeaedcb1fc187e45269bd3d41398ace397d2d791c9ccf8d23dd07"
     }
   ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "status": "cpu_audits_passed_live_physical_review_pending"
 }

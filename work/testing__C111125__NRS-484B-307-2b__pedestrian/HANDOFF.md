@@ -110,3 +110,23 @@ This diagnostic audit is not a canonical delivery acceptance receipt. The CPU co
 ## Original device entry transition, 2026-11-24
 
 `native_crossing.measure` now retains source-measured before/at-highway-entry frame identity, other-device mode and indication, green-alone state and entry crosswalk membership in `entry_transition`; a no-entry history returns null. This is a frame-fact join for the NRS 484B.283 referenced alternatives, without a legal permission or physical acceptance verdict. Two focused tests exercise a flashing-countdown to steady change and the no-entry path. The complete assignment suite passes 30 tests; pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. Log hashes are in `result.json`. Next CPU construction remains reviewed site/device applicability, full statutory alternative expansion, canonical semantic proposals, execution manifest and saved delivery audit.
+
+## Saved device alternative timeline continuation, 2026-11-24
+
+`device_timeline.py` now reopens the sealed site and original events through `native_crossing.measure`, then reports the first highway entry mode, clearance frame, first flashing-countdown zero and first steady frame. It checks contiguous original frame identities, valid modes and countdowns, and rejects multiple highway entry intervals. It distinguishes observed clearance before countdown zero or steady indication without claiming NRS 484B.283 device applicability, lawful entry, physical acceptance or a legal verdict. The new CLI is a saved-only CPU observation; integration with canonical delivery and full alternative case expansion are still required.
+
+Three focused tests exercise flashing countdown, WALK-to-steady continuation, no-entry, frame gaps, invalid countdown and reentry. The complete suite passes 33 tests. Pinned preflight, five exact diagnostic offline bundles and scoped static pass; exact scoped strict exits 1 on truthful `partial`. Those existing diagnostic bundles do not yet embed the new timeline module. The next CPU step is to bind this observation to source-reviewed device applicability and exact case alternatives before canonical semantic and delivery proposals.
+
+SHA-256 source and proof index:
+
+- `device_timeline.py`: `b867f448dc9327f34dfeed9940c5d8dff0e365cecd9d47d6b5e51745a2502500`
+- `tests/test_device_timeline.py`: `f89a4101c3ad9ba104947a73bbb753ab17ccec5b94128f114e31c4e8ea922df9`
+- `cpu-device-timeline-tests.log`: `e1195305e05005ed6c0b32dfc42ef000b61e0dd866abf2fc6738f9bf46362752`
+- `cpu-device-timeline-preflight.log`: `43e15967d66931c46eb9a2cc15d7afb980c7b13fef356615b7d6c38e168cf1e5`
+- `cpu-device-timeline-offline-marked_cross.log`: `d551abe4df49a4f852a860fc4fc32927757bf32507f0b36184403ad9543d0255`
+- `cpu-device-timeline-offline-unmarked_cross.log`: `edabb2aa189f3425dc900b75edf89371133ce8d2029ae9c98d664e57ed3ccc2e`
+- `cpu-device-timeline-offline-other_device_stop.log`: `59d3830adfebc253067685507af45ba48b1db83211a99b7add6499b92d353eab`
+- `cpu-device-timeline-offline-other_device_cross.log`: `634090b8c5c871da8bd68d6b189175354cf6e903651f51abb8dc105847b831c2`
+- `cpu-device-timeline-offline-outside_cross.log`: `94e1d4346e90fc537263762d79ccd3b5a726932d7b51ecedea0fb1c1c96ed758`
+- `cpu-device-timeline-static.log`: `2bb5e878a32673b6ed56fa67c0b3fe2f1495c1c375de7720970a62222e2fd721`
+- `cpu-device-timeline-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`

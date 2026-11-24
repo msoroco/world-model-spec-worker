@@ -37,6 +37,10 @@ class OriginalInstrumentLog:
                 raise ValueError("Original instrument sample case mismatch")
             if row.get("source_type") != source_type or row.get("source_citation") != source_citation:
                 raise ValueError("Original instrument sample source mismatch")
+            if any(type(row.get(key)) is not bool for key in ("siren_active", "warning_lamp_active")):
+                raise ValueError("Original instrument device state missing")
+            if any(key in row for key in ("siren_commanded", "warning_lamp_commanded")):
+                raise ValueError("Original instrument contains command echo fields")
             rows.append(row)
         frames = [row.get("native_frame") for row in rows]
         if any(type(frame) is not int for frame in frames) or any(

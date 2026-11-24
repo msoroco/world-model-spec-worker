@@ -21,6 +21,7 @@ green = importlib.import_module("dual_green")
 compare = module("comparison_audit")
 native = module("native_attempt")
 saved = module("saved_attempt")
+finalizer = module("saved_finalizer")
 cameras = module("camera_audit")
 
 
@@ -255,6 +256,33 @@ class DualGreenTests(unittest.TestCase):
         attempt, case_id, _ = self.native_fixture(with_cameras=True)
         with self.assertRaisesRegex(green.EvidenceError, "camera duration mismatch"):
             saved.measure_delivery(self.site, self.root, attempt, case_id)
+
+    def test_diagnostic_finalizer_retains_exact_source_hashes(self):
+        attempt, case_id, receipt = self.native_fixture(with_cameras=True)
+        site_path = self.root / "site.json"
+        site_path.write_text(json.dumps(self.site))
+        output = self.root / "observation.json"
+        report = finalizer.finalize(site_path, self.root, attempt, case_id, output,
+                                    diagnostic=True)
+        self.assertTrue(report["diagnostic_only"])
+        self.assertEqual(report["event_sha256"], receipt["event_source"]["sha256"])
+        self.assertEqual(report["site_sha256"], hashlib.sha256(site_path.read_bytes()).hexdigest())
+        self.assertFalse(report["physical_acceptance_claimed"])
+        self.assertIsNone(report["permission_verdict"])
+        self.assertEqual(json.loads(output.read_text()), report)
+
+    def test_finalizer_rejects_short_production_and_missing_original(self):
+        attempt, case_id, _ = self.native_fixture(with_cameras=True)
+        site_path = self.root / "site.json"
+        site_path.write_text(json.dumps(self.site))
+        output = self.root / "observation.json"
+        with self.assertRaisesRegex(green.EvidenceError, "camera duration mismatch"):
+            finalizer.finalize(site_path, self.root, attempt, case_id, output)
+        self.assertFalse(output.exists())
+        (attempt / "original-events.json").unlink()
+        with self.assertRaisesRegex(green.EvidenceError, "missing or escaping"):
+            finalizer.finalize(site_path, self.root, attempt, case_id, output,
+                               diagnostic=True)
 
     def test_native_attempt_and_saved_source_join(self):
         attempt, case_id, receipt = self.native_fixture(other=True)

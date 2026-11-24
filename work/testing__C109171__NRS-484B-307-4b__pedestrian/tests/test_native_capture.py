@@ -132,6 +132,16 @@ class NativeCaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(SourceError, 'camera source hash mismatch'):
             audit_frame_map(self.root, result['frame_map_ref'], result['events_ref'], 4)
 
+    def test_rehashed_camera_frame_source_swap_rejected(self):
+        result = self.run_case('arrow_wait', False, False)
+        map_path = self.root / result['frame_map_ref']['path']
+        mapping = json.loads(map_path.read_text())
+        mapping[1]['cameras']['overview'] = mapping[0]['cameras']['overview'].copy()
+        map_path.write_text(json.dumps(mapping))
+        result['frame_map_ref']['sha256'] = hashlib.sha256(map_path.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(SourceError, 'camera source frame/channel path differs'):
+            audit_frame_map(self.root, result['frame_map_ref'], result['events_ref'], 4)
+
     def test_saved_process_joins_entry_and_all_original_cameras_once(self):
         captured = self.run_case('arrow_walk_entry', True, True)
         output = self.root / 'processed' / 'receipt.json'

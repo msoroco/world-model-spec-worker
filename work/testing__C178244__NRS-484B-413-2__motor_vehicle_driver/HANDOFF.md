@@ -24,3 +24,18 @@ For a comparison add `--compare OTHER_PACKET.json`. The source files must come f
 - `.venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict-check.log`, because the truthful result remains partial.
 
 Next CPU work: resolve the selected right-turn/cell mismatch through source-backed lead binding review; construct a valid right-turn exact-case package on a compatible frozen cell, including original-source capture, semantic proposals, execution manifest, exact offline and positive/negative compatibility receipts, saved-only finalization, delivery audit, and comparison audit. For the six historical left-turn members, source-review actual sealed traces if supplied; do not infer their distance or coverage from metadata. Remaining physical checks after a complete CPU package are actual motion, signal visibility, district frontage, four-camera coverage, and full-duration video decode.
+
+## 2026-11-24 original frame-map join checkpoint
+
+The source-bound signal measurement now decodes the sealed original frame-map file and requires every frame ID and elapsed time to equal the corresponding measured signal/position sample. A recomputed frame-map digest cannot hide an altered time row. Both 100-foot and 300-foot physical boundary probes remain in the focused suite; the selected business right-turn/cell mismatch and incomplete delivery package remain unresolved CPU work.
+
+### Receipts
+
+- `cpu-frame-map-join-tests.log` exit 0, SHA256 `94ee1d847b701c4e11a4ee957d522df9a553037d1d1c1486cc226d6579ff3ffd`
+- `cpu-frame-map-join-preflight.log` exit 0, SHA256 `74bc4630e0b05dc75d95d65c41b53f9f77312576d1bd2c0275026da5f3a660b6`
+- `cpu-frame-map-join-static.log` exit 0, SHA256 `f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec`
+- `cpu-frame-map-join-strict.log` exit 1, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+- `signal_distance.py` SHA256 `1c9152dd0d1bd8513fb980c25dd88e86248672faa2696919f247ae6da9015048`
+- `tests/test_signal_distance.py` SHA256 `598155976e9aa64ece55fade2c9d93dc4bbdc3705bc1492739790c93e6d22a71`
+
+Seventeen focused tests, pinned preflight and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: source-backed exact right-turn construction and full canonical compatibility/delivery proof, preserving the frozen left-turn cell and accepted metadata.

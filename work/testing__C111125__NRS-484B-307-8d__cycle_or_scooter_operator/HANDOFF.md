@@ -64,3 +64,30 @@ Next CPU work: bind reviewed C111125 original map/device/detector and bicycle-wi
 
 This closes a saved diagnostic integrity gap, not original Native provenance. Source-backed map/device/detector and rider, canonical semantic/delivery manifest, compatibility, runtime saved processing and physical review remain incomplete.
 Scoped static `assignment-check.log` exit 0 SHA256 4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035; exact scoped strict `strict-gate.log` exit 1 on truthful partial SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.
+
+## 2026-11-24 detector occupancy through completed cycles checkpoint
+
+`signal_trial.py` now identifies the observed first green onset through last completed red return and requires the bicycle detector zone to be occupied and its output absent throughout that window before reporting a failed detector output. Previously, one late occupied detector frame after two cross-signal rotations could satisfy the failure flag. The source-measured result now includes `detector_occupied_through_completed_cycles` and exact window frame endpoints. It still cannot establish detector-to-signal causal authority or malfunction from these observations alone.
+
+A new negative test creates exactly that late-occupancy trace; it retains two complete cross-signal cycles but correctly reports no failed detection. All five exact diagnostic bundles were rebuilt with the corrected measurement code. The 23-test suite, pinned preflight, five exact offline cases and scoped static passed. Exact scoped strict exited 1 on truthful `partial`. Remaining CPU work includes a source-reviewed Native map/device/detector/rider packet, actual policy readback, canonical semantic proposals/manifest, compatibility/process-saved and independent delivery/comparison receipts.
+
+SHA-256 source and proof index:
+
+- `signal_trial.py`: `a6e791c5896873cc7ff87a013b73890e6d5ed24b1529adcc7ff8c32b8f0e229d`
+- `tests/test_signal_trial.py`: `5e99867acabdd5ebd273dfb02752a935ace14847d88a9e185851c047280c57aa`
+- `execution-manifest.draft.json`: `8fe21639b08de3a5c40b084a88009d31a70d33503bfa9055c1794b1da651c4d2`
+- `construction-two_cycles_failed_detection.json`: `ae28fa6df1751a1abd7400798e8d147ffd487dfbfc537a9ec62a7fd97dd58097`
+- `construction-one_cycle.json`: `57028975c660723a0494802610e2c5fba3de4bf9a9714c903ce0bfd4f6dcdaea`
+- `construction-signal_changes.json`: `0929e07b5449ec53310e8bfddeeaa64310090c25cef15443018a8cbd39b9c8b8`
+- `construction-no_prior_stop.json`: `24b6468ea2964d7cbd9509f8df48e893237188a6e476a6b8208d54ecedbabfca`
+- `construction-fails_to_yield.json`: `8df709453f43543e6f348101e2f3bc3a3d34fe30b58d9d95862bc625c05c2fdf`
+- `cpu-cycle-window-build.log`: `94ce843ee12d63a82e1163f9418895ef53b49e1893eb1741034e4b09918373cd`
+- `cpu-cycle-window-tests.log`: `fbe12784ee06eb5b3fa3395735fbebc09aec76548b0073657350099b6be76166`
+- `cpu-cycle-window-preflight.log`: `03859ffbc9b71026853ac886700245b85fe6f3c369fe22c424ceb8a42ef8b6f7`
+- `cpu-cycle-window-offline-two_cycles_failed_detection.log`: `6eba6afe6488b878361ad972ba1033d6723dbc567521dd60eca421028ec5fd32`
+- `cpu-cycle-window-offline-one_cycle.log`: `564f4388dad1b34d89668014e31ea3d23529aace2e16513da93d271b2b71fc02`
+- `cpu-cycle-window-offline-signal_changes.log`: `73042784344daede268474d8bc0b04d80cc5b1a9d09f243dce1815d2f7782a06`
+- `cpu-cycle-window-offline-no_prior_stop.log`: `7b9ba43f9c68d9d069332f2d5ce930e105c3cf6a29511511c3a272435446ef3c`
+- `cpu-cycle-window-offline-fails_to_yield.log`: `8f457ef914694165adb4c34e3268bf21cb8566cf81499625eef6dbe1a1753bcb`
+- `cpu-cycle-window-static.log`: `4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035`
+- `cpu-cycle-window-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`

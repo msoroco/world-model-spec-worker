@@ -3,7 +3,7 @@
   "assignment_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver",
   "input_sha256": "5db7490601e22077bdcad893de3708e9b20876fd98d4f20441bd67e7bd172dce",
   "readiness_kind": "partial_native_saved_finalizer_semantic_proposals",
-  "reason": "Reviewed-source Native adapter now checks exact case/law, live OpenDRIVE hash and SHA-bound original highway, center-reference and opposing-lane or one-way authority documents before delegating Native capture. A three-frame diagnostic integration test passes. Forty-nine tests, preflight and scoped static pass; strict remains partial pending real reviewed sources, full CARLA delegate, canonical bundles, compatibility, saved-only and delivery receipts.",
+  "reason": "Reviewed-source Native adapter now requires each SHA-bound original document to name the exact case/map and assert its highway, center-reference, opposing-direction or one-way authority fact before the delegate starts. Rehashed contradictory and foreign-case documents reject. Fifty-one focused tests, pinned preflight and scoped static pass; strict remains partial pending real reviewed sources, full CARLA delegate, canonical bundles, compatibility, saved-only and delivery receipts.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -115,6 +115,30 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-source-adapter-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-source-facts-tests.log",
+      "sha256": "b08bbc7061d604217bbf0d267fe87da5979b61daf36984f8b85bb067e1f67e9f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-source-facts-preflight.log",
+      "sha256": "39ad79b4a266eb4a5dfcc6486ed461015d72ec7ca3e0695318eac0b76b9145f6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-source-facts-static.log",
+      "sha256": "f7103607cf441b4b4422aedc645f5c195966afff4737211c9e74cf1887c18534"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-source-facts-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ]

@@ -6,6 +6,7 @@ converts original callback BGRA bytes into lossless PNGs and joins frame IDs.
 from __future__ import annotations
 
 import io
+import math
 import threading
 import time
 
@@ -51,6 +52,9 @@ class NativeCameraAdapter:
         del actor
         frame = snapshot.frame
         _require(isinstance(frame, int), "Native snapshot frame required")
+        snapshot_time = getattr(getattr(snapshot, "timestamp", None), "elapsed_seconds", None)
+        _require(type(snapshot_time) in (int, float) and math.isfinite(snapshot_time),
+                 "Native snapshot timestamp required")
         deadline = time.monotonic() + self.timeout_s
         with self.condition:
             _require(not self.closed and
@@ -63,6 +67,10 @@ class NativeCameraAdapter:
             images = {key: self.pending[key][frame] for key in CAMERAS}
         result = {}
         for key, image in images.items():
+            image_time = getattr(image, "timestamp", None)
+            _require(type(image_time) in (int, float) and math.isfinite(image_time) and
+                     abs(image_time - snapshot_time) <= 0.001,
+                     "Native camera timestamp differs: " + key)
             width, height = CAMERAS[key]
             _require((image.width, image.height) == (width, height),
                      "Native callback dimensions differ: " + key)

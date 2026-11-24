@@ -125,6 +125,9 @@ def audit_frame_map(attempt, frame_map_ref, events_ref, expected_frames=DEFAULT_
         _require(set(mapped['cameras']) == set(CAMERAS), 'camera missing from frame map')
         for name in CAMERAS:
             ref = mapped['cameras'][name]
+            expected_path = f'camera_png/{frame:04d}_{name}.png'
+            _require(ref.get('path') == expected_path,
+                     'camera source frame/channel path differs')
             path = (attempt / ref['path']).resolve()
             _require(path.is_relative_to(attempt) and path.is_file(), 'camera source missing')
             raw = path.read_bytes()

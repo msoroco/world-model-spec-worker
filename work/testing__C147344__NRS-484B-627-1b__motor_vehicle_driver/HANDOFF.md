@@ -40,3 +40,15 @@ The conditional law requires source-backed slow operation impeding traffic immed
 Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because the package remains partial. Command bindings are in `result.json`.
 
 Next CPU work: implement CARLA construction/controller for the four cases, source-bound finalizer and human-review evidence packet for actual impediment and passing necessity, run exact offline and positive/negative compatibility, and add independent saved delivery and comparison audits. Physical motion and camera quality remain later CARLA checks.
+
+## 2026-11-24 immediate-follower source join checkpoint
+
+The earlier measurement inferred "immediately behind" from shared lane identity. `right_lane_measurement.py` now keeps same-lane and original immediate-follower readback separate and rejects a claimed immediate follower in another lane. `finalize_follower.py` independently SHA-verifies 900-frame motion and relation packets, joins each frame/time/actor ID, refuses inline unsealed relation flags, and passes the joined observation to the measurement. Same-lane with an intervening vehicle remains false. The relation packet still needs a reviewed original ordering source; a fixture string does not prove legal impediment or passing necessity.
+
+Pinned suite passes 11 tests; preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. New SHA256 receipts:
+- `cpu-follower-join-tests.log`: `d71dd74a07651a91d0312e21f61d0d7ffd499695a26337e99e1b01654e2a9ce0`
+- `cpu-follower-join-preflight.log`: `c34f8b66e61c985c8f033ab721445111999c2caf2f7cc8fd03c8fb7e11ad063d`
+- `cpu-follower-join-static.log`: `edc0436fde98171827bcdac9065e8b83b908253d8cfd8d52fd6007bc7cf39a44`
+- `cpu-follower-join-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+Next CPU work: source-bind actual highway and marked-lane geometry, following traffic and slower vehicle; implement four exact scene/controllers and cameras, semantic proposals, positive/negative compatibility and independent comparison/delivery acceptance.

@@ -2,78 +2,36 @@
   "assignment_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver",
   "input_sha256": "d0b28463b250a5ea0a6980c21da20a27580aa54714fc8dfac70b67fee6fd0e9f",
   "status": "partial",
-  "readiness_kind": "source_gated_original_event_acquisition_in_progress",
+  "readiness_kind": "original_four_camera_lossless_recorder_cpu_draft",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-delivery-tests.log",
-      "sha256": "6d4ed331e47170de17c42b85355276404c9ded0a973d4e569c45ea6c6f76fcf6"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-static-check.log",
-      "sha256": "48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-acquisition-tests.log",
-      "sha256": "2b6e5f208565224b63a526d676c5f4873900d105dca5cea2513c9bee9f879878"
+      "log": "cpu-recorder-tests.log",
+      "sha256": "5b5e9ec91c9b65f8ea5b99316902ad3c80c298112bb7601a45434a2e4ee41630"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "cpu-acquisition-preflight.log",
-      "sha256": "6b37e7682bc56e77ffbc34968f3aaa9936a667915df90cc908458501333b5df6"
+      "log": "cpu-recorder-preflight.log",
+      "sha256": "cac705a2fd913031abca5a004ae61ac7a6cfbe835828722d7c494045ae927b66"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete",
       "exit_code": 0,
-      "log": "cpu-acquisition-static.log",
+      "log": "cpu-recorder-static.log",
       "sha256": "48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
-      "log": "cpu-acquisition-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-camera-join-tests.log",
-      "sha256": "a6e53f2b8ce140c31be250a7b13cc78895dedaee8dbc4ff6712fc76f838dffe2"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-camera-join-preflight.log",
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-camera-join-static.log",
-      "sha256": "48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-camera-join-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "log": "cpu-recorder-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Original Native 900-tick capture now optionally joins all four original camera callback frame IDs to each snapshot and publishes a source-hashed frame map; stale or missing callbacks fail closed before event/receipt publication. 21 CPU tests, pinned preflight, and scoped static pass. CPU package remains incomplete: exact runner/config/construction/manifest, source-bound media acquisition, selected-requirement finalizer and diagnostics, canonical semantic proposals, offline and compatibility proofs, and canonical saved processor. Scoped strict rejects truthful partial status."
+  "reason": "CARLA-lazy four-camera callback recorder now checks original Native frame identity and production dimensions, saves ordered PNGs, encodes lossless 20 Hz FFV1 videos, and seals each output hash. Twenty-three focused tests, pinned preflight and scoped static pass; no exact offline bundle/manifest exists yet. Owner runner wiring, source-reviewed site/profile, selected-requirement finalizer and diagnostic recipes, semantic proposals, compatibility/process-saved and independent delivery/comparison receipts remain CPU work. Exact scoped strict rejects truthful partial."
 }

@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver",
   "input_sha256": "8e3606471525b5f206c97bd40bd7ad7cede67b27554dfe39c51f395b6f07baed",
-  "readiness_kind": "exact_cases_native_source_gates_saved_measurement_and_comparison_audit",
-  "reason": "Seven exact cases and five comparisons remain partial. A saved delivery join now combines source-sealed 600-frame actor measurements with independently decoded 2,400 original camera PNGs and rejects resealed actor/camera Native clock divergence; 31 focused tests and pinned preflight pass. Retained sample is a fake-adapter diagnostic only. Original site/CARLA provenance, seven inline bundles/manifest, offline and compatibility receipts, semantic proposals and physical pixel review remain unfinished.",
+  "readiness_kind": "original_carla_adapter_and_saved_delivery_in_progress",
+  "reason": "Seven exact cases and five comparisons remain partial. Lazy CARLA-facing adapter now reads synchronous original world tick/snapshot, distinct actor poses/brake and four exact-frame sensor PNGs into the 600-frame capture writer; a complete fake-world capture feeds saved actor/camera join. 33 focused tests, pinned preflight and scoped static pass. Original reviewed site and production controller/sensors, canonical bundles/manifest, semantic proposals, offline/compatibility and independent delivery/comparison acceptance remain unfinished; physical realization and pixels require local GPU review.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -74,6 +74,30 @@
       "exit_code": 1,
       "log": "check-delivery-join-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-carla-adapter-tests.log",
+      "sha256": "4e00dd25ac2201d5d9466ee368d5ed46a17cf8c6dc7c556f6a24b017062cacea"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-carla-adapter-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-carla-adapter-static.log",
+      "sha256": "e5747523924cafcfcb63f346271e3ef25d46c51d37527c8af4b11f5026889978"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-carla-adapter-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]
 }

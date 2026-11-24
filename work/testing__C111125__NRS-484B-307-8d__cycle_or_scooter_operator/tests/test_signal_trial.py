@@ -109,6 +109,18 @@ class SignalTrialTests(unittest.TestCase):
                 self.assertEqual((result["complete_device_cycles_before_entry"], result["prior_stop_observed"],
                                   result["detector_failure_observed"], result["conflict_at_entry"]), expected)
 
+    def test_late_detector_occupancy_cannot_count_as_failed_detection(self):
+        plan = mod.construct_plan(self.site, self.root, "two_cycles_failed_detection")
+        frames = self.frames()
+        for row in frames[:-3]:
+            row["detector_occupied"] = False
+        measured = mod.measure_attempt(self.packet(plan["case_suffix"], frames), self.root, plan)
+        self.assertEqual(measured["complete_device_cycles_before_entry"], 2)
+        self.assertTrue(measured["detector_occupancy_observed"])
+        self.assertFalse(measured["detector_occupied_through_completed_cycles"])
+        self.assertFalse(measured["detector_failure_observed"])
+        self.assertEqual(measured["completed_cycle_window_frames"], [1, 6])
+
     def test_native_spawn_readback_policy_and_cleanup(self):
         class Actor:
             id = 17

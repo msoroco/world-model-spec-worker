@@ -135,6 +135,17 @@ def _complete_cycles(states: list[str]) -> int:
     return count
 
 
+def _cycle_window(states: list[str]) -> tuple[int, int] | None:
+    """First observed green onset through the last completed red return."""
+    transitions = [(i, state) for i, state in enumerate(states)
+                   if i == 0 or state != states[i - 1]]
+    completed = []
+    for i in range(len(transitions) - 2):
+        if [item[1] for item in transitions[i:i + 3]] == ["green", "yellow", "red"]:
+            completed.append((transitions[i][0], transitions[i + 2][0]))
+    return (completed[0][0], completed[-1][1]) if completed else None
+
+
 def measure_attempt(packet: dict, root: Path, plan: dict) -> dict:
     """Measure original 20 Hz readbacks; preserve uncertainty for later review."""
     sources = {}
@@ -175,8 +186,13 @@ def measure_attempt(packet: dict, root: Path, plan: dict) -> dict:
     stop = any(f["ego_station_m"] < plan["stop_boundary_station_m"] and f["ego_speed_mps"] <= 0.05 for f in prior)
     held_red = all(f["subject_signal"] == "red" for f in frames[:entry + 1])
     occupied = any(f["detector_occupied"] is True for f in prior)
-    failed_output = occupied and all(f["detector_output"] is False for f in prior if f["detector_occupied"] is True)
     cycles = _complete_cycles([f["cross_signal"] for f in prior])
+    cycle_window = _cycle_window([f["cross_signal"] for f in prior])
+    occupied_through_cycles = (cycle_window is not None and
+                               all(f["detector_occupied"] is True
+                                   for f in prior[cycle_window[0]:cycle_window[1] + 1]))
+    failed_output = occupied_through_cycles and all(
+        f["detector_output"] is False for f in prior[cycle_window[0]:cycle_window[1] + 1])
     conflict_at_entry = frames[entry]["directed_participant_conflict"] is True
     return {
         "case_suffix": plan["case_suffix"],
@@ -186,6 +202,9 @@ def measure_attempt(packet: dict, root: Path, plan: dict) -> dict:
         "duration_frames": len(frames), "entry_frame": frames[entry]["frame"],
         "prior_stop_observed": stop, "red_held_to_entry": held_red,
         "detector_occupancy_observed": occupied, "detector_failure_observed": failed_output,
+        "detector_occupied_through_completed_cycles": occupied_through_cycles,
+        "completed_cycle_window_frames": None if cycle_window is None else
+            [prior[cycle_window[0]]["frame"], prior[cycle_window[1]]["frame"]],
         "complete_device_cycles_before_entry": cycles,
         "conflict_at_entry": conflict_at_entry,
         "straight_route_observed": True,

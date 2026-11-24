@@ -128,6 +128,21 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'graph source hash differs'):
                 project_core_packet(attempt, root / 'tampered-core-packet')
             self.assertFalse((root / 'tampered-core-packet').exists())
+            graph = json.loads(original.read_bytes())
+            graph['nodes'][0]['attributes']['actor_id'] = 8
+            changed = json.dumps(graph, separators=(',', ':')).encode()
+            original.write_bytes(changed)
+            inventory_path = attempt / 'graph-frames.jsonl'
+            inventory = [json.loads(line) for line in inventory_path.read_text().splitlines()]
+            inventory[0]['sha256'] = hashlib.sha256(changed).hexdigest()
+            inventory_path.write_text(''.join(json.dumps(row) + '\n' for row in inventory))
+            acquisition_path = attempt / 'acquisition.json'
+            acquisition = json.loads(acquisition_path.read_text())
+            acquisition['graph-frames.jsonl']['sha256'] = hashlib.sha256(inventory_path.read_bytes()).hexdigest()
+            acquisition_path.write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'graph actor identity differs'):
+                project_core_packet(attempt, root / 'wrong-actor-packet')
+            self.assertFalse((root / 'wrong-actor-packet').exists())
 
     def test_attested_adapter_requires_original_graph_callback(self):
         adapter = FakeAdapter()

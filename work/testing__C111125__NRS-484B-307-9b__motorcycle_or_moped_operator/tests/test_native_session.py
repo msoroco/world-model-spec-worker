@@ -47,9 +47,12 @@ class NativeSessionTests(unittest.TestCase):
             (attempt / 'config.json').write_text('{}\n')
             ego = Mock()
             session = types.SimpleNamespace(world=object(), carla=object(),
-                                             blueprint_library=object(), event_adapter=object())
+                                             blueprint_library=object(), event_adapter=object(), camera_adapter=object())
             with patch.object(native_session, 'construct_native', return_value={'ego': ego}) as construct, \
-                    patch.object(native_session, 'capture_original', return_value={'frame_count': 900}) as capture:
+                    patch.object(native_session, 'capture_original', return_value={'frame_count': 900}) as capture, \
+                    patch.object(native_session, 'FourViewRecorder') as recorder, \
+                    patch.object(native_session, 'audit_manifest') as audit:
+                recorder.return_value.finish.return_value = {'path': 'media-manifest.json', 'sha256': 'a' * 64}
                 receipt = native_session.capture_events(session, packet, CASE, attempt)
             construct.assert_called_once()
             self.assertEqual(capture.call_args.args[1], attempt)
@@ -57,7 +60,9 @@ class NativeSessionTests(unittest.TestCase):
             self.assertEqual((attempt / 'native-site.json').read_bytes(), packet.read_bytes())
             for ref in site['original_sources'].values():
                 self.assertEqual((attempt / ref['path']).read_bytes(), (root / ref['path']).read_bytes())
-            self.assertEqual(receipt['camera_media_status'], 'not_acquired_by_event_session')
+            self.assertEqual(receipt['camera_media_status'], 'four_original_views_recorded_unreviewed')
+            self.assertEqual(receipt['media_manifest_ref']['path'], 'media-manifest.json')
+            audit.assert_called_once()
             self.assertEqual(receipt['site_packet_sha256'], hashlib.sha256(packet.read_bytes()).hexdigest())
 
     def test_capture_failure_still_destroys_ego(self):
@@ -68,9 +73,10 @@ class NativeSessionTests(unittest.TestCase):
             attempt.mkdir()
             ego = Mock()
             session = types.SimpleNamespace(world=object(), carla=object(),
-                                             blueprint_library=object(), event_adapter=object())
+                                             blueprint_library=object(), event_adapter=object(), camera_adapter=object())
             with patch.object(native_session, 'construct_native', return_value={'ego': ego}), \
-                    patch.object(native_session, 'capture_original', side_effect=ValueError('frame gap')):
+                    patch.object(native_session, 'capture_original', side_effect=ValueError('frame gap')), \
+                    patch.object(native_session, 'FourViewRecorder'):
                 with self.assertRaisesRegex(ValueError, 'frame gap'):
                     native_session.capture_events(session, packet, CASE, attempt)
             ego.destroy.assert_called_once()
@@ -83,7 +89,7 @@ class NativeSessionTests(unittest.TestCase):
             attempt = root / 'materialized'
             attempt.mkdir()
             session = types.SimpleNamespace(world=object(), carla=object(),
-                                             blueprint_library=object(), event_adapter=object())
+                                             blueprint_library=object(), event_adapter=object(), camera_adapter=object())
             (root / site['original_sources']['map_ref']['path']).unlink()
             with patch.object(native_session, 'construct_native') as construct:
                 with self.assertRaisesRegex(ValueError, 'missing or escaping source'):

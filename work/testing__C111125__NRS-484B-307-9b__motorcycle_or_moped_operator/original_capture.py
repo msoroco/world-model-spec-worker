@@ -39,7 +39,8 @@ def _sample(site, raw, previous_frame, previous_time):
     return raw
 
 
-def capture_original(site, source_root, adapter, output_path, *, frames=900, diagnostic_fixture=False):
+def capture_original(site, source_root, adapter, output_path, *, frames=900, diagnostic_fixture=False,
+                     on_frame=None):
     """Write one sealed event packet after exactly 45 s of 20 Hz readback.
 
     ``adapter.tick()`` advances synchronous Native time and returns a snapshot
@@ -61,6 +62,8 @@ def capture_original(site, source_root, adapter, output_path, *, frames=900, dia
         if actor_id is None:
             actor_id = row['actor_id']
         require(row['actor_id'] == actor_id, 'ego actor changed')
+        if on_frame is not None:
+            on_frame(row)
         rows.append(row)
         previous_frame, previous_time = row['frame'], row['time_s']
     output = Path(output_path)

@@ -1,74 +1,90 @@
 {
-  "format": "worker-execution-manifest",
   "assignment_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
-      "kind": "delivery",
-      "construction": "construction.json",
-      "construction_sha256": "203fed53caa57db119f54b831c0b4b63827150a0d726615823b170b20916049e",
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "following_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/following_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "oncoming_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/oncoming_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "reviewed_zone_record": {
+          "entrypoint": "zone_source.py",
+          "evidence": "zone-review-source.json and zone-authority-source.txt",
+          "method": "source hash, reviewed road/lane and map-sample extent join; no legal safety cutoff"
+        },
+        "signal_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "stripe_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stripe_geometry.json",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        }
+      },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Native map may lack connected left-turn geometry or actual no-passing-zone striping at the chosen crossing; camera and traffic clearance need physical verification."
+        "reason": "Native map may lack connected left-turn geometry or actual no-passing-zone striping at the chosen crossing; camera and traffic clearance need physical verification.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/signaled/fallback1/construction.json",
-          "construction_sha256": "f5abe5a9d6a814e6ed3c603e681ac159e08e227967476331fc183f0a64b21351",
-          "trigger": {
-            "source": "Native check_map preflight",
-            "metric": "map-marking and connected-turn validation",
-            "failure_condition": "Primary crossing x=0 fails marking or topology check before capture"
-          },
           "changed_knobs": [
             "crossing_x_m: 0 to 5 m along the same authored approach"
           ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/signaled/fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "compat-signaled-fallback1-window-receipt.json",
+            "command_log_sha256": "0fbe7326546604d312d671813b2d57ea86bdd6a5c25700eb20e63698317ba030",
+            "exit_code": 0,
+            "log": "compat-signaled-fallback1-window-analysis.log",
+            "negative_log": "compat-signaled-fallback1-window-negative.log",
+            "receipt": "compat-signaled-fallback1-window-receipt.json",
+            "sha256": "0fbe7326546604d312d671813b2d57ea86bdd6a5c25700eb20e63698317ba030"
+          },
+          "construction": "cases/signaled/fallback1/construction.json",
+          "construction_sha256": "f5abe5a9d6a814e6ed3c603e681ac159e08e227967476331fc183f0a64b21351",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/signaled/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
             "construction_sha256": "f5abe5a9d6a814e6ed3c603e681ac159e08e227967476331fc183f0a64b21351",
+            "exit_code": 0,
             "log": "proof-signaled-fallback1-window.log",
             "log_sha256": "ee45785bce454a87627cc10435f2af51c0b098ba0fea1c3dc27734a6bb4f9fba"
           },
-          "compatibility": {
-            "receipt": "compat-signaled-fallback1-window-receipt.json",
-            "sha256": "0fbe7326546604d312d671813b2d57ea86bdd6a5c25700eb20e63698317ba030",
-            "log": "compat-signaled-fallback1-window-analysis.log",
-            "negative_log": "compat-signaled-fallback1-window-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/signaled/fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "compat-signaled-fallback1-window-receipt.json",
-            "command_log_sha256": "0fbe7326546604d312d671813b2d57ea86bdd6a5c25700eb20e63698317ba030"
+          "trigger": {
+            "failure_condition": "Primary crossing x=0 fails marking or topology check before capture",
+            "metric": "map-marking and connected-turn validation",
+            "source": "Native check_map preflight"
           }
         }
       ],
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/signaled/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/case0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "compat-signaled-primary-window-receipt.json",
+        "command_log_sha256": "a24a7a56c1785a51573b1ffacae9e332699fbf9aeb6137fedc023b028a42de56",
         "exit_code": 0,
-        "construction_sha256": "203fed53caa57db119f54b831c0b4b63827150a0d726615823b170b20916049e",
-        "log": "proof-signaled-primary-window.log",
-        "log_sha256": "ef2a1fa2c69a9b1d4f0be0074f11aee338141c92105046f44bf30b414f1c2c1c"
+        "log": "compat-signaled-primary-window-analysis.log",
+        "negative_log": "compat-signaled-primary-window-negative.log",
+        "receipt": "compat-signaled-primary-window-receipt.json",
+        "sha256": "a24a7a56c1785a51573b1ffacae9e332699fbf9aeb6137fedc023b028a42de56"
       },
-      "measurement_contract": "measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "delivery_probe": {
-        "script": "delivery_audit.py",
-        "script_sha256": "379bbca75b3a0bdf0a7fe6084457368a0d3b3c29c47f5bb53c9503b10b71ebbd",
-        "positive_log": "delivery-signaled-response-positive.log",
-        "positive_log_sha256": "2b0a8a17d154365533ecb00d7f79033adaa1b63991eedde4ab4a73347d59bb2b",
-        "negative_log": "delivery-signaled-response-negative.log",
-        "negative_log_sha256": "8044dfc26f580581ebaf2cb8986254a3f9742c4e48468f792d8b87df7abe3069",
-        "negative_expected_error": "original participant/body history incomplete or frame join changed",
-        "scope": "CPU software fixture only; not delivery acceptance"
-      },
+      "construction": "construction.json",
+      "construction_sha256": "203fed53caa57db119f54b831c0b4b63827150a0d726615823b170b20916049e",
       "delivery_acceptance": {
         "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -77,153 +93,153 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "530764f8b964d3fa2a94a7504dc5c00da6c327d40d39aa246b1a187c7e9a7ee3",
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c109755-destination-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/delivery_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --output .runtime-work/c109755-destination-signaled-positive",
-        "test_exit_code": 0,
-        "test_log": "delivery-signaled-destination-positive.log",
-        "test_log_sha256": "197241afe930e149f448c92e1fad3e22a4b5886999fdf141cb4ac40c359ca430",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c109755-destination-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/delivery_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --output .runtime-work/c109755-destination-signaled-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "original participant/body history incomplete or frame join changed",
         "negative_log": "delivery-signaled-destination-negative.log",
         "negative_log_sha256": "4cb17de191fe26816e48a4bec684f72e4747038b77ef7bd2552b050a1cd109d2",
-        "scope": "CPU fixture audit of lifecycle, frame join, body history and real decode; actual participant pixels remain unverified",
         "positive_log": "delivery-signaled-response-positive.log",
-        "positive_log_sha256": "2b0a8a17d154365533ecb00d7f79033adaa1b63991eedde4ab4a73347d59bb2b"
+        "positive_log_sha256": "2b0a8a17d154365533ecb00d7f79033adaa1b63991eedde4ab4a73347d59bb2b",
+        "scope": "CPU fixture audit of lifecycle, frame join, body history and real decode; actual participant pixels remain unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "530764f8b964d3fa2a94a7504dc5c00da6c327d40d39aa246b1a187c7e9a7ee3",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-signaled-destination-positive.log",
+        "test_log_sha256": "197241afe930e149f448c92e1fad3e22a4b5886999fdf141cb4ac40c359ca430"
+      },
+      "delivery_probe": {
+        "negative_expected_error": "original participant/body history incomplete or frame join changed",
+        "negative_log": "delivery-signaled-response-negative.log",
+        "negative_log_sha256": "8044dfc26f580581ebaf2cb8986254a3f9742c4e48468f792d8b87df7abe3069",
+        "positive_log": "delivery-signaled-response-positive.log",
+        "positive_log_sha256": "2b0a8a17d154365533ecb00d7f79033adaa1b63991eedde4ab4a73347d59bb2b",
+        "scope": "CPU software fixture only; not delivery acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "379bbca75b3a0bdf0a7fe6084457368a0d3b3c29c47f5bb53c9503b10b71ebbd"
       },
       "fixture_recipe": "work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/diagnostic-recipe.json",
-      "compatibility": {
-        "receipt": "compat-signaled-primary-window-receipt.json",
-        "sha256": "3ae17d1e634f05394deb897d956f956dca0914d27852755731bb588115cc2756",
-        "log": "compat-signaled-primary-window-analysis.log",
-        "negative_log": "compat-signaled-primary-window-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/signaled/primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "compat-signaled-primary-window-receipt.json",
-        "command_log_sha256": "3ae17d1e634f05394deb897d956f956dca0914d27852755731bb588115cc2756"
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-signaled-primary-window-negative.log",
         "sha256": "29ecdc530b92af474459be694ac46f6e73cd65a611627f4435da5309f7a2a543"
       },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
-      "acquisition": {
-        "ego_body_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/ego_body_history.jsonl"
-        },
-        "signal_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/signal_history.jsonl"
-        },
-        "oncoming_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/oncoming_history.jsonl"
-        },
-        "following_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/following_history.jsonl"
-        },
-        "stripe_geometry": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/stripe_geometry.json"
-        },
-        "reviewed_zone_record": {
-          "entrypoint": "zone_source.py",
-          "evidence": "zone-review-source.json and zone-authority-source.txt",
-          "method": "source hash, reviewed road/lane and map-sample extent join; no legal safety cutoff"
-        }
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/signaled/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "203fed53caa57db119f54b831c0b4b63827150a0d726615823b170b20916049e",
+        "exit_code": 0,
+        "log": "proof-signaled-primary-window.log",
+        "log_sha256": "ef2a1fa2c69a9b1d4f0be0074f11aee338141c92105046f44bf30b414f1c2c1c"
       },
       "physical_preparation": {
         "receipt": "physical-signaled-proof.json",
         "sha256": "42e39f22fcff389d60197e1d2a3cef6aeb1436c72682baf77f9c1235444a9506"
       },
       "post_capture": {
-        "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
         "feedback_command": ".venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$SAVED_OUTPUT/v0001/processing.json\" --decode-receipt \"$SAVED_OUTPUT/v0001/final-decode.json\" --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
+        "recorded_only": true,
+        "test_exit_code": 0,
         "test_log": "saved-signaled-channel.log",
-        "test_log_sha256": "fdfc1c5b08a41e3ddabe79136f3c45c49b3270c334dbac9e239c6bb68fdc916e",
-        "test_exit_code": 0
+        "test_log_sha256": "fdfc1c5b08a41e3ddabe79136f3c45c49b3270c334dbac9e239c6bb68fdc916e"
       }
     },
     {
-      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn",
-      "kind": "delivery",
-      "construction": "cases/unsignaled/construction.json",
-      "construction_sha256": "de51263033628d908ef6cb9791272b997ea5f6257b1deb7b7238590a9e1aad23",
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "following_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/following_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "oncoming_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/oncoming_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "reviewed_zone_record": {
+          "entrypoint": "zone_source.py",
+          "evidence": "zone-review-source.json and zone-authority-source.txt",
+          "method": "source hash, reviewed road/lane and map-sample extent join; no legal safety cutoff"
+        },
+        "signal_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_history.jsonl",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        },
+        "stripe_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stripe_geometry.json",
+          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer"
+        }
+      },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Native map may lack connected left-turn geometry or actual no-passing-zone striping at the chosen crossing; camera and traffic clearance need physical verification."
+        "reason": "Native map may lack connected left-turn geometry or actual no-passing-zone striping at the chosen crossing; camera and traffic clearance need physical verification.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/unsignaled/fallback1/construction.json",
-          "construction_sha256": "cf08fc9117a4879058b82980b6adfaa4cc6dd65befb3b19982195d52981e43e3",
-          "trigger": {
-            "source": "Native check_map preflight",
-            "metric": "map-marking and connected-turn validation",
-            "failure_condition": "Primary crossing x=0 fails marking or topology check before capture"
-          },
           "changed_knobs": [
             "crossing_x_m: 0 to 5 m along the same authored approach"
           ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/unsignaled/fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "command_log": "compat-unsignaled-fallback1-window-receipt.json",
+            "command_log_sha256": "7544c9382c2ff632b99a6f44d3aa67e9e9af88274d73d277dff25293c68bd763",
+            "exit_code": 0,
+            "log": "compat-unsignaled-fallback1-window-analysis.log",
+            "negative_log": "compat-unsignaled-fallback1-window-negative.log",
+            "receipt": "compat-unsignaled-fallback1-window-receipt.json",
+            "sha256": "7544c9382c2ff632b99a6f44d3aa67e9e9af88274d73d277dff25293c68bd763"
+          },
+          "construction": "cases/unsignaled/fallback1/construction.json",
+          "construction_sha256": "cf08fc9117a4879058b82980b6adfaa4cc6dd65befb3b19982195d52981e43e3",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/unsignaled/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
             "construction_sha256": "cf08fc9117a4879058b82980b6adfaa4cc6dd65befb3b19982195d52981e43e3",
+            "exit_code": 0,
             "log": "proof-unsignaled-fallback1-window.log",
             "log_sha256": "dd54c5dd004ecd8d430ef7392ac166342a7e5b0a8240fadb346795e955fd22f5"
           },
-          "compatibility": {
-            "receipt": "compat-unsignaled-fallback1-window-receipt.json",
-            "sha256": "7544c9382c2ff632b99a6f44d3aa67e9e9af88274d73d277dff25293c68bd763",
-            "log": "compat-unsignaled-fallback1-window-analysis.log",
-            "negative_log": "compat-unsignaled-fallback1-window-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/unsignaled/fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "command_log": "compat-unsignaled-fallback1-window-receipt.json",
-            "command_log_sha256": "7544c9382c2ff632b99a6f44d3aa67e9e9af88274d73d277dff25293c68bd763"
+          "trigger": {
+            "failure_condition": "Primary crossing x=0 fails marking or topology check before capture",
+            "metric": "map-marking and connected-turn validation",
+            "source": "Native check_map preflight"
           }
         }
       ],
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/unsignaled/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/case1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command_log": "compat-unsignaled-primary-window-receipt.json",
+        "command_log_sha256": "292de8a549f287fe55f7296f349f528a76c1e2913a5d8654f4326222822ef2d9",
         "exit_code": 0,
-        "construction_sha256": "de51263033628d908ef6cb9791272b997ea5f6257b1deb7b7238590a9e1aad23",
-        "log": "proof-unsignaled-primary-window.log",
-        "log_sha256": "79e2236ab75726598bedfd1308d620e4df39101fd82af2ab766447066c768731"
+        "log": "compat-unsignaled-primary-window-analysis.log",
+        "negative_log": "compat-unsignaled-primary-window-negative.log",
+        "receipt": "compat-unsignaled-primary-window-receipt.json",
+        "sha256": "292de8a549f287fe55f7296f349f528a76c1e2913a5d8654f4326222822ef2d9"
       },
-      "measurement_contract": "measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "delivery_probe": {
-        "script": "delivery_audit.py",
-        "script_sha256": "379bbca75b3a0bdf0a7fe6084457368a0d3b3c29c47f5bb53c9503b10b71ebbd",
-        "positive_log": "delivery-unsignaled-response-positive.log",
-        "positive_log_sha256": "6cfafcc911ccae1aeaee157030df042973866fe1d99c23a76366b87cfd632479",
-        "negative_log": "delivery-unsignaled-response-negative.log",
-        "negative_log_sha256": "8044dfc26f580581ebaf2cb8986254a3f9742c4e48468f792d8b87df7abe3069",
-        "negative_expected_error": "original participant/body history incomplete or frame join changed",
-        "scope": "CPU software fixture only; not delivery acceptance"
-      },
+      "construction": "cases/unsignaled/construction.json",
+      "construction_sha256": "de51263033628d908ef6cb9791272b997ea5f6257b1deb7b7238590a9e1aad23",
       "delivery_acceptance": {
         "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -232,87 +248,71 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "530764f8b964d3fa2a94a7504dc5c00da6c327d40d39aa246b1a187c7e9a7ee3",
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c109755-destination-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/delivery_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --output .runtime-work/c109755-destination-unsignaled-positive",
-        "test_exit_code": 0,
-        "test_log": "delivery-unsignaled-destination-positive.log",
-        "test_log_sha256": "5346d791ed6dfe30961a3dbdaf9bc34e42d8688a371f6804bdd23af77ed72b44",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c109755-destination-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/delivery_probe.py --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --output .runtime-work/c109755-destination-unsignaled-negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "original participant/body history incomplete or frame join changed",
         "negative_log": "delivery-unsignaled-destination-negative.log",
         "negative_log_sha256": "4cb17de191fe26816e48a4bec684f72e4747038b77ef7bd2552b050a1cd109d2",
-        "scope": "CPU fixture audit of lifecycle, frame join, body history and real decode; actual participant pixels remain unverified",
         "positive_log": "delivery-unsignaled-response-positive.log",
-        "positive_log_sha256": "6cfafcc911ccae1aeaee157030df042973866fe1d99c23a76366b87cfd632479"
+        "positive_log_sha256": "6cfafcc911ccae1aeaee157030df042973866fe1d99c23a76366b87cfd632479",
+        "scope": "CPU fixture audit of lifecycle, frame join, body history and real decode; actual participant pixels remain unverified",
+        "script": "delivery_audit.py",
+        "script_sha256": "530764f8b964d3fa2a94a7504dc5c00da6c327d40d39aa246b1a187c7e9a7ee3",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-unsignaled-destination-positive.log",
+        "test_log_sha256": "5346d791ed6dfe30961a3dbdaf9bc34e42d8688a371f6804bdd23af77ed72b44"
+      },
+      "delivery_probe": {
+        "negative_expected_error": "original participant/body history incomplete or frame join changed",
+        "negative_log": "delivery-unsignaled-response-negative.log",
+        "negative_log_sha256": "8044dfc26f580581ebaf2cb8986254a3f9742c4e48468f792d8b87df7abe3069",
+        "positive_log": "delivery-unsignaled-response-positive.log",
+        "positive_log_sha256": "6cfafcc911ccae1aeaee157030df042973866fe1d99c23a76366b87cfd632479",
+        "scope": "CPU software fixture only; not delivery acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "379bbca75b3a0bdf0a7fe6084457368a0d3b3c29c47f5bb53c9503b10b71ebbd"
       },
       "fixture_recipe": "work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/diagnostic-unsignaled-recipe.json",
-      "compatibility": {
-        "receipt": "compat-unsignaled-primary-window-receipt.json",
-        "sha256": "5f37083ee7609e1da1a362761680be09151695b9ab8aed483d06100745628eac",
-        "log": "compat-unsignaled-primary-window-analysis.log",
-        "negative_log": "compat-unsignaled-primary-window-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/unsignaled/primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "exit_code": 0,
-        "command_log": "compat-unsignaled-primary-window-receipt.json",
-        "command_log_sha256": "5f37083ee7609e1da1a362761680be09151695b9ab8aed483d06100745628eac"
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-unsignaled-primary-window-negative.log",
         "sha256": "2c1c214cdaf2b22e8a2617a5273c49038aafed001c0f12384d7eece899747756"
       },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
-      "acquisition": {
-        "ego_body_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/ego_body_history.jsonl"
-        },
-        "signal_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/signal_history.jsonl"
-        },
-        "oncoming_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/oncoming_history.jsonl"
-        },
-        "following_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/following_history.jsonl"
-        },
-        "stripe_geometry": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original turn-history and zone-context projected by selected saved finalizer",
-          "evidence": "channels/stripe_geometry.json"
-        },
-        "reviewed_zone_record": {
-          "entrypoint": "zone_source.py",
-          "evidence": "zone-review-source.json and zone-authority-source.txt",
-          "method": "source hash, reviewed road/lane and map-sample extent join; no legal safety cutoff"
-        }
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-traffic-sweep-proof/unsignaled/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "de51263033628d908ef6cb9791272b997ea5f6257b1deb7b7238590a9e1aad23",
+        "exit_code": 0,
+        "log": "proof-unsignaled-primary-window.log",
+        "log_sha256": "79e2236ab75726598bedfd1308d620e4df39101fd82af2ab766447066c768731"
       },
       "physical_preparation": {
         "receipt": "physical-unsignaled-proof.json",
         "sha256": "4b1b3fb66c24c5f7a2ddd0cea61c9af8579dd4bd980fc2d29134ab2c88269ed0"
       },
       "post_capture": {
-        "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/execution-manifest.json --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
         "feedback_command": ".venv-cpu/bin/python work/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$SAVED_OUTPUT/v0001/processing.json\" --decode-receipt \"$SAVED_OUTPUT/v0001/final-decode.json\" --case testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn",
+        "recorded_only": true,
+        "test_exit_code": 0,
         "test_log": "saved-unsignaled-channel.log",
-        "test_log_sha256": "669769e36c9e1df726ab34cd9bf77c8169279a5a4043676ab40d37a8c4aa5156",
-        "test_exit_code": 0
+        "test_log_sha256": "669769e36c9e1df726ab34cd9bf77c8169279a5a4043676ab40d37a8c4aa5156"
       }
     }
   ],
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "status": "partial_current_saved_processing_proved_source_review_pending"
 }

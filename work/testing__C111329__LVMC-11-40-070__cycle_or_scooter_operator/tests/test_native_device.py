@@ -58,11 +58,11 @@ class TestDevice(unittest.TestCase):
   self.assertEqual(audit_original_history({**CASE,"officer_direction":"proceed"},SITE,samples(True))["officer_command_at_crossing"],"proceed")
  def test_comparison(self):
   context={"map_name":"TownX","jurisdiction_source":"survey","governed_approach":"northbound","bike_blueprint_id":"bicycle","route":"northbound","camera_contract":"four","duration_s":45,"device_authority_source":"order","vehicle_applicability_source":"sign","device_type":"signal","device_instruction":"red","officer_direction":"none"}
-  left={"case_id":"a","source_kind":"original_native","legal_assessment":"unresolved","device_id":"10","bike_id":"22","crossing_frame":None,"device_state_at_crossing":"red","officer_command_at_crossing":"none","context":context,"source_hashes":{"site":"aaa"}}
-  right={**left,"case_id":"b","crossing_frame":51}
+  left={"format":"c111329-saved-instruction-measurement","case_id":"a","source_kind":"original_native","legal_assessment":"unresolved","device_id":"10","bike_id":"22","crossing_frame":None,"hold_window_frames":[980,999],"device_state_at_response":"red","officer_command_at_response":"none","context":context,"source_hashes":{"site":"aaa","trace":"bbb"}}
+  right={**left,"case_id":"b","crossing_frame":51,"hold_window_frames":None}
   comp={"comparison_id":"obey-red","case_ids":["a","b"],"deliberate_variable":"operator_motion"}
   self.assertTrue(audit(comp,left,right)["passed"])
-  with self.assertRaisesRegex(ValueError,"variable did not differ"):audit(comp,left,{**right,"crossing_frame":None})
+  with self.assertRaisesRegex(ValueError,"variable did not differ"):audit(comp,left,{**right,"crossing_frame":None,"hold_window_frames":[980,999]})
   with self.assertRaisesRegex(ValueError,"fixed condition changed"):audit(comp,left,{**right,"context":{**context,"map_name":"TownY"}})
   with self.assertRaisesRegex(ValueError,"missing source-bound context"):audit(comp,left,{**right,"source_hashes":{}})
 if __name__=="__main__":unittest.main()

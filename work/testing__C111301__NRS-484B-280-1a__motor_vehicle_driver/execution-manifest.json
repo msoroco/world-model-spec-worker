@@ -1,129 +1,109 @@
 {
-  "format": "worker-execution-manifest",
   "assignment_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
   "cases": [
     {
-      "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
-      "kind": "delivery",
-      "construction": "construction.json",
-      "construction_sha256": "23d0ad1b23816187b3fd747df9572615e7fca4be51a1a6ef8a96da5741918e76",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A source-confirmed distinct person and manual wheelchair asset may be unavailable in the Native map."
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "fallback-clear-construction.json",
-          "construction_sha256": "e81150edf237220d88ac1c054fb9ac3d6fb729be7bdc7feebd40bf88548013de",
-          "trigger": {
-            "source": "Native CARLA blueprint library",
-            "metric": "matching manual-wheelchair asset blueprint count",
-            "failure_condition": "primary exact wheelchair prop filter returns zero matches"
-          },
-          "changed_knobs": [
-            "manual_chair_blueprint_filter: static.prop.wheelchair* -> static.prop.*wheelchair*"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-clear-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
-            "exit_code": 0,
-            "construction_sha256": "e81150edf237220d88ac1c054fb9ac3d6fb729be7bdc7feebd40bf88548013de",
-            "log": "proof-clear-fallback1.log",
-            "log_sha256": "69918ffb6b37f4f999a056ad5fb6f69e82e6939253b97d99b84639b94367d683"
-          },
-          "compatibility": {
-            "receipt": "compat-clear-fallback1-receipt.json",
-            "sha256": "cd31a2cfbcd5c833302651a5a1cbdcecffb1b3be7bcdf97a83b2215c53db5c69",
-            "log": "compat-clear-fallback1-analysis.log",
-            "negative_log": "compat-clear-fallback1-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-compat-clear-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
-        }
-      ],
-      "measurement_contract": "measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "analysis.py"
-      },
-      "fixture_recipe": "work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/diagnostic-clear-recipe.json",
       "acquisition": {
-        "ego_body_history": {
+        "camera_frame_map": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/ego_body_history.jsonl"
-        },
-        "wheelchair_person_body_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/wheelchair_person_body_history.jsonl"
-        },
-        "manual_wheelchair_body_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/manual_wheelchair_body_history.jsonl"
-        },
-        "ego_speed_and_brake_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/ego_speed_and_brake_history.jsonl"
-        },
-        "contact_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/contact_history.jsonl"
-        },
-        "pedestrian_path_and_speed_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/pedestrian_path_and_speed_history.jsonl"
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
         "contact_events": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/contact_events.jsonl"
+          "evidence": "channels/contact_events.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
-        "intersection_geometry": {
+        "contact_history": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/intersection_geometry.jsonl"
+          "evidence": "channels/contact_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
-        "camera_frame_map": {
+        "ego_body_history": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/camera_frame_map.jsonl"
+          "evidence": "channels/ego_body_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
+        },
+        "ego_speed_and_brake_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_speed_and_brake_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
         "intersection_context": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original intersection and wheelchair identity context projection",
-          "evidence": "channels/context.json"
+          "evidence": "channels/context.json",
+          "method": "Source-hashed original intersection and wheelchair identity context projection"
+        },
+        "intersection_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/intersection_geometry.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
+        },
+        "manual_wheelchair_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/manual_wheelchair_body_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
+        },
+        "pedestrian_path_and_speed_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_path_and_speed_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
         "wheelchair_identity_context": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original intersection and wheelchair identity context projection",
-          "evidence": "channels/context.json"
+          "evidence": "channels/context.json",
+          "method": "Source-hashed original intersection and wheelchair identity context projection"
+        },
+        "wheelchair_person_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/wheelchair_person_body_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         }
       },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+      "candidate_risk": {
+        "reason": "A source-confirmed distinct person and manual wheelchair asset may be unavailable in the Native map.",
+        "status": "physical"
       },
-      "negative": {
-        "log": "compat-clear-negative.log"
+      "candidates": [
+        {
+          "changed_knobs": [
+            "manual_chair_blueprint_filter: static.prop.wheelchair* -> static.prop.*wheelchair*"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-compat-clear-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "compat-clear-fallback1-analysis.log",
+            "negative_log": "compat-clear-fallback1-negative.log",
+            "receipt": "compat-clear-fallback1-receipt.json",
+            "sha256": "cd31a2cfbcd5c833302651a5a1cbdcecffb1b3be7bcdf97a83b2215c53db5c69"
+          },
+          "construction": "fallback-clear-construction.json",
+          "construction_sha256": "e81150edf237220d88ac1c054fb9ac3d6fb729be7bdc7feebd40bf88548013de",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-clear-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "e81150edf237220d88ac1c054fb9ac3d6fb729be7bdc7feebd40bf88548013de",
+            "exit_code": 0,
+            "log": "proof-clear-fallback1.log",
+            "log_sha256": "69918ffb6b37f4f999a056ad5fb6f69e82e6939253b97d99b84639b94367d683"
+          },
+          "trigger": {
+            "failure_condition": "primary exact wheelchair prop filter returns zero matches",
+            "metric": "matching manual-wheelchair asset blueprint count",
+            "source": "Native CARLA blueprint library"
+          }
+        }
+      ],
+      "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/case0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-clear-analysis.log",
+        "negative_log": "compat-clear-negative.log",
+        "receipt": "compat-clear-receipt.json",
+        "sha256": "2589b58d7be50e985acaf084c4fef135cdfa43d7188cadbe4f46aa6d748b456b"
       },
-      "post_capture": {
-        "recorded_only": true,
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "test_log": "saved-clear-refresh.log",
-        "test_log_sha256": "c16f4d69f91b21559b2d0fb72cf27f23b32df318d29adca13dfae43381989da9",
-        "test_exit_code": 0
-      },
+      "construction": "construction.json",
+      "construction_sha256": "23d0ad1b23816187b3fd747df9572615e7fca4be51a1a6ef8a96da5741918e76",
       "delivery_acceptance": {
         "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -132,158 +112,158 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "3775f93483bbedf003d7bfa9b555cf0a532d1626eb3137da3f6333aba0ccf77c",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/audit_probe.py --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-audit-clear/positive",
-        "test_exit_code": 0,
-        "test_log": "audit-clear-positive.log",
-        "test_log_sha256": "933a151bf4693f61d4fdde53aa9bff8f2f551e407cbd764e3813baa6b0cc688b",
         "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/audit_probe.py --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-audit-clear/negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original missing or changed",
         "negative_log": "audit-clear-negative.log",
-        "negative_log_sha256": "e01166e5aa12f1d1f922ebd02f6f76c47dda808cb2b62ecee1922a877a14af90"
+        "negative_log_sha256": "e01166e5aa12f1d1f922ebd02f6f76c47dda808cb2b62ecee1922a877a14af90",
+        "script": "delivery_audit.py",
+        "script_sha256": "3775f93483bbedf003d7bfa9b555cf0a532d1626eb3137da3f6333aba0ccf77c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "audit-clear-positive.log",
+        "test_log_sha256": "933a151bf4693f61d4fdde53aa9bff8f2f551e407cbd764e3813baa6b0cc688b"
       },
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-wheelchair_clear_path --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "23d0ad1b23816187b3fd747df9572615e7fca4be51a1a6ef8a96da5741918e76",
-        "log": "proof-wheelchair_clear_path.log",
-        "log_sha256": "4ed8633c1b1c2b216437eff861bcc263e27d609c4943669047641e6a545f2023"
-      },
-      "compatibility": {
-        "receipt": "compat-clear-receipt.json",
-        "sha256": "e6daf3052e74d869fd2e532bef5406c2a5fddae55e1ec8699cd6765ae2c146d0",
-        "log": "compat-clear-analysis.log",
-        "negative_log": "compat-clear-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-compat-clear --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
-      },
-      "physical_preparation": {
-        "receipt": "physical-clear-proof.json",
-        "sha256": "e8b2fbe6ad0ad8bcad0b9e81c831909921249f6d0ec749a535dc5c6e34d283da"
-      }
-    },
-    {
-      "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing",
+      "fixture_recipe": "work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/diagnostic-clear-recipe.json",
       "kind": "delivery",
-      "construction": "cases/crossing/construction.json",
-      "construction_sha256": "832e103cd7f9af3b5d3da955c919d840d780758341754db4989056edf20dbff4",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A source-confirmed distinct person and manual wheelchair asset may be unavailable in the Native map."
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "fallback-crossing-construction.json",
-          "construction_sha256": "86dd2d532af5288930951b5807e2616de88180d9bb3a17ad53ba714e6e79da7a",
-          "trigger": {
-            "source": "Native CARLA blueprint library",
-            "metric": "matching manual-wheelchair asset blueprint count",
-            "failure_condition": "primary exact wheelchair prop filter returns zero matches"
-          },
-          "changed_knobs": [
-            "manual_chair_blueprint_filter: static.prop.wheelchair* -> static.prop.*wheelchair*"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-crossing-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
-            "exit_code": 0,
-            "construction_sha256": "86dd2d532af5288930951b5807e2616de88180d9bb3a17ad53ba714e6e79da7a",
-            "log": "proof-crossing-fallback1.log",
-            "log_sha256": "a53db106e9d24424d055c6a39fba8d7f8523f730bf569038dbafca4dd036ba86"
-          },
-          "compatibility": {
-            "receipt": "compat-crossing-fallback1-receipt.json",
-            "sha256": "078d47f9dc64ff644fc46795531fa273ffd4203260abe56d73374b2ed76aa004",
-            "log": "compat-crossing-fallback1-analysis.log",
-            "negative_log": "compat-crossing-fallback1-negative.log",
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-compat-crossing-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
-        }
-      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/diagnostic-crossing-recipe.json",
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-clear-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-wheelchair_clear_path --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "23d0ad1b23816187b3fd747df9572615e7fca4be51a1a6ef8a96da5741918e76",
+        "exit_code": 0,
+        "log": "proof-wheelchair_clear_path.log",
+        "log_sha256": "4ed8633c1b1c2b216437eff861bcc263e27d609c4943669047641e6a545f2023"
+      },
+      "physical_preparation": {
+        "receipt": "physical-clear-proof.json",
+        "sha256": "e8b2fbe6ad0ad8bcad0b9e81c831909921249f6d0ec749a535dc5c6e34d283da"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_clear_path --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-clear-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-clear-refresh.log",
+        "test_log_sha256": "c16f4d69f91b21559b2d0fb72cf27f23b32df318d29adca13dfae43381989da9"
+      }
+    },
+    {
       "acquisition": {
-        "ego_body_history": {
+        "camera_frame_map": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/ego_body_history.jsonl"
-        },
-        "wheelchair_person_body_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/wheelchair_person_body_history.jsonl"
-        },
-        "manual_wheelchair_body_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/manual_wheelchair_body_history.jsonl"
-        },
-        "ego_speed_and_brake_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/ego_speed_and_brake_history.jsonl"
-        },
-        "contact_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/contact_history.jsonl"
-        },
-        "pedestrian_path_and_speed_history": {
-          "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/pedestrian_path_and_speed_history.jsonl"
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
         "contact_events": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/contact_events.jsonl"
+          "evidence": "channels/contact_events.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
-        "intersection_geometry": {
+        "contact_history": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/intersection_geometry.jsonl"
+          "evidence": "channels/contact_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
-        "camera_frame_map": {
+        "ego_body_history": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original encounter and context projected by saved analyzer",
-          "evidence": "channels/camera_frame_map.jsonl"
+          "evidence": "channels/ego_body_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
+        },
+        "ego_speed_and_brake_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_speed_and_brake_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
         "intersection_context": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original intersection and wheelchair identity context projection",
-          "evidence": "channels/context.json"
+          "evidence": "channels/context.json",
+          "method": "Source-hashed original intersection and wheelchair identity context projection"
+        },
+        "intersection_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/intersection_geometry.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
+        },
+        "manual_wheelchair_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/manual_wheelchair_body_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
+        },
+        "pedestrian_path_and_speed_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_path_and_speed_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         },
         "wheelchair_identity_context": {
           "entrypoint": "analysis.py",
-          "method": "Source-hashed original intersection and wheelchair identity context projection",
-          "evidence": "channels/context.json"
+          "evidence": "channels/context.json",
+          "method": "Source-hashed original intersection and wheelchair identity context projection"
+        },
+        "wheelchair_person_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/wheelchair_person_body_history.jsonl",
+          "method": "Source-hashed original encounter and context projected by saved analyzer"
         }
       },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+      "candidate_risk": {
+        "reason": "A source-confirmed distinct person and manual wheelchair asset may be unavailable in the Native map.",
+        "status": "physical"
       },
-      "negative": {
-        "log": "compat-crossing-negative.log"
+      "candidates": [
+        {
+          "changed_knobs": [
+            "manual_chair_blueprint_filter: static.prop.wheelchair* -> static.prop.*wheelchair*"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-compat-crossing-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "compat-crossing-fallback1-analysis.log",
+            "negative_log": "compat-crossing-fallback1-negative.log",
+            "receipt": "compat-crossing-fallback1-receipt.json",
+            "sha256": "078d47f9dc64ff644fc46795531fa273ffd4203260abe56d73374b2ed76aa004"
+          },
+          "construction": "fallback-crossing-construction.json",
+          "construction_sha256": "86dd2d532af5288930951b5807e2616de88180d9bb3a17ad53ba714e6e79da7a",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-crossing-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "86dd2d532af5288930951b5807e2616de88180d9bb3a17ad53ba714e6e79da7a",
+            "exit_code": 0,
+            "log": "proof-crossing-fallback1.log",
+            "log_sha256": "a53db106e9d24424d055c6a39fba8d7f8523f730bf569038dbafca4dd036ba86"
+          },
+          "trigger": {
+            "failure_condition": "primary exact wheelchair prop filter returns zero matches",
+            "metric": "matching manual-wheelchair asset blueprint count",
+            "source": "Native CARLA blueprint library"
+          }
+        }
+      ],
+      "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/lead-nov24/ready-refresh/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/case1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-crossing-analysis.log",
+        "negative_log": "compat-crossing-negative.log",
+        "receipt": "compat-crossing-receipt.json",
+        "sha256": "3671291d05bb329dd30279ae105a56464f0b9d288051d0c46ae91bcc03c53d9e"
       },
-      "post_capture": {
-        "recorded_only": true,
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-        "test_log": "saved-crossing-refresh.log",
-        "test_log_sha256": "a4f79f643fd5ec280db9d2d02d2246a59f39b958e3a3ed4372ac647714f4cd91",
-        "test_exit_code": 0
-      },
+      "construction": "cases/crossing/construction.json",
+      "construction_sha256": "832e103cd7f9af3b5d3da955c919d840d780758341754db4989056edf20dbff4",
       "delivery_acceptance": {
         "case_id": "testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing",
-        "sets": [
-          "full-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -292,36 +272,56 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "3775f93483bbedf003d7bfa9b555cf0a532d1626eb3137da3f6333aba0ccf77c",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/audit_probe.py --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-audit-crossing/positive",
-        "test_exit_code": 0,
-        "test_log": "audit-crossing-positive.log",
-        "test_log_sha256": "079a1e618e2a030e63b2c21e366631914c91008cfcb0b652dc575ab18948a50e",
         "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/audit_probe.py --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-audit-crossing/negative --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "sealed original missing or changed",
         "negative_log": "audit-crossing-negative.log",
-        "negative_log_sha256": "e01166e5aa12f1d1f922ebd02f6f76c47dda808cb2b62ecee1922a877a14af90"
+        "negative_log_sha256": "e01166e5aa12f1d1f922ebd02f6f76c47dda808cb2b62ecee1922a877a14af90",
+        "script": "delivery_audit.py",
+        "script_sha256": "3775f93483bbedf003d7bfa9b555cf0a532d1626eb3137da3f6333aba0ccf77c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "audit-crossing-positive.log",
+        "test_log_sha256": "079a1e618e2a030e63b2c21e366631914c91008cfcb0b652dc575ab18948a50e"
+      },
+      "fixture_recipe": "work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/diagnostic-crossing-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-crossing-negative.log"
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-offline-wheelchair_crossing --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
         "construction_sha256": "832e103cd7f9af3b5d3da955c919d840d780758341754db4989056edf20dbff4",
+        "exit_code": 0,
         "log": "proof-wheelchair_crossing.log",
         "log_sha256": "1efb1b355478aacb857072918e8f5aed642982d0f19e519585ae89f2baae594f"
-      },
-      "compatibility": {
-        "receipt": "compat-crossing-receipt.json",
-        "sha256": "fd7a14bc8e177b1e72bbec927550e6d51f440968bd59d31eb4e2e9d9ab064eec",
-        "log": "compat-crossing-analysis.log",
-        "negative_log": "compat-crossing-negative.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-compat-crossing --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
       },
       "physical_preparation": {
         "receipt": "physical-crossing-proof.json",
         "sha256": "7a66fbe2368e3847f76ec2eee8665d0ba77c746f1e9c349a6ad148aac4d77ddb"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111301__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-280-1a__motor_vehicle_driver__wheelchair_crossing --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-attempt-refresh --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111301-saved-crossing-refresh --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-crossing-refresh.log",
+        "test_log_sha256": "a4f79f643fd5ec280db9d2d02d2246a59f39b958e3a3ed4372ac647714f4cd91"
       }
     }
-  ]
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
 }

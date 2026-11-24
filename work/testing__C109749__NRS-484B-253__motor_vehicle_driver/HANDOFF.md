@@ -157,3 +157,19 @@ Next CPU work: wire an actual third actor to the reviewed-map CARLA scene factor
 `reciprocal_live.py` connects the reviewed-map CARLA scene to a separately spawned later opponent, in addition to ego, initial opponent and four cameras. It requires seven distinct lease-owned actors, applies the case-specific later wait/proceed controller, samples third-actor original body, heading, speed and braking after the same synchronous world tick, and passes the five-value stream into `reciprocal_native_capture.capture_reciprocal`. `WorldLease` restores settings/weather and destroys actors. This is executable source-oriented wiring; no real CARLA run or physical right-of-way conclusion is claimed.
 
 Five focused reciprocal-live tests cover same-tick readback, alias rejection, wait/proceed contrast, seven-actor ownership/cleanup and map mismatch before spawn. The complete 90-test assignment suite, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial status. New log hashes are in `result.json`. Next CPU work: inline bundle and saved-finalizer integration of the third-actor source, regenerated offline/compatibility/process-saved receipts, feasible physical sweep expansion and canonical delivery/queue integration.
+
+## 2026-11-24 reciprocal saved-finalization checkpoint
+
+`reciprocal_finalization.py` adds a saved-only entrypoint that runs the existing exact reciprocal finalizer and the independently sealed 900-frame later-opponent join, places the third actor observations in `reciprocal_events`, and binds the separate source digest. The 900-frame diagnostic capture test verifies the combined output and rejects a removed third-actor source. Existing inline bundles are unchanged, so production bundle integration and regenerated compatibility remain CPU work.
+
+### Receipts
+
+- `cpu-reciprocal-finalization-tests.log` exit 0, SHA256 `be5da2fe857e61b8b125f25b1e38323292112ea8db55d7e9321f827b4ed2abe6`
+- `cpu-reciprocal-finalization-preflight.log` exit 0, SHA256 `69824e2619f891b411c16ccaa46e80c78bda39697b7f13138094bb9c2d6865ce`
+- `cpu-reciprocal-finalization-offline.log` exit 0, SHA256 `f51f0e5067cba9f425ec816576cc9db0645ee8963782f3b4de8343e1f7f7aa61`
+- `cpu-reciprocal-finalization-static.log` exit 0, SHA256 `5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93`
+- `cpu-reciprocal-finalization-strict.log` exit 1, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+- `reciprocal_finalization.py` SHA256 `d9e780c36a4614a9ec923978f3d9079866ca16ad04f5c2c9f1042f2255776921`
+- `tests/test_reciprocal_native_capture.py` SHA256 `32f0cb2e446425d18c635408d234df19f34eb74f9385d9c23a1da7c56420c205`
+
+Pinned preflight, existing reciprocal offline construction and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: inline bundle wiring and regenerated compatibility/process-saved receipts for both reciprocal cases, followed by canonical delivery integration.

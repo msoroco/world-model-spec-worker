@@ -33,7 +33,8 @@ def packet(start=0, district="business", direction="left", case_id="a", step_m=1
 
 def write_sources(root, p):
     values = {"sealed_result": {"source": "sealed"},
-              "frame_map": {"source": "original frames"},
+              "frame_map": {"frames": [{"frame": row["frame"], "time_s": row["time_s"]}
+                                       for row in p["samples"]]},
               "light_readback": {"samples": p["samples"]},
               "turn_onset": {"turn_onset_frame": p["turn_onset_frame"]},
               "district_context": {k: p[k] for k in ("district_class", "district_source", "weather")}}
@@ -154,6 +155,21 @@ class SignalDistanceTest(unittest.TestCase):
             write_sources(root, p)
             p["turn_onset_frame"] = 28
             with self.assertRaisesRegex(mod.EvidenceError, "turn onset disagrees"):
+                mod.verify_source_bindings(p, root)
+
+    def test_resealed_frame_map_disagreement_rejected(self):
+        p = packet()
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            write_sources(root, p)
+            frame_path = root / "frame_map.json"
+            frame_map = json.loads(frame_path.read_text())
+            frame_map["frames"][10]["time_s"] += 0.05
+            frame_path.write_text(json.dumps(frame_map) + "\n")
+            digest = sha256(frame_path.read_bytes()).hexdigest()
+            p["source_files"]["frame_map"]["sha256"] = digest
+            p["frame_map_sha256"] = digest
+            with self.assertRaisesRegex(mod.EvidenceError, "frame map disagrees"):
                 mod.verify_source_bindings(p, root)
 
     def test_cli_reads_and_verifies_source_packet(self):

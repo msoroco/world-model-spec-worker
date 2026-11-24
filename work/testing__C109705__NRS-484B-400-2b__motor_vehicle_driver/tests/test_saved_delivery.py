@@ -167,6 +167,24 @@ class SavedDeliveryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'escapes attempt'):
                 saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
 
+    def test_rehashed_symlinked_original_source_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            source = root / manifest['trace']['path']
+            link = root / 'original/trace-link.json'
+            link.symlink_to(source)
+            manifest['trace']['path'] = 'original/trace-link.json'
+            with self.assertRaisesRegex(ValueError, 'source path is symlinked'):
+                saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            (root / 'alias').symlink_to(root / 'original', target_is_directory=True)
+            manifest['map']['path'] = 'alias/map-packet.json'
+            with self.assertRaisesRegex(ValueError, 'source path is symlinked'):
+                saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
+
     def test_saved_clock_drift_rejected_after_source_reseal(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

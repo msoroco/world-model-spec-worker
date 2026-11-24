@@ -60,6 +60,15 @@ class OriginalAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "frame sequence"):
             self.reader()
 
+    def test_preflight_rejects_late_missing_state_and_command_echo(self):
+        self.rows[-1]["siren_active"] = "true"
+        with self.assertRaisesRegex(ValueError, "device state missing"):
+            self.reader()
+        self.rows[-1]["siren_active"] = True
+        self.rows[-1]["siren_commanded"] = True
+        with self.assertRaisesRegex(ValueError, "command echo fields"):
+            self.reader()
+
     def test_capture_consumes_original_log_and_camera_pixels(self):
         image = types.SimpleNamespace(width=2, height=2,
                                       raw_data=bytes([3, 2, 1, 255] * 4))

@@ -5,6 +5,7 @@ checks identity and cleanup, not whether a legal highway designation is true.
 """
 from __future__ import annotations
 
+from contextlib import contextmanager
 import hashlib
 import json
 from pathlib import Path
@@ -157,3 +158,35 @@ def run_scene_capture(*, world, attempt_root, case_id, site, plan_binding,
                 'physical_acceptance_claimed': False}
     finally:
         scene.close()
+
+
+@contextmanager
+def managed_world(world):
+    """Own and restore the world state around one exact capture attempt."""
+    original_settings = world.get_settings()
+    original_weather = world.get_weather()
+    staged = world.get_settings()
+    staged.synchronous_mode = True
+    staged.fixed_delta_seconds = .05
+    try:
+        world.apply_settings(staged)
+        readback = world.get_settings()
+        if (readback.synchronous_mode is not True or
+                abs(readback.fixed_delta_seconds - .05) > 1e-8):
+            raise ValueError('synchronous 20 Hz world readback failed')
+        yield
+    finally:
+        try:
+            world.set_weather(original_weather)
+        finally:
+            world.apply_settings(original_settings)
+            restored = world.get_settings()
+            if (restored.synchronous_mode != original_settings.synchronous_mode or
+                    restored.fixed_delta_seconds != original_settings.fixed_delta_seconds):
+                raise ValueError('original world settings restoration failed')
+
+
+def run_managed_scene_capture(*, world, **kwargs):
+    """Production entrypoint with owned world state and actor cleanup."""
+    with managed_world(world):
+        return run_scene_capture(world=world, **kwargs)

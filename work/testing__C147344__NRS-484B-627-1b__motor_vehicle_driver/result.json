@@ -2,7 +2,7 @@
   "assignment_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver",
   "input_sha256": "c95309091d29a6932f2db586789b8aafa0aadfe53eb28cc445a253a62a6acac1",
   "status": "partial",
-  "readiness_kind": "branch_cases_and_original_frame_measurement",
+  "readiness_kind": "branch_cases_original_frame_measurement_and_independent_follower_join_partial",
   "applied_update": 0,
   "tests": [
     {
@@ -28,10 +28,34 @@
       "exit_code": 1,
       "log": "strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C147344__NRS-484B-627-1b__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-follower-join-tests.log",
+      "sha256": "d71dd74a07651a91d0312e21f61d0d7ffd499695a26337e99e1b01654e2a9ce0"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-follower-join-preflight.log",
+      "sha256": "c34f8b66e61c985c8f033ab721445111999c2caf2f7cc8fd03c8fb7e11ad063d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C147344__NRS-484B-627-1b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-follower-join-static.log",
+      "sha256": "edc0436fde98171827bcdac9065e8b83b908253d8cfd8d52fd6007bc7cf39a44"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C147344__NRS-484B-627-1b__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-follower-join-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four conditional-law case plans, three controlled comparisons and a five-test original-frame lane/follower/pass measurement are CPU prepared. Executable construction, source-backed impediment/necessity review, finalizer, case compatibility and delivery proof remain CPU work; strict gate truthfully fails on partial status."
+  "reason": "Four conditional-law cases and three comparisons remain planned. Original-frame lane/follower/pass measurement now distinguishes same-lane from immediately-behind readback; independent saved finalizer joins a separately SHA-bound 900-frame follower-relation source and rejects stale bytes, frame/actor mismatch and unsealed inline relation. Eleven focused CPU tests, preflight and scoped static pass. Executable construction, reviewed actual follower-relation source, impediment/necessity review, cameras, compatibility and delivery proofs remain CPU work; strict gate truthfully fails on partial status."
 }

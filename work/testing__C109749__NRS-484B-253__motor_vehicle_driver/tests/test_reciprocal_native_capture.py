@@ -9,6 +9,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from reciprocal_native_capture import capture_reciprocal
 from reciprocal_saved import audit_saved
+from reciprocal_finalization import finalize_reciprocal
 from test_native_acquisition import Adapter, NativeAcquisition, body
 from saved_left_turn import ASSIGNMENT_ID
 
@@ -89,6 +90,15 @@ class ReciprocalNativeCaptureTests(unittest.TestCase):
         self.assertEqual(observed["joined_original_frames"], 900)
         self.assertTrue(observed["observations"]["later_braking_during_conflict"])
         self.assertEqual(observed["physical_acceptance"], "unverified")
+        finalized = finalize_reciprocal(case_id=case, attempt=out,
+                                        allow_diagnostic=True)
+        self.assertEqual(finalized["original_frame_count"], 900)
+        self.assertEqual(finalized["observations"]["later_opponent_identity"], 13)
+        self.assertEqual(finalized["source_hashes"]["later-opponent-original.jsonl"],
+                         observed["source_sha256"])
+        (out / "later-opponent-original.jsonl").unlink()
+        with self.assertRaisesRegex(ValueError, "missing or outside"):
+            finalize_reciprocal(case_id=case, attempt=out, allow_diagnostic=True)
 
 
 if __name__ == "__main__":

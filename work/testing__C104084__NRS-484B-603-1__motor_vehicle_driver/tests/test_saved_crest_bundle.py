@@ -10,6 +10,7 @@ SCRATCH = ROOT.parents[1] / '.runtime-work'
 sys.path.insert(0, str(ROOT))
 from saved_crest_audit import ASSIGNMENT
 from saved_crest_bundle import assemble, verify_bundle
+from saved_delivery_audit import audit as audit_delivery
 from test_saved_crest_media import media_fixture
 
 
@@ -45,6 +46,22 @@ class SavedCrestBundleTests(unittest.TestCase):
             self.assertEqual(sealed['native_map_source']['sha256'], spec['native_map_sha256'])
             self.assertFalse(proof['checks']['physical_completion'])
             self.assertEqual(verify_bundle(dest, sealed, expected_case=case)['frame_count'], 900)
+            delivery = audit_delivery(dest, expected_case=case)
+            self.assertEqual(delivery['frame_count'], 900)
+            self.assertEqual(delivery['decoded_camera_count'], 4)
+            self.assertFalse(delivery['physical_acceptance'])
+            finalized_path = dest / 'finalized.json'
+            original_finalized = finalized_path.read_bytes()
+            altered = json.loads(original_finalized)
+            altered['checks']['physical_completion'] = True
+            finalized_path.write_text(json.dumps(altered) + '\n', encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'finalizer differs'):
+                audit_delivery(dest, expected_case=case)
+            finalized_path.write_bytes(original_finalized)
+            (dest / 'unplanned.txt').write_text('extra\n')
+            with self.assertRaisesRegex(ValueError, 'inventory differs'):
+                audit_delivery(dest, expected_case=case)
+            (dest / 'unplanned.txt').unlink()
             with self.assertRaises(FileExistsError):
                 assemble(spec, dest, expected_case=case)
             (dest / 'front.mkv').write_bytes(b'changed')

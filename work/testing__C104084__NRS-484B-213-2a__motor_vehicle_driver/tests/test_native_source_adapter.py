@@ -54,7 +54,9 @@ class Delegate:
 
 class SourceAdapterTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = ROOT.parents[1] / '.runtime-work' / 'c104084-source-facts-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.output = self.root / "attempt"
@@ -66,8 +68,15 @@ class SourceAdapterTests(unittest.TestCase):
         kinds = ("highway", "center_reference", "one_way_authority" if one_way else "opposing_lane")
         sources = {}
         hashes = {}
+        facts = {"highway": "public_highway",
+                 "center_reference": "center_reference_present",
+                 "opposing_lane": "opposing_direction_present",
+                 "one_way_authority": "one_way_designation"}
         for kind in kinds:
-            data = json.dumps({"source_kind": kind, "source_citation": "fixture citation"}).encode()
+            data = json.dumps({"source_kind": kind, "source_citation": "fixture citation",
+                               "case_id": case_id,
+                               "map_opendrive_sha256": hashlib.sha256(b"reviewed-crest-map").hexdigest(),
+                               facts[kind]: True}).encode()
             (self.root / (kind + ".json")).write_bytes(data)
             digest = hashlib.sha256(data).hexdigest()
             sources[kind] = {"path": kind + ".json", "sha256": digest,
@@ -133,6 +142,32 @@ class SourceAdapterTests(unittest.TestCase):
         delegate.context["opposing_lane_source_ref"] = "wrong"
         with self.assertRaisesRegex(ValueError, "opposing-lane context"):
             adapter.begin(case_id)
+
+    def test_rehashed_contradictory_source_fact_rejected(self):
+        adapter, delegate, packet_path, case_id = self.fixture("left_crest_obstructed")
+        source = self.root / 'opposing_lane.json'
+        document = json.loads(source.read_text())
+        document['opposing_direction_present'] = False
+        source.write_text(json.dumps(document))
+        packet = json.loads(packet_path.read_text())
+        packet['sources']['opposing_lane']['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+        packet_path.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError, 'source fact missing'):
+            adapter.begin(case_id)
+        self.assertFalse(delegate.begun)
+
+    def test_rehashed_foreign_case_source_rejected(self):
+        adapter, delegate, packet_path, case_id = self.fixture("left_one_way_obstructed")
+        source = self.root / 'one_way_authority.json'
+        document = json.loads(source.read_text())
+        document['case_id'] = 'another-case'
+        source.write_text(json.dumps(document))
+        packet = json.loads(packet_path.read_text())
+        packet['sources']['one_way_authority']['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+        packet_path.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError, 'source claim mismatch'):
+            adapter.begin(case_id)
+        self.assertFalse(delegate.begun)
 
 
 if __name__ == "__main__":

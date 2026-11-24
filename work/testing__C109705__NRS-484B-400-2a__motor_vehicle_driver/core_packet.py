@@ -68,7 +68,13 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
             raw = source.read_bytes()
             if hashlib.sha256(raw).hexdigest() != graph_row.get('sha256'):
                 raise ValueError('original adapter graph source hash differs')
-            _checked_graph(raw, frame, time_s)
+            graph = _checked_graph(raw, frame, time_s)
+            graph_actor_ids = [node['attributes'].get('actor_id')
+                               for node in graph['nodes']
+                               if node['attributes'].get('actor_id') is not None]
+            if (len(graph_actor_ids) != 1 or type(graph_actor_ids[0]) is not int
+                    or graph_actor_ids[0] != actor_id):
+                raise ValueError('original adapter graph actor identity differs')
             graph_sources.append((index, raw))
     pixels = audit_original_pixels(attempt, acquisition['case_id'],
                                    allow_diagnostic=True)

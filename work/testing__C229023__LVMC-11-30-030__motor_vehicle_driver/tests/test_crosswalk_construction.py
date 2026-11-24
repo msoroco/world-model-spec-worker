@@ -22,7 +22,7 @@ class CrosswalkConstructionTests(unittest.TestCase):
                 "marked_crosswalk_polygon": [[10, -3], [14, -3], [14, 3], [10, 3]],
                 "road_y_bounds": [-3, 5], "lead_stop_center": [7, 0],
                 "ego_start_center": [-10, 0], "pass_lane_y": 3.5,
-                "combined_vehicle_half_width_m": 2.4,
+                "combined_vehicle_half_width_m": 2.4, "ego_half_width_m": 0.9,
                 "pedestrian_start": [12, -4], "pedestrian_end": [12, 6]}
 
     def run_build(self, site, kind="unmarked", behavior="pass"):
@@ -61,6 +61,22 @@ class CrosswalkConstructionTests(unittest.TestCase):
         s["pass_lane_y"] = 1
         with self.assertRaisesRegex(ValueError, "clearance"):
             self.run_build(s)
+
+    def test_passing_vehicle_footprint_must_remain_on_road(self):
+        s = self.site()
+        s["pass_lane_y"] = 4.5
+        with self.assertRaisesRegex(ValueError, "footprint leaves road"):
+            self.run_build(s)
+
+    def test_vehicle_widths_must_be_positive_source_values(self):
+        for name, value in (("ego_half_width_m", 0),
+                            ("combined_vehicle_half_width_m", -1),
+                            ("ego_half_width_m", True)):
+            with self.subTest(name=name, value=value):
+                s = self.site()
+                s[name] = value
+                with self.assertRaisesRegex(ValueError, "positive source vehicle half widths"):
+                    self.run_build(s)
 
     def sourced_site(self, root):
         site = self.site()
