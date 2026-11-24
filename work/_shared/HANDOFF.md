@@ -795,3 +795,13 @@ The selected manifest now binds exact positive and negative independent delivery
 ## 2026-11-24 C158208-2 police pose and refreshed selected proofs
 
 C158208-2 now embeds a dedicated police pedestrian blueprint and explicit right shoulder direction-pose command/readback in all ten primary/fallback constructions. The officer review remains dependent on original camera evidence for visible traffic direction and authority. Ten offline, ten compatibility, five selected delivery positive/negative, five physical preparation sets, selected saved processing, 27 unit tests, semantic, compatibility, delivery handoff and assignment-scoped complete checks pass on the current runtime. Status is truthful `partial`; shared GPU queue/local integration and Native physical review remain. The exact package handoff is `work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/HANDOFF.md`. No previously ready result was changed, and no Git command was run.
+
+## 2026-11-24 newly ready: C158208-2
+
+`testing__C158208__NRS-484B-257-2__motor_vehicle_driver` passed its current-runtime strict assignment gate with `--complete --require-delivery-ready`. The exact five-case package and one fallback per case, CPU proofs, independent audits and dispatch fragment are bound in its selected manifest. The package remains subject to later Native original-camera review for the actual officer direction and authority, signed intersection, motion and camera coverage. Batch count is now 34 ready, 9 partial; the next nearest-to-ready partial is C215286. The whole batch strict gate has not passed.
+
+C215286 continuation: `reverse_alternatives.py` and two focused tests now provide original-frame intersection and corner observations; its full 18-test suite and scoped partial complete check pass. The exact alternative cases and proofs are still to be integrated. Whole-batch quick validation was interrupted in accordance with `START_HERE.md` retained-completion guidance; no passing whole-batch claim is made. The final `work/` portability scan covered 10,424 files with zero violations.
+
+## 2026-11-24 C215286 alternative construction checkpoint
+
+C215286 remains partial. Authored straight intersection and curved street-corner reverse routes, a CARLA-lazy 900-frame four-camera Native capture entrypoint, source-hashed synthetic diagnostic site packets and source-tamper checks. The package 22-test suite and assignment-scoped `--complete` check pass. Exact alternative manifests, real site-source selection, saved finalization and independent delivery proofs remain worker-owned. The selected crosswalk cases and all prior-ready results were left intact.

@@ -52,7 +52,7 @@ def run():
         for item in plan["comparisons"]
     ]
     result = {"format": "worker-assignment-dispatch-plan", "assignment_id": ASSIGNMENT,
-              "status": "cpu_prepared_partial", "cases": cases,
+              "status": "cpu_prepared_ready", "cases": cases,
               "comparison_audit_commands": comparisons,
               "scope": "Exact local-operator commands; no Native execution or acceptance occurred here"}
     (HERE / "dispatch-plan.json").write_text(json.dumps(result, indent=2) + "\n")
