@@ -129,7 +129,7 @@ class CaptureTests(unittest.TestCase):
             source_ids={key: 'synthetic-sensor-' + key for key in camera_recorder.CAMERAS},
             sizes={key: (2, 2) for key in camera_recorder.CAMERAS})
         self.run_capture(camera_capture=recorder)
-        result = pixel_audit.audit_pixels(self.folder / 'out', case_id=CASE)
+        result = pixel_audit.audit_pixels(self.folder / 'out', case_id=CASE, diagnostic=True)
         self.assertEqual(result['decoded_original_pixels'], 3600)
         self.assertTrue(recorder.closed)
 

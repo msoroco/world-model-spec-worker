@@ -13,6 +13,11 @@ from PIL import Image
 from native_capture import CAMERAS, FPS, FRAMES
 from native_operation import CASE_PROFILES, assemble_measurement_rows, validate_history
 
+DELIVERY_DIMENSIONS = {"overview": (1920, 1080),
+                       "alley_approach": (1280, 720),
+                       "access_aisle": (1280, 720),
+                       "driver_reference": (1280, 720)}
+
 
 def _read(path: Path, digest: str) -> list[dict]:
     if not path.is_file():
@@ -74,6 +79,8 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
             with Image.open(image_path) as image:
                 if image.format != "PNG" or min(image.size) <= 0:
                     raise ValueError("invalid original camera format")
+                if require_delivery and image.size != DELIVERY_DIMENSIONS[camera]:
+                    raise ValueError("original camera delivery dimensions differ")
                 image.load()
     return {"format": "worker-alley-saved-audit", "case_id": case_id,
             "original_frames": FRAMES, "decoded_original_pngs": FRAMES * len(CAMERAS),

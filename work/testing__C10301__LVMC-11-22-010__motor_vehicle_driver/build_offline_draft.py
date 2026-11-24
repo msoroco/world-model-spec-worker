@@ -12,22 +12,29 @@ KINDS = ("steady_travel", "steering_variation")
 
 RUNNER = '''"""Exact alley operation diagnostic entrypoint."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from alley_geometry import validate
 from native_operation import CASE_PROFILES
+from native_capture import CAMERAS
 
 
 def check():
     root = Path(__file__).resolve().parent
     config = json.loads((root / "config.json").read_text())
-    scene = json.loads((root / "alley-scene.json").read_text())
+    scene_bytes = (root / "alley-scene.json").read_bytes()
+    if hashlib.sha256(scene_bytes).hexdigest() != config["scene_sha256"]:
+        raise ValueError("alley scene source changed")
+    scene = json.loads(scene_bytes)
     if config["selected_case_id"] not in CASE_PROFILES:
         raise ValueError("unknown exact alley case")
     if config["profile"] != CASE_PROFILES[config["selected_case_id"]]:
         raise ValueError("case controller profile differs")
     if config["fps"] != 20 or config["duration_s"] != 45:
         raise ValueError("original acquisition duration differs")
+    if config["cameras"] != list(CAMERAS):
+        raise ValueError("original camera identities differ")
     validate(scene)
     return config["selected_case_id"]
 
@@ -83,6 +90,7 @@ def build() -> None:
                   "actor": "motor_vehicle_driver", "selected_case_id": case,
                   "profile": "steady" if kind == "steady_travel" else "variation",
                   "fps": 20, "duration_s": 45, "diagnostic_only": True,
+                  "scene_sha256": hashlib.sha256(scene.encode()).hexdigest(),
                   "cameras": ["overview", "alley_approach", "access_aisle", "driver_reference"],
                   "required_atoms": []}
         files = {"runner.py": RUNNER,

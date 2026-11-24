@@ -12,6 +12,7 @@ import math
 from pathlib import Path
 
 from approach import _verified, measure
+from saved_delivery import FRAMES, audit_original_pixels
 
 
 def _rows(path: Path) -> list[dict]:
@@ -36,12 +37,15 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
     if acquisition.get('diagnostic_fixture') is not True:
         raise ValueError('diagnostic bridge requires explicit diagnostic source')
+    _, road_sha = _verified(attempt, 'road.xodr', acquisition)
     _, context_sha = _verified(attempt, 'intersection-context.json', acquisition)
     history_path, history_sha = _verified(attempt, 'approach-history.jsonl', acquisition)
     mapping_path, mapping_sha = _verified(attempt, 'video_frames.jsonl', acquisition)
     history, mapping = _rows(history_path), _rows(mapping_path)
-    if len(history) != len(mapping) or not history:
-        raise ValueError('saved body/camera frame count differs')
+    if len(history) != FRAMES or len(mapping) != FRAMES:
+        raise ValueError('diagnostic Core packet requires complete original capture')
+    pixels = audit_original_pixels(attempt, acquisition['case_id'],
+                                   allow_diagnostic=True)
     trace, evidence, frames = [], [], []
     previous = None
     for index, (body, view) in enumerate(zip(history, mapping)):
@@ -85,11 +89,14 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
               'capture/evidence.jsonl': _save(output / 'capture/evidence.jsonl', evidence),
               'capture/native/frames.jsonl': _save(output / 'capture/native/frames.jsonl', frames)}
     receipt = {'kind': 'diagnostic_core_join_packet', 'case_id': acquisition['case_id'],
-               'source_sha256': {'intersection-context.json': context_sha,
+               'source_sha256': {'road.xodr': road_sha,
+                                 'intersection-context.json': context_sha,
                                  'approach-history.jsonl': history_sha,
                                  'video_frames.jsonl': mapping_sha},
                'acquisition_sha256': hashlib.sha256((attempt / 'acquisition.json').read_bytes()).hexdigest(),
                'generated_sha256': hashes, 'frames': len(trace),
+               'original_decoded_frames': pixels['decoded_frames'],
+               'original_media_sha256': pixels['media_sha256'],
                'selected_measurement': measured['nearest_body_edge_range_m'],
                'physical_completion': False, 'legal_judgment': 'unresolved',
                'graph_capture_required': True}

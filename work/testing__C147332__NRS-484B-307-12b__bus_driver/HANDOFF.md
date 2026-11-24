@@ -170,3 +170,20 @@ Exact scoped static check passes (`nov24-media-profile-static.log`); exact scope
 `original_media_profile.py` now probes every stream in each saved camera container and counts decoded frames. It rejects extra streams, including audio, missing decoded frame counts and count disagreement with `camera-frame-map.jsonl` when that original map is present. The real FFmpeg test verifies four good streams and rejects a mismatched map, an added audio stream and a wrong-rate camera. The 34-test assignment suite passes; all four current saved diagnostic attempts pass the tightened CLI profile check. These diagnostic results do not establish signal visibility or physical motion.
 
 The exact scoped static gate exits 0; the exact scoped strict gate exits 1 because `result.json` remains truthfully partial. Next worker-owned CPU work is genuine independent public-highway and official overhead red-X source review, demonstrated Native asset state, nondiagnostic source-bound construction and delivery/compatibility/comparison proofs, original-pixel visibility review and shared ordered queue/local integration. No frozen inputs, runtime, batch or shared files were edited; no Git command was run.
+
+## 2026-11-23 saved camera frame-map continuity proof
+
+`original_media_profile.py` now validates every saved camera-frame-map row for the exact four camera names, contiguous world frame IDs and 20 Hz elapsed-time cadence before comparing full FFV1 decoded frame counts. The real FFmpeg fixture rejects skipped frames, cadence drift and camera identity changes. This closes a metadata gap in the independent profile audit; it does not establish actual rendered red-X visibility.
+
+Pinned preflight, 34 focused tests, all four existing diagnostic saved profile probes and scoped static check pass. Exact scoped strict exits 1 because `result.json` remains truthful `partial`. Source-grounded official-device/highway review, demonstrated Native display asset, nondiagnostic delivery and comparison, pixel visibility review and shared queue integration remain.
+
+Current proof log SHA-256 receipts:
+
+- `cpu-frame-profile-preflight.log`: `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63` (exit 0)
+- `cpu-frame-profile-tests.log`: `e6e6fe9910957ce15a5a95c8d5cc208ad1a3596d453d3e97275159e364f97b0c` (exit 0)
+- `cpu-frame-profile-adjacent_travel.log`: `a95e60cb89c3751687741976f8f5955c09b28cf5ddc880b172aea32e527875e8` (exit 0)
+- `cpu-frame-profile-lateral_entry.log`: `a95e60cb89c3751687741976f8f5955c09b28cf5ddc880b172aea32e527875e8` (exit 0)
+- `cpu-frame-profile-red_lane_stand.log`: `a95e60cb89c3751687741976f8f5955c09b28cf5ddc880b172aea32e527875e8` (exit 0)
+- `cpu-frame-profile-red_lane_drive.log`: `a95e60cb89c3751687741976f8f5955c09b28cf5ddc880b172aea32e527875e8` (exit 0)
+- `cpu-frame-profile-static.log`: `a52f2a201bac16ac78e4a36598523ac9ae085e28d7e53b2a2a57ff0c97e5e575` (exit 0)
+- `cpu-frame-profile-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)

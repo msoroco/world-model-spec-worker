@@ -3,7 +3,7 @@
   "assignment_id": "testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver",
   "input_sha256": "0baf1c8e5dbb996248c0c12187a0fcb2f425742814233ec065f3b78093fc292a",
   "readiness_kind": "partial_exact_cases_native_bundle_and_saved_source_audit",
-  "reason": "Seven exact cases and three comparisons remain planned. The synchronous Native bundle and independent saved audit fully decode all 3,600 original PNG frame sources. The new saved-only processor writes a source-bound case-specific halt-gap receipt only after that full audit passes, records the observed contiguous halt interval and 14/15/16-foot construction probe without legal inference, and leaves no output after a changed original source. Thirty-six CPU tests pass. Reviewed map/route/actor and context source bindings, canonical semantic proposals, exact offline/compatibility bundles, canonical finalization and execution manifest remain CPU work. The parking alternative needs binding review. No physical acceptance or external blocker is claimed.",
+  "reason": "Seven exact cases and three comparisons remain planned. The saved source measurement now rejects absolute, parent-traversal and symlink escapes even when the outside file has a matching SHA256; 37 focused tests, pinned preflight and scoped static pass. Reviewed map/route/actor and context bindings, canonical semantic proposals, exact offline/compatibility bundles, finalization, and execution manifest remain CPU work. Parking binding and physical review are unresolved; strict readiness remains partial.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -31,6 +31,30 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-saved-process-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-source-containment.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-source-containment-tests.log",
+      "sha256": "c6928d6e18ef03853f164c213d6637ec330090168ebd0967db03a425c1b3812b"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-source-containment.log",
+      "sha256": "ef61bd0682043f33c3ccdb7fff017abd4400313e9b864bcc6b955e4ec627e5f3"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-source-containment.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ]

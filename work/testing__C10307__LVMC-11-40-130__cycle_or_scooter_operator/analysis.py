@@ -79,11 +79,14 @@ def write_native_result(attempt: Path, report: dict) -> None:
                                   for row in samples))
     condition_path.write_text("".join(json.dumps({"time_s": row["time_s"], "value": row}) + "\n"
                                       for row in conditions))
+    commanded_path = attempt / "derived-commanded-target.json"
+    commanded_path.write_text(json.dumps({"commanded_approach_speed": config["requested_speed_mps"]}) + "\n")
     evidence = [
         {"name": "actual_bicycle_speed", "unit": "m/s", "reference": speed_path.name},
         {"name": "contemporaneous_conditions", "unit": "structured", "reference": condition_path.name},
         {"name": "jurisdiction", "unit": "structured", "reference": "context.json"},
         {"name": "bicycle_classification", "unit": "structured", "reference": "context.json"},
+        {"name": "commanded_approach_speed", "unit": "m/s", "reference": commanded_path.name},
     ]
     measured = report["summary"]["mean_speed_mps"]
     requested = config["requested_speed_mps"]
@@ -100,7 +103,11 @@ def write_native_result(attempt: Path, report: dict) -> None:
               "trace_reference": "trace.jsonl", "video_references": list(required[2:6]),
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": description, "recording_evidence": evidence,
-              "realized_observables": {}, "diagnostic_fixture": report["diagnostic_fixture"]}
+              "realized_observables": {"commanded_approach_speed": {
+                  "unit": "m/s", "method": "Read the commanded target from the frozen case controller and retain Native body velocity in the raw trace.",
+                  "time_window": "The original 0 to 30 s capture window.", "statistic": "first",
+                  "reference": commanded_path.name, "value": requested}},
+              "diagnostic_fixture": report["diagnostic_fixture"]}
     output = attempt / "result.json"
     if output.exists():
         raise ValueError("refusing to overwrite saved Native result")

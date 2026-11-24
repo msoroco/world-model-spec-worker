@@ -83,6 +83,25 @@ class OriginalMeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "contiguous two-second"):
             measure_gap.measure(self.packet_path)
 
+    def test_matching_hash_cannot_escape_saved_acquisition(self):
+        outside = self.packet_path.parent.parent / "outside-pose.jsonl"
+        outside.write_bytes(self.pose_path.read_bytes())
+        self.addCleanup(outside.unlink)
+        self.packet["pose_source"] = {"path": str(outside), "sha256": self._sha(outside)}
+        self._save_packet()
+        with self.assertRaisesRegex(ValueError, "escapes saved acquisition"):
+            measure_gap.measure(self.packet_path)
+        self.packet["pose_source"]["path"] = "../outside-pose.jsonl"
+        self._save_packet()
+        with self.assertRaisesRegex(ValueError, "escapes saved acquisition"):
+            measure_gap.measure(self.packet_path)
+        link = self.packet_path.parent / "linked-pose.jsonl"
+        link.symlink_to(outside)
+        self.packet["pose_source"]["path"] = link.name
+        self._save_packet()
+        with self.assertRaisesRegex(ValueError, "outside saved acquisition"):
+            measure_gap.measure(self.packet_path)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -12,7 +12,7 @@ from pathlib import Path
 from native_operation import CASE_PROFILES, FPS, assemble_measurement_rows, request_control, sample_original, validate_history
 from native_context import sample_from_native
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "alley_approach", "access_aisle", "driver_reference")
 FRAMES = 900
 
 

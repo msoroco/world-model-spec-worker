@@ -67,6 +67,8 @@ def measure(map_packet, trace_packet, *, case_id):
         previous = frame
         phase = sample.get('phase')
         if phase == 'intersection_entry':
+            if found_departure:
+                raise ValueError('intersection entry repeated after departure')
             found_entry = True
         elif phase == 'departure':
             found_departure = True
@@ -84,6 +86,10 @@ def measure(map_packet, trace_packet, *, case_id):
             result.append({'frame': frame, 'full_body_right_min_m': min(lateral), 'full_body_right_max_m': max(lateral)})
         elif phase not in ('approach', 'turning'):
             raise ValueError('unknown trace phase')
+        elif found_departure:
+            raise ValueError('trace phase regressed after departure')
+        elif phase == 'turning' and not found_entry:
+            raise ValueError('turning before intersection entry')
     if not found_entry or not found_departure:
         raise ValueError('intersection entry and departure samples required')
     return {

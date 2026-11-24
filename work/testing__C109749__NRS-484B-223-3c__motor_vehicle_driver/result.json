@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver",
   "input_sha256": "a075af65f30abe7a02001955c3f07d5682f57d72a3014fa71a36f485b7a2665a",
-  "status": "partial",
   "readiness_kind": "partial_exact_case_construction",
-  "applied_update": 0,
+  "reason": "Four exact cases and two comparisons remain partial. `native_scene.py` now validates exact case, reviewed map/highway source bytes, live OpenDRIVE, 20 Hz settings and a retained spawn plan before creating distinct ego and receiving vehicles plus four pinned-profile RGB cameras. Its run_scene_capture entrypoint drives the existing source-sealed live reader and cleans all actors/sensors on success and failure. Fifty-one CPU tests pass, including a full diagnostic spawn-to-saved capture and negative source/spawn cases. Reviewed production site and spawn plan, world lease restoration, canonical semantic proposals, exact bundles, compatibility and saved-only delivery receipts remain worker-owned CPU work. No physical 50-foot or legal outcome claimed.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/tests -v",
@@ -22,10 +26,30 @@
       "exit_code": 1,
       "log": "cpu-strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-spawned-scene-tests.log",
+      "sha256": "be435b094594546d86297c60c093bd3cbe63a31523b92fd047479d3d6a1701ac"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-spawned-scene-preflight.log",
+      "sha256": "ce7008ea0c195a3b0c7dc21ab1d279f1ac331d291a4adfd44a35f1b4143d2312"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-223-3c__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-spawned-scene-static.log",
+      "sha256": "cb95f25b10f771bfa51450f07236b2ab969a45d747cfdf7f16ca965fc9a4d574"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-223-3c__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-spawned-scene-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Four exact cases and two comparisons remain partial. The live CARLA frame reader now drives reviewed route controls, binds live OpenDRIVE to the sealed original source, records actual ego body/lane transition markers, receiving traffic actor/lane, four camera callbacks and 20 Hz snapshots into Native capture. 46 CPU tests pass. Actor/camera spawn with world ownership, production 900-frame entrypoint, canonical semantic proposals, inline bundles, compatibility and saved-only delivery receipts remain worker-owned CPU work. No physical 50-foot or legal outcome claimed."
+  ]
 }

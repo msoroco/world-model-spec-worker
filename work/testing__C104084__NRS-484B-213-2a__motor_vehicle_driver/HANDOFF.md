@@ -162,3 +162,9 @@ channels, four source-hashed diagnostic recipes with positive/negative runtime
 compatibility, semantic proposals and independent delivery/comparison audits.
 The lead owns any shared curve-cell binding. No GPU dependency is claimed for
 these remaining preparation steps.
+
+### Independent derived-result source join (2026-11-23)
+
+`derived_audit.py` independently reopens sealed original crest packets and checks every saved `trace.jsonl` body/ray value, `video_frames.jsonl` Native/frame/camera identity, and `result.json` measured observation and target check. It rejects changed derived rows, changed frame identities, fabricated target measurements and unsupported physical-completion claims. Its receipt retains source-manifest and derived file hashes and explicitly leaves physical and legal acceptance unclaimed. This is a saved-only CPU integrity proof, not a full delivery audit or local canonical acceptance.
+
+Pinned preflight, 36 focused tests and scoped static checks pass. The exact scoped strict gate exits 1 on truthful partial status. Reproduction commands, exit codes and SHA256-bound logs are in `result.json` under `cpu-derived-*.log`. Remaining CPU work: concrete CARLA adapter and authority acquisition, four exact canonical case bundles, semantic proposals, positive/negative compatibility and process-saved proofs, and full independent delivery audit. Curve alternative needs the batch lead to assign a compatible cell. Actual motion, rays and pixel visibility remain later physical checks.

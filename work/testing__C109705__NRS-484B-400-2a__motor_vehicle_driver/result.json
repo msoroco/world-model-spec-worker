@@ -3,7 +3,7 @@
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "8a14a3e8f6c0ac470e16c0195b8a7bf2e20482edfcab4c6ec968edb174a69ace",
   "readiness_kind": "source_bound_construction_draft",
-  "reason": "Native map packet bytes and surveyed context are sealed at verification; the 900-frame capture and four diagnostic offline bundles pass CPU proof, while exact reviewed Native source and full Core capture/delivery receipts remain unfinished.",
+  "reason": "Native map packet bytes and surveyed context are sealed at verification; the 900-frame capture and four diagnostic offline bundles pass CPU proof, while exact reviewed Native source and full Core capture/delivery receipts remain unfinished. The diagnostic Core projection now also verifies and binds the original OpenDRIVE SHA; a changed map rejects before output. Thirty-six package tests and pinned 900-frame Core join pass. Core graph capture and delivery remain unfinished CPU work.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -511,6 +511,42 @@
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c109705-pipeline TMPDIR=.runtime-work/c109705-core-join-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests/check_core_join.py",
       "exit_code": 0,
       "log": "cpu-core-join-runtime.log",
+      "sha256": "593c0831fb360c551e242a134d43527b969ed5c75fea16baa5811182081e1474"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-map-seal/pipeline TMPDIR=$PWD/.runtime-work/c109705-map-seal MPLCONFIGDIR=$PWD/.runtime-work/c109705-map-seal PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-core-map-seal-tests.log",
+      "sha256": "7f9d8182f8e1cd418b452415f3b3efc99ad70f5117d1f1d9b155c0aecc4d0a78"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-map-seal/pipeline TMPDIR=$PWD/.runtime-work/c109705-map-seal MPLCONFIGDIR=$PWD/.runtime-work/c109705-map-seal PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests/check_core_join.py",
+      "exit_code": 0,
+      "log": "cpu-core-map-seal-join.log",
+      "sha256": "593c0831fb360c551e242a134d43527b969ed5c75fea16baa5811182081e1474"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109705-core-completeness SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-core-completeness/pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -q",
+      "exit_code": 0,
+      "log": "cpu-core-complete-capture-tests.log",
+      "sha256": "70a8d66d0ecdc6fcec97d5b543b2d228a8548614c27012ad0d120c958ba9598e"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109705-core-completeness SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-core-completeness/pipeline .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests/check_core_join.py",
+      "exit_code": 0,
+      "log": "cpu-core-complete-capture-join.log",
+      "sha256": "593c0831fb360c551e242a134d43527b969ed5c75fea16baa5811182081e1474"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c109705-core-media SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-core-media/pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -q",
+      "exit_code": 0,
+      "log": "cpu-core-original-media-tests.log",
+      "sha256": "4477ba65de5e0987e60c713dc7ea78cba2c89f8722fc25dd914f4921735d82fd"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c109705-core-media SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109705-core-media/pipeline .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests/check_core_join.py",
+      "exit_code": 0,
+      "log": "cpu-core-original-media-join.log",
       "sha256": "593c0831fb360c551e242a134d43527b969ed5c75fea16baa5811182081e1474"
     }
   ]

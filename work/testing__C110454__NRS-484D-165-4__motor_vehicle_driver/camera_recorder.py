@@ -14,15 +14,30 @@ import zipfile
 from PIL import Image
 
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
+PROFILE_DIMENSIONS = {
+    "overview": (1920, 1080),
+    "approach": (1280, 720),
+    "reference_corner": (1280, 720),
+    "driver_reference": (1280, 720),
+}
 
 
 class CameraRecorder:
-    def __init__(self, sensors: dict, output: Path, *, timeout_seconds: float = 5.0):
+    def __init__(self, sensors: dict, output: Path, *, timeout_seconds: float = 5.0,
+                 dimensions: dict | None = None):
         if set(sensors) != set(VIEWS) or timeout_seconds <= 0:
             raise ValueError("four sensors and positive timeout required")
+        dimensions = PROFILE_DIMENSIONS if dimensions is None else dimensions
+        if set(dimensions) != set(VIEWS) or any(
+                not isinstance(dimensions[view], (tuple, list)) or
+                len(dimensions[view]) != 2 or
+                any(type(size) is not int or size <= 0 for size in dimensions[view])
+                for view in VIEWS):
+            raise ValueError("four positive camera dimensions required")
         self.sensors = sensors
         self.output = Path(output)
         self.timeout_seconds = timeout_seconds
+        self.dimensions = {view: tuple(dimensions[view]) for view in VIEWS}
         self.queues = {view: Queue() for view in VIEWS}
         self.listening = []
         self.archives = {}
@@ -47,11 +62,13 @@ class CameraRecorder:
             raise
 
     @staticmethod
-    def _png(image) -> bytes:
+    def _png(image, expected_dimensions: tuple[int, int]) -> bytes:
         width, height = image.width, image.height
         if (type(width) is not int or type(height) is not int or
                 width <= 0 or height <= 0):
             raise ValueError("original camera dimensions invalid")
+        if (width, height) != expected_dimensions:
+            raise ValueError("original camera dimensions differ from capture profile")
         raw = bytes(image.raw_data)
         if len(raw) != width * height * 4:
             raise ValueError("original camera BGRA byte count mismatch")
@@ -71,7 +88,7 @@ class CameraRecorder:
                 raise ValueError("original camera callback missing: " + view) from exc
             if image.frame != frame:
                 raise ValueError("original camera callback frame mismatch: " + view)
-            encoded[view] = self._png(image)
+            encoded[view] = self._png(image, self.dimensions[view])
         for view in VIEWS:
             self.archives[view].writestr(f"{frame}.png", encoded[view])
         self.frames += 1

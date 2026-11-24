@@ -58,6 +58,7 @@ def build() -> dict:
                                  'uncertainty': 'Physical motion, parcel authority and pixel visibility require independent local review'}
                                 for name, method, source in channels],
                    'context_inputs': [{'name': 'reviewed original map and parcel authority',
+                                       'unit': 'source record',
                                        'method': 'SHA-256 OpenDRIVE, authority and exact route join'}],
                    'limitations': ['Diagnostic CPU packets do not establish parcel authority or physical realization.',
                                    'Avoidance purpose is separately sourced and cannot be inferred from route shape.']}

@@ -59,7 +59,9 @@ class FakeAdapter:
 
 class ParkingTest(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = MODULE.parents[2] / '.runtime-work/c229439-parking-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.root = Path(self.tmp.name)
         self.polygon = [[0, 0], [10, 0], [10, 10], [0, 10]]
         self.site = {'cell_id': 'C229439', 'layout': 'road', 'map_name': 'source_map',
@@ -180,8 +182,6 @@ class ParkingTest(unittest.TestCase):
         self.assertEqual(parking.audit_saved_attempt(attempt, self.root)['measurement']['source_frame_count'], 900)
         attempt_path = self.root / 'attempt.json'
         attempt_path.write_text(json.dumps(attempt))
-        output = finalizer.finalize(attempt_path, self.root, self.root / 'observations.json')
-        self.assertEqual(json.loads(output.read_text())['source_audit']['measurement']['source_frame_count'], 900)
         (self.root / 'rows.json').write_text('[]')
         with self.assertRaisesRegex(parking.SourceError, 'hash mismatch'):
             parking.audit_saved_attempt(attempt, self.root)
@@ -214,17 +214,29 @@ class ParkingTest(unittest.TestCase):
             cameras[name] = {**save(path.name, path.read_bytes()), 'frame_count': 900,
                              'fps': 20, 'dimensions': [2, 2]}
         attempt = {**self.expected(900), 'source_format': 'native_original', 'fps': 20,
-                   'actor_rows': actor_ref, 'frame_map': frame_ref, 'camera_archives': cameras}
+                   'actor_rows': actor_ref, 'frame_map': frame_ref, 'camera_archives': cameras,
+                   'cameras': cameras}
         dimensions = {name: [2, 2] for name in saved_media_audit.CAMERAS}
         with self.assertRaisesRegex(ValueError, 'profile dimensions mismatch'):
             saved_media_audit.audit_media(attempt, self.root)
         result = saved_media_audit.audit_media(attempt, self.root, dimensions)
         self.assertEqual(result['decoded_images'], 3600)
         self.assertFalse(result['physical_acceptance'])
+        attempt_path = self.root / 'media-attempt.json'
+        attempt_path.write_text(json.dumps(attempt))
+        output = finalizer.finalize(attempt_path, self.root, self.root / 'media-observations.json', dimensions)
+        finalized = json.loads(output.read_text())
+        self.assertEqual(finalized['source_audit']['measurement']['source_frame_count'], 900)
+        self.assertEqual(finalized['original_media_audit']['decoded_images'], 3600)
         rows[80]['camera_frames']['front']['sha256'] = '0' * 64
         attempt['actor_rows'] = save('original-rows.json', json.dumps(rows).encode())
         with self.assertRaisesRegex(ValueError, 'pixel binding mismatch'):
             saved_media_audit.audit_media(attempt, self.root, dimensions)
+        attempt_path.write_text(json.dumps(attempt))
+        rejected = self.root / 'rejected-media.json'
+        with self.assertRaisesRegex(ValueError, 'pixel binding mismatch'):
+            finalizer.finalize(attempt_path, self.root, rejected, dimensions)
+        self.assertFalse(rejected.exists())
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ if __name__=='__main__':
     manifest=json.loads(MANIFEST.read_text())
     for entry in manifest['cases']:
         case=entry['case_id'];short=case.removeprefix(manifest['assignment_id']+'__')
-        output=REPO/('.runtime-work/c10307-offline-native-v4-'+short)
+        output=REPO/('.runtime-work/c10307-offline-native-v6-'+short)
         command=[str(REPO/'.venv-cpu/bin/python'),str(REPO/'runtime.py'),'offline',
                  '--manifest',str(MANIFEST),'--case',case,'--output',str(output),
                  '--python',str(REPO/'.venv-cpu/bin/python')]

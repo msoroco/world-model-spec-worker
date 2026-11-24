@@ -92,13 +92,17 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
                 raise ValueError('Native tick frame discontinuity')
             raw = adapter.ego_snapshot(ego, frame)
             sample = _state(raw, frame, previous_frame if previous_frame is not None else frame - 1, case_id)
+            if sample['phase'] == 'turning' and not entered:
+                raise ValueError('Native turn began before observed intersection entry')
             if sample['phase'] == 'intersection_entry':
+                if departed:
+                    raise ValueError('Native route returned to intersection after departure')
                 entered = True
             if sample['phase'] == 'departure':
                 if not entered or sample['road_id'] != survey['destination_road_id']:
                     raise ValueError('departure lacks observed entry or destination road')
                 departed = True
-            if sample['phase'] in ('approach', 'intersection_entry') and departed:
+            if sample['phase'] != 'departure' and departed:
                 raise ValueError('Native route regressed after departure')
             samples.append(sample)
             for name in CAMERAS:

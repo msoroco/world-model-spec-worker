@@ -28,7 +28,7 @@ def fixture():
             "access_aisle_source_sha256": "c" * 64,
             "parking_designation_source_sha256": "d" * 64,
             "municipal_jurisdiction_source_sha256": "e" * 64,
-            "camera_ids": ["front", "rear", "left", "right"],
+            "camera_ids": ["overview", "alley_approach", "access_aisle", "driver_reference"],
             "duration_frames": 900, "fps": 20, "nominal_speed_m_s": 2.0,
             "requested_lateral_profile": "steady" if index == 0 else "variation",
         }
@@ -49,7 +49,7 @@ class ComparisonAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "SHA256"):
             audit_module.audit(broken, captures)
         broken = copy.deepcopy(captures)
-        broken[audit_module.VARIATION]["camera_ids"] = ["front"]
+        broken[audit_module.VARIATION]["camera_ids"] = ["overview"]
         with self.assertRaisesRegex(ValueError, "fixed-condition"):
             audit_module.audit(measurements, broken)
 

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from site_contract import CASE_ACTIONS, read_packet, validate_site
@@ -41,6 +42,7 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
         raise ValueError("output directory must be empty")
     output.mkdir(parents=True, exist_ok=True)
     frames = []
+    first_native_time_s = None
     try:
         adapter.configure_site(packet, site)
         parked = adapter.spawn_parked(packet)
@@ -53,7 +55,12 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
             native_id, sim_time_s = adapter.tick()
             if type(native_id) is not int or (frames and native_id != frames[-1]["frame_id"] + 1):
                 raise ValueError("Native frame ID gap")
-            if abs(float(sim_time_s) - index / RATE_HZ) > 1e-4:
+            if type(sim_time_s) not in (int, float) or not math.isfinite(sim_time_s):
+                raise ValueError("Native simulation clock invalid")
+            if first_native_time_s is None:
+                first_native_time_s = float(sim_time_s)
+            episode_time_s = float(sim_time_s) - first_native_time_s
+            if abs(episode_time_s - index / RATE_HZ) > 1e-4:
                 raise ValueError("Native simulation clock drift")
             if index == RATE_HZ * 10:
                 adapter.command_act(driver, parked, site["selected_act"],
@@ -62,7 +69,8 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
             if not isinstance(observed, dict):
                 raise ValueError("original actor observation is missing")
             observed = dict(observed)
-            observed.update(frame_id=native_id, sim_time_s=sim_time_s,
+            observed.update(frame_id=native_id, sim_time_s=episode_time_s,
+                            native_elapsed_time_s=float(sim_time_s),
                             camera_frames={view: native_id for view in CAMERAS},
                             camera_sha256={})
             for view in CAMERAS:

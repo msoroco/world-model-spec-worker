@@ -15,10 +15,13 @@ CASE = 'testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__near_centerline
 
 
 class Adapter:
-    def __init__(self, *, missing_camera=False, missing_entry=False, stop_at=901):
+    def __init__(self, *, missing_camera=False, missing_entry=False,
+                 early_turn=False, resumed_turn=False, stop_at=901):
         self.frame = 0
         self.missing_camera = missing_camera
         self.missing_entry = missing_entry
+        self.early_turn = early_turn
+        self.resumed_turn = resumed_turn
         self.stop_at = stop_at
         self.stopped = False
         self.destroyed = False
@@ -46,6 +49,10 @@ class Adapter:
         phase = ('approach' if frame < 100 else
                  ('turning' if self.missing_entry else 'intersection_entry') if frame == 100 else
                  'turning' if frame < 400 else 'departure')
+        if self.early_turn and frame == 99:
+            phase = 'turning'
+        if self.resumed_turn and frame == 401:
+            phase = 'turning'
         return {'case_id': CASE, 'frame': frame, 'phase': phase,
                 'road_id': 4 if frame >= 400 else 1,
                 'driver_control': True, 'position_xy_m': [x, 0],
@@ -97,7 +104,19 @@ class NativeCaptureTests(unittest.TestCase):
 
     def test_missing_entry_rejected_and_ego_cleaned(self):
         adapter = Adapter(missing_entry=True)
-        with self.assertRaisesRegex(ValueError, 'observed entry'):
+        with self.assertRaisesRegex(ValueError, 'before observed intersection entry'):
+            self._run(adapter)
+        self.assertTrue(adapter.stopped and adapter.destroyed)
+
+    def test_turn_before_entry_rejected_and_ego_cleaned(self):
+        adapter = Adapter(early_turn=True)
+        with self.assertRaisesRegex(ValueError, 'before observed intersection entry'):
+            self._run(adapter)
+        self.assertTrue(adapter.stopped and adapter.destroyed)
+
+    def test_return_to_turning_after_departure_rejected(self):
+        adapter = Adapter(resumed_turn=True)
+        with self.assertRaisesRegex(ValueError, 'regressed after departure'):
             self._run(adapter)
         self.assertTrue(adapter.stopped and adapter.destroyed)
 

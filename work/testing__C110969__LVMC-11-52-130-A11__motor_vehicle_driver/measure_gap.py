@@ -15,16 +15,23 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _inside_source(root, source, name):
+    relative = Path(source["path"])
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ValueError(name + " path escapes saved acquisition")
+    path = (root / relative).resolve()
+    if not path.is_relative_to(root.resolve()) or not path.is_file():
+        raise ValueError(name + " missing or outside saved acquisition")
+    if _sha(path) != source["sha256"]:
+        raise ValueError(name + " missing or hash mismatch")
+    return path
+
+
 def measure(packet_path):
     packet_path = Path(packet_path)
     packet = json.loads(packet_path.read_text())
-    for name in ("map_source", "pose_source"):
-        source = packet[name]
-        path = (packet_path.parent / source["path"]).resolve()
-        if not path.is_file() or _sha(path) != source["sha256"]:
-            raise ValueError(name + " missing or hash mismatch")
-    map_path = (packet_path.parent / packet["map_source"]["path"]).resolve()
-    pose_path = (packet_path.parent / packet["pose_source"]["path"]).resolve()
+    map_path = _inside_source(packet_path.parent, packet["map_source"], "map_source")
+    pose_path = _inside_source(packet_path.parent, packet["pose_source"], "pose_source")
     map_data = json.loads(map_path.read_text())
     if not map_data.get("map_id") or not map_data.get("geometry_provenance"):
         raise ValueError("Intersection map identity/provenance missing")

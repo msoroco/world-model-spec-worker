@@ -6,16 +6,19 @@ import json
 from pathlib import Path
 
 from parking import audit_saved_attempt
+from saved_media_audit import audit_media
 
 
-def finalize(attempt_path, capture_root, output_path):
+def finalize(attempt_path, capture_root, output_path, expected_dimensions=None):
     attempt = json.loads(Path(attempt_path).read_text())
     audit = audit_saved_attempt(attempt, capture_root)
+    media = audit_media(attempt, capture_root, expected_dimensions)
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({'format': 'parking-device-observations',
                                   'case_id': attempt['case_id'],
                                   'source_audit': audit,
+                                  'original_media_audit': media,
                                   'legal_judgment': None}, indent=2) + '\n')
     return output
 

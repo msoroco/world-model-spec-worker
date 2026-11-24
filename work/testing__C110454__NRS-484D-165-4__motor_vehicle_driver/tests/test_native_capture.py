@@ -174,7 +174,8 @@ class NativeCaptureTests(unittest.TestCase):
                     sensor.callback(N(frame=frame, width=2, height=2,
                                       raw_data=bytes([1, 2, 3, 255] * 4)))
                 return frame
-        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01)
+        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01,
+                                  dimensions={view: (2, 2) for view in sensors})
         vehicle = Vehicle()
         receipt = capture_interval(CameraWorld(), vehicle, Bits, self.control,
                                    recorder, self.site, self.root,
@@ -204,9 +205,32 @@ class NativeCaptureTests(unittest.TestCase):
                     sensor.callback(N(frame=frame + 1, width=2, height=2,
                                       raw_data=bytes([1, 2, 3, 255] * 4)))
                 return frame
-        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01)
+        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01,
+                                  dimensions={view: (2, 2) for view in sensors})
         with self.assertRaisesRegex(ValueError, "callback frame mismatch"):
             capture_interval(DriftWorld(), Vehicle(), Bits, self.control,
+                             recorder, self.site, self.root,
+                             case_id="exact__low_beam", mode="low_beam", ticks=4)
+        self.assertTrue(all(sensor.stopped for sensor in sensors.values()))
+        self.assertFalse((self.root / "actor-state.jsonl").exists())
+
+    def test_camera_profile_dimension_mismatch_rejects_original_source(self):
+        class Sensor:
+            def listen(self, callback): self.callback = callback
+            def stop(self): self.stopped = True
+        sensors = {view: Sensor() for view in
+                   ("overview", "approach", "reference_corner", "driver_reference")}
+        class WrongSizeWorld(World):
+            def tick(self):
+                frame = super().tick()
+                for sensor in sensors.values():
+                    sensor.callback(N(frame=frame, width=3, height=2,
+                                      raw_data=bytes([1, 2, 3, 255] * 6)))
+                return frame
+        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01,
+                                  dimensions={view: (2, 2) for view in sensors})
+        with self.assertRaisesRegex(ValueError, "dimensions differ from capture profile"):
+            capture_interval(WrongSizeWorld(), Vehicle(), Bits, self.control,
                              recorder, self.site, self.root,
                              case_id="exact__low_beam", mode="low_beam", ticks=4)
         self.assertTrue(all(sensor.stopped for sensor in sensors.values()))

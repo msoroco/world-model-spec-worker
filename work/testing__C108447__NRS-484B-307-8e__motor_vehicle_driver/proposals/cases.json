@@ -1,0 +1,948 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__baseline_reference",
+      "rationale": "Shared source-observation reference",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "avoid_red"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "private"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "property"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+      "deliberate_differences": [
+        "parcel_class"
+      ],
+      "paired_probe_id": "property_bypass_parcel_class",
+      "probe": {
+        "comparison_or_standard": "Original source clause and measured physical attempt; no legal verdict",
+        "primary_variable": "parcel_class",
+        "target_value_or_branch": "private"
+      },
+      "rationale": "Exact physical contrast; original observation and purpose remain unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "avoid_red"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "private"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "property"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass",
+      "deliberate_differences": [
+        "parcel_class"
+      ],
+      "paired_probe_id": "property_bypass_parcel_class",
+      "probe": {
+        "comparison_or_standard": "Original source clause and measured physical attempt; no legal verdict",
+        "primary_variable": "parcel_class",
+        "target_value_or_branch": "public"
+      },
+      "rationale": "Exact physical contrast; original observation and purpose remain unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "avoid_red"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "public"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "property"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing",
+      "deliberate_differences": [
+        "route_class"
+      ],
+      "paired_probe_id": "property_bypass_route_class",
+      "probe": {
+        "comparison_or_standard": "Original source clause and measured physical attempt; no legal verdict",
+        "primary_variable": "route_class",
+        "target_value_or_branch": "roadway"
+      },
+      "rationale": "Exact physical contrast; original observation and purpose remain unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "avoid_red"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "private"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "roadway"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red",
+      "deliberate_differences": [
+        "approach_state"
+      ],
+      "paired_probe_id": "property_bypass_approach_state",
+      "probe": {
+        "comparison_or_standard": "Original source clause and measured physical attempt; no legal verdict",
+        "primary_variable": "approach_state",
+        "target_value_or_branch": "green"
+      },
+      "rationale": "Exact physical contrast; original observation and purpose remain unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "avoid_red"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "private"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "property"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red",
+      "deliberate_differences": [
+        "destination_state"
+      ],
+      "paired_probe_id": "property_bypass_destination_state",
+      "probe": {
+        "comparison_or_standard": "Original source clause and measured physical attempt; no legal verdict",
+        "primary_variable": "destination_state",
+        "target_value_or_branch": "red_alone"
+      },
+      "rationale": "Exact physical contrast; original observation and purpose remain unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "avoid_red"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "private"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "property"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose",
+      "deliberate_differences": [
+        "avoidance_purpose"
+      ],
+      "paired_probe_id": "property_bypass_avoidance_purpose",
+      "probe": {
+        "comparison_or_standard": "Original source clause and measured physical attempt; no legal verdict",
+        "primary_variable": "avoidance_purpose",
+        "target_value_or_branch": "other"
+      },
+      "rationale": "Exact physical contrast; original observation and purpose remain unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "actor registry",
+            "name": "original vehicle class",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json actor_source",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "approach signal identity, facing and state",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json approach_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "reviewed parcel authority joined to OpenDRIVE",
+            "name": "source parcel classification and boundaries",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "map-packet.json properties",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native body transform 20 Hz",
+            "name": "ego body path and street entry",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json ego and destination_entry_frame",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native signal observer 20 Hz",
+            "name": "destination street traffic signal",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json destination_signal_history",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "authored source context",
+            "name": "separate avoidance purpose",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "trace.json purpose",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          },
+          {
+            "method": "Native synchronized camera observer 20 Hz",
+            "name": "original four-camera frame map",
+            "reference_frame": "original Native frame joined to camera map",
+            "sampling_rate_hz": 20,
+            "source": "frame-map.jsonl and four PNG archives",
+            "time_window": "original 45-second episode",
+            "uncertainty": "Physical motion, parcel authority and pixel visibility require independent local review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256 OpenDRIVE, authority and exact route join",
+            "name": "reviewed original map and parcel authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU packets do not establish parcel authority or physical realization.",
+          "Avoidance purpose is separately sourced and cannot be inferred from route shape."
+        ]
+      },
+      "target_law_id": "NRS-484B-307-8e",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "variable_assignments": {
+        "approach_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "red_alone"
+        },
+        "avoidance_purpose": {
+          "kind": "world_setup",
+          "unit": "categorical sourced purpose",
+          "value": "other"
+        },
+        "destination_state": {
+          "kind": "world_setup",
+          "unit": "categorical signal request",
+          "value": "green"
+        },
+        "parcel_class": {
+          "kind": "world_setup",
+          "unit": "categorical source class",
+          "value": "private"
+        },
+        "route_class": {
+          "kind": "controller",
+          "unit": "categorical route request",
+          "value": "property"
+        }
+      }
+    }
+  ],
+  "cell_id": "C108447",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Avoidance purpose is separately sourced; route shape alone does not establish intent.",
+          "phrase": "to avoid the red signal"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed original map and parcel authority",
+        "Original feasible purpose variation and Native motion"
+      ],
+      "rationale": "Original source-bound purpose and physical feasibility are required before freezing a sweep.",
+      "status": "incomplete",
+      "sweep_id": "avoidance_purpose_pending_original_source",
+      "target_law_id": "NRS-484B-307-8e"
+    }
+  ],
+  "sweeps_expanded": true
+}

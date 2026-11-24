@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import subprocess
 from pathlib import Path
 
@@ -18,6 +19,20 @@ def audit(attempt: Path) -> dict:
         rows = [json.loads(line) for line in frame_map.read_text().splitlines() if line.strip()]
         if not rows:
             raise ValueError("original camera frame map empty")
+        first_frame = rows[0].get("frame")
+        first_time = rows[0].get("elapsed_seconds")
+        if (type(first_frame) is not int or type(first_time) not in (int, float) or
+                not math.isfinite(first_time)):
+            raise ValueError("original camera frame map lacks frame and time")
+        for index, row in enumerate(rows):
+            frame = row.get("frame")
+            time = row.get("elapsed_seconds")
+            if (type(frame) is not int or frame != first_frame + index or
+                    type(time) not in (int, float) or not math.isfinite(time) or
+                    abs(time - first_time - index / 20) > .001):
+                raise ValueError("original camera frame map is not contiguous at 20 Hz")
+            if row.get("camera_names") != list(CAMERAS):
+                raise ValueError("original camera frame map has wrong camera identity")
         expected_frames = len(rows)
     results = {}
     for name in CAMERAS:

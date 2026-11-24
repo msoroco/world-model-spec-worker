@@ -28,6 +28,26 @@ class SignalControllerTest(unittest.TestCase):
             MODULE.request_right_signal("none", 0)
         with self.assertRaises(ValueError):
             MODULE.request_right_signal("short80", float("nan"))
+        with self.assertRaises(ValueError):
+            MODULE.request_right_signal("continuous100", 10, speed_m_s=-1)
+
+    def test_one_sample_lead_preserves_measured_boundary(self):
+        # At 20 Hz and 8 m/s each saved sample is 0.4 m apart. An exact
+        # 100-foot request would first be retained inside the 100-foot mark.
+        remaining = [40 - .4 * index for index in range(101)]
+        starts = {}
+        for case in ("short80", "continuous100", "above101", "interrupted", "rain"):
+            active = [MODULE.request_right_signal(case, distance, speed_m_s=8)
+                      for distance in remaining]
+            first = 100
+            while first > 0 and active[first - 1]:
+                first -= 1
+            starts[case] = remaining[first] / MODULE.METRES_PER_FOOT
+        self.assertLess(starts["short80"], 100)
+        self.assertGreaterEqual(starts["continuous100"], 100)
+        self.assertGreater(starts["above101"], 101)
+        self.assertLess(starts["interrupted"], 100)
+        self.assertEqual(starts["rain"], starts["continuous100"])
 
 
 if __name__ == "__main__":

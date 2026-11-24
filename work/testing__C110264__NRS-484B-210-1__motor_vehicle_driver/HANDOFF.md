@@ -64,3 +64,9 @@ Proof SHA-256 (logs under this assignment):
 - `cpu-offline-neither.log`: `a72b1e51b003a10040bf7405264bc2df341d469c47bdc8d6d4da187fde85dbcd` (exit 0)
 
 Next CPU work: bind a reviewed Native map/paved corridor and actual actor/sensor adapters to a production runner; author canonical semantic proposals and manifest; run exact source-shaped positive/negative compatibility, pinned saved-only and independent delivery/comparison receipts. Actual right-pass motion, signal and turn readback, camera visibility and statutory findings remain unverified. Scoped strict fails on truthful `partial` status.
+
+## 2026-11-23 saved finalizer checkpoint
+
+`pass_right_finalizer.py:finalize` now validates the selected `left_signal`, `left_turn` or `neither` case, invokes the independent saved source audit and full four-camera decoder, and returns the measured target signal, measured left-turn motion, right-pass and intersection-passage findings with source and pixel digests. It refuses a saved trace that lacks the exact pass. Its CLI writes only a fresh result and binds the saved manifest SHA256. `tests/test_pass_right_finalizer.py` exercises full 900-frame camera ZIP decode, wrong-case rejection and missing-trace rejection with source-shaped diagnostic fixtures; fixture dimensions are marked outside the production camera profile. No physical visibility, legal permission or acceptance is asserted.
+
+Pinned preflight and scoped static check passed. The 27-test focused suite passed in `cpu-finalizer-tests.log`. The exact scoped strict gate exited 1 on partial status in `cpu-strict-finalizer.log`; the four current log hashes are retained in `result.json`. Canonical semantic proposals, complete manifest, production Native runner, runtime compatibility/process-saved receipts and independent delivery/comparison receipt chain remain CPU work.

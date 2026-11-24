@@ -80,3 +80,24 @@ Proof SHA-256 (all logs within this assignment):
 - `cpu-offline-unqualified_lamps_only.log`: `7a3e50f751c88bd05858ea21a95e69a612978a76099624b18c17831749845a4b` (exit 0)
 
 Next CPU work: bind a real reviewed Native site and independent siren/lamp instrument and source documents to a production runner; author canonical proposals and execution manifest; run exact source-shaped positive/negative compatibility, saved-only processing and independent delivery/comparison checks for every selected case. Physical audibility and recipient hearing remain unverified. The scoped strict command fails on truthful `partial` status.
+
+## 2026-11-23 original pixel profile and ZIP integrity checkpoint
+
+`pixel_audit.py` now requires every decoded original PNG to match the capture profile dimensions in nondiagnostic mode and rejects duplicate ZIP frame names even when the archive hash is updated. Small-image synthetic tests and the fake Native capture opt in to diagnostic mode; neither establishes actual pixels or visibility. This closes two archive acceptance gaps. The current front/rear/left/right naming remains a mismatch with the pinned overview/approach/reference_corner/driver_reference delivery profile and must be repaired in the canonical bundles before readiness.
+
+Pinned preflight, 38 focused tests, all seven rebuilt exact diagnostic offline constructions and scoped static pass. Exact scoped strict exits 1 on truthful partial status. Genuine reviewed site and independent device instrumentation, canonical media, semantic proposals, positive/negative compatibility, saved-only processing and independent delivery/comparison receipts remain.
+
+Current log SHA-256 receipts:
+
+- `cpu-profile-preflight.log`: `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63` (exit 0)
+- `cpu-profile-tests.log`: `ed8b7faf5511acd135332b3d280872d5683d346a6f6301b3ace4ddca059ac260` (exit 0)
+- `cpu-profile-build.log`: `87cc665f6677a9dae1a03cb93d988d280f65490d6edec95bb7cfd1f70142b331` (exit 0)
+- `cpu-profile-offline-response_siren_pedestrian.log`: `d6e40899b068cd7be8c4baaddd26662804f30c792fd39eeea376d52ab74857a4` (exit 0)
+- `cpu-profile-offline-response_lamps_only.log`: `09c31216d4b46d0aa6cd826e263cf7f0b8b843826a6d8f7c2413d4a9c033f7d8` (exit 0)
+- `cpu-profile-offline-response_silent.log`: `6ca40a61162032f7210b5cba9bf409825137f4007d6ba497beda3ef87525e4cf` (exit 0)
+- `cpu-profile-offline-pursuit_actual_siren.log`: `e9a7aba92ff732327a64a4bbfcfb259c1ac2c878dcd605c6a6596696c91ba710` (exit 0)
+- `cpu-profile-offline-pursuit_suspected_siren.log`: `fd0c8a09b44bb13c0ecec4a5de9ccea0b5591f4882f6f66b32dedd5b95355350` (exit 0)
+- `cpu-profile-offline-unqualified_siren.log`: `b22dc5e0ce60c4151ed25caeedb17c7e2e7508d811c0943283696f88a2d64e47` (exit 0)
+- `cpu-profile-offline-unqualified_lamps_only.log`: `a087de4dcd0ae15ec513e35a9cae32b6bf4cc40f478bb6708f318a3ff8b78ee6` (exit 0)
+- `cpu-profile-static.log`: `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d` (exit 0)
+- `cpu-profile-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)

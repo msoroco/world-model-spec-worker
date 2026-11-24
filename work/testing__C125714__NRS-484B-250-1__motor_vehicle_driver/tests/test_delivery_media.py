@@ -102,6 +102,31 @@ class NativeMediaAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "camera stream count differs"):
                 audit_media_time(tmp, 9)
 
+    def test_variable_presentation_times_with_nominal_20_hz_rejected(self):
+        Path('.runtime-work').mkdir(exist_ok=True)
+        with TemporaryDirectory(dir='.runtime-work') as tmp:
+            native_video_fixture(tmp)
+            video = Path(tmp) / 'overview.mkv'
+            variable = Path(tmp) / 'overview-variable.mkv'
+            command = ['ffmpeg', '-nostdin', '-v', 'error', '-f', 'lavfi', '-i',
+                       'color=c=black:s=1920x1080:r=20', '-frames:v', '9',
+                       '-vf', 'settb=1/1000,setpts=PTS+if(between(N\,4\,6)\,20\,0)',
+                       '-fps_mode', 'vfr', '-enc_time_base', '1/1000',
+                       '-c:v', 'ffv1', '-pix_fmt', 'yuv420p',
+                       '-y', str(variable)]
+            subprocess.run(command, check=True, capture_output=True, timeout=60)
+            probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                                    '-count_frames', '-show_entries',
+                                    'stream=avg_frame_rate,nb_read_frames', '-of', 'json',
+                                    str(variable)], check=True, capture_output=True,
+                                   text=True, timeout=60)
+            stream = json.loads(probe.stdout)['streams'][0]
+            self.assertEqual(stream['nb_read_frames'], '9')
+            self.assertEqual(stream['avg_frame_rate'], '20/1')
+            variable.replace(video)
+            with self.assertRaisesRegex(ValueError, 'presentation time differs'):
+                audit_media_time(tmp, 9)
+
     def test_skipped_native_frame_and_time_step_rejected(self):
         with TemporaryDirectory() as tmp:
             native_video_fixture(tmp)

@@ -19,3 +19,7 @@ NRS 484B.127(1) requires a driver following another vehicle no more closely than
 ## Local resume and physical review
 
 The first GPU command is in `result.json.first_gpu_delivery_command`; local dispatch supplies `$LOCAL_ROOT`, `$DB`, `$RUN`, `$JOB_ID`, `$CARLA_PYTHON`, `$CARLA_HOST` and `$CARLA_PORT`. For each exact case, select the primary candidate first; use fallback1 only on its declared route-discovery failure trigger. After Native exit and owner release, run the manifest `post_capture.command`, then `delivery_audit.py` and the declared `comparison_audit.py` command over original attempts. Review measured range brackets, realized fixed conditions, complete 45 s motion, source identities, actual participant/road pixels and public-highway context. Legal reasonableness remains for independent judgment. The shared batch GPU queue, branch coverage/review and local integration proof await preparation of the remaining assignments; this assignment's exact CPU gate has passed but the complete-batch strict gate has not.
+
+## 2026-11-23 scoped resumption
+
+The pinned CPU preflight and exact assignment-scoped complete delivery gate were rerun after the environment update; both exited 0. The exact commands and SHA-256 log receipts are appended to `result.json.tests`. The already prepared 16-case package remains `ready` for CPU delivery, subject to the physical GPU checks listed above.

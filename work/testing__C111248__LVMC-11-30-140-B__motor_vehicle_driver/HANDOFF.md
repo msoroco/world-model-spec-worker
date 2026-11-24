@@ -50,3 +50,23 @@ Next CPU actions: integrate this adapter with per-case executable Native runner 
 Fourteen focused CPU tests pass (`cpu-carla-adapter-tests.log`, SHA256 `fc0faeef63dc481c181b7486857b1beb0317e3f1f28a7b9a26c3ce12a284ddeb`). Pinned preflight exits 0 (`cpu-carla-adapter-preflight.log`, SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`). Scoped static exits 0 (`cpu-carla-adapter-static.log`, SHA256 `0a4ff9e3e5d8205601b12039ecd202fc0159418643bff694b18cd0939c6dff4f`). Exact scoped strict exits 1 on truthful partial status (`cpu-carla-adapter-strict.log`, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`).
 
 Next CPU work: bind verified real blindness/cue and protected-person identity sources, implement exact per-case canonical bundles and semantic proposals, positive/negative compatibility, canonical saved processing and independent comparison proof receipts. The contact case remains observation-only and risk-gated; no collision is commanded.
+
+## 2026-11-23 six-case diagnostic construction checkpoint
+
+`build_offline_draft.py` now packages all six exact planned cases with source-hashed embedded `case-plan.json`, distinct cue/encounter/response/precaution knobs, the existing Native actor and camera adapter, 900-frame original capture, saved measurement and pixel audit. The bundled runner validates case identity, case knobs, 20 Hz/45-second profile and required source inventory, then refuses a Native launch without reviewed map, blindness and actually carried cue sources. The contact case remains observation-only and never commands a collision.
+
+All six exact pinned `runtime.py offline` constructions pass. Pinned preflight, 14 focused tests and scoped static pass. The exact scoped strict gate exits 1 on truthful partial status. These are diagnostic bundles, not canonical delivery. Next CPU work is production runner/source packet binding, semantic proposals, compatibility, saved-only runtime processing and independent delivery/comparison receipts. No physical blindness, cue visibility, stop necessity or legal judgment is claimed.
+
+Current proof SHA-256 receipts:
+
+- `cpu-bundle-preflight.log`: `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63` (exit 0)
+- `cpu-bundle-build.log`: `d51b1b918534bc1261bf61fff2b9b7417ca593460d43e4121aa9480bbe43604c` (exit 0)
+- `cpu-bundle-offline-white_full_stop_wait.log`: `88040f968f83d5aa4e6095a780d52f6b8622822018b3a45d5750914fedd39374` (exit 0)
+- `cpu-bundle-offline-white_roll_through.log`: `fd1fc49aac2f8dc434fcec6a1d1591343f6b96c844b506697b957a57ddbc2031` (exit 0)
+- `cpu-bundle-offline-white_early_proceed.log`: `d48ddf3303610a70384145095010f7eb9913545a865b90ac9700b9bf928c42c9` (exit 0)
+- `cpu-bundle-offline-white_contact_stop.log`: `94f93a05af8c149572696c6e0684fbe3e621d5e1e4ca1083f6f347464c0e9691` (exit 0)
+- `cpu-bundle-offline-red_tip_full_stop_wait.log`: `a4920d06b3ca91cca1cc69a1bf272b190856c011a8066e2b210d129db26f6a70` (exit 0)
+- `cpu-bundle-offline-assisted_full_stop_wait.log`: `79549598ad270e45226b4c057866c0dfe8650813190b833fee3ef251e4ecec0a` (exit 0)
+- `cpu-bundle-tests.log`: `7b10f312d54751897f2d2928c9005820c871814b7b5f0a502ab54a74555e2bcc` (exit 0)
+- `cpu-bundle-static.log`: `0a4ff9e3e5d8205601b12039ecd202fc0159418643bff694b18cd0939c6dff4f` (exit 0)
+- `cpu-bundle-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)

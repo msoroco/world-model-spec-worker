@@ -155,7 +155,7 @@ class NativeCaptureTests(unittest.TestCase):
             original_map = frame_map_path.read_bytes()
             original_capture = capture_path.read_bytes()
             frame_rows = [json.loads(line) for line in original_map.splitlines()]
-            frame_rows[5]["cameras"]["rear"]["sensor_id"] = "replacement-rear"
+            frame_rows[5]["cameras"]["alley_approach"]["sensor_id"] = "replacement-alley-approach"
             altered_map = "".join(json.dumps(row) + "\n" for row in frame_rows).encode()
             frame_map_path.write_bytes(altered_map)
             capture_meta = json.loads(original_capture)
@@ -165,7 +165,13 @@ class NativeCaptureTests(unittest.TestCase):
                 saved_delivery.audit(output, case_id)
             frame_map_path.write_bytes(original_map)
             capture_path.write_bytes(original_capture)
-            image = output / "camera-png" / "0000-front.png"
+            capture_meta = json.loads(original_capture)
+            capture_meta["diagnostic_fixture"] = False
+            capture_path.write_text(json.dumps(capture_meta))
+            with self.assertRaisesRegex(ValueError, "delivery dimensions differ"):
+                saved_delivery.audit(output, case_id, require_delivery=True)
+            capture_path.write_bytes(original_capture)
+            image = output / "camera-png" / "0000-overview.png"
             image.write_bytes(b"broken")
             with self.assertRaisesRegex(ValueError, "image hash mismatch"):
                 saved_delivery.audit(output, case_id)
@@ -201,8 +207,8 @@ class NativeCaptureTests(unittest.TestCase):
         class SwitchedAdapter(Adapter):
             def image(self, camera, frame):
                 packet = super().image(camera, frame)
-                if camera == "rear" and frame >= 45:
-                    packet["sensor_id"] = "replacement-rear"
+                if camera == "alley_approach" and frame >= 45:
+                    packet["sensor_id"] = "replacement-alley-approach"
                 return packet
 
         case_id = next(iter(native_capture.CASE_PROFILES))

@@ -115,3 +115,9 @@ Proof SHA-256 (logs under this assignment):
 - `cpu-offline-high_beam.log`: `6a6d7ee6f402ce96210fad2bf7ed1548fb7e04b7828e26658fd7100742d5179b` (exit 0)
 
 Next CPU work: bind a surveyed Native site/parking actor to a production runner, construct and measure the physical depressed-aim alternative if supported, author canonical proposals and manifest, then source-shaped positive/negative compatibility, saved-only and independent delivery/comparison receipts for every case. Actual emitted intensity, aim, parking and camera visibility remain unverified. Scoped strict fails on truthful `partial` status.
+
+## 2026-11-23 original camera profile enforcement
+
+`camera_recorder.py` now requires each original callback to match the declared 1920×1080 overview or 1280×720 detail-view dimensions before encoding. The diagnostic bundle config and runner preflight bind these dimensions, and a new fake-Native negative test confirms that a mismatched frame is rejected before actor-state sources are emitted and all listeners are stopped. The three inline constructions were regenerated to carry current code. This is a software source-shape check, not proof of actual lamp emission, aim or image visibility.
+
+Pinned preflight, bundle build, all **20** focused tests, three exact offline construction checks and scoped static exited 0. The exact scoped strict gate exited 1 because status remains partial. The commands and cleaned SHA-256 logs are in `result.json.tests`. Next CPU work remains a reviewed intersection site and production owner runner, physical aim branch if supported, canonical proposals/manifest and exact compatibility, saved-only and delivery audit receipts.

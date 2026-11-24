@@ -160,10 +160,58 @@
       "exit_code": 1,
       "log": "cpu-saved-pair-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-camera-alignment.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-build-camera-alignment.log",
+      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-camera-alignment.log",
+      "sha256": "fcebdf18d2c258bfde08843f94a03c2ae53590a57c987ac70a24eeb76052129d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-attention-offline-steady_travel-camera-alignment-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-steady_travel-camera-alignment.log",
+      "sha256": "54ec184f269341762ff28f9c2e10baf906db4fca5704092366afdf083cef7905"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-attention-offline-steering_variation-camera-alignment-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-steering_variation-camera-alignment.log",
+      "sha256": "a11f25942272c9eb86d287e1e923929bdb1679a6070a0e3737011332f3316afd"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_saved_pair.py --output-root .runtime-work/c10301-attention-saved-pair-camera-alignment-v1",
+      "exit_code": 0,
+      "log": "cpu-saved-pair-camera-alignment.log",
+      "sha256": "79eeb53066b0a0b2e1d486ac8dc60727d6ca382cd3d03d1090a3ad17c92934f7"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-camera-alignment.log",
+      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-camera-alignment.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Two exact diagnostic alley cases pass source-specific measurement contracts and pinned offline constructions. A standalone saved-only replay now captures 900 source-joined frames and decodes 3,600 PNGs per case, finalizes both, audits the controlled comparison, and rejects a missing original operation source. Strict readiness remains partial: pinned runtime compatibility/process-saved, canonical manifest and proposals, reviewed Native site binding and independent delivery acceptance still need CPU work."
+  "reason": "Two exact diagnostic alley cases now align source camera IDs with the bundled view contract and bind alley scene bytes in bundle preflight. Saved delivery rejects wrong-sized original views; 24 focused tests, both pinned offline constructions and a full 900-frame/3600-PNG-per-case saved comparison replay pass. Strict readiness remains partial: pinned runtime compatibility/process-saved, canonical manifest and proposals, reviewed Native site binding and independent delivery acceptance still need CPU work."
 }

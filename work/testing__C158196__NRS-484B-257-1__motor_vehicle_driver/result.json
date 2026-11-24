@@ -2,7 +2,7 @@
   "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "9d804a3458eaf04ca6c3572860bd4e7e3389d43dfbbf4ac504cd9d9e6064c238",
   "status": "partial",
-  "readiness_kind": "source_bound_construction_draft",
+  "readiness_kind": "source_bound_signal_exception_comparison_draft",
   "applied_update": 0,
   "tests": [
     {
@@ -52,10 +52,40 @@
       "exit_code": 0,
       "log": "cpu-comparison-proof.log",
       "sha256": "9ba9239d709349a4d93125cf651a7a56d1a4d4d80ac9e5f8d5e7166345f149bb"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/p06-c158196 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-signal-tests.log",
+      "sha256": "234b72aa04bc0eb291394cb1925fb62f2f637794a69b4caa575c8c673391c1f5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-signal-preflight.log",
+      "sha256": "a3ea153998134da0f073ec60f025dd09dc6d8fdc3148af07d5cd95db8f8120b1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --output .runtime-work/p06-c158196/offline-active-signal",
+      "exit_code": 0,
+      "log": "cpu-signal-offline.log",
+      "sha256": "c5bb6f7139ea911350afe81f08823d33ff32aa0878510ea759c06d527fc7de42"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-257-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-signal-static.log",
+      "sha256": "f68e6484bcb8af1b65fb5655bd4140699952f3953d41b143091614f95b51ddaf"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-signal-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four exact diagnostic bundles pass pinned offline checks. 20 focused tests and synthetic source-bound single-case and linked saved-comparison positive/negative proofs pass. Real Native site and four-camera acquisition, canonical semantic proposals, selected-requirement contracts, pinned compatibility, saved-only processing and delivery audit remain worker-owned CPU work. Accepted metadata alone does not prove this branch."
+  "reason": "Four diagnostic case bundles remain partial. signal_exception.py now verifies original source bytes, active governing signal readback and full frame/time join; saved_comparison.py measures the third governing_signal_exception contrast while holding context and all nonsignal source hashes fixed. Twenty-three focused tests, pinned preflight, active-signal offline construction and scoped static check pass. Real Native site and four-camera capture, canonical proposals and contracts, pinned compatibility/process-saved, delivery/pixel audits and production exception integration remain CPU work. Accepted metadata does not prove the branch."
 }

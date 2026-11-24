@@ -117,6 +117,21 @@ def audit_media_time(path, expected_frames):
             raise ValueError("original camera dimensions or frame count differ: " + name)
         if stream.get("codec_name") != "ffv1" or stream.get("avg_frame_rate") != "20/1":
             raise ValueError("original camera FFV1 or 20 Hz contract differs: " + name)
+        timing = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                                 "-show_frames", "-show_entries",
+                                 "frame=best_effort_timestamp_time", "-of", "json",
+                                 str(video)], capture_output=True, text=True, timeout=180)
+        if timing.returncode:
+            raise ValueError("original camera presentation-time probe failed: " + name)
+        encoded_frames = json.loads(timing.stdout).get("frames", [])
+        try:
+            pts = [float(frame["best_effort_timestamp_time"]) for frame in encoded_frames]
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("original camera presentation time missing: " + name) from exc
+        if (len(pts) != expected_frames or any(not math.isfinite(value) for value in pts)
+                or any(abs((value - pts[0]) - index * .05) > .001
+                       for index, value in enumerate(pts))):
+            raise ValueError("original camera presentation time differs from 20 Hz Native frames: " + name)
         decoded = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(video),
                                   "-f", "null", "-"], capture_output=True, timeout=180)
         if decoded.returncode:

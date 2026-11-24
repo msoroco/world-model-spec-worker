@@ -58,6 +58,25 @@ class BundleTests(unittest.TestCase):
             self.assertEqual(sha(FOLDER / row['materialization_log']), row['materialization_log_sha256'])
             self.assertFalse(row['physical_acceptance_claimed'])
 
+    def test_semantic_stage_chain_is_hash_bound_to_selected_constructions(self):
+        index = json.loads((FOLDER / 'proposals/semantic-index.json').read_text())
+        self.assertEqual(index['assignment_id'], FOLDER.name)
+        refs = index['stages']
+        self.assertEqual(set(refs), {'relevance_batch', 'relevance', 'template',
+                                     'judgment_observables', 'bindings', 'cases'})
+        for name, ref in refs.items():
+            for item in ref if isinstance(ref, list) else [ref]:
+                with self.subTest(stage=name):
+                    self.assertEqual(sha(FOLDER / item['path']), item['sha256'])
+        cases = json.loads((FOLDER / refs['cases']['path']).read_text())['cases']
+        selected = {item['case_id']: item for item in cases if item['target_type'] != 'baseline'}
+        manifest = json.loads((FOLDER / 'execution-manifest.draft.json').read_text())
+        self.assertEqual(set(selected), {item['case_id'] for item in manifest['cases']})
+        for entry in manifest['cases']:
+            construction = json.loads((FOLDER / entry['construction']).read_text())
+            self.assertEqual(selected[entry['case_id']]['recording_description'],
+                             construction['recording_description'])
+
 
 if __name__ == '__main__':
     unittest.main()

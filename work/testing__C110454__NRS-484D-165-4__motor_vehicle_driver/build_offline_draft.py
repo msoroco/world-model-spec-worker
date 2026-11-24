@@ -20,6 +20,7 @@ import json
 from pathlib import Path
 from lamp_probe import CASE_MODES
 from native_capture import VIEWS
+from camera_recorder import PROFILE_DIMENSIONS
 
 
 def check():
@@ -40,6 +41,8 @@ def check():
         raise ValueError("Original 20 Hz interval changed")
     if config["cameras"] != list(VIEWS):
         raise ValueError("Four original camera views changed")
+    if config["camera_dimensions"] != {view: list(PROFILE_DIMENSIONS[view]) for view in VIEWS}:
+        raise ValueError("Original camera profile dimensions changed")
     if config["source_requirements"] != ["reviewed_site", "actor_state", "camera_frame_map", "original_camera_media"]:
         raise ValueError("Original source requirements changed")
     return case
@@ -100,6 +103,8 @@ def build():
             "plan_sha256": hashlib.sha256(source).hexdigest(),
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
             "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
+            "camera_dimensions": {"overview": [1920, 1080], "approach": [1280, 720],
+                                  "reference_corner": [1280, 720], "driver_reference": [1280, 720]},
             "source_requirements": ["reviewed_site", "actor_state", "camera_frame_map", "original_camera_media"],
             "required_atoms": [], "diagnostic_only": True,
         }

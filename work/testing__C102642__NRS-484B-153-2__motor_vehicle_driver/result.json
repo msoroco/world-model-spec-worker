@@ -52,10 +52,64 @@
       "exit_code": 0,
       "log": "cpu-bundle-tests.log",
       "sha256": "d7fc16d49a81020b35270d152cf71752c6590de19364650632638c1fe566fbb9"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-episode-clock.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-episode-clock-tests.log",
+      "sha256": "334d40c4b8aed8f082b0200e4ad6a43a02d0f3830ef093708762a71740c498f5"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --output .runtime-work/c102642-offline-open_near_overlap-episode-clock-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-open_near_overlap-episode-clock-v2.log",
+      "sha256": "be005788fbd1c9fc88926279df34a35fc27d5281664903b88be87545653a9ea7"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --output .runtime-work/c102642-offline-open_near_clear-episode-clock-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-open_near_clear-episode-clock-v2.log",
+      "sha256": "cd1cecb74317b8dc64597f905bf180a0a8cc2d3b14111d13ee0a1b1049323370"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --output .runtime-work/c102642-offline-open_far_side-episode-clock-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-open_far_side-episode-clock-v2.log",
+      "sha256": "8dc3be28e1d7145f0e71e5c160c53cad2f70df3388a360c2cb1e7ff3ee03d009"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --output .runtime-work/c102642-offline-board_near-episode-clock-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-board_near-episode-clock-v2.log",
+      "sha256": "c29da81b61d0ab60a45c7c5490f3ca16a77cb94c0a16b216f8898e287d2f6a49"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --output .runtime-work/c102642-offline-alight_near-episode-clock-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-alight_near-episode-clock-v2.log",
+      "sha256": "5f390859fdfe23d327773bf809bad28b26c1b6a749ae563294f58bf15487abc1"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-episode-clock.log",
+      "sha256": "f495045bad815c4cb4863d7062e1398268583d6288251332a3927ded251b6f21"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-episode-clock.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact offline bundles pass. Native acquisition now verifies the observed selected act, passing-side relation and loaded map stability before sealing source bytes; 22 focused tests pass, including negative missing-act and map-change cases. Concrete CARLA adapter, surveyed physical site, canonical proposals/manifest, pinned positive/negative compatibility and saved-only delivery receipts remain CPU work."
+  "reason": "Five exact diagnostic offline bundles pass with 23 focused tests. Native capture now converts a finite absolute simulator clock to the episode-relative 20 Hz axis while preserving the original timestamp; cumulative drift is rejected. Concrete CARLA adapter, surveyed physical site, canonical proposals/manifest, pinned positive/negative compatibility and saved-only delivery receipts remain CPU work."
 }

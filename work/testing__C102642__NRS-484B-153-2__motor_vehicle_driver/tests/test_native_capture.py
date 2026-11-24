@@ -24,13 +24,14 @@ audit_spec.loader.exec_module(audit)
 
 class Adapter:
     def __init__(self, source, *, drift=False, missing_camera=False,
-                 missing_act=False, changed_map=False):
+                 missing_act=False, changed_map=False, start_time_s=0.0):
         self.source = source
         self.index = -1
         self.drift = drift
         self.missing_camera = missing_camera
         self.missing_act = missing_act
         self.changed_map = changed_map
+        self.start_time_s = start_time_s
         self.commands = []
         self.cleaned = False
         stream = io.BytesIO()
@@ -63,7 +64,7 @@ class Adapter:
 
     def tick(self):
         self.index += 1
-        return self.index, self.index / 20 + (0.1 if self.drift else 0)
+        return self.index, self.start_time_s + self.index / 20 + (0.001 * self.index if self.drift else 0)
 
     def observe(self, frame_id, driver, parked, passing):
         active = frame_id == 201 and not self.missing_act
@@ -87,7 +88,7 @@ class Adapter:
 
 class NativeCaptureTests(unittest.TestCase):
     def run_case(self, *, case_key="board_near", drift=False, missing_camera=False,
-                 missing_act=False, changed_map=False):
+                 missing_act=False, changed_map=False, start_time_s=0.0):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
             source = packet()
@@ -95,7 +96,8 @@ class NativeCaptureTests(unittest.TestCase):
             survey.write_text(json.dumps(source))
             digest = hashlib.sha256(survey.read_bytes()).hexdigest()
             adapter = Adapter(source, drift=drift, missing_camera=missing_camera,
-                              missing_act=missing_act, changed_map=changed_map)
+                              missing_act=missing_act, changed_map=changed_map,
+                              start_time_s=start_time_s)
             output = base / "out"
             case = ROOT.name + "__" + case_key
             if drift or missing_camera or missing_act or changed_map:
@@ -111,6 +113,8 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertEqual(receipt["frame_count"], 900)
             self.assertEqual(receipt["camera_frame_count"], 3600)
             self.assertEqual(len(trace["frames"]), 900)
+            self.assertEqual(trace["frames"][0]["sim_time_s"], 0.0)
+            self.assertEqual(trace["frames"][0]["native_elapsed_time_s"], start_time_s)
             self.assertEqual(len(list((output / "cameras").rglob("*.png"))), 3600)
             expected_act = native.CASE_ACTIONS[case_key][0]
             expected_side = "right" if case_key == "open_far_side" else "left"
@@ -151,6 +155,9 @@ class NativeCaptureTests(unittest.TestCase):
 
     def test_clock_drift_rejected_with_cleanup(self):
         self.run_case(drift=True)
+
+    def test_nonzero_native_clock_keeps_episode_time_axis(self):
+        self.run_case(start_time_s=1234.5)
 
     def test_missing_camera_rejected_with_cleanup(self):
         self.run_case(missing_camera=True)

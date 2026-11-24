@@ -36,6 +36,7 @@ class AnalysisTests(unittest.TestCase):
                                   context_source={"path": str(packet),
                                                   "sha256": hashlib.sha256(packet.read_bytes()).hexdigest()})
         (attempt / "config.json").write_bytes((ROOT / "config.json").read_bytes())
+        (attempt / "construction.json").write_bytes((ROOT / "construction.json").read_bytes())
         return attempt
 
     def test_full_window_measured_without_legal_label(self):
@@ -45,6 +46,15 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(len(report["measurements"]["actual_bicycle_speed_history"]["value"]), 900)
             self.assertEqual(report["summary"]["mean_speed_mps"], 3.0)
             self.assertEqual(report["legal_prudence"], "unresolved")
+            (attempt / "trace.jsonl").write_text("{}\n")
+            (attempt / "video_frames.jsonl").write_text("{}\n")
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
+                (attempt / (name + ".mkv")).write_bytes(b"fixture")
+            from analysis import write_native_result
+            write_native_result(attempt, report)
+            native = json.loads((attempt / "result.json").read_text())
+            self.assertEqual(native["realized_observables"]["commanded_approach_speed"]["value"], 3.0)
+            self.assertEqual(json.loads((attempt / "derived-commanded-target.json").read_text())["commanded_approach_speed"], 3.0)
 
     def test_missing_case_source_and_stale_hash_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

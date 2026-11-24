@@ -2,7 +2,7 @@
   "assignment_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "587ffe4fae90daaaafa083cf75342ee439ca301b1d2ab24d9f498a21660ddc6f",
   "status": "partial",
-  "readiness_kind": "exact_case_targets_and_source_measurement",
+  "readiness_kind": "exact_case_sampling_lead_and_saved_measurement",
   "applied_update": 0,
   "tests": [
     {
@@ -10,10 +10,40 @@
       "exit_code": 0,
       "log": "cpu-signal-tests.log",
       "sha256": "32627afe4fec9fff01f356b37089f088bfd884ffd6d5df814308407b6df027fd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-resume.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/prove_sampling.py",
+      "exit_code": 0,
+      "log": "cpu-sampling-resume.log",
+      "sha256": "cdab929d626578352906d4b815e5db058e3a6c93de55643d8d64c72bfabd8b79"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-resume.log",
+      "sha256": "09f5d9061b5070cddebf8e5a3d2f1889b6c156c2f6ad500fdacb4ed5341a0fd9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-resume.log",
+      "sha256": "56f7f142c56ec43f9bdb5a62d6f7f6a89966f2162c58c546ac49949dbce3d4c1"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-resume.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact signal targets, three controlled comparisons, route-station request policy, saved-source measurement and independent tamper/missing-source audit now pass 12 CPU tests. Map-bound CARLA construction/capture, Native finalization, semantic proposals, source-bound compatibility, full delivery audit and exact manifest remain CPU work."
+  "reason": "Five exact signal targets and three comparisons now have a speed-based one-sample 20 Hz actuation lead and a source-shaped diagnostic saved measurement. The diagnostic measures about 80.05, 101.05, 101.05, 53.81 and 101.05 feet for short80, continuous100, above101, interrupted and rain. Thirteen CPU tests, pinned preflight, diagnostic proof and scoped static pass. Native map-bound construction/capture, finalizer, semantic proposals, compatibility, saved-only processing and independent delivery remain worker-owned CPU work; no physical or legal outcome claimed."
 }

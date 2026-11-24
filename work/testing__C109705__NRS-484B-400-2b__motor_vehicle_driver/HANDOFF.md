@@ -79,3 +79,9 @@ Proof SHA-256 (logs under this assignment):
 - `cpu-offline-imaginary_farther_from_centerline.log`: `d14cccddbd2da0d59747ca6d73b7eb44f4b9525f6a4cfee4fef9f7cca334cea4` (exit 0)
 
 Next CPU work: bind reviewed original map/survey, trace and camera packets to the accepted IDs or a separately reviewed Native execution; author canonical semantic proposals and manifest; run source-shaped positive/negative compatibility, pinned saved-only processing and independent delivery/comparison receipts for each case. The accepted export contains metadata but not the physical source packets, so no measured centerline or video conclusion follows. Scoped strict fails on truthful `partial` status.
+
+## 2026-11-23 departure route-order invariant
+
+`native_capture.py` now rejects turning before an observed intersection entry and any return to an approach, entry or turning phase after destination-road departure. `departure_geometry.py` independently rejects the same source-trace regressions in saved measurement. New negative CPU tests exercise early turn, post-departure turn and repeated entry, including Native ego cleanup. All four inline diagnostic constructions were regenerated to embed current code. This enforces the statutory sequence without imposing a numeric legal lateral cutoff.
+
+Pinned preflight, bundle build, all **34** focused tests, four exact offline checks and scoped static exited 0. The exact scoped strict gate exited 1 on truthful partial status. Commands and cleaned SHA-256 log receipts are in `result.json.tests`. Next CPU work remains reviewed original map/trace/media binding, concrete CARLA adapter, canonical proposals/manifest, compatibility, saved-only processing and independent delivery receipts.

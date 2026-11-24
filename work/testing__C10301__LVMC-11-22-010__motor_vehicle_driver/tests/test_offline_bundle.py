@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 import unittest
@@ -20,6 +21,10 @@ class OfflineBundleTests(unittest.TestCase):
             self.assertEqual(config["selected_case_id"], row["case_id"])
             self.assertEqual(config["fps"] * config["duration_s"], 900)
             self.assertEqual(len(config["cameras"]), 4)
+            self.assertEqual(config["cameras"], ["overview", "alley_approach",
+                                                  "access_aisle", "driver_reference"])
+            self.assertEqual(config["scene_sha256"],
+                             hashlib.sha256(files["alley-scene.json"].encode()).hexdigest())
             self.assertEqual(scene["surface_role"], "access_aisle_adjacent_to_designated_handicapped_parking")
             self.assertTrue(construction["diagnostic_only"])
             profiles[row["case_id"]] = config["profile"]

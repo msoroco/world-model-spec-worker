@@ -85,6 +85,17 @@ class DepartureGeometryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'before intersection entry'):
             module.measure(m, t, case_id=CASE)
 
+    def test_saved_trace_rejects_phase_regression_after_departure(self):
+        m, t = packet()
+        t['samples'][4] = {'frame': 60, 'phase': 'turning'}
+        with self.assertRaisesRegex(ValueError, 'phase regressed after departure'):
+            module.measure(m, t, case_id=CASE)
+
+        m, t = packet()
+        t['samples'][4] = {'frame': 60, 'phase': 'intersection_entry'}
+        with self.assertRaisesRegex(ValueError, 'entry repeated after departure'):
+            module.measure(m, t, case_id=CASE)
+
 
 if __name__ == '__main__':
     unittest.main()

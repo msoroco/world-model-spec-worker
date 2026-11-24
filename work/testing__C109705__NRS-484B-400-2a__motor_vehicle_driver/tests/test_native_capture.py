@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from PIL import Image
@@ -95,6 +96,8 @@ class NativeCaptureTests(unittest.TestCase):
             capture(FakeAdapter(), CASE, survey, attempt)
             receipt = project_core_packet(attempt, root / 'core-packet')
             self.assertEqual(receipt['frames'], 900)
+            self.assertEqual(receipt['source_sha256']['road.xodr'],
+                             hashlib.sha256((attempt / 'road.xodr').read_bytes()).hexdigest())
             self.assertTrue(receipt['graph_capture_required'])
             self.assertFalse(receipt['physical_completion'])
             trace = [json.loads(line) for line in (root / 'core-packet/trace.jsonl').read_text().splitlines()]
@@ -113,6 +116,57 @@ class NativeCaptureTests(unittest.TestCase):
             original.write_bytes(original.read_bytes() + b'{}\n')
             with self.assertRaisesRegex(ValueError, 'hash|Hash|source'):
                 project_core_packet(attempt, root / 'tampered')
+
+    def test_diagnostic_core_packet_rejects_changed_original_map(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            (attempt / 'road.xodr').write_bytes(b'<OpenDRIVE>changed</OpenDRIVE>')
+            with self.assertRaisesRegex(ValueError, 'hash|Hash|source'):
+                project_core_packet(attempt, root / 'core-packet')
+            self.assertFalse((root / 'core-packet').exists())
+
+    def test_diagnostic_core_packet_rejects_sealed_short_capture(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            acquisition_path = attempt / 'acquisition.json'
+            acquisition = json.loads(acquisition_path.read_text())
+            for name in ('approach-history.jsonl', 'video_frames.jsonl'):
+                source = attempt / name
+                source.write_bytes(b'\n'.join(source.read_bytes().splitlines()[:899]) + b'\n')
+                acquisition[name]['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+            acquisition_path.write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'complete original capture'):
+                project_core_packet(attempt, root / 'core-packet')
+            self.assertFalse((root / 'core-packet').exists())
+
+    def test_diagnostic_core_packet_rejects_resealed_bad_original_pixel(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            source = attempt / 'approach.zip'
+            with zipfile.ZipFile(source) as archive:
+                images = [(name, archive.read(name)) for name in archive.namelist()]
+            with zipfile.ZipFile(source, 'w', compression=zipfile.ZIP_STORED) as archive:
+                for index, (name, raw) in enumerate(images):
+                    archive.writestr(name, b'corrupt png' if index == 0 else raw)
+            acquisition_path = attempt / 'acquisition.json'
+            acquisition = json.loads(acquisition_path.read_text())
+            acquisition['media']['approach']['sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+            acquisition_path.write_text(json.dumps(acquisition))
+            with self.assertRaises((ValueError, OSError)):
+                project_core_packet(attempt, root / 'core-packet')
+            self.assertFalse((root / 'core-packet').exists())
 
     def test_exact_bundle_runner_uses_reviewed_native_capture(self):
         package = Path(__file__).resolve().parents[1]

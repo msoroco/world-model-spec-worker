@@ -94,3 +94,21 @@ The five offline bundles were regenerated and their hashes refreshed. Current `r
 ## 2026-11-23 camera contract alignment
 
 The five exact diagnostic bundles and `native_readback.py` now require `overview`, `approach`, `reference_corner` and `driver_reference`, matching the independent delivery auditor's sealed media names and intended 1920×1080/1280×720 profile. Earlier front/rear/left/right draft names would have failed saved delivery. All five offline constructions were regenerated and retested; current passing receipts and hashes are in `result.json`. The camera synchronizer must still retain pixel payloads and encode original videos before delivery can pass.
+
+## 2026-11-23 original camera pixel capture checkpoint
+
+Added `native_camera_capture.py` to stream four original synchronized BGRA sensor images to lossless FFV1 video at 20 Hz. The adapter validates four distinct sensor IDs, contiguous world frames, each image sensor identity, source dimensions and complete byte payloads before encoding. It seals file hashes, frame count and sensor IDs in `source-packet.json`; `capture_constructed_sources` now integrates this binding and aborts encoders on failure. The offline draft includes the adapter. A CPU test decodes a sealed stream and matches original BGRA frame bytes exactly. These synthetic image tests validate the capture path but do not assert real CARLA acquisition or legal/physical acceptance.
+
+Pinned preflight, 78 focused CPU tests, five exact diagnostic `runtime.py offline` runs and scoped static check pass. The exact scoped strict gate exits 1 because this package remains truthfully `partial`. Native finalizer, canonical manifest and proposals, compatibility, saved-only processing and independent delivery/comparison receipts remain. No recorded site is attached.
+
+Current log SHA-256 receipts:
+
+- `cpu-preflight.log`: `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63` (exit 0)
+- `cpu-tests.log`: `74c0f6ee3040e593e5972aac383008609b687e03dc3d57cb72da323e66822d53` (exit 0)
+- `cpu-static-check.log`: `f7ae058c828bf483f5ae261c3eeab547c77f7393c695b92673bf338ea14b63a4` (exit 0)
+- `cpu-strict-gate.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-clear_intervening.log`: `d50de0c3a30ccce73fef0b275ff3a01f2fe86f463eb255acb8dbd2b49ebb3b21` (exit 0)
+- `cpu-offline-blocked_intervening.log`: `cef6858c3d1b7a9b9e79f05d5f6bbab341fe4dbf880c9e318a0c3414b52ea133` (exit 0)
+- `cpu-offline-blocked_opposite.log`: `2d17e71b3d519fe93c1ecad71aa58bcb22f933c2d2771cc3df04ca0087450037` (exit 0)
+- `cpu-offline-blocked_late_return.log`: `470ffab8db4e7d173c36590da9d1a3b5347678749542a411cc909319e5b31951` (exit 0)
+- `cpu-offline-missing_sidewalk.log`: `6a817375bd8ab9aafc1c1b3ef0ed8a27a6f05fa5651ec87b4c81c50b8e96b05b` (exit 0)

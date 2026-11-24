@@ -26,10 +26,28 @@ class MediaProfileTest(unittest.TestCase):
                      str(root / (name + ".mkv"))], check=True, capture_output=True)
             self.assertEqual(set(audit(root)["cameras"]), set(CAMERAS))
             (root / "camera-frame-map.jsonl").write_text(
-                "\n".join(json.dumps({"frame": frame}) for frame in (1, 2)) + "\n")
+                "\n".join(json.dumps({"frame": frame, "elapsed_seconds": (frame - 1) / 20,
+                                      "camera_names": list(CAMERAS)})
+                          for frame in (1, 2)) + "\n")
             self.assertEqual(audit(root)["frame_map_count"], 2)
-            (root / "camera-frame-map.jsonl").write_text(json.dumps({"frame": 1}) + "\n")
+            (root / "camera-frame-map.jsonl").write_text(json.dumps(
+                {"frame": 1, "elapsed_seconds": 0.0, "camera_names": list(CAMERAS)}) + "\n")
             with self.assertRaisesRegex(ValueError, "decoded frame count differs"):
+                audit(root)
+            (root / "camera-frame-map.jsonl").write_text("\n".join(json.dumps(row) for row in [
+                {"frame": 1, "elapsed_seconds": 0.0, "camera_names": list(CAMERAS)},
+                {"frame": 3, "elapsed_seconds": .05, "camera_names": list(CAMERAS)}]) + "\n")
+            with self.assertRaisesRegex(ValueError, "not contiguous"):
+                audit(root)
+            (root / "camera-frame-map.jsonl").write_text("\n".join(json.dumps(row) for row in [
+                {"frame": 1, "elapsed_seconds": 0.0, "camera_names": list(CAMERAS)},
+                {"frame": 2, "elapsed_seconds": .1, "camera_names": list(CAMERAS)}]) + "\n")
+            with self.assertRaisesRegex(ValueError, "not contiguous"):
+                audit(root)
+            (root / "camera-frame-map.jsonl").write_text("\n".join(json.dumps(row) for row in [
+                {"frame": 1, "elapsed_seconds": 0.0, "camera_names": list(CAMERAS)},
+                {"frame": 2, "elapsed_seconds": .05, "camera_names": list(CAMERAS[:-1])}]) + "\n")
+            with self.assertRaisesRegex(ValueError, "wrong camera identity"):
                 audit(root)
             (root / "camera-frame-map.jsonl").unlink()
             extra = root / "extra.mkv"
