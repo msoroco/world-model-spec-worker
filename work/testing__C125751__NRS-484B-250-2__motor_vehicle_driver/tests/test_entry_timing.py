@@ -76,9 +76,21 @@ class EntryTimingTests(unittest.TestCase):
         self.assertAlmostEqual(result['entry_brackets']['ego']['lower_elapsed_seconds'], 53.25)
         self.assertAlmostEqual(result['ego_minus_other_upper_entry_s'], .3)
         self.assertEqual(result['other_approach_side_of_ego'], 'right')
+        self.assertEqual(result['governing_device_entry_states'],
+                         {'ego':'inoperative','other':'inoperative'})
         self.assertEqual(result['statutory_applicability'],
                          'unresolved_official_device_exclusion_and_subsection_4')
         self.assertEqual(result['right_of_way_judgment'], 'unresolved')
+
+    def test_original_signal_state_is_bound_to_each_entry_frame(self):
+        packet=trace()
+        packet['frames'][60]['governing_device_readback']='green'
+        packet['frames'][66]['governing_device_readback']='red'
+        result=measure(packet,survey())
+        self.assertEqual(result['governing_device_entry_states'],
+                         {'ego':'red','other':'green'})
+        self.assertEqual(result['statutory_applicability'],
+                         'unresolved_official_device_exclusion_and_subsection_4')
 
     def test_clock_footprint_and_device_negative_branches(self):
         for mutation, message in (

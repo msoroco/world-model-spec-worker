@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from saved_delivery import CAMERAS, audit_saved
+from native_geometry import validate_live_route
 
 
 def sha(path):
@@ -46,6 +47,7 @@ def audit_source_provenance(attempt: Path, case_id: str) -> dict:
         if name != 'road':
             packets[name] = json.loads(source.read_text())
     scene, assets = packets['scene'], packets['asset_inventory']
+    validate_live_route(_inside(attempt, sources['road']['path']))
     if (scene.get('case_id') != case_id or scene.get('world_map') != manifest.get('world_map') or
             assets.get('world_map') != manifest.get('world_map') or
             scene.get('map_sha256') != sources['road']['sha256']):

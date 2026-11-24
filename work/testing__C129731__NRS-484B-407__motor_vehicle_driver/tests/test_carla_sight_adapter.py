@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as Obj
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from carla_sight_adapter import CarlaSightAdapter, capture_original_carla, load_reviewed_site
@@ -254,6 +255,18 @@ class CarlaSightAdapterTests(unittest.TestCase):
                     self.world, self.ego, self.approach, path, digest, loc,
                     ASSIGNMENT + "__distance_at_500ft",
                     Path(__file__).resolve().parents[1] / "attempt-tmp")
+            self.assertEqual(self.world.frame, 0)
+
+    def test_capture_requires_configured_output_root_before_native_tick(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "site.json"
+            path.write_text(json.dumps(site()) + "\n")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            with patch.dict(os.environ, {"SCENARIO_PIPELINE_OUTPUT_ROOT": ""}):
+                with self.assertRaisesRegex(ValueError, "pipeline output root required"):
+                    capture_original_carla(
+                        self.world, self.ego, self.approach, path, digest, loc,
+                        ASSIGNMENT + "__distance_at_500ft", Path(tmp) / "attempt")
             self.assertEqual(self.world.frame, 0)
 
 

@@ -23,6 +23,15 @@ def build() -> list[Path]:
     if set(cases) != expected:
         raise ValueError("all six exact crosswalk cases required")
     source_hash = hashlib.sha256((ROOT / SOURCE).read_bytes()).hexdigest()
+    dispositions = plan.get("requirement_dispositions")
+    expected_source = {"path": str(SOURCE), "sha256": source_hash,
+                       "source_locator": "law.text"}
+    if (not isinstance(dispositions, list) or len(dispositions) != 1 or
+            dispositions[0].get("status") != "selected_required" or
+            dispositions[0].get("requirement") != plan["law_text"] or
+            dispositions[0].get("source") != expected_source or
+            set(dispositions[0].get("case_ids", [])) != expected):
+        raise ValueError("selected whole-text requirement disposition differs")
     branch = plan["selected_branches"][0]
     assignment = json.loads((ROOT / SOURCE).read_text())
     if assignment.get("law", {}).get("text") != plan.get("law_text") or branch["source_index"] != 281:
@@ -42,8 +51,7 @@ def build() -> list[Path]:
             "requirements": [{
                 "disposition_index": 0,
                 "requirement": plan["law_text"],
-                "source": {"path": str(SOURCE), "sha256": source_hash,
-                           "source_locator": "law.text"},
+                "source": expected_source,
                 "kind": "measured",
                 "method": "measure_crosswalk_observation",
                 "output_key": "crosswalk_observation",

@@ -14,6 +14,7 @@ RUNNER = '''"""Exact median-crossing timing diagnostic bundle."""
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 
@@ -54,13 +55,16 @@ def main():
     if args.check:
         print('diagnostic entry-timing bundle passed: '+case)
         return
-    if not all((args.output_dir,args.survey,args.survey_sha256,args.map_source)):
+    survey_arg = args.survey or os.getenv('C125751_SURVEY')
+    survey_sha256 = args.survey_sha256 or os.getenv('C125751_SURVEY_SHA256')
+    map_arg = args.map_source or os.getenv('C125751_MAP_SOURCE')
+    if not all((args.output_dir,survey_arg,survey_sha256,map_arg)):
         raise ValueError('Reviewed original crossing, governing device and actor sources required')
-    survey_path = Path(args.survey).resolve()
-    map_path = Path(args.map_source).resolve()
+    survey_path = Path(survey_arg).resolve()
+    map_path = Path(map_arg).resolve()
     if not survey_path.is_file() or not map_path.is_file():
         raise ValueError('Reviewed original crossing source file missing')
-    if hashlib.sha256(survey_path.read_bytes()).hexdigest() != args.survey_sha256:
+    if hashlib.sha256(survey_path.read_bytes()).hexdigest() != survey_sha256:
         raise ValueError('Reviewed original crossing survey hash differs')
     survey = json.loads(survey_path.read_text())
     if hashlib.sha256(map_path.read_bytes()).hexdigest() != survey.get('opendrive_sha256'):
@@ -72,7 +76,7 @@ def main():
     client.set_timeout(20.0)
     adapter = CarlaNativeAdapter(client,carla,survey)
     attempt = Path(args.output_dir).resolve()
-    capture(adapter,survey_path,args.survey_sha256,map_path,case,attempt)
+    capture(adapter,survey_path,survey_sha256,map_path,case,attempt)
     from runtime_source_bridge import export
     from analysis import run as analyze
     import shutil

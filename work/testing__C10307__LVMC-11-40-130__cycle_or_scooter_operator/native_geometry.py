@@ -62,6 +62,48 @@ def validate_geometry(map_path: Path, rack_envelope=RACK_ENVELOPE_XY_M) -> dict:
             "municipal_jurisdiction_verified": False}
 
 
+def validate_live_route(map_path: Path) -> dict:
+    """Require the observed road bytes to support the fixed bicycle/rack poses.
+
+    This checks the planned straight lane geometry, not jurisdiction, actor
+    clearance, or actual motion. Those require reviewed sources and Native run.
+    """
+    raw = Path(map_path).read_bytes()
+    root = ET.fromstring(raw)
+    if root.tag != "OpenDRIVE":
+        raise ValueError("observed Native map is not OpenDRIVE")
+    for road in root.findall("road"):
+        if road.get("junction") != "-1":
+            continue
+        sections = road.findall("./lanes/laneSection")
+        offset = road.find("./lanes/laneOffset")
+        if len(sections) != 1 or offset is None:
+            continue
+        if any(float(offset.get(key, "0")) != 0 for key in ("a", "b", "c", "d")):
+            continue
+        lane = sections[0].find("./right/lane[@id='-1']")
+        width = lane.find("width") if lane is not None else None
+        if (lane is None or lane.get("type") != "driving" or width is None or
+                float(width.get("a", "0")) < 2.0 or
+                any(float(width.get(key, "0")) != 0 for key in ("b", "c", "d"))):
+            continue
+        for segment in road.findall("./planView/geometry"):
+            if segment.find("line") is None:
+                continue
+            x = float(segment.get("x", "nan"))
+            y = float(segment.get("y", "nan"))
+            heading = float(segment.get("hdg", "nan"))
+            length = float(segment.get("length", "nan"))
+            if (abs(y) <= .05 and abs(heading) <= .001 and
+                    x <= ROUTE_START_X_M - 1 and x + length >= ROUTE_END_X_M + 1):
+                return {"map_sha256": hashlib.sha256(raw).hexdigest(),
+                        "road_id": road.get("id"),
+                        "route_xy_m": [[ROUTE_START_X_M, ROUTE_Y_M],
+                                       [ROUTE_END_X_M, ROUTE_Y_M]],
+                        "rack_envelope_xy_m": list(RACK_ENVELOPE_XY_M)}
+    raise ValueError("observed Native map lacks the fixed alley route and rack geometry")
+
+
 def main():
     import argparse
     import json

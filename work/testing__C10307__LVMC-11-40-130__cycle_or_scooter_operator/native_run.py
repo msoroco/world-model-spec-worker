@@ -14,6 +14,7 @@ from native_acquisition import seal_original_acquisition
 from native_controller import run_bicycle_route
 from native_spawn import read_asset_inventory, spawn_bicycle_and_rack
 from native_capture import FourCameraCapture
+from native_geometry import validate_live_route
 
 
 def sha(path):
@@ -64,6 +65,7 @@ def source_configuration(env, case_id):
             not road_ref.get('path') or road_ref.get('sha256') != scene.get('map_sha256') or
             not Path(road_ref['path']).is_file() or sha(road_ref['path']) != road_ref['sha256']):
         raise ValueError("Native scene case/map source mismatch")
+    validate_live_route(Path(road_ref['path']))
     if scene.get("human_powered_bicycle_verified") is not True or scene.get("rack_asset_verified") is not True:
         raise ValueError("Native bicycle/rack physical classification source missing")
     jurisdiction = scene.get("jurisdiction", {})

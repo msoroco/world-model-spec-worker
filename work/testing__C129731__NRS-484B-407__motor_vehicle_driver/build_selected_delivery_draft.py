@@ -19,7 +19,9 @@ SCRIPTS = ("native_case_constructor.py", "reversal_route_controller.py",
            "native_camera_audit.py",
            "native_sight_capture.py", "distance_probe_audit.py",
            "sight_measurement.py", "selected_delivery.py",
-           "delivery_audit.py", "comparison_audit.py")
+           "delivery_audit.py", "comparison_audit.py",
+           "build_exact_bundles.py", "selected_analysis.py")
+MEASUREMENT = "selected-measurement-contract.draft.json"
 
 
 def _sha(path: Path):
@@ -38,6 +40,10 @@ def build(package: Path) -> dict:
             [c["case_id"] for c in cases] != [c["case_id"] for c in drafts]):
         raise ValueError("four exact planned case identities required")
     script_hashes = {name: _sha(package / name) for name in SCRIPTS}
+    diagnostic = json.loads((package / "execution-manifest.draft.json").read_text())
+    diagnostic_index = {row["case_id"]: row for row in diagnostic.get("cases", [])}
+    if len(diagnostic_index) != 4 or diagnostic.get("assignment_id") != ASSIGNMENT:
+        raise ValueError("four exact diagnostic constructions required")
     entries = []
     for case, semantic in zip(cases, drafts):
         cid = case["case_id"]
@@ -50,6 +56,11 @@ def build(package: Path) -> dict:
                 case.get("planning_status") != "source_review_pending" or
                 case.get("gap_ids") != ["unverified-law-coverage"]):
             raise ValueError("unresolved distance case changed or was mislabeled")
+        built = diagnostic_index.get(cid)
+        if (not isinstance(built, dict) or
+                _sha(package / built["construction"]) != built["construction_sha256"] or
+                json.loads((package / built["construction"]).read_text()).get("diagnostic_only") is not True):
+            raise ValueError("exact diagnostic construction changed")
         entries.append({
             "case_id": cid, "kind": "delivery_planned_source_pending",
             "target_first_turn_distance_ft": target,
@@ -67,7 +78,12 @@ def build(package: Path) -> dict:
                              "delivery_audit": "delivery_audit.py",
                              "original_media_review": "selected_delivery.py"},
             "candidate_risk": case["physical_risk"],
-            "offline_proof": "pending_exact_source_site",
+            "diagnostic_construction": built["construction"],
+            "diagnostic_construction_sha256": built["construction_sha256"],
+            "measurement_analysis": "selected_analysis.py",
+            "measurement_contract_draft": MEASUREMENT,
+            "measurement_contract_sha256": _sha(package / MEASUREMENT),
+            "offline_proof": "diagnostic_only_passed; selected delivery proof pending",
             "compatibility_proof": "pending_exact_bundle_and_sources",
             "delivery_acceptance": "pending_original_sources_and_review",
             "legal_visibility_judgment": "unresolved",

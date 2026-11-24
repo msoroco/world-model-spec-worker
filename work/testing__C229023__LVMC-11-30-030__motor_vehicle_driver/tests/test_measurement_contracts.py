@@ -18,6 +18,7 @@ from scenario_pipeline.worker_exchange import measurement_contract
 class MeasurementContractTests(unittest.TestCase):
     def test_six_exact_source_bound_contracts(self):
         paths = build()
+        plan = json.loads((HERE / "case-plan.json").read_text())
         self.assertEqual(len(paths), 6)
         for path in paths:
             contract = json.loads(path.read_text())
@@ -26,10 +27,7 @@ class MeasurementContractTests(unittest.TestCase):
             self.assertEqual(contract["requirements"][0]["disposition_index"], 0)
             self.assertIn("trace.jsonl", contract["requirements"][0]["inputs"])
             self.assertEqual(contract["negative"]["remove"], ["context.json"])
-            disposition = {"status": "selected_required", "case_ids": [contract["case_id"]],
-                           "requirement": contract["requirements"][0]["requirement"],
-                           "source": contract["requirements"][0]["source"]}
-            rows = measurement_contract.validate(contract, [disposition],
+            rows = measurement_contract.validate(contract, plan["requirement_dispositions"],
                                                  (HERE / "analysis.py").read_text(),
                                                  contract["case_id"])
             self.assertEqual(rows[0]["output_key"], "crosswalk_observation")

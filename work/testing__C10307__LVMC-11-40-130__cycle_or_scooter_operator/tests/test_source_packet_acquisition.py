@@ -8,6 +8,7 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from source_packet_acquisition import capture_world_sources, assemble_reviewed_scene
+from native_geometry import opendrive_text
 
 CASE = ROOT.name + '__reference'
 
@@ -16,7 +17,7 @@ class SourcePacketAcquisitionTests(unittest.TestCase):
     def world(self):
         return SimpleNamespace(
             get_map=lambda: SimpleNamespace(name='ReviewedCityMap',
-                                            to_opendrive=lambda: '<OpenDRIVE/>\n'),
+                                            to_opendrive=opendrive_text),
             get_blueprint_library=lambda: [SimpleNamespace(id=value) for value in
                                            ('vehicle.bicycle', 'static.rack', 'walker.pedestrian.0001')])
 
@@ -62,6 +63,20 @@ class SourcePacketAcquisitionTests(unittest.TestCase):
             paths['municipal'].write_text(json.dumps(municipal))
             scene = root / 'wrong-scene.json'
             with self.assertRaisesRegex(ValueError, 'municipal jurisdiction packet differs'):
+                assemble_reviewed_scene(observed, CASE, scene, **paths)
+            self.assertFalse(scene.exists())
+
+    def test_reject_reviewed_map_without_fixed_alley_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            observed = capture_world_sources(self.world(), root / 'capture')
+            road = root / 'capture/road.xodr'
+            road.write_text(opendrive_text().replace('x="-40"', 'x="-20"'))
+            import hashlib
+            observed['road_source']['sha256'] = hashlib.sha256(road.read_bytes()).hexdigest()
+            paths = self.packets(root, observed)
+            scene = root / 'shifted-scene.json'
+            with self.assertRaisesRegex(ValueError, 'lacks the fixed alley route'):
                 assemble_reviewed_scene(observed, CASE, scene, **paths)
             self.assertFalse(scene.exists())
 

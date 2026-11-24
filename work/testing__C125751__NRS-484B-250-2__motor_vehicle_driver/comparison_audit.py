@@ -1,6 +1,7 @@
 """Independently compare saved C125751 measurements and fixed sources."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -62,3 +63,40 @@ def audit_comparison(comparison_id, attempts, surveys):
         results[case] = json.loads((Path(attempt)/'result.json').read_text())
         hashes[case] = hashlib.sha256(Path(surveys[case]).read_bytes()).hexdigest()
     return compare_verified(comparison_id,results,hashes)
+
+
+def _case_paths(rows):
+    paths={}
+    for item in rows:
+        case,separator,path=item.partition('=')
+        if (not separator or not case.startswith(ASSIGNMENT+'__') or
+                not path or case in paths):
+            raise ValueError('exact case=path audit binding required once per case')
+        paths[case]=Path(path).resolve()
+    return paths
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--comparison',required=True)
+    parser.add_argument('--attempt',action='append',required=True)
+    parser.add_argument('--survey',action='append',required=True)
+    parser.add_argument('--output',required=True)
+    args=parser.parse_args(argv)
+    attempts,surveys=_case_paths(args.attempt),_case_paths(args.survey)
+    output=Path(args.output).resolve()
+    if output.exists() or any(output==attempt or attempt in output.parents
+                              for attempt in attempts.values()):
+        raise ValueError('fresh comparison output outside original attempts required')
+    receipt=audit_comparison(args.comparison,attempts,surveys)
+    receipt={'format':'worker-comparison-source-audit',**receipt,
+             'attempt_result_sha256':{case:hashlib.sha256((attempt/'result.json').read_bytes()).hexdigest()
+                                      for case,attempt in attempts.items()},
+             'survey_sha256':{case:hashlib.sha256(path.read_bytes()).hexdigest()
+                              for case,path in surveys.items()}}
+    output.write_text(json.dumps(receipt,indent=2)+'\n')
+    return receipt
+
+
+if __name__=='__main__':
+    main()

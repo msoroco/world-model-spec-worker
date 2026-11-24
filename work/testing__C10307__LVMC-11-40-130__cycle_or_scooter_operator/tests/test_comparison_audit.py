@@ -95,6 +95,23 @@ class ComparisonAuditTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "reported mean"):
             check_record(right)
 
+    def test_source_approach_mean_excludes_post_route_stop(self):
+        candidate = record("reference")
+        candidate["samples"] = [
+            {"time_s": i * .05, "x_m": -25.0 + i * .1,
+             "speed_mps": 3.0 if i < 500 else 0.0}
+            for i in range(900)]
+        candidate["condition_samples"] = [{"time_s": i * .05} for i in range(900)]
+        candidate["summary"] = {
+            "mean_speed_mps": 3.0,
+            "episode_mean_speed_mps": 3.0 * 500 / 900,
+            "approach_window": {"start_x_m": -20.0, "end_x_m": 0.0,
+                                "sample_count": 201, "source_verified": True}}
+        check_record(candidate)
+        candidate["summary"]["mean_speed_mps"] = 3.0 * 500 / 900
+        with self.assertRaisesRegex(ValueError, "reported mean"):
+            check_record(candidate)
+
     def test_condition_time_must_join_original_speed_time(self):
         right = record("faster", 5.0)
         right["condition_samples"][0]["time_s"] = 0.05

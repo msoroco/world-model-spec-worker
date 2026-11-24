@@ -7,6 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from canonical_evidence import build_result
 from saved_crosswalk_finalizer import finalize
 
 SOURCES = ("context.json", "trace.jsonl", "frame-map.jsonl", "receipt.json",
@@ -28,8 +29,8 @@ def run(attempt: str | Path, output: str | Path, case_id: str) -> dict:
     target = Path(output).resolve()
     if not root.is_dir() or target.parent != root or target.name != "analysis-report.json":
         raise ValueError("analysis report must be inside the saved original attempt")
-    if target.exists():
-        raise ValueError("retain prior analysis report")
+    if target.exists() or (root / "result.json").exists():
+        raise ValueError("retain prior analysis result and report")
     hashes = {}
     for name in SOURCES:
         path = root / name
@@ -42,13 +43,19 @@ def run(attempt: str | Path, output: str | Path, case_id: str) -> dict:
     if any(hashlib.sha256((root / name).read_bytes()).hexdigest() != digest
            for name, digest in hashes.items()):
         raise ValueError("saved analysis changed original source")
+    native_result = build_result(root, case_id, finalized)
     report = {"format": "worker-analysis-report", "case_id": case_id,
               "measurements": {"crosswalk_observation": {
                   "value": measure_crosswalk_observation(finalized),
                   "method": "measure_crosswalk_observation", "sources": hashes}},
               "analysis_complete": True, "source_hashes": hashes,
               "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
-    target.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+    with (root / "result.json").open("x", encoding="utf-8") as stream:
+        json.dump(native_result, stream, indent=2, allow_nan=False)
+        stream.write("\n")
+    with target.open("x", encoding="utf-8") as stream:
+        json.dump(report, stream, indent=2, allow_nan=False)
+        stream.write("\n")
     return report
 
 

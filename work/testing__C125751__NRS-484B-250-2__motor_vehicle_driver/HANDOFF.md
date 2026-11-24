@@ -104,3 +104,27 @@ The 17 focused tests passed in `cpu-contract-tests.log`; five rebuilt exact bund
 `carla_native_adapter.py` now validates both reviewed per-case actor schedules before spawning: each has exactly contiguous original frames 0 through 899, finite CARLA controls, no throttle/brake conflict, and no gap or overlap. A new focused test rejects incomplete, shifted, overlapping and conflicting controls before actor creation. This makes the source-reviewed control packet an executable 900-frame acquisition requirement; it does not fabricate the missing production packet or claim realized timing targets.
 
 Rebuilt all five exact selected constructions and reran `runtime.py offline` on each (v6): all passed. The full focused suite passed 19 tests and the scoped static check passed. Current source-bound logs are `cpu-selected-offline-*.log`, `cpu-schedule-tests.log` and `cpu-schedule-static.log`, sealed in `result.json`. Next CPU work remains source-shaped runtime compatibility and saved-only lifecycle, plus independent delivery/comparison receipts and source-supported judgment sweep controls.
+
+The exact assignment strict command `.venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` exited 1 on the truthful partial result; its sanitized output is `cpu-schedule-strict.log` and its SHA is listed in `result.json`. All eight current proof log hashes match and assignment files pass the whitespace, blank-EOF and size scan. Do not promote ready before the remaining CPU delivery proofs and an exact strict exit 0.
+
+## 2026-11-24 saved source audit command checkpoint
+
+`delivery_audit.py` and `comparison_audit.py` now expose runnable command interfaces for exact-case source checks. They require a fresh output outside original attempts; the comparison command requires one `case=path` binding per attempt and survey and seals each result and survey hash in its receipt. These are saved-source software receipts, not physical-completion or legal acceptance. `tests/test_audit_commands.py` rejects case mismatch, duplicate bindings, overwrite and output inside an original attempt.
+
+All five exact selected constructions were rebuilt and their v7 `runtime.py offline` checks passed. The complete focused suite passed 21 tests; scoped static passed. Current logs `cpu-selected-offline-*.log`, `cpu-audit-cli-tests.log` and `cpu-audit-cli-static.log` are SHA-bound in `result.json`. The remaining CPU work is source-shaped runtime compatibility, full saved-only processing/lifecycle, canonical independent acceptance and comparison receipts, source-backed judgment sweep controls, and reviewed production source packet.
+
+Exact scoped strict gate still exits 1 because `result.json` remains truthful partial. Its current sanitized log is `cpu-audit-cli-strict.log`, SHA-bound in `result.json`. No ready promotion is justified.
+
+## Independent frozen-law applicability review
+
+The frozen NRS 484B.250(2)/(5) text excludes intersections controlled by official traffic-control devices. The cited NRS 484B.250(4) text in `inputs/coverage/branch-sources.json` covers installed, uncovered signals that are inoperative on entry and requires stop-sign-style stopping and cautious yielding. It does not itself establish the subsection (2) left-versus-right rule in this traffic-light cell. The current original signal-state trace can distinguish operating readbacks, but cannot alone prove installation, uncovered status, device authority or legal applicability. Keep the five timing cases as measurements and engineering probes; do not classify left/right yielding as a violation from these measurements. Source-reviewed signal installation, coverage, inoperability and legal branch disposition must be added before canonical legal conclusions.
+
+## 2026-11-24 original entry-signal readback checkpoint
+
+`entry_timing.py` now preserves each actor’s original governing-device state at its first full-body crossing entry, in addition to the all-episode state inventory. A mixed-state fixture proves that the entry readbacks are indexed to the observed Native frame rather than inferred from the requested setting. This is source evidence for later applicability review and makes no legal finding. All five selected constructions were rebuilt and their v8 offline proofs passed; the 22-test focused suite and scoped static check passed. Current logs are `cpu-selected-offline-*.log`, `cpu-entry-state-tests.log` and `cpu-entry-state-static.log`, sealed in `result.json`.
+
+Exact scoped strict still exits 1 on the truthful partial package. See `cpu-entry-state-strict.log`; do not promote ready.
+
+## 2026-11-24 source completion assessment checkpoint
+
+`delivery_audit.assess_source_completion` now checks the sealed original case, full 900-frame trace and 3,600 decoded camera sources, both body entries and exits, and both measured target matches. It reports a source-completion candidate while explicitly leaving actual pixel visibility, physical acceptance and legal judgment unclaimed. The new CPU test proves a diagnostic positive and rejection of incomplete decode, missing body exit and changed case. Five v9 selected offline checks, 23 focused tests and scoped static passed. Exact scoped strict remains partial; see `cpu-source-completion-strict.log`. Current logs are SHA-bound in `result.json`.

@@ -99,9 +99,12 @@ def write_native_result(attempt: Path, report: dict) -> None:
                                             if source_approach else "saved diagnostic velocity magnitude mean"),
                                  "tolerance": tolerance, "matched": abs(requested - measured) <= tolerance,
                                  "physical_cause_confirmed": False,
-                                 "cause_evidence": "Synthetic diagnostic shape only; original physical cause unreviewed"}],
-              "setup_confirmed": False, "behavior_attempted": False,
-              "maneuver_completed": False, "termination_reason": "diagnostic saved-source processing",
+                                 "cause_evidence": ("Original position/velocity join; independent physical review pending"
+                                                    if source_approach else "Synthetic diagnostic shape only") }],
+              "setup_confirmed": source_approach, "behavior_attempted": source_approach,
+              "maneuver_completed": source_approach,
+              "termination_reason": ("source-measured alley route complete; full capture elapsed"
+                                     if source_approach else "diagnostic saved-source processing"),
               "physical_failure_flags": ["synthetic_fixture"] if report["diagnostic_fixture"] else ["physical_review_pending"],
               "trace_reference": "trace.jsonl", "video_references": list(required[2:6]),
               "video_frame_map_reference": "video_frames.jsonl",

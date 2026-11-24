@@ -47,7 +47,7 @@ class SavedDeliveryTests(unittest.TestCase):
         (self.acquisition / "camera-manifest.json").write_text(json.dumps(self.manifest))
 
     def audit(self):
-        return audit_saved(self.acquisition, CASE, minimum_frames=25,
+        return audit_saved(self.acquisition, CASE, expected_frames=25,
                            expected_dimensions={camera: (64, 48) for camera in CAMERAS})
 
     def test_full_saved_decode_and_source_binding(self):
@@ -56,8 +56,10 @@ class SavedDeliveryTests(unittest.TestCase):
         self.assertEqual(set(result["cameras"]), set(CAMERAS))
         self.assertEqual(result["legal_prudence"], "unresolved")
         self.assertFalse(result["physical_visibility_reviewed"])
-        with self.assertRaisesRegex(ValueError, "shorter"):
+        with self.assertRaisesRegex(ValueError, "exact required"):
             audit_saved(self.acquisition, CASE)
+        with self.assertRaisesRegex(ValueError, "exact required"):
+            audit_saved(self.acquisition, CASE, expected_frames=24)
 
     def test_rejects_camera_frame_gap_and_rebinding(self):
         self.manifest["cameras"]["approach"]["frame_ids"][4] += 1
@@ -101,7 +103,7 @@ class SavedDeliveryTests(unittest.TestCase):
 
     def test_rejects_wrong_dimensions_even_when_source_hash_matches(self):
         with self.assertRaisesRegex(ValueError, "dimensions differ"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25,
+            audit_saved(self.acquisition, CASE, expected_frames=25,
                         expected_dimensions=CAMERA_DIMENSIONS)
 
 

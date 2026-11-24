@@ -30,11 +30,14 @@ class AnalysisTests(unittest.TestCase):
                        "measured_values": {"rear_approach_frames": [10]},
                        "observed": {"rear_approach_sampled": True},
                        "target_checks": [], "legal_judgment": "unresolved"}
-        with patch.object(analysis, "finalize", return_value=measurement):
+        with patch.object(analysis, "finalize", return_value=measurement), patch.object(
+                analysis, "build_result", return_value={"case_id": self.case_id}):
             report = analysis.run(self.root, self.root / "analysis-report.json", self.case_id)
         self.assertTrue(report["analysis_complete"])
+        self.assertEqual(json.loads((self.root / "result.json").read_text())["case_id"], self.case_id)
         self.assertEqual(set(report["measurements"]["crosswalk_observation"]["sources"]), set(analysis.SOURCES))
         (self.root / "analysis-report.json").unlink()
+        (self.root / "result.json").unlink()
         (self.root / "context.json").unlink()
         with self.assertRaisesRegex(ValueError, "Missing required source: context.json"):
             analysis.run(self.root, self.root / "analysis-report.json", self.case_id)
@@ -45,7 +48,8 @@ class AnalysisTests(unittest.TestCase):
                        "observed": {"lead_stop_sampled": True}, "target_checks": []}
         argv = ["analysis.py", "--attempt", str(self.root), "--output",
                 str(self.root / "analysis-report.json")]
-        with patch("sys.argv", argv), patch.object(analysis, "finalize", return_value=measurement), redirect_stdout(io.StringIO()):
+        with patch("sys.argv", argv), patch.object(analysis, "finalize", return_value=measurement), patch.object(
+                analysis, "build_result", return_value={"case_id": self.case_id}), redirect_stdout(io.StringIO()):
             analysis.main()
         report = json.loads((self.root / "analysis-report.json").read_text())
         self.assertEqual(report["case_id"], self.case_id)

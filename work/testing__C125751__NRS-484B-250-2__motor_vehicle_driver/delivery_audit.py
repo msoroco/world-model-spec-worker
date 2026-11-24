@@ -1,12 +1,45 @@
 """Independent saved-result consistency audit for one exact crossing attempt."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
 
 from saved_delivery import audit as audit_sources
 from native_capture import _source_path
+
+
+def assess_source_completion(sources, result, decoded_frames):
+    """Describe observed source completion without accepting the physical scene."""
+    measured=sources.get('entry_measurement',{})
+    entries=measured.get('entry_brackets',{})
+    exits=measured.get('exit_brackets',{})
+    if (sources.get('case_id') != result.get('case_id') or
+            sources.get('source_integrity') != 'passed'):
+        raise ValueError('source completion case or integrity differs')
+    both_entered=all(isinstance(entries.get(name),dict) for name in ('ego','other'))
+    both_exited=all(isinstance(exits.get(name),dict) for name in ('ego','other'))
+    targets=result.get('target_checks',[])
+    matching_targets=(len(targets)==2 and
+                      {row.get('target') for row in targets}==
+                      {'ego_minus_other_entry_s','ego_response'} and
+                      all(row.get('matched') is True for row in targets))
+    full_sources=(sources.get('native_frames')==900 and
+                  sources.get('camera_frames')==3600 and
+                  sources.get('all_camera_pixels_decoded') is True and
+                  decoded_frames==900)
+    return {'format':'worker-crossing-source-completion',
+            'case_id':sources['case_id'],
+            'full_original_sources':full_sources,
+            'both_body_entries_observed':both_entered,
+            'both_body_exits_observed':both_exited,
+            'requested_measurements_matched':matching_targets,
+            'source_completion_candidate':bool(full_sources and both_entered and
+                                               both_exited and matching_targets),
+            'actual_pixel_visibility_reviewed':False,
+            'physical_acceptance_claimed':False,
+            'legal_judgment':'unresolved'}
 
 
 def audit(attempt, survey_path):
@@ -77,9 +110,33 @@ def audit(attempt, survey_path):
         raise ValueError('saved result includes prohibited legal verdict')
     if result.get('legal_judgment') != 'unresolved' or result.get('physical_acceptance') != 'not_assessed':
         raise ValueError('saved result overclaims legal or physical acceptance')
+    completion=assess_source_completion(sources,result,decoded['frames'])
     return {'case_id':sources['case_id'], 'saved_sources_verified':True,
             'all_camera_pixels_decoded':sources['all_camera_pixels_decoded'],
             'primary_video_decoded_frames':decoded['frames'],
             'primary_rgb_sha256':decoded['rgb_sequence_sha256'],
             'result_sha256':hashlib.sha256(result_path.read_bytes()).hexdigest(),
+            'source_completion':completion,
             'physical_acceptance_claimed':False, 'legal_judgment':'unresolved'}
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--attempt',required=True)
+    parser.add_argument('--survey',required=True)
+    parser.add_argument('--case',required=True)
+    parser.add_argument('--output',required=True)
+    args=parser.parse_args(argv)
+    output=Path(args.output).resolve()
+    attempt=Path(args.attempt).resolve()
+    if output.exists() or output==attempt or attempt in output.parents:
+        raise ValueError('fresh audit output outside original attempt required')
+    receipt=audit(args.attempt,args.survey)
+    if receipt['case_id']!=args.case:
+        raise ValueError('delivery audit exact case differs')
+    output.write_text(json.dumps({'format':'worker-delivery-source-audit',**receipt},indent=2)+'\n')
+    return receipt
+
+
+if __name__=='__main__':
+    main()

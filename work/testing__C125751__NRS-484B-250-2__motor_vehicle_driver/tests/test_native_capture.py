@@ -11,7 +11,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from entry_timing import ASSIGNMENT
-from native_capture import CAMERAS, capture
+from native_capture import CAMERAS, _check_fresh_destination, capture
 from saved_delivery import audit
 
 from test_entry_timing import body, survey
@@ -97,6 +97,26 @@ class NativeCaptureTests(unittest.TestCase):
         return capture(adapter,self.survey_path,
                        hashlib.sha256(self.survey_path.read_bytes()).hexdigest(),
                        self.map_path,self.case,self.root/'attempt')
+
+    def test_materialized_bundle_allowed_once_and_changed_bytes_rejected(self):
+        output = self.root/'attempt'
+        output.mkdir()
+        construction = {'case_id':self.case,
+                        'files':[{'path':'runner.py','content':'print(1)\n'}]}
+        raw = json.dumps(construction,indent=2)+'\n'
+        (output/'construction.json').write_text(raw)
+        (output/'candidate-selection.json').write_text(json.dumps({
+            'case_id':self.case,
+            'construction_sha256':hashlib.sha256(raw.encode()).hexdigest()})+'\n')
+        (output/'runner.py').write_text('print(1)\n')
+        _check_fresh_destination(output,self.case)
+        (output/'runner.py').write_text('print(2)\n')
+        with self.assertRaisesRegex(ValueError,'bundle file differs'):
+            _check_fresh_destination(output,self.case)
+        (output/'runner.py').write_text('print(1)\n')
+        (output/'original-trace.json').write_text('{}\n')
+        with self.assertRaisesRegex(ValueError,'refusing to overwrite'):
+            _check_fresh_destination(output,self.case)
 
     def test_complete_original_actor_and_camera_source_join(self):
         adapter = Adapter()

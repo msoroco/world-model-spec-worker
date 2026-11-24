@@ -15,6 +15,33 @@ from entry_timing import ASSIGNMENT, CASES, measure
 CAMERAS = ('front', 'rear', 'left', 'right')
 
 
+def _check_fresh_destination(output, case_id):
+    if not output.exists() or not any(output.iterdir()):
+        return
+    construction_path = output/'construction.json'
+    selection_path = output/'candidate-selection.json'
+    if not construction_path.is_file() or not selection_path.is_file():
+        raise ValueError('refusing to overwrite original crossing attempt')
+    construction = json.loads(construction_path.read_text())
+    selection = json.loads(selection_path.read_text())
+    if construction.get('case_id') != case_id or selection.get('case_id') != case_id:
+        raise ValueError('materialized exact case differs')
+    if selection.get('construction_sha256') != hashlib.sha256(construction_path.read_bytes()).hexdigest():
+        raise ValueError('materialized construction digest differs')
+    allowed = {'construction.json', 'candidate-selection.json'}
+    for item in construction.get('files', []):
+        relative = item.get('path')
+        if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
+            raise ValueError('materialized bundle path invalid')
+        path = output/relative
+        if not path.is_file() or path.read_text() != item.get('content'):
+            raise ValueError('materialized bundle file differs')
+        allowed.add(relative)
+    observed = {str(path.relative_to(output)) for path in output.rglob('*') if path.is_file()}
+    if observed != allowed:
+        raise ValueError('refusing to overwrite original crossing attempt')
+
+
 def _source_path(root, relative):
     if not isinstance(relative, str) or not relative:
         raise ValueError('original camera source path missing')
@@ -37,8 +64,7 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
     if case_id not in {ASSIGNMENT+'__'+suffix for suffix in CASES}:
         raise ValueError('foreign exact timing case')
     output = Path(output)
-    if output.exists() and any(output.iterdir()):
-        raise ValueError('refusing to overwrite original crossing attempt')
+    _check_fresh_destination(output, case_id)
     raw_survey = Path(survey_path).read_bytes()
     if hashlib.sha256(raw_survey).hexdigest() != survey_sha256:
         raise ValueError('original crossing survey hash differs')

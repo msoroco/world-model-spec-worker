@@ -57,6 +57,7 @@ def measure(trace, survey):
         raise ValueError('two distinct original actors required')
     first_frame = first_time = None
     entries = {'ego': None, 'other': None}
+    entry_device_states = {'ego': None, 'other': None}
     exits = {'ego': None, 'other': None}
     prior_inside = {'ego': False, 'other': False}
     device_states = set()
@@ -90,6 +91,7 @@ def measure(trace, survey):
                 entries[name] = {'frame': i, 'native_frame_id': native_frame,
                                  'upper_elapsed_seconds': native_time,
                                  'lower_elapsed_seconds': frames[i-1]['native_elapsed_seconds']}
+                entry_device_states[name] = state
             if not inside and prior_inside[name] and exits[name] is None:
                 exits[name] = {'frame': i, 'native_frame_id': native_frame,
                                'upper_elapsed_seconds': native_time,
@@ -107,6 +109,7 @@ def measure(trace, survey):
             'ego_minus_other_upper_entry_s': difference,
             'other_approach_side_of_ego': 'right' if cross < 0 else 'left',
             'governing_device_states': sorted(device_states),
+            'governing_device_entry_states': entry_device_states,
             'approximately_same_time_judgment': 'unresolved',
             'statutory_applicability': 'unresolved_official_device_exclusion_and_subsection_4',
             'right_of_way_judgment': 'unresolved'}

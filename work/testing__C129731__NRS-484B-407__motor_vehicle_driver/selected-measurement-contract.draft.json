@@ -1,0 +1,109 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Subject actually turns to proceed in the opposite direction",
+      "source": "NRS 484B.407 exact text",
+      "output_key": "heading_change_deg",
+      "method": "measure_original_sight",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "inventory.json",
+        "frame_map.json",
+        "ego_motion.json",
+        "sight_rays.json",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Subject turn interval has original frame identity",
+      "source": "NRS 484B.407 exact text",
+      "output_key": "turn_frame_count",
+      "method": "measure_original_sight",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "inventory.json",
+        "frame_map.json",
+        "ego_motion.json",
+        "sight_rays.json",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Turn site is an original curve or approach to or near a crest",
+      "source": "NRS 484B.407 exact text",
+      "output_key": "location_kind",
+      "method": "measure_original_sight",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "inventory.json",
+        "frame_map.json",
+        "ego_motion.json",
+        "sight_rays.json",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Original sight rays cover the opposing approach within 500 feet",
+      "source": "NRS 484B.407 exact text",
+      "output_key": "opposing_blocked_ray_count",
+      "method": "measure_original_sight",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "inventory.json",
+        "frame_map.json",
+        "ego_motion.json",
+        "sight_rays.json",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Original sight rays cover the following approach within 500 feet",
+      "source": "NRS 484B.407 exact text",
+      "output_key": "following_blocked_ray_count",
+      "method": "measure_original_sight",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "inventory.json",
+        "frame_map.json",
+        "ego_motion.json",
+        "sight_rays.json",
+        "road_geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Both approach directions have complete turn interval and 500-foot ray stations",
+      "source": "NRS 484B.407 exact text",
+      "output_key": "two_direction_ray_count",
+      "method": "measure_original_sight",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "inventory.json",
+        "frame_map.json",
+        "ego_motion.json",
+        "sight_rays.json",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "sight_rays.json"
+    ],
+    "error_contains": "Missing required source: sight_rays.json"
+  },
+  "scope": "Original packet contract; synthetic source-shaped CPU test is diagnostic only and not delivery acceptance"
+}

@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from native_geometry import opendrive_text, validate_geometry
+from native_geometry import opendrive_text, validate_geometry, validate_live_route
 
 
 class GeometryTest(unittest.TestCase):
@@ -18,6 +18,15 @@ class GeometryTest(unittest.TestCase):
         checked = validate_geometry(self.map)
         self.assertEqual(checked["route_xy_m"], [[-30.0, -0.75], [30.0, -0.75]])
         self.assertFalse(checked["rack_visual_asset_verified"])
+        self.assertEqual(validate_live_route(self.map)["route_xy_m"], checked["route_xy_m"])
+
+    def test_live_route_rejects_missing_lane_and_shifted_road(self):
+        self.map.write_text(opendrive_text().replace('type="driving"', 'type="sidewalk"'))
+        with self.assertRaisesRegex(ValueError, 'lacks the fixed alley route'):
+            validate_live_route(self.map)
+        self.map.write_text(opendrive_text().replace('x="-40"', 'x="-20"'))
+        with self.assertRaisesRegex(ValueError, 'lacks the fixed alley route'):
+            validate_live_route(self.map)
 
     def test_missing_map_rejected(self):
         self.map.unlink()

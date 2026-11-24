@@ -33,7 +33,10 @@ def build(seal_offline=False):
                  'measurement_contract':contract.name,
                  'measurement_procedure':{'entrypoint':'analysis.py'},
                  'native_handoff':{'python_env_var':'CARLA_PYTHON',
-                                   'host_env_var':'CARLA_HOST','port_env_var':'CARLA_PORT'},
+                                   'host_env_var':'CARLA_HOST','port_env_var':'CARLA_PORT',
+                                   'survey_env_var':'C125751_SURVEY',
+                                   'survey_sha256_env_var':'C125751_SURVEY_SHA256',
+                                   'map_source_env_var':'C125751_MAP_SOURCE'},
                  'candidate_risk':row['candidate_risk'], 'candidates':[],
                  'missing_proofs':['source-shaped positive and negative compatibility',
                                    'saved-only processing and physical audit lifecycle',
@@ -44,7 +47,7 @@ def build(seal_offline=False):
                 raise ValueError('Exact selected offline check missing: '+suffix)
             command = ('.venv-cpu/bin/python runtime.py offline --manifest '
                        f'work/{AID}/execution-manifest.json --case {case} '
-                       f'--output .runtime-work/c125751-selected-offline-v6-{suffix} '
+                       f'--output .runtime-work/c125751-selected-offline-v9-{suffix} '
                        '--python "$PWD/.venv-cpu/bin/python"')
             entry['offline'] = {'command':command, 'exit_code':0,
                                 'construction_sha256':sha(construction),

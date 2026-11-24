@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, FrameJoin, FourCameraCapture
 from native_run import configure_world, source_configuration, snapshot_sources, spawn_case_pedestrian, pedestrian_source
 from delivery_audit import audit_source_provenance
+from native_geometry import opendrive_text
 
 CASE = "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference"
 
@@ -39,7 +40,7 @@ class NativeAdapterTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             road = root / 'road.xodr'
-            road.write_text('<OpenDRIVE/>\n')
+            road.write_text(opendrive_text())
             digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
             packets = {
                 'municipal': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
@@ -145,7 +146,7 @@ class NativeAdapterTests(unittest.TestCase):
             road.write_text('<OpenDRIVE changed="yes"/>\n')
             with self.assertRaisesRegex(ValueError, 'case/map source mismatch'):
                 source_configuration(env, CASE)
-            road.write_text('<OpenDRIVE/>\n')
+            road.write_text(opendrive_text())
             scene["human_powered_bicycle_verified"] = False
             sp.write_text(json.dumps(scene))
             env["C10307_SCENE_SHA256"] = digest(sp)

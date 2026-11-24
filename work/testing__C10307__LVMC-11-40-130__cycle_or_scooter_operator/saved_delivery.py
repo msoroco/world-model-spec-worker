@@ -60,15 +60,15 @@ def _probe_and_decode(path: Path, expected_frames: int,
             "width": width, "height": height}
 
 
-def audit_saved(root: Path, case_id: str, *, minimum_frames: int = 900,
+def audit_saved(root: Path, case_id: str, *, expected_frames: int = 900,
                 expected_dimensions: dict = CAMERA_DIMENSIONS) -> dict:
     """Reject truncated, rebound or diagnostic episodes before saved processing."""
     root = Path(root)
     inventory = json.loads((root / "inventory.json").read_text())
     measured = measure(root, inventory, case_id)
     samples = measured["samples"]
-    if len(samples) < minimum_frames or minimum_frames < 2:
-        raise ValueError("original episode shorter than required 20 Hz window")
+    if expected_frames < 2 or len(samples) != expected_frames:
+        raise ValueError("original episode differs from exact required 20 Hz window")
     capture = json.loads((root / "camera-manifest.json").read_text())
     if (capture.get("case_id") != case_id or
             capture.get("source_kind") != "original_live_native" or

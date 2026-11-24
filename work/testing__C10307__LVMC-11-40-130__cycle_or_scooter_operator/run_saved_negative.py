@@ -20,9 +20,9 @@ def main():
     for entry in manifest["cases"]:
         case = entry["case_id"]
         short = case.removeprefix(ROOT.name + "__")
-        source = REPO / ".runtime-work" / ("c10307-saved-v16-" + short + "-attempt")
-        attempt = REPO / ".runtime-work" / ("c10307-saved-v16-" + short + "-negative-attempt")
-        output = REPO / ".runtime-work" / ("c10307-saved-v16-" + short + "-negative-source")
+        source = REPO / ".runtime-work" / ("c10307-saved-v20-" + short + "-attempt")
+        attempt = REPO / ".runtime-work" / ("c10307-saved-v20-" + short + "-negative-attempt")
+        output = REPO / ".runtime-work" / ("c10307-saved-v20-" + short + "-negative-source")
         for path in (attempt, output):
             if path.exists():
                 shutil.rmtree(path)
