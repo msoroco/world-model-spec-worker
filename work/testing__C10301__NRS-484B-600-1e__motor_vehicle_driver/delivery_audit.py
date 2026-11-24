@@ -36,7 +36,11 @@ def _sealed(attempt: Path, entry: dict, label: str) -> tuple[Path, str]:
     path = attempt / name
     if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(attempt.resolve()):
         raise ValueError(f"{label} source missing or escapes attempt")
-    observed = hashlib.sha256(path.read_bytes()).hexdigest()
+    hasher = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            hasher.update(chunk)
+    observed = hasher.hexdigest()
     if observed != digest:
         raise ValueError(f"{label} source hash differs")
     return path, observed
@@ -99,6 +103,31 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
         if (not isinstance(row, dict) or row.get("frame") != origin + i or
                 row.get("camera_frames") != {camera: origin + i for camera in CAMERAS}):
             raise ValueError("camera and original frame join differs")
+    kinematic_hash = motion.get('kinematics_source_sha256')
+    if kinematic_hash is None and not allow_diagnostic:
+        raise ValueError('original Native kinematics required for delivery')
+    if kinematic_hash is not None:
+        kinematic_path = attempt / 'native-kinematics.jsonl'
+        raw = kinematic_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != kinematic_hash:
+            raise ValueError('original Native kinematics source hash differs')
+        kinematic_rows = [json.loads(line) for line in raw.splitlines() if line.strip()]
+        if len(kinematic_rows) != EXPECTED_FRAMES:
+            raise ValueError('original Native kinematics frame count differs')
+        for i, row in enumerate(kinematic_rows):
+            position, velocity, controls = (row.get('position_m'),
+                                            row.get('velocity_mps'), row.get('control'))
+            if (row.get('frame') != origin + i or
+                    row.get('time_s') != i / 20 or
+                    not isinstance(position, list) or len(position) != 3 or
+                    not isinstance(velocity, list) or len(velocity) != 3 or
+                    not all(type(value) in (int, float) and math.isfinite(value)
+                            for value in position + velocity) or
+                    not isinstance(controls, dict) or
+                    not all(type(controls.get(key)) in (int, float) and
+                            math.isfinite(controls[key]) and 0 <= controls[key] <= 1
+                            for key in ('throttle', 'brake'))):
+                raise ValueError('original Native kinematics frame join differs')
     camera_readback_hash = motion.get("camera_frame_readback_sha256")
     if camera_readback_hash is None and not allow_diagnostic:
         raise ValueError("original camera readback required for delivery")

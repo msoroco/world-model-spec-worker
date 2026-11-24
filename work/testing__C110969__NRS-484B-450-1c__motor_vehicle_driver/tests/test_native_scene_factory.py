@@ -115,6 +115,32 @@ class FactoryTests(unittest.TestCase):
         acquire.assert_called_once()
         writer.assert_called_once()
 
+    def test_client_wires_original_capture_before_acquisition(self):
+        case = "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stop"
+        route, boundary, cameras = packets(case)
+        world = World()
+        client = types.SimpleNamespace(get_world=lambda: world)
+        carla = types.SimpleNamespace(
+            Transform=lambda loc, rot: (loc, rot),
+            Location=lambda **kwargs: kwargs, Rotation=lambda **kwargs: kwargs,
+            VehicleControl=lambda **kwargs: kwargs)
+        capture_module = types.ModuleType('pipeline_capture')
+        with patch.object(factory, "validate_route", return_value={}), \
+             patch.object(factory, "NativeCameraAdapter"), \
+             patch.object(factory, "NativeMediaWriter"), \
+             patch.object(factory, "DestinationController"), \
+             patch.object(factory, "acquire", return_value={"frame_count": 900}) as acquire, \
+             patch.dict(sys.modules, {'pipeline_capture': capture_module}):
+            from unittest.mock import Mock
+            capture_module.PipelineCapture = Mock()
+            factory.run_native(world, carla, route, boundary, cameras,
+                               types.SimpleNamespace(observe=lambda *_: {}),
+                               case, "run", Path("/ignored"), client=client)
+        capture_module.PipelineCapture.assert_called_once_with(
+            client, world.spawned[0][3], Path('/ignored'), case)
+        self.assertIs(acquire.call_args.kwargs['pipeline_capture'],
+                      capture_module.PipelineCapture.return_value)
+
 
 if __name__ == "__main__":
     unittest.main()

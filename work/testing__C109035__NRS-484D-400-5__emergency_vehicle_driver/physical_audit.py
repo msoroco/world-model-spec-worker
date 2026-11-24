@@ -43,5 +43,4 @@ def assess_motion(rows: list[dict] | None, site: dict | None) -> dict:
             "ego_actor_id": ego_id, "pedestrian_actor_id": pedestrian_id,
             "progress_m": progress_m, "passed_recipient_station_m": pass_m,
             "closest_recipient_distance_m": closest_m,
-            "maximum_lane_lateral_error_m": lateral_error_m,
-            "diagnostic_fixture": True}
+            "maximum_lane_lateral_error_m": lateral_error_m}

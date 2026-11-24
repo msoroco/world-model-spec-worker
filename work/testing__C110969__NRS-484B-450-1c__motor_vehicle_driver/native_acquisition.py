@@ -41,7 +41,8 @@ def body_footprint(actor) -> list[list[float]]:
 
 
 def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
-            run_id: str, output: Path, sample_count: int = 900, media_writer=None) -> dict:
+            run_id: str, output: Path, sample_count: int = 900, media_writer=None,
+            pipeline_capture=None) -> dict:
     """Tick a synchronous 20 Hz world and seal original packets for the finalizer.
 
     controller.step(frame_index, actor) requests behavior. observer.observe takes
@@ -95,6 +96,11 @@ def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
                                                   "officer_direction_observation",
                                                   "device_direction_observation")),
                      "independent original activity/context observation missing")
+            if pipeline_capture is not None:
+                captured_row = pipeline_capture.capture(frame, time_s)
+                _require(captured_row["frame"] == frame and
+                         abs(captured_row["time_s"] - time_s) <= 1e-6,
+                         "original graph/actor frame join differs")
             if media_writer is not None:
                 media_writer.capture(snapshot, actor)
             samples.append({"frame": frame, "time_s": time_s,
@@ -106,9 +112,13 @@ def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
     except BaseException:
         if media_writer is not None:
             media_writer.abort()
+        if pipeline_capture is not None:
+            pipeline_capture.close(confirmed=False)
         raise
     finally:
         controller.stop(actor)
+    if pipeline_capture is not None:
+        pipeline_capture.close(confirmed=True)
     activity = {"case_id": case_id, "native_run_id": run_id,
                 "activity_source": "original_native_activity_observer",
                 "activity_samples": activities,

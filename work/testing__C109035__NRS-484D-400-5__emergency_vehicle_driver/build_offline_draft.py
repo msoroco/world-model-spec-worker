@@ -11,6 +11,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "emergency_scene.py", "native_scene.py", "native_capture.py",
     "actor_readback.py",
+    "physical_audit.py", "delivery_audit.py",
     "camera_recorder.py", "device_readback.py", "original_adapters.py",
     "native_handoff.py", "native_camera_rig.py",
     "saved_finalizer.py",

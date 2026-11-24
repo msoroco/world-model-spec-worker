@@ -18,8 +18,12 @@ def _bind(attempt: Path, path: Path) -> dict:
     if (not path.is_file() or path.is_symlink() or
             not path.resolve().is_relative_to(attempt.resolve())):
         raise ValueError("camera source missing or outside attempt")
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
     return {"path": str(path.relative_to(attempt)),
-            "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            "sha256": digest.hexdigest()}
 
 
 def finalize_capture(attempt: Path, case_id: str, camera_frames: list[dict],

@@ -65,6 +65,33 @@ class Observer:
 
 
 class AcquisitionTests(unittest.TestCase):
+    def test_original_graph_capture_joins_each_existing_tick(self):
+        class GraphCapture:
+            def __init__(self):
+                self.frames = []
+                self.confirmed = None
+
+            def capture(self, frame, time_s):
+                self.frames.append((frame, time_s))
+                return {"frame": frame, "time_s": time_s}
+
+            def close(self, confirmed=True):
+                self.confirmed = confirmed
+
+        with tempfile.TemporaryDirectory(dir=Path('.runtime-work').resolve()) as tmp:
+            graph = GraphCapture()
+            acquire(World(), Actor(), BOUNDARY, Controller(), Observer(), CASE,
+                    'graph-run', Path(tmp), 3, pipeline_capture=graph)
+            self.assertEqual([frame for frame, _ in graph.frames], [1, 2, 3])
+            for (_, time_s), expected in zip(graph.frames, (0.05, 0.1, 0.15)):
+                self.assertAlmostEqual(time_s, expected)
+            self.assertTrue(graph.confirmed)
+            failed = GraphCapture()
+            with self.assertRaisesRegex(SourceError, 'frame or 20 Hz time gap'):
+                acquire(World(gap=True), Actor(), BOUNDARY, Controller(), Observer(),
+                        CASE, 'gap-run', Path(tmp), 3, pipeline_capture=failed)
+            self.assertFalse(failed.confirmed)
+
     def test_native_footprint_rotates_actual_box(self):
         points = body_footprint(Actor())
         self.assertEqual(points, [[5.5, 4], [5.5, 6], [4.5, 6], [4.5, 4]])

@@ -14,6 +14,21 @@ MODULES = (
     "source_binding.py",
 )
 EXPECTED = {"below": 75, "equal": 80, "above": 85}
+RECORDING = {
+    'channels': [
+        {'name': name, 'unit': unit, 'sampling_rate_hz': 20,
+         'method': method, 'time_window': 'complete original 45-second capture',
+         'reference_frame': 'original Native CARLA frame and time',
+         'uncertainty': '20 Hz sampled source; physical and site review pending'}
+        for name, unit, method in (
+            ('sampled_speed_mps', 'm/s', 'original actor velocity magnitude'),
+            ('ego_position_m', 'structured record', 'original actor location vector'),
+            ('route_readback', 'structured record', 'original map waypoint and route station'),
+            ('camera_frame_sources', 'structured record', 'original four-camera frame readback'))
+    ],
+    'context_inputs': [],
+    'limitations': ['Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment.'],
+}
 
 RUNNER = '''"""Exact speed-case preflight and source-gated Native runner."""
 import argparse
@@ -72,7 +87,8 @@ def main():
     if attempt.exists() and any((attempt / name).exists() for name in (
             "native-site-source.json", "capture-index.json", "native-motion-receipt.json",
             "original-speed.jsonl", "speed-source.json", "camera-frame-readback.json",
-            "route-frame-readback.json", "camera-frame-map.jsonl", "capture")):
+            "route-frame-readback.json", "native-kinematics.jsonl",
+            "camera-frame-map.jsonl", "capture")):
         raise ValueError("Native acquisition output already exists")
     import carla
     from owned_capture import capture_owned
@@ -237,8 +253,7 @@ def build() -> None:
             "law_id": plan["law_id"], "cell_id": plan["cell_id"],
             "actor": plan["actor"], "case_id": item["case_id"],
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_reviewed_site_pending",
-                                      "channels": config["cameras"]},
+            "recording_description": RECORDING,
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         path = ROOT / f"construction-{suffix}.json"

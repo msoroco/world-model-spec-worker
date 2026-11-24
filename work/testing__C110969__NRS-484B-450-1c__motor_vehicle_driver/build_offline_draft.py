@@ -119,6 +119,9 @@ def build():
             "source_requirements": ["reviewed_intersection_boundary", "original_trace",
                                     "original_activity", "original_camera_media"],
             "required_atoms": [], "diagnostic_only": True,
+            "controller_profile": {"brake_distance_m": 2.0,
+                                   "throttle_gain": 0.2,
+                                   "through_speed_floor_mps": 2.0},
         }
         files = {name: (HERE / name).read_text() for name in SOURCES}
         files.update({"runner.py": RUNNER, "case-plan.json": source.decode(),

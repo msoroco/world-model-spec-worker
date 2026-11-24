@@ -152,3 +152,46 @@ def finalize(folder: Path, *, case_id: str) -> dict:
         "actual_camera_pixels": "unverified",
         "legal_conclusion": None,
     }
+
+
+def measure(folder: Path, *, case_id: str) -> dict:
+    """Bind selected witness observations to exact saved original source bytes."""
+    folder = Path(folder)
+    names = ("device_trace.jsonl", "actor_trace.jsonl", "dispatch_context.json",
+             "equipment_record.json")
+    for name in names:
+        if not (folder / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    measured = finalize(folder, case_id=case_id)
+    hashes = {name: hashlib.sha256((folder / name).read_bytes()).hexdigest()
+              for name in names}
+    observed = measured["observed"]
+    definitions = {
+        "response_warning_observation": (
+            ("device_trace.jsonl", "actor_trace.jsonl", "dispatch_context.json"),
+            {"event": observed["event"],
+             "siren_frames": observed["observed_siren_frames"],
+             "recipient_actor_id": measured["original_actor_ids"]["pedestrian"]}),
+        "pursuit_warning_observation": (
+            ("device_trace.jsonl", "dispatch_context.json"),
+            {"event": observed["event"], "siren_frames": observed["observed_siren_frames"]}),
+        "temporal_siren_relation": (
+            ("device_trace.jsonl", "dispatch_context.json"),
+            {"event": observed["event"],
+             "all_siren_frames_within_documented_event":
+                 observed["all_siren_frames_within_documented_event"]}),
+        "lamp_without_siren_observation": (
+            ("device_trace.jsonl", "equipment_record.json"),
+            {"observed": observed["lamp_without_siren_observed"],
+             "lamp_frames": observed["observed_warning_lamp_frames"]}),
+        "equipment_authorization_record": (
+            ("equipment_record.json", "device_trace.jsonl"),
+            {"audibility_documentation_status":
+                 observed["audibility_500ft_documentation_status"],
+             "device_frames_observed": measured["native_frame_count"]}),
+    }
+    return {"case_id": case_id,
+            "measurements": {key: {"method": "measure", "value": value,
+                                   "sources": {name: hashes[name] for name in sources}}
+                             for key, (sources, value) in definitions.items()},
+            "physical_acceptance_claimed": False}

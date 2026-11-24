@@ -25,7 +25,7 @@ def encoded(value):
 def export(attempt, expected_case, *, expected_count=900):
     attempt = Path(attempt).resolve()
     _require(not any((attempt/name).exists() for name in
-                     ('trace.jsonl', 'video_frames.jsonl', *(name+'.mkv' for name in CAMERAS))),
+                     ('video_frames.jsonl', *(name+'.mkv' for name in CAMERAS))),
              'prior Native export exists')
     media = audit_saved_acquisition(attempt)
     _require(media['case_id'] == expected_case and media['frame_count'] == expected_count,
@@ -84,11 +84,31 @@ def export(attempt, expected_case, *, expected_count=900):
             video_receipts[camera] = {'sha256': sha(target),
                                       'decoded_frames': decoded['frames'],
                                       'rgb_sequence_sha256': decoded['rgb_sequence_sha256']}
-    (attempt/'trace.jsonl').write_text(''.join(encoded(row) for row in traces))
+    trace_path = attempt/'trace.jsonl'
+    graph_manifest_path = attempt/'capture'/'manifest.json'
+    if graph_manifest_path.is_file():
+        graph_manifest = json.loads(graph_manifest_path.read_text())
+        _require(graph_manifest.get('extraction_confirmed') is True and
+                 graph_manifest.get('frames') == len(traces) and
+                 graph_manifest.get('sources', {}).get('trace.jsonl') == sha(trace_path),
+                 'original graph capture incomplete or trace seal differs')
+        graph_rows = [json.loads(line) for line in trace_path.read_text().splitlines()]
+        _require(len(graph_rows) == len(traces), 'original graph trace count differs')
+        for graph_row, actor_row in zip(graph_rows, traces):
+            _require(graph_row['frame'] == actor_row['frame'] and
+                     abs(graph_row['time_s']-actor_row['time_s']) <= 1e-6 and
+                     all(abs(x-y) <= 1e-3 for x,y in zip(
+                         graph_row['position_m'], actor_row['position_m'])) and
+                     abs(graph_row['speed_mps']-actor_row['speed_mps']) <= 1e-3,
+                     'original graph/actor telemetry differs')
+    else:
+        _require(not trace_path.exists(), 'unsealed original trace exists')
+        trace_path.write_text(''.join(encoded(row) for row in traces))
     (attempt/'video_frames.jsonl').write_text(''.join(encoded(row) for row in frame_map))
     receipt = {'format':'intersection-native-export-v1', 'case_id':expected_case,
                'original_source_manifest_sha256':sha(attempt/'source-manifest.json'),
                'trace_sha256':sha(attempt/'trace.jsonl'),
+               'graph_manifest_sha256':sha(graph_manifest_path) if graph_manifest_path.is_file() else None,
                'frame_map_sha256':sha(attempt/'video_frames.jsonl'),
                'frame_count':len(rows), 'videos':video_receipts,
                'physical_visibility_reviewed':False, 'legal_conclusion':None}

@@ -1,5 +1,6 @@
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -12,6 +13,7 @@ from native_capture import capture
 from native_media import NativeMedia
 from delivery_audit import audit_decoded_media
 from saved_speed import process_delivery
+from analysis import finalize, project_trace, write_native_result
 
 CASE = ROOT.name + '__above'
 CAMERAS = ('front', 'front_left', 'front_right', 'rear')
@@ -181,6 +183,64 @@ class CaptureTests(unittest.TestCase):
                                  allow_diagnostic=True)
         self.assertEqual(saved['native_run_id'], 'run-1')
         self.assertTrue(saved['media_audit']['full_video_decode'])
+        for alias, original in {'overview': 'front', 'approach': 'front_left',
+                                'reference_corner': 'front_right',
+                                'driver_reference': 'rear'}.items():
+            self.assertEqual((self.attempt / (alias + '.mkv')).read_bytes(),
+                             (self.attempt / (original + '.mkv')).read_bytes())
+        trace = project_trace(self.attempt, CASE)
+        self.assertEqual(len(trace), 900)
+        self.assertEqual(trace[0]['frame'], 101)
+        self.assertGreater(trace[-1]['position_m'][0], trace[0]['position_m'][0])
+        self.assertEqual(trace[-1]['camera_frames']['rear'], trace[-1]['frame'])
+        construction = json.loads((ROOT / 'construction-above.json').read_text())
+        (self.attempt / 'construction.json').write_text(json.dumps(construction) + '\n')
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        (self.attempt / 'config.json').write_text(json.dumps(config) + '\n')
+        report = finalize(self.attempt, CASE, allow_diagnostic=True)
+        native_result = write_native_result(self.attempt, report)
+        self.assertEqual(native_result['case_id'], CASE)
+        self.assertEqual(len(native_result['recording_evidence']), 4)
+        self.assertEqual(len((self.attempt / 'trace.jsonl').read_text().splitlines()), 900)
+        self.assertEqual(len((self.attempt / 'video_frames.jsonl').read_text().splitlines()), 900)
+        sys.path.insert(0, str(ROOT.parents[1] / 'runtime' / 'scenario_pipeline'))
+        from worker_exchange.native_output import validate_result
+        from batch_pipeline.validation import recording_evidence
+        from batch_pipeline.carla import validate_attempt
+        validate_result(native_result)
+        recording_evidence(native_result, construction['recording_description'],
+                           lambda reference: self.attempt / reference)
+        validated = validate_attempt(
+            self.attempt.resolve(),
+            {'case': {'case_id': CASE, 'sweep_measurements': []},
+             'cell': {'cell_id': 'C10301'}, 'actor': 'motor_vehicle_driver'},
+            construction, {'recorded_exit_code': 0}, {})
+        self.assertTrue(validated['rebuild_required'])
+        with self.assertRaisesRegex(ValueError, 'overwrite derived Native'):
+            write_native_result(self.attempt, report)
+        kinematics = self.attempt / 'native-kinematics.jsonl'
+        original_kinematics = kinematics.read_bytes()
+        rows = [json.loads(line) for line in original_kinematics.splitlines()]
+        self.assertEqual(len(rows), 900)
+        self.assertEqual(rows[0]['frame'], 101)
+        self.assertEqual(rows[-1]['frame'], 1000)
+        kinematics.write_bytes(original_kinematics + b'changed')
+        with self.assertRaisesRegex(ValueError, 'kinematics source hash differs'):
+            audit_decoded_media(self.attempt, CASE, allow_diagnostic=True)
+        kinematics.write_bytes(original_kinematics)
+        motion_path = self.attempt / 'native-motion-receipt.json'
+        original_motion = motion_path.read_bytes()
+        rows[40]['velocity_mps'][0] += 2.0
+        kinematics.write_bytes(''.join(json.dumps(row, sort_keys=True) + '\n'
+                                       for row in rows).encode())
+        motion = json.loads(original_motion)
+        motion['kinematics_source_sha256'] = hashlib.sha256(kinematics.read_bytes()).hexdigest()
+        motion_path.write_text(json.dumps(motion) + '\n')
+        with self.assertRaisesRegex(ValueError, 'velocity and speed differ'):
+            project_trace(self.attempt, CASE)
+        kinematics.write_bytes(original_kinematics)
+        motion_path.write_bytes(original_motion)
         route_path = self.attempt / 'route-frame-readback.json'
         self.assertTrue(route_path.is_file())
         self.assertEqual(len(json.loads(route_path.read_text())['frames']), 900)
@@ -225,6 +285,26 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(all(sensor.destroyed and sensor.stopped
                             for sensor in self.world.sensors))
         self.assertFalse((self.attempt / 'capture-index.json').exists())
+
+    def test_pinned_analysis_entrypoint_writes_native_result(self):
+        capture(self.world, self.site, self.attempt, CASE, 'run-analysis',
+                0.05, transform, control, diagnostic_fixture=True,
+                media_factory=media_factory)
+        construction = json.loads((ROOT / 'construction-above.json').read_text())
+        (self.attempt / 'construction.json').write_text(json.dumps(construction) + '\n')
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        (self.attempt / 'config.json').write_text(json.dumps(config) + '\n')
+        command = [sys.executable, str(ROOT / 'analysis.py'), '--attempt',
+                   str(self.attempt), '--output',
+                   str(self.attempt / 'analysis-report.json')]
+        completed = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(json.loads((self.attempt / 'result.json').read_text())['case_id'], CASE)
+        self.assertIn('measurements', json.loads((self.attempt / 'analysis-report.json').read_text()))
+        repeated = subprocess.run(command, capture_output=True, text=True)
+        self.assertNotEqual(repeated.returncode, 0)
+        self.assertIn('overwrite derived Native result', repeated.stderr)
 
 
 if __name__ == '__main__':

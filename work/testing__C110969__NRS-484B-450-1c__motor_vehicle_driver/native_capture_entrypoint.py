@@ -104,6 +104,9 @@ def run_from_environment(case_id, output_dir, host, port, *, api=None, client=No
     validate_camera_packet(cameras, route, boundary)
     output = Path(output_dir)
     check_materialized_attempt(output, case_id)
+    construction_config = json.loads((output/'config.json').read_text())
+    _require(construction_config.get('selected_case_id') == case_id,
+             'Native construction config case differs')
     if api is None:
         import carla as api
     if client is None:
@@ -122,7 +125,8 @@ def run_from_environment(case_id, output_dir, host, port, *, api=None, client=No
     }, sort_keys=True)+'\n')
     try:
         captured = run_native(world, api, route, boundary, cameras, OriginalMotionObserver(),
-                              case_id, output.name, output)
+                              case_id, output.name, output, client=client,
+                              controller_profile=construction_config.get('controller_profile'))
         exported = finalize_native_capture(output, case_id, world, original_settings)
         return {'case_id': case_id, 'native_capture': captured,
                 'export': exported, 'physical_acceptance_claimed': False}

@@ -43,7 +43,7 @@ def validate_camera_packet(packet, route, boundary):
 
 
 def run_native(world, carla, route, boundary, camera_packet, observer, case_id,
-               run_id, output, sample_count=900):
+               run_id, output, sample_count=900, client=None, controller_profile=None):
     """Create the exact scene and retain original camera/trace source packets."""
     _require(route.get("case_id") == case_id, "route case identity differs")
     validate_route(route, boundary, case_id)
@@ -55,6 +55,7 @@ def run_native(world, carla, route, boundary, camera_packet, observer, case_id,
     actors = []
     adapter = None
     writer = None
+    pipeline_capture = None
     try:
         settings = copy.copy(original_settings)
         settings.synchronous_mode = True
@@ -81,13 +82,19 @@ def run_native(world, carla, route, boundary, camera_packet, observer, case_id,
             sensors[name] = sensor
         adapter = NativeCameraAdapter(sensors)
         writer = NativeMediaWriter(Path(output), adapter)
+        if client is not None:
+            from pipeline_capture import PipelineCapture
+            pipeline_capture = PipelineCapture(client, ego, output, case_id)
         controller = DestinationController(
-            route, boundary, case_id, carla.VehicleControl)
+            route, boundary, case_id, carla.VehicleControl, profile=controller_profile)
         return acquire(world, ego, boundary, controller, observer, case_id, run_id,
-                       Path(output), sample_count=sample_count, media_writer=writer)
+                       Path(output), sample_count=sample_count, media_writer=writer,
+                       pipeline_capture=pipeline_capture)
     except BaseException:
         if writer is not None:
             writer.abort()
+        if pipeline_capture is not None:
+            pipeline_capture.close(confirmed=False)
         raise
     finally:
         if adapter is not None:
@@ -98,9 +105,9 @@ def run_native(world, carla, route, boundary, camera_packet, observer, case_id,
 
 
 def run_from_packets(world, carla, route_path, boundary_path, camera_path,
-                     observer, case_id, run_id, output, sample_count=900):
+                     observer, case_id, run_id, output, sample_count=900, client=None):
     """Load only explicit reviewed source packets; never derive them from case names."""
     paths = [Path(route_path), Path(boundary_path), Path(camera_path)]
     packets = [json.loads(path.read_text()) for path in paths]
     return run_native(world, carla, *packets, observer, case_id, run_id,
-                      output, sample_count=sample_count)
+                      output, sample_count=sample_count, client=client)

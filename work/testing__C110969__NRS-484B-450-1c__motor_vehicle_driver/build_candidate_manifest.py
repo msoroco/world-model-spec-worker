@@ -40,6 +40,13 @@ def build(*, require_compatibility=True):
                                    'evidence': 'trace.json and activity.json'}
                             for name in ('activity_history', 'body_footprint_history',
                                          'traffic_conflict_history', 'direction_history')}}
+        physical = ROOT/'cases'/suffix/'physical-preparation.json'
+        if physical.is_file():
+            receipt = json.loads(physical.read_text())
+            if receipt.get('construction_sha256') != sha(construction):
+                raise ValueError('stale exact physical preparation receipt')
+            entry['physical_preparation'] = {
+                'receipt': str(physical.relative_to(ROOT)), 'sha256': sha(physical)}
         if require_compatibility:
             compatibility = ROOT / 'cases' / suffix / 'compatibility.json'
             analysis_log = ROOT / 'cases' / suffix / 'compat-analysis.log'

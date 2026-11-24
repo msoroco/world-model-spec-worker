@@ -39,6 +39,15 @@ def _position(actor) -> tuple[float, float, float]:
     return tuple(float(value) for value in components)
 
 
+def _velocity(actor) -> tuple[float, float, float]:
+    value = actor.get_velocity()
+    components = (value.x, value.y, value.z)
+    if any(type(item) not in (int, float) or not math.isfinite(item)
+           for item in components):
+        raise ValueError('invalid original Native velocity vector')
+    return tuple(float(item) for item in components)
+
+
 def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                   native_run_id: str, uncertainty_mps: float, *,
                   diagnostic_fixture: bool = False,
@@ -63,6 +72,7 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
         reserved.append("camera-frame-readback.json")
     if route_reader is not None:
         reserved.append("route-frame-readback.json")
+    reserved.append('native-kinematics.jsonl')
     if any((attempt / name).exists() for name in reserved):
         raise ValueError("original Native attempt artifact already exists")
     settings = world.get_settings()
@@ -72,6 +82,7 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
     rows = []
     camera_rows = []
     route_rows = []
+    kinematic_rows = []
     first_elapsed = None
     first_position = None
     previous_frame = None
@@ -99,6 +110,12 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
             rows.append({"frame": frame, "time_s": index / HZ,
                          "speed_mps": _speed(actor),
                          "speed_uncertainty_mps": float(uncertainty_mps)})
+            position = _position(actor)
+            velocity = _velocity(actor)
+            kinematic_rows.append({'frame': frame, 'time_s': index / HZ,
+                                   'position_m': list(position),
+                                   'velocity_mps': list(velocity),
+                                   'control': {'throttle': throttle, 'brake': brake}})
             if route_reader is not None:
                 route = route_reader(actor)
                 if (not isinstance(route, dict) or
@@ -126,6 +143,11 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
             raise ValueError("Native ego did not travel the reviewed route")
         descriptor = write_original_speed(attempt, case_id, native_run_id, rows,
                                           diagnostic_fixture=diagnostic_fixture)
+        kinematic_bytes = ''.join(json.dumps(row, sort_keys=True,
+                                             allow_nan=False) + '\n'
+                                  for row in kinematic_rows).encode()
+        (attempt / 'native-kinematics.jsonl').write_bytes(kinematic_bytes)
+        kinematic_hash = hashlib.sha256(kinematic_bytes).hexdigest()
         camera_hash = None
         if camera_frame_reader is not None:
             camera_bytes = (json.dumps({"case_id": case_id,
@@ -146,6 +168,7 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
         receipt = {"format": "c10301-native-motion-v1", "case_id": case_id,
                    "native_run_id": native_run_id, "sample_count": FRAMES,
                    "travel_m": travel_m, "speed_source_sha256": descriptor["sha256"],
+                   "kinematics_source_sha256": kinematic_hash,
                    "diagnostic_fixture": diagnostic_fixture,
                    "physical_acceptance_claimed": False}
         if camera_hash is not None:

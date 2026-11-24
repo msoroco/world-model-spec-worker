@@ -1,4 +1,5 @@
 import json
+import hashlib
 from pathlib import Path
 import sys
 import tempfile
@@ -14,6 +15,26 @@ from test_native_media import Cameras
 
 
 class ExportTests(unittest.TestCase):
+    def test_original_graph_trace_is_preserved_and_joined(self):
+        with tempfile.TemporaryDirectory(dir=Path('.runtime-work').resolve()) as temp:
+            root = Path(temp)
+            acquire(World(), Actor(), BOUNDARY, Controller(), Observer(), CASE,
+                    'graph-export', root, 2, NativeMediaWriter(root, Cameras()))
+            samples = json.loads((root/'trace.json').read_text())['samples']
+            graph_rows = [{'frame': row['frame'], 'time_s': row['time_s'],
+                           'position_m': row['position_m'], 'speed_mps': row['speed_mps'],
+                           'original_graph_field': True} for row in samples]
+            trace_path = root/'trace.jsonl'
+            trace_path.write_text(''.join(json.dumps(row)+'\n' for row in graph_rows))
+            graph = root/'capture'
+            graph.mkdir()
+            (graph/'manifest.json').write_text(json.dumps({
+                'extraction_confirmed': True, 'frames': 2,
+                'sources': {'trace.jsonl': hashlib.sha256(trace_path.read_bytes()).hexdigest()}}))
+            export(root, CASE, expected_count=2)
+            self.assertTrue(all(row['original_graph_field'] for row in
+                                map(json.loads, trace_path.read_text().splitlines())))
+
     def test_original_pngs_export_losslessly_with_exact_frame_map(self):
         with tempfile.TemporaryDirectory(dir=Path('.runtime-work').resolve()) as temp:
             root = Path(temp)

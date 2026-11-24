@@ -41,7 +41,7 @@ def prepare(assignment: dict, plan: dict) -> dict[str, dict]:
     if set(by_suffix) != set(expected) or len(cases) != len(expected):
         raise ValueError("Seven exact case IDs are required")
     params = [
-        {"name": "documented_event_context", "kind": "source_context", "range_or_domain": list(dict.fromkeys(v[0] for v in expected.values()))},
+        {"name": "documented_event_context", "kind": "world_setup", "range_or_domain": list(dict.fromkeys(v[0] for v in expected.values()))},
         {"name": "requested_siren", "kind": "controller", "range_or_domain": [False, True]},
         {"name": "requested_warning_lamps", "kind": "controller", "range_or_domain": [False, True]},
     ]
@@ -53,15 +53,23 @@ def prepare(assignment: dict, plan: dict) -> dict[str, dict]:
                            "notes": "Vehicle authorization, actual event, purpose, device state and normal-condition audibility need independent original sources."}],
         "borderline_excluded": [],
     }
+    judgment_phrases = [
+        ("authorized emergency vehicle", "Authorization requires an original vehicle record."),
+        ("immediate pursuit", "Pursuit timing and target identity require dispatch context."),
+        ("to warn pedestrians and other drivers", "Purpose and receipt cannot be inferred from a command."),
+        ("audible under normal conditions", "Audibility at the stated distance needs independent evidence."),
+    ]
+    judgments = [{"phrase": phrase, "note": note} for phrase, note in judgment_phrases]
     template = {
         "template_id": TEMPLATE, "law_id": LAW, "actor": ACTOR, "status": "draft", "quote": quote,
         "structure": {
             "activation": {"condition": "Authorized emergency vehicle and driver; device and event facts are source-reviewed."},
             "obligation": {"type": "conditional_siren_restriction", "description": "Siren must not be used except during emergency-call response or immediate pursuit of an actual or suspected violator; qualifying use may warn pedestrians and other drivers."},
-            "exceptions": ["Response to an emergency call", "Immediate pursuit of an actual violator", "Immediate pursuit of a suspected violator"],
+            "exceptions": [{"source_clause": "in response to an emergency call"},
+                           {"source_clause": "in the immediate pursuit of an actual or suspected violator of the law"}],
             "permissions": ["The vehicle may be equipped with a qualifying audible device", "Warning lamps may operate without sounding the siren"],
             "timing": {"description": "Join each original siren-on frame to an independently documented event interval."},
-            "judgment_calls_needed": ["Vehicle authorization", "Immediate pursuit", "Warning purpose", "Normal-condition 500-foot audibility"],
+            "judgment_calls_needed": judgments,
         },
         "parameter_refs": params,
     }
@@ -72,7 +80,29 @@ def prepare(assignment: dict, plan: dict) -> dict[str, dict]:
         "context_refs": [], "fixed_parameters": [],
         "variable_parameters": [{**p, "used_by_laws": [LAW]} for p in params],
     }
-    proposals = []
+    observed = [("siren_active", "categorical"), ("warning_lamp_active", "categorical"),
+                ("ego_position", "native world m"), ("pedestrian_position", "native world m"),
+                ("camera_frame_identity", "native frame")]
+    contexts = [("dispatch_context", "source record"),
+                ("equipment_record", "source record"),
+                ("site_packet", "source record")]
+    recording = {"channels": [{"name": name, "unit": unit, "sampling_rate_hz": 20,
+                                "method": "Original Native saved frame-joined source",
+                                "time_window": "All 900 Native frames",
+                                "reference_frame": "Native world and frame identity",
+                                "uncertainty": "Original source precision; legal interpretation unresolved"}
+                               for name, unit in observed],
+                 "context_inputs": [{"name": name, "unit": unit,
+                                     "method": "Exact sealed original source document"}
+                                    for name, unit in contexts],
+                 "limitations": ["Device observations do not establish 500-foot audibility, hearing or legal purpose.",
+                                 "Synthetic diagnostic receipts are not production physical evidence."]}
+    proposals = [{"case_id": AID + "__shared_baseline", "target_law_id": None,
+                  "target_type": "baseline", "status": "draft",
+                  "rationale": "Common source-bound emergency vehicle approach setup.",
+                  "variable_assignments": {p["name"]: {"kind": p["kind"], "value": None} for p in params},
+                  "recording_description": recording,
+                  "unresolved_judgment_calls": [j["phrase"] for j in judgments]}]
     for suffix, (event, siren, lamps) in expected.items():
         case = by_suffix[suffix]
         if (case["authored_event_context"], case["requested_siren"], case["requested_warning_lamps"]) != (event, siren, lamps):
@@ -86,13 +116,18 @@ def prepare(assignment: dict, plan: dict) -> dict[str, dict]:
             "case_id": case["case_id"], "target_law_id": LAW, "target_type": "boundary_probe", "status": "draft",
             "rationale": case["branch"] + "; requested controls are not observed device states or legal findings.",
             "variable_assignments": {
-                "documented_event_context": {"kind": "source_context", "value": event},
+                "documented_event_context": {"kind": "world_setup", "value": event},
                 "requested_siren": {"kind": "controller", "value": siren},
                 "requested_warning_lamps": {"kind": "controller", "value": lamps},
             },
-            "recording_description": "Original 45-second 20-Hz four-camera emergency vehicle and pedestrian approach capture",
+            "recording_description": recording,
+            "paired_probe_id": "c109035-" + ("response" if event == "emergency_call" else "pursuit" if event.startswith("immediate") else "unqualified"),
+            "deliberate_differences": ["documented_event_context", "requested_siren", "requested_warning_lamps"],
+            "probe": {"primary_variable": "requested_siren",
+                      "comparison_or_standard": "Original device and event source comparison; legal judgment unresolved",
+                      "target_value_or_branch": suffix},
             "construction": {"path": construction.name, "sha256": digest(construction)},
-            "unresolved_judgment_calls": template["structure"]["judgment_calls_needed"],
+            "unresolved_judgment_calls": [j["phrase"] for j in judgments],
         })
     comparisons = []
     variables = {c["case_id"]: c["variable_assignments"] for c in proposals}
@@ -112,9 +147,24 @@ def prepare(assignment: dict, plan: dict) -> dict[str, dict]:
                             "fixed_conditions": comparison["fixed_conditions"],
                             "changed_variables": sorted(changed), "interpretation": comparison["interpretation"]})
     case_stage = {"cell_id": assignment["cell_id"], "actor": ACTOR, "status": "draft",
-                  "cases": proposals, "comparisons": comparisons, "sweep_specs": []}
+                  "sweeps_expanded": True,
+                  "cases": proposals, "comparisons": comparisons,
+                  "sweep_specs": [{"sweep_id": "c109035-source-judgments", "target_law_id": LAW,
+                                   "status": "incomplete", "judgment_refs": judgments,
+                                   "rationale": "Original source documents and physical capture must retain each qualitative judgment unresolved.",
+                                   "missing_inputs": ["Reviewed Native source packet and production four-camera recording."]}]}
+    observable_items = [{"name": name, "unit": unit,
+                         "description": "Original frame-joined saved observation"} for name, unit in observed]
+    context_items = [{"name": name, "unit": unit,
+                      "description": "Original sealed source document"} for name, unit in contexts]
+    judgment_observables = [{"template_id": TEMPLATE, **j, "status": "draft",
+                             "observable_requirements": {"observables": observable_items,
+                                "context_inputs": context_items, "sweep_dimensions": observable_items[:2],
+                                "landmarks": [], "recording_needs": observable_items,
+                                "limitations": recording["limitations"]}}
+                            for j in judgments]
     return {"relevance_batch": relevance, "relevance": relevance, "template": template,
-            "bindings": bindings, "cases": case_stage}
+            "bindings": bindings, "cases": case_stage, "judgment_observables": judgment_observables}
 
 
 def main() -> None:
@@ -130,11 +180,16 @@ def main() -> None:
     destination = ROOT / "proposals"
     destination.mkdir(exist_ok=True)
     refs = {}
+    observables = payloads.pop("judgment_observables")
     for stage, payload in payloads.items():
         path = destination / f"{stage}.json"
         path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
         refs[stage] = {"path": str(path.relative_to(ROOT)), "sha256": digest(path)}
     refs["judgment_observables"] = []
+    for index, payload in enumerate(observables, 1):
+        path = destination / f"judgment-{index}.json"
+        path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+        refs["judgment_observables"].append({"path": str(path.relative_to(ROOT)), "sha256": digest(path)})
     index = {"format": "worker-semantic-delivery", "assignment_id": AID,
              "status": "draft", "sources": [
                  {"path": str(assignment_path.relative_to(PROJECT)), "sha256": digest(assignment_path)},

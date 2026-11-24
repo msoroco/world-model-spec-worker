@@ -73,6 +73,23 @@ class SceneTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "case/map"):
             validate_route(bad, BOUNDARY, CASE)
 
+    def test_bounded_fallback_brakes_earlier_without_changing_route(self):
+        actor = Actor(x=2)
+        primary = DestinationController(route(), BOUNDARY, CASE,
+                                        lambda **kwargs: kwargs)
+        fallback = DestinationController(route(), BOUNDARY, CASE,
+                                         lambda **kwargs: kwargs,
+                                         profile={"brake_distance_m": 3.5,
+                                                  "throttle_gain": 0.2,
+                                                  "through_speed_floor_mps": 2.0})
+        self.assertEqual(primary.step(0, actor)['phase'], 'approach')
+        self.assertEqual(fallback.step(0, actor)['phase'], 'destination_brake')
+        with self.assertRaisesRegex(ValueError, 'bounded engineering'):
+            DestinationController(route(), BOUNDARY, CASE, lambda **kwargs: kwargs,
+                                  profile={"brake_distance_m": 20,
+                                           "throttle_gain": 0.2,
+                                           "through_speed_floor_mps": 2.0})
+
 
 if __name__ == "__main__":
     unittest.main()

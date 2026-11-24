@@ -68,11 +68,21 @@ def validate_route(route: dict, boundary: dict, case_id: str):
 
 
 class DestinationController:
-    def __init__(self, route: dict, boundary: dict, case_id: str, control_factory):
+    def __init__(self, route: dict, boundary: dict, case_id: str, control_factory,
+                 profile=None):
         self.plan = validate_route(route, boundary, case_id)
         self.target = route["destination"]
         self.speed_limit = route["speed_limit_mps"]
         self.control_factory = control_factory
+        self.profile = profile or {"brake_distance_m": 2.0,
+                                   "throttle_gain": 0.2,
+                                   "through_speed_floor_mps": 2.0}
+        _require(set(self.profile) == {"brake_distance_m", "throttle_gain",
+                                      "through_speed_floor_mps"} and
+                 1.0 <= self.profile["brake_distance_m"] <= 5.0 and
+                 0.1 <= self.profile["throttle_gain"] <= 0.3 and
+                 1.0 <= self.profile["through_speed_floor_mps"] <= 4.0,
+                 "bounded engineering controller profile required")
         self.stopped = False
 
     def step(self, frame_index, actor):
@@ -89,11 +99,12 @@ class DestinationController:
         _require(all(math.isfinite(v) for v in (distance, forward, cross, speed)),
                  "invalid Native controller observation")
         through = self.plan["variant"] == "through_motion"
-        if not through and (distance < 2.0 or forward < -0.5):
+        if not through and (distance < self.profile["brake_distance_m"] or forward < -0.5):
             throttle, brake, steer, phase = 0.0, 1.0, 0.0, "destination_brake"
         else:
-            target_speed = min(self.speed_limit, max(2.0, distance * 0.7))
-            throttle = min(0.5, max(0.0, 0.2 * (target_speed - speed)))
+            target_speed = min(self.speed_limit,
+                               max(self.profile["through_speed_floor_mps"], distance * 0.7))
+            throttle = min(0.5, max(0.0, self.profile["throttle_gain"] * (target_speed - speed)))
             brake = min(0.8, max(0.0, 0.3 * (speed - target_speed)))
             steer = max(-0.5, min(0.5, math.atan2(cross, max(2.0, forward)) * 0.7))
             phase = "approach"

@@ -4,12 +4,21 @@ from __future__ import annotations
 from pathlib import Path
 import json
 import hashlib
+import shutil
 
 from capture_finalizer import finalize_capture
 from native_media import NativeMedia
 from native_motion import capture_speed
 from native_motion import CASE_PREFIX, TARGETS
 from native_site import construct
+
+
+def _sha_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def capture(world, packet_path: Path, attempt: Path, case_id: str,
@@ -56,6 +65,16 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
         frames, paths = media.finish()
         index = finalize_capture(attempt, case_id, frames, paths,
                                  site_source=site_source)
+        aliases = {'overview': 'front', 'approach': 'front_left',
+                   'reference_corner': 'front_right',
+                   'driver_reference': 'rear'}
+        for name, camera in aliases.items():
+            target = attempt / (name + '.mkv')
+            if target.exists():
+                raise ValueError('runtime camera media alias already exists')
+            shutil.copyfile(paths[camera], target)
+            if _sha_file(target) != index['cameras'][camera]['sha256']:
+                raise ValueError('runtime camera media alias differs from original')
         return {'motion': motion, 'capture_index': index,
                 'site_packet_sha256': site.packet_sha256}
     finally:
