@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import os
 
 CASE=Path(__file__).resolve().parent
 ROOT=CASE.parents[1]
@@ -91,7 +92,7 @@ def audit():
         if receipt.returncode!=0 or json.loads(receipt.stdout)['delivery_ready']:
             raise ValueError('C131364 copied connected saved check differs')
         saved_checks+=1
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
             base=Path(temporary);raw=base/'raw';saved=base/'saved'
             generated=subprocess.run([sys.executable,str(folder/'fixture_connected_raw.py'),
                 '--bundle',str(folder),'--output-dir',str(raw)],
@@ -113,7 +114,7 @@ def audit():
             if prepared_run(folder,raw,base/'rejected').returncode==0:
                 raise ValueError('C131364 altered raw review accepted')
             saved_negatives+=1
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'lane-readback.json'
             changed=json.loads(path.read_text());changed['left_lane_id']=-2
@@ -122,7 +123,7 @@ def audit():
                 if saved_run(altered,script,witness if script!='compare_saved.py' else None).returncode==0:
                     raise ValueError('C131364 changed saved lane readback accepted')
             saved_negatives+=1
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'connected-saved'/'camera-frames.jsonl'
             rows=[json.loads(line) for line in path.read_text().splitlines()]
@@ -134,7 +135,7 @@ def audit():
             saved_negatives+=1
         for name in ('requested-tracks.jsonl','assignment-source.json','road.xodr',
                      'connected-requested-tracks.jsonl','connected-road.xodr'):
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')
                 if run(altered).returncode==0:

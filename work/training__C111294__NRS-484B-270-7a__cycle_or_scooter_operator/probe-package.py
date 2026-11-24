@@ -11,7 +11,9 @@ import tempfile
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
-from worker_exchange.package_compatibility import run, materialize_case
+from worker_exchange.package_compatibility import _process_fixture, materialize_case
+from worker_exchange.fixture_recipe import fixture_fingerprint
+from worker_exchange.common import digest
 from worker_exchange.runtime_cli import execution_env
 
 spec = importlib.util.spec_from_file_location('fixture', HERE / 'saved-fixture-proof.py')
@@ -33,8 +35,12 @@ def main():
     print('scratch', scratch, flush=True)
     case = HERE.name + '__' + args.case
     manifest = HERE / 'draft-execution-manifest.json'
-    receipt = run(manifest, case, source, scratch / 'output', ROOT / 'runtime/pipeline/library',
-        ROOT / '.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck', args.candidate)
+    inventory = fixture_fingerprint(source)
+    fingerprint = {'fixture_sha256': digest(inventory), 'fixture_manifest': inventory}
+    receipt = _process_fixture(manifest, case, source, scratch / 'output',
+        ROOT / 'runtime/pipeline/library',
+        ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck',
+        args.candidate, fingerprint)
     negative = scratch / 'negative'
     materialize_case(manifest, case, negative, source, args.candidate)
     (negative / 'interaction.json').unlink()

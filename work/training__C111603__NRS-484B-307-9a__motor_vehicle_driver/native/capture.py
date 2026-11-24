@@ -183,6 +183,7 @@ def capture(bundle, output, host, port):
                     "signal_governs_ego_verified": False,
                     "other_traffic_lawfulness_verified": False,
                     "legal_verdict": None}, allow_nan=False) + "\n")
+                source_rgb_sha256 = {}
                 for name, width, height, *_ in specs:
                     image = sensors[name].get(timeout=30)
                     while image.frame < frame:
@@ -191,9 +192,12 @@ def capture(bundle, output, host, port):
                         raise RuntimeError("Camera/native frame join failed")
                     rgb = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(
                         height, width, 4)[:, :, :3][:, :, ::-1]
-                    encoders[name].stdin.write(rgb.tobytes())
+                    rgb_bytes = rgb.tobytes()
+                    source_rgb_sha256[name] = hashlib.sha256(rgb_bytes).hexdigest()
+                    encoders[name].stdin.write(rgb_bytes)
                 video_file.write(json.dumps({"video_frame": index,
-                                             "native_frame": frame, "time_s": time_s}) + "\n")
+                                             "native_frame": frame, "time_s": time_s,
+                                             "source_rgb_sha256": source_rgb_sha256}) + "\n")
                 frames += 1
     except BaseException as exc:
         error = {"type": type(exc).__name__, "message": str(exc),

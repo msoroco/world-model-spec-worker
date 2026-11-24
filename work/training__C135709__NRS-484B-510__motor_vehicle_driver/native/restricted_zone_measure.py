@@ -14,7 +14,7 @@ from pathlib import Path
 
 FRAME_COUNT = 600
 FRAME_RATE = 20
-CAMERAS = ("front", "front_left", "front_right", "rear")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def digest(path: Path) -> str:

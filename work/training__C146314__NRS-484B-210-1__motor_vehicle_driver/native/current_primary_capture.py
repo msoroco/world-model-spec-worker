@@ -208,6 +208,7 @@ def execute(bundle,output,host,port):
                     'legal_verdict':None}
                 pipeline.capture(frame,time_s,extra={'c146314_right_pass':row})
                 observed.write(json.dumps(row,allow_nan=False)+'\n')
+                source_rgb_sha256={}
                 for name,width,height,_,_ in cameras:
                     image=camera_queues[name].get(timeout=30)
                     while image.frame<frame:
@@ -216,10 +217,13 @@ def execute(bundle,output,host,port):
                         raise RuntimeError('Native camera-frame join differs')
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(
                         height,width,4)[:,:,:3][:,:,::-1]
-                    videos[name].stdin.write(rgb.tobytes())
+                    original_rgb=rgb.tobytes()
+                    source_rgb_sha256[name]=hashlib.sha256(original_rgb).hexdigest()
+                    videos[name].stdin.write(original_rgb)
                 frame_map.write(json.dumps({'video_frame':i,
                     'native_frame':frame,'carla_frame':frame,'time_s':time_s,
-                    'views':[camera[0] for camera in cameras]},
+                    'views':[camera[0] for camera in cameras],
+                    'source_rgb_sha256':source_rgb_sha256},
                     allow_nan=False)+'\n')
                 frames+=1
     except BaseException as exc:

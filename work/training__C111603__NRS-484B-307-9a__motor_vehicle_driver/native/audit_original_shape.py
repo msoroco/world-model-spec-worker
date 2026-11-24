@@ -12,7 +12,7 @@ def audit():
         for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
             bundle = HERE / "drafts" / suffix / candidate
             result = prove(bundle)
-            if (result["positive_count"] != 1 or result["negative_count"] != 9 or
+            if (result["positive_count"] != 1 or result["negative_count"] != 10 or
                     result["original_native_observed"] or result["delivery_ready"] or
                     not result["observed_movement_matches_request"]):
                 raise ValueError("Original-shape candidate proof differs")

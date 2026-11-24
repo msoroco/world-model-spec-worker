@@ -63,11 +63,12 @@ def build():
     put(OUT / 'config.json', cfg)
     (OUT / 'check.py').write_bytes((HERE / 'current_primary_check.py').read_bytes())
     (OUT / 'capture.py').write_bytes((HERE / 'current_primary_capture.py').read_bytes())
+    (OUT / 'saved.py').write_bytes((HERE / 'current_primary_saved.py').read_bytes())
     tests = OUT / 'tests'
     tests.mkdir(exist_ok=True)
     (tests / 'test_exact.py').write_bytes((HERE / 'current_primary_test.py').read_bytes())
     files = ['config.json', 'requested-tracks.jsonl', 'one-way-pass.xodr',
-        'assignment-source.json', 'case-plan.json', 'check.py', 'capture.py',
+        'assignment-source.json', 'case-plan.json', 'check.py', 'capture.py', 'saved.py',
         'tests/test_exact.py']
     construction = {'case_id': CASE_ID, 'cell_id': 'C146314',
         'law_id': 'NRS-484B-210-1', 'actor': 'motor_vehicle_driver',

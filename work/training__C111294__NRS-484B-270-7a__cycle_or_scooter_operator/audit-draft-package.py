@@ -30,13 +30,14 @@ def audit():
             if package != records[(entry['case_id'], candidate)]:
                 raise ValueError('Portable summary differs from receipt')
             receipt = package['receipt']
-            if receipt['format'] != 'worker-package-compatibility-v1' or receipt['passed'] is not True or \
+            if receipt['format'] != 'worker-package-compatibility' or receipt['passed'] is not True or \
                     receipt['candidate_id'] != candidate or receipt['case_id'] != entry['case_id'] or \
                     receipt['construction_sha256'] != selected['construction_sha256'] or \
                     receipt['runtime_manifest_sha256'] != manifest['runtime_manifest_sha256']:
                 raise ValueError('Exact portable identity or pass differs')
             expected = {'actual_analysis', 'native_validation', 'mandatory_observations',
-                        'lean_decoder', 'render', 'final_decode', 'acquisition_unchanged'}
+                        'lean_decoder', 'render', 'final_decode', 'acquisition_unchanged',
+                        'derived_outputs_rebuilt', 'four_camera_sources'}
             if not expected.issubset(receipt['checks']):
                 raise ValueError('Portable check set incomplete')
             if sha(folder / 'package-analysis.log') != receipt['log_sha256']:

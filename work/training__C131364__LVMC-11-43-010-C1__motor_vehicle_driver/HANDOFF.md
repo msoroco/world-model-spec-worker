@@ -1,5 +1,45 @@
 # LVMC-11-43-010-C1 at C131364
 
+## 2026-11-23 source-bound saved CPU continuation
+
+`native/prepare_long_saved.py` now derives 600 timestamped saved rows per
+proposed primary witness from the 30-second synthetic packet. Each row binds
+the exact source track and all four encoded camera streams by byte hash and
+frame/native-frame join (4,800 joins total). It preserves `observed_lane_id:
+null`, `camera_pixels_reviewed: false`, and no physical or legal verdict. Two
+positives and two altered-source negatives passed: a third-camera frame join,
+and a lane mutation with the track hash rebound. `native/audit_long_saved.py`
+independently replayed both source/saved joins. Proof and audit:
+`native/long-saved-proof.json` SHA-256
+`129584d32e74e796cc0c3ae0ef2faea5a6b396fbfa0795b9194ed3e40671d253`;
+`native/long-saved-audit.json` SHA-256
+`043c610cc9f431565d825272e5481118ec6a055a6e75d85df3d71e8951016d88`.
+The saved rows reside only under `.runtime-work/c131364-saved-run/proof-20261123-b/`.
+
+Pinned `runtime.py preflight` and scoped `worker_check.py --complete` passed.
+The legacy copied offline proof replay passed eight positives and 40 source
+negatives after its temporary directories were moved under `TMPDIR`. That
+legacy manifest is not the current runtime `cases` format: `runtime.py offline`
+rejected it with `KeyError: 'cases'`. Its independent package audit also found
+stale copied source bytes. The first entry's copied assignment hash is
+`42034713010efcc100933a0f2d2c68fbc2f66990e715c562168f133989ca630b`,
+while the current frozen assignment is
+`4dcdfa64a0cff2e2bd3ce50ee41fdf9eb5dbc97d2b73c143d09ba3fd62644be3`;
+its copied case-plan hash is
+`72c679de4da778ae16be0b7e935469461ea7d3106f4bb848fc2017c988d7f1f3`,
+while the current case plan is
+`b508fd3e448c5d3faac89abf62e9dcb4074450476223c492f49a4d8aab9236ee`.
+The earlier legacy proof therefore covers only its historical copies.
+
+Next: rebase exact construction packets against the current frozen assignment
+and case plan, replace the legacy manifest with a current selectable
+construction manifest, migrate the connected Native runner and saved processor
+to 600 frames and four actual camera sources, then run pinned offline,
+compatibility, final decode, and independent acceptance checks. A 160x90
+synthetic color packet cannot establish camera visibility, real Native geometry,
+continuous lane occupancy, or the observed exit. Both witnesses remain
+unselected and the assignment remains `partial`.
+
 ## 2026-11-23 current CPU continuation
 
 The pinned `.venv-cpu/bin/python runtime.py preflight` passed, as did

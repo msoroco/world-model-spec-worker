@@ -12,7 +12,7 @@ def prove():
     entries = []
     for suffix in ("witness_1", "witness_2"):
         for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
-            output = HERE / "pinned-runs" / suffix / candidate
+            output = ROOT / ".runtime-work" / "c111603-307-9a" / "pinned-runs" / suffix / candidate
             if output.exists():
                 shutil.rmtree(output)
             command = [sys.executable, str(ROOT / "runtime.py"), "offline",
@@ -27,7 +27,7 @@ def prove():
                 raise ValueError("Frozen offline runner did not pass")
             entries.append({"case_suffix": suffix, "candidate_id": candidate,
                             "offline_passed": True, "simulation_started": False,
-                            "output": str(output.relative_to(HERE))})
+                            "output": str(output.relative_to(ROOT))})
     proof = {"format": "c111603-3079a-pinned-offline-proof-v1",
              "assignment_id": CASE.name, "entries": entries,
              "candidate_count": 8, "cpu_tests_passed": 56,

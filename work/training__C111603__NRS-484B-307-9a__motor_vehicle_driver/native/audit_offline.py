@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
 
 
 def sha(raw):
@@ -30,7 +31,7 @@ def audit():
             construction = json.loads(raw)
             if construction["status"] != "unselected_cpu_diagnostic" or not construction["entrypoint"].endswith("/capture.py"):
                 raise ValueError("Unexpected selected status")
-            output = HERE / "pinned-runs" / suffix / choice["id"]
+            output = ROOT / ".runtime-work" / "c111603-307-9a" / "pinned-runs" / suffix / choice["id"]
             for item in construction["files"]:
                 target = output / item["path"]
                 if target.read_bytes() != item["content"].encode():

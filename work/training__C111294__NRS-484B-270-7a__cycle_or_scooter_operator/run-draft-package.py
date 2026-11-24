@@ -38,7 +38,7 @@ def main():
                 fingerprint = {'fixture_sha256': digest(inventory), 'fixture_manifest': inventory}
                 receipt = _process_fixture(manifest, case, source, output,
                     ROOT / 'runtime/pipeline/library',
-                    ROOT / '.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck',
+                    ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck',
                     candidate, fingerprint)
                 negative = scratch / (prefix + '-negative')
                 materialize_case(manifest, case, negative, source, candidate)

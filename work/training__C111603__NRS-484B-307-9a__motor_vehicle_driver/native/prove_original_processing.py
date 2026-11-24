@@ -1,4 +1,5 @@
 """CPU source-shape proof for C111603 original processing using marker media."""
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -71,7 +72,9 @@ def fixture(bundle, directory):
                     "other_traffic_lawfulness_verified": False,
                     "legal_verdict": None})
         video.append({"video_frame": i, "native_frame": 1000 + i,
-                      "time_s": (i + 1) / 20})
+                      "time_s": (i + 1) / 20,
+                      "source_rgb_sha256": {camera: hashlib.sha256(FIXTURE_MEDIA).hexdigest()
+                                            for camera in CAMERAS}})
     write_rows(directory / "native-raw-actors.jsonl", raw)
     write_rows(directory / "video_frames.jsonl", video)
     media = {}
@@ -153,6 +156,9 @@ def prove(bundle):
         rejected("video_frame", lambda: change_line(
             directory / "video_frames.jsonl", 10,
             lambda row: row.update(video_frame=11)), rehash=True)
+        rejected("camera_frame_digest", lambda: change_line(
+            directory / "video_frames.jsonl", 10,
+            lambda row: row["source_rgb_sha256"].update(overview="0" * 64)), rehash=True)
         rejected("body_vertex", lambda: change_line(
             directory / "native-raw-actors.jsonl", 10,
             lambda row: row["ego"]["body_native_xyz_m"][0].__setitem__(0, 100)), rehash=True)

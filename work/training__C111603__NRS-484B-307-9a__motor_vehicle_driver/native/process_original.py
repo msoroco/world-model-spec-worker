@@ -8,6 +8,8 @@ import subprocess
 from build import FRAMES, RATE, check, digest
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 LANES = {"south_approach": (1, -1), "east_departure": (2, -1)}
 FIXTURE_MEDIA = b"C111603 SYNTHETIC FIXTURE; NOT VIDEO\n"
 REVIEW_FLAGS = (
@@ -37,17 +39,56 @@ def media_hash(path, synthetic_fixture):
         try:
             completed = subprocess.run([
                 "ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-                "-show_entries", "stream=codec_name,nb_read_frames", "-of", "json", str(path)],
+            "-show_entries", "stream=codec_name,nb_read_frames,width,height", "-of", "json", str(path)],
                 capture_output=True, text=True, timeout=120)
         except FileNotFoundError as exc:
             raise ValueError("ffprobe unavailable") from exc
         if completed.returncode:
             raise ValueError("Original camera media unreadable")
         streams = json.loads(completed.stdout).get("streams", [])
+        camera = path.stem
         if (len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or
-                streams[0].get("nb_read_frames") != str(FRAMES)):
+                streams[0].get("nb_read_frames") != str(FRAMES) or
+                (streams[0].get("width"), streams[0].get("height")) != CAMERA_SIZES[camera]):
             raise ValueError("Original FFV1 frame contract")
     return sha(path)
+
+
+def verify_frame_pixels(directory, video, synthetic_fixture):
+    """Join every decoded RGB frame to the capture-time original RGB digest."""
+    for camera in CAMERAS:
+        digests = [row.get("source_rgb_sha256", {}).get(camera) for row in video]
+        if any(not isinstance(value, str) or len(value) != 64 or
+               any(char not in "0123456789abcdef" for char in value)
+               for value in digests):
+            raise ValueError("Original per-frame camera digest missing: " + camera)
+        if synthetic_fixture:
+            expected = hashlib.sha256(FIXTURE_MEDIA).hexdigest()
+            if any(value != expected for value in digests):
+                raise ValueError("Synthetic camera frame digest mismatch: " + camera)
+            continue
+        width, height = CAMERA_SIZES[camera]
+        frame_size = width * height * 3
+        command = ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                   "-i", str(directory / (camera + ".mkv")),
+                   "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"]
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        try:
+            for index, expected in enumerate(digests):
+                raw = proc.stdout.read(frame_size)
+                if len(raw) != frame_size or hashlib.sha256(raw).hexdigest() != expected:
+                    raise ValueError(f"Original decoded camera frame mismatch: {camera} {index}")
+            if proc.stdout.read(1):
+                raise ValueError("Extra decoded camera frame: " + camera)
+            if proc.wait(timeout=180) != 0:
+                raise ValueError("Original camera decoder failed: " + camera)
+        finally:
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait()
+            proc.stdout.close()
+            proc.stderr.close()
 
 
 def actor_shape(actor, blueprint):
@@ -115,6 +156,7 @@ def process(bundle, directory, review_path, *, synthetic_fixture=False):
         raise ValueError("Capture or restoration receipt mismatch")
     media = {name + ".mkv": media_hash(directory / (name + ".mkv"), synthetic_fixture)
              for name in CAMERAS}
+    verify_frame_pixels(directory, video, synthetic_fixture)
     if (review.get("format") != "c111603-3079a-original-review-v1" or
             review.get("source_kind") != kind + "_review" or
             not isinstance(review.get("reviewer_id"), str) or

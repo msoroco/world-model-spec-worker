@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import os
 
 CASE=Path(__file__).resolve().parent
 
@@ -54,7 +55,7 @@ def prove():
             raise AssertionError('C131364 connected saved CPU check failed: '+connected.stderr)
         saved_positives.append({'case_id':entry['case_id'],'candidate_id':entry['candidate_id'],
                                 'script':'measure_exit_saved.py','passed':True})
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
             base=Path(temporary);raw=base/'raw'
             generated=subprocess.run([sys.executable,str(folder/'fixture_connected_raw.py'),
                 '--bundle',str(folder),'--output-dir',str(raw)],
@@ -76,7 +77,7 @@ def prove():
             saved_negatives.append({'case_id':entry['case_id'],
                 'candidate_id':entry['candidate_id'],
                 'mutation':'changed_raw_frame_map','rejected':True})
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'saved-fixtures'/witness/'lane-readback.json'
             changed=json.loads(path.read_text());changed['left_lane_id']=-2
@@ -87,7 +88,7 @@ def prove():
             saved_negatives.append({'case_id':entry['case_id'],
                                     'candidate_id':entry['candidate_id'],
                                     'mutation':'changed_lane_readback','rejected':True})
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
             altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
             path=altered/'connected-saved'/'camera-frames.jsonl'
             rows=[json.loads(line) for line in path.read_text().splitlines()]
@@ -103,7 +104,7 @@ def prove():
                               ('road_bytes','road.xodr'),
                               ('connected_track_bytes','connected-requested-tracks.jsonl'),
                               ('connected_road_bytes','connected-road.xodr')):
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')
                 if run(altered).returncode==0:
