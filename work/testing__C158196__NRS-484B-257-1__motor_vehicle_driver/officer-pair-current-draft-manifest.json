@@ -1,0 +1,117 @@
+{
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_controls_ego",
+      "construction": "officer-controlled-construction.json",
+      "construction_sha256": "616c6b5625faa76c73c70ed392edba404a516dd9b68e2cca9a78bda80657a082",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "officer-controlled-fallback1-construction.json",
+          "construction_sha256": "fd4e7b98495eeec5178ff3de99e35dad74039109a8a466cb0e9ee4232f8dcd94",
+          "trigger": {
+            "source": "original approach and driver-reference camera frames",
+            "metric": "reviewed head visibility at ego entry",
+            "failure_condition": "The selected governing head is absent or occluded in either original forward view."
+          },
+          "changed_knobs": [
+            "raise and yaw the two ego-mounted head views"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "officer-controlled-fallback2-construction.json",
+          "construction_sha256": "d614535ae23ff83c1b3e694fde2a59a2d0e5e0703e55870d7e7cdbe8cda2c355",
+          "trigger": {
+            "source": "original Native ego lane/entry history and overview frames",
+            "metric": "ego approach lane continuity and sampled entry frame",
+            "failure_condition": "Primary ego leaves the intended lane or enters before a stable affected-lane readback."
+          },
+          "changed_knobs": [
+            "move ego spawn within the same authored lane",
+            "reduce commanded approach throttle",
+            "raise overview to retain entrance context"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "officer-controlled-fallback3-construction.json",
+          "construction_sha256": "7132ed44fcb2d49e9b028612d803d5043949cefe1452153f7165ba0a903f83f3",
+          "trigger": {
+            "source": "original signal-state history and signed-entrance camera frames",
+            "metric": "operative phase stability through first ego body entry",
+            "failure_condition": "Primary signal phase changes before the complete ego body enters the intersection."
+          },
+          "changed_knobs": [
+            "shorten ego approach distance",
+            "increase commanded ego throttle",
+            "shift fixed corner view to retain sign and head"
+          ]
+        }
+      ],
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "signal_exception_measurements.py"
+      },
+      "measurement_contract": "officer-controlled-measurement-contract.json"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_not_controlling_ego",
+      "construction": "officer-not-controlled-construction.json",
+      "construction_sha256": "c600f5ff3258573fa1c6ea75be90c4a628578f837c99021e6ac781421306498b",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "officer-not-controlled-fallback1-construction.json",
+          "construction_sha256": "7cb68037850dee21dfe98d3623baa4afcffb9d15821ba6f8d7be2e8207c24ad3",
+          "trigger": {
+            "source": "original approach and driver-reference camera frames",
+            "metric": "reviewed head visibility at ego entry",
+            "failure_condition": "The selected governing head is absent or occluded in either original forward view."
+          },
+          "changed_knobs": [
+            "raise and yaw the two ego-mounted head views"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "officer-not-controlled-fallback2-construction.json",
+          "construction_sha256": "aaaf5ca9336bf7daab43529c60f75a29c83cdafb80bb6ecf339bd02cd314ff45",
+          "trigger": {
+            "source": "original Native ego lane/entry history and overview frames",
+            "metric": "ego approach lane continuity and sampled entry frame",
+            "failure_condition": "Primary ego leaves the intended lane or enters before a stable affected-lane readback."
+          },
+          "changed_knobs": [
+            "move ego spawn within the same authored lane",
+            "reduce commanded approach throttle",
+            "raise overview to retain entrance context"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "officer-not-controlled-fallback3-construction.json",
+          "construction_sha256": "c5a81868bf4e0ddcf9d15bbba2e27db32487d4aa9363b438caaff6a1589b5fba",
+          "trigger": {
+            "source": "original signal-state history and signed-entrance camera frames",
+            "metric": "operative phase stability through first ego body entry",
+            "failure_condition": "Primary signal phase changes before the complete ego body enters the intersection."
+          },
+          "changed_knobs": [
+            "shorten ego approach distance",
+            "increase commanded ego throttle",
+            "shift fixed corner view to retain sign and head"
+          ]
+        }
+      ],
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "signal_exception_measurements.py"
+      },
+      "measurement_contract": "officer-not-controlled-measurement-contract.json"
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

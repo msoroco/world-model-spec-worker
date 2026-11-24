@@ -18,6 +18,11 @@
           "kind": "world_setup",
           "value": null,
           "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
         }
       },
       "recording_description": {
@@ -148,6 +153,11 @@
           "kind": "world_setup",
           "value": "Green",
           "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
         }
       },
       "recording_description": {
@@ -287,6 +297,11 @@
           "kind": "world_setup",
           "value": "Off",
           "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
         }
       },
       "recording_description": {
@@ -426,6 +441,11 @@
           "kind": "world_setup",
           "value": "Green",
           "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
         }
       },
       "recording_description": {
@@ -565,6 +585,11 @@
           "kind": "world_setup",
           "value": "Green",
           "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
         }
       },
       "recording_description": {
@@ -687,6 +712,338 @@
         "primary_variable": "operative_signal_controls_ego_at_entry",
         "comparison_or_standard": "NRS 484B.257(1) exception, subject to original Native and camera review",
         "target_value_or_branch": "yield_without_signal_control"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_controls_ego",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Exact police-officer control exception contrast on the same signed entrance, with original actor, assignment, gesture and body-entry sources; legal and physical control remain unresolved.",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane and operative-state join per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "official control and physical head visibility require source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical indication requires original-camera review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original ego complete-body vertices per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical geometry requires Native acquisition"
+          },
+          {
+            "name": "through_highway_sight_clear",
+            "unit": "count",
+            "method": "Saved original same-frame Native collision ray from ego driver-height proxy to through actor body center; zero when blocked, one when clear",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Collision ray does not establish human view or legally sufficient nearest sight point"
+          },
+          {
+            "name": "ego_distance_to_junction_m",
+            "unit": "m",
+            "method": "Saved shortest plan-view ego body distance to sourced junction polygon; zero at overlap",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Distance is geometric and does not establish legally sufficient view"
+          },
+          {
+            "name": "through_vehicle_position",
+            "unit": "structured record",
+            "method": "Saved original through actor ID, position and sourced route lane per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native actor placement requires physical review"
+          },
+          {
+            "name": "through_vehicle_speed",
+            "unit": "structured record",
+            "method": "Saved original through actor velocity magnitude and ID per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Speed alone does not establish immediate hazard"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Saved original ego speed from checked same-frame signal history",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Speed alone does not establish prudent approach"
+          },
+          {
+            "name": "officer_controls_ego_at_entry",
+            "unit": "boolean",
+            "method": "Join original officer actor and controlled lane to original body-entry frame and four-camera officer gesture review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "original Native actor, map and camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical source and officer assignment review pending"
+          }
+        ],
+        "limitations": [
+          "authored OpenDRIVE and CPU fixtures do not establish official control, proper sign erection, real actor motion or video coverage"
+        ],
+        "context_inputs": [
+          {
+            "name": "signal_governance_review",
+            "unit": "structured record",
+            "method": "Saved finalizer joins signal_context.json, control_context.json, signal_history.jsonl, interaction_history.jsonl, video_frames.jsonl and signal_head_review.json; verifies four original camera hashes; reports official control unresolved",
+            "source_refs": [
+              "signal_context.json",
+              "control_context.json",
+              "signal_history.jsonl",
+              "interaction_history.jsonl",
+              "video_frames.jsonl",
+              "signal_head_review.json"
+            ],
+            "uncertainty": "Native observations and official signal governance require local source review"
+          },
+          {
+            "name": "yield_site_review",
+            "unit": "structured record",
+            "method": "Saved finalizer joins signed-entrance geometry, original interaction body history and four-camera review; the yield case additionally validates source-hashed yield_context.json and nearest-view reference",
+            "source_refs": [
+              "signal_context.json",
+              "interaction_history.jsonl",
+              "video_frames.jsonl",
+              "signal_head_review.json"
+            ],
+            "uncertainty": "Sign propriety, sight and right-of-way remain unresolved pending Native source review"
+          },
+          {
+            "name": "officer_control_review",
+            "unit": "structured record",
+            "method": "Hash original officer history, assignment context and four camera bytes; join to ego body entry frame",
+            "source_refs": [
+              "officer_context.json",
+              "officer_history.jsonl",
+              "officer_review.json",
+              "signal_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Native officer source and official assignment pending"
+          }
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "police officer official assignment and actual control",
+        "immediate hazard and right-of-way",
+        "original officer gesture and entrance visibility"
+      ],
+      "paired_probe_id": "officer_exception_control",
+      "deliberate_differences": [
+        "officer_controls_ego_at_entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) police-officer exception, subject to original Native and independent camera/source review",
+        "target_value_or_branch": "officer_controls_ego"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_not_controlling_ego",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Exact police-officer control exception contrast on the same signed entrance, with original actor, assignment, gesture and body-entry sources; legal and physical control remain unresolved.",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "Native signal state"
+        },
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane and operative-state join per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "official control and physical head visibility require source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical indication requires original-camera review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original ego complete-body vertices per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical geometry requires Native acquisition"
+          },
+          {
+            "name": "through_highway_sight_clear",
+            "unit": "count",
+            "method": "Saved original same-frame Native collision ray from ego driver-height proxy to through actor body center; zero when blocked, one when clear",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Collision ray does not establish human view or legally sufficient nearest sight point"
+          },
+          {
+            "name": "ego_distance_to_junction_m",
+            "unit": "m",
+            "method": "Saved shortest plan-view ego body distance to sourced junction polygon; zero at overlap",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Distance is geometric and does not establish legally sufficient view"
+          },
+          {
+            "name": "through_vehicle_position",
+            "unit": "structured record",
+            "method": "Saved original through actor ID, position and sourced route lane per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native actor placement requires physical review"
+          },
+          {
+            "name": "through_vehicle_speed",
+            "unit": "structured record",
+            "method": "Saved original through actor velocity magnitude and ID per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Speed alone does not establish immediate hazard"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Saved original ego speed from checked same-frame signal history",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Speed alone does not establish prudent approach"
+          },
+          {
+            "name": "officer_controls_ego_at_entry",
+            "unit": "boolean",
+            "method": "Join original officer actor and controlled lane to original body-entry frame and four-camera officer gesture review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "original Native actor, map and camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Target false observation; physical source and officer assignment review pending"
+          }
+        ],
+        "limitations": [
+          "authored OpenDRIVE and CPU fixtures do not establish official control, proper sign erection, real actor motion or video coverage"
+        ],
+        "context_inputs": [
+          {
+            "name": "signal_governance_review",
+            "unit": "structured record",
+            "method": "Saved finalizer joins signal_context.json, control_context.json, signal_history.jsonl, interaction_history.jsonl, video_frames.jsonl and signal_head_review.json; verifies four original camera hashes; reports official control unresolved",
+            "source_refs": [
+              "signal_context.json",
+              "control_context.json",
+              "signal_history.jsonl",
+              "interaction_history.jsonl",
+              "video_frames.jsonl",
+              "signal_head_review.json"
+            ],
+            "uncertainty": "Native observations and official signal governance require local source review"
+          },
+          {
+            "name": "yield_site_review",
+            "unit": "structured record",
+            "method": "Saved finalizer joins signed-entrance geometry, original interaction body history and four-camera review; the yield case additionally validates source-hashed yield_context.json and nearest-view reference",
+            "source_refs": [
+              "signal_context.json",
+              "interaction_history.jsonl",
+              "video_frames.jsonl",
+              "signal_head_review.json"
+            ],
+            "uncertainty": "Sign propriety, sight and right-of-way remain unresolved pending Native source review"
+          },
+          {
+            "name": "officer_control_review",
+            "unit": "structured record",
+            "method": "Hash original officer history, assignment context and four camera bytes; join to ego body entry frame",
+            "source_refs": [
+              "officer_context.json",
+              "officer_history.jsonl",
+              "officer_review.json",
+              "signal_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Native officer source and official assignment pending"
+          }
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "police officer official assignment and actual control",
+        "immediate hazard and right-of-way",
+        "original officer gesture and entrance visibility"
+      ],
+      "paired_probe_id": "officer_exception_control",
+      "deliberate_differences": [
+        "officer_controls_ego_at_entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) police-officer exception, subject to original Native and independent camera/source review",
+        "target_value_or_branch": "officer_not_controlling_ego"
       }
     }
   ],

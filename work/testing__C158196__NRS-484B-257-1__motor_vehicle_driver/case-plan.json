@@ -29,6 +29,20 @@
       "target_law_id": "NRS-484B-257-1",
       "purpose": "Proper yield-sign entrance without actual signal control, nearest-view reference",
       "physical_risk": "visibility geometry and sign placement uncertain"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_controls_ego",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Police officer is observed directing ego at body entry on the signed approach",
+      "physical_risk": "Performer visibility, actual directed control and official authority require original Native and independent source review",
+      "preparation_status": "draft_offline_proved"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_not_controlling_ego",
+      "target_law_id": "NRS-484B-257-1",
+      "purpose": "Matched signed approach with officer performer present but no observed direction to ego at body entry",
+      "physical_risk": "Presence can be mistaken for control; original gesture visibility and same-route control distinction require review",
+      "preparation_status": "draft_offline_proved"
     }
   ],
   "comparisons": [
@@ -69,6 +83,21 @@
         "passed": true,
         "physical_acceptance_claimed": false
       }
+    },
+    {
+      "comparison_id": "officer_exception_control",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_controls_ego",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_not_controlling_ego"
+      ],
+      "fixed_conditions": [
+        "same authored signed entrance, ego route, officer performer placement, four camera plan and Native capture duration"
+      ],
+      "deliberate_differences": [
+        "whether source-bound visible officer direction controls ego at complete-body entry"
+      ],
+      "preparation_status": "draft_offline_proved",
+      "physical_acceptance_claimed": false
     }
   ],
   "evidence_review": {
@@ -391,8 +420,12 @@
     {
       "requirement": "Police officer control exception is separately inventoried",
       "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
-      "status": "exception_pending",
-      "evidence_or_gap": "No selected construction or original control source yet tests officer control."
+      "status": "selected_required",
+      "evidence_or_gap": "Two exact officer-control contrast cases have current-runtime offline constructions and a canonical semantic proposal. Original Native officer actor, assigned authority and visible control at ego entry remain unverified; compatibility and independent delivery proofs remain to bind.",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_controls_ego",
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__officer_not_controlling_ego"
+      ]
     },
     {
       "requirement": "An operative traffic-control signal controls the ego approach at complete-body entry",
@@ -851,5 +884,17 @@
     "verification": "officer-pair-draft-verify.log",
     "verification_sha256": "6ff66336adf8fb59dbb647277cef18b40b94a5640dc971d0d6807cdbb1fdba39",
     "status": "offline_proved_not_active"
+  },
+  "officer_pair_semantic_proof_20261124": {
+    "proposal": "proposals/cases.json",
+    "proposal_sha256": "cc98c325a1ee5da8624fcd0f290423d78afa1666d5fd2ffd01a7642c034858b8",
+    "bindings": "proposals/bindings.json",
+    "bindings_sha256": "f4d75027d1f17273bf3620c1069cf378fa08cc7d938c2d5ec835fc05fe65bfce",
+    "index": "proposals/semantic-index.json",
+    "index_sha256": "ad298b54ac865ebc154946e116f6b0b8a815d915bb425982a56e4a6be4c29072",
+    "verification": "officer-semantic-verify.log",
+    "verification_sha256": "41e3e8048afc3b7f55aed458f6dfac3ecd5204b1261518b512c7c5ffa978e7c5",
+    "selected_cases": 6,
+    "status": "stage_validated_not_active"
   }
 }
