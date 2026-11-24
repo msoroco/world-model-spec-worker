@@ -116,6 +116,20 @@ class NativeCaptureTests(unittest.TestCase):
             process_saved(self.root, receipt_path, receipt_hash, case_id="exact__low_beam",
                           allow_diagnostic=True)
 
+    def test_core_capture_callback_uses_exact_original_frames(self):
+        observed = []
+        capture_interval(World(), Vehicle(), Bits, self.control,
+                         lambda frame: {view: frame for view in
+                             ("overview", "approach", "reference_corner", "driver_reference")},
+                         self.site, self.root, case_id="exact__low_beam",
+                         mode="low_beam", ticks=4,
+                         capture_after_tick=lambda frame, time_s: observed.append((frame, time_s)))
+        mapping = [json.loads(line) for line in
+                   (self.root / "video_frames.jsonl").read_text().splitlines()]
+        self.assertEqual([frame for frame, _ in observed], [101, 102, 103, 104])
+        self.assertEqual([row["carla_frame"] for row in mapping], [101, 102, 103, 104])
+        self.assertEqual([row["time_s"] for row in mapping], [t for _, t in observed])
+
     def test_gap_does_not_emit_source(self):
         with self.assertRaisesRegex(ValueError, "frame gap"):
             self.capture(World(gap=True))

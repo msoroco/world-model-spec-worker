@@ -10,6 +10,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+import subprocess
 from zipfile import ZipFile
 
 from PIL import Image, ImageDraw
@@ -127,4 +128,63 @@ def compare_pixels(first: dict, second: dict) -> dict:
             'camera_view': first['camera_view'], 'roi_sha256': first['roi_sha256'],
             'mean_second_minus_first_8bit': round(sum(delta) / len(delta), 4),
             'frame_count': len(delta), 'emitted_intensity_reviewed': False,
+            'beam_aim_reviewed': False, 'physical_acceptance_claimed': False}
+
+
+def measure_video(attempt: Path, roi_path: Path, roi_sha256: str, media: dict,
+                  camera_rows: list[dict], *, expected_frames: int,
+                  expected_dimensions: tuple[int, int]) -> dict:
+    """Measure source pixels from a lossless diagnostic or original FFV1 movie."""
+    root = Path(attempt).resolve(strict=True)
+    roi_file = Path(roi_path).resolve(strict=True)
+    if not roi_file.is_relative_to(root) or roi_file.is_symlink():
+        raise ValueError('reviewed ROI source must be inside attempt')
+    raw = roi_file.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != roi_sha256:
+        raise ValueError('reviewed ROI source hash differs')
+    roi = json.loads(raw)
+    view = roi.get('camera_view')
+    if (roi.get('format') != 'parked-headlamp-photometry-roi-v1' or
+            roi.get('source_kind') != 'reviewed_original_camera_roi' or
+            roi.get('dimensions') != list(expected_dimensions) or
+            not roi.get('source_ref')):
+        raise ValueError('source-reviewed fixed camera ROI required')
+    lamp = _mask(expected_dimensions, roi.get('lamp_polygon_xy'))
+    background = _mask(expected_dimensions, roi.get('background_polygon_xy'))
+    if set(lamp) & set(background):
+        raise ValueError('lamp and background pixels overlap')
+    path = _contained(root, media.get('path'))
+    if path.suffix != '.mkv' or media.get('source_frame_count') != expected_frames or \
+            hashlib.sha256(path.read_bytes()).hexdigest() != media.get('sha256'):
+        raise ValueError('original camera movie source differs')
+    if len(camera_rows) != expected_frames or expected_frames < 2:
+        raise ValueError('original camera frame map incomplete')
+    frames = [row.get('frame') for row in camera_rows]
+    if frames != list(range(frames[0], frames[0] + expected_frames)) or any(
+            row.get(view + '_source_frame') != frames[index]
+            for index, row in enumerate(camera_rows)):
+        raise ValueError('original camera movie frame join differs')
+    command = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', str(path),
+               '-f', 'rawvideo', '-pix_fmt', 'rgb24', 'pipe:1']
+    process = subprocess.run(command, capture_output=True, check=True, timeout=300)
+    width, height = expected_dimensions
+    stride = width * height * 3
+    if len(process.stdout) != stride * expected_frames:
+        raise ValueError('original camera movie decoded frame count differs')
+    observations = []
+    for index, frame in enumerate(frames):
+        pixels = memoryview(process.stdout)[index * stride:(index + 1) * stride]
+        def mean_luma(indices):
+            return sum(0.2126 * pixels[3 * i] + 0.7152 * pixels[3 * i + 1] +
+                       0.0722 * pixels[3 * i + 2] for i in indices) / len(indices)
+        lamp_luma = mean_luma(lamp)
+        background_luma = mean_luma(background)
+        observations.append({'native_frame': frame,
+                             'lamp_mean_luma_8bit': round(lamp_luma, 4),
+                             'background_mean_luma_8bit': round(background_luma, 4),
+                             'lamp_minus_background_8bit': round(lamp_luma - background_luma, 4)})
+    return {'format': 'parked-headlamp-pixel-observation-v1',
+            'camera_view': view, 'roi_sha256': roi_sha256,
+            'original_media_sha256': media['sha256'], 'frame_count': expected_frames,
+            'frames': observations, 'emitted_intensity_reviewed': False,
             'beam_aim_reviewed': False, 'physical_acceptance_claimed': False}

@@ -74,7 +74,8 @@ def _frame(world, actor, site, head_reader, device_reader):
 
 def capture(world, actor, site, source_root, case_suffix, head_reader,
             device_reader, control_factory, vector_factory, attempt_root,
-            ticks=899, camera_readers=None, camera_dimensions=None):
+            ticks=899, camera_readers=None, camera_dimensions=None,
+            frame_sink=None):
     """Record original observed frames and a sealed receipt; caller owns actor/world.
 
     A valid capture starts before highway entry and samples the initial state,
@@ -119,6 +120,8 @@ def capture(world, actor, site, source_root, case_suffix, head_reader,
         require(not inside(first['pedestrian_xy'], site['highway_polygon_xy']),
                 'capture starts after highway entry')
         sample_cameras(first)
+        if frame_sink is not None:
+            frame_sink.capture(first)
         rows.append(first)
         previous_frame, previous_time = first['frame'], first['elapsed_seconds']
         for _ in range(ticks):
@@ -135,6 +138,8 @@ def capture(world, actor, site, source_root, case_suffix, head_reader,
             require(row['pedestrian_faces_head'] is True,
                     'facing signal observation unavailable')
             sample_cameras(row)
+            if frame_sink is not None:
+                frame_sink.capture(row)
             rows.append(row)
             previous_frame, previous_time = row['frame'], row['elapsed_seconds']
         if case_suffix in WAIT_CASES:
@@ -143,6 +148,8 @@ def capture(world, actor, site, source_root, case_suffix, head_reader,
         for archive in archives.values():
             archive.close()
         archives.clear()
+        if frame_sink is not None:
+            frame_sink.close()
         path = output_root / 'original-frames.json'
         payload = (json.dumps(rows, indent=2) + '\n').encode()
         temporary = path.with_suffix('.json.tmp')
@@ -167,6 +174,8 @@ def capture(world, actor, site, source_root, case_suffix, head_reader,
         (output_root / 'capture-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
         return receipt
     finally:
+        if frame_sink is not None and not (output_root / 'capture-receipt.json').exists():
+            frame_sink.close(confirmed=False)
         for archive in archives.values():
             archive.close()
         if not (output_root / 'capture-receipt.json').exists():

@@ -16,7 +16,7 @@ from saved_media_audit import audit as audit_media
 from device_timeline import observe_timeline
 
 
-def audit(attempt_root, site_ref, case_suffix):
+def audit(attempt_root, site_ref, case_suffix, require_reviewed=False):
     if case_suffix not in ENTER_CASES | WAIT_CASES:
         raise ValueError('unknown exact case')
     root = Path(attempt_root).resolve()
@@ -27,6 +27,18 @@ def audit(attempt_root, site_ref, case_suffix):
     case_id = ASSIGNMENT + '__' + case_suffix
     if receipt.get('case_id') != case_id:
         raise ValueError('original capture case mismatch')
+    if require_reviewed:
+        reviewed = receipt.get('reviewed_site_source')
+        if not isinstance(reviewed, dict) or reviewed.get('path') != 'site-source.json':
+            raise ValueError('reviewed original site source missing')
+        source(reviewed, root)
+        if reviewed['sha256'] != site_ref.get('sha256'):
+            raise ValueError('reviewed site source differs from measured site')
+        site = json.loads(source(site_ref, root).read_text())
+        if (site.get('diagnostic_fixture') is not False or
+                site.get('reviewed_original_site') is not True or
+                site.get('review_source_id') != reviewed.get('review_source_id')):
+            raise ValueError('reviewed source identity or provenance differs')
     event_ref = receipt['original_frames']
     measured = build_sealed(site_ref, event_ref, receipt_ref, root)
     media = audit_media(root)
@@ -84,9 +96,11 @@ def main():
     parser.add_argument('--site-ref', required=True)
     parser.add_argument('--case-suffix', required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--require-reviewed', action='store_true')
     args = parser.parse_args()
     site_ref = json.loads(Path(args.site_ref).read_text())
-    result = audit(args.attempt_root, site_ref, args.case_suffix)
+    result = audit(args.attempt_root, site_ref, args.case_suffix,
+                   require_reviewed=args.require_reviewed)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2) + '\n')

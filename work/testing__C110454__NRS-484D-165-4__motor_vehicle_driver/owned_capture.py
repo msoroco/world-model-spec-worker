@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from camera_recorder import CameraRecorder, PROFILE_DIMENSIONS, VIEWS
+from camera_recorder import CameraRecorder, PROFILE_DIMENSIONS, VIEWS, encode_original_videos
 from native_capture import capture_interval
 
 
@@ -36,11 +36,24 @@ def capture_owned(client, packet_path, output_dir, *, case_id, mode,
     if set(packet.get('cameras', {})) != set(VIEWS):
         raise ValueError('four original camera constructions required')
     output = Path(output_dir)
-    if output.exists() and any(output.iterdir()):
-        raise ValueError('Native attempt output already exists')
+    originals = ['actor-state.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl',
+                 'native-source-receipt.json', 'site-packet.json', 'lamp-roi.json',
+                 'trace.jsonl', 'capture-seal.json']
+    originals.extend(view + ext for view in VIEWS for ext in ('.zip', '.mkv'))
+    if output.exists() and any((output / name).exists() for name in originals):
+        raise ValueError('Native attempt already contains original acquisition')
     reviewed = dict(packet)
     reviewed['source_path'] = str(packet_path)
     reviewed['source_sha256'] = hashlib.sha256(raw).hexdigest()
+    roi_raw = None
+    if mode != 'unlit' and recorder_factory is CameraRecorder:
+        roi_ref = packet.get('lamp_roi_source_path')
+        if not isinstance(roi_ref, str) or not roi_ref:
+            raise ValueError('reviewed original lamp ROI source required')
+        roi_path = Path(roi_ref).resolve(strict=True)
+        roi_raw = roi_path.read_bytes()
+        if hashlib.sha256(roi_raw).hexdigest() != packet.get('lamp_roi_sha256'):
+            raise ValueError('reviewed original lamp ROI hash differs')
     saved = snapshot(client)
     spawned = []
     pipeline = None
@@ -90,8 +103,14 @@ def capture_owned(client, packet_path, output_dir, *, case_id, mode,
         receipt = capture_interval(world, vehicle, light_enum, control, recorder,
                                    reviewed, output, case_id=case_id, mode=mode,
                                    capture_after_tick=None if pipeline is None else pipeline.capture)
+        if recorder_factory is CameraRecorder:
+            frame_rows = [json.loads(line) for line in (output / 'video_frames.jsonl').read_text().splitlines()]
+            receipt['original_camera_videos'] = encode_original_videos(output, frame_rows)
         completed = True
         output.mkdir(parents=True, exist_ok=True)
+        (output / 'site-packet.json').write_bytes(raw)
+        if roi_raw is not None:
+            (output / 'lamp-roi.json').write_bytes(roi_raw)
         (output / 'native-source-receipt.json').write_text(
             json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8')
         return receipt

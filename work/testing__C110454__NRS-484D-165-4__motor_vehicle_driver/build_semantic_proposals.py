@@ -65,7 +65,7 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
                          "target_type": "boundary_probe", "status": "draft",
                          "rationale": row["review_note"],
                          "variable_assignments": {"requested_headlamp_mode": {"kind": "controller", "value": mode}},
-                         "recording_description": "Original parked-vehicle 45-second 20-Hz four-camera headlamp capture",
+                         "recording_description": json.loads(construction.read_text())["recording_description"],
                          "diagnostic_construction": {"path": construction.name, "sha256": sha(construction)},
                          "unresolved_judgment_calls": unresolved})
     exact = {row["case_id"]: row for row in proposed}

@@ -1,4 +1,4 @@
-"""Validate the three exact source-hashed diagnostic headlamp bundles."""
+"""Validate the three exact source-hashed selected headlamp bundles."""
 from __future__ import annotations
 
 import hashlib
@@ -27,7 +27,9 @@ class OfflineBundleTests(unittest.TestCase):
                 config = json.loads(files["config.json"])
                 self.assertEqual(config["requested_headlamp_mode"], expected[row["case_id"]])
                 self.assertEqual(config["plan_sha256"], hashlib.sha256(files["case-plan.json"].encode()).hexdigest())
-                self.assertEqual(config["cameras"], ["overview", "approach", "reference_corner", "driver_reference"])
+                self.assertEqual([camera['name'] for camera in config["cameras"]],
+                                 ["overview", "approach", "reference_corner", "driver_reference"])
+                self.assertFalse(construction['diagnostic_only'])
                 self.assertEqual(config["rate_hz"], 20)
                 self.assertEqual(config["frame_count"], 900)
                 self.assertEqual(files["lamp_probe.py"], (ROOT / "lamp_probe.py").read_text())

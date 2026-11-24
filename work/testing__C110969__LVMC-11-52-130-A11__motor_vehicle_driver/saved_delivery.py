@@ -64,11 +64,12 @@ def audit(attempt_path, *, allow_diagnostic=False):
     if packet.get("acquisition_kind") != "original_native" and not allow_diagnostic:
         raise ValueError("Diagnostic source cannot satisfy delivery audit")
     root = attempt_path.parent
+    provenance_root = root if (root / "fixture-provenance.json").is_file() else root.parent
     diagnostic_text_only = (packet.get("acquisition_kind") == "diagnostic_fixture" and
-                            (root / "fixture-provenance.json").is_file())
+                            (provenance_root / "fixture-provenance.json").is_file())
     if diagnostic_text_only:
-        marker = json.loads((root / "fixture-provenance.json").read_text())
-        provenance = json.loads((root / "acquisition-provenance.json").read_text())
+        marker = json.loads((provenance_root / "fixture-provenance.json").read_text())
+        provenance = json.loads((provenance_root / "acquisition-provenance.json").read_text())
         if (not allow_diagnostic or marker.get("diagnostic_fixture") is not True or
                 "CPU diagnostic only" not in marker.get("scope", "") or
                 provenance.get("diagnostic_fixture") is not True or

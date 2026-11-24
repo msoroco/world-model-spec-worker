@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -25,6 +26,10 @@ measurement = module('saved_measurement')
 capture_module = module('native_capture')
 media_audit = module('saved_media_audit')
 delivery = module('delivery_audit')
+owned = module('owned_runner')
+graph_sink = module('pedestrian_graph_sink')
+publication = module('native_publication')
+finalizer = module('saved_finalizer')
 
 
 class CrossingTests(unittest.TestCase):
@@ -221,6 +226,40 @@ class CrossingTests(unittest.TestCase):
         with self.assertRaises(comparison.ComparisonError):
             comparison.audit_pair('contrary_device_choice',waiting,crossing_case)
 
+    def test_each_device_alternative_comparison_requires_original_timeline(self):
+        common = {key: 'same' for key in (
+            'map_source_sha256', 'signal_source_sha256',
+            'device_inventory_source_sha256', 'highway_polygon_source_sha256',
+            'camera_profile_sha256')}
+        common.update(duration_frames=4, crosswalk_kind='marked',
+                      green_alone_frames=4, source_bound=True)
+        baseline = {**common, 'case_suffix': 'marked_cross',
+                    'first_highway_entry': {
+                        'other_device_indication': 'none', 'in_crosswalk': True}}
+        for comparison_id, (suffix, mode, enters) in comparison.DEVICE_ALTERNATIVES.items():
+            timeline = {'format': 'c111125-saved-device-timeline-v1',
+                        'original_first_frame': 0, 'original_last_frame': 3,
+                        'entry_frame': 1 if enters else None,
+                        'entry_device_mode': mode if enters else None,
+                        'entry_within_crosswalk': True if enters else None,
+                        'clearance_frame': 2 if enters else None,
+                        'cleared_before_countdown_zero_observed': True,
+                        'cleared_before_steady_observed': True,
+                        'first_steady_frame': 3,
+                        'legal_verdict': None, 'physical_acceptance': False}
+            alternative = {**common, 'case_suffix': suffix,
+                           'first_highway_entry': {'in_crosswalk': True} if enters else None,
+                           'device_indication_while_waiting': 'DONT_WALK',
+                           'device_timeline': timeline}
+            self.assertFalse(comparison.audit_pair(comparison_id, baseline, alternative)['physical_acceptance'])
+            alternative['source_bound'] = False
+            with self.assertRaisesRegex(comparison.ComparisonError, 'source binding'):
+                comparison.audit_pair(comparison_id, baseline, alternative)
+            alternative['source_bound'] = True
+            alternative['device_timeline'] = {**timeline, 'original_last_frame': 2}
+            with self.assertRaisesRegex(comparison.ComparisonError, 'frame span'):
+                comparison.audit_pair(comparison_id, baseline, alternative)
+
     def test_green_alone_requires_single_aspect(self):
         result = crossing.measure(self.site,self.root,self.events(aspects=['circular_green','green_arrow']))
         self.assertFalse(result['first_highway_entry']['green_alone'])
@@ -301,6 +340,202 @@ class CrossingTests(unittest.TestCase):
         rows = json.loads(saved.read_text())
         self.assertEqual(rows[0]['actor_id'], 42)
         self.assertEqual(rows[-1]['frame'], 90)
+
+    def test_reviewed_owner_runs_full_900_frame_wait_capture_and_rejects_fixture(self):
+        from io import BytesIO
+        from types import SimpleNamespace
+        from PIL import Image
+        actor, world, head, device = self.native_fakes()
+        actor.get_transform = lambda: object()
+        actor.destroy = lambda: setattr(actor, 'destroyed', True)
+        world.try_spawn_actor = lambda blueprint, transform: actor
+        class Library:
+            def find(self, blueprint):
+                return blueprint
+        stream = BytesIO()
+        Image.new('RGB', (8, 6), (10, 20, 30)).save(stream, format='PNG')
+        png = stream.getvalue()
+        cameras = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+                   for name in capture_module.CAMERAS}
+        class FrameSink:
+            def __init__(self):
+                self.frames = []
+                self.closed = None
+            def capture(self, row):
+                self.frames.append(row['frame'])
+            def close(self, confirmed=True):
+                self.closed = confirmed
+        sink = FrameSink()
+        session = SimpleNamespace(world=world, blueprint_library=Library(),
+            transform_factory=lambda *xyz: xyz, head_reader=head, device_reader=device,
+            control_factory=lambda **kw: kw, vector_factory=lambda *xyz: xyz,
+            camera_readers=cameras, frame_sink=sink)
+        case_id = capture_module.ASSIGNMENT + '__other_device_stop'
+        attempt = self.root / 'full-attempt'
+        attempt.mkdir()
+        (attempt / 'config.json').write_text(json.dumps({'selected_case_id': case_id}))
+        (attempt / 'construction.json').write_text('{}')
+        self.site.update(diagnostic_fixture=True, reviewed_original_site=True,
+                         review_source_id='test-only')
+        site_path = self.root / 'site.json'
+        site_path.write_text(json.dumps(self.site))
+        with self.assertRaisesRegex(ValueError, 'reviewed original'):
+            owned.capture_reviewed(session, site_path, case_id, attempt,
+                camera_dimensions={name: (8, 6) for name in cameras})
+        self.site['diagnostic_fixture'] = False
+        site_path.write_text(json.dumps(self.site))
+        receipt = owned.capture_reviewed(session, site_path, case_id, attempt,
+            camera_dimensions={name: (8, 6) for name in cameras},
+            publisher=lambda output, exact_case: {'case_id': exact_case,
+                                                   'scope': 'fake-publisher-only'})
+        self.assertEqual(receipt['frame_count'], 900)
+        self.assertEqual(receipt['last_frame'], 899)
+        self.assertEqual(sink.frames, list(range(900)))
+        self.assertTrue(sink.closed)
+        self.assertTrue(actor.destroyed)
+        self.assertEqual(media_audit.audit(attempt)['decoded_images'], 3600)
+        self.assertEqual(receipt['reviewed_site_source']['sha256'],
+                         hashlib.sha256((attempt / 'site-source.json').read_bytes()).hexdigest())
+        reviewed_result = delivery.audit(attempt, receipt['reviewed_site_source'],
+                                       'other_device_stop', require_reviewed=True)
+        self.assertEqual(reviewed_result['decoded_images'], 3600)
+        selected = json.loads((ROOT / 'cases/other_device_stop/construction.json').read_text())
+        selected_config = json.loads(next(item['content'] for item in selected['files']
+                                         if item['path'] == 'config.json'))
+        selected_config['case']['diagnostic_only'] = False
+        (attempt / 'config.json').write_text(json.dumps(selected_config))
+        (attempt / 'construction.json').write_text(json.dumps(selected))
+        (attempt / 'runner.py').write_text('pass\n')
+        originals = json.loads((attempt / 'original-frames.json').read_text())
+        native = attempt / 'capture/native'
+        graph_dir = native / 'graphs/base'
+        graph_dir.mkdir(parents=True)
+        graph_index = []
+        evidence = []
+        trace = []
+        for row in originals:
+            frame = row['frame']
+            graph_ref = f'graphs/base/{frame:08d}.adapter.json'
+            (native / graph_ref).write_text(json.dumps({
+                'format': 'native-adapter-graph-v1',
+                'metadata': {'frame': frame}, 'nodes': [], 'edges': []}))
+            graph_index.append({'frame': frame, 'adapter_graph': graph_ref})
+            evidence.append({'original_frame': frame,
+                             'recording_time_s': row['elapsed_seconds']})
+            trace.append({'frame': frame, 'time_s': row['elapsed_seconds'],
+                          'position': {'x': row['pedestrian_xy'][0],
+                                       'y': row['pedestrian_xy'][1], 'z': 0},
+                          'speed_mps': 0})
+        (native / 'frames.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in graph_index))
+        (attempt / 'capture/evidence.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in evidence))
+        (attempt / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace))
+        (attempt / 'capture/manifest.json').write_text(json.dumps({
+            'case_id': case_id, 'frames': 900, 'extraction_confirmed': True}))
+        (attempt / 'fixture-provenance.json').write_text(json.dumps({
+            'diagnostic_fixture': True,
+            'scope': 'CPU fake Native publication test; no physical site claim'}))
+        sys.path.insert(0, str(ROOT.parents[1] / 'runtime/scenario_pipeline'))
+        missing_graph = graph_dir / '00000007.adapter.json'
+        graph_bytes = missing_graph.read_bytes()
+        missing_graph.unlink()
+        with self.assertRaisesRegex(ValueError, 'graph source missing'):
+            publication.publish_original(attempt, case_id)
+        self.assertFalse((attempt / 'result.json').exists())
+        missing_graph.write_bytes(graph_bytes)
+        published = publication.publish_original(attempt, case_id)
+        self.assertEqual(published['frames'], 900)
+        self.assertTrue((attempt / 'result.json').is_file())
+        self.assertTrue(json.loads((attempt / 'result.json').read_text())['diagnostic_fixture'])
+        with self.assertRaisesRegex(ValueError, 'restoration receipt required'):
+            owned.seal_after_restoration(attempt, {'restored': False})
+        seal = owned.seal_after_restoration(attempt, {
+            'restored': True, 'source': 'CPU fake operator restoration only'})
+        self.assertEqual(seal['events'], [
+            'capture_finished', 'encoders_closed', 'restoration_verified'])
+        stage = self.root / 'saved-stage'
+        shutil.copytree(attempt, stage)
+        (stage / 'result.json').unlink()
+        shutil.rmtree(stage / 'channels')
+        saved_report, saved_result = finalizer.analyze_original(stage, case_id)
+        self.assertTrue(saved_report['analysis_complete'])
+        self.assertTrue(saved_result['diagnostic_fixture'])
+        self.assertEqual(saved_report['device_timeline']['entry_frame'], None)
+        changed = dict(receipt)
+        changed.pop('reviewed_site_source')
+        (attempt / 'capture-receipt.json').write_text(json.dumps(changed))
+        with self.assertRaisesRegex(ValueError, 'reviewed original site source missing'):
+            delivery.audit(attempt, receipt['reviewed_site_source'],
+                           'other_device_stop', require_reviewed=True)
+
+    def test_original_frame_sink_failure_cannot_publish_complete_capture(self):
+        actor, world, head, device = self.native_fakes()
+        class FailingSink:
+            closed = None
+            def capture(self, row):
+                if row['frame'] == 2:
+                    raise ValueError('original graph source failed')
+            def close(self, confirmed=True):
+                self.closed = confirmed
+        sink = FailingSink()
+        attempt = self.root / 'sink-failure'
+        with self.assertRaisesRegex(ValueError, 'original graph source failed'):
+            capture_module.capture(world, actor, self.site, self.root,
+                'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+                attempt, ticks=3, frame_sink=sink)
+        self.assertFalse(sink.closed)
+        self.assertFalse((attempt / 'capture-receipt.json').exists())
+
+    def test_pedestrian_graph_sink_retains_walker_control_without_vehicle_pedals(self):
+        from types import ModuleType, SimpleNamespace
+        from unittest.mock import patch
+        actor, world, _, _ = self.native_fakes()
+        actor.get_transform = lambda: SimpleNamespace(
+            location=SimpleNamespace(x=-2, y=5, z=0),
+            rotation=SimpleNamespace(yaw=0))
+        actor.get_velocity = lambda: SimpleNamespace(x=0, y=0, z=0)
+        actor.get_control = lambda: SimpleNamespace(
+            direction=SimpleNamespace(x=1, y=0, z=0), speed=1.2, jump=False)
+        road = SimpleNamespace(name='fake-road', to_opendrive=lambda: '<OpenDRIVE/>')
+        world.get_map = lambda: road
+        class Client:
+            def get_world(self):
+                return world
+            def start_recorder(self, path, additional):
+                Path(path).write_text('diagnostic recorder')
+            def stop_recorder(self):
+                pass
+            def show_recorder_file_info(self, path, verbose):
+                return 'diagnostic recorder info'
+        collector_module = ModuleType('scene_graph_collector')
+        class Collector:
+            def __init__(self, client, ego_id, output_dir, **kwargs):
+                Path(output_dir).mkdir()
+            def capture(self, frame, control, observed_evidence):
+                self.control = control
+                return {'simulation_time': frame * .05}
+            def close(self):
+                pass
+        collector_module.SceneGraphCollector = Collector
+        observation_module = ModuleType('original_observations')
+        observation_module.observe = lambda native_world, native_actor, frame, time: {
+            'participants': [{'actor_id': actor.id, 'blueprint': actor.type_id,
+                              'position_m': [-2, 5, 0], 'heading_deg': 0,
+                              'speed_mps': 0, 'body_vertices_m': [[-2, 5, 0]]}]}
+        with patch.dict(sys.modules, {'scene_graph_collector': collector_module,
+                                      'original_observations': observation_module}):
+            sink = graph_sink.PedestrianGraphSink(Client(), actor,
+                                                  self.root / 'graph-sink',
+                                                  capture_module.ASSIGNMENT + '__marked_cross')
+            sink.capture({'frame': 0, 'elapsed_seconds': 0,
+                          'official_signal_head_id': 'head1',
+                          'lit_aspects': ['circular_green'],
+                          'other_device_id': 'ped1', 'other_device_mode': 'absent'})
+            sink.close()
+        trace = json.loads((self.root / 'graph-sink/trace.jsonl').read_text())
+        self.assertEqual(trace['control']['walker']['speed'], 1.2)
+        self.assertNotIn('throttle', trace['control'])
+        manifest = json.loads((self.root / 'graph-sink/capture/manifest.json').read_text())
+        self.assertFalse(manifest['extraction_confirmed'])
 
     def test_native_capture_wait_and_frame_gap_rejection(self):
         actor, world, head, device = self.native_fakes()

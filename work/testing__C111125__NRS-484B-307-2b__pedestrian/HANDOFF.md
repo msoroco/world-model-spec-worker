@@ -130,3 +130,11 @@ SHA-256 source and proof index:
 - `cpu-device-timeline-offline-outside_cross.log`: `94e1d4346e90fc537263762d79ccd3b5a726932d7b51ecedea0fb1c1c96ed758`
 - `cpu-device-timeline-static.log`: `2bb5e878a32673b6ed56fa67c0b3fe2f1495c1c375de7720970a62222e2fd721`
 - `cpu-device-timeline-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
+
+## Reviewed-source owner and alternative comparison CPU checkpoint, 2026-11-24
+
+All eight case-plan comparison pairs now have independent audit code. The five NRS 484B.283 device-alternative pairs require fixed source hashes, exact source-bound original frame span, observed mode, entry/wait and clearance facts; negative tests reject missing source binding and frame-span drift. Legal verdict and physical acceptance remain unclaimed.
+
+`owned_runner.py` requires an explicit reviewed original site packet and the exact materialized case, source-verifies the map, head and device inventory before spawn, captures 900 original synchronized Native frames and four camera PNG streams, copies source bytes into the attempt, records their SHA-256 in the capture receipt, and destroys the actor. A 900-frame fake Native wait test decodes all 3,600 original camera PNGs and verifies diagnostic-site rejection. `delivery_audit.py --require-reviewed` checks the copied reviewed site and original-source identity before the saved protocol. These are CPU fixture proofs; the fake site is marked test-only, not accepted physical evidence.
+
+The assignment suite passes 36 tests (`cpu-selected-source-tests.log`); pinned preflight and scoped static pass (`cpu-selected-source-preflight.log`, `cpu-selected-source-static.log`). Exact scoped strict fails on truthful partial (`cpu-selected-source-strict.log`). The remaining CPU implementation is the selected production construction and source-gated runner publication to the pinned Native graph/FFV1 capture contract, a full process-saved proof, tested fallback plans, and independent delivery/comparison receipts. Existing `runtime/python/pipeline_capture.py` assumes vehicle control fields and cannot directly capture a walker; a pedestrian adapter/publication path is needed. Reviewed original intersection/head/device applicability sources are absent from frozen accepted evidence and must be bound for eventual physical execution.
