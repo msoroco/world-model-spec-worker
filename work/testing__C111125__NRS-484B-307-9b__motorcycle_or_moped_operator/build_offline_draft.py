@@ -7,13 +7,15 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
-SOURCES = ('signal_exception.py', 'original_capture.py', 'saved_measurement.py',
+SOURCES = ('signal_exception.py', 'original_capture.py', 'native_session.py', 'saved_measurement.py',
            'comparison_audit.py', 'delivery_audit.py', 'media_decode.py')
 
 RUNNER = '''"""C111125 exact diagnostic preflight; unsourced Native launch is refused."""
 import argparse
 import hashlib
+import importlib
 import json
+import os
 from pathlib import Path
 
 
@@ -42,12 +44,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--site-packet", default=os.environ.get("SCENARIO_SITE_PACKET"))
+    parser.add_argument("--native-adapter", default=os.environ.get("SCENARIO_NATIVE_ADAPTER"))
+    parser.add_argument("--host", default="localhost")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case_id = check()
     if args.check:
         print("diagnostic C111125 case passed: " + case_id)
         return
-    raise ValueError("Reviewed original C111125 map, composite head, detector and camera sources required")
+    if not args.output_dir or not args.site_packet or not args.native_adapter:
+        raise ValueError("Reviewed original C111125 map, composite head, detector and camera sources required")
+    adapter = importlib.import_module(args.native_adapter)
+    if not hasattr(adapter, "open_session"):
+        raise ValueError("Operator-owned Native adapter lacks open_session")
+    from native_session import capture_events
+    with adapter.open_session(case_id, args.site_packet, args.host, args.port) as session:
+        capture_events(session, args.site_packet, case_id, args.output_dir)
 
 
 if __name__ == "__main__":
@@ -56,8 +69,10 @@ if __name__ == "__main__":
 
 TEST = '''import json
 from pathlib import Path
+import sys
+import types
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 import runner
 
 
@@ -70,6 +85,21 @@ class BundleTests(unittest.TestCase):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
             with self.assertRaisesRegex(ValueError, "Reviewed original C111125"):
                 runner.main()
+
+    def test_pinned_capture_dispatch_to_operator_session(self):
+        case_id = runner.check()
+        session = object()
+        context = MagicMock()
+        context.__enter__.return_value = session
+        adapter = types.SimpleNamespace(open_session=MagicMock(return_value=context))
+        env = {"SCENARIO_SITE_PACKET": "/reviewed/site.json", "SCENARIO_NATIVE_ADAPTER": "test_native_adapter"}
+        args = ["runner.py", "--output-dir", "/materialized/attempt",
+                "--host", "localhost", "--port", "2000"]
+        with patch.dict("os.environ", env), patch.dict(sys.modules, {"test_native_adapter": adapter}), \\
+                patch("native_session.capture_events") as capture, patch("sys.argv", args):
+            runner.main()
+        adapter.open_session.assert_called_once_with(case_id, "/reviewed/site.json", "localhost", 2000)
+        capture.assert_called_once_with(session, "/reviewed/site.json", case_id, "/materialized/attempt")
 
 
 if __name__ == "__main__":

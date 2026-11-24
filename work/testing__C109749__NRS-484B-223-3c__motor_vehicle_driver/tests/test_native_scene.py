@@ -129,6 +129,29 @@ class NativeSceneTests(unittest.TestCase):
         self.assertTrue(all(actor.destroyed for actor in self.world.spawned))
         self.assertTrue(self.world.spawned[-1].stopped)
 
+    def test_failed_sensor_stop_does_not_skip_actor_destruction(self):
+        scene, _ = self.spawn()
+        def fail_stop():
+            raise RuntimeError('sensor stop failed')
+        next(iter(scene.cameras.values())).stop = fail_stop
+        with self.assertRaisesRegex(RuntimeError, 'sensor stop failed'):
+            scene.close()
+        self.assertTrue(all(actor.destroyed for actor in self.world.spawned))
+        scene.close()
+
+    def test_spawn_failure_preserves_error_after_stop_failure(self):
+        self.world.fail_spawn = 3
+        original_spawn = self.world.spawn_actor
+        def spawn(blueprint, transform, attach_to=None):
+            actor = original_spawn(blueprint, transform, attach_to=attach_to)
+            if actor is not None and len(self.world.spawned) == 3:
+                actor.stop = lambda: (_ for _ in ()).throw(RuntimeError('cleanup stop failed'))
+            return actor
+        self.world.spawn_actor = spawn
+        with self.assertRaisesRegex(ValueError, 'camera spawn failed'):
+            self.spawn()
+        self.assertTrue(all(actor.destroyed for actor in self.world.spawned))
+
     def test_wrong_case_or_missing_camera_plan_rejected(self):
         with self.assertRaisesRegex(ValueError, 'wrong exact'):
             spawn_scene(self.world, self.root, 'other__below_50ft', self.site,

@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 from native_capture import capture
+from delivery_audit import VIEWS
 from test_native_scene import ref, site
 
 
@@ -91,6 +92,39 @@ class NativeCaptureTests(unittest.TestCase):
         user = result['measurement']['exhibition']['other_users'][0]
         self.assertEqual(user['region'], 'intersection')
         self.assertEqual(user['lawful_presence_source'], context['path'])
+
+    def test_camera_callback_ids_join_original_snapshot(self):
+        world = World()
+        result = capture(world, Ego(world), None, self.site, self.site_ref,
+                         'green_clear', green, self.root,
+                         camera_profile_sha256='source-hashed-profile',
+                         camera_frame_reader=lambda snapshot: {
+                             view: snapshot.frame for view in VIEWS})
+        frame_ref = result['receipt']['frame_map_ref']
+        self.assertIsNotNone(frame_ref)
+        rows = json.loads((self.root / frame_ref['path']).read_text())
+        self.assertEqual(len(rows), 900)
+        self.assertEqual(rows[0]['camera_frame_ids'], {view: 1 for view in VIEWS})
+        self.assertEqual(rows[-1]['frame'], 900)
+        self.assertFalse(result['receipt']['camera_capture_complete'])
+
+    def test_stale_or_missing_camera_callback_fails_closed(self):
+        for reader in (
+            lambda snapshot: {view: snapshot.frame - 1 for view in VIEWS},
+            lambda snapshot: {view: snapshot.frame for view in VIEWS[:-1]},
+        ):
+            with self.subTest(reader=reader):
+                world = World()
+                ego = Ego(world)
+                with self.assertRaisesRegex(ValueError, 'camera callbacks'):
+                    capture(world, ego, None, self.site, self.site_ref,
+                            'green_clear', green, self.root,
+                            camera_profile_sha256='source-hashed-profile',
+                            camera_frame_reader=reader)
+                self.assertTrue(ego.braked)
+                self.assertFalse((self.root / 'original-events.json').exists())
+                self.assertFalse((self.root / 'original-frame-map.json').exists())
+                self.assertFalse((self.root / 'original-capture-receipt.json').exists())
 
     def test_frame_and_signal_failure_leave_no_receipt(self):
         world = World()

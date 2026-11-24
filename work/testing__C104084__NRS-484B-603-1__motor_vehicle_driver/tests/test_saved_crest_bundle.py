@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRATCH = ROOT.parents[1] / '.runtime-work'
 sys.path.insert(0, str(ROOT))
 from saved_crest_audit import ASSIGNMENT
 from saved_crest_bundle import assemble, verify_bundle
@@ -14,7 +15,7 @@ from test_saved_crest_media import media_fixture
 
 class SavedCrestBundleTests(unittest.TestCase):
     def test_seals_complete_observed_sources_and_rejects_tamper(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as tmp:
             root = Path(tmp)
             original = root / 'source'
             original.mkdir()
@@ -56,9 +57,17 @@ class SavedCrestBundleTests(unittest.TestCase):
             spec['native_map_sha256'] = 'a' * 64
             with self.assertRaisesRegex(ValueError, 'map bytes differ'):
                 assemble(spec, root / 'wrong-map', expected_case=case)
+            self.assertFalse((root / 'wrong-map').exists())
+            self.assertFalse(any(root.glob('crest-bundle-*')))
+            spec['native_map_sha256'] = hashlib.sha256(native_map.read_bytes()).hexdigest()
+            Path(spec['cameras']['front']).write_bytes(b'bad camera')
+            with self.assertRaises(ValueError):
+                assemble(spec, root / 'bad-camera', expected_case=case)
+            self.assertFalse((root / 'bad-camera').exists())
+            self.assertFalse(any(root.glob('crest-bundle-*')))
 
     def test_rejects_missing_camera_and_unbound_native_origin(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as tmp:
             spec = {'profile': 'steady_approach', 'acquisition_kind': 'original_native',
                     'native_map_sha256': 'bad', 'native_capture_ref': 'run',
                     'sources': {}, 'cameras': {}}

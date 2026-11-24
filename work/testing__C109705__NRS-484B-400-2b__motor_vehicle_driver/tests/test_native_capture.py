@@ -54,6 +54,7 @@ class Adapter:
         if self.resumed_turn and frame == 401:
             phase = 'turning'
         return {'case_id': CASE, 'frame': frame, 'phase': phase,
+                'elapsed_seconds': 10 + frame / 20,
                 'road_id': 4 if frame >= 400 else 1,
                 'driver_control': True, 'position_xy_m': [x, 0],
                 'body_corners_xy_m': [[x - 1, -1], [x + 1, -1], [x - 1, 1], [x + 1, 1]],
@@ -123,6 +124,19 @@ class NativeCaptureTests(unittest.TestCase):
     def test_frame_gap_rejected_and_ego_cleaned(self):
         adapter = Adapter(stop_at=10)
         with self.assertRaisesRegex(ValueError, 'frame'):
+            self._run(adapter)
+        self.assertTrue(adapter.stopped and adapter.destroyed)
+
+    def test_native_clock_drift_rejected_and_ego_cleaned(self):
+        adapter = Adapter()
+        original = adapter.ego_snapshot
+        def drift(ego, frame):
+            row = original(ego, frame)
+            if frame == 75:
+                row['elapsed_seconds'] += 0.02
+            return row
+        adapter.ego_snapshot = drift
+        with self.assertRaisesRegex(ValueError, '20 Hz clock drift'):
             self._run(adapter)
         self.assertTrue(adapter.stopped and adapter.destroyed)
 

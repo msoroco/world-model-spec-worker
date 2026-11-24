@@ -73,6 +73,11 @@ def capture(
     route = (validate_roadway_route(map_packet) if case_id.endswith('__ordinary_crossing')
              else validate_route(map_packet, property_id))
     _require(map_packet.get('coordinate_frame'), 'map coordinate frame required')
+    settings = world.get_settings()
+    _require(settings.synchronous_mode is True and
+             type(settings.fixed_delta_seconds) in (int, float) and
+             abs(settings.fixed_delta_seconds - 0.05) < 1e-9,
+             'synchronous 20 Hz Native world required')
     _require(output.suffix == '.json' and output.parent.is_dir(), 'existing text output directory required')
     _require((camera_observer is None) == (media_directory is None), 'camera observer and media directory must be supplied together')
     if media_directory is not None:
@@ -90,14 +95,21 @@ def capture(
     archives = {name: stack.enter_context(ZipFile(media_directory / f'{name}.zip', 'w'))
                 for name in CAMERAS} if media_directory is not None else {}
     try:
-        for _ in range(ticks):
+        for index in range(ticks):
             frame = int(world.tick())
-            _require(not samples or frame > samples[-1]['frame'], 'Native frames must increase')
+            _require(not samples or frame == samples[-1]['frame'] + 1, 'Native frames must increase consecutively')
+            snapshot = world.get_snapshot()
+            _require(snapshot.frame == frame, 'Native snapshot frame differs from tick')
+            time_s = snapshot.timestamp.elapsed_seconds
+            _require(type(time_s) in (int, float) and math.isfinite(time_s),
+                     'finite original Native timestamp required')
+            _require(not samples or abs(time_s - samples[0]['time_s'] - index / 20) < 0.002,
+                     'original Native 20 Hz clock drift')
             location = _xy(ego)
             speed = _speed(ego)
             yaw = math.radians(float(ego.get_transform().rotation.yaw))
             _require(all(math.isfinite(v) for v in (*location, speed, yaw)), 'finite Native body sample required')
-            sample = {'frame': frame, 'time_s': frame / 20.0, 'x': location[0], 'y': location[1], 'speed_mps': speed, 'yaw_rad': yaw}
+            sample = {'frame': frame, 'time_s': time_s, 'x': location[0], 'y': location[1], 'speed_mps': speed, 'yaw_rad': yaw}
             samples.append(sample)
             approach = _signal(signal_observer, frame, 'approach_signal')
             destination = _signal(signal_observer, frame, 'destination_signal')

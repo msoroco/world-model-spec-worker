@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "f284bffb1992eb71aa3dc8fd755986eb28718589d69f1470e660ce06c4f6cc1a",
-  "readiness_kind": "partial_source_gated_native_entrypoint_checkpoint",
-  "reason": "Three exact offline bundles now bind source-gated live CARLA entrypoints to the existing operator-owned 900-frame speed, four-camera acquisition and saved finalizer. Mocked entrypoint tests and all three pinned offline checks pass, as do preflight and scoped static. The site packet supplied to the entrypoint still requires independent review of actual C10301 route and access-aisle authority; accepted originals, positive/negative compatibility, canonical manifest and saved-delivery receipts remain CPU work. No Native physical motion or camera content is claimed.",
+  "readiness_kind": "partial_exact_speed_bundles_pinned_dispatch_bound",
+  "reason": "Three exact source-gated bundles now accept the pinned runtime capture argument shape through explicit operator SCENARIO_SITE_PACKET, SCENARIO_NATIVE_RUN_ID and SCENARIO_SPEED_UNCERTAINTY_MPS environment bindings, while preserving prior-acquisition refusal in the materialized bundle directory. Pinned preflight, 32 focused tests, all three rebuilt exact offline checks and scoped static pass. Independent review of actual C10301 route/access-aisle authority and frozen accepted originals, canonical manifest, positive/negative compatibility and saved-delivery receipts remain CPU work. No physical speed, camera-content or territorial claim is made; strict readiness remains partial.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -284,6 +284,48 @@
       "exit_code": 0,
       "log": "cpu-live-offline-above.log",
       "sha256": "c7f18448572d4d57e9aa73e4ae9bdc3459e2afa4159577f520c93628df0c4d8e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-dispatch-preflight.log",
+      "sha256": "9d3084521bb756fe4cda56c293741d46b565b4dc57507c781d2f53cdc1377dbb"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-dispatch-tests.log",
+      "sha256": "544a2d85963d486f11ea3d2d5ed1989ee2464289992cfdcfaf0623a3612e5cce"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10301-speed-dispatch/bundle_below",
+      "exit_code": 0,
+      "log": "cpu-dispatch-below.log",
+      "sha256": "10559fb50f8b5f85382ba8094b6c6093a58d3298267f97ad58f5a73d9a533e26"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10301-speed-dispatch/bundle_equal",
+      "exit_code": 0,
+      "log": "cpu-dispatch-equal.log",
+      "sha256": "7feebbfddd1bdeae8a68c0020619d76dcc58467a21502f6ae8b97e46582b816f"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10301-speed-dispatch/bundle_above",
+      "exit_code": 0,
+      "log": "cpu-dispatch-above.log",
+      "sha256": "ef69b1f7f7d6f17defa0cf75f124bf878eb2c2add685dcd3597556c71a82c091"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-dispatch-static.log",
+      "sha256": "689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-dispatch-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ]
 }

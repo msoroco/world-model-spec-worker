@@ -60,11 +60,7 @@ class NativeCameraAdapter:
                 remaining = deadline - time.monotonic()
                 _require(remaining > 0, "missing original Native camera callback")
                 self.condition.wait(remaining)
-            images = {key: self.pending[key].pop(frame) for key in CAMERAS}
-            for values in self.pending.values():
-                for old in [number for number in values if number <= frame]:
-                    del values[old]
-            self.last_frame = frame
+            images = {key: self.pending[key][frame] for key in CAMERAS}
         result = {}
         for key, image in images.items():
             width, height = CAMERAS[key]
@@ -79,6 +75,14 @@ class NativeCameraAdapter:
             result[key] = {"frame": frame,
                            "source": "original_native_camera_callback",
                            "png": output.getvalue()}
+        with self.condition:
+            _require(not self.closed and
+                     (self.last_frame is None or frame == self.last_frame + 1),
+                     "Native camera frame sequence differs")
+            for values in self.pending.values():
+                for old in [number for number in values if number <= frame]:
+                    del values[old]
+            self.last_frame = frame
         return result
 
     def close(self):

@@ -18,6 +18,7 @@ RUNNER = '''"""Exact speed-case preflight and source-gated Native runner."""
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 
@@ -46,9 +47,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
-    parser.add_argument("--site-packet")
-    parser.add_argument("--native-run-id")
-    parser.add_argument("--uncertainty-mps", type=float)
+    parser.add_argument("--site-packet", default=os.environ.get("SCENARIO_SITE_PACKET"))
+    parser.add_argument("--native-run-id", default=os.environ.get("SCENARIO_NATIVE_RUN_ID"))
+    parser.add_argument("--uncertainty-mps", type=float, default=os.environ.get("SCENARIO_SPEED_UNCERTAINTY_MPS"))
     parser.add_argument("--host", default="localhost")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
@@ -65,8 +66,11 @@ def main():
     if not packet.get("route_source_ref") or not packet.get("access_aisle_source_ref"):
         raise ValueError("Reviewed C10301 route and access-aisle sources required")
     attempt = Path(args.output_dir)
-    if attempt.exists() and any(attempt.iterdir()):
-        raise ValueError("Native attempt output already exists")
+    if attempt.exists() and any((attempt / name).exists() for name in (
+            "native-site-source.json", "capture-index.json", "native-motion-receipt.json",
+            "original-speed.jsonl", "speed-source.json", "camera-frame-readback.json",
+            "route-frame-readback.json", "camera-frame-map.jsonl", "capture")):
+        raise ValueError("Native acquisition output already exists")
     import carla
     from owned_capture import capture_owned
 
@@ -142,6 +146,35 @@ class BundleTests(unittest.TestCase):
                     patch("owned_capture.capture_owned") as capture, \\
                     patch("sys.argv", args):
                 with self.assertRaisesRegex(ValueError, "provenance or case differs"):
+                    runner.main()
+            capture.assert_not_called()
+
+    def test_pinned_capture_shape_uses_operator_environment(self):
+        config = runner.check()
+        carla = types.SimpleNamespace(
+            Client=MagicMock(), Location=MagicMock(), Rotation=MagicMock(),
+            Transform=MagicMock(), VehicleControl=MagicMock())
+        with tempfile.TemporaryDirectory() as directory:
+            packet = Path(directory) / "reviewed-site.json"
+            packet.write_text(json.dumps({
+                "case_id": config["selected_case_id"], "diagnostic_fixture": False,
+                "route_source_ref": "reviewed-route", "access_aisle_source_ref": "reviewed-aisle"}) + "\\n")
+            attempt = Path(directory) / "materialized"
+            attempt.mkdir()
+            (attempt / "config.json").write_text("{}\\n")
+            env = {"SCENARIO_SITE_PACKET": str(packet), "SCENARIO_NATIVE_RUN_ID": "original-2",
+                   "SCENARIO_SPEED_UNCERTAINTY_MPS": "0.15"}
+            args = ["runner.py", "--output-dir", str(attempt), "--host", "localhost", "--port", "2000"]
+            with patch.dict("os.environ", env), patch.dict(sys.modules, {"carla": carla}), \\
+                    patch("owned_capture.capture_owned") as capture, patch("sys.argv", args):
+                runner.main()
+            capture.assert_called_once()
+            self.assertEqual(capture.call_args.args[2], attempt)
+            self.assertEqual(capture.call_args.args[4:6], ("original-2", 0.15))
+            (attempt / "native-site-source.json").write_text("existing\\n")
+            with patch.dict("os.environ", env), patch.dict(sys.modules, {"carla": carla}), \\
+                    patch("owned_capture.capture_owned") as capture, patch("sys.argv", args):
+                with self.assertRaisesRegex(ValueError, "acquisition output already exists"):
                     runner.main()
             capture.assert_not_called()
 

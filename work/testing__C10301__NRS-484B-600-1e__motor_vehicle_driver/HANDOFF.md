@@ -1,5 +1,11 @@
 # testing__C10301__NRS-484B-600-1e__motor_vehicle_driver
 
+## 2026-11-24 pinned capture dispatch integration checkpoint
+
+- The three exact bundle runners now accept `runtime.py capture`'s actual `--output-dir --host --port` launch shape. The operator supplies `SCENARIO_SITE_PACKET`, `SCENARIO_NATIVE_RUN_ID` and `SCENARIO_SPEED_UNCERTAINTY_MPS`; the runner still requires a case-matched nondiagnostic site packet and route/access-aisle source references before lazy CARLA import. It allows the pinned runtime's already materialized implementation/configuration files in the attempt directory, while refusing pre-existing Native site, motion, speed, frame-map or capture artifacts. This closes the previous always-fail dispatch path without accepting a prior acquisition overwrite.
+- The bundled mocked-live test exercises that exact argument/env shape against a materialized directory and checks capture call binding and prior-acquisition refusal. All three rebuilt exact constructions pass pinned `runtime.py offline`; pinned CPU preflight, 32 focused tests and scoped static pass. Exact scoped strict exits 1 on truthful partial. Commands and SHA256 logs are in `result.json.tests`.
+- CPU work remains independent source review of the frozen accepted originals and actual C10301 route/access-aisle authority, canonical manifest, positive/negative compatibility and saved-delivery receipts. Physical speed, camera scene content and public-way applicability are unverified.
+
 Status: partial source inventory. No case or recording is proposed by this checkpoint.
 
 Exact law: NRS 484B.600(1)(e) — It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.

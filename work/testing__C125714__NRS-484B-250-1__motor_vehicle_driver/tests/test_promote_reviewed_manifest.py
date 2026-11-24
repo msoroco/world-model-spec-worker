@@ -25,9 +25,23 @@ class PromotionTests(unittest.TestCase):
             case_id = ROOT.name + "__" + suffix
             folder = base / suffix
             construction = folder / "construction.json"
-            digest = write(construction, {"case_id": case_id, "diagnostic_only": False})
+            packet = '{"reviewed":true}\n'
+            map_text = '<OpenDRIVE/>\n'
+            packet_sha = hashlib.sha256(packet.encode()).hexdigest()
+            map_sha = hashlib.sha256(map_text.encode()).hexdigest()
+            scene = {"case_id": case_id, "reviewed_context_source": "packet.json",
+                     "reviewed_context_sha256": packet_sha,
+                     "crossing": {"map_source_sha256": map_sha}}
+            files = [{"path": "scene.json", "content": json.dumps(scene)},
+                     {"path": "packet.json", "content": packet},
+                     {"path": "reviewed-map.xodr", "content": map_text}]
+            digest = write(construction, {"case_id": case_id, "diagnostic_only": False, "files": files})
             write(folder / "measurement-contract.json", {"case_id": case_id})
-            write(folder / "preflight.json", {"case_id": case_id, "passed": True, "native_started": False})
+            write(folder / "preflight.json", {"format": "worker-reviewed-packet-cpu-preflight",
+                                           "case_id": case_id, "passed": True, "native_started": False,
+                                           "source_packet_sha256": packet_sha, "map_sha256": map_sha,
+                                           "physical_acceptance_claimed": False,
+                                           "legal_acceptance_claimed": False})
             cases.append({"case_id": case_id, "kind": "delivery", "construction": suffix + "/construction.json",
                           "construction_sha256": digest, "measurement_contract": suffix + "/measurement-contract.json",
                           "source_preflight": suffix + "/preflight.json", "candidates": []})
@@ -73,6 +87,23 @@ class PromotionTests(unittest.TestCase):
             next(row for row in index["cases"] if row["case_id"].endswith("__advance"))["construction_sha256"] = digest
             write(base / "candidate-index.json", index)
             with self.assertRaisesRegex(ValueError, "diagnostic or wrong"):
+                assemble(base, receipts, allow_scratch=True)
+
+    def test_refuses_preflight_for_different_source_bytes(self):
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as temp:
+            base = Path(temp)
+            receipts = self.fixture(base)
+            path = base / "advance" / "preflight.json"
+            preflight = json.loads(path.read_text())
+            preflight["source_packet_sha256"] = "0" * 64
+            write(path, preflight)
+            with self.assertRaisesRegex(ValueError, "does not bind inline sources"):
+                assemble(base, receipts, allow_scratch=True)
+            self.fixture(base)
+            preflight = json.loads(path.read_text())
+            preflight["map_sha256"] = "0" * 64
+            write(path, preflight)
+            with self.assertRaisesRegex(ValueError, "does not bind inline sources"):
                 assemble(base, receipts, allow_scratch=True)
 
 

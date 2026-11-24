@@ -71,6 +71,10 @@ class CameraAdapterTests(unittest.TestCase):
         self.sensors["overview"].emit(1, short=True)
         with self.assertRaisesRegex(ValueError, "byte count differs"):
             self.adapter.capture(SimpleNamespace(frame=1), None)
+        self.assertIsNone(self.adapter.last_frame)
+        self.sensors["overview"].emit(1)
+        recovered = self.adapter.capture(SimpleNamespace(frame=1), None)
+        self.assertEqual({entry["frame"] for entry in recovered.values()}, {1})
 
     def test_wrong_sensor_profile_rejected(self):
         sensors = {key: Sensor(size) for key, size in CAMERAS.items()}

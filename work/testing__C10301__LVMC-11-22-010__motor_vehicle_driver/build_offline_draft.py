@@ -14,6 +14,7 @@ RUNNER = '''"""Exact alley operation diagnostic entrypoint."""
 import argparse
 import hashlib
 import json
+import importlib
 from pathlib import Path
 from alley_geometry import validate
 from native_operation import CASE_PROFILES
@@ -43,12 +44,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--site-packet")
+    parser.add_argument("--adapter")
+    parser.add_argument("--host", default="localhost")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print("diagnostic alley bundle passed: " + case)
         return
-    raise ValueError("Reviewed Native site and original camera source required; diagnostic capture refused")
+    if not args.output_dir or not args.site_packet or not args.adapter:
+        raise ValueError("Reviewed Native site and original camera source required; diagnostic capture refused")
+    adapter = importlib.import_module(args.adapter)
+    if not hasattr(adapter, "open_session"):
+        raise ValueError("Operator-owned Native adapter lacks open_session")
+    from owned_runner import capture_reviewed
+    with adapter.open_session(case, args.site_packet, args.host, args.port) as session:
+        capture_reviewed(session, args.site_packet, case, args.output_dir)
 
 
 if __name__ == "__main__":
@@ -98,6 +110,7 @@ def build() -> None:
                  "native_operation.py": (HERE / "native_operation.py").read_text(),
                  "native_context.py": (HERE / "native_context.py").read_text(),
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
+                 "owned_runner.py": (HERE / "owned_runner.py").read_text(),
                  "saved_delivery.py": (HERE / "saved_delivery.py").read_text(),
                  "saved_finalizer.py": (HERE / "saved_finalizer.py").read_text(),
                  "measurement_contract.py": (HERE / "measurement_contract.py").read_text(),

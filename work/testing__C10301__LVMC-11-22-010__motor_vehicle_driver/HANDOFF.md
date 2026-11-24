@@ -1,5 +1,11 @@
 # testing__C10301__LVMC-11-22-010__motor_vehicle_driver
 
+## 2026-11-24 operator-owned capture integration checkpoint
+
+- `owned_runner.py` binds an operator-provided reviewed alley site packet to the exact case, spawns the sourced ego through `native_operation.spawn_ego`, invokes the 900-frame four-camera `native_capture.capture`, preserves the site packet bytes and their SHA256 in the diagnostic receipt, and destroys its actor in a `finally` block. The operator-owned session remains responsible for world settings, sensor lifecycle and restoration. The capture receipt retains `diagnostic_fixture: true`; this integration does not assert original physical realization or interior attention.
+- Both inline exact constructions now include this module. Their runner accepts `--site-packet` and `--adapter` only for explicit capture, opens the operator session, and calls the owned capture path. `runner.py --check` continues to validate the scene, controller profile, interval and camera IDs without CARLA. A no-source launch still fails closed. `tests/test_owned_runner.py` covers exact call binding, source preservation, missing-source refusal, no-overwrite and actor cleanup on capture failure.
+- Pinned CPU preflight, 27 focused tests, both exact `runtime.py offline` bundle checks and scoped static passed. The exact scoped strict gate exits 1 because the package remains partial. Logs and SHA256 entries are in `result.json.tests`. Reviewed Native alley/marking/municipal sources, source-shaped runtime compatibility, process-saved and delivery audits, canonical semantic proposals and manifest remain CPU work. Physical attention and statutory judgment remain unresolved.
+
 Status: partial CPU construction. Two exact cases are planned, but neither has a canonical executable bundle or delivery proof.
 
 Exact law: LVMC 11.22.010 — A person shall, when operating a vehicle, give his full time and attention to the operation of the vehicle.

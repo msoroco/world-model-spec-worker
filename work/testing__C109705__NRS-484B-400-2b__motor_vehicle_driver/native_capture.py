@@ -47,9 +47,13 @@ def _state(raw, frame, previous_frame, expected_case):
         raise ValueError('Native road ID missing')
     if raw.get('driver_control') is not True:
         raise ValueError('Native driver control missing')
+    elapsed = raw.get('elapsed_seconds')
+    if type(elapsed) not in (int, float) or not math.isfinite(elapsed) or elapsed < 0:
+        raise ValueError('Native original elapsed clock missing')
     return {'frame': frame, 'phase': phase, 'road_id': raw['road_id'],
             'position_xy_m': position, 'body_corners_xy_m': corners,
-            'heading_rad': float(heading), 'speed_mps': float(speed)}
+            'heading_rad': float(heading), 'speed_mps': float(speed),
+            'elapsed_seconds': float(elapsed)}
 
 
 def capture(adapter, case_id, survey, map_source_path, output_dir):
@@ -94,6 +98,8 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
                 raise ValueError('Native tick frame discontinuity')
             raw = adapter.ego_snapshot(ego, frame)
             sample = _state(raw, frame, previous_frame if previous_frame is not None else frame - 1, case_id)
+            if samples and abs(sample['elapsed_seconds'] - samples[0]['elapsed_seconds'] - tick_index / 20) > 0.002:
+                raise ValueError('Native original 20 Hz clock drift')
             if sample['phase'] == 'turning' and not entered:
                 raise ValueError('Native turn began before observed intersection entry')
             if sample['phase'] == 'intersection_entry':

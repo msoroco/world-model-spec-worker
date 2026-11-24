@@ -48,7 +48,9 @@ def request():
 
 class SurveyTests(unittest.TestCase):
     def setUp(self):
-        tmp = tempfile.TemporaryDirectory()
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(tmp.cleanup)
         self.root = Path(tmp.name)
 

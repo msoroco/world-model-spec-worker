@@ -1,5 +1,11 @@
 # testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver
 
+## 2026-11-24 seven exact offline construction checkpoint
+
+- `build_offline_draft.py` builds seven exact inline constructions under `cases/`, bound to the current case-plan SHA and all eight owned geometry, controller, Native capture, saved measurement and audit modules. Each `runner.py --check` verifies its own exact requested gap, stop/stand activity, halt cause, 20 Hz/900-frame interval, four cameras and original source requirements. Normal execution requires a reviewed map packet and an operator-owned `open_session` adapter; it passes the owned world/actor/camera/context callbacks to `native_bundle.capture_bundle`. These bundles are diagnostic and make no claim of reviewed map geometry, legal necessity or actual Native capture.
+- `execution-manifest.draft.json` records seven exact construction SHA256 values and the existing case-specific physical risks. All seven `.venv-cpu/bin/python runtime.py offline` checks exit 0 using only `.runtime-work/c110969-a11` for materialization; the seven `cpu-bundle-*.log` files preserve the exact commands and receipts. The existing focused suite passed 37 tests; `tests/test_offline_draft.py` independently passed and verifies seven identities, embedded source equality, plan hash and case variables. Pinned preflight and scoped static passed. The exact scoped strict gate remains exit 1 on truthful partial status.
+- Next CPU work is reviewed map/route/actor and context acquisition binding, semantic proposals, canonical measurement contracts and process-saved positive/negative compatibility, full execution manifest and risk-justified fallback plans. The statutory parking alternative also needs reviewed cell binding. Physical realization and legal necessity are not inferred from offline checks.
+
 Status: partial executable CPU construction. Seven exact proposed cases and three controlled comparisons are in `case-plan.json`; none is a verified recording.
 
 ## 2026-11-24 original pixel decode checkpoint

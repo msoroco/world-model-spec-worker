@@ -47,15 +47,28 @@ class FakeEgo:
 
 
 class FakeWorld:
-    def __init__(self, ego, frames=None):
+    def __init__(self, ego, frames=None, times=None, delta=0.05):
         self.ego = ego
         self.frames = frames or list(range(1, len(ego.points) + 1))
+        self.times = times
+        self.delta = delta
         self.index = -1
 
     def tick(self):
         self.index += 1
         self.ego.index = min(self.index, len(self.ego.points) - 1)
         return self.frames[self.index]
+
+    def get_settings(self):
+        return types.SimpleNamespace(synchronous_mode=True,
+                                     fixed_delta_seconds=self.delta)
+
+    def get_snapshot(self):
+        elapsed = (self.times[self.index] if self.times is not None
+                   else 40 + self.index / 20)
+        return types.SimpleNamespace(
+            frame=self.frames[self.index],
+            timestamp=types.SimpleNamespace(elapsed_seconds=elapsed))
 
 
 def signals(frame, name):
@@ -67,7 +80,8 @@ def signals(frame, name):
 class NativeCaptureTests(unittest.TestCase):
     def run_capture(self, points, **changes):
         ego = FakeEgo(points + [points[-1]] * (20 - len(points)))
-        world = FakeWorld(ego, changes.pop('frames', None))
+        world = FakeWorld(ego, changes.pop('frames', None),
+                          changes.pop('times', None), changes.pop('delta', 0.05))
         with tempfile.TemporaryDirectory() as td:
             output = Path(td) / 'original-route.json'
             args = dict(world=world, ego=ego, map_packet=packet(), property_id='lot', case_id='exact-case',
@@ -124,6 +138,18 @@ class NativeCaptureTests(unittest.TestCase):
             self.run_capture([[-3, 5], [5, 5], [13, 5]], signal_observer=lambda f, n: {'state': 'green'})
         with self.assertRaisesRegex(ValueError, 'frames must increase'):
             self.run_capture([[-3, 5], [5, 5], [13, 5]], frames=[1, 1, 2])
+        with self.assertRaisesRegex(ValueError, 'frames must increase consecutively'):
+            self.run_capture([[-3, 5], [5, 5], [13, 5]], frames=[1, 3, 4])
+
+    def test_native_snapshot_clock_and_settings_readback(self):
+        with self.assertRaisesRegex(ValueError, '20 Hz clock drift'):
+            self.run_capture([[-3, 5], [5, 5], [13, 5]],
+                             times=[40 + i / 20 + (0.02 if i == 6 else 0)
+                                    for i in range(20)])
+        with self.assertRaisesRegex(ValueError, 'synchronous 20 Hz'):
+            self.run_capture([[-3, 5], [5, 5], [13, 5]], delta=0.1)
+        _, trace, _ = self.run_capture([[-3, 5], [5, 5], [13, 5]])
+        self.assertEqual(trace['ego'][0]['time_s'], 40)
 
     def test_saved_analysis_rejects_mid_route_phase_change_and_missing_frame(self):
         _, trace, _ = self.run_capture([[-3, 5], [5, 5], [13, 5]])

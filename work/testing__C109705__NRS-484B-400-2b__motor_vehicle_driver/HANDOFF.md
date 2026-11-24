@@ -93,3 +93,22 @@ Pinned preflight, bundle build, all **34** focused tests, four exact offline che
 Pinned preflight, all 36 focused tests, four refreshed exact inline diagnostic constructions and four pinned offline runs passed. Scoped static passed. Exact scoped strict exited 1 because this package is truthfully partial. Current commands and SHA-256 logs are in `result.json.tests`; the rebuilt case hashes are in `execution-manifest.draft.json`. The first offline attempt used a relative `--python` path and failed inside the materialized bundle; all four were rerun successfully with an absolute interpreter path and fresh scratch outputs.
 
 Next CPU work: source-shaped positive/negative compatibility and saved-only proofs for each exact case, a concrete CARLA adapter and source-gated original map/camera capture, canonical semantic proposals and independent delivery release. The four accepted recording metadata records do not contain original source packets, so they do not establish physical centerline or visibility coverage.
+
+## 2026-11-24 original Native clock integrity checkpoint
+
+`native_capture.py` now requires an original finite elapsed timestamp on every Native ego snapshot and checks the full 900-tick sequence against the 20 Hz source clock within a 2 ms acquisition tolerance. It writes those timestamps into the original trace. `saved_delivery.py` independently reopens the sealed trace and verifies all 900 elapsed timestamps against that same clock before evaluating the departure or camera sources. These are sampling-integrity tolerances, not statutory thresholds. Both capture and saved CPU tests reject a clock drift; the capture test also verifies emergency stop and actor cleanup.
+
+All four exact diagnostic constructions were regenerated to embed the updated capture and saved auditors. The 38-test focused suite, pinned preflight, four `runtime.py offline` checks, and scoped static gate exited 0. The exact scoped strict gate exited 1 on the truthful partial status. No physical Native run or accepted-source recording was inferred.
+
+SHA-256 bound proof logs:
+
+- `cpu-clock-tests.log`: `466a15fe6cd190f16427465920c1360c9ba84c718cb62c162dc1f77330e05977` (exit 0)
+- `cpu-clock-preflight.log`: `b823b61d9c1d2cfdafe11ad56fd052f3f7058f53f88c9183f5bd2e9b9fce7ae5` (exit 0)
+- `cpu-clock-offline-near_centerline.log`: `10c0ff4f30fd08ab7752c44636d8dba0d1d3ac1a98db24c56d5a78a25f75715c` (exit 0)
+- `cpu-clock-offline-farther_from_centerline.log`: `451ed9772d06b10b2e00f016348cf363eac3a192abc3f3a946e853db074e410e` (exit 0)
+- `cpu-clock-offline-imaginary_near_centerline.log`: `243909baada1cab13f46ff151a82838745e58f0a32edaf34a3b18fa4c02b38f1` (exit 0)
+- `cpu-clock-offline-imaginary_farther_from_centerline.log`: `1ae4699f2dab4586acd0b66165449c2fc34bbc92b1cf4e076b3c71352df4a562` (exit 0)
+- `cpu-clock-static.log`: `f0d299bf832c8d5b5ee6d6d81443685e167d1689691b6302ca03ca933643e8b9` (exit 0)
+- `cpu-clock-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+Next CPU actions: implement the concrete CARLA actor/camera adapter with source-reviewed map and original image acquisition, author canonical semantic proposals and manifest, source-shaped positive/negative compatibility plus process-saved receipts, and independent delivery/comparison release audits for all four exact cases. Existing accepted metadata alone does not prove its original centerline, trace, clock or media. Preserve partial until the exact scoped strict gate passes.

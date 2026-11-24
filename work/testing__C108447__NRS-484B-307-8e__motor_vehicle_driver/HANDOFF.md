@@ -100,3 +100,24 @@ An exact private-bypass `runtime.py compatibility` attempt exits before analysis
 - `cpu-zip-offline-no_approach_red.log` SHA256 `4e78f485e11a516d4cf543778295b1c556e38893d5ca35e40d3c7ac87014c104`; exit 0.
 - `cpu-zip-offline-destination_red.log` SHA256 `697450a4058b9a424d6e8b877ff6bcf9ca6c7493245d76044102461e82d64de1`; exit 0.
 - `cpu-zip-offline-other_purpose.log` SHA256 `3536fbefd4e8c042135fcffb135d0b10d82df09ce15442ec72a45fc10681ad31`; exit 0.
+
+## 2026-11-24 original Native clock readback checkpoint
+
+`native_capture.py` now checks the owner-supplied world is synchronous with a 0.05-second fixed delta, reads the CARLA snapshot after each tick, requires its frame identity to match the tick and all frames to be consecutive, and uses the original elapsed timestamp for both the ego trace and four-camera frame map. It rejects a 20 Hz clock drift greater than 2 ms before returning a capture. The tolerance verifies sampling integrity; it is not a legal threshold. Fake-world tests cover a skipped frame, drift, wrong world setting and nonzero original clock origin. Saved delivery already independently verifies frame-map and ego timestamp joins.
+
+All six exact source-sealed constructions and semantic proposal bindings were regenerated. Six pinned `runtime.py offline` checks passed and their new construction/log hashes are sealed in `draft-offline-receipts.json`. The 66-test focused suite, pinned preflight and scoped static passed; exact scoped strict exited 1 on truthful partial status. This does not establish parcel authority, Native motion, camera visibility or avoidance purpose.
+
+SHA-256 bound current proof logs:
+
+- `cpu-clock-tests.log`: `acf99616d24979fa9ffb16be90e2bd7bdf85c666ac0589a6ad70460b45e05890` (exit 0)
+- `cpu-clock-preflight.log`: `68756cdc19ea16da6617aa81ea800b545f7d77cea965774616428ba2afd07746` (exit 0)
+- `cpu-clock-offline-private_bypass.log`: `82b907f37a3a974dcd8ee6abbbbe7b0cb87ef24ed91aac183284043072caae90` (exit 0)
+- `cpu-clock-offline-public_bypass.log`: `5c816081e069732c6af0873eb11749c23f839d421b0c14f7d1abe3f89252aeee` (exit 0)
+- `cpu-clock-offline-ordinary_crossing.log`: `be0436433834047b26a9efafcf89188e2b16fe9fd2432dfa02f17382c98d8b1c` (exit 0)
+- `cpu-clock-offline-no_approach_red.log`: `0cfcc1fa73b1af8fee6f6f71983b0e0ccaba10434458b30095f49c01fcd7e0e7` (exit 0)
+- `cpu-clock-offline-destination_red.log`: `dea2d3ffeb2aa7b764f6c247bd224152d29768183a5101490d2a2daf3dbb629a` (exit 0)
+- `cpu-clock-offline-other_purpose.log`: `976e61e0f1cf24f6c285705826793df1587325a8b72e5522f2bc4cf0cf8f777f` (exit 0)
+- `cpu-clock-static.log`: `98c73331c9ba5bcabd7c402e1028fdda6681d78d0a90c2626a7f8c461529d8a3` (exit 0)
+- `cpu-clock-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+Next CPU work: add selected-requirement measurement contracts and executable analysis entrypoints to the six bundles, then run source-shaped positive/negative compatibility and process-saved, independent delivery/comparison receipts. Select and independently review authoritative original parcel/map material before physical capture. Preserve partial until exact scoped strict passes.

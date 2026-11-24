@@ -19,12 +19,12 @@ DURATION_FRAMES = 900
 
 def probe_video(path):
     """Count decoded video frames with the pinned ffprobe executable."""
-    command = ['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
+    command = ['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v',
                '-show_entries', 'stream=width,height,avg_frame_rate,nb_read_frames',
                '-of', 'json', str(path)]
     result = subprocess.run(command, capture_output=True, text=True, check=True)
     streams = json.loads(result.stdout).get('streams', [])
-    require(len(streams) == 1, 'exactly one selected video stream required')
+    require(len(streams) == 1, 'exactly one original video stream required')
     stream = streams[0]
     rate = Fraction(stream['avg_frame_rate'])
     require(rate.denominator != 0, 'invalid video frame rate')

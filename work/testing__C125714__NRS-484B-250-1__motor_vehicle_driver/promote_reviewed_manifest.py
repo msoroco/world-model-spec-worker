@@ -65,6 +65,27 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
         source_check = json.loads(preflight.read_text())
         if source_check.get("passed") is not True or source_check.get("case_id") != case_id or source_check.get("native_started") is not False:
             raise ValueError("reviewed source preflight is incomplete: " + case_id)
+        files = {item.get("path"): item.get("content") for item in document.get("files", [])
+                 if isinstance(item, dict)}
+        scene_text = files.get("scene.json")
+        if not isinstance(scene_text, str):
+            raise ValueError("reviewed construction lacks inline scene: " + case_id)
+        scene = json.loads(scene_text)
+        packet_name = scene.get("reviewed_context_source")
+        packet_text = files.get(packet_name)
+        map_text = files.get("reviewed-map.xodr")
+        if not isinstance(packet_text, str) or not isinstance(map_text, str):
+            raise ValueError("reviewed construction lacks inline source bytes: " + case_id)
+        packet_sha = hashlib.sha256(packet_text.encode("utf-8")).hexdigest()
+        map_sha = hashlib.sha256(map_text.encode("utf-8")).hexdigest()
+        if (scene.get("case_id") != case_id or scene.get("reviewed_context_sha256") != packet_sha
+                or scene.get("crossing", {}).get("map_source_sha256") != map_sha
+                or source_check.get("format") != "worker-reviewed-packet-cpu-preflight"
+                or source_check.get("source_packet_sha256") != packet_sha
+                or source_check.get("map_sha256") != map_sha
+                or source_check.get("physical_acceptance_claimed") is not False
+                or source_check.get("legal_acceptance_claimed") is not False):
+            raise ValueError("reviewed source preflight does not bind inline sources: " + case_id)
         stage = proof["cases"][case_id]
         for name in REQUIRED:
             item = stage.get(name)

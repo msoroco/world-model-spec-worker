@@ -38,7 +38,8 @@ class Carla:
 
 class EncounterTests(unittest.TestCase):
     def setUp(self):
-        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+        scratch=HERE.parents[1]/'.runtime-work';scratch.mkdir(exist_ok=True)
+        self.temp=tempfile.TemporaryDirectory(dir=scratch);self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name)
         refs=[]
         packets={'map.json':{'native_map_name':'TownTest','ego_route_xy':[[-10,0],[10,0]],'rider_route_xy':[[0,-10],[0,10]]},'bicycle.json':{'blueprint_id':'vehicle.bh.crossbike','classification':{'human_powered':True,'tandem_wheels':2,'one_wheel_diameter_in':26,'moped':False}},'rules.json':{'jurisdiction':'Nevada','applicable_rules':['NRS 484B.270(1)']}}
@@ -137,6 +138,15 @@ class EncounterTests(unittest.TestCase):
                         '-frames:v','3','-c:v','mpeg4',str(path)],check=True)
         self.assertEqual(probe_video(path),
                          {'fps':20.0,'frame_count':3,'width':32,'height':32})
+
+    def test_probe_rejects_second_original_video_stream(self):
+        path=self.root/'two-streams.mkv'
+        subprocess.run(['ffmpeg','-v','error','-f','lavfi','-i','color=c=blue:s=32x32:r=20',
+                        '-f','lavfi','-i','color=c=red:s=32x32:r=20',
+                        '-map','0:v:0','-map','1:v:0','-frames:v','3',
+                        '-c:v','ffv1',str(path)],check=True)
+        with self.assertRaisesRegex(SourceError,'exactly one original video stream'):
+            probe_video(path)
 
     def test_full_decode_of_four_sealed_original_streams(self):
         cameras={}

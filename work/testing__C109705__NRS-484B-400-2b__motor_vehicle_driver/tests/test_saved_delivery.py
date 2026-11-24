@@ -32,7 +32,7 @@ def fixture(root):
     for frame in range(900):
         phase = 'approach' if frame < 100 else ('intersection_entry' if frame == 100 else
                                                 'turning' if frame < 400 else 'departure')
-        row = {'frame': frame, 'phase': phase}
+        row = {'frame': frame, 'phase': phase, 'elapsed_seconds': 12 + frame / 20}
         if phase == 'departure':
             row.update(road_id=4, body_corners_xy_m=corners)
         trace['samples'].append(row)
@@ -165,6 +165,15 @@ class SavedDeliveryTests(unittest.TestCase):
             manifest = fixture(root)
             manifest['map']['path'] = '../escaped.json'
             with self.assertRaisesRegex(ValueError, 'escapes attempt'):
+                saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
+
+    def test_saved_clock_drift_rejected_after_source_reseal(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            replace_json(root, manifest, 'trace',
+                         lambda value: value['samples'][440].update(elapsed_seconds=99))
+            with self.assertRaisesRegex(ValueError, '20 Hz clock drift'):
                 saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
 
     def test_centerline_and_original_map_hash_rejected(self):

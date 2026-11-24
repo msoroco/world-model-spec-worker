@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import math
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -75,6 +76,11 @@ def audit(attempt_dir, manifest, *, case_id, allow_diagnostic=False):
     rows = trace.get('samples')
     if len(rows) != 900 or any(row.get('frame') != rows[0].get('frame') + i for i, row in enumerate(rows)):
         raise ValueError('900 consecutive original trace frames required')
+    times = [row.get('elapsed_seconds') for row in rows]
+    if any(type(t) not in (int, float) or not math.isfinite(t) for t in times):
+        raise ValueError('original elapsed clock missing or invalid')
+    if any(abs(t - times[0] - i / 20) > 0.002 for i, t in enumerate(times)):
+        raise ValueError('saved original 20 Hz clock drift')
     if index.get('case_id') != case_id or set(index.get('channels', {})) != set(CAMERAS):
         raise ValueError('four original camera channels differ')
     frames = [row['frame'] for row in rows]
@@ -102,6 +108,7 @@ def audit(attempt_dir, manifest, *, case_id, allow_diagnostic=False):
         raise ValueError('original Native delivery requires full PNG frame decode')
     return {'case_id': case_id, 'source_integrity': 'passed',
             'original_frames': 900, 'rate_hz': 20, 'duration_s': 45,
+            'observed_span_s': times[-1] - times[0],
             'original_camera_channels': list(CAMERAS), 'source_file_count': len(source_files),
             'departure_measurement': measurement, 'full_video_decode': False,
             'full_source_decode': bool(decoded), 'pixel_decode': decoded,

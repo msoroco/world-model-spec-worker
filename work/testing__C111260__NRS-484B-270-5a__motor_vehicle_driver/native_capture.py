@@ -65,6 +65,8 @@ def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_ori
                 raise ValueError("original sample/map provenance missing")
             if row.get("rider_kind_observed") != kind:
                 raise ValueError("rider classification drift")
+            if str(row.get("rider_person_actor_id")) != str(site["rider"]["person_actor_id"]):
+                raise ValueError("source-bound rider person identity missing or changed")
             rows.append(row)
             for camera in CAMERAS:
                 payload = camera_png(camera, frame)
@@ -77,7 +79,8 @@ def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_ori
             writer.close()
     _SAVED.ENCOUNTER.audit_original_history(rows, expected_rider_kind=kind,
                                              expected_response=response,
-                                             map_sha256=site["map_sha256"])
+                                             map_sha256=site["map_sha256"],
+                                             expected_person_actor_id=site["rider"]["person_actor_id"])
     media = {camera: {"path": archives[camera],
                       "sha256": hashlib.sha256((root / archives[camera]).read_bytes()).hexdigest()}
              for camera in CAMERAS}

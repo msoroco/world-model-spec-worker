@@ -16,7 +16,10 @@ REQUIRED = ("prepared", "native_exit", "owner_released", "saved_processed",
 
 def option(command: str, name: str) -> str | None:
     tokens = shlex.split(command)
-    return tokens[tokens.index(name) + 1] if name in tokens and tokens.index(name) + 1 < len(tokens) else None
+    positions = [index for index, token in enumerate(tokens) if token == name]
+    if len(positions) > 1:
+        raise ValueError("duplicate handoff option: " + name)
+    return tokens[positions[0] + 1] if positions and positions[0] + 1 < len(tokens) else None
 
 
 def validate_row(row: dict) -> None:
@@ -29,20 +32,37 @@ def validate_row(row: dict) -> None:
         command = row[key]
         if verb not in shlex.split(command) or option(command, "--case") != case:
             raise ValueError("wrong case or stage: " + key)
+        if option(command, "--assignment") != ROOT.name or option(command, "--batch") != "full-test-delivery":
+            raise ValueError("wrong assignment or batch: " + key)
+    for key in ("execute_command", "accept_command"):
+        if option(row[key], "--job") != "$JOB_ID" or option(row[key], "--run") != "$RUN":
+            raise ValueError("wrong Native job or run: " + key)
     if row["capture_command"] != row["execute_command"]:
         raise ValueError("capture command differs from Native execution")
     if option(row["owner_release_command"], "--attempt") != "$ATTEMPT":
         raise ValueError("owner release lacks exact attempt")
+    if option(row["owner_release_command"], "--receipt") != "$OWNER_RELEASE_RECEIPT":
+        raise ValueError("owner release receipt differs")
     if option(row["postprocessing_command"], "--case") != case:
         raise ValueError("saved processor selects wrong case")
     if option(row["postprocessing_command"], "--owner-release-receipt") != "$OWNER_RELEASE_RECEIPT":
         raise ValueError("saved processor lacks owner release")
+    if (option(row["postprocessing_command"], "--attempt") != "$ATTEMPT"
+            or option(row["postprocessing_command"], "--manifest") !=
+            f"work/{ROOT.name}/execution-manifest.json"):
+        raise ValueError("saved processor attempt or manifest differs")
     if option(row["additional_source_audit_command"], "--case-id") != case:
         raise ValueError("independent auditor selects wrong case")
     if option(row["additional_source_audit_command"], "--pixel-review") != "$PIXEL_REVIEW":
         raise ValueError("independent auditor lacks pixel review")
+    if (option(row["additional_source_audit_command"], "--attempt") != "$ATTEMPT"
+            or option(row["additional_source_audit_command"], "--job-id") != "$JOB_ID"
+            or option(row["additional_source_audit_command"], "--output") != "$AUDIT"):
+        raise ValueError("independent auditor attempt, job or audit output differs")
     if option(row["accept_command"], "--audit") != "$AUDIT":
         raise ValueError("acceptance lacks independent audit")
+    if option(row["accept_command"], "--attempt") != "$ATTEMPT_NUMBER":
+        raise ValueError("acceptance attempt differs")
     if option(row["accept_command"], "--review-archive") != "/external/archive":
         raise ValueError("acceptance archive is not external")
 
@@ -80,8 +100,17 @@ def main() -> None:
     for row in rows:
         validate_row(row)
         for key, option_name in (("owner_release_command", "--attempt"),
+                                 ("owner_release_command", "--receipt"),
                                  ("postprocessing_command", "--case"),
+                                 ("postprocessing_command", "--manifest"),
+                                 ("postprocessing_command", "--attempt"),
                                  ("additional_source_audit_command", "--pixel-review"),
+                                 ("additional_source_audit_command", "--job-id"),
+                                 ("additional_source_audit_command", "--output"),
+                                 ("execute_command", "--assignment"),
+                                 ("execute_command", "--job"),
+                                 ("accept_command", "--batch"),
+                                 ("accept_command", "--attempt"),
                                  ("accept_command", "--audit")):
             changed = dict(row)
             tokens = shlex.split(row[key])
@@ -93,6 +122,14 @@ def main() -> None:
                 pass
             else:
                 raise AssertionError("broken stage command was accepted: " + key)
+        changed = dict(row)
+        changed["postprocessing_command"] += " --case WRONG"
+        try:
+            validate_row(changed)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("duplicate saved case selector was accepted")
         case = row["case_id"]
         events = [{"stage": stage, "case_id": case, "attempt_id": "diagnostic-attempt",
                    "job_id": "diagnostic-job", "passed": True} for stage in REQUIRED]

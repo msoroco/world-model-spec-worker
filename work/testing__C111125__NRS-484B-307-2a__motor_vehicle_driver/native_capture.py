@@ -12,12 +12,14 @@ from pathlib import Path
 
 from native_scene import require, source, verify_site
 from saved_attempt import ASSIGNMENT, CASES, process_saved
+from delivery_audit import VIEWS
 
 FRAMES = 900
 
 
 def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
-            output_root, other_context_ref=None, camera_profile_sha256=None):
+            output_root, other_context_ref=None, camera_profile_sha256=None,
+            camera_frame_reader=None):
     root = Path(output_root).resolve()
     if case_suffix not in CASES:
         raise ValueError('unknown exact case')
@@ -25,6 +27,8 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
         raise ValueError('original signal reader required')
     if not camera_profile_sha256:
         raise ValueError('source-hashed camera profile required')
+    if camera_frame_reader is not None and not callable(camera_frame_reader):
+        raise ValueError('original camera frame reader must be callable')
     verify_site(site, root)
     source(site_ref, root)
     if json.loads(source(site_ref, root).read_text()) != site:
@@ -39,6 +43,7 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
     if (root / 'original-events.json').exists() or (root / 'original-capture-receipt.json').exists():
         raise ValueError('original capture output already exists')
     rows = []
+    frame_map = []
     try:
         for index in range(FRAMES):
             tick = world.tick()
@@ -73,6 +78,16 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
                          'facing_approach_id': signal['facing_approach_id'],
                          'lit_aspects': signal['lit_aspects'],
                          'ego_xy': [xy.x, xy.y], 'other_users': users})
+            if camera_frame_reader is not None:
+                camera_frames = camera_frame_reader(snapshot)
+                if (not isinstance(camera_frames, dict) or
+                        set(camera_frames) != set(VIEWS) or
+                        any(type(camera_frames[view]) is not int or
+                            camera_frames[view] != tick for view in VIEWS)):
+                    raise ValueError('four original camera callbacks must join Native frame')
+                frame_map.append({'index': index, 'frame': tick,
+                                  'elapsed_seconds': instant,
+                                  'camera_frame_ids': camera_frames.copy()})
     finally:
         # The caller still owns every actor and the world restoration.
         if hasattr(ego, 'set_target_velocity'):
@@ -80,11 +95,21 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
             ego.set_target_velocity(velocity(x=0.0, y=0.0, z=0.0))
     event_path = root / 'original-events.json'
     pending = root / 'original-events.json.pending'
+    map_path = root / 'original-frame-map.json'
+    map_pending = root / 'original-frame-map.json.pending'
     if pending.exists():
         raise ValueError('pending original events already exist')
+    if frame_map and (map_path.exists() or map_pending.exists()):
+        raise ValueError('original frame map already exists')
     raw = (json.dumps(rows, separators=(',', ':'), allow_nan=False) + '\n').encode()
     try:
         pending.write_bytes(raw)
+        frame_map_ref = None
+        if frame_map:
+            map_raw = (json.dumps(frame_map, separators=(',', ':'), allow_nan=False) + '\n').encode()
+            map_pending.write_bytes(map_raw)
+            frame_map_ref = {'path': map_path.name,
+                             'sha256': hashlib.sha256(map_raw).hexdigest()}
         event_ref = {'path': event_path.name, 'sha256': hashlib.sha256(raw).hexdigest()}
         packet = {'assignment_id': ASSIGNMENT, 'case_id': ASSIGNMENT + '__' + case_suffix,
                   'case_suffix': case_suffix, 'candidate': 'primary',
@@ -97,8 +122,11 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
         # if validation fails; never publish a receipt for that acquisition.
         pending.replace(event_path)
         measured = process_saved(packet, root)
+        if frame_map_ref is not None:
+            map_pending.replace(map_path)
         receipt = {'format': 'c111125-original-green-capture', 'case_id': packet['case_id'],
                    'event_ref': event_ref, 'site_ref': site_ref,
+                   'frame_map_ref': frame_map_ref,
                    'other_context_ref': other_context_ref,
                    'frame_count': FRAMES, 'first_frame': rows[0]['frame'],
                    'last_frame': rows[-1]['frame'], 'fps': 20,
@@ -108,3 +136,4 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
         return {'receipt': receipt, 'measurement': measured}
     finally:
         pending.unlink(missing_ok=True)
+        map_pending.unlink(missing_ok=True)

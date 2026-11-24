@@ -44,10 +44,21 @@ class NativeScene:
         if self.closed:
             return
         self.closed = True
+        first_error = None
         for sensor in self.cameras.values():
-            sensor.stop()
+            try:
+                sensor.stop()
+            except Exception as error:
+                if first_error is None:
+                    first_error = error
         for actor in reversed([self.ego, self.receiving_vehicle, *self.cameras.values()]):
-            actor.destroy()
+            try:
+                actor.destroy()
+            except Exception as error:
+                if first_error is None:
+                    first_error = error
+        if first_error is not None:
+            raise first_error
 
 
 def spawn_scene(world, attempt_root, case_id, site, plan_binding, transform_factory):
@@ -113,8 +124,14 @@ def spawn_scene(world, attempt_root, case_id, site, plan_binding, transform_fact
     except Exception:
         for actor in reversed(spawned):
             if hasattr(actor, 'stop'):
-                actor.stop()
-            actor.destroy()
+                try:
+                    actor.stop()
+                except Exception:
+                    pass
+            try:
+                actor.destroy()
+            except Exception:
+                pass
         raise
 
 

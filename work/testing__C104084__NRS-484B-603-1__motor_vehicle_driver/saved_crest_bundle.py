@@ -9,6 +9,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
+import tempfile
 
 from saved_crest_audit import ASSIGNMENT, CAMERAS, PROFILES, _source
 from saved_crest_finalizer import finalize
@@ -59,8 +61,23 @@ def assemble(source_spec: dict, destination, *, expected_case: str) -> dict:
     dimensions = source_spec.get('camera_dimensions')
     if not isinstance(dimensions, dict) or set(dimensions) != set(CAMERAS):
         raise ValueError('four original camera dimensions required')
-    root = Path(destination)
-    root.mkdir(parents=True, exist_ok=False)
+    destination = Path(destination)
+    if destination.exists():
+        raise FileExistsError(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    root = Path(tempfile.mkdtemp(prefix='crest-bundle-', dir=destination.parent))
+    try:
+        result = _assemble_into(source_spec, root, expected_case, profile, map_hash, paths,
+                                cameras, dimensions)
+        root.rename(destination)
+        return result
+    finally:
+        if root.exists():
+            shutil.rmtree(root)
+
+
+def _assemble_into(source_spec, root, expected_case, profile, map_hash, paths,
+                   cameras, dimensions):
     manifest = {'case_id': expected_case, 'profile': profile,
                 'acquisition_kind': 'original_native', 'duration_s': 45,
                 'rate_hz': 20, 'approach_start_m': source_spec.get('approach_start_m'),

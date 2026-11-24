@@ -19,6 +19,14 @@ RATE_HZ = 20
 FRAME_COUNT = 900
 
 
+def actor_id(actor) -> str:
+    """Use a Native actor's stable ID, never its Python object rendering."""
+    value = getattr(actor, "id", actor)
+    if type(value) not in (int, str) or not str(value):
+        raise ValueError("original actor ID is missing")
+    return str(value)
+
+
 def capture(adapter, *, survey_path: Path, survey_sha256: str,
             case_id: str, output: Path) -> dict:
     """Capture one exact case through a source-reporting CARLA adapter.
@@ -49,8 +57,12 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
         passing = adapter.spawn_passing(packet, site["clearance_variant"])
         driver = adapter.spawn_driver(packet)
         adapter.attach_cameras(parked, CAMERAS)
-        if not all((parked, passing, driver)) or len({parked, passing, driver}) != 3:
-            raise ValueError("three distinct original actors are required")
+        if not all((parked, passing, driver)):
+            raise ValueError("three original actors are required")
+        if len({actor_id(parked), actor_id(passing), actor_id(driver)}) != 3:
+            raise ValueError("Native participant IDs collide")
+        if actor_id(driver) != str(packet["driver_actor_id"]):
+            raise ValueError("selected Native driver differs from surveyed driver")
         for index in range(FRAME_COUNT):
             native_id, sim_time_s = adapter.tick()
             if type(native_id) is not int or (frames and native_id != frames[-1]["frame_id"] + 1):
@@ -88,9 +100,9 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
                      "map_sha256": packet["map_sha256"],
                      "survey_sha256": survey_sha256,
                      "loading_site_id": packet["loading_site_id"],
-                     "parked_vehicle_id": str(parked),
-                     "driver_id": str(driver),
-                     "passing_vehicle_id": str(passing),
+                     "parked_vehicle_id": actor_id(parked),
+                     "driver_id": actor_id(driver),
+                     "passing_vehicle_id": actor_id(passing),
                      "traffic_route_id": packet.get("traffic_route_id", packet["lane_id"]),
                      "camera_contract_id": "four-camera-20hz-900f"},
                  "parked_center_xy": packet["parked_center_xy"],

@@ -119,7 +119,8 @@ def control_step(ego_speed_mps, distance_to_conflict_m, rider_time_to_conflict_s
             "conflict_window": conflict_window, "ego_ttc_s": ego_ttc}
 
 
-def audit_original_history(rows, *, expected_rider_kind, expected_response, map_sha256):
+def audit_original_history(rows, *, expected_rider_kind, expected_response, map_sha256,
+                           expected_person_actor_id=None):
     """Require original samples, role IDs and observed response, never request flags."""
     if expected_rider_kind not in RIDER_KINDS or expected_response not in ("brake", "maintain"):
         raise ValueError("invalid audit target")
@@ -129,6 +130,11 @@ def audit_original_history(rows, *, expected_rider_kind, expected_response, map_
     expected_ids = (first.get("ego_actor_id"), first.get("rider_actor_id"))
     if not all(expected_ids) or expected_ids[0] == expected_ids[1]:
         raise ValueError("distinct observed actor IDs required")
+    if expected_person_actor_id is not None and (
+            not first.get("rider_person_actor_id") or
+            str(first["rider_person_actor_id"]) != str(expected_person_actor_id) or
+            str(first["rider_person_actor_id"]) == str(expected_ids[0])):
+        raise ValueError("source-bound rider person identity missing or changed")
     previous = None
     conflict_rows = []
     for row in rows:
@@ -136,6 +142,9 @@ def audit_original_history(rows, *, expected_rider_kind, expected_response, map_
             raise ValueError("original map-bound samples required")
         if (row.get("ego_actor_id"), row.get("rider_actor_id")) != expected_ids:
             raise ValueError("actor identity changed")
+        if expected_person_actor_id is not None and (
+                str(row.get("rider_person_actor_id")) != str(expected_person_actor_id)):
+            raise ValueError("source-bound rider person identity missing or changed")
         if row.get("rider_kind_observed") != expected_rider_kind or not row.get("rider_mounted_observed"):
             raise ValueError("rider type or mounted state unobserved")
         frame = int(row["frame"])

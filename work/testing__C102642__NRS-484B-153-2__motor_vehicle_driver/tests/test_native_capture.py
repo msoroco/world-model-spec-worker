@@ -88,6 +88,56 @@ class Adapter:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_actor_identity_uses_native_id_not_python_rendering(self):
+        actor = type("CarlaActor", (), {"id": 42,
+                                        "__str__": lambda self: "<actor wrapper>"})()
+        self.assertEqual(native.actor_id(actor), "42")
+        with self.assertRaisesRegex(ValueError, "ID is missing"):
+            native.actor_id(object())
+
+    def test_surveyed_driver_identity_rejects_wrong_spawn_before_ticks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            source = packet()
+            survey = base / "survey.json"
+            survey.write_text(json.dumps(source))
+            digest = hashlib.sha256(survey.read_bytes()).hexdigest()
+            class WrongDriver(Adapter):
+                def spawn_driver(self, source):
+                    return "different-driver"
+            adapter = WrongDriver(source)
+            output = base / "out"
+            with self.assertRaisesRegex(ValueError, "differs from surveyed driver"):
+                native.capture(adapter, survey_path=survey, survey_sha256=digest,
+                               case_id=ROOT.name + "__board_near", output=output)
+            self.assertEqual(adapter.index, -1)
+            self.assertTrue(adapter.cleaned)
+            self.assertFalse((output / "native-trace.json").exists())
+
+    def test_distinct_wrappers_with_duplicate_native_ids_fail(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            source = packet()
+            survey = base / "survey.json"
+            survey.write_text(json.dumps(source))
+            digest = hashlib.sha256(survey.read_bytes()).hexdigest()
+            class Wrapper:
+                def __init__(self, identity):
+                    self.id = identity
+            class DuplicateIds(Adapter):
+                def spawn_parked(self, source):
+                    return Wrapper(7)
+                def spawn_passing(self, source, variant):
+                    return Wrapper(7)
+                def spawn_driver(self, source):
+                    return "driver"
+            adapter = DuplicateIds(source)
+            with self.assertRaisesRegex(ValueError, "IDs collide"):
+                native.capture(adapter, survey_path=survey, survey_sha256=digest,
+                               case_id=ROOT.name + "__board_near", output=base / "out")
+            self.assertEqual(adapter.index, -1)
+            self.assertTrue(adapter.cleaned)
+
     def run_case(self, *, case_key="board_near", drift=False, missing_camera=False,
                  missing_act=False, changed_map=False, start_time_s=0.0):
         with tempfile.TemporaryDirectory() as directory:
