@@ -2,24 +2,68 @@
   "assignment_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
   "input_sha256": "8d628f180d24b0a1977ce607edb3030cd369af28b3930f84f968679104d764b5",
   "status": "partial",
-  "readiness_kind": "controlled_case_and_measurement_draft",
+  "readiness_kind": "exact_bundle_offline_partial",
   "applied_update": 0,
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/tests -v",
+      "name": "focused_suite",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/tests -v",
       "exit_code": 0,
-      "log": "cpu-saved-delivery-tests.log",
-      "sha256": "3ee371b5154ee77ebcf0ca70ac60c42a2952b9e62d7ef911a9ee0c62a97dc007"
+      "log": "cpu-bundle-tests.log",
+      "sha256": "ffd86b5aaf99329d98565c1bd636213f0d55bedf55bf4be595f277ae98d2b5a1"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete",
+      "name": "static",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete",
       "exit_code": 0,
       "log": "cpu-static-check.log",
       "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1"
+    },
+    {
+      "name": "strict",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "name": "offline_reference",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --output .runtime-work/c10307-offline-reference-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-reference.log",
+      "sha256": "3d97e57fa770284aad5f9969a65edc1e49ab94334147f0f6290c1313b2c6aa88"
+    },
+    {
+      "name": "offline_faster",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --output .runtime-work/c10307-offline-faster-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-faster.log",
+      "sha256": "a230c45fe2a45a28aefd9b081daea4692ac950936c1083bd7b974d84b3b9a31f"
+    },
+    {
+      "name": "offline_reduced_visibility",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --output .runtime-work/c10307-offline-reduced_visibility-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-reduced_visibility.log",
+      "sha256": "c2b833976d7bde4483fc209c26c97059012bb7c264d8fd4dcc13359c600d4046"
+    },
+    {
+      "name": "offline_pedestrian_near_rack",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --output .runtime-work/c10307-offline-pedestrian_near_rack-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-pedestrian_near_rack.log",
+      "sha256": "4220663a4cfa75ed88cfbf9e413f9485d8448efd391ad827cc29fa8696db7ece"
+    },
+    {
+      "name": "offline_wet_surface",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --output .runtime-work/c10307-offline-wet_surface-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-wet_surface.log",
+      "sha256": "5ae935aa41ca977d58b2e345b92fda586d98f33e57b25c04ffc9273db068e504"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Actual CARLA bicycle/rack motion and full four-camera pixel visibility after CPU package completion"
   ],
-  "reason": "Five controlled cases have source-bound measurement, geometry, asset gating, original-clock controller and acquisition, and independent saved media audit. The controller now retains a 900-tick 20 Hz window beyond route completion with observer hook; a 900-tick synthetic integration fixture passes full four-camera decoding and profile dimensions are enforced. Native live camera integration, local source-classified bicycle/rack assets and jurisdiction, exact constructions, canonical proposals, offline/compatibility and saved-only delivery proofs remain CPU work. Status is partial."
+  "reason": "All five exact inline constructions materialize and pass pinned offline checks; a source-bound 900-frame saved finalizer and 47 focused tests pass. Live Native camera acquisition, package compatibility, process-saved integration, semantic stage proposals, candidate fallbacks and independent delivery/comparison receipts remain CPU work. Scoped strict gate exits 1 because status is partial."
 }

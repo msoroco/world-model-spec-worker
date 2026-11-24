@@ -10,6 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("c125714_entry_timing", ROOT / "entry_timing.py")
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
+finalizer_spec = importlib.util.spec_from_file_location(
+    'c125714_finalizer', ROOT / 'saved_finalizer.py')
+finalizer = importlib.util.module_from_spec(finalizer_spec)
+finalizer_spec.loader.exec_module(finalizer)
 
 
 def rectangle(x, y):
@@ -122,6 +126,21 @@ class EntryTimingTest(unittest.TestCase):
         result = module.measure(self.root)
         self.assertEqual(result["approach_relation"], "opposite")
         self.assertEqual(result["legal_applicability"], "unresolved_review")
+
+    def test_selected_finalizer_positive_and_missing_source_negative(self):
+        selected = module.ASSIGNMENT + '__timing_inside_training'
+        self.site['case_id'] = selected
+        self.site['subsection_4_context_reviewed'] = True
+        self.write()
+        result = finalizer.finalize(self.root, selected)
+        self.assertEqual(result['measurement'], 'intersection_entry_time_difference_s')
+        self.assertAlmostEqual(result['measured_value_s'], .05)
+        self.assertFalse(result['legal_verdict_claimed'])
+        with self.assertRaisesRegex(ValueError, 'case identity'):
+            finalizer.finalize(self.root, module.ASSIGNMENT + '__timing_below_training')
+        (self.root / 'other-body-history.jsonl').unlink()
+        with self.assertRaisesRegex(ValueError, 'missing or stale original'):
+            finalizer.finalize(self.root, selected)
 
 
 if __name__ == "__main__":

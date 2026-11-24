@@ -24,8 +24,140 @@
   "topic_inventory": {
     "exact-text": "A person shall not stop, stand or park a vehicle within an alley in such position as to block the driveway or entrance to any abutting property."
   },
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_clear",
+      "branch": "park_at_driveway",
+      "kind": "delivery",
+      "gap_ids": [
+        "missing-original-alley-access-evidence"
+      ],
+      "access_kind": "driveway",
+      "parking_position": "clear",
+      "planned_original_capture": true,
+      "fixed_conditions": [
+        "same qualifying connected highway alley, not cul-de-sac",
+        "same abutting parcel and permitted vehicular access",
+        "same ego vehicle, approach route, 20 Hz duration and four camera contract",
+        "same target access corridor geometry within pair"
+      ],
+      "deliberate_condition": "parked vehicle body clear of access corridor",
+      "measurement": "original per-frame body/access polygon intersection during stopping, standing and parked phases",
+      "legal_blocking_judgment": "pending original evidence and independent review",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Parking target and access corridor placement may be disrupted by actual CARLA collision and map geometry; fallback design and offline receipt remain CPU work."
+      }
+    },
+    {
+      "case_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_overlap",
+      "branch": "park_at_driveway",
+      "kind": "delivery",
+      "gap_ids": [
+        "missing-original-alley-access-evidence"
+      ],
+      "access_kind": "driveway",
+      "parking_position": "overlap",
+      "planned_original_capture": true,
+      "fixed_conditions": [
+        "same qualifying connected highway alley, not cul-de-sac",
+        "same abutting parcel and permitted vehicular access",
+        "same ego vehicle, approach route, 20 Hz duration and four camera contract",
+        "same target access corridor geometry within pair"
+      ],
+      "deliberate_condition": "parked vehicle body intrudes into access corridor",
+      "measurement": "original per-frame body/access polygon intersection during stopping, standing and parked phases",
+      "legal_blocking_judgment": "pending original evidence and independent review",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Parking target and access corridor placement may be disrupted by actual CARLA collision and map geometry; fallback design and offline receipt remain CPU work."
+      }
+    },
+    {
+      "case_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_clear",
+      "branch": "park_at_driveway",
+      "kind": "delivery",
+      "gap_ids": [
+        "missing-original-alley-access-evidence"
+      ],
+      "access_kind": "entrance",
+      "parking_position": "clear",
+      "planned_original_capture": true,
+      "fixed_conditions": [
+        "same qualifying connected highway alley, not cul-de-sac",
+        "same abutting parcel and permitted vehicular access",
+        "same ego vehicle, approach route, 20 Hz duration and four camera contract",
+        "same target access corridor geometry within pair"
+      ],
+      "deliberate_condition": "parked vehicle body clear of access corridor",
+      "measurement": "original per-frame body/access polygon intersection during stopping, standing and parked phases",
+      "legal_blocking_judgment": "pending original evidence and independent review",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Parking target and access corridor placement may be disrupted by actual CARLA collision and map geometry; fallback design and offline receipt remain CPU work."
+      }
+    },
+    {
+      "case_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_overlap",
+      "branch": "park_at_driveway",
+      "kind": "delivery",
+      "gap_ids": [
+        "missing-original-alley-access-evidence"
+      ],
+      "access_kind": "entrance",
+      "parking_position": "overlap",
+      "planned_original_capture": true,
+      "fixed_conditions": [
+        "same qualifying connected highway alley, not cul-de-sac",
+        "same abutting parcel and permitted vehicular access",
+        "same ego vehicle, approach route, 20 Hz duration and four camera contract",
+        "same target access corridor geometry within pair"
+      ],
+      "deliberate_condition": "parked vehicle body intrudes into access corridor",
+      "measurement": "original per-frame body/access polygon intersection during stopping, standing and parked phases",
+      "legal_blocking_judgment": "pending original evidence and independent review",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Parking target and access corridor placement may be disrupted by actual CARLA collision and map geometry; fallback design and offline receipt remain CPU work."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "driveway_parking_position",
+      "case_ids": [
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_clear",
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_overlap"
+      ],
+      "fixed_conditions": [
+        "alley qualification and connected geometry",
+        "abutting parcel, ownership and permitted vehicular use",
+        "vehicle, approach, cameras and duration",
+        "access kind and corridor geometry"
+      ],
+      "deliberate_differences": [
+        "parked vehicle longitudinal target and resulting body footprint relative to access corridor"
+      ],
+      "audit_rule": "Compare original per-frame footprint polygons; preserve access corridor and provenance; do not assign a legal blocking cutoff."
+    },
+    {
+      "comparison_id": "entrance_parking_position",
+      "case_ids": [
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_clear",
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_overlap"
+      ],
+      "fixed_conditions": [
+        "alley qualification and connected geometry",
+        "abutting parcel, ownership and permitted vehicular use",
+        "vehicle, approach, cameras and duration",
+        "access kind and corridor geometry"
+      ],
+      "deliberate_differences": [
+        "parked vehicle longitudinal target and resulting body footprint relative to access corridor"
+      ],
+      "audit_rule": "Compare original per-frame footprint polygons; preserve access corridor and provenance; do not assign a legal blocking cutoff."
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -51,17 +183,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No accepted original recording is exported for this assignment.",
+    "Four exact capture constructions, finalizers, proposals, compatibility receipts, delivery and comparison audits remain CPU work.",
+    "Actual parking motion, corridor geometry, and camera coverage require later original CARLA capture review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed the complete frozen evidence inventory (zero accepted recordings), exact law, assignment and conditional witness. No source recording is available for equivalence review.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "missing-original-alley-access-evidence",
+        "requirement": "Original qualifying alley, abutting property access, actual halt and parked body footprint relative to driveway or entrance",
+        "source": {
+          "path": "inputs/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/evidence.json",
+          "sha256": "ca74b266e045c693573c6c9af1ef4d0e12dc77afc92a3ccf6171"
+        },
+        "why_existing_insufficient": "The frozen evidence inventory contains no accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_authored_measurement_partial",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

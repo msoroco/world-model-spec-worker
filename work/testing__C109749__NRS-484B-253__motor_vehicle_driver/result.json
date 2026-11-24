@@ -2,24 +2,30 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3",
   "status": "partial",
-  "readiness_kind": "source_bound_construction_checkpoint",
+  "readiness_kind": "exact_case_construction_and_finalizer_checkpoint",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-left-turn-tests.log",
-      "sha256": "0a301c25d255777222c1462e8114ecd2938db16509304cce3a4cd7edc33d3455"
+      "sha256": "fca8d7e7a3aac7efcaa3682a68e0959e2d31a631903c5535ac4d9ac9fb68e5b0"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python construction.py --case EACH --map-packet diagnostic-map.json --output .runtime-work/c109749-offline/EACH.json",
       "exit_code": 0,
-      "log": "assignment-check.log",
-      "sha256": "5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93"
+      "log": "cpu-construction-cli.log",
+      "sha256": "4176917f69b0a20665672f436f2cf58b87942a99ec5c4e6c72aec23ab4b9a720"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c109749-contract-check .venv-cpu/bin/python pinned measurement_contract.validate for eight exact cases",
+      "exit_code": 0,
+      "log": "cpu-contract-check.log",
+      "sha256": "c52bf188ba57b5c3f850dad5f13ab776c4267a0f112b57660dcfc4bc2954cb6a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Eight exact cases and five comparisons are planned. Native map-route validation, actor/body measurement, sealed 20 Hz four-camera acquisition and saved source join, independent full-decode four-camera media audit, and measured comparison audit now have 36 focused CPU tests, including 900 ticks and 3,600 decoded images. Source-reviewed Native map binding, eight exact scene bundles and offline/compatibility receipts, case-specific finalizers, semantic proposals, saved-only delivery processing, and physical visibility audits remain worker-owned CPU work. Six historical accepted entries have metadata only; physical coverage is unverified."
+  "reason": "Eight exact source-bound construction requests and selected-requirement measurement contracts now exist; the saved-only finalizer emits case-specific source-hashed measurements and its CLI rejects missing original evidence. Pinned capture names match the four-camera profile. Forty-six focused tests, eight diagnostic-map construction CLI runs and eight pinned-runtime contract checks pass. Reviewed real Native map/actor binding, full runnable bundles, exact offline/compatibility receipts, semantic proposals, saved-only delivery processing, physical/pixel and independent delivery/comparison proofs remain CPU work. Six historical accepted entries have metadata only."
 }

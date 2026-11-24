@@ -16,7 +16,7 @@ from left_turn_measurements import body_occupancy, opposing_approach
 from native_intersection import validate
 from saved_left_turn import ASSIGNMENT_ID
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sha(path):
@@ -75,9 +75,16 @@ def capture(*, adapter, case_id, map_path, output, frame_count=900, start_frame=
         required = ("ego_vertices", "opponent_vertices", "ego_heading",
                     "opponent_heading", "ego_speed_mps", "opponent_speed_mps",
                     "ego_signal_left", "ego_turn_committed", "opponent_cleared",
-                    "ego_braking")
+                    "ego_braking", "ego_actor_id", "opponent_actor_id",
+                    "ego_driver_control_source", "opponent_driver_control_source")
         if any(key not in row for key in required):
             raise ValueError("Native actor snapshot missing measured field")
+        if (not isinstance(row["ego_actor_id"], int) or
+                not isinstance(row["opponent_actor_id"], int) or
+                row["ego_actor_id"] == row["opponent_actor_id"] or
+                not row["ego_driver_control_source"] or
+                not row["opponent_driver_control_source"]):
+            raise ValueError("Native actor identity or driver control source invalid")
         body_occupancy(row["ego_vertices"], packet["intersection_polygon"])
         body_occupancy(row["opponent_vertices"], packet["intersection_polygon"])
         opposing_approach(row["ego_heading"], row["opponent_heading"])

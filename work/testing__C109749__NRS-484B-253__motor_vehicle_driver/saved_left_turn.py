@@ -64,7 +64,7 @@ def process(*, case_id, map_path, trace_path, receipt_path):
             if sample["frame"] != camera_row.get("frame") or sample["time_s"] != camera_row.get("time_s"):
                 raise ValueError("original camera frame join mismatch")
             cameras = camera_row.get("cameras", {})
-            if set(cameras) != {"front", "rear", "left", "right"}:
+            if set(cameras) != {"overview", "approach", "reference_corner", "driver_reference"}:
                 raise ValueError("four original cameras required")
             for entry in cameras.values():
                 relative = Path(entry["path"])

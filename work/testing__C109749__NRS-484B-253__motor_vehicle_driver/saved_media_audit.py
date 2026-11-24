@@ -13,7 +13,7 @@ from PIL import Image, UnidentifiedImageError
 
 from saved_left_turn import ASSIGNMENT_ID
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sha(path):
@@ -47,6 +47,7 @@ def audit(attempt, *, case_id, allow_diagnostic=False):
     dimensions = {}
     seen_paths = set()
     previous = None
+    actor_ids = None
     for actor, row in zip(trace, rows):
         frame, time_s = actor.get("frame"), actor.get("time_s")
         if not isinstance(frame, int) or not isinstance(time_s, (int, float)) or row.get("frame") != frame or row.get("time_s") != time_s:
@@ -54,6 +55,14 @@ def audit(attempt, *, case_id, allow_diagnostic=False):
         if previous is not None and (frame != previous[0] + 1 or abs(time_s - previous[1] - 0.05) > 0.002):
             raise ValueError("saved frame order or 20 Hz cadence mismatch")
         previous = frame, time_s
+        current_ids = (actor.get("ego_actor_id"), actor.get("opponent_actor_id"))
+        if any(not isinstance(value, int) for value in current_ids) or current_ids[0] == current_ids[1]:
+            raise ValueError("original participant identities missing or aliased")
+        if actor_ids is not None and current_ids != actor_ids:
+            raise ValueError("original participant identity changed across frames")
+        actor_ids = current_ids
+        if not actor.get("ego_driver_control_source") or not actor.get("opponent_driver_control_source"):
+            raise ValueError("original driver control source missing")
         cameras = row.get("cameras")
         if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
             raise ValueError("four original cameras required per frame")
@@ -89,6 +98,7 @@ def audit(attempt, *, case_id, allow_diagnostic=False):
             "source_bindings": {"receipt_sha256": _sha(receipt_path),
                                 "trace_sha256": _sha(trace_path),
                                 "frame_map_sha256": _sha(frame_map_path)},
+            "participant_actor_ids": {"ego": actor_ids[0], "initial_opponent": actor_ids[1]},
             "physical_visibility": "unverified", "legal_judgment": "unresolved"}
 
 

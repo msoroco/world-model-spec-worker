@@ -2,11 +2,40 @@
   "assignment_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver",
   "input_sha256": "1511cfcf7c15fd69a12f0eb306eb57227be5a0c8d094a83ca67a495188600094",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "exact_cases_and_measurement_partial",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "name": "preflight",
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "88e91354457cf8f1ac48db4f8c8c40dedf5e472738fc2bb501694c58338cd445"
+    },
+    {
+      "name": "focused_tests",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-access-tests.log",
+      "sha256": "d6b7e210c6401e9409c4e148f41ad46f369e4bd4a44798e014046a43b05b8a85"
+    },
+    {
+      "name": "static",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "889b7e0aa9d5d7629bed94f73abfad95cb86d301a8f9adf4acd5b2bbd59bd893"
+    },
+    {
+      "name": "strict",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Actual CARLA parking motion, four-camera visibility and original source review after CPU delivery preparation"
+  ],
+  "reason": "Four exact cases and two controlled comparisons plus original-source access measurement and comparison audit are authored and focused-tested. Native construction/controller, capture acquisition, case-specific finalization integration, semantic proposals, compatibility and delivery proofs remain CPU work; scoped strict gate exits 1 because status is partial."
 }

@@ -2,11 +2,40 @@
   "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
   "input_sha256": "273a7316c5a1bc7be69a88dff8ce09577108b14fab0549bbfff45f5b6e96da37",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "accepted_source_review_partial",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "name": "preflight",
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "59b6fe5457d3d056f0ee5a8e7b9fe6c8dbc1368944df92061499a3f44202fa5c"
+    },
+    {
+      "name": "focused_tests",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-speed-tests.log",
+      "sha256": "7d063643024406e14ba607e5661eb7d40926885ddd1503dcb63700795290896f"
+    },
+    {
+      "name": "static",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-600-1c__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "76c4fc909dad88e8d70d86772fc316d5ae7aa2cb0944adc3782b7c83791cfa64"
+    },
+    {
+      "name": "strict",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-600-1c__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Review original CARLA motion, camera sign visibility and capture quality after CPU delivery preparation"
+  ],
+  "reason": "Eight accepted recordings retained as source review candidates, not duplicated. Exact-case source verifier and five focused tests pass. Original recordings are absent from frozen export; case construction, saved finalizer integration, semantic proposals, compatibility and delivery/comparison audits remain CPU work. Scoped strict exits 1 because status is partial."
 }

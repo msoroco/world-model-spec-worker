@@ -44,12 +44,15 @@ class Adapter:
         frame = self.next_frame
         self.next_frame += 2 if self.drop else 1
         sample = {"ego_vertices": body(0, 0), "opponent_vertices": body(1, 0),
+                  "ego_actor_id": 11, "opponent_actor_id": 12,
+                  "ego_driver_control_source": "fixture ego control callback",
+                  "opponent_driver_control_source": "fixture opponent control callback",
                   "ego_heading": [1, 0], "opponent_heading": [-1, 0],
                   "ego_speed_mps": 1, "opponent_speed_mps": 5,
                   "ego_signal_left": True, "ego_turn_committed": False,
                   "opponent_cleared": False, "ego_braking": True}
         image = b"bad" if self.bad_png else png()
-        return frame, frame / 20, sample, {name: image for name in ("front", "rear", "left", "right")}
+        return frame, frame / 20, sample, {name: image for name in ("overview", "approach", "reference_corner", "driver_reference")}
 
 
 class NativeAcquisition(unittest.TestCase):
@@ -101,7 +104,7 @@ class NativeAcquisition(unittest.TestCase):
         self.packet["reviewed_original_map"] = True
         self.write_map()
         paths = self.run_capture()
-        image = self.root / "attempt" / "original-frames" / "000000100-front.png"
+        image = self.root / "attempt" / "original-frames" / "000000100-overview.png"
         image.write_bytes(b"changed")
         with self.assertRaisesRegex(ValueError, "sealed original camera bytes changed"):
             process(case_id=self.case, map_path=paths["map_path"],

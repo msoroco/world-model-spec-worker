@@ -24,11 +24,11 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def source(root: Path, manifest: dict, name: str) -> Path:
+def source(root: Path, manifest: dict, name: str, kind: str = 'original_native') -> Path:
     path = root / name
     binding = manifest.get(name)
     require(path.is_file() and not path.is_symlink() and isinstance(binding, dict)
-            and binding.get("kind") == "original_native" and binding.get("sha256") == sha(path),
+            and binding.get("kind") == kind and binding.get("sha256") == sha(path),
             "missing or stale original Native source: " + name)
     return path
 
@@ -86,13 +86,25 @@ def first_entry(history: list[dict], region: list[tuple[float, float]], actor: s
     raise ValueError(actor + ": no original body entry transition")
 
 
-def measure(attempt: Path) -> dict:
+def measure(attempt: Path, diagnostic_fixture: bool = False) -> dict:
     attempt = Path(attempt)
     require(attempt.is_dir() and not attempt.is_symlink(), "saved attempt directory required")
+    provenance_path = attempt / 'acquisition-provenance.json'
+    if diagnostic_fixture:
+        require(provenance_path.is_file() and
+                json.loads(provenance_path.read_text()).get('provenance_kind') == 'synthetic_fixture' and
+                json.loads(provenance_path.read_text()).get('diagnostic_fixture') is True,
+                'diagnostic fixture provenance missing')
+    elif provenance_path.is_file():
+        provenance = json.loads(provenance_path.read_text())
+        require(provenance.get('provenance_kind') == 'native' and
+                provenance.get('diagnostic_fixture') is False,
+                'original Native provenance differs')
     manifest_path = attempt / "source-manifest.json"
     require(manifest_path.is_file() and not manifest_path.is_symlink(), "source manifest missing")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    files = {name: source(attempt, manifest, name) for name in SOURCES}
+    kind = 'diagnostic_fixture' if diagnostic_fixture else 'original_native'
+    files = {name: source(attempt, manifest, name, kind) for name in SOURCES}
     site = json.loads(files["site-context.json"].read_text(encoding="utf-8"))
     require(site.get("assignment_id") == ASSIGNMENT and site.get("cell_id") == "C125714",
             "wrong saved assignment or cell")

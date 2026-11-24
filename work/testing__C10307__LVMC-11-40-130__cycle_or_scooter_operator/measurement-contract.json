@@ -1,5 +1,5 @@
 {
-  "format": "worker-draft-measurement-contract",
+  "format": "worker-measurement-contract",
   "assignment_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
   "law_id": "LVMC-11-40-130",
   "cell_id": "C10307",
@@ -32,5 +32,28 @@
     "A speed target is an engineering input; measured speed alone does not determine legal prudence.",
     "Synthetic unit tests show software behavior only; original bicycle, jurisdiction, rack geometry and camera pixels require independent verification.",
     "The current checker is a draft source-bound component, not yet wired into the pinned canonical post-capture path."
-  ]
+  ],
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Bicycle speed no greater than reasonable and prudent under then-existing conditions",
+      "source": "LVMC 11.40.130; inputs/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/assignment.json",
+      "output_key": "actual_bicycle_speed_history",
+      "method": "measure_bicycle_speed",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "frame-map.json",
+        "bicycle-motion.json",
+        "context.json",
+        "inventory.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "context.json"
+    ],
+    "error_contains": "Missing required source: context.json"
+  }
 }

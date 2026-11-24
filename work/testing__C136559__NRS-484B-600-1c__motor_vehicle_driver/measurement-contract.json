@@ -1,0 +1,39 @@
+{
+  "format": "worker-selected-requirement-measurement-contract",
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1c",
+  "existing_accepted_reuse_candidates": 8,
+  "selected_requirement": "NRS 484B.600(1)(c) operation faster than public-authority-posted rate on particular highway portion traversed",
+  "comparison_ids": [
+    "strict_rate_boundary",
+    "governed_portion",
+    "governed_direction",
+    "authority",
+    "units",
+    "source_visibility"
+  ],
+  "original_sources": [
+    "frame_map",
+    "vehicle_motion",
+    "route_occupancy",
+    "posted_control"
+  ],
+  "saved_verifier": "speed_source_review.py",
+  "unit_conversions": {
+    "mph_to_mps": 0.44704,
+    "kmh_to_mps": "1/3.6"
+  },
+  "outputs": [
+    "per-frame rate difference in m/s only when posting governs current highway portion and direction",
+    "source hashes and posting provenance",
+    "governed-frame count"
+  ],
+  "strict_numeric_rule": "rate greater than posted rate; no duration or measurement tolerance invented",
+  "off_camera_sign": "governing rate remains unknown without source-backed reading assumption",
+  "legal_applicability": "unresolved pending original source review",
+  "particular_portion_join": {
+    "occupied": "route_occupancy.samples[].road_id, segment_id, direction, on_highway, operating",
+    "posted": "posted_control.governed_road_id, governed_segment_id, governed_direction",
+    "source": "posted_control.governed_segment_source and governed_direction_source"
+  }
+}
