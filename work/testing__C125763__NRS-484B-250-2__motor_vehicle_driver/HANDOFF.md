@@ -1,3 +1,9 @@
+## 2026-11-23 judgment-observable restoration and stage validation
+
+Restored four C125763 `proposals/judgment-observables-{1,2,3,4}.json` drafts from the current law phrases and retained source channels. They cover measured entry timing without a legal cutoff, yield response, official yield-sign governance and the opposite-direction left-turn exception. Each passes the pinned `batch_pipeline.stages.validate("judgment_observables", ...)` check. This corrects the fresh 39-test suite failure caused by the prior archive removing files still required by `tests/test_semantic_delivery.py`.
+
+Archived the stale `canonical-proof-index.json` and its four compatibility receipts byte-exactly in `work/_shared/c125763-stale-canonical-snapshot-20261123.json` (44,421 bytes). The current physical-proof test verifies every archived SHA256 and confirms the index's manifest hash differs from the current manifest. No current proof binding was removed. `runtime.py preflight` passes; all 39 package tests pass. Status remains **partial**: the complete semantic index, refreshed saved and physical receipts, qualitative sweep and final strict proof are still worker-owned CPU tasks.
+
 ## 2026-11-23 unbound proposal observables archived
 
 Four unbound `proposals/judgment-observables-{1,2,3,4}.json` files were preserved byte-exactly, with original paths and SHA256, in `work/_shared/c125763-unbound-judgment-observables-20261123.json` (archive SHA256 `644b7a7092200e27a231529f0bb1ff6f4f909f169957e308e8f3b6e67c625492`). No active JSON, Python, or Markdown file referenced them. The assignment-scoped nonready complete check passed after archival. Status remains partial.

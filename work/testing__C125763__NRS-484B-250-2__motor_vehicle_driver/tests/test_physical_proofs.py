@@ -1,6 +1,8 @@
 import hashlib
 import json
+import base64
 import unittest
+import zlib
 from pathlib import Path
 
 PACKAGE=Path(__file__).resolve().parents[1]
@@ -8,14 +10,25 @@ PACKAGE=Path(__file__).resolve().parents[1]
 
 class PhysicalProofTests(unittest.TestCase):
     def test_historical_canonical_snapshot_is_explicitly_stale(self):
-        index=json.loads((PACKAGE/'canonical-proof-index.json').read_text())
+        wrapper=json.loads((PACKAGE.parent/'_shared/consolidated-proof-archives-20261123.json').read_text())
+        nested=next(row for row in wrapper['files'] if row['original_path'].endswith('/c125763-stale-canonical-snapshot-20261123.json'))
+        source=zlib.decompress(base64.b64decode(nested['content_zlib_base64']))
+        self.assertEqual(hashlib.sha256(source).hexdigest(),nested['sha256'])
+        archive=json.loads(source)
+        archived={Path(row['path']).name:row for row in archive['files']}
+        def original(name):
+            row=archived[name]
+            data=zlib.decompress(base64.b64decode(row['content_zlib_base64']))
+            self.assertEqual(hashlib.sha256(data).hexdigest(),row['sha256'])
+            return data
+        index=json.loads(original('canonical-proof-index.json'))
         digest=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
         self.assertEqual(index['status'],'partial_snapshot')
         self.assertNotEqual(index['manifest_sha256'],digest(PACKAGE/'execution-manifest.json'))
         self.assertEqual(len(index['cases']),4)
         self.assertFalse(index['physical_acceptance_claimed'])
         for row in index['cases']:
-            self.assertEqual(row['compatibility_sha256'],digest(PACKAGE/row['compatibility_receipt']))
+            self.assertEqual(row['compatibility_sha256'],hashlib.sha256(original(row['compatibility_receipt'])).hexdigest())
             self.assertFalse((PACKAGE/row['saved_receipt']).exists())
 
     def test_current_manifest_declares_four_distinct_physical_receipt_gaps(self):

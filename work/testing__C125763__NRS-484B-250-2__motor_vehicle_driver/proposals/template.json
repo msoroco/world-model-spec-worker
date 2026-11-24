@@ -1,0 +1,97 @@
+{
+  "template_id": "NRS-484B-250-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+  "structure": {
+    "law_id": "NRS-484B-250-2",
+    "activation": {
+      "condition": "two vehicles enter one intersection from different highways at approximately the same time, with the subject vehicle on the left, subject to the stated control and opposite-direction left-turn exclusions",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "the driver of the vehicle on the left yields the right-of-way to the vehicle on the right",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "intersection controlled by official traffic-control devices except as otherwise provided in subsection 4",
+        "effect": "the subsection-2 rule does not apply unless subsection 4 governs",
+        "replacement_obligation": "subsection-4 duties require separate review",
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices"
+      },
+      {
+        "trigger": "vehicles approach from opposite directions and one driver intends or makes a left turn",
+        "effect": "the subsection-2 rule does not apply",
+        "replacement_obligation": "applicable left-turn duty requires separate review",
+        "source_clause": "or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
+      }
+    ],
+    "timing": {
+      "description": "compare original complete vehicle-body entry times; observe priority and yielding through the encounter",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "approximately the same time",
+        "note": "The supplied law has no numeric legal simultaneity cutoff."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "Original motion and priority context are required; no speed or time surrogate decides the duty."
+      },
+      {
+        "phrase": "official traffic-control devices",
+        "note": "Official status and governance require independent source review; Native light state alone is insufficient."
+      },
+      {
+        "phrase": "intending to or is making a left turn",
+        "note": "Turn intention and realized trajectory require route and original heading/body evidence."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "positive engineering m/s, without legal cutoff"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "authored travel or left-turn waypoints"
+    },
+    {
+      "name": "other_release_frame",
+      "kind": "controller",
+      "range_or_domain": "nonnegative Native frame"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed m/s in original trace"
+    },
+    {
+      "name": "body_entry_time_delta_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed signed seconds"
+    },
+    {
+      "name": "native_signal_state",
+      "kind": "world_setup",
+      "range_or_domain": "Green, Red, Off and other Native states with separate official-status review"
+    },
+    {
+      "name": "official_device_status",
+      "kind": "world_setup",
+      "range_or_domain": "independently reviewed status; unknown allowed"
+    },
+    {
+      "name": "opposite_direction_left_turn",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed maneuver and approach context"
+    }
+  ]
+}
