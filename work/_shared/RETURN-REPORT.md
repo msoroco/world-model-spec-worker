@@ -1,4 +1,10 @@
-Current return count is 8,600 of the 8,600-file limit; earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
+## 2026-11-23 C144550 first-case fallback CPU proofs
+
+Pinned five-primary static receipt verification and all three fallback receipt hash/identity checks passed; the C144550 scoped nonready complete check and CPU preflight passed. Their current logs are under ignored `.runtime-work/`. The full strict delivery gate has not passed because 14 packages remain partial.
+
+All three distinct clear-gap fallbacks now pass current source-bound compatibility, missing-lane-history negative analysis and recorded-only saved processing. The manifest binds their returned receipt hashes. The three offline constructions were already pinned. The first fallback changes the target actor route distance, the second lowers ego target speed, and the third moves the overview camera. These CPU diagnostics establish software replay only. Five primaries and three first-case fallbacks are proved; twelve fallback proof sets plus semantic and delivery audits remain. C144550 remains partial. Current manifest SHA256: `8f614c44dcbca108563df4a9087cc67c76ed784dbff9ea3cc57a4c09f988c7aa`. The partial-package historical test-log archive index is in `work/_shared/HANDOFF.md`; the C144550 test log must be restored from it before strict readiness.
+
+Current return count is 8,597 of the 8,600-file limit; earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
 
 ## 2026-11-23 C144550 five-primary proof checkpoint
 
