@@ -1,0 +1,102 @@
+{
+  "law_id": "NRS-484B-450-1o",
+  "actor": "motor_vehicle_driver",
+  "template_id": "NRS-484B-450-1o@motor_vehicle_driver",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: At any place where official traffic-control devices prohibit stopping, standing or parking.",
+  "structure": {
+    "activation": {
+      "condition": "Observed stopping, standing or parking at a place governed by an effective official prohibition.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not stop, stand or park at a place where an official device prohibits that act, absent a statutory exception.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "necessary to avoid conflict with other traffic",
+        "trigger": "necessary traffic conflict",
+        "effect": "exception may apply",
+        "description": "Observe other traffic and why the halt was necessary."
+      },
+      {
+        "source_clause": "in compliance with law",
+        "trigger": "specific applicable law",
+        "effect": "exception may apply",
+        "description": "Identify source law and actual compliant conduct."
+      },
+      {
+        "source_clause": "directions of a police officer",
+        "trigger": "police direction",
+        "effect": "exception may apply",
+        "description": "Observe the officer direction and actual compliance."
+      },
+      {
+        "source_clause": "official traffic-control device",
+        "trigger": "device direction",
+        "effect": "exception may apply",
+        "description": "Observe the distinct official direction and actual compliance."
+      }
+    ],
+    "timing": {
+      "description": "Compare original device effective conditions to each original halt frame.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "stop, stand or park",
+        "note": "Actual halt activity needs original motion and independent purpose."
+      },
+      {
+        "phrase": "official traffic-control devices prohibit stopping, standing or parking",
+        "note": "Official device identity, exact instruction and governed place need independent review."
+      },
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": "Necessity needs independent original traffic observations."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "Specific applicable law and compliance need independent source."
+      },
+      {
+        "phrase": "directions of a police officer or official traffic-control device",
+        "note": "Direction and actual compliance need independent original observations."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "halt_action",
+      "kind": "controller",
+      "range_or_domain": "park, stop or stand request"
+    },
+    {
+      "name": "device_mode",
+      "kind": "world_setup",
+      "range_or_domain": "effective or not effective at original halt"
+    },
+    {
+      "name": "exception_setup",
+      "kind": "world_setup",
+      "range_or_domain": "none, traffic conflict, law, police or device direction"
+    },
+    {
+      "name": "exact_instruction",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed prohibition text"
+    },
+    {
+      "name": "parking_site",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed C229439 road and governed polygon"
+    },
+    {
+      "name": "capture_profile",
+      "kind": "world_setup",
+      "range_or_domain": "four original RGB cameras at 20 Hz for 900 frames"
+    }
+  ],
+  "status": "draft"
+}

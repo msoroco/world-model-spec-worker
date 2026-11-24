@@ -7,6 +7,7 @@ as evidence of actual behavior.
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from pathlib import Path
 
@@ -105,10 +106,16 @@ def capture(world, api, adapter, case, site, device, context_observer,
         rows.append(original_row(snapshot, adapter.ego, case, device, site, observed, pixels))
     camera_refs = writer.close()
     refs = seal_rows(root, rows, camera_refs)
+    source_context = {'actor_rows.json': refs['actor_rows']}
+    for name, value in (('site-source.json', site), ('device-source.json', device)):
+        path = root / name
+        path.write_text(json.dumps(value, indent=2) + '\n')
+        source_context[name] = {'path': name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
     attempt = {"source_format": "native_original", "case_id": case["case_id"],
                "subject_id": str(adapter.ego.id), "device_id": device["device_id"],
                "device_instruction": device["exact_instruction"],
                "parking_polygon": site["parking_polygon"], "halt_action": case["halt_action"],
-               "frame_count": 900, "first_frame": first_frame, "fps": 20, **refs}
+               "frame_count": 900, "first_frame": first_frame, "fps": 20,
+               "source_context": source_context, **refs}
     (root / "attempt.json").write_text(json.dumps(attempt, indent=2) + "\n")
     return attempt

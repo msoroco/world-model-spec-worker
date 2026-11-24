@@ -28,6 +28,7 @@ class BundleTests(unittest.TestCase):
                 self.assertIn('native_carla_adapter.py', files)
                 self.assertIn('native_camera_writer.py', files)
                 self.assertIn('native_capture.py', files)
+                self.assertIn('analysis.py', files)
                 self.assertIn('audit_media(attempt, capture_root', files['finalizer.py']['content'])
                 for item in files.values():
                     if 'source' in item:

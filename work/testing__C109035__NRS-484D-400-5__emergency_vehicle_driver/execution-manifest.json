@@ -7,7 +7,7 @@
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian",
       "kind": "delivery",
       "construction": "constructions/response_siren_pedestrian.json",
-      "construction_sha256": "065ad15fed57177e26594a5562f39ed26e3b86000185c1c81e81226cb9ff2450",
+      "construction_sha256": "aa172ae62d90b2d672fcbfdb2a20c94048d3038d227f0ee8a6843a996e9ead86",
       "measurement_contract": "measurements/response_siren_pedestrian.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -22,13 +22,28 @@
         "status": "physical",
         "reason": "The pedestrian may be outside four-camera view or too near the moving vehicle at the approach station; a reviewed map-specific site and one geometry-preserving offset are required before physical use."
       },
-      "status": "partial_cpu_receipts_pending"
+      "status": "partial_cpu_receipts_pending",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/response_siren_pedestrian-fallback1.json",
+          "construction_sha256": "ad70a2c557fa3fd2658bdaa0c197cadb0309696bf41564a63019acb64f678c8e",
+          "trigger": {
+            "source": "original four-camera pixel audit and reviewer",
+            "metric": "pedestrian visibility in synchronized overview and reference corner views",
+            "failure_condition": "reviewed original frames show occlusion or unsafe near-field framing"
+          },
+          "changed_knobs": [
+            "reviewed fallback_cameras poses, with original profile sizes and source hash"
+          ]
+        }
+      ]
     },
     {
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only",
       "kind": "delivery",
       "construction": "constructions/response_lamps_only.json",
-      "construction_sha256": "43e13bd8f9e6f6d67811ba5b6cf48bf088e674a7b7fabf6fa18a9de20a04cab7",
+      "construction_sha256": "0d3d3caae97321d3aa74f4fca35bf864af85985e69b0f139e8cbdf9b55c5ff89",
       "measurement_contract": "measurements/response_lamps_only.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -49,7 +64,7 @@
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent",
       "kind": "delivery",
       "construction": "constructions/response_silent.json",
-      "construction_sha256": "6d7dddef741dfe61d4a586b90dddf2e5a1cc2adf05543c200600ef0082b25aaf",
+      "construction_sha256": "773ae49ede51b77828181d49e7f905cc8b4847f344b5dc6627372bc8edee626b",
       "measurement_contract": "measurements/response_silent.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -70,7 +85,7 @@
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren",
       "kind": "delivery",
       "construction": "constructions/pursuit_actual_siren.json",
-      "construction_sha256": "31ec6c9c4f22d830dc4a5d15c43c67c2b189f3d04e125516257416693d4db431",
+      "construction_sha256": "840d1ebd9b0e9d47385aecf3fd06258629c3684a2a82056ccc8f76f736a0f5c6",
       "measurement_contract": "measurements/pursuit_actual_siren.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -91,7 +106,7 @@
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren",
       "kind": "delivery",
       "construction": "constructions/pursuit_suspected_siren.json",
-      "construction_sha256": "b636126f1ae874d0c9ae1bc40eaef110a9ae40ab74cb844ac9e438454748acd6",
+      "construction_sha256": "7a7183c07890d7287d120627fe5a5aabdfa34c67ddb8dd145f5559f95fadb380",
       "measurement_contract": "measurements/pursuit_suspected_siren.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -112,7 +127,7 @@
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren",
       "kind": "delivery",
       "construction": "constructions/unqualified_siren.json",
-      "construction_sha256": "8cce805651b29fdc971ae87b66935d7eb5a39cf33d2b52ce934b58d4050e84e8",
+      "construction_sha256": "9e12b4180d20879f48afd83dd1082d7fc45d0c4c070f972ed93ae94fd6df0270",
       "measurement_contract": "measurements/unqualified_siren.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -133,7 +148,7 @@
       "case_id": "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only",
       "kind": "delivery",
       "construction": "constructions/unqualified_lamps_only.json",
-      "construction_sha256": "98573d7cdd41c7136f71a9e27bdf4b5f7234fe00fae9311482ae399edbc1997c",
+      "construction_sha256": "7825ee38cf59cddcb0ef7ea66531e42673a96ac4b6e74108a894772168e945f3",
       "measurement_contract": "measurements/unqualified_lamps_only.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"

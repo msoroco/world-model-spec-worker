@@ -8,6 +8,7 @@ from pathlib import Path
 FOLDER = Path(__file__).resolve().parent
 ROOT = FOLDER.parents[1]
 SOURCES = {'runner.py': 'runner.py', 'parking.py': 'parking.py',
+           'analysis.py': 'analysis.py',
            'native_carla_adapter.py': 'native_carla_adapter.py',
            'native_camera_writer.py': 'native_camera_writer.py',
            'native_capture.py': 'native_capture.py',
@@ -17,6 +18,7 @@ SOURCES = {'runner.py': 'runner.py', 'parking.py': 'parking.py',
            'tests/test_native_carla_adapter.py': 'tests/test_native_carla_adapter.py',
            'tests/test_native_camera_writer.py': 'tests/test_native_camera_writer.py'}
 SOURCES['tests/test_native_capture.py'] = 'tests/test_native_capture.py'
+SOURCES['tests/test_analysis.py'] = 'tests/test_analysis.py'
 
 
 def sha(path):
