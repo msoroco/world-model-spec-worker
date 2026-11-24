@@ -811,3 +811,7 @@ To preserve the 8,600-file return limit, twelve generated decoded-video audit si
 ## 2026-11-23 historical log archive and ready recheck
 
 Six historical diagnostic logs, including the sole former result test row for the straight comparator, were preserved with exact paths, byte sizes, SHA256 hashes and row data in `work/_shared/c125751-result-only-logs-20261123.tar.xz` (SHA256 `d8880e2e40a4961717cd40523720ab44f2ff02606c4957359f558fbf50741419`). The archive was verified member by member before originals were removed. The assignment-scoped complete strict delivery-ready check passed afterward. C125751 remains **ready**; active construction and manifest receipts are unchanged.
+
+## 2026-11-23 historical log archive for C125745 return slots
+
+Older result-linked logs from this package were preserved byte-exactly, including their result test rows, in `work/_shared/c125745-primary-restore-cap-20261123.tar.xz` (SHA256 `a0e892a9fda7f424514e15a865c1f3f4914b91ff1ae153afdb618d65f17883eb`). The archive index records original paths, bytes and SHA256 values, and every member was verified before removal. The assignment-scoped complete strict delivery-ready gate passed after archival; this package remains **ready**.

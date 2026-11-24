@@ -144,14 +144,21 @@ class NativePairTests(unittest.TestCase):
 
     def test_judgment_sweeps_keep_the_selected_stop_sign_and_yield_axis(self):
         proposal=json.loads((ROOT/'proposals/cases.json').read_text())
-        sweeps={item['sweep_id']:item for item in proposal['sweep_specs']}
+        sweeps={item['sweep_id']:item for item in proposal['sweep_specs']+
+                proposal['qualitative_review_specs']}
         self.assertEqual(len(sweeps),4)
         for sweep in sweeps.values():
             values=sweep['variable_assignments']
             self.assertEqual(values['native_stop_sign_id']['value'],17)
             self.assertEqual(values['official_device_status']['value'],
                              'stop sign commanded; official status unverified')
-            self.assertEqual(sweep['status'],'incomplete')
+        self.assertTrue(proposal['sweeps_expanded'])
+        for sweep in proposal['sweep_specs']:
+            self.assertEqual(sweep['status'],'expanded_cpu_pending_native')
+            self.assertEqual(len(sweep['expanded_case_ids']),3)
+        for sweep in proposal['qualitative_review_specs']:
+            self.assertEqual(sweep['status'],'source_review_pending_native')
+            self.assertEqual(sweep['axes'],[])
         yield_sweep=sweeps['c125745-2']
         self.assertEqual(yield_sweep['axes'][0]['variable'],
                          'ego_hold_after_clear_frames')

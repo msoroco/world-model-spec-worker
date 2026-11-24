@@ -246,3 +246,7 @@ The actual command `.venv-cpu/bin/python worker_check.py --assignment testing__C
 Twenty-five historical `cases/right_*-fallback*-positive/negative.log` files had no references in returned JSON, Python, Markdown, text or log files. Their original paths, SHA256 values and exact bytes are preserved in `work/_shared/c412593-unbound-fallback-logs-20261123.json` (SHA256 `8c29061ea34dfa76fa3db177913373b81b29df93536513caf65858a624b87571`). Active manifest and proof paths were not changed. Restore a historical log from its archive record if needed for an old workflow.
 
 The assignment-scoped strict `worker_check.py --complete --require-delivery-ready` passed after this archival; C412593 remains ready.
+
+## 2026-11-23 historical log archive for C125745 return slots
+
+Older result-linked logs from this package were preserved byte-exactly, including their result test rows, in `work/_shared/c125745-primary-restore-cap-20261123.tar.xz` (SHA256 `a0e892a9fda7f424514e15a865c1f3f4914b91ff1ae153afdb618d65f17883eb`). The archive index records original paths, bytes and SHA256 values, and every member was verified before removal. The assignment-scoped complete strict delivery-ready gate passed after archival; this package remains **ready**.

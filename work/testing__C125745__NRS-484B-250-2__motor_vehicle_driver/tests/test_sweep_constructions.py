@@ -905,6 +905,47 @@ class SweepConstructionTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(negative['log_text'].encode()).hexdigest(),
                          negative['log_sha256'])
 
+    def test_frame32_fallback1_current_physical_diagnostics(self):
+        plan = read('case-plan.json')['frame32_fallback1_physical_cpu_diagnostics']
+        manifest = read('execution-manifest.json')
+        self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+        entry = next(row for row in manifest['cases'] if row['case_id'] == plan['case_id'])
+        candidate = next(row for row in entry['candidates'] if row['id'] == 'fallback1')
+        self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
+        self.assertEqual(plan['compatibility_receipt_sha256'],
+                         digest(candidate['compatibility']['receipt']))
+        self.assertEqual(plan['saved_receipt_sha256'],
+                         digest(candidate['post_capture']['test_log']))
+        self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
+        for kind, expected in (('complete_motion', 'met'),
+                               ('incomplete_motion', 'not_met'),
+                               ('missing_evidence', 'unverified'),
+                               ('lifecycle', None)):
+            proof = plan['proofs'][kind]
+            self.assertEqual(proof['exit_code'], 0)
+            payloads = {}
+            for label in ('result', 'log'):
+                payload = zlib.decompress(base64.b64decode(
+                    proof[label + '_zlib_base64'], validate=True))
+                self.assertEqual(len(payload), proof[label + '_bytes'])
+                self.assertEqual(hashlib.sha256(payload).hexdigest(),
+                                 proof[label + '_sha256'])
+                payloads[label] = payload
+            result = json.loads(payloads['result'])
+            if kind == 'lifecycle':
+                self.assertEqual(result['saved_processing_receipt_sha256'],
+                                 plan['saved_receipt_sha256'])
+                self.assertEqual(result['events'],
+                                 ['capture_finished', 'encoders_closed',
+                                  'restoration_verified', 'native_exit',
+                                  'owner_released', 'saved_processing_started'])
+                self.assertTrue(result['failed_encoder_rejected'])
+                self.assertTrue(result['premature_release_rejected'])
+            else:
+                self.assertEqual(result['physical_checks']['maneuver']['status'],
+                                 expected)
+                self.assertFalse(result['physical_acceptance_claimed'])
+
     def test_frame32_fallback2_retained_physical_diagnostics(self):
         plan = read('case-plan.json')['frame32_fallback2_physical_cpu_diagnostics']
         manifest = read('execution-manifest.json')

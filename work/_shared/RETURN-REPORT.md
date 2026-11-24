@@ -1,3 +1,15 @@
+## 2026-11-23 C125745 selected-primary physical replay
+
+All 16 selected-primary classifier/lifecycle commands reproduced their existing result and log hashes. Ten older logs were preserved with exact hashes and result rows in `c125745-primary-restore-cap-20261123.tar.xz` (SHA256 `a0e892a9fda7f424514e15a865c1f3f4914b91ff1ae153afdb618d65f17883eb`), freeing nine return slots; both affected ready packages passed scoped strict rechecks. Four missing logs for the first primary are now returned. The C125745 strict probe advanced to an honest-provenance defect: the synthetic classifier result labels itself `native`, while the gate requires `synthetic_fixture`. C125745 remains partial pending reproducible provenance correction and receipt rebinding.
+
+## 2026-11-23 C125745 finite sweep expansion
+
+C125745 now records its six finite numeric sweep points as explicit manifest cases and keeps the two nonnumeric official-device/opposite-turn topics as pending source reviews. Its first canonical GPU dispatch is declared. The 75-test suite, pinned preflight and scoped nonready check pass. A guarded strict ready probe advanced to physical preparation and identified missing returned selected-primary fixture logs; all four selected primaries later replayed all classifier/lifecycle results and logs byte-exactly in ignored work. C125745 remains **partial** while the remaining physical, delivery and judgment work is completed. Test log SHA256 `91592d49395a708507eb1908d17bec4cd7c563e29d4a13acb384ad8d427e6b4a`. The batch remains 29 ready, 14 partial.
+
+## 2026-11-23 C125745 frame-32 fallback1 CPU proof
+
+C125745 now retains four exact synthetic classifier/lifecycle command outputs and hashes for the frame-32 fallback1, bound to its canonical saved receipt. Complete, incomplete and missing evidence classified `met`, `not_met` and `unverified`; 75 package tests and the scoped nonready check pass. C125745 stays partial pending its remaining CPU proof bindings; Native and legal outcomes are unclaimed. Test log SHA256 `3e482ff19905735e18ff5a85c78cb6c7a7b36e67091b86ee258408dbc67294d5`.
+
 ## 2026-11-23 C125763 CPU readiness and C125751 archival
 
 C125763 now returns all five root review sources byte-for-byte from its active construction and a four-case qualitative judgment decision plan. Its 41-test CPU proof and 16 synthetic physical/lifecycle commands remain bound to the unchanged manifest; pinned preflight, scoped nonready check and the scoped strict delivery-ready gate pass. Its result is **ready/delivery_prepared** for CPU delivery, with Native site facts, official-device/subsection-4 qualification, physical acceptance and legal judgment explicitly unverified.
