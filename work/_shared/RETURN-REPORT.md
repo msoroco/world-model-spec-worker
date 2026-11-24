@@ -1,6 +1,28 @@
+## 2026-11-23 current C144550 first-primary manifest proof bound
+
+The current first-primary positive/negative compatibility and saved-processing receipts now occupy the manifest-referenced returned paths, with their current SHA256 values in `execution-manifest.json`. The manifest also maps all eleven required Core atoms and selected recording channels to the retained original graph/lane sources and saved finalizer. The pinned `package_compatibility.check_receipts` static check on the first manifest entry passed after generating the diagnostic fixture (exit 0; `.runtime-work/c144550-first-primary-current-static-check.log` SHA256 `fab3af7db8cf6e304ba7dce9ba9e729937756936b93fbaa42e1b9247baf2e584`). Manifest SHA256 `2537e52fa6b1d473bdd2209c1ba9f6d12db8bdeefdc1a41e36a381ad3798c524`. The scoped nonready check passes; the strict assignment gate remains open because four other exact cases and fifteen fallbacks lack full compatibility/saved proof. No Native or legal acceptance is claimed.
+
+## 2026-11-23 C144550 all five draft semantic case descriptions
+
+`proposals/cases.json` now names each exact case and its specific comparison variable while retaining the shared source-frame, lamp, body-gap and marked-lane measurement description (SHA256 `1ea7b6f06ac7136fe00b4fac72c2374556c5a2c15d62d73a39483e0af4f89827`). The descriptions use measured proximity as evidence and do not impose a legal signal-time or safe-gap cutoff. The C144550 scoped nonready complete check passes after this edit. The canonical semantic index, independent audits, other compatibility and saved proofs remain unfinished; C144550 stays partial and the batch stays 29 ready/14 partial.
+
+## 2026-11-23 archived ready-package strict revalidation
+
+The seven ready packages touched by the 73-member lossless return-capacity archive each passed `.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready` after archival. Their exact command uses the full assignment ID named by each short ID below; logs remain in ignored `.runtime-work/`.
+
+- `C101303`: exit 0; `.runtime-work/capacity-checks-20261123/C101303.log` SHA256 `887b30b325ad7ce0b4e52930d7ffea24858d3efc676139847c210a95a0b3347f`.
+- `C109749`: exit 0; `.runtime-work/capacity-checks-20261123/C109749.log` SHA256 `a5165396057b4eb55a93c9232431f354a98be5e870445d3d73803f56b08064e3`.
+- `C125751`: exit 0; `.runtime-work/capacity-checks-20261123/C125751.log` SHA256 `24e8163fd00d48d9fc3c3f3913b708f29dbcf78a6ab0a573758caad219eb9203`.
+- `C129731`: exit 0; `.runtime-work/capacity-checks-20261123/C129731.log` SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`.
+- `C136559`: exit 0; `.runtime-work/capacity-checks-20261123/C136559.log` SHA256 `547806bff481939fb0e9bb913c466852105cae45c0b5d749a9762d5e41adc099`.
+- `C149237`: exit 0; `.runtime-work/capacity-checks-20261123/C149237.log` SHA256 `db2b0057e9de08897099b65a96e8eea07f91f3d528ae101b5d1c2f5c6511806f`.
+- `C177008`: exit 0; `.runtime-work/capacity-checks-20261123/C177008.log` SHA256 `a15f61b995b4a6e8c74aee3c780b80ffa13c903495638aeba728edc3a4272144`.
+
+C144550 also passed the nonready scoped `--complete` check (exit 0; `.runtime-work/capacity-checks-20261123/C144550.log` SHA256 `730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31`). Its status remains partial; batch remains 29 ready and 14 partial, so the full strict gate has not passed.
+
 ## 2026-11-23 returned file capacity restored
 
-The returned tree now contains exactly 8,600 files, matching `batch.json.max_return_files`. Seventy-three historical or case-plan-only artifacts are preserved byte-for-byte in `work/_shared/historical-unbound-proofs-20261123.tar.xz` (SHA256 `fc2aee0a534597f84b243a3b065fa37a7e61585fc266cdbe98c64734535536cf`), and two older shared artifacts were consolidated into `work/_shared/nested-capacity-pair-20261123.tar.xz` (SHA256 `e8b953923d1ec65a5041e1e5522bc07a5475cf0965c4d88d3f5c2a6b83f0d37b`). Their member paths, hashes and recovery commands are indexed at the top of `work/_shared/HANDOFF.md`. The C144550 current-manifest positive/negative and saved receipts are recoverable members of the first archive; its predecessor manifest-bound receipts remain directly returned. Package statuses remain 29 ready and 14 partial; the full strict gate has not passed.
+The returned tree now contains exactly 8,600 files, matching `batch.json.max_return_files`. Seventy-three historical or case-plan-only artifacts are preserved byte-for-byte in `work/_shared/historical-unbound-proofs-20261123.tar.xz` (SHA256 `fc2aee0a534597f84b243a3b065fa37a7e61585fc266cdbe98c64734535536cf`), and two older shared artifacts were consolidated into `work/_shared/nested-capacity-pair-20261123.tar.xz` (SHA256 `e8b953923d1ec65a5041e1e5522bc07a5475cf0965c4d88d3f5c2a6b83f0d37b`). Their member paths, hashes and recovery commands are indexed at the top of `work/_shared/HANDOFF.md`. The C144550 current-manifest positive/negative and saved receipts are recoverable members of the first archive; the current receipts are now also bound at the manifest-referenced returned paths after the later static check. Package statuses remain 29 ready and 14 partial; the full strict gate has not passed.
 
 ## 2026-11-23 C144550 first current-manifest compatibility and saved proof
 

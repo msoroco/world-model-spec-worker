@@ -52,6 +52,215 @@
           "Driver safety ascertainment remains a legal judgment."
         ]
       }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "delivery",
+      "rationale": "Same lane change with appropriate indicator first observed after body begins leaving",
+      "variable_assignments": {
+        "signal_timing": "indicator first observed after source-lane body departure"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "delivery",
+      "rationale": "Same left lane change with wrong right indicator",
+      "variable_assignments": {
+        "indicator_direction": "right indicator during left lane change"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "delivery",
+      "rationale": "Same signaled movement with target vehicle nearer in measured gap",
+      "variable_assignments": {
+        "target_vehicle_placement": "nearer target-lane route point; report measured body gap, no legal cutoff"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap",
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "delivery",
+      "rationale": "Right adjacent marked lane with appropriate right indicator before movement",
+      "variable_assignments": {
+        "lane_change_direction": "right adjacent same-direction marked lane",
+        "indicator_direction": "right before source-lane body departure"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "source_lane_body_departure",
+            "unit": "boolean",
+            "method": "complete original Native ego body compared with sampled source-lane polygon",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled crossing onset; between-frame state unknown"
+          },
+          {
+            "name": "indicator_before_departure",
+            "unit": "boolean",
+            "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+            "time_window": "before and at departure",
+            "reference_frame": "Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native state is not proof of camera-visible indicator"
+          },
+          {
+            "name": "target_lane_gap",
+            "unit": "m",
+            "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+            "time_window": "all 900 original frames",
+            "reference_frame": "Native lane heading",
+            "sampling_rate_hz": 20,
+            "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_same_direction_lane_inventory",
+            "unit": "structured record",
+            "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+          }
+        ],
+        "limitations": [
+          "No statutory numeric signal lead time or safe gap is supplied.",
+          "Original pixels must establish clearly marked lane appearance and signal display.",
+          "Driver safety ascertainment remains a legal judgment."
+        ]
+      }
     }
   ]
 }

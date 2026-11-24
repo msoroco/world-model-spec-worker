@@ -1,3 +1,17 @@
+## 2026-11-23 archived ready-package strict revalidation
+
+The seven ready packages touched by the 73-member lossless return-capacity archive each passed `.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready` after archival. Their exact command uses the full assignment ID named by each short ID below; logs remain in ignored `.runtime-work/`.
+
+- `C101303`: exit 0; `.runtime-work/capacity-checks-20261123/C101303.log` SHA256 `887b30b325ad7ce0b4e52930d7ffea24858d3efc676139847c210a95a0b3347f`.
+- `C109749`: exit 0; `.runtime-work/capacity-checks-20261123/C109749.log` SHA256 `a5165396057b4eb55a93c9232431f354a98be5e870445d3d73803f56b08064e3`.
+- `C125751`: exit 0; `.runtime-work/capacity-checks-20261123/C125751.log` SHA256 `24e8163fd00d48d9fc3c3f3913b708f29dbcf78a6ab0a573758caad219eb9203`.
+- `C129731`: exit 0; `.runtime-work/capacity-checks-20261123/C129731.log` SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`.
+- `C136559`: exit 0; `.runtime-work/capacity-checks-20261123/C136559.log` SHA256 `547806bff481939fb0e9bb913c466852105cae45c0b5d749a9762d5e41adc099`.
+- `C149237`: exit 0; `.runtime-work/capacity-checks-20261123/C149237.log` SHA256 `db2b0057e9de08897099b65a96e8eea07f91f3d528ae101b5d1c2f5c6511806f`.
+- `C177008`: exit 0; `.runtime-work/capacity-checks-20261123/C177008.log` SHA256 `a15f61b995b4a6e8c74aee3c780b80ffa13c903495638aeba728edc3a4272144`.
+
+C144550 also passed the nonready scoped `--complete` check (exit 0; `.runtime-work/capacity-checks-20261123/C144550.log` SHA256 `730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31`). Its status remains partial; batch remains 29 ready and 14 partial, so the full strict gate has not passed.
+
 
 ## 2026-11-23 nested archive consolidation
 
