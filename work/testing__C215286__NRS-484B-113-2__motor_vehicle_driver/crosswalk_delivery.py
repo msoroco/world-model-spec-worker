@@ -101,10 +101,12 @@ def construct(world, packet, spawn_transform):
         raise
 
 
-def control_step(actor, *, reverse, hold, control_factory):
+def control_step(actor, *, reverse, hold, control_factory, throttle=.16):
     if not isinstance(reverse, bool) or not isinstance(hold, bool):
         raise ValueError("explicit reverse and hold decisions required")
-    command = {"reverse": reverse, "throttle": .16 if reverse and not hold else 0.0,
+    if type(throttle) not in (float, int) or not isfinite(throttle) or not 0 < throttle <= .4:
+        raise ValueError("bounded engineering reverse throttle required")
+    command = {"reverse": reverse, "throttle": throttle if reverse and not hold else 0.0,
                "brake": 0.0 if reverse and not hold else 1.0, "hand_brake": False}
     actor.apply_control(control_factory(**command))
     return command

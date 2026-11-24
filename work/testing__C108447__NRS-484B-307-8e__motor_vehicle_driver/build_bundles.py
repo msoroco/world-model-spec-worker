@@ -14,7 +14,9 @@ FOLDER = Path(__file__).resolve().parent
 ASSIGNMENT = FOLDER.name
 SOURCES = ('runner.py', 'native_capture.py', 'route_controller.py',
            'property_route.py', 'case_observation.py', 'map_binding.py',
-           'saved_delivery.py', 'comparison_audit.py', 'analysis.py')
+           'saved_delivery.py', 'physical_completion.py', 'delivery_audit.py',
+           'prepare_delivery.py', 'comparison_audit.py',
+           'comparison_delivery.py', 'analysis.py')
 CAMERAS = [('overview', 1920, 1080, 'fixed whole intersection'),
            ('approach', 1280, 720, 'fixed approach signal and body path'),
            ('reference_corner', 1280, 720, 'fixed parcel connector and boundary'),

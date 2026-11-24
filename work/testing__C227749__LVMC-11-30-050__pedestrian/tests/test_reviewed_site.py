@@ -38,6 +38,7 @@ class ReviewedSiteTests(unittest.TestCase):
             'opposite_curb_xy_m': self.scene['opposite_curb_xy_m'],
             'crosswalk_boundaries_xy_m': self.scene['crosswalk_boundaries_xy_m'],
             'roadway_highway_public_use': 'reviewed_public_roadway',
+            'municipal_jurisdiction': 'reviewed_within_municipality',
             'governing_control': 'reviewed_none',
             'source_refs': refs,
         }
@@ -77,6 +78,12 @@ class ReviewedSiteTests(unittest.TestCase):
         self.packet['source_refs']['roadway_highway_public_use']['path'] = '../outside.txt'
         self.write_packet()
         with self.assertRaisesRegex(ValueError, 'outside attempt'):
+            audit_reviewed_site(self.scene, self.attempt)
+
+    def test_rejects_missing_municipal_finding(self):
+        del self.packet['municipal_jurisdiction']
+        self.write_packet()
+        with self.assertRaisesRegex(ValueError, 'municipal jurisdiction finding missing'):
             audit_reviewed_site(self.scene, self.attempt)
 
 

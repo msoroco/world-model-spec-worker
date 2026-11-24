@@ -43,6 +43,8 @@ def _project(attempt, scene, packet):
              "channels/reverse-body-crosswalk.jsonl")
     for name in names:
         _copy(source / name, root / name)
+    _copy(source / "channels/reverse-body-crosswalk.jsonl",
+          root / "reverse-body-crosswalk-source.jsonl")
     rows = [json.loads(line) for line in (root / "channels/reverse-body-crosswalk.jsonl").read_text().splitlines()]
     context = json.loads((root / "reviewed-crosswalk-source.json").read_text())
     measured = measure(rows, source_id=context["source_id"],
@@ -111,6 +113,7 @@ def native(scene, output_dir, host, port):
     root = Path(output_dir)
     if not root.is_dir():
         raise ValueError("materialized attempt directory required")
+    controller = json.loads((root / "config.json").read_text())["reverse_controller"]
     client = carla.Client(host, int(port))
     client.set_timeout(20)
     saved = snapshot(client)
@@ -127,7 +130,9 @@ def native(scene, output_dir, host, port):
         capture_dir = root / "capture"
         capture_dir.mkdir()
         captured = capture(world, carla, site_path, checked["case_id"],
-                           capture_dir, cameras.read)
+                           capture_dir, cameras.read,
+                           throttle=controller["throttle"],
+                           stop_radius_m=controller["stop_radius_m"])
     except BaseException as error:
         failure = error
         raise
@@ -144,7 +149,7 @@ def native(scene, output_dir, host, port):
                 }, indent=2) + "\n")
     encoded = encode(root, checked["case_id"])
     measured, target_rows, distance = _project(root, scene, packet)
-    completion = distance <= .25
+    completion = distance <= controller["stop_radius_m"]
     target_check = {"target": "reverse_body_crosswalk_relation",
                     "requested": checked["target"],
                     "measured": {"target_original_frames": [row["frame"] for row in target_rows],
@@ -162,7 +167,7 @@ def native(scene, output_dir, host, port):
               "maneuver": {"status": "met" if completion else "not_met",
                            "method": "original route endpoint distance",
                            "sources": check_source, "intervals": [],
-                           "engineering_endpoint_radius_m": .25,
+                           "engineering_endpoint_radius_m": controller["stop_radius_m"],
                            "endpoint_distance_m": distance}}
     result = {"case_id": checked["case_id"],
               "measured_values": {"original_frame_count": captured["frame_count"],

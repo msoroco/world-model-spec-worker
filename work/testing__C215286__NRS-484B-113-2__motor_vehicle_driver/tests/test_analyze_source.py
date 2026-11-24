@@ -27,8 +27,7 @@ class SavedAnalysisTests(unittest.TestCase):
         frame = {"frame": 0, "time_s": 0, "vehicle_actor_id": 4,
                  "body_polygon_xy": body, "crosswalk_polygon_xy": packet["crosswalk_polygon_xy"],
                  "velocity_xy": [-1, 0], "forward_xy": [1, 0], "reverse_gear": True}
-        path = root / "channels" / "reverse-body-crosswalk.jsonl"
-        path.parent.mkdir()
+        path = root / "reverse-body-crosswalk-source.jsonl"
         path.write_text(json.dumps(frame) + "\n")
         context = {"map_packet": packet, "frames_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                    "source_id": "fixture-only", "vehicle_actor_id": 4,

@@ -51,10 +51,13 @@ def _write_once(path, data):
     return _sha(data)
 
 
-def capture(world, carla, site_path, case_id, output_dir, camera_reader, *, frames=900):
+def capture(world, carla, site_path, case_id, output_dir, camera_reader, *, frames=900,
+            throttle=.16, stop_radius_m=.25):
     """Capture a full source-joined interval from an injected Native world."""
     if frames != 900:
         raise ValueError("exact 45 second original interval required")
+    if type(stop_radius_m) not in (float, int) or not 0 < stop_radius_m <= .5:
+        raise ValueError("bounded engineering stop radius required")
     packet, packet_raw, source_raw = read(site_path, case_id)
     check_world(world, packet)
     root = Path(output_dir)
@@ -76,8 +79,8 @@ def capture(world, carla, site_path, case_id, output_dir, camera_reader, *, fram
             location = ego_transform.location
             remaining = math.hypot(location.x - destination[0], location.y - destination[1])
             # The same route-endpoint controller applies to all three cases.
-            control_step(ego, reverse=True, hold=remaining <= .25,
-                         control_factory=carla.VehicleControl)
+            control_step(ego, reverse=True, hold=remaining <= stop_radius_m,
+                         control_factory=carla.VehicleControl, throttle=throttle)
             native_frame = world.tick()
             snapshot = world.get_snapshot()
             if type(native_frame) is not int or snapshot.frame != native_frame:

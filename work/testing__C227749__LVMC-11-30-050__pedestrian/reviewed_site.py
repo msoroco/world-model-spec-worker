@@ -13,7 +13,7 @@ from pathlib import Path
 
 FACTS = ('starting_curb_xy_m', 'opposite_curb_xy_m',
          'crosswalk_boundaries_xy_m', 'roadway_highway_public_use',
-         'governing_control')
+         'municipal_jurisdiction', 'governing_control')
 
 
 def _inside(root: Path, relative: str) -> Path:
@@ -47,6 +47,9 @@ def audit_reviewed_site(scene: dict, attempt: Path) -> dict:
     if packet.get('roadway_highway_public_use') not in ('reviewed_public_roadway',
                                                        'reviewed_private_roadway'):
         raise ValueError('reviewed roadway/public-use finding missing')
+    if packet.get('municipal_jurisdiction') not in ('reviewed_within_municipality',
+                                                    'reviewed_outside_municipality'):
+        raise ValueError('reviewed municipal jurisdiction finding missing')
     if packet.get('governing_control') not in ('reviewed_none', 'reviewed_device'):
         raise ValueError('reviewed governing control finding missing')
     refs = packet.get('source_refs')

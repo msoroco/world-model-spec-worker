@@ -40,6 +40,14 @@ class SavedDeliveryTests(unittest.TestCase):
             'properties': [{'id': 'lot', 'status': 'private', 'authority': 'original parcel authority',
                             'polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]]}],
         }
+        original.write_text(json.dumps({
+            'format': 'original-parcel-authority-v1',
+            'opendrive_sha256': audit.sha(xodr.read_bytes()),
+            'map_name': 'source', 'coordinate_frame': 'native-map',
+            'intersecting_street_id': 'street-B', 'connector_routes': connector,
+            'roadway_route': None, 'properties': map_packet['properties'],
+        }) + '\n')
+        map_packet['source']['sha256'] = audit.sha(original.read_bytes())
         frames = list(range(100, 120))
         self.trace = {'case_id': self.case, 'coordinate_frame': 'native-map', 'actor_class': 'vehicle',
                       'actor_source': {'source': 'original registry'},
@@ -150,6 +158,13 @@ class SavedDeliveryTests(unittest.TestCase):
         packet['connector_routes']['lot'][1][1] = 6
         self.bundle['map'] = self.write('map.json', json.dumps(packet) + '\n')
         with self.assertRaisesRegex(ValueError, 'saved connector route differs'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+
+    def test_resealed_parcel_classification_override_rejected(self):
+        packet = json.loads((self.root / 'map.json').read_text())
+        packet['properties'][0]['status'] = 'public'
+        self.bundle['map'] = self.write('map.json', json.dumps(packet) + '\n')
+        with self.assertRaisesRegex(ValueError, 'saved parcel classification or boundaries differ'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
     def test_missing_connector_route_rejected_even_when_both_packets_omit_it(self):

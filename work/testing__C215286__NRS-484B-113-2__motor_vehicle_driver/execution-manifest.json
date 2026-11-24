@@ -2,48 +2,167 @@
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "preparation_status": "offline_only_partial",
+  "preparation_status": "delivery_prepared",
   "cases": [
     {
       "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
       "kind": "delivery",
       "construction": "cases/reverse_clear/construction.json",
-      "construction_sha256": "b0a10d77d493791ffb0fe0344717aa161e459368f09ada2169be0cf4839a0c24",
+      "construction_sha256": "6b89cae515f858c5f82681e1d79b7b79006b33b61b98379727f2b7071cad0d47",
       "candidate_risk": {
         "status": "physical",
         "reason": "Map crosswalk geometry and body extent may make requested edge relation difficult to realize"
       },
-      "candidates": [],
-      "preparation_status": "offline_only_partial",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_clear/fallback1-construction.json",
+          "construction_sha256": "23edfb05a5c2eec1a8f64ea560fbae99e85ae6a6dbb53909a60b6a2dbce63215",
+          "trigger": {
+            "source": "reverse-body-crosswalk-source.jsonl and trace.jsonl",
+            "metric": "backing target frame count and reverse endpoint distance",
+            "failure_condition": "target frame count is zero or endpoint distance exceeds the primary engineering stop radius"
+          },
+          "changed_knobs": [
+            "reverse throttle 0.16 to 0.22",
+            "engineering stop radius 0.25 m to 0.10 m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --candidate fallback1 --output .runtime-work/c215286-20261124/offline3-reverse_clear-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "23edfb05a5c2eec1a8f64ea560fbae99e85ae6a6dbb53909a60b6a2dbce63215",
+            "log": "cpu-offline-fallback1-reverse_clear.log",
+            "log_sha256": "00d5e1b753e496a4d3f2b07c2509e6f6d77a68cdba0e2c614563ea0d511112a9"
+          },
+          "compatibility": {
+            "receipt": "compat-receipt-fallback1-reverse_clear.json",
+            "sha256": "81b294e289b1d2ff962d75228f72ba418866d5e9c468885e54e136138b24645a",
+            "log": "cpu-compatibility-fallback1-reverse_clear.log",
+            "negative_log": "cpu-negative-fallback1-reverse_clear.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --candidate fallback1 --output .runtime-work/c215286-20261124/compat3-reverse_clear-fallback1 --library runtime/library --validator .runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "preparation_status": "delivery_prepared",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --output .runtime-work/c215286-20261124/offline-reverse_clear --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --candidate primary --output .runtime-work/c215286-20261124/offline3-reverse_clear-primary --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "81c6e18f7f2209ea3c479a4afe98877ca3ab5b60c9cbf0ff9f40c0ec81d77738",
+        "construction_sha256": "6b89cae515f858c5f82681e1d79b7b79006b33b61b98379727f2b7071cad0d47",
         "log": "cpu-offline-reverse_clear.log",
-        "log_sha256": "00d5e1b753e496a4d3f2b07c2509e6f6d77a68cdba0e2c614563ea0d511112a9"
+        "log_sha256": "4fa1ee401ed527c618bd0b3dc993c3e4602df198a8972be20de46c8a45f85a7a"
       },
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analyze_source.py",
         "kind": "saved_source_finalizer"
       },
-      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/diagnostic-reverse_clear-recipe.json"
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/diagnostic-reverse_clear-recipe.json",
+      "compatibility": {
+        "receipt": "compat-receipt-reverse_clear.json",
+        "sha256": "b613ee581fcea0171f4ba3abe1ea4dda2befe199d802d1bef503938ff762cb75",
+        "log": "cpu-compatibility-reverse_clear.log",
+        "negative_log": "cpu-negative-reverse_clear.log",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --candidate primary --output .runtime-work/c215286-20261124/compat3-reverse_clear-primary --library runtime/library --validator .runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cpu-negative-reverse_clear.log",
+        "error_contains": "Missing required source: reverse-body-crosswalk-source.jsonl"
+      },
+      "acquisition": {
+        "reverse_body_crosswalk": {
+          "entrypoint": "native_capture.py",
+          "method": "Native original frame body/crosswalk source capture",
+          "evidence": "reverse-body-crosswalk-source.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "cases/reverse_clear/physical-preparation.json",
+        "sha256": "0674b08ea5268bd18fb081d2123fe2904ad60c08404be7d771f76387646470e8"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: reverse-body-crosswalk-source.jsonl",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_audit.py --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/compat3-reverse_clear-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-reverse_clear.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_audit.py --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-negative-reverse_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-negative-reverse_clear.json --negative-missing-source",
+        "script": "delivery_audit.py",
+        "script_sha256": "eaf3b94ee598e48999c9934c6b6eeb720a26a1bd98e63ce916addb9f0173a1c6",
+        "test_log": "cpu-delivery-reverse_clear.log",
+        "test_log_sha256": "e109a234226ae8f8b3a04632fac734f56178d932f5a013fc13f3501d6e3c7fa3",
+        "negative_log": "cpu-delivery-negative-reverse_clear.log",
+        "negative_log_sha256": "d3be642951b3de26662fab82e047c39a68f38903ea9e9b55475561751ea182ec"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-attempt-reverse_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-output-reverse_clear --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-output-reverse_clear/v0001/feedback.json testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-reverse_clear.log",
+        "test_log_sha256": "636b3ff0e64dc9e54058908be43f3214b0b0b15a5a2f53d5181c8611a8e7c479"
+      }
     },
     {
       "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent",
       "kind": "delivery",
       "construction": "cases/reverse_tangent/construction.json",
-      "construction_sha256": "0aa768262900b859cf9458144a02beb12992446637472b57954bddecd411e817",
+      "construction_sha256": "8d8a462567380bb6aec605e4c7125ddeb009d553ffb171b63b34d86764752ac8",
       "candidate_risk": {
         "status": "physical",
         "reason": "Map crosswalk geometry and body extent may make requested edge relation difficult to realize"
       },
-      "candidates": [],
-      "preparation_status": "offline_only_partial",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_tangent/fallback1-construction.json",
+          "construction_sha256": "0c275633b5b537275c223466aa5233d4c8631063a8271b072586360f8e731365",
+          "trigger": {
+            "source": "reverse-body-crosswalk-source.jsonl and trace.jsonl",
+            "metric": "backing target frame count and reverse endpoint distance",
+            "failure_condition": "target frame count is zero or endpoint distance exceeds the primary engineering stop radius"
+          },
+          "changed_knobs": [
+            "reverse throttle 0.16 to 0.22",
+            "engineering stop radius 0.25 m to 0.10 m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --candidate fallback1 --output .runtime-work/c215286-20261124/offline3-reverse_tangent-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "0c275633b5b537275c223466aa5233d4c8631063a8271b072586360f8e731365",
+            "log": "cpu-offline-fallback1-reverse_tangent.log",
+            "log_sha256": "3c7240ff4c49c8c36c51ad35e3ed6d1ca1d4b410e6ee9614e68c5f7820de2258"
+          },
+          "compatibility": {
+            "receipt": "compat-receipt-fallback1-reverse_tangent.json",
+            "sha256": "24c8cd0e9205edc24f0c795df94c72a3a4753252ab2ae6bfe88185d89081f9a6",
+            "log": "cpu-compatibility-fallback1-reverse_tangent.log",
+            "negative_log": "cpu-negative-fallback1-reverse_tangent.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --candidate fallback1 --output .runtime-work/c215286-20261124/compat3-reverse_tangent-fallback1 --library runtime/library --validator .runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "preparation_status": "delivery_prepared",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --output .runtime-work/c215286-20261124/offline-reverse_tangent --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --candidate primary --output .runtime-work/c215286-20261124/offline3-reverse_tangent-primary --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "f085234ffa569702d85ac73fd39e900cff31a162fc896223f3952c09c5cbc03f",
+        "construction_sha256": "8d8a462567380bb6aec605e4c7125ddeb009d553ffb171b63b34d86764752ac8",
         "log": "cpu-offline-reverse_tangent.log",
         "log_sha256": "3c7240ff4c49c8c36c51ad35e3ed6d1ca1d4b410e6ee9614e68c5f7820de2258"
       },
@@ -52,23 +171,113 @@
         "entrypoint": "analyze_source.py",
         "kind": "saved_source_finalizer"
       },
-      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/diagnostic-reverse_tangent-recipe.json"
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/diagnostic-reverse_tangent-recipe.json",
+      "compatibility": {
+        "receipt": "compat-receipt-reverse_tangent.json",
+        "sha256": "7c8cab096415c2360be2d36949469be04838c1d9078571f0370a2262947e0c8c",
+        "log": "cpu-compatibility-reverse_tangent.log",
+        "negative_log": "cpu-negative-reverse_tangent.log",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --candidate primary --output .runtime-work/c215286-20261124/compat3-reverse_tangent-primary --library runtime/library --validator .runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cpu-negative-reverse_tangent.log",
+        "error_contains": "Missing required source: reverse-body-crosswalk-source.jsonl"
+      },
+      "acquisition": {
+        "reverse_body_crosswalk": {
+          "entrypoint": "native_capture.py",
+          "method": "Native original frame body/crosswalk source capture",
+          "evidence": "reverse-body-crosswalk-source.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "cases/reverse_tangent/physical-preparation.json",
+        "sha256": "42a719afb0294a8012741c3f3ad747af181aedcd077cf265ad523652f980d349"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: reverse-body-crosswalk-source.jsonl",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_audit.py --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/compat3-reverse_tangent-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-reverse_tangent.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_audit.py --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-negative-reverse_tangent --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-negative-reverse_tangent.json --negative-missing-source",
+        "script": "delivery_audit.py",
+        "script_sha256": "eaf3b94ee598e48999c9934c6b6eeb720a26a1bd98e63ce916addb9f0173a1c6",
+        "test_log": "cpu-delivery-reverse_tangent.log",
+        "test_log_sha256": "2219092701c4d68d78d90a88c6c04aa9329192b56904d2b7530863f54fc5f4c1",
+        "negative_log": "cpu-delivery-negative-reverse_tangent.log",
+        "negative_log_sha256": "d3be642951b3de26662fab82e047c39a68f38903ea9e9b55475561751ea182ec"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-attempt-reverse_tangent --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-output-reverse_tangent --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-output-reverse_tangent/v0001/feedback.json testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_tangent",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-reverse_tangent.log",
+        "test_log_sha256": "0d072d0d32e39ccc2916b0c2755c7de261fd1285d1baf49c2e64d05de3bde9ab"
+      }
     },
     {
       "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap",
       "kind": "delivery",
       "construction": "cases/reverse_overlap/construction.json",
-      "construction_sha256": "041363c2fe43fb7d07d73d317a4f88d1b5739713a7a2c5a1b217e3763c881dc4",
+      "construction_sha256": "0dbcb6dd84807f7f248e26016d02b4f6057fc64292aecb156dc6985e6fd73f02",
       "candidate_risk": {
         "status": "physical",
         "reason": "Map crosswalk geometry and body extent may make requested edge relation difficult to realize"
       },
-      "candidates": [],
-      "preparation_status": "offline_only_partial",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reverse_overlap/fallback1-construction.json",
+          "construction_sha256": "ca3970a23495ce6e99a4f4bd7ab195cf3fc6ada35e8f5144ba3e0e26ba6f9095",
+          "trigger": {
+            "source": "reverse-body-crosswalk-source.jsonl and trace.jsonl",
+            "metric": "backing target frame count and reverse endpoint distance",
+            "failure_condition": "target frame count is zero or endpoint distance exceeds the primary engineering stop radius"
+          },
+          "changed_knobs": [
+            "reverse throttle 0.16 to 0.22",
+            "engineering stop radius 0.25 m to 0.10 m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --candidate fallback1 --output .runtime-work/c215286-20261124/offline3-reverse_overlap-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "ca3970a23495ce6e99a4f4bd7ab195cf3fc6ada35e8f5144ba3e0e26ba6f9095",
+            "log": "cpu-offline-fallback1-reverse_overlap.log",
+            "log_sha256": "4dfa1d14d056f7a58a367abb9382e5c16267bafc10058a703070e639406cb4a1"
+          },
+          "compatibility": {
+            "receipt": "compat-receipt-fallback1-reverse_overlap.json",
+            "sha256": "0ecc3e025da6e3935f0cca7bcdef01104151dbb73f3480e854ba8ffbfbe05f6e",
+            "log": "cpu-compatibility-fallback1-reverse_overlap.log",
+            "negative_log": "cpu-negative-fallback1-reverse_overlap.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --candidate fallback1 --output .runtime-work/c215286-20261124/compat3-reverse_overlap-fallback1 --library runtime/library --validator .runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "preparation_status": "delivery_prepared",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --output .runtime-work/c215286-20261124/offline-reverse_overlap --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --candidate primary --output .runtime-work/c215286-20261124/offline3-reverse_overlap-primary --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "4937bde219468e4f7e8ed5e68aaa445955396753e15614b0b28465655ecd0a5c",
+        "construction_sha256": "0dbcb6dd84807f7f248e26016d02b4f6057fc64292aecb156dc6985e6fd73f02",
         "log": "cpu-offline-reverse_overlap.log",
         "log_sha256": "83c77099775cd8e78d84d9e1001c05ce1456cb0ebfdbeeea984d766d2a80ab7f"
       },
@@ -77,7 +286,68 @@
         "entrypoint": "analyze_source.py",
         "kind": "saved_source_finalizer"
       },
-      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/diagnostic-reverse_overlap-recipe.json"
+      "fixture_recipe": "work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/diagnostic-reverse_overlap-recipe.json",
+      "compatibility": {
+        "receipt": "compat-receipt-reverse_overlap.json",
+        "sha256": "580b06237a379b0f483790d18b75e9de2483049b3bdbfb2790bf3ef90b3e3170",
+        "log": "cpu-compatibility-reverse_overlap.log",
+        "negative_log": "cpu-negative-reverse_overlap.log",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --candidate primary --output .runtime-work/c215286-20261124/compat3-reverse_overlap-primary --library runtime/library --validator .runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cpu-negative-reverse_overlap.log",
+        "error_contains": "Missing required source: reverse-body-crosswalk-source.jsonl"
+      },
+      "acquisition": {
+        "reverse_body_crosswalk": {
+          "entrypoint": "native_capture.py",
+          "method": "Native original frame body/crosswalk source capture",
+          "evidence": "reverse-body-crosswalk-source.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "cases/reverse_overlap/physical-preparation.json",
+        "sha256": "c461f162eed48381d3a94a0c3e922b61e96e7d3c4191c9ada84ba4d29d505434"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: reverse-body-crosswalk-source.jsonl",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_audit.py --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/compat3-reverse_overlap-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-reverse_overlap.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/delivery_audit.py --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-negative-reverse_overlap --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-negative-reverse_overlap.json --negative-missing-source",
+        "script": "delivery_audit.py",
+        "script_sha256": "eaf3b94ee598e48999c9934c6b6eeb720a26a1bd98e63ce916addb9f0173a1c6",
+        "test_log": "cpu-delivery-reverse_overlap.log",
+        "test_log_sha256": "1fff2ae297b591d26e8516fd3a4dd323cd3ef51185ecba168b4fd12ff8f813dc",
+        "negative_log": "cpu-delivery-negative-reverse_overlap.log",
+        "negative_log_sha256": "d3be642951b3de26662fab82e047c39a68f38903ea9e9b55475561751ea182ec"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-attempt-reverse_overlap --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-output-reverse_overlap --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c215286-20261124/delivery-saved-output-reverse_overlap/v0001/feedback.json testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-reverse_overlap.log",
+        "test_log_sha256": "a0230ac55b19dfe44e121688f4c9a68a3a88d1537a7c1e14523669f8a50b21db"
+      }
     }
   ]
 }

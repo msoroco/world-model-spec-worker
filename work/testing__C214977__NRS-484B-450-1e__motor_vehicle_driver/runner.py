@@ -132,6 +132,14 @@ def run_native(config, args):
                 restoration = restore(client, saved)
     if receipt is None or restoration is None:
         raise ValueError('Native capture or world restoration incomplete')
+    recorder_info = client.show_recorder_file_info(str(recorder_path), True)
+    if not isinstance(recorder_info, str) or not recorder_info.strip():
+        raise ValueError('Native recorder actor census missing')
+    census_path = attempt/'capture'/'recorder_info.txt'
+    census_path.parent.mkdir(parents=True, exist_ok=True)
+    if census_path.exists():
+        raise ValueError('retain prior recorder actor census')
+    census_path.write_text(recorder_info.rstrip()+'\n')
     from native_output_bridge import seal_original_capture
     seal_original_capture(attempt, config['case'], saved['opendrive'],
                           restoration_verified=restoration['restored'])

@@ -120,9 +120,11 @@
     }
   ],
   "observations": [
-    "Original map identity and crosswalk polygon with source references",
-    "Original 20 Hz vehicle body footprint, velocity, forward vector and reverse gear",
-    "Framewise disjoint/contact/overlap relation while backing; no legal verdict"
+    {
+      "name": "reverse_body_crosswalk",
+      "mandatory": true,
+      "description": "Original 20 Hz Native map polygon, vehicle body footprint, motion, reverse gear, and framewise relation"
+    }
   ],
   "sources": [
     {
@@ -162,9 +164,7 @@
     "e22d5dba7af61833c4090e2b261f307f2449cb816e5be9cea13f7bcc432da259"
   ],
   "runtime_uncertainties": [
-    "Accepted recording has only exported metadata; original trace/video are absent, so its exact body-crosswalk overlap cannot be verified here.",
-    "Native crosswalk source polygon and route packet must be exported from original map before runtime.py offline/compatibility proofs.",
-    "Exact manifest, canonical stage proposals, finalizer and saved-only process path remain CPU work."
+    "Physical CARLA behavior and Native camera pixels remain to be captured and reviewed on the GPU. Legal boundary interpretation remains unresolved."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -172,16 +172,12 @@
     "facts": [
       {
         "recording_id": "e22d5dba7af61833c4090e2b261f307f2449cb816e5be9cea13f7bcc432da259",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 700 frames, case testing__C215286__NRS-484B-113-2__motor_vehicle_driver__marked_crosswalk, and decoder_passed=None. Frozen review context describes the authored setting as: marked crosswalk",
+        "demonstrated_fact": "Frozen accepted metadata reports accepted status, 700 frames, and the marked_crosswalk case ID; decoder_passed is absent. Separate frozen review context describes marked-crosswalk as an authored setting, not a measured result.",
         "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
         "sources": [
           {
             "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/accepted/e22d5dba7af61833c4090e2b261f307f2449cb816e5be9cea13f7bcc432da259/metadata.json",
             "sha256": "adec25b8d8414850cd6c8567797a386eb513676e594df4cb87b62e719eec9a54"
-          },
-          {
-            "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "88a55e0fd20ca9d3f35d9e7b87037e25aba26b7e2d0de40934dbcd5e96903e23"
           }
         ]
       }
@@ -199,7 +195,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_cpu_construction_and_audit",
+  "planning_status": "delivery_prepared_cpu",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -240,5 +236,33 @@
         "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_overlap"
       ]
     }
-  ]
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "vehicle reverse route and marked crosswalk",
+        "interval": "full capture"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle body and crosswalk boundary",
+        "interval": "full capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crosswalk marking and vehicle reference",
+        "interval": "full capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver vehicle reverse direction",
+        "interval": "full capture"
+      }
+    ]
+  }
 }

@@ -16,7 +16,7 @@ spec.loader.exec_module(module)
 class SavedPairTests(unittest.TestCase):
     def make_attempt(self, root, name, x, *, packet_change=None, time_change=0):
         attempt = root / name
-        channel = attempt / "channels" / "reverse-body-crosswalk.jsonl"
+        channel = attempt / "reverse-body-crosswalk-source.jsonl"
         channel.parent.mkdir(parents=True, exist_ok=True)
         from test_site_packet import site
         original = site()

@@ -4,6 +4,45 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "baseline",
+      "rationale": "Shared engineering reference for controlled reverse comparisons; no legal threshold or physical acceptance claimed.",
+      "variable_assignments": {
+        "reverse_path": {
+          "kind": "controller",
+          "value": "disjoint",
+          "note": "Requested physical relation; original outcome unverified"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "reverse_body_crosswalk",
+            "unit": "structured",
+            "method": "Native original frame body and marked-crossing polygon measurement",
+            "time_window": "full reverse maneuver",
+            "reference_frame": "Native world XY",
+            "uncertainty": "Actual body relation requires independent physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "marked_crosswalk_source",
+            "unit": "metadata",
+            "method": "Native map SHA-256 and marked-crossing geometry"
+          }
+        ],
+        "limitations": [
+          "No legal verdict is inferred from physical relation."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "on or over a crosswalk"
+      ]
+    },
+    {
       "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_clear",
       "target_law_id": "NRS-484B-113-2",
       "target_type": "judgment_sweep",
@@ -148,6 +187,22 @@
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "reverse-crosswalk-relation",
+      "target_law_id": "NRS-484B-113-2",
+      "judgment_refs": [
+        {
+          "phrase": "on or over a crosswalk",
+          "note": "Original marked crossing geometry and vehicle extent during backing need source review; boundary contact has no assigned legal cutoff."
+        }
+      ],
+      "rationale": "Categorical disjoint, contact, and overlap engineering probes have exact cases; a numeric legal judgment sweep requires unavailable legal threshold and source-backed numeric range.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "No source-backed numeric law threshold or legal contact rule for on or over a crosswalk."
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

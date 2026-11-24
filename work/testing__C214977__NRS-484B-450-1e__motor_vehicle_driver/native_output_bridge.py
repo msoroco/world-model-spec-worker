@@ -75,6 +75,9 @@ def seal_original_capture(attempt, case, map_text, *, restoration_verified):
     recorder = root/'carla_recorder.log'
     require(recorder.is_file() and recorder.stat().st_size > 0,
             'original CARLA recorder source missing')
+    recorder_info = root/'capture'/'recorder_info.txt'
+    require(recorder_info.is_file() and recorder_info.stat().st_size > 0,
+            'original CARLA recorder actor census missing')
     rows = sealed_json(receipt['sources']['actor_rows'], root)
     mapping = sealed_json(receipt['sources']['frame_map'], root)
     cameras = sealed_json(receipt['sources']['camera_readbacks'], root)
@@ -94,7 +97,8 @@ def seal_original_capture(attempt, case, map_text, *, restoration_verified):
             frame_map.append(frame, time_s)
             corners = row['body_corners_xy']
             position = row['position_m']
-            source_packet = {'frame':frame, 'time_s':time_s, 'subject_id':row['subject_id'],
+            source_packet = {'frame':frame, 'time_s':time_s, 'participants':row.get('participants', []),
+                             'subject_id':row['subject_id'],
                              'body_corners_xy':corners, 'speed_mps':row['speed_mps'],
                              'halt_activity':row['halt_activity'],
                              'crosswalk_id':row['crosswalk_id'], 'marking_status':row['marking_status'],
@@ -121,7 +125,7 @@ def seal_original_capture(attempt, case, map_text, *, restoration_verified):
                              'ego':{'body_vertices_m':row['body_vertices_m'],
                                     'position_m':position,'heading_deg':row['heading_deg'],
                                     'speed_mps':row['speed_mps'],
-                                    'speed_provenance':'original_native_actor_get_velocity'},
+                                    'speed_provenance':'original_trace_actor_get_velocity'},
                              'original_observations':source_packet,'world':{'weather':{}}})
     _write_lines(root/'trace.jsonl',trace)
     _write_lines(root/'capture/evidence.jsonl',evidence)
@@ -131,6 +135,7 @@ def seal_original_capture(attempt, case, map_text, *, restoration_verified):
         'diagnostic_fixture':False,'extraction_confirmed':True,'frames':900,
         'sources':{'road.xodr':map_sha,'trace.jsonl':_sha(root/'trace.jsonl'),
                    'carla_recorder.log':_sha(recorder),
+                   'capture/recorder_info.txt':_sha(recorder_info),
                    'native-receipt.json':receipt_ref['sha256']},
         'scope':'original measured crosswalk actor and four RGB callbacks'})
     videos = {}

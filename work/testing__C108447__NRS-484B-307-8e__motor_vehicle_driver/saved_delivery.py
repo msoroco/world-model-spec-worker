@@ -71,7 +71,15 @@ def audit(attempt: Path, bundle: dict, *, expected_frames: int = 900) -> dict:
     authority = map_packet.get('source', {})
     authority_path = source_file(attempt, authority, 'original parcel authority')
     authority_data = json.loads(authority_path.read_text())
+    require(authority_data.get('format') == 'original-parcel-authority-v1',
+            'original parcel authority format required')
     require(authority_data.get('opendrive_sha256') == sha(native_path.read_bytes()), 'parcel authority original map seal differs')
+    require(authority_data.get('map_name') == native.get('map_name') and
+            authority_data.get('coordinate_frame') == map_packet.get('coordinate_frame') and
+            authority_data.get('intersecting_street_id') == map_packet.get('intersecting_street_id'),
+            'saved map identity differs from sealed authority')
+    require(authority_data.get('properties') == map_packet.get('properties'),
+            'saved parcel classification or boundaries differ from sealed authority')
     require(isinstance(authority_data.get('connector_routes'), dict) and authority_data['connector_routes']
             and authority_data['connector_routes'] == map_packet.get('connector_routes'),
             'saved connector route differs from sealed authority')

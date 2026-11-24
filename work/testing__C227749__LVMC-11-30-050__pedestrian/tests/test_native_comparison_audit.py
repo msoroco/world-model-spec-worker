@@ -32,7 +32,7 @@ class NativeComparisonAuditTest(unittest.TestCase):
                 'case_id': case_id, 'source_refs': refs}) + '\n')
             self.attempts.append(attempt)
 
-    def check(self, site_audit=None):
+    def check(self, site_audit=None, comparison_id='right_angle_vs_neither'):
         def measured(attempt):
             index = [path.resolve() for path in self.attempts].index(pathlib.Path(attempt).resolve())
             return {'case_id': self.ids[index], 'diagnostic_fixture': False,
@@ -47,7 +47,7 @@ class NativeComparisonAuditTest(unittest.TestCase):
         with patch.object(comparison, 'read_attempt', side_effect=measured), \
              patch.object(comparison, 'audit_pixels', side_effect=pixels), \
              patch.object(comparison, 'audit_reviewed_site', side_effect=site_audit):
-            return comparison.audit('right_angle_vs_neither', *self.attempts,
+            return comparison.audit(comparison_id, *self.attempts,
                                     self.root / 'review-left', self.root / 'review-right',
                                     package=ROOT)
 
@@ -81,6 +81,20 @@ class NativeComparisonAuditTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, 'receipt differs from original documents'):
             self.check(site_audit=original)
+
+    def test_changed_crosswalk_needs_distinct_reviewed_source(self):
+        plan = json.loads((ROOT / 'case-plan.json').read_text())
+        self.ids = next(row['case_ids'] for row in plan['comparisons']
+                        if row['comparison_id'] == 'outside_vs_crosswalk_exception')
+        for attempt, case_id in zip(self.attempts, self.ids):
+            exact = ROOT / 'cases' / case_id.removeprefix(ROOT.name + '__')
+            for name in ('scene.json', 'config.json'):
+                shutil.copyfile(exact / name, attempt / name)
+            site = json.loads((attempt / 'reviewed-site-audit.json').read_text())
+            site['case_id'] = case_id
+            (attempt / 'reviewed-site-audit.json').write_text(json.dumps(site) + '\n')
+        with self.assertRaisesRegex(ValueError, 'changed crosswalk needs distinct reviewed source'):
+            self.check(comparison_id='outside_vs_crosswalk_exception')
 
 
 if __name__ == '__main__':

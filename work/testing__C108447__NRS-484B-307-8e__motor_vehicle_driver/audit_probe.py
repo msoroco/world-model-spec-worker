@@ -39,6 +39,7 @@ def run(case_id: str, scratch: Path, negative: bool) -> dict:
             fixture.bundle['case'] = fixture.write('case.json', json.dumps({'case_id': case_id}) + '\n')
             if suffix == 'public_bypass':
                 packet['properties'][0]['status'] = 'public'
+                authority['properties'][0]['status'] = 'public'
             if suffix == 'ordinary_crossing':
                 route = [[-3, -2], [5, -2], [13, -2]]
                 packet['roadway_route'] = route

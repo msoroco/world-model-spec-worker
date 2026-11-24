@@ -130,10 +130,10 @@ class AdapterTests(unittest.TestCase):
     def test_reviewed_source_staging_preserves_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
             base=Path(directory);source=base/'review';attempt=base/'attempt'
-            (source/'source-inputs').mkdir(parents=True);attempt.mkdir()
+            (source/'reviewed-inputs').mkdir(parents=True);attempt.mkdir()
             raw=(json.dumps({'map_name':'Town'})+'\n').encode()
-            path=source/'source-inputs/site.json';path.write_bytes(raw)
-            ref={'path':'source-inputs/site.json','sha256':hashlib.sha256(raw).hexdigest()}
+            path=source/'reviewed-inputs/site.json';path.write_bytes(raw)
+            ref={'path':'reviewed-inputs/site.json','sha256':hashlib.sha256(raw).hexdigest()}
             _stage_sources(source,attempt,[ref])
             self.assertEqual((attempt/ref['path']).read_bytes(),raw)
             with self.assertRaisesRegex(SourceError,'collision'):

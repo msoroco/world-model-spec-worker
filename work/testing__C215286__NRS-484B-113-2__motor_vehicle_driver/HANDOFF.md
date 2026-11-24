@@ -1,40 +1,23 @@
-# testing__C215286__NRS-484B-113-2__motor_vehicle_driver
+# C215286 NRS 484B.113(2) crosswalk delivery handoff
 
-Status: partial CPU construction and audit; no delivery-ready claim.
+Status: delivery prepared on the current pinned CPU runtime. The exact assignment strict gate passed on 2026-11-24. Native CARLA capture, physical acceptance, camera pixel review, and legal judgment remain for local GPU delivery.
 
-Exact assigned branch: NRS 484B.113(2), backing on or over a crosswalk, C215286 motor vehicle driver. The statute also names intersection and street corner, but this assignment fixes the crosswalk branch. There is no statutory numeric threshold or judgment range for this assignment. A physical body-boundary contact probe is an engineering geometry probe, not a legal cutoff.
+## Scope and selected cases
 
-## Coverage and accepted evidence
+The assigned branch is backing on or over a crosswalk at C215286 by the motor vehicle driver. `case-plan.json` selects three exact cases: `reverse_clear` (disjoint), `reverse_tangent` (contact), and `reverse_overlap` (positive-area overlap). It requires `reverse_contact_vs_clear` and `reverse_overlap_vs_clear` saved-source comparisons. These are engineering geometry probes. The law's contact boundary has no source-backed numeric cutoff; the canonical semantic proposal records the numeric judgment sweep as incomplete, while preserving all three selected physical probes and unresolved legal judgment.
 
-`case-plan.json` names exact `reverse_clear`, `reverse_tangent`, and `reverse_overlap` cases. It links clear/contact and clear/overlap comparisons with fixed map, marking, vehicle, driver, capture rate and reverse condition. The one frozen accepted marked-crosswalk recording is preserved and reviewed in `evidence_review`; its exported metadata reports acceptance and 700 frames, while original trace and video are absent. Its body-crosswalk relation and comparison isolation cannot be inferred from metadata, so it is not counted as full branch coverage.
+The one frozen accepted marked-crosswalk recording remains unchanged. Its exported metadata reports acceptance and 700 frames, but the original trace and video were not supplied. The existing-evidence review cites its frozen metadata and retains that limitation; it does not infer body-crosswalk relation or comparison isolation from acceptance metadata.
 
-## Implemented CPU construction and proof
+## Source-grounded Native package
 
-`crosswalk_delivery.py` validates an original map hash, crosswalk polygon/source, vehicle blueprint, driver/district sources, spawn transform source and nondegenerate reverse route. It lazily spawns the ego through an injected Native world and checks map and blueprint readback. It issues reverse/hold control, measures 20 Hz original-frame body polygon versus crosswalk polygon with velocity and reverse gear, and audits an expected physical relation only while backing. Its comparison audit requires two distinct original sources, a common map/crosswalk source and frame window, and an observed relation change. It returns no legal verdict.
+`execution-manifest.json` binds three selected primary constructions and one source-triggered fallback per case. The package requires an original C215286 marked-crosswalk site packet with map hash, map marking polygon/source, district and driver attribution, vehicle blueprint, spawn and reverse route. `runner.py` captures 900 original 20 Hz vehicle-body and crosswalk frames, four synchronized original cameras, frame mapping, source hashes, Native restoration/closure evidence, and selected measurement. The analyzer derives physical disjoint/contact/overlap from the original frame source and returns no legal verdict. The fallback changes only reverse throttle and engineering stop radius, with source-defined trigger conditions.
 
-`.venv-cpu/bin/python -m unittest discover -s work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/tests -v` passed 12 tests. `cpu-tests.log` SHA256: c1216526e41ef083fb3b6659c3166b0718b582596bc093d96734986f88d39c52. Exact static check `.venv-cpu/bin/python worker_check.py --assignment testing__C215286__NRS-484B-113-2__motor_vehicle_driver --complete` passed; log `assignment-check.log`.
+The selected measurement contract binds original source files and a missing-source rejection. `compare_saved.py` verifies two distinct saved attempts, their original map/marking/vehicle/driver/district identity, timestamps and observed geometry distinction. `delivery_audit.py` reopens original source, trace and four FFV1 videos, validates all timestamp joins and decoded pixels, and rejects missing original frame source. The positive CPU audits are explicitly synthetic diagnostic fixtures; their pixels and geometry are not physical CARLA acceptance evidence.
 
-## Next CPU actions
+## CPU proofs and exact delivery
 
-1. Export a source-hashed original C215286 marked-crosswalk polygon, district and reverse route packet; bind exact construction for all three cases and assess whether a tested fallback is needed for edge contact.
-2. Author the exact execution manifest, canonical stage proposals, full original-frame finalizer, four-camera capture profile and source-specific diagnostic recipes.
-3. Run exact offline and positive/negative compatibility proofs for each case and any candidate, then test `runtime.py process-saved` with independent full-video, source-decode, delivery and comparison audits.
-4. Rerun the exact strict assignment gate. Actual CARLA motion and camera visibility remain later physical checks, separate from the unfinished CPU package.
+All six primary/fallback offline and compatibility proofs passed on the current pinned runtime, including Native validator, Lean Core decoder, four camera renders/decodes, selected measurements and negative source tests. Saved-only processing passed for each exact case with preserved acquisition sources and a fresh derived version. Both comparison audits passed. The focused suite passed 26 tests. Physical preparation fixtures exercised complete, incomplete and missing-evidence branches, plus Native seal, exit and owner-release ordering. Each case's `delivery_acceptance` receipt binds a positive independent audit and a negative missing-source audit for demo-test and full-test targets. These proofs prepare the package for GPU delivery; they do not claim physical or legal acceptance.
 
-## Exact offline construction bundles
+The first exact GPU command is in `result.json` as `first_gpu_delivery_command`. It needs `CARLA_PYTHON`, `CARLA_HOST`, `CARLA_PORT`, `JOB_ID`, `DB`, and `RUN` supplied by the local owner. Run one exact selected case at a time, preserve the original site packet and pixels, review fallback triggers from original measurements, then use recorded-only processing and the two independent comparison audits. The local lead adds the three exact case commands and two comparison commands to the shared queue.
 
-`execution-manifest.json` binds all three exact inline constructions under `cases/`. Each bundle has `runner.py`, `scene.json` and two exact-case tests. `runtime.py offline` passed for `reverse_clear`, `reverse_tangent`, and `reverse_overlap` with receipts in `cpu-offline-*.log`; these check software identity and materialization only. The Native execution path in `runner.py` intentionally fails until original C215286 source packet and complete capture/finalization code are bound. No compatibility or delivery readiness is claimed.
-
-- `cpu-offline-reverse_clear.log` SHA256: `11133046e26ff39bfd368df7bedaf429c166289dac27cb401e3ee42764aa601c`.
-- `cpu-offline-reverse_tangent.log` SHA256: `f693ce34611c8f70445abf3b6b8c74cc04c8cb04506a532740d187144088097a`.
-- `cpu-offline-reverse_overlap.log` SHA256: `3cf275f77dd70acae3575a05094fc87e4a6f0dd61a6edd83027d62e780ba03e2`.
-
-## Saved-source finalizer increment
-
-`analyze_source.py` reads a reviewed original map packet and `channels/reverse-body-crosswalk.jsonl`, checks the frame-file SHA256 and exact polygon equality, then emits physical measurement and unresolved legal judgment. The focused suite now has 12 passing tests including removal of the required frame source and changed bytes. This is a source-bound component test, not the full `runtime.py compatibility` gate; Native-shaped four-camera diagnostic, canonical proposal/measurement contract and complete process-saved outputs remain to author.
-
-## Saved comparison audit increment (2026-11-23)
-
-`compare_saved.py` reopens both original saved frame streams through `analyze_source.load_measured`, verifies each frame-file SHA256, compares the map, crosswalk polygon and source, vehicle blueprint, driver and district source, actor identity, frame indices and original times, then checks disjoint/contact or disjoint/overlap while backing. It rejects reused attempts and reports only a physical distinction with unresolved legal judgment. The deliberate route/body position can differ; the fixed source fields cannot. The current artifact is a tested CPU audit script, but it is not yet bound to complete process-saved delivery receipts.
-
-`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/tests -v` passed 16 tests; `cpu-tests.log` SHA256: 4349ee6ca8522fe78b975fae6a5b9343df3bff009a10a7d4aa3af1a5ae604012. The exact static assignment check passed again in `assignment-check.log`. Next CPU work is original map source packet, full Native capture/finalization, canonical proposals, compatibility, process-saved and source-decode delivery audits; physical CARLA outcome remains unverified.
+Verification: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C215286__NRS-484B-113-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 and reported `static_checks_passed: true`.

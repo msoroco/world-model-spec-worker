@@ -127,6 +127,8 @@ class TestCapture(unittest.TestCase):
         for name in ('site','vehicle','frontage','highway','camera_pose'):
             (out/(name+'.json')).write_bytes((self.root/(name+'.json')).read_bytes())
         (out/'carla_recorder.log').write_text('synthetic recorder fixture\n')
+        (out/'capture').mkdir(exist_ok=True)
+        (out/'capture'/'recorder_info.txt').write_text(' Create 123: vehicle.sedan \n')
         (out/'construction.json').write_text(json.dumps({'case_id':self.case['case_id']})+'\n')
         (out/'runner.py').write_text('# CPU fixture entrypoint\n')
         (out/'config.json').write_text(json.dumps({'case':self.case})+'\n')

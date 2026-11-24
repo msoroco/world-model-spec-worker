@@ -120,6 +120,6 @@ def analyze(map_packet: dict[str, Any], trace: dict[str, Any], case: dict[str, A
 def analyze_files(map_path: Path, trace_path: Path, case_path: Path) -> dict[str, Any]:
     map_packet = json.loads(map_path.read_text())
     declared = map_packet.get('source', {})
-    original = Path(declared.get('path', ''))
+    original = map_path.parent / Path(declared.get('path', ''))
     _require(original.is_file() and _sha(original) == declared.get('sha256'), 'original map/property source seal differs')
     return analyze(map_packet, json.loads(trace_path.read_text()), json.loads(case_path.read_text()))

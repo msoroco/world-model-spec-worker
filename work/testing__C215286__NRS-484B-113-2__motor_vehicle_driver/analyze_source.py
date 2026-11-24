@@ -22,11 +22,11 @@ def measure_crosswalk(frames, source):
 def load_measured(attempt):
     attempt = Path(attempt)
     context = attempt / "reviewed-crosswalk-source.json"
-    frames_path = attempt / "channels" / "reverse-body-crosswalk.jsonl"
+    frames_path = attempt / "reverse-body-crosswalk-source.jsonl"
     if not context.is_file():
         raise ValueError("Missing required source: reviewed-crosswalk-source.json")
     if not frames_path.is_file():
-        raise ValueError("Missing required source: channels/reverse-body-crosswalk.jsonl")
+        raise ValueError("Missing required source: reverse-body-crosswalk-source.jsonl")
     source = json.loads(context.read_text())
     verify_saved(attempt, source)
     validate_source(source["map_packet"])
@@ -45,7 +45,7 @@ def analyze(attempt, *, expected_relation):
     source, measured, actual_sha = load_measured(attempt)
     physical = audit(measured, expected_relation=expected_relation)
     root = Path(attempt)
-    paths = ("channels/reverse-body-crosswalk.jsonl", "reviewed-crosswalk-source.json",
+    paths = ("reverse-body-crosswalk-source.jsonl", "reviewed-crosswalk-source.json",
              "original-site-packet.json", "original-site-source.json")
     hashes = {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in paths}
     return {"format": "worker-analysis-report",

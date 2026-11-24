@@ -13,7 +13,8 @@ from saved_measurement import read_attempt
 
 FIXED_CONFIG = ('law_id', 'cell_id', 'actor', 'rate_hz', 'duration_s', 'cameras')
 FIXED_SITE_FACTS = ('starting_curb_xy_m', 'opposite_curb_xy_m',
-                    'roadway_highway_public_use', 'governing_control')
+                    'roadway_highway_public_use', 'municipal_jurisdiction',
+                    'governing_control')
 
 
 def read(path):
@@ -85,6 +86,9 @@ def audit(comparison_id, left_attempt, right_attempt, left_review, right_review,
         if comparison_id != 'outside_vs_crosswalk_exception':
             if left_refs['crosswalk_boundaries_xy_m']['sha256'] != right_refs['crosswalk_boundaries_xy_m']['sha256']:
                 raise ValueError('comparison fixed crosswalk source changed')
+        elif (scenes[0]['crosswalk_boundaries_xy_m'] != scenes[1]['crosswalk_boundaries_xy_m'] and
+              left_refs['crosswalk_boundaries_xy_m']['sha256'] == right_refs['crosswalk_boundaries_xy_m']['sha256']):
+            raise ValueError('comparison changed crosswalk needs distinct reviewed source')
         status = 'native_originals_reviewed'
     return {'format': 'worker-pedestrian-original-comparison-audit',
             'assignment_id': assignment, 'comparison_id': comparison_id,
