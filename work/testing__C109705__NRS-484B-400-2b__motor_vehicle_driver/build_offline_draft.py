@@ -9,7 +9,7 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "construction.py", "native_map.py", "native_capture.py", "native_camera_source.py",
-    "native_ego_adapter.py", "native_seal.py",
+    "native_ego_adapter.py", "native_seal.py", "native_publication.py",
     "departure_geometry.py", "saved_delivery.py", "saved_pixels.py",
     "finalize.py", "comparison_audit.py", "analysis.py",
 )
@@ -18,6 +18,7 @@ RUNNER = '''"""Exact two-directional left-turn departure bundle preflight."""
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 from construction import SUFFIXES
 from native_capture import CAMERAS
@@ -25,6 +26,7 @@ from native_capture import capture
 from native_camera_source import NativeCameraSource
 from native_ego_adapter import NativeEgoAdapter
 from native_seal import seal
+from native_publication import project, encode
 
 
 def check():
@@ -64,12 +66,15 @@ def main():
     if args.check:
         print("diagnostic left-turn departure bundle passed: " + case)
         return
-    if not args.survey or not args.survey_sha256 or not args.output_dir:
+    survey_arg = args.survey or os.environ.get("CARLA_MAP_PACKET")
+    survey_sha = args.survey_sha256 or os.environ.get("CARLA_MAP_PACKET_SHA256")
+    if not survey_arg or not survey_sha or not args.output_dir:
         raise ValueError("Reviewed original two-directional Native map and full-body/camera sources required")
     import carla
-    survey_path = Path(args.survey)
+    from worker_exchange.native_output import seal_capture
+    survey_path = Path(survey_arg)
     raw = survey_path.read_bytes()
-    if hashlib.sha256(raw).hexdigest() != args.survey_sha256:
+    if hashlib.sha256(raw).hexdigest() != survey_sha:
         raise ValueError("reviewed survey packet hash differs")
     survey = json.loads(raw)
     source_name = survey.get("map_source_path")
@@ -80,28 +85,44 @@ def main():
         raise ValueError("reviewed original map source hash differs")
     client = carla.Client(args.host, args.port)
     client.set_timeout(10.0)
-    world = client.get_world()
-    previous = world.get_settings()
-    if previous.synchronous_mode:
-        raise ValueError("exclusive Native synchronous world ownership required")
-    settings = world.get_settings()
-    settings.synchronous_mode = True
-    settings.fixed_delta_seconds = 0.05
-    world.apply_settings(settings)
+    output = Path(args.output_dir)
     try:
-        output = Path(args.output_dir)
-        adapter = NativeEgoAdapter(world, carla, survey_path, args.survey_sha256, case_id=case)
-        camera = NativeCameraSource(world, carla, survey_path, args.survey_sha256,
-                                    output / "original-cameras")
-        receipt = capture(adapter, case, survey, map_source, output, camera_source=camera)
+        world = client.get_world()
+        previous = world.get_settings()
+        if previous.synchronous_mode:
+            raise ValueError("exclusive Native synchronous world ownership required")
+        settings = world.get_settings()
+        settings.synchronous_mode = True
+        settings.fixed_delta_seconds = 0.05
+        world.apply_settings(settings)
+        try:
+            adapter = NativeEgoAdapter(world, carla, survey_path, survey_sha, case_id=case)
+            camera = NativeCameraSource(world, carla, survey_path, survey_sha,
+                                        output / "original-cameras")
+            receipt = capture(adapter, case, survey, map_source, output, camera_source=camera)
+        finally:
+            world.apply_settings(previous)
+        if world.get_settings().synchronous_mode != previous.synchronous_mode:
+            raise ValueError("Native world restoration differs")
         receipt.update(seal(output, case_id=case, survey_path=survey_path,
-                            survey_sha256=args.survey_sha256,
+                            survey_sha256=survey_sha,
                             map_source_path=map_source, capture_receipt=receipt))
-        receipt["survey_sha256"] = args.survey_sha256
+        receipt["survey_sha256"] = survey_sha
         receipt["physical_acceptance_claimed"] = False
         (output / "acquisition.json").write_text(json.dumps(receipt, indent=2) + "\\n")
-    finally:
-        world.apply_settings(previous)
+        frames = project(output, survey)
+        hashes = encode(output)
+        seal_capture(output, frames=frames, restoration={"restored": True,
+                     "method": "Native world settings restored and verified"},
+                     errors=[], encoder_exit_codes={name: 0 for name in hashes},
+                     context={"survey_sha256": survey_sha,
+                              "original_map_sha256": receipt["original_map_sha256"],
+                              "encoded_video_sha256": hashes})
+    except BaseException as error:
+        (output / "native-run-status.json").write_text(json.dumps({
+            "errors": [type(error).__name__ + ": " + str(error)],
+            "physical_acceptance_claimed": False}, indent=2) + "\\n")
+        raise
 
 
 if __name__ == "__main__":

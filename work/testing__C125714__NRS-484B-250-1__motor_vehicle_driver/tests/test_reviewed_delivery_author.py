@@ -44,7 +44,7 @@ def fixture(base):
 
 class ReviewedDeliveryAuthorTest(unittest.TestCase):
     def test_authors_all_exact_candidates_and_rejects_changed_source(self):
-        with TemporaryDirectory() as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
              TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
             fixture(source)
             output = Path(destination) / "candidate"
@@ -64,6 +64,26 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                                 for suffix in SUFFIXES))
             self.assertTrue(all((receipts / suffix / "preflight.json").is_file()
                                 for suffix in SUFFIXES))
+            for suffix in SUFFIXES:
+                candidate = output / suffix
+                recipe_path = candidate / "reviewed-diagnostic-recipe.json"
+                recipe = json.loads(recipe_path.read_text())
+                self.assertEqual(recipe["sources"][0]["sha256"], sha(candidate / "reviewed-map.xodr"))
+                self.assertEqual(recipe["generator"]["sha256"],
+                                 sha(candidate / "reviewed-diagnostic.json"))
+                spec = json.loads((candidate / "reviewed-diagnostic.json").read_text())
+                packet = (candidate / "construction.json").read_text()
+                inline = {item["path"]: item["content"] for item in json.loads(packet)["files"]}
+                context = json.loads(spec["files"]["intersection-context.json"])
+                self.assertTrue(context["diagnostic_only"])
+                self.assertEqual(context["reviewed_context_sha256"],
+                                 hashlib.sha256(inline["reviewed-context.json"].encode()).hexdigest())
+                self.assertEqual(spec["files"]["reviewed-context.json"],
+                                 inline["reviewed-context.json"])
+                self.assertEqual(json.loads(spec["files"]["capture/manifest.json"])["sources"]["road.xodr"],
+                                 sha(candidate / "reviewed-map.xodr"))
+                self.assertEqual(next(row for row in result["cases"] if row["case_id"].endswith("__" + suffix))["fixture_recipe"],
+                                 str(recipe_path.relative_to(REPO)))
             construction = json.loads((output / "advance" / "construction.json").read_text())
             self.assertFalse(construction["diagnostic_only"])
             self.assertIn("precedence_response_audit.py",
@@ -100,7 +120,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
     def test_rejects_diagnostic_and_unisolated_pair(self):
         with self.assertRaisesRegex(ValueError, "rejects diagnostic"):
             source_files(ROOT / "scene.json")
-        with TemporaryDirectory() as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
              TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
             fixture(source)
             scene_path = Path(source) / "other_later" / "scene.json"
@@ -123,7 +143,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                 check_comparison_isolation(scenes)
 
     def test_rejects_changed_fixed_review_source_across_pair(self):
-        with TemporaryDirectory() as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
              TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
             fixture(source)
             folder = Path(source) / "advance"
@@ -142,7 +162,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                        Path(proof) / "preflight", scratch_output=True)
 
     def test_rejects_packet_and_source_aliases_before_bundling(self):
-        with TemporaryDirectory() as source:
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as source:
             fixture(source)
             folder = Path(source) / "precedence"
             scene_path = folder / "scene.json"
@@ -184,7 +204,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                 source_files(scene_path)
 
     def test_preserves_reviewed_crlf_bytes_in_construction(self):
-        with TemporaryDirectory() as source:
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as source:
             fixture(source)
             folder = Path(source) / "precedence"
             scene_path = folder / "scene.json"

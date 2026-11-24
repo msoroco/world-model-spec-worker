@@ -68,14 +68,23 @@ def capture(adapter, case_id, survey, map_source_path, output_dir, *, camera_sou
     if tuple(plan['camera_plan']) != CAMERAS:
         raise ValueError('four exact camera channels required')
     output = Path(output_dir)
-    if output.exists() and any(output.iterdir()):
-        raise ValueError('refusing to overwrite original Native capture')
+    if output.is_symlink():
+        raise ValueError('refusing symlinked Native capture')
+    for name in ('original-trace.json', 'original-camera-index.json',
+                 'original-cameras', 'original-map.xodr',
+                 'original-map-packet.json', 'source-manifest.json',
+                 'original-bindings.json', 'acquisition.json',
+                 'capture-seal.json', 'trace.jsonl', 'video_frames.jsonl',
+                 'graphs', 'graph-frames.jsonl'):
+        if (output / name).exists() or (output / name).is_symlink():
+            raise ValueError('refusing to overwrite original Native capture')
     if camera_source is not None and Path(camera_source.output).resolve().parent != output.resolve():
         raise ValueError('original camera sources must be attempt local')
     output.mkdir(parents=True, exist_ok=True)
     ego = None
     samples = []
     cameras = {name: [] for name in CAMERAS}
+    graph_index = []
     previous_frame = None
     waypoint_index = 0
     entered = departed = False
@@ -126,6 +135,20 @@ def capture(adapter, case_id, survey, map_source_path, output_dir, *, camera_sou
                 if not camera.get('source_path') or not camera.get('source_sha256'):
                     raise ValueError('Native camera source binding missing')
                 cameras[name].append(camera)
+            if getattr(adapter, 'world', None) is not None:
+                from original_graph import collect
+                snapshot = adapter.world.get_snapshot()
+                raw_graph = collect(adapter.world, ego, snapshot,
+                                    expected_frame=frame,
+                                    expected_time_s=sample['elapsed_seconds'])
+                graph_path = output / 'graphs/abstract' / f'{frame:08d}.adapter.json'
+                graph_path.parent.mkdir(parents=True, exist_ok=True)
+                with graph_path.open('xb') as stream:
+                    stream.write(raw_graph)
+                graph_index.append({'frame': frame,
+                                    'simulation_time': sample['elapsed_seconds'],
+                                    'adapter_graph': str(graph_path.relative_to(output)),
+                                    'sha256': hashlib.sha256(raw_graph).hexdigest()})
             if math.dist(sample['position_xy_m'], target) < 0.5 and waypoint_index < len(waypoint_ids):
                 waypoint_index += 1
             previous_frame = frame
@@ -142,6 +165,12 @@ def capture(adapter, case_id, survey, map_source_path, output_dir, *, camera_sou
         camera_path = output / 'original-camera-index.json'
         with camera_path.open('x', encoding='utf-8') as stream:
             stream.write(json.dumps({'case_id': case_id, 'channels': cameras}, indent=2) + '\n')
+        if getattr(adapter, 'world', None) is not None:
+            if len(graph_index) != 900:
+                raise ValueError('original Native graph capture incomplete')
+            with (output / 'graph-frames.jsonl').open('x', encoding='utf-8') as stream:
+                for graph in graph_index:
+                    stream.write(json.dumps(graph, allow_nan=False) + '\n')
         return {'case_id': case_id, 'trace_path': str(trace_path),
                 'trace_sha256': hashlib.sha256(trace_path.read_bytes()).hexdigest(),
                 'camera_index_path': str(camera_path),

@@ -107,12 +107,15 @@ class NativeCaptureTests(unittest.TestCase):
                     return "different-driver"
             adapter = WrongDriver(source)
             output = base / "out"
+            output.mkdir()
+            (output / "runner.py").write_text("# materialized by runtime\n")
             with self.assertRaisesRegex(ValueError, "differs from surveyed driver"):
                 native.capture(adapter, survey_path=survey, survey_sha256=digest,
                                case_id=ROOT.name + "__board_near", output=output)
             self.assertEqual(adapter.index, -1)
             self.assertTrue(adapter.cleaned)
             self.assertFalse((output / "native-trace.json").exists())
+            self.assertTrue((output / "runner.py").exists())
 
     def test_distinct_wrappers_with_duplicate_native_ids_fail(self):
         with tempfile.TemporaryDirectory() as directory:

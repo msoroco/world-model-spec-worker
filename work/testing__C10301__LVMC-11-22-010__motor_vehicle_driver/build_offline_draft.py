@@ -15,6 +15,7 @@ import argparse
 import hashlib
 import json
 import importlib
+import os
 from pathlib import Path
 from alley_geometry import validate
 from native_operation import CASE_PROFILES
@@ -53,14 +54,16 @@ def main():
     if args.check:
         print("diagnostic alley bundle passed: " + case)
         return
-    if not args.output_dir or not args.site_packet or not args.adapter:
+    site_packet = args.site_packet or os.environ.get("SCENARIO_NATIVE_SITE_PACKET")
+    adapter_name = args.adapter or os.environ.get("SCENARIO_NATIVE_ADAPTER")
+    if not args.output_dir or not site_packet or not adapter_name:
         raise ValueError("Reviewed Native site and original camera source required; diagnostic capture refused")
-    adapter = importlib.import_module(args.adapter)
+    adapter = importlib.import_module(adapter_name)
     if not hasattr(adapter, "open_session"):
         raise ValueError("Operator-owned Native adapter lacks open_session")
     from owned_runner import capture_reviewed
-    with adapter.open_session(case, args.site_packet, args.host, args.port) as session:
-        capture_reviewed(session, args.site_packet, case, args.output_dir)
+    with adapter.open_session(case, site_packet, args.host, args.port) as session:
+        capture_reviewed(session, site_packet, case, args.output_dir)
 
 
 if __name__ == "__main__":

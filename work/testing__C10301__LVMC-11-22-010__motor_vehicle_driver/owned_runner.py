@@ -23,10 +23,15 @@ def capture_reviewed(session, site_path, case_id, output_dir):
         raise ValueError("Reviewed original site packet required")
     output_dir = Path(output_dir)
     if output_dir.exists():
-        raise ValueError("Capture output already exists")
+        if not output_dir.is_dir() or not (output_dir / "config.json").is_file() or not (output_dir / "runner.py").is_file():
+            raise ValueError("Capture output already exists outside a materialized bundle")
+        for name in ("camera-png", "ego.jsonl", "context.jsonl", "operation.jsonl",
+                     "camera-frame-map.jsonl", "capture.json", "site-source.json"):
+            if (output_dir / name).exists():
+                raise ValueError("Capture output already contains original acquisition: " + name)
     if not getattr(session, "person_id", None):
         raise ValueError("Original operator identity required")
-    output_dir.mkdir(parents=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     actor = None
     try:
         actor = spawn_ego(session.world, session.carla, site, case_id)

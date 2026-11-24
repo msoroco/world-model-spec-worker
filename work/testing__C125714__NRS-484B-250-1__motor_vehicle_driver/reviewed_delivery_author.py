@@ -40,6 +40,45 @@ def write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
 
+def reviewed_fixture(folder, suffix, packet_text, map_text):
+    """Bind a synthetic CPU diagnostic to the reviewed construction sources.
+
+    The body positions and black videos remain synthetic. The returned recipe
+    only tests software compatibility and must never be treated as a capture.
+    """
+    original = ROOT if suffix == "precedence" else ROOT / "cases" / suffix
+    spec = deepcopy(json.loads((original / "diagnostic.json").read_text()))
+    packet = json.loads(packet_text)
+    context = deepcopy(packet)
+    context.update(diagnostic_only=True, ego_actor_id=11, other_actor_id=22,
+                   reviewed_context_sha256=hashlib.sha256(packet_text.encode("utf-8")).hexdigest())
+    files = spec["files"]
+    files["intersection-context.json"] = json.dumps(context, separators=(",", ":"),
+                                                       ensure_ascii=False) + "\n"
+    files["reviewed-context.json"] = packet_text
+    files["acquisition.json"] = json.dumps({
+        name: {"kind": "original_native", "sha256": hashlib.sha256(content.encode("utf-8")).hexdigest()}
+        for name, content in files.items()
+        if name in ("intersection-context.json", "ego-body-history.jsonl",
+                    "other-body-history.jsonl", "reviewed-context.json")
+    }, separators=(",", ":")) + "\n"
+    capture = json.loads(files["capture/manifest.json"])
+    capture["sources"]["road.xodr"] = hashlib.sha256(map_text.encode("utf-8")).hexdigest()
+    files["capture/manifest.json"] = json.dumps(capture, separators=(",", ":")) + "\n"
+    map_path = folder / "reviewed-map.xodr"
+    map_path.write_text(map_text, encoding="utf-8")
+    spec_path = folder / "reviewed-diagnostic.json"
+    write_json(spec_path, spec)
+    recipe_path = folder / "reviewed-diagnostic-recipe.json"
+    write_json(recipe_path, {
+        "format": "worker-fixture-recipe",
+        "sources": [{"path": "road.xodr", "source": str(map_path.relative_to(REPO)),
+                     "sha256": digest(map_path)}],
+        "generator": {"source": str(spec_path.relative_to(REPO)), "sha256": digest(spec_path)},
+    })
+    return recipe_path
+
+
 def safe_relative(base, relative):
     if (not isinstance(relative, str) or not relative or Path(relative).is_absolute()
             or ".." in Path(relative).parts):
@@ -223,6 +262,8 @@ def author(source_root, map_path, output_root, proof_root, *, scratch_output=Fal
         diagnostic_folder = ROOT if suffix == "precedence" else ROOT / "cases" / suffix
         contract_path = folder / "measurement-contract.json"
         contract_path.write_bytes((diagnostic_folder / "measurement-contract.json").read_bytes())
+        packet_rel = Path(scene["reviewed_context_source"]).as_posix()
+        recipe_path = reviewed_fixture(folder, suffix, files[packet_rel], map_text)
         measurement = json.loads(contract_path.read_text())
         acquisition = {
             requirement["requirement"]: {
@@ -245,7 +286,7 @@ def author(source_root, map_path, output_root, proof_root, *, scratch_output=Fal
                                   "construction_sha256": digest(path),
                                   "measurement_contract": str(contract_path.relative_to(output_root)),
                                   "measurement_procedure": {"entrypoint": "analysis.py"},
-                                  "fixture_recipe": str((diagnostic_folder / "diagnostic-recipe.json").relative_to(REPO)),
+                                  "fixture_recipe": str(recipe_path.relative_to(REPO)),
                                   "acquisition": acquisition,
                                   "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                                      "host_env_var": "CARLA_HOST",

@@ -64,7 +64,7 @@ def finalize(attempt, case_id):
 def write_native_result(attempt, report):
     """Project measured original rows to the runtime's diagnostic channel form."""
     attempt = Path(attempt)
-    if (attempt / 'result.json').exists() or (attempt / 'trace.jsonl').exists():
+    if (attempt / 'result.json').exists():
         raise ValueError('Refusing to overwrite saved derived output')
     trace_packet = json.loads((attempt / 'original-trace.json').read_text())
     camera = json.loads((attempt / 'original-camera-index.json').read_text())
@@ -117,8 +117,19 @@ def write_native_result(attempt, report):
                                 for row in output[name]))
         evidence.append({'name': name, 'unit': spec['unit'],
                          'reference': 'channels/' + name + '.jsonl'})
-    (attempt / 'trace.jsonl').write_text(''.join(
-        json.dumps(row, allow_nan=False) + '\n' for row in traces))
+    trace_path = attempt / 'trace.jsonl'
+    if trace_path.exists():
+        observed_trace = [json.loads(line) for line in trace_path.read_text().splitlines()
+                          if line.strip()]
+        if len(observed_trace) != len(traces) or any(
+                observed.get('frame') != projected['frame'] or
+                abs(observed.get('time_s', -1) - projected['time_s']) > .0001 or
+                observed.get('position_m') != projected['position_m']
+                for observed, projected in zip(observed_trace, traces)):
+            raise ValueError('Recorded Native trace differs from original packet')
+    else:
+        trace_path.write_text(''.join(
+            json.dumps(row, allow_nan=False) + '\n' for row in traces))
     target = json.loads((attempt / 'config.json').read_text())['departure_position_target']
     observed = report['measurements']['departure_right_of_centerline']['value']
     result = {
@@ -140,8 +151,7 @@ def write_native_result(attempt, report):
                              'reference_corner.mkv', 'driver_reference.mkv'],
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': description, 'recording_evidence': evidence,
-        'realized_observables': {}, 'provenance_kind': 'synthetic_fixture',
-        'diagnostic_fixture': True, 'physical_acceptance_claimed': False,
+        'realized_observables': {}, 'physical_acceptance_claimed': False,
     }
     from worker_exchange.native_output import physical_result, validate_result
     result = physical_result(attempt, result)

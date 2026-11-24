@@ -60,6 +60,26 @@ class OwnedRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already exists"):
                 MODULE.capture_reviewed(object(), site, CASE, root / "attempt")
 
+    def test_runtime_materialized_directory_is_accepted_once(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            site = root / "site.json"
+            site.write_text('{"diagnostic_fixture": false}\n')
+            output = root / "attempt"
+            output.mkdir()
+            (output / "config.json").write_text("{}\n")
+            (output / "runner.py").write_text("# materialized\n")
+            actor = Mock()
+            session = types.SimpleNamespace(world=object(), carla=object(),
+                                             capture_adapter=object(), person_id="person-1")
+            with patch.object(MODULE, "spawn_ego", return_value=actor), \
+                    patch.object(MODULE, "capture", return_value={"case_id": CASE}):
+                MODULE.capture_reviewed(session, site, CASE, output)
+            actor.destroy.assert_called_once()
+            self.assertTrue((output / "site-source.json").is_file())
+            with self.assertRaisesRegex(ValueError, "already contains original acquisition"):
+                MODULE.capture_reviewed(session, site, CASE, output)
+
 
 if __name__ == "__main__":
     unittest.main()

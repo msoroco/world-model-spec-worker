@@ -46,8 +46,11 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
     site = validate_site(packet, key)
     if adapter.map_sha256() != packet["map_sha256"]:
         raise ValueError("loaded Native map differs from surveyed source")
-    if output.exists() and any(output.iterdir()):
-        raise ValueError("output directory must be empty")
+    # The runtime materializes runner.py, config.json and construction.json in
+    # this directory before launching Native. Only prior acquisition products
+    # are collisions; rejecting all existing files makes live capture impossible.
+    if (output / "native-trace.json").exists() or (output / "cameras").exists():
+        raise ValueError("output already contains a Native acquisition")
     output.mkdir(parents=True, exist_ok=True)
     frames = []
     first_native_time_s = None
