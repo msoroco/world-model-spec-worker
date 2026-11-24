@@ -18,7 +18,9 @@ from PIL import Image
 
 BASE = Path(__file__).resolve().parent
 ASSIGNMENT_ID = "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator"
-CAMERAS = ("front", "front_left", "front_right", "rear")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+PROFILE_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+                 "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _signal_trial():
@@ -43,7 +45,8 @@ def _hash_file(path: Path) -> str:
 
 def capture_saved(*, attempt_root: Path, authority_root: Path, site: dict,
                   case_suffix: str, actor_id: int, observed_blueprint_id: str,
-                  policy_receipt: dict, sample_tick, frame_count: int = 900,
+                  policy_receipt: dict, sample_tick, native_exit_code: int,
+                  frame_count: int = 900,
                   diagnostic_fixture: bool = False) -> dict:
     """Seal a completed sequence of original 20 Hz samples.
 
@@ -57,6 +60,8 @@ def capture_saved(*, attempt_root: Path, authority_root: Path, site: dict,
         raise ValueError("Native bicycle actor readback missing")
     if not isinstance(policy_receipt, dict) or policy_receipt.get("device_sha256") != plan["device_sha256"] or policy_receipt.get("detector_sha256") != plan["detector_sha256"]:
         raise ValueError("source-bound detector/device policy receipt missing")
+    if native_exit_code != 0:
+        raise ValueError("Native completion failed; attempt cannot be sealed")
     if frame_count < 2:
         raise ValueError("capture needs at least two observed frames")
     root = Path(attempt_root).resolve()
@@ -89,6 +94,8 @@ def capture_saved(*, attempt_root: Path, authority_root: Path, site: dict,
                     if image.format != "PNG":
                         raise ValueError("original camera image is not PNG")
                     image.load()
+                    if not diagnostic_fixture and image.size != PROFILE_SIZES[name]:
+                        raise ValueError("original camera does not match capture profile: " + name)
                 member = f"{frame:08d}.png"
                 archives[name].writestr(member, payload)
                 image_refs[name] = {"member": member, "sha256": hashlib.sha256(payload).hexdigest()}
@@ -113,7 +120,7 @@ def capture_saved(*, attempt_root: Path, authority_root: Path, site: dict,
                              "sha256": _hash_file(root / f"camera-{name}.zip"),
                              "frame_count": frame_count} for name in CAMERAS}
     receipt = {"format": "c111125-native-attempt-v1", "case_id": ASSIGNMENT_ID + "__" + case_suffix,
-               "diagnostic_fixture": diagnostic_fixture, "native_exit_code": 0,
+               "diagnostic_fixture": diagnostic_fixture, "native_exit_code": native_exit_code,
                "actor_id": actor_id, "observed_blueprint_id": observed_blueprint_id,
                "policy_receipt": policy_receipt, "packet_ref": packet_ref,
                "frame_count": frame_count, "camera_sources": camera_sources,

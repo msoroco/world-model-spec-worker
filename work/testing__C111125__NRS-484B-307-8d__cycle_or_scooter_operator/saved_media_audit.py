@@ -11,7 +11,9 @@ from PIL import Image
 
 
 ASSIGNMENT_ID = "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator"
-CAMERAS = ("front", "front_left", "front_right", "rear")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+PROFILE_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+                 "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _verified_path(root: Path, ref: dict) -> Path:
@@ -75,6 +77,8 @@ def audit_saved_media(attempt_root: Path, case_id: str) -> dict:
                     size = tuple(image.size)
                 if name in dimensions and dimensions[name] != size:
                     raise ValueError("original camera dimensions vary: " + name)
+                if receipt.get("diagnostic_fixture") is not True and size != PROFILE_SIZES[name]:
+                    raise ValueError("original camera profile differs: " + name)
                 dimensions[name] = size
     return {"format": "c111125-original-media-audit-v1", "assignment_id": ASSIGNMENT_ID,
             "case_id": case_id, "attempt_receipt_sha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest(),

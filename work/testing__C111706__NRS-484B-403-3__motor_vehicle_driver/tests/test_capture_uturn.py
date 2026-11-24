@@ -94,3 +94,27 @@ class CaptureTest(unittest.TestCase):
     def test_rejects_unreviewed_boundary(self):
         with self.assertRaisesRegex(CaptureError, "boundary source"):
             self.invoke(mutate=lambda site: site.update(intersection_boundary={}))
+
+    def test_camera_failure_brakes_and_does_not_publish_native(self):
+        class FailedCollector:
+            def read_frame(self, frame, time_s):
+                raise RuntimeError("missing original camera")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            site = {"case_id": CASE, "map_name": "reviewed-map", "map_sha256": "map-seal",
+                    "route_sha256": "route-seal", "district_source_sha256": "district-seal",
+                    "intersection_boundary": {"source_sha256": "boundary-seal",
+                                              "polygon_xy_m": [[0, 0], [1, 0], [1, 1]]}}
+            path = root / "site.json"
+            path.write_text(json.dumps(site))
+            ego, other = Actor("ego", 0), Actor("other", 5)
+            output = root / "native.json"
+            with self.assertRaisesRegex(RuntimeError, "missing original camera"):
+                capture(World(), ego, other, path, hashlib.sha256(path.read_bytes()).hexdigest(),
+                        CASE, output, lambda a, i: a.apply_control("drive"),
+                        lambda a, i: a.apply_control("drive"),
+                        lambda a: a.apply_control("brake"), camera_collector=FailedCollector())
+            self.assertFalse(output.exists())
+            self.assertEqual(ego.controls[-1], "brake")
+            self.assertEqual(other.controls[-1], "brake")

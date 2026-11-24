@@ -8,7 +8,7 @@ from pathlib import Path
 from crosswalk_delivery import audit, measure, validate_source
 
 
-def analyze(attempt, *, expected_relation):
+def load_measured(attempt):
     attempt = Path(attempt)
     context = attempt / "reviewed-crosswalk-source.json"
     frames_path = attempt / "channels" / "reverse-body-crosswalk.jsonl"
@@ -29,6 +29,11 @@ def analyze(attempt, *, expected_relation):
                        map_sha256=source["map_packet"]["map_sha256"],
                        crosswalk_source=source["map_packet"]["crosswalk_source"],
                        vehicle_actor_id=source["vehicle_actor_id"])
+    return source, measured, actual_sha
+
+
+def analyze(attempt, *, expected_relation):
+    source, measured, actual_sha = load_measured(attempt)
     physical = audit(measured, expected_relation=expected_relation)
     return {"measurements": {"crosswalk_relation": physical},
             "source_sha256": actual_sha, "legal_judgment": "unresolved"}

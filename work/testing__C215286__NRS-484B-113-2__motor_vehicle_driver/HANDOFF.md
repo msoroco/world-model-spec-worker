@@ -32,3 +32,9 @@ Exact assigned branch: NRS 484B.113(2), backing on or over a crosswalk, C215286 
 ## Saved-source finalizer increment
 
 `analyze_source.py` reads a reviewed original map packet and `channels/reverse-body-crosswalk.jsonl`, checks the frame-file SHA256 and exact polygon equality, then emits physical measurement and unresolved legal judgment. The focused suite now has 12 passing tests including removal of the required frame source and changed bytes. This is a source-bound component test, not the full `runtime.py compatibility` gate; Native-shaped four-camera diagnostic, canonical proposal/measurement contract and complete process-saved outputs remain to author.
+
+## Saved comparison audit increment (2026-11-23)
+
+`compare_saved.py` reopens both original saved frame streams through `analyze_source.load_measured`, verifies each frame-file SHA256, compares the map, crosswalk polygon and source, vehicle blueprint, driver and district source, actor identity, frame indices and original times, then checks disjoint/contact or disjoint/overlap while backing. It rejects reused attempts and reports only a physical distinction with unresolved legal judgment. The deliberate route/body position can differ; the fixed source fields cannot. The current artifact is a tested CPU audit script, but it is not yet bound to complete process-saved delivery receipts.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/tests -v` passed 16 tests; `cpu-tests.log` SHA256: 4349ee6ca8522fe78b975fae6a5b9343df3bff009a10a7d4aa3af1a5ae604012. The exact static assignment check passed again in `assignment-check.log`. Next CPU work is original map source packet, full Native capture/finalization, canonical proposals, compatibility, process-saved and source-decode delivery audits; physical CARLA outcome remains unverified.

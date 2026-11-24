@@ -13,11 +13,16 @@ The Native runner is bundled for every case. It has a lazy walker controller and
 `proof-index.json` binds all five current construction and fixture recipe hashes to retained logs and compatibility receipts. All five current bundles passed pinned exact `runtime.py offline` and pinned `runtime.py compatibility`, including positive analysis and `negative_case_source`, final video decode, Lean decoder, four camera sources and Native result validation. The compatibility source is explicitly a **synthetic diagnostic fixture** and proves software shape only. The five `cases/*/primary-compatibility.json` receipts are retained.
 
 - `proof-index.json` SHA256 `1d3f7149590ba6e1a8ff25726dc28b22430725e73fa19817656d7881695f7fb0`.
-- `cpu-tests.log`: 21 tests passed; SHA256 `49c2179951e49fecb0f59956cfa8fb7ab6ea2df8d07c339a5c62e49245bcb45c`.
+- `cpu-tests.log`: 23 tests passed; SHA256 `741603f82362c489e79b6e1b397bb17c004458697a12c354ceb5a6bab3fecda2`.
 - `geometry-proof.log`: five authored geometry targets passed; SHA256 `586843cf048d190719b70cfdd5830694557a624877563396566afae931719393`.
 - `saved-measurement-proof.log`: five 201-frame synthetic positive and missing-source negative cases passed; SHA256 `d2b812a344060e8b7c4fb1f1646f781d440e70e1f0c8f320450f6c9e909ddf4c`.
 - Exact assignment `worker_check.py --complete` passed; SHA256 `09d44601237b8b7333c5b6848edb441b03b12cbcca3962a82873a211db607cf1`.
 - Exact assignment `worker_check.py --complete --require-delivery-ready` failed because status remains partial; SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
+
+
+## 2026-11-23 independent saved media decode
+
+`saved_media_audit.py` now rechecks source hashes and exact frame joins, probes each named camera against the 20 Hz four-camera capture profile, and fully decodes each frame with FFmpeg frame hashes. Original Native sources additionally require lossless FFV1. `prove_saved_media.py` ran this audit on all five retained exact synthetic compatibility attempts: four named cameras and five decoded frames per case. A source-hashed shortened overview video was rejected against the original join count. This is software media integrity only; physical visibility remains unconfirmed. `saved-media-proof.log` SHA256 `71b9e91cb05c66184e4d79349490f16607fbbdf7e0fd5704eddc807a331efaf5`.
 
 ## Remaining worker CPU construction and source proof
 

@@ -12,6 +12,7 @@ from pathlib import Path
 from nearest_view_measurement import measure
 from physical_completion import assess
 from source_tick_capture import verify_seal
+from camera_sources import audit_camera_sources
 
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
@@ -57,8 +58,10 @@ def _load(attempt: Path, expected_case: str, *, diagnostic: bool,
     completion = assess(attempt, expected_case, construction, diagnostic_fixture=diagnostic)
     if not completion["maneuver_completed"]:
         raise ValueError("original body did not complete intersection traversal")
+    media = audit_camera_sources(attempt) if not diagnostic else None
     return {"identity": identity, "packet": packet, "measured": measured,
-            "completion": completion, "identity_sha256": _sha(attempt / "capture-identity.json")}
+            "completion": completion, "media": media,
+            "identity_sha256": _sha(attempt / "capture-identity.json")}
 
 
 def audit(response_attempt: Path, uninterrupted_attempt: Path, *, diagnostic: bool = False,
@@ -89,13 +92,16 @@ def audit(response_attempt: Path, uninterrupted_attempt: Path, *, diagnostic: bo
     if not left_speed < right_speed:
         raise ValueError("response did not realize lower approach speed")
     return {"comparison_id": "yield_nearest_view", "case_ids": list(CASES),
-            "status": "diagnostic_fixture_only" if diagnostic else "source_bound_motion_only",
+            "status": "diagnostic_fixture_only" if diagnostic else "source_bound_motion_and_media",
             "fixed_conditions_checked": ["site packet", "OpenDRIVE map", "intersection geometry",
                                          "reviewed context", "through vehicle history",
                                          "viewpoint and entry timing"],
             "realized_speed_mps": {CASES[0]: left_speed, CASES[1]: right_speed},
             "sources": [{"case_id": CASES[0], "capture_identity_sha256": response["identity_sha256"]},
                         {"case_id": CASES[1], "capture_identity_sha256": uninterrupted["identity_sha256"]}],
+            "camera_full_decode": None if diagnostic else {
+                CASES[0]: response["media"]["decoded_images"],
+                CASES[1]: uninterrupted["media"]["decoded_images"]},
             "video_accepted": False, "legal_status": "unresolved"}
 
 

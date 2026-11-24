@@ -116,17 +116,35 @@ def request_controls(carla, scene, walker, vehicle):
             "vehicle_position_before_step_m": vp, "walker_position_before_step_m": wp}
 
 
-def native_sample(scene, snapshot, walker, vehicle):
+def native_sample(scene, snapshot, walker, vehicle, world=None):
     """Read original actor states after world.tick, never the requested targets."""
     frame = int(snapshot.frame)
     time_s = float(snapshot.timestamp.elapsed_seconds)
     if not math.isfinite(time_s):
         raise ValueError("nonfinite Native time")
+    if world is None:
+        actors = [vehicle]
+    else:
+        actors = list(world.get_actors().filter("vehicle.*"))
+    inventory = []
+    for actor in actors:
+        velocity = actor.get_velocity()
+        xyz = _point(actor)
+        values = [float(velocity.x), float(velocity.y), float(velocity.z)]
+        if not all(math.isfinite(value) for value in values):
+            raise ValueError("nonfinite Native vehicle velocity")
+        inventory.append({"actor_id": int(actor.id), "xyz_m": xyz,
+                          "velocity_xyz_mps": values})
+    inventory.sort(key=lambda item: item["actor_id"])
+    if len({item["actor_id"] for item in inventory}) != len(inventory) or not any(
+            item["actor_id"] == int(vehicle.id) for item in inventory):
+        raise ValueError("original vehicle inventory omits selected vehicle or duplicates identity")
     return {"case_id": scene["case_id"], "frame": frame, "time_s": time_s,
             "pedestrian_actor_id": int(walker.id), "vehicle_actor_id": int(vehicle.id),
             "pedestrian_xyz_m": _point(walker), "vehicle_xyz_m": _point(vehicle),
             "vehicle_velocity_xyz_mps": [float(v) for v in
-                (vehicle.get_velocity().x, vehicle.get_velocity().y, vehicle.get_velocity().z)]}
+                (vehicle.get_velocity().x, vehicle.get_velocity().y, vehicle.get_velocity().z)],
+            "all_native_vehicles": inventory}
 
 
 def measure_original(scene, rows):
@@ -155,6 +173,24 @@ def measure_original(scene, rows):
             if not isinstance(values, list) or len(values) != 3 or not all(
                 isinstance(v, (float, int)) and math.isfinite(v) for v in values):
                 raise ValueError("missing original participant source: "+key)
+        inventory = row.get("all_native_vehicles")
+        if not isinstance(inventory, list) or not inventory:
+            raise ValueError("missing original all-vehicle inventory")
+        inventory_ids = set()
+        for item in inventory:
+            ident = item.get("actor_id") if isinstance(item, dict) else None
+            if not isinstance(ident, int) or ident <= 0 or ident in inventory_ids:
+                raise ValueError("invalid original vehicle inventory identity")
+            inventory_ids.add(ident)
+            for key in ("xyz_m", "velocity_xyz_mps"):
+                values = item.get(key)
+                if not isinstance(values, list) or len(values) != 3 or not all(
+                    isinstance(v, (int, float)) and math.isfinite(v) for v in values):
+                    raise ValueError("missing original vehicle inventory source: "+key)
+        target = next((item for item in inventory if item["actor_id"] == row["vehicle_actor_id"]), None)
+        if target is None or target["xyz_m"] != row["vehicle_xyz_m"] or target[
+                "velocity_xyz_mps"] != row["vehicle_velocity_xyz_mps"]:
+            raise ValueError("selected vehicle differs from original all-vehicle inventory")
     pedestrian_entry = next((r for r in rows if r["pedestrian_xyz_m"][1] >= -3.5), None)
     pedestrian_exit = next((r for r in rows if r["pedestrian_xyz_m"][1] >= 3.5), None)
     vehicle_pass = next((r for r in rows if r["vehicle_xyz_m"][0] >= 0.5), None)
@@ -171,6 +207,9 @@ def measure_original(scene, rows):
             "pedestrian_entered_after_vehicle_passed": pedestrian_entry["frame"] > vehicle_pass["frame"],
             "simultaneous_engineering_conflict_frames": overlap,
             "designated_prohibition_source_context": scene["designated_prohibition"],
+            "observed_native_vehicle_actor_ids": sorted({item["actor_id"] for row in rows
+                                                           for item in row["all_native_vehicles"]}),
+            "roadway_classification": "requires_source_map_review",
             "legal_right_of_way": "unresolved"}
 
 
@@ -243,6 +282,9 @@ def audit_pair(first, second, comparison):
            a["vehicle_velocity_xyz_mps"] != b["vehicle_velocity_xyz_mps"]
            for a,b in zip(*rows)):
         raise ValueError("comparison roadway vehicle trajectory changed")
+    if any(a["all_native_vehicles"] != b["all_native_vehicles"]
+           for a,b in zip(*rows)):
+        raise ValueError("comparison original all-vehicle inventory changed")
     if comparison == "entry_timing":
         a,b = [s["measurement"] for s in saved]
         if not a["pedestrian_entered_after_vehicle_passed"] or b["pedestrian_entered_after_vehicle_passed"]:

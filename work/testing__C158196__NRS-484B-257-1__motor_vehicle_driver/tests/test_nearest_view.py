@@ -1,5 +1,6 @@
 import importlib.util
 import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -15,6 +16,9 @@ construction_spec.loader.exec_module(construction)
 native_spec = importlib.util.spec_from_file_location("native_observation_c158196", MODULE.parents[0] / "native_observation.py")
 native_observation = importlib.util.module_from_spec(native_spec)
 native_spec.loader.exec_module(native_observation)
+comparison_spec = importlib.util.spec_from_file_location("saved_comparison_c158196", MODULE.parents[0] / "saved_comparison.py")
+saved_comparison = importlib.util.module_from_spec(comparison_spec)
+comparison_spec.loader.exec_module(saved_comparison)
 
 
 def packet():
@@ -61,6 +65,26 @@ def native_tick():
            "yield_sign_readback": True, "signal_controlling": False,
            "officer_controlling": False}
     return raw, geometry
+
+
+def write_attempt(base, suffix, *, policy, occupied=True, minimum_speed=0.4):
+    base.mkdir(parents=True, exist_ok=True)
+    value = packet()
+    value["case_id"] = "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__" + suffix
+    value["context"]["engineering_policy"] = policy
+    value["context"]["through_vehicle_initial_station_m"] = 20.0 if occupied else 80.0
+    for frame in value["frames"]:
+        frame["through_occupied"] = occupied and frame["frame"] >= 104
+        frame["ego_speed_mps"] = minimum_speed
+        frame["through_center_station_m"] += 0 if occupied else 60
+    for name, item in value["sources"].items():
+        path = base / item["path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(name + "\n", encoding="utf-8")
+        item["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    packet_path = base / "native" / "nearest_view_packet.json"
+    packet_path.write_text(json.dumps(value, sort_keys=True) + "\n", encoding="utf-8")
+    return packet_path
 
 
 class NearestViewTests(unittest.TestCase):
@@ -188,6 +212,41 @@ class NearestViewTests(unittest.TestCase):
         raw["signal_controlling"] = True
         with self.assertRaisesRegex(ValueError, "controlling exception"):
             native_observation.derive(raw, geometry)
+
+    def test_saved_conflict_comparison_reopens_sources(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            left, right = Path(temporary) / "hold", Path(temporary) / "continue"
+            write_attempt(left, "nearest_view_hold", policy="hold_for_observed_traffic", minimum_speed=0.1)
+            write_attempt(right, "nearest_view_continue", policy="continue_through_observed_traffic", minimum_speed=2.0)
+            result = saved_comparison.audit(left, right, "nearest_view_conflict_response")
+            self.assertEqual(result["status"], "source_bound_measured_not_legal_verdict")
+            (left / "native" / "view_raycast.json").write_text("changed\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "source hash mismatch"):
+                saved_comparison.audit(left, right, "nearest_view_conflict_response")
+
+    def test_saved_occupancy_comparison_rejects_unchanged_traffic(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            left, right = Path(temporary) / "continue", Path(temporary) / "clear"
+            write_attempt(left, "nearest_view_continue", policy="continue_through_observed_traffic")
+            packet_path = write_attempt(right, "nearest_view_clear", policy="continue_through_observed_traffic", occupied=False)
+            self.assertEqual(saved_comparison.audit(left, right, "nearest_view_traffic_occupancy")["comparison_id"], "nearest_view_traffic_occupancy")
+            value = json.loads(packet_path.read_text(encoding="utf-8"))
+            for frame in value["frames"]:
+                frame["through_occupied"] = frame["frame"] >= 104
+            packet_path.write_text(json.dumps(value), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "occupancy does not differ"):
+                saved_comparison.audit(left, right, "nearest_view_traffic_occupancy")
+
+    def test_saved_comparison_rejects_fixed_context_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            left, right = Path(temporary) / "hold", Path(temporary) / "continue"
+            write_attempt(left, "nearest_view_hold", policy="hold_for_observed_traffic", minimum_speed=0.1)
+            packet_path = write_attempt(right, "nearest_view_continue", policy="continue_through_observed_traffic", minimum_speed=2.0)
+            value = json.loads(packet_path.read_text(encoding="utf-8"))
+            value["context"]["nearest_view_station_m"] = 3.0
+            packet_path.write_text(json.dumps(value), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "fixed-condition"):
+                saved_comparison.audit(left, right, "nearest_view_conflict_response")
 
 
 if __name__ == "__main__":

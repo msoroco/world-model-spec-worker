@@ -39,6 +39,7 @@ def main():
         sources = {'runner.py':'runner.py',
                    'overpass_source.py':'overpass_source.py',
                    'native_capture.py':'native_capture.py',
+                   'media_audit.py':'media_audit.py',
                    'walker_pipeline_capture.py':'walker_pipeline_capture.py',
                    'scene.json':scene_file.name,
                    'candidate-overpass.xodr':'candidate-overpass.xodr'}

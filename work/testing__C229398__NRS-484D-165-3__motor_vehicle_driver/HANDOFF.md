@@ -27,3 +27,30 @@ Eighteen focused CPU tests pass, including Native fake construction of both plac
 3. Review original law and referenced timing text again, resolve site documentation and implementation gaps, then rerun the exact strict gate. Physical CARLA visibility, lamp color/readability and capture quality remain later GPU checks.
 
 No input, runtime, batch or shared files were edited; no Git command was run.
+
+## 2026-11-23 independent saved-media extension
+
+`encode_original.py` now exposes `audit_encoded` and an operational saved-attempt
+CLI (`--attempt`, `--case-key`, `--map-sha256`, `--receipt`). It rejoins the sealed
+original capture packet to the encoded-view index, verifies all four encoded
+file hashes, exact source-camera mappings, FFV1 codec, 20 Hz cadence and 900
+frames, then fully decodes each view with FFmpeg. The receipt retains explicit
+unreviewed physical visibility and no legal verdict. `audit_encoded_views`
+also supports a short real-FFV1 CPU fixture; its positive test decodes all four
+videos and its negative checks reject a changed expected frame count and
+tampered bytes. This proves media integrity and decodability, not pixel-level
+equivalence to every original PNG or actual lamp visibility.
+
+The updated auditor was embedded into all six inline construction bundles.
+Their construction hashes and manifest references were refreshed, and all six
+exact `runtime.py offline` runs passed in the retained
+`.runtime-work/c229398-offline-nov24-media-cli-*` trees. The focused suite now
+passes 19 tests (`cpu-tests.log`). The exact static check passes
+(`cpu-static-check.log`); the exact strict gate still fails on partial status
+(`cpu-strict-check.log`). `result.json` contains the current commands and hashes.
+
+Next CPU implementation remains the pinned Native result/capture-seal closure,
+case-specific process-saved/compatibility and semantic proposals, independent
+delivery acceptance, and risk-justified fallback receipts. These have not been
+claimed complete. Actual CARLA pixels and photometric findings remain for the
+later authorized Native run and independent review.

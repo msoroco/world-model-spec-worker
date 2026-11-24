@@ -5,12 +5,68 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import argparse
 from pathlib import Path
 
 from parked_lamps import audit_saved_capture, require
 
 VIEWS = {"front": "overview", "rear": "approach",
          "left": "reference_corner", "right": "driver_reference"}
+
+
+def audit_encoded_views(attempt, expected_frames, *, ffmpeg="ffmpeg", ffprobe="ffprobe"):
+    """Independently verify sealed four-view bytes and decode every video frame.
+
+    The receipt is a software media audit. It cannot establish that the lamps
+    are visible or that a scene meets a legal standard.
+    """
+    root = Path(attempt)
+    index_path = root / "encoded-views.json"
+    require(index_path.is_file(), "encoded view index missing")
+    index = json.loads(index_path.read_text())
+    views = index.get("views")
+    require(isinstance(views, dict) and set(views) == set(VIEWS.values()),
+            "exact four encoded views required")
+    audited = {}
+    for camera, view in VIEWS.items():
+        item = views[view]
+        require(item.get("source_camera") == camera and item.get("path") == view + ".mkv" and
+                item.get("source") == "original_png_index" and item.get("codec") == "ffv1" and
+                item.get("fps") == 20 and item.get("frames") == expected_frames,
+                view + " source/cadence identity mismatch")
+        target = root / item["path"]
+        require(target.is_file() and target.resolve().is_relative_to(root.resolve()) and
+                file_sha(target) == item.get("sha256"), view + " encoded bytes changed")
+        probe = subprocess.run([ffprobe, "-v", "error", "-count_frames", "-select_streams", "v:0",
+                                "-show_entries", "stream=nb_read_frames,r_frame_rate,codec_name",
+                                "-of", "json", str(target)], capture_output=True, text=True,
+                               timeout=120, check=True)
+        streams = json.loads(probe.stdout).get("streams", [])
+        require(len(streams) == 1 and streams[0].get("nb_read_frames") == str(expected_frames) and
+                streams[0].get("r_frame_rate") == "20/1" and streams[0].get("codec_name") == "ffv1",
+                view + " encoded frame count, rate or codec mismatch")
+        decoded = subprocess.run([ffmpeg, "-v", "error", "-xerror", "-i", str(target),
+                                  "-map", "0:v:0", "-f", "null", "-"],
+                                 capture_output=True, text=True, timeout=900)
+        require(decoded.returncode == 0, view + " full decode failed: " + decoded.stderr[-500:])
+        audited[view] = {"path": item["path"], "sha256": item["sha256"],
+                         "frames_decoded": expected_frames, "source_camera": camera,
+                         "codec": "ffv1", "fps": 20}
+    return {"format": "c229398-independent-four-view-decode-v1", "case_id": index.get("case_id"),
+            "encoded_index_sha256": file_sha(index_path), "views": audited,
+            "physical_visibility_status": "unreviewed", "legal_verdict": None}
+
+
+def audit_encoded(attempt, case_key, map_sha256, *, ffmpeg="ffmpeg", ffprobe="ffprobe"):
+    root = Path(attempt)
+    capture = root / "capture"
+    audit_saved_capture(capture, case_key, map_sha256)
+    packet_path = capture / "capture-packet.json"
+    index = json.loads((root / "encoded-views.json").read_text())
+    require(index.get("case_id") == json.loads(packet_path.read_text()).get("case_id") and
+            index.get("capture_packet_sha256") == file_sha(packet_path),
+            "encoded views differ from original capture packet")
+    return audit_encoded_views(root, 900, ffmpeg=ffmpeg, ffprobe=ffprobe)
 
 
 def file_sha(path):
@@ -85,3 +141,21 @@ def encode(attempt, case_key, map_sha256, *, ffmpeg="ffmpeg", ffprobe="ffprobe")
         "capture_packet_sha256": hashlib.sha256(packet_path.read_bytes()).hexdigest(),
         "views": results, "physical_visibility_status": "unreviewed"}, indent=2, sort_keys=True) + "\n")
     return results
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Audit a saved original parked-lamp capture and four encoded views")
+    parser.add_argument("--attempt", required=True)
+    parser.add_argument("--case-key", required=True)
+    parser.add_argument("--map-sha256", required=True)
+    parser.add_argument("--receipt", required=True)
+    args = parser.parse_args()
+    result = audit_encoded(args.attempt, args.case_key, args.map_sha256)
+    target = Path(args.receipt)
+    with target.open("x") as stream:
+        json.dump(result, stream, indent=2, sort_keys=True)
+        stream.write("\n")
+
+
+if __name__ == "__main__":
+    main()

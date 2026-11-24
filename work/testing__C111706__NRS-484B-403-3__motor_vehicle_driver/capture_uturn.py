@@ -49,13 +49,14 @@ def _position(actor, road_map) -> dict:
 
 def capture(world, ego, other, site_path: Path, expected_site_sha256: str,
             expected_case: str, output: Path, ego_control, other_control, brake_control,
-            *, ticks: int = 900, step_s: float = 0.05) -> dict:
+            *, ticks: int = 900, step_s: float = 0.05, camera_collector=None) -> dict:
     """Write a sealed projection only after all original ticks are acquired.
 
     Control callbacks receive (actor, tick_index) and must apply a control.
     The brake callback receives each actor and must apply full braking.
     They may implement an independently reviewed waypoint follower. A synthetic
-    callback cannot establish physical completion. Camera capture is separate.
+    callback cannot establish physical completion. Pass the four-camera
+    collector to join original sensor images to every world tick.
     """
     _need(_seal(site_path) == expected_site_sha256, "site source hash mismatch")
     site = json.loads(site_path.read_text(encoding="utf-8"))
@@ -88,6 +89,8 @@ def capture(world, ego, other, site_path: Path, expected_site_sha256: str,
                 _need(math.isclose(t - prior_time, step_s, rel_tol=0, abs_tol=1e-3),
                       "original tick interval mismatch")
             _need(math.isfinite(t), "nonfinite original time")
+            if camera_collector is not None:
+                camera_collector.read_frame(frame, t)
             frames.append({"frame": frame, "time_s": t,
                            "ego": _position(ego, road_map),
                            "other_vehicle": _position(other, road_map)})
@@ -108,6 +111,14 @@ def capture(world, ego, other, site_path: Path, expected_site_sha256: str,
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(output.name + ".tmp")
     temporary.write_text(json.dumps(packet, separators=(",", ":")) + "\n", encoding="utf-8")
-    temporary.replace(output)
+    try:
+        if camera_collector is not None:
+            camera_collector.finish(expected_case=expected_case,
+                                    native_path=output, native_sha256=_seal(temporary),
+                                    expected_frames=[s["frame"] for s in frames])
+        temporary.replace(output)
+    except Exception:
+        temporary.unlink(missing_ok=True)
+        raise
     return {"path": str(output), "sha256": _seal(output), "frame_count": len(frames),
             "first_frame": frames[0]["frame"], "last_frame": frames[-1]["frame"]}

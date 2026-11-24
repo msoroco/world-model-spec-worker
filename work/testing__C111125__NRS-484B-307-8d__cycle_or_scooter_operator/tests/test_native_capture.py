@@ -47,6 +47,12 @@ class OriginalCaptureTests(unittest.TestCase):
         stream = BytesIO()
         Image.new("RGB", (4, 3), color=(10, 20, 30)).save(stream, format="PNG")
         self.png = stream.getvalue()
+        self.full_profile = False
+        self.profile_png = {}
+        for name, size in capture.PROFILE_SIZES.items():
+            stream = BytesIO()
+            Image.new("RGB", size, color=(10, 20, 30)).save(stream, format="PNG")
+            self.profile_png[name] = stream.getvalue()
         self.case_id = capture.ASSIGNMENT_ID + "__two_cycles_failed_detection"
 
     def tick(self, index):
@@ -58,7 +64,7 @@ class OriginalCaptureTests(unittest.TestCase):
                "detector_occupied": True, "detector_output": False,
                "ego_speed_mps": 0.0 if station == 0 else 1.0,
                "ego_station_m": station, "directed_participant_conflict": False}
-        return row, {name: self.png for name in capture.CAMERAS}
+        return row, {name: self.profile_png[name] if self.full_profile else self.png for name in capture.CAMERAS}
 
     def make(self, count=9):
         self.count = count
@@ -67,6 +73,7 @@ class OriginalCaptureTests(unittest.TestCase):
                               site=self.site, case_suffix="two_cycles_failed_detection",
                               actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
                               policy_receipt=self.policy, sample_tick=self.tick,
+                              native_exit_code=0,
                               frame_count=count, diagnostic_fixture=True)
         return attempt
 
@@ -87,6 +94,7 @@ class OriginalCaptureTests(unittest.TestCase):
         self.assertEqual(audit["decoded_original_images"], 3600)
 
     def test_saved_processor_requires_camera_audit_for_original_attempt(self):
+        self.full_profile = True
         attempt = self.make()
         receipt_path = attempt / "attempt.json"
         receipt = json.loads(receipt_path.read_text())
@@ -94,13 +102,23 @@ class OriginalCaptureTests(unittest.TestCase):
         receipt_path.write_text(json.dumps(receipt) + "\n")
         result = saved.process_saved(attempt, self.authority, self.site, self.case_id)
         self.assertEqual(result["original_media_audit"]["decoded_original_images"], 36)
-        (attempt / "camera-rear.zip").unlink()
+        (attempt / "camera-driver_reference.zip").unlink()
         with self.assertRaisesRegex(saved.SavedAttemptError, "four-camera media rejected"):
             saved.process_saved(attempt, self.authority, self.site, self.case_id)
 
+    def test_non_diagnostic_capture_rejects_wrong_profile(self):
+        self.count = 9
+        with self.assertRaisesRegex(ValueError, "capture profile"):
+            capture.capture_saved(attempt_root=self.root / "wrong-profile", authority_root=self.authority,
+                                  site=self.site, case_suffix="two_cycles_failed_detection",
+                                  actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
+                                  policy_receipt=self.policy, sample_tick=self.tick,
+                                  native_exit_code=0,
+                                  frame_count=9, diagnostic_fixture=False)
+
     def test_reject_camera_hash_pixel_and_missing_source(self):
         attempt = self.make()
-        path = attempt / "camera-front.zip"
+        path = attempt / "camera-overview.zip"
         path.write_bytes(path.read_bytes() + b"changed")
         with self.assertRaisesRegex(ValueError, "source hash mismatch"):
             media.audit_saved_media(attempt, self.case_id)
@@ -110,17 +128,18 @@ class OriginalCaptureTests(unittest.TestCase):
                               site=self.site, case_suffix="two_cycles_failed_detection",
                               actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
                               policy_receipt=self.policy, sample_tick=self.tick,
+                              native_exit_code=0,
                               frame_count=9, diagnostic_fixture=True)
         receipt_path = attempt / "attempt.json"
         receipt = json.loads(receipt_path.read_text())
-        receipt["camera_sources"].pop("rear")
+        receipt["camera_sources"].pop("driver_reference")
         receipt_path.write_text(json.dumps(receipt) + "\n")
         with self.assertRaisesRegex(ValueError, "four original camera sources missing"):
             media.audit_saved_media(attempt, self.case_id)
 
     def test_reject_rehashed_camera_pixel_change(self):
         attempt = self.make()
-        path = attempt / "camera-front.zip"
+        path = attempt / "camera-overview.zip"
         with ZipFile(path) as archive:
             members = [(name, archive.read(name)) for name in archive.namelist()]
         with ZipFile(path, "w") as archive:
@@ -128,7 +147,7 @@ class OriginalCaptureTests(unittest.TestCase):
                 archive.writestr(name, self.png[:-1] + b"0" if index == 0 else payload)
         receipt_path = attempt / "attempt.json"
         receipt = json.loads(receipt_path.read_text())
-        receipt["camera_sources"]["front"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        receipt["camera_sources"]["overview"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
         receipt_path.write_text(json.dumps(receipt) + "\n")
         with self.assertRaisesRegex(ValueError, "pixel binding differs"):
             media.audit_saved_media(attempt, self.case_id)
@@ -137,7 +156,7 @@ class OriginalCaptureTests(unittest.TestCase):
         def bad_tick(index):
             row, images = self.tick(index)
             if index == 3:
-                images.pop("rear")
+                images.pop("driver_reference")
             return row, images
         self.count = 9
         attempt = self.root / "failed"
@@ -146,8 +165,20 @@ class OriginalCaptureTests(unittest.TestCase):
                                   site=self.site, case_suffix="two_cycles_failed_detection",
                                   actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
                                   policy_receipt=self.policy, sample_tick=bad_tick,
+                                  native_exit_code=0,
                                   frame_count=9, diagnostic_fixture=True)
         self.assertFalse((attempt / "attempt.json").exists())
+
+    def test_failed_native_completion_does_not_seal_attempt(self):
+        self.count = 9
+        attempt = self.root / "native-failed"
+        with self.assertRaisesRegex(ValueError, "Native completion failed"):
+            capture.capture_saved(attempt_root=attempt, authority_root=self.authority,
+                                  site=self.site, case_suffix="two_cycles_failed_detection",
+                                  actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
+                                  policy_receipt=self.policy, sample_tick=self.tick,
+                                  native_exit_code=1, frame_count=9, diagnostic_fixture=True)
+        self.assertFalse(attempt.exists())
 
 
 if __name__ == "__main__":

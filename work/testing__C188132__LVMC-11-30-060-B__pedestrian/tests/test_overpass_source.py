@@ -42,6 +42,7 @@ class FakeWorld:
     def __init__(self, fail_vehicle=False):
         self.fail_vehicle = fail_vehicle
         self.spawns = []
+        self.actors = []
 
     def get_blueprint_library(self):
         return self
@@ -53,8 +54,13 @@ class FakeWorld:
         self.spawns.append((blueprint, transform))
         if self.fail_vehicle and blueprint.startswith("vehicle"):
             return None
-        return FakeActor([transform.location.x, transform.location.y,
-                          transform.location.z], len(self.spawns))
+        actor = FakeActor([transform.location.x, transform.location.y,
+                           transform.location.z], len(self.spawns))
+        self.actors.append(actor)
+        return actor
+
+    def get_actors(self):
+        return SimpleNamespace(filter=lambda pattern: self.actors[1:])
 
 
 def fake_carla():
@@ -98,7 +104,10 @@ def rows(variant):
                        'vehicle_actor_id':22,
                        'pedestrian_xyz_m':[0,py,.2],
                        'vehicle_xyz_m':[vx,-1.75,.3],
-                       'vehicle_velocity_xyz_mps':[5,0,0]})
+                       'vehicle_velocity_xyz_mps':[5,0,0],
+                       'all_native_vehicles':[{'actor_id':22,
+                                               'xyz_m':[vx,-1.75,.3],
+                                               'velocity_xyz_mps':[5,0,0]}]})
     return result
 
 
@@ -110,6 +119,7 @@ def write_attempt(root, variant, *, vehicle_shift=0):
     if vehicle_shift:
         for row in source:
             row['vehicle_xyz_m'][1] += vehicle_shift
+            row['all_native_vehicles'][0]['xyz_m'][1] += vehicle_shift
     (root/'body.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in source))
     (root/'frames.jsonl').write_text(''.join(json.dumps(
         {'frame':r['frame'],'time_s':r['time_s']})+'\n' for r in source))
@@ -151,6 +161,10 @@ class OverpassSourceTests(unittest.TestCase):
         self.assertEqual(vehicle.vehicle_control.x, 5.0)
         snap = SimpleNamespace(frame=1000, timestamp=SimpleNamespace(elapsed_seconds=0.0))
         self.assertEqual(native_sample(s, snap, walker, vehicle)['vehicle_xyz_m'][0], 7.0)
+        extra = FakeActor([12.0, -1.75, .3], 33)
+        world.actors.append(extra)
+        self.assertEqual([item['actor_id'] for item in native_sample(
+            s, snap, walker, vehicle, world)['all_native_vehicles']], [2, 33])
 
     def test_failed_second_spawn_cleans_first(self):
         world = FakeWorld(fail_vehicle=True)
@@ -174,6 +188,41 @@ class OverpassSourceTests(unittest.TestCase):
             measure_original(s, source)
         with self.assertRaisesRegex(ValueError, '900-frame'):
             measure_original(s, rows(CASES[0])[:-1])
+
+    def test_all_vehicle_inventory_and_selected_join(self):
+        s = scene(CASES[0])
+        source = rows(CASES[0])
+        other = {'actor_id':33, 'xyz_m':[12.0, -1.75, .3],
+                 'velocity_xyz_mps':[0.0, 0.0, 0.0]}
+        for row in source:
+            row['all_native_vehicles'].append(other)
+        self.assertEqual(measure_original(s, source)[
+            'observed_native_vehicle_actor_ids'], [22, 33])
+        source[5]['all_native_vehicles'] = []
+        with self.assertRaisesRegex(ValueError, 'all-vehicle inventory'):
+            measure_original(s, source)
+        source = rows(CASES[0])
+        source[5]['all_native_vehicles'][0]['xyz_m'][0] += 1
+        with self.assertRaisesRegex(ValueError, 'selected vehicle differs'):
+            measure_original(s, source)
+
+    def test_pair_rejects_extra_vehicle_source_difference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            first, second = Path(tmp)/'first', Path(tmp)/'second'
+            write_attempt(first, CASES[0])
+            write_attempt(second, CASES[1])
+            rows_path = second/'body.jsonl'
+            source = [json.loads(line) for line in rows_path.read_text().splitlines()]
+            source[5]['all_native_vehicles'].append({
+                'actor_id':33, 'xyz_m':[12.0,-1.75,.3],
+                'velocity_xyz_mps':[0.0,0.0,0.0]})
+            rows_path.write_text(''.join(json.dumps(row)+'\n' for row in source))
+            manifest_path = second/'source-manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            manifest['body_history']['sha256'] = sha(rows_path)
+            manifest_path.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, 'all-vehicle inventory changed'):
+                audit_pair(first, second, 'entry_timing')
 
     def test_sealed_source_manifest_and_missing_evidence(self):
         variant = CASES[0]

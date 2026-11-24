@@ -84,6 +84,34 @@ class CameraSourcesTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "provenance"):
                 audit_camera_sources(attempt)
 
+    def test_900_frame_diagnostic_decodes_all_3600_original_images(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / "attempt"
+            capture = TickCapture(attempt, GEOMETRY, CONTEXT)
+            frames = []
+            images = {name: png((camera * 40, 60, 80)) for camera, name in enumerate(CAMERAS)}
+            for index in range(900):
+                row = raw(index % 3)
+                row["frame"] = 100 + index
+                row["time_s"] = round(index * .05, 8)
+                capture.append(row)
+                frames.append({"frame": row["frame"], "time_s": row["time_s"],
+                               "cameras": images})
+            capture.close()
+            construction = attempt.parent / "construction.json"
+            construction.write_text('{"case":"nearest_view_response"}\n')
+            opendrive = b"<OpenDRIVE>diagnostic map</OpenDRIVE>"
+            site = attempt.parent / "reviewed-site.json"
+            site.write_text(json.dumps({"review_status": "reviewed",
+                                        "map_opendrive_sha256": hashlib.sha256(opendrive).hexdigest()}) + "\n")
+            write_capture_identity(attempt,
+                "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+                construction, site, opendrive, diagnostic_fixture=True)
+            write_camera_sources(attempt, frames, diagnostic_fixture=True)
+            result = audit_camera_sources(attempt, diagnostic_fixture=True)
+            self.assertEqual(result["decoded_images"], 3600)
+            self.assertEqual(result["frame_count"], 900)
+
     def test_rejects_missing_camera_and_frame_time_swap(self):
         with tempfile.TemporaryDirectory() as directory:
             attempt = Path(directory)

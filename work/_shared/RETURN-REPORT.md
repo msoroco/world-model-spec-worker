@@ -1717,3 +1717,47 @@ C111248 LVMC-11-30-140-B added a source-bound 900-tick Native capture with four 
 ## 2026-11-23 C111260 closeout and root saved replay
 
 C111260 NRS-484B-270-5a added source-bound 900-tick Native capture, four synchronized PNG archives, original actor/history validation, SHA sealing and independent decoding of all 3,600 saved images. Twenty-two focused tests and scoped static pass; I checked all three proof hashes and reran exact scoped strict, which rejects truthful partial status. C158208 NRS-484B-257-1 resumed as a partition 01 owner. Root-owned C109705 NRS-484B-400-2a added a saved-only CLI that reopens the retained attempt and fully decodes all 3,600 camera PNGs before writing an audit receipt. Its default rejects diagnostic input without writing output; a diagnostic test explicitly enables it. All 21 focused tests and scoped static pass; exact scoped strict rejects truthful partial status. The three new proof-log hashes are recorded in its result.json and its HANDOFF names the remaining CPU work.
+
+## 2026-11-23 C147332 12a closeout
+
+C147332 NRS-484B-307-12a strengthened its original four-camera delivery audit to require FFV1 codec, exact declared 1920x1080 and 1280x720 dimensions, and 20 Hz; resealed wrong-profile video fails. Twenty-four focused tests, eight renewed primary/fallback offline receipts, eight renewed positive/negative compatibility receipts, four positive and four missing-signal negative delivery audits, and pinned compatibility/readiness-component validators pass. Scoped static passes. I independently checked all 55 result proof hashes and reran exact scoped strict, which rejects truthful partial status pending genuine reviewed source, Native capture and semantic/delivery completion. C229398 NRS-484D-165-3 began in partition 07 as replacement owner.
+
+## 2026-11-23 C158208 recorder closeout and C111125 8d retest
+
+C158208 NRS-484B-257-1 added a source-bound four-camera PNG recorder and independent saved-media audit that ties each image to sealed 20 Hz tick/capture identity, validates profile/frame/hash joins and fully decodes the retained images. A 900-frame diagnostic proof decoded 3,600 images; 38 focused tests and scoped static pass. I independently checked all nine proof hashes and reran exact scoped strict, which rejects truthful partial status. C111125 NRS-484B-307-8d reached a 20-test source-sealed Native capture/saved-media audit milestone, but a final Native exit-code guard landed after those tests. Its owner is rerunning that final change and refreshing proof hashes before this checkpoint is accepted. C111329 LVMC-11-40-070 began in partition 03; C229398 NRS-484D-165-3 continues in partition 07.
+
+## 2026-11-23 C111125 8d final guard closeout
+
+C111125 NRS-484B-307-8d now seals 900 original 20 Hz Native/device/detector/geometry rows, four source-hashed PNG archives and per-frame pixel bindings. Its independent saved-media audit streams hashes and fully decodes all 3,600 images; non-diagnostic saved processing requires that audit. A final caller-supplied Native exit-code guard rejects failure before sealing, with a new negative test. The complete final 21-test suite and scoped static pass; I independently verified both proof-log hashes and reran exact scoped strict, which rejects truthful partial status. Canonical source/adapters, proposals, per-case receipts and runtime process-saved/acceptance remain CPU work. C111706 NRS-484B-403-3 began in partition 04 as replacement owner.
+
+## 2026-11-23 C229398 165-3 closeout
+
+C229398 NRS-484D-165-3 added an independent saved-media audit for four sealed FFV1 views with source-camera mapping, codec/rate/frame count and full FFmpeg decode, plus a saved-attempt CLI and positive/tamper short-video tests. It synchronized all six inline bundles and construction hashes, reran six exact offline proofs, and passed 19 focused tests and scoped static. I independently checked all ten result proof-log hashes and reran exact scoped strict, which rejects truthful partial status. Native result/seal closure, process-saved/compatibility, semantics, fallback and delivery acceptance remain CPU work. C188132 LVMC-11-30-060-B began in partition 06 as replacement owner.
+
+## 2026-11-23 C111329 bicycle/officer closeout
+
+C111329 LVMC-11-40-070 replaced an elapsed-time bicycle hold with an original stop-line/front-body geometry controller and added a source-hashed Police Officer gesture adapter with spawn/readback, per-frame window, recipient/authority and cleanup checks. Sixteen focused tests and scoped static pass. I independently checked the proof hash and reran exact scoped strict, which rejects truthful partial status pending exact runner/config/manifest/proposals, nine-case receipts, four-camera saved processing and delivery audit. C227749 LVMC-11-30-050 began in partition 08 as replacement owner.
+
+## 2026-11-23 C227749 saved media closeout
+
+C227749 LVMC-11-30-050 added a source-hashed four-camera FFprobe/FFmpeg full-decode audit against the exact 20 Hz profile and frame joins, plus a saved-media proof command. All five retained exact synthetic compatibility attempts passed four-camera decode, and a source-hashed shortened view was rejected. Twenty-three focused tests and scoped static pass. I independently checked all six result proof hashes and reran exact scoped strict, which rejects truthful partial status. Genuine source/physical, semantic, fallback and delivery acceptance work remains. C150041 LVMC-11-52-040-A began in partition 01 as replacement owner.
+
+## 2026-11-23 C188132 closeout and static naming repair
+
+C188132 LVMC-11-30-060-B added per-frame Native vehicle inventory checks and a source-hashed four-camera audit with full FFmpeg decode. Thirteen focused tests and three rebuilt exact offline constructions pass; scoped static passes. I independently checked all seven result proof hashes and reran exact scoped strict, which rejects truthful partial status. During the global static run, a returned log named with reserved `offline-` prefix caused a gate failure. The owner renamed all three affected logs to `construction-*-media-final.log`, updated references/hashes and reran scoped static successfully; a new full static run is underway. C110264 NRS-484B-210-1 began in partition 02 as replacement owner.
+
+## 2026-11-23 C111706 403-3 closeout
+
+C111706 NRS-484B-403-3 added a source-route pure-pursuit ego follower and timed other-vehicle control, synchronized 900-tick four-camera original capture, and an independent saved audit that hashes and fully decodes each PNG against Native frame/time joins. It also added source-bound location and vehicle-timing comparison audits. Thirty-four focused tests and scoped static pass. I independently verified all three proof-log hashes and reran exact scoped strict, which rejects truthful partial status pending reviewed site sources and canonical delivery receipts. C215286 NRS-484B-113-2 began in partition 07 as replacement owner.
+
+## 2026-11-23 full static rerun
+
+After the reserved-prefix proof-log rename, `.venv-cpu/bin/python worker_check.py --complete` passed across the current batch state. The full strict delivery-ready command is being rerun separately. No assignment was promoted from partial on a static-only pass.
+
+## 2026-11-23 C150041, C110264 and C215286 closeouts
+
+C150041 LVMC-11-52-040-A added a source-bound roadway orientation sweep across 0 to 90 degrees using retained site packet/source hashes, saved survey and Native OpenDRIVE binding, and full vehicle footprint against reviewed roadway polygon. Fifty-two focused tests and scoped static pass; I checked all 68 proof hashes and reran exact scoped strict, which rejects truthful partial status pending genuine reviewed site/judgment and delivery proofs. C110264 NRS-484B-210-1 added a streaming SHA/profile/order/count/size/format four-camera 900-PNG full pixel decoder; 24 focused tests and scoped static pass. I checked six proof hashes and reran exact scoped strict, which rejects partial. C215286 NRS-484B-113-2 added saved-attempt comparison audits reopening and hashing original frame streams, checking fixed map/crosswalk/blueprint/driver/district/actor/frame/time and rejecting reused or changed sources. Sixteen focused tests and scoped static pass; I checked four proof hashes and reran exact scoped strict, which rejects partial. C111610 NRS-484B-307-9a, C158196 NRS-484B-257-1 and C111610 NRS-484B-283-1a are the next owners in partitions 03, 06 and 08.
+
+## 2026-11-23 full strict rerun
+
+The corrected full static check passed. The exact full strict command `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 in `.runtime-work/global-nov23-final-strict-rerun.log` on `Preparation acceptance failed: partial/missing packages remain`. This reflects the truthful partial results; no assignment was promoted without a passing scoped strict gate.

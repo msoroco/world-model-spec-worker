@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from parking_site_acquisition import acquire
 from parking_scene import build
+from parking_sweep_feasibility import reviewed_candidate_angles
 
 
 XODR = '<OpenDRIVE><road name="straight" id="1" length="80" junction="-1" /></OpenDRIVE>'
@@ -50,6 +51,45 @@ def survey(root):
 
 
 class ParkingSiteAcquisitionTests(unittest.TestCase):
+    def test_reviewed_polygon_sweep_binds_packet_and_full_footprint(self):
+        with TemporaryDirectory() as tmp:
+            path, _ = survey(tmp)
+            packet = acquire(NativeMap(), path, tmp, Path(tmp) / "attempt")
+            result = reviewed_candidate_angles(packet, packet.parent)
+            self.assertEqual([row["angle_deg"] for row in result["samples"]],
+                             list(range(0, 91, 10)))
+            self.assertTrue(result["all_footprints_fit"])
+            self.assertEqual(result["source_packet_sha256"],
+                             hashlib.sha256(packet.read_bytes()).hexdigest())
+            self.assertFalse(result["motion_verified"])
+
+    def test_reviewed_polygon_sweep_reports_angle_that_leaves_road(self):
+        with TemporaryDirectory() as tmp:
+            path, item = survey(tmp)
+            item["context"]["roadway_polygon_xy_m"] = [[-25, 0], [25, 0],
+                                                           [25, 3], [-25, 3]]
+            path.write_text(json.dumps(item))
+            packet = acquire(NativeMap(), path, tmp, Path(tmp) / "attempt")
+            result = reviewed_candidate_angles(packet, packet.parent, edge_offset_m=1.5)
+            self.assertFalse(result["all_footprints_fit"])
+            self.assertFalse(result["samples"][-1]["full_footprint_inside_reviewed_roadway"])
+
+    def test_reviewed_polygon_sweep_rejects_changed_source(self):
+        with TemporaryDirectory() as tmp:
+            path, _ = survey(tmp)
+            packet = acquire(NativeMap(), path, tmp, Path(tmp) / "attempt")
+            (packet.parent / "reviewed_sources/activity.txt").write_text("changed\n")
+            with self.assertRaisesRegex(ValueError, "source hash changed"):
+                reviewed_candidate_angles(packet, packet.parent)
+
+    def test_reviewed_polygon_sweep_rejects_changed_survey(self):
+        with TemporaryDirectory() as tmp:
+            path, _ = survey(tmp)
+            packet = acquire(NativeMap(), path, tmp, Path(tmp) / "attempt")
+            (packet.parent / "reviewed-survey.json").write_text("{}\n")
+            with self.assertRaisesRegex(ValueError, "survey and map source join"):
+                reviewed_candidate_angles(packet, packet.parent)
+
     def test_retains_native_bytes_and_constructs_source_bound_case(self):
         with TemporaryDirectory() as tmp:
             path, item = survey(tmp)

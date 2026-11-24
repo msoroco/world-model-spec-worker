@@ -13,6 +13,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 from parking_pose import body
+from parking_measurement import inside, unit, vector
+from source_review import validate
 
 
 def inspect_straight_lane(path):
@@ -98,12 +100,80 @@ def candidate_angles(path, *, length_m=4.5, width_m=2.0, spacing_deg=10):
             "legal_judgment": "unresolved"}
 
 
+def reviewed_candidate_angles(packet_path, source_root, *, segment_index=0,
+                              edge_offset_m=2.5, length_m=4.5, width_m=2.0,
+                              spacing_deg=10):
+    """Probe complete parked-body footprints within a retained reviewed polygon.
+
+    This is geometric feasibility at one selected edge segment and center. It
+    neither expands the legal judgment sweep nor proves the vehicle can drive
+    into any sampled pose.
+    """
+    packet_path = Path(packet_path)
+    source_root = Path(source_root)
+    context = validate(packet_path, source_root=source_root)
+    packet = json.loads(packet_path.read_text())
+    survey_path = source_root / "reviewed-survey.json"
+    if (not survey_path.is_file() or
+            hashlib.sha256(survey_path.read_bytes()).hexdigest() != packet.get("survey_sha256") or
+            packet.get("context", {}).get("native_opendrive_sha256") != context["roadway_source"] or
+            not packet.get("context", {}).get("native_map_name")):
+        raise ValueError("reviewed Native survey and map source join required")
+    if not isinstance(segment_index, int) or segment_index < 0 or segment_index + 1 >= len(context["road_edge_xy_m"]):
+        raise ValueError("reviewed road edge segment missing")
+    values = (edge_offset_m, length_m, width_m, spacing_deg)
+    if (not all(isinstance(v, (int, float)) and math.isfinite(v) for v in values) or
+            min(values) <= 0 or 90 % spacing_deg):
+        raise ValueError("positive dimensions and exact 0..90 spacing required")
+    start, end = context["road_edge_xy_m"][segment_index:segment_index + 2]
+    tangent = unit(vector(start, end))
+    lawful = unit(context["lawful_travel_xy"])
+    anchor = tuple((start[i] + end[i]) / 2 for i in (0, 1))
+    normals = ((-tangent[1], tangent[0]), (tangent[1], -tangent[0]))
+    choices = [(normal, tuple(anchor[i] + edge_offset_m * normal[i] for i in (0, 1)))
+               for normal in normals]
+    choices = [(normal, center) for normal, center in choices
+               if inside(center, context["roadway_polygon_xy_m"])]
+    if len(choices) != 1:
+        raise ValueError("reviewed roadway does not identify one inward side")
+    inward, center = choices[0]
+    samples = []
+    for index in range(round(90 / spacing_deg) + 1):
+        angle = round(index * spacing_deg, 8)
+        radians = math.radians(angle)
+        forward = unit(tuple(math.cos(radians) * lawful[i] +
+                             math.sin(radians) * inward[i] for i in (0, 1)))
+        corners = body(center, forward, length_m=length_m, width_m=width_m)
+        samples.append({"angle_deg": angle, "center_xy_m": list(center),
+                        "forward_xy": list(forward),
+                        "full_footprint_inside_reviewed_roadway":
+                            all(inside(point, context["roadway_polygon_xy_m"])
+                                for point in corners)})
+    return {"format": "parking-reviewed-orientation-feasibility-v1",
+            "source_kind": "retained_reviewed_packet",
+            "source_packet_sha256": context["reviewed_packet_sha256"],
+            "roadway_source_sha256": context["roadway_source"],
+            "lawful_direction_source_sha256": context["lawful_direction_source"],
+            "segment_index": segment_index, "edge_offset_m": edge_offset_m,
+            "vehicle_length_m": length_m, "vehicle_width_m": width_m,
+            "spacing_deg": spacing_deg, "samples": samples,
+            "all_footprints_fit": all(item["full_footprint_inside_reviewed_roadway"]
+                                      for item in samples),
+            "motion_verified": False, "legal_judgment": "unresolved"}
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--opendrive", required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--opendrive")
+    source.add_argument("--packet")
+    parser.add_argument("--source-root")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
-    result = candidate_angles(args.opendrive)
+    if args.packet and not args.source_root:
+        parser.error("--packet requires --source-root")
+    result = (reviewed_candidate_angles(args.packet, args.source_root)
+              if args.packet else candidate_angles(args.opendrive))
     Path(args.output).write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({"samples": len(result["samples"]),
                       "all_footprints_fit": result["all_footprints_fit"]}))

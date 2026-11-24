@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from native_capture import FourVideoRecorder, sample_original_walker
+from media_audit import audit_media
 from overpass_source import (FRAMES, native_sample, request_controls, sha,
                              spawn_pair, validate_case)
 
@@ -62,7 +63,7 @@ def run(scene_path, map_path, output, host, port):
                 snap = world.get_snapshot()
                 if frame != snap.frame:
                     raise RuntimeError('world tick and original snapshot differ')
-                original = native_sample(scene, snap, walker, vehicle)
+                original = native_sample(scene, snap, walker, vehicle, world)
                 walker_body = sample_original_walker(scene, walker, snap)
                 if walker_body['frame'] != original['frame']:
                     raise RuntimeError('original body and actor frame differ')
@@ -104,11 +105,14 @@ def run(scene_path, map_path, output, host, port):
     files = ('scene.json','candidate-overpass.xodr','body-history.jsonl',
              'video_frames.jsonl','camera-frame-joins.jsonl','control-requests.jsonl',
              'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv')
+    sources = {'scene':'scene.json', 'map':'candidate-overpass.xodr',
+               'body_history':'body-history.jsonl', 'frame_map':'video_frames.jsonl',
+               'camera_joins':'camera-frame-joins.jsonl'}
+    sources.update({'video_'+name:name+'.mkv' for name in
+                    ('overview','approach','reference_corner','driver_reference')})
     write(output/'source-manifest.json', {'format':'c188132-original-sources-v1',
-          'scene':{'path':'scene.json','sha256':sha(output/'scene.json')},
-          'map':{'path':'candidate-overpass.xodr','sha256':sha(output/'candidate-overpass.xodr')},
-          'body_history':{'path':'body-history.jsonl','sha256':sha(output/'body-history.jsonl')},
-          'frame_map':{'path':'video_frames.jsonl','sha256':sha(output/'video_frames.jsonl')}})
+          **{key:{'path':name,'sha256':sha(output/name)} for key,name in sources.items()}})
+    write(output/'media-audit.json', audit_media(output))
     write(output/'acquisition.json', {name:{'kind':'original_native','sha256':sha(output/name)}
                                       for name in files})
     seal_capture(output, frames=count, restoration=restored, errors=[],
