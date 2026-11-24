@@ -97,6 +97,8 @@ def original_rows(capture):
                        "time_s": row["time_s"]})
         trace.append({"frame": native, "time_s": row["time_s"],
                       "position_m": position, "speed_mps": row["speed_mps"],
+                      "position": {"x": position[0], "y": position[1], "z": position[2]},
+                      "heading_deg": row["heading_deg"],
                       "light_state_bits": row["native_lamp_state_bits"],
                       "parking_brake": row["parking_brake"]})
     return frames, trace
@@ -119,6 +121,14 @@ def encode(attempt, case_key, map_sha256, *, ffmpeg="ffmpeg", ffprobe="ffprobe")
         target = root / name
         require(not target.exists(), "retain prior original " + name)
         target.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in values))
+    observations = [json.loads(line) for line in history_path.read_text().splitlines()]
+    (root / "parked_lamp_observations.jsonl").write_text("".join(
+        json.dumps({"time_s": row["time_s"], "value": row}, sort_keys=True) + "\n"
+        for row in observations))
+    (root / "site_context.json").write_text(json.dumps({
+        "reviewed_site_packet": json.loads((capture / "site_packet.json").read_text()),
+        "site_packet_sha256": file_sha(capture / "site_packet.json")
+    }, sort_keys=True) + "\n")
     results = {}
     for camera, view in VIEWS.items():
         target = root / (view + ".mkv")

@@ -37,12 +37,15 @@ def native(output_dir, host, port):
         raise ValueError("PARKED_LAMP_SITE_PACKET source path is required for Native capture")
     from native_capture import capture, read_site
     from carla_cameras import OriginalCameras
+    from worker_exchange.world_restore import snapshot, restore
+    from native_closure import close
     import carla
     import hashlib
 
     site, _, _ = read_site(source, config["case_key"])
     client = carla.Client(host, port)
     client.set_timeout(20.0)
+    saved_world = snapshot(client)
     world = client.get_world()
     settings = world.get_settings()
     if not settings.synchronous_mode or abs(settings.fixed_delta_seconds - .05) > 1e-6:
@@ -50,18 +53,34 @@ def native(output_dir, host, port):
     map_digest = hashlib.sha256(world.get_map().to_opendrive().encode()).hexdigest()
     if map_digest != site["map_sha256"]:
         raise ValueError("Native OpenDRIVE bytes differ from reviewed site map")
-    output = Path(output_dir) / "capture"
+    attempt = Path(output_dir)
+    output = attempt / "capture"
     output.mkdir()
-    cameras = OriginalCameras(world, carla, site, config)
+    cameras = None
+    failure = None
     try:
+        cameras = OriginalCameras(world, carla, site, config)
         result = capture(world, source, config["case_key"], output, cameras.read)
+        from encode_original import encode
+        encoded = encode(attempt, config["case_key"], site["map_sha256"])
+    except BaseException as error:
+        failure = error
+        raise
     finally:
-        cameras.close()
-    from encode_original import encode
-    encoded = encode(output_dir, config["case_key"], site["map_sha256"])
+        try:
+            if cameras is not None:
+                cameras.close()
+        finally:
+            restoration = restore(client, saved_world)
+            if failure is not None:
+                (attempt / "native-run-status.json").write_text(json.dumps({
+                    "errors": [type(failure).__name__ + ": " + str(failure)],
+                    "restoration": restoration, "physical_acceptance_claimed": False}, indent=2) + "\n")
+    sealed = close(attempt, config["case_key"], site["map_sha256"], restoration)
     print(json.dumps({"case_id": result["case_id"], "original_frames": result["frame_count"],
                       "original_camera_images": 4 * result["frame_count"],
                       "encoded_views": sorted(encoded),
+                      "capture_seal_format": sealed["format"],
                       "delivery_acceptance_claimed": False}))
 
 

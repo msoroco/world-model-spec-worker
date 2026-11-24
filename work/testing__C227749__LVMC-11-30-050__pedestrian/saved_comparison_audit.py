@@ -13,7 +13,7 @@ def read(path):
     return json.loads(Path(path).read_text())
 
 
-def compare(root, scratch):
+def compare(root, scratch, compat_prefix='compat-v4-'):
     root, scratch = Path(root), Path(scratch)
     plan = read(root / 'case-plan.json')
     assignment = root.name
@@ -27,7 +27,7 @@ def compare(root, scratch):
         for name, case_id in zip(names, ids):
             case = root / 'cases' / name
             construction = case / 'construction.json'
-            attempt = scratch / ('compat-v4-' + name)
+            attempt = scratch / (compat_prefix + name)
             version = scratch / ('process-' + name) / 'v0001'
             receipts.append(audit_saved(version, attempt, case_id, sha(construction)))
             scenes.append(read(case / 'scene.json'))

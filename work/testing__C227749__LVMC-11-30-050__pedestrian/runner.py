@@ -12,6 +12,7 @@ from crossing_geometry import validate_scene
 from native_capture import FourVideoRecorder, sample_original_walker
 from native_controller import request_next_control, spawn_walker
 from native_crosswalk_readback import audit_crosswalk_map
+from reviewed_site import audit_reviewed_site
 
 FRAMES=400
 CAMERAS=('overview','approach','reference_corner','driver_reference')
@@ -55,6 +56,8 @@ def run_native(scene,scene_path,map_path,output,host,port):
         raise ValueError('exact materialized construction/config required')
     if any((output/name).exists() for name in ('trace.jsonl','video_frames.jsonl','walker-body-history.jsonl','capture-seal.json')):
         raise ValueError('original acquisition already exists')
+    reviewed = audit_reviewed_site(scene, output)
+    write(output/'reviewed-site-audit.json', reviewed)
     os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']=str(safe/'c227749-native-runtime')
     import carla
     from worker_exchange.native_output import FrameMap,seal_capture
@@ -111,10 +114,12 @@ def run_native(scene,scene_path,map_path,output,host,port):
         write(output/'native-run-status.json',{'phase':'failed','errors':errors,
              'restoration':restoration,'captured_frames':len(frames)})
         raise RuntimeError('Native acquisition or restoration failed; retained failed attempt')
-    sources=('scene.json','candidate-crossing.xodr','native-crosswalk-readback.json','road.xodr','trace.jsonl',
+    sources=('scene.json','candidate-crossing.xodr','reviewed-site.json','reviewed-site-audit.json',
+             'native-crosswalk-readback.json','road.xodr','trace.jsonl',
              'walker-body-history.jsonl','video_frames.jsonl','camera-frame-joins.jsonl',
              *(name+'.mkv' for name in CAMERAS))
-    write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in sources})
+    sources += tuple(ref['path'] for ref in reviewed['source_refs'].values())
+    write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in dict.fromkeys(sources)})
     seal_capture(output,frames=len(frames),restoration=restoration,errors=[],
        encoder_exit_codes={name:0 for name in CAMERAS},
        context={'case_id':scene['case_id'],'map_sha256':scene['map_source_sha256']})

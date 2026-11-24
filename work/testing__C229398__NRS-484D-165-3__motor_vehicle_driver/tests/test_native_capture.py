@@ -22,7 +22,8 @@ class Vehicle:
     def get_control(self):
         return types.SimpleNamespace(hand_brake=True)
     def get_transform(self):
-        return types.SimpleNamespace(location=types.SimpleNamespace(x=1.0, y=2.0, z=0.0))
+        return types.SimpleNamespace(location=types.SimpleNamespace(x=1.0, y=2.0, z=0.0),
+                                     rotation=types.SimpleNamespace(yaw=0.0))
     def get_light_state(self):
         return 3
     def destroy(self):
@@ -170,6 +171,29 @@ class CaptureTest(unittest.TestCase):
             packet_path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "rear original camera image hash join mismatch"):
                 audit_saved_capture(out, "dark_lamps_on", "a" * 64)
+
+    def test_saved_entrypoint_uses_original_source_and_rejects_missing_packet(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            source = source_packet(root)
+            attempt = root / "attempt"
+            capture = attempt / "capture"
+            capture.mkdir(parents=True)
+            with patch.object(native, "construct", return_value={"actor": Vehicle(), "requested_lamp_mask": 3}):
+                native.capture(World(), source, "dark_lamps_on", capture, images)
+            (attempt / "config.json").write_text(json.dumps({
+                "selected_case_id": native.ASSIGNMENT + "__dark_lamps_on", "case_key": "dark_lamps_on"}))
+            import finalize_original
+            report = root / "report.json"
+            with patch.object(sys, "argv", ["finalize_original.py", "--attempt", str(attempt),
+                                            "--output", str(report)]):
+                finalize_original.main()
+            self.assertEqual(json.loads(report.read_text())["measurements"]["parked_position"]["value"]["frame_count"], 900)
+            (capture / "site_packet.json").unlink()
+            with patch.object(sys, "argv", ["finalize_original.py", "--attempt", str(attempt),
+                                            "--output", str(report)]):
+                with self.assertRaisesRegex(ValueError, "Missing required source: capture/site_packet.json"):
+                    finalize_original.main()
 
 
 if __name__ == "__main__":

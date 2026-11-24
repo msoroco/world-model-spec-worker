@@ -95,9 +95,12 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
             velocity = vehicle.get_velocity()
             speed = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
             require(speed <= .25, "parked vehicle moving")
-            position = vehicle.get_transform().location
+            transform = vehicle.get_transform()
+            position = transform.location
             require(all(math.isfinite(value) for value in (position.x, position.y, position.z)),
                     "Native vehicle position invalid")
+            heading = float(transform.rotation.yaw)
+            require(math.isfinite(heading), "Native heading invalid")
             lamp_bits = int(vehicle.get_light_state())
             require(lamp_bits == built["requested_lamp_mask"], "Native lamp readback changed")
             observed = camera_reader(native_frame)
@@ -133,6 +136,7 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
                          "lighting_assessment": site["lighting_assessment"],
                          "parking_brake": True, "speed_mps": speed,
                          "position_m": [position.x, position.y, position.z],
+                         "heading_deg": heading,
                          "front_lamp_state": CASES[case_key]["lamps"],
                          "rear_lamp_state": CASES[case_key]["lamps"],
                          "native_lamp_state_bits": lamp_bits,

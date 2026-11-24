@@ -62,7 +62,7 @@ class TestCapture(unittest.TestCase):
                      'parking_route':[[-5,2],[2,2]], 'crosswalk_id':'cw', 'marking_status':'marked'}
         self.sref = seal(self.root,'site.json',self.site)
         self.vref = seal(self.root,'vehicle.json',{'blueprint':'vehicle.sedan','driver_source':'assigned actor'})
-        self.case = {'case_id':'case-park-on','action':'park','exception':'none','destination':[2,2]}
+        self.case = {'case_id':'case-park-on','action':'park','exception':'none','destination':'on'}
     def tearDown(self): self.tmp.cleanup()
     def test_full_capture(self):
         a = Adapter()
@@ -78,6 +78,15 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(verified['decoded_original_pngs'],3600)
         self.assertTrue(verified['actual_pixels'])
         self.assertFalse(verified['full_video_decode'])
+        comparison_source = s.comparison_source(receipt_ref,self.root,self.root/'out',self.case,verified)
+        self.assertEqual(comparison_source['site_source_sha256'],self.sref['sha256'])
+        self.assertEqual(comparison_source['vehicle_source_sha256'],self.vref['sha256'])
+        self.assertEqual(comparison_source['original_frame_count'],900)
+        self.assertFalse(comparison_source['delivery_accepted'])
+        self.assertFalse(any(comparison_source['exception_sources'].values()))
+        with self.assertRaisesRegex(n.SourceError, 'measured destination mismatch'):
+            s.comparison_source(receipt_ref,self.root,self.root/'out',
+                                {**self.case,'destination':'off'},verified)
     def test_camera_png_tamper_rejected(self):
         a = Adapter()
         n.capture(a,self.sref,self.vref,self.case,self.root,self.root/'out')
