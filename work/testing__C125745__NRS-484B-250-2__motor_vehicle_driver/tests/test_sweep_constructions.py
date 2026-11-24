@@ -1081,3 +1081,106 @@ class SweepConstructionTests(unittest.TestCase):
                     self.assertFalse(receipt['missing_evidence'])
                     self.assertEqual(receipt['native_revision']['construction_sha256'],
                                      plan['construction_sha256'])
+
+    def test_frame24_fallback1_source_bound_physical_diagnostics(self):
+        plan = read('case-plan.json')['frame24_fallback1_physical_cpu_diagnostics']
+        manifest = read('execution-manifest.json')
+        self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+        entry = next(row for row in manifest['cases'] if row['case_id'] == plan['case_id'])
+        candidate = next(row for row in entry['candidates'] if row['id'] == 'fallback1')
+        self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
+        self.assertEqual(plan['compatibility_receipt_sha256'],
+                         digest(candidate['compatibility']['receipt']))
+        self.assertEqual(plan['saved_receipt_sha256'],
+                         digest(candidate['post_capture']['test_log']))
+        self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
+        for kind, expected in [('complete_motion', 'met'),
+                               ('incomplete_motion', 'not_met'),
+                               ('missing_evidence', 'unverified'),
+                               ('lifecycle', None)]:
+            proof = plan['proofs'][kind]
+            self.assertEqual(proof['exit_code'], 0)
+            sources = {}
+            for label in ('result', 'log'):
+                payload = zlib.decompress(base64.b64decode(
+                    proof[label + '_zlib_base64'], validate=True))
+                self.assertEqual(len(payload), proof[label + '_bytes'])
+                self.assertEqual(hashlib.sha256(payload).hexdigest(),
+                                 proof[label + '_sha256'])
+                sources[label] = payload
+            result = json.loads(sources['result'])
+            if kind == 'lifecycle':
+                self.assertEqual(result['saved_processing_receipt_sha256'],
+                                 plan['saved_receipt_sha256'])
+                self.assertEqual(result['events'],
+                                 ['capture_finished', 'encoders_closed',
+                                  'restoration_verified', 'native_exit',
+                                  'owner_released', 'saved_processing_started'])
+                self.assertTrue(result['failed_encoder_rejected'])
+                self.assertTrue(result['premature_release_rejected'])
+            else:
+                maneuver = result['physical_checks']['maneuver']
+                self.assertEqual(maneuver['status'], expected)
+                self.assertFalse(result['physical_acceptance_claimed'])
+                if expected != 'unverified':
+                    self.assertIn('crossing_history.jsonl', maneuver['sources'])
+        rejection = plan['wrong_receipt_rejection']
+        log = zlib.decompress(base64.b64decode(
+            rejection['log_zlib_base64'], validate=True))
+        self.assertEqual(rejection['exit_code'], 1)
+        self.assertEqual(len(log), rejection['log_bytes'])
+        self.assertEqual(hashlib.sha256(log).hexdigest(), rejection['log_sha256'])
+        self.assertIn(rejection['error_contains'], log.decode())
+
+    def test_frame24_other_fallback_physical_diagnostics(self):
+        manifest = read('execution-manifest.json')
+        plans = read('case-plan.json')
+        for candidate_id in ('fallback2', 'fallback3'):
+            with self.subTest(candidate=candidate_id):
+                plan = plans['frame24_' + candidate_id + '_physical_cpu_diagnostics']
+                self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+                entry = next(row for row in manifest['cases']
+                             if row['case_id'] == plan['case_id'])
+                candidate = next(row for row in entry['candidates']
+                                 if row['id'] == candidate_id)
+                self.assertEqual(plan['construction_sha256'],
+                                 candidate['construction_sha256'])
+                self.assertEqual(plan['compatibility_receipt_sha256'],
+                                 digest(candidate['compatibility']['receipt']))
+                self.assertEqual(plan['saved_receipt_sha256'],
+                                 digest(candidate['post_capture']['test_log']))
+                self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
+                for kind, expected in [('complete_motion', 'met'),
+                                       ('incomplete_motion', 'not_met'),
+                                       ('missing_evidence', 'unverified'),
+                                       ('lifecycle', None)]:
+                    proof = plan['proofs'][kind]
+                    self.assertEqual(proof['exit_code'], 0)
+                    data = zlib.decompress(base64.b64decode(
+                        proof['result_zlib_base64'], validate=True))
+                    log = zlib.decompress(base64.b64decode(
+                        proof['log_zlib_base64'], validate=True))
+                    self.assertEqual((len(data), hashlib.sha256(data).hexdigest()),
+                                     (proof['result_bytes'], proof['result_sha256']))
+                    self.assertEqual((len(log), hashlib.sha256(log).hexdigest()),
+                                     (proof['log_bytes'], proof['log_sha256']))
+                    result = json.loads(data)
+                    if kind == 'lifecycle':
+                        self.assertEqual(result['saved_processing_receipt_sha256'],
+                                         plan['saved_receipt_sha256'])
+                        self.assertTrue(result['failed_encoder_rejected'])
+                        self.assertTrue(result['premature_release_rejected'])
+                        self.assertEqual(result['events'][-3:],
+                                         ['native_exit', 'owner_released',
+                                          'saved_processing_started'])
+                    else:
+                        self.assertEqual(result['physical_checks']['maneuver']['status'],
+                                         expected)
+                        self.assertFalse(result['physical_acceptance_claimed'])
+                rejection = plan['wrong_receipt_rejection']
+                log = zlib.decompress(base64.b64decode(
+                    rejection['log_zlib_base64'], validate=True))
+                self.assertEqual(rejection['exit_code'], 1)
+                self.assertEqual(hashlib.sha256(log).hexdigest(),
+                                 rejection['log_sha256'])
+                self.assertIn(rejection['error_contains'], log.decode())

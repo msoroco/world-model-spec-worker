@@ -65,6 +65,14 @@ class PhysicalProofTests(unittest.TestCase):
             self.assertEqual(row['candidate_selection']['manifest_sha256'],replay['manifest_sha256'])
             self.assertEqual(row['candidate_selection']['case_id'],row['case_id'])
             self.assertEqual(row['candidate_selection']['candidate_id'],'primary')
+            entry=next(item for item in manifest['cases'] if item['case_id']==row['case_id'])
+            standalone=PACKAGE/entry['post_capture']['test_log']
+            self.assertTrue(standalone.is_file())
+            self.assertEqual(hashlib.sha256(standalone.read_bytes()).hexdigest(),
+                             entry['post_capture']['test_log_sha256'])
+            self.assertIn('No Native or legal acceptance',entry['post_capture']['proof_scope'])
+            self.assertEqual(json.loads(standalone.read_text())['result_sha256'],
+                             row['saved_processing']['result_sha256'])
             for stage in ('compatibility','saved_processing'):
                 proof=row[stage]
                 source=zlib.decompress(base64.b64decode(proof['log_zlib_base64'],validate=True))

@@ -274,3 +274,7 @@ The active returned execution manifest and case plan are unchanged for the four 
 ## 2026-11-23 returned-file capacity archival
 
 Twelve historical `*process-saved-command.log` stdout files that were not referenced by the active execution manifest were preserved byte-exact, with SHA-256 and their original result test rows, in `work/_shared/c158196-saved-command-logs-20261123.json`. Their redundant result test rows were removed; the active saved receipt JSONs and manifest bindings remain in place. This freed returned-file slots for current C331230 proofs. C158196 remains partial; no readiness assertion changed.
+
+## 2026-11-23 relevance proposal deduplication
+
+`proposals/relevance-batch.json` was byte-identical to retained `proposals/relevance.json` (SHA256 `b8edd0221eb81dfc512481ba8d3c19f4699fd5b640f14d515a44733ceabc6ad8`). The semantic index now points both relevance stages at the same returned bytes. The assignment-scoped nonready complete checker passed. The staged officer case and comparison work remain partial.
