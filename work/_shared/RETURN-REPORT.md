@@ -1,3 +1,15 @@
+## 2026-11-23 C144550 exact-case indicator component
+
+C144550 now maps all five exact cases to planned Native indicator commands, with the late case triggered by observed body departure. Native light-state updates preserve unrelated lamps and return readback; original camera and lane history remain the display evidence. Four CPU tests, pinned preflight and the scoped nonready check pass. The case plan binds the component source and test hashes. C144550 remains partial pending runner integration, saved processing and exact-case proofs.
+
+## 2026-11-23 C144550 same-direction lane selection
+
+C144550 now rejects opposite-direction Native adjacent lanes even where the road ID and marking match; the right-lane CPU test covers that rejection. Three tests and the scoped nonready check pass. The package remains partial pending controller, exact saved path, fallbacks, proofs and actual marked-lane observations.
+
+## 2026-11-23 C125763 opposite approach comparison and proof replay
+
+C125763 added a third source-bound controlled comparison for the opposite left-turn approach. Its audit and tampered-source rejection pass; 41 CPU tests pass. All 16 selected-primary synthetic physical fixture commands were replayed with exact returned result hashes, and four receipt bindings were refreshed. The pinned preflight, scoped nonready complete check and direct manifest, semantic, delivery and compatibility validators pass. Current execution manifest SHA256: `af9b42b06fd514b0b3a3230881f8ce24b68595a1873f7e518c0a17981f06bb18`; combined test/fixture log SHA256: `37db38d5111101c1563b2c1e95529b6bd93a20bac9478a97af75160cbcd420ef`. C125763 remains partial pending Native evidence and source-backed qualitative judgment qualification. No physical or legal acceptance is claimed. The full batch strict gate remains open.
+
 ## 2026-11-23 C125745 frame32 fallback2 CPU physical record
 
 The exact `c125745-1-0000` fallback2 now has its missing source-bound synthetic physical classifier and lifecycle record. The current compatibility receipt, construction hash, and standalone recorded-only saved receipt match the execution manifest. Complete motion classified `met`, incomplete motion `not_met`, and missing crossing evidence `unverified`; the six-event lifecycle passed and rejected failed encoder sealing and premature owner release. A wrong-candidate saved receipt was rejected at `Canonical saved receipt path differs from manifest`. The exact result and log bytes, commands, hashes and negative rejection are compressed inline in `case-plan.json.frame32_fallback2_physical_cpu_diagnostics`. All 24 sweep case/candidate selections now have retained synthetic classifier/lifecycle diagnostics. All 74 package tests passed (`cpu-tests.log` SHA256 `5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110`); pinned CPU preflight and scoped nonready complete check passed. Current case plan SHA256: `df3171423c8fde914138ee4adf9c3802bd033f51722a4ba43d591c69902225d3`.

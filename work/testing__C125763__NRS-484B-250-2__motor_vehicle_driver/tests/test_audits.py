@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 import sys
 import tempfile
@@ -13,7 +14,7 @@ import test_finalizer as finalizer_fixture
 from finalizer import finalize
 from runner import ASSIGNMENT
 from audit_delivery import audit as audit_delivery
-from audit_comparisons import audit_pair,audit as audit_comparisons
+from audit_comparisons import audit_pair,audit as audit_comparisons,audit_opposite_context_receipts
 
 
 def _write_rows(path,rows):
@@ -98,11 +99,38 @@ class AuditTests(unittest.TestCase):
                 ASSIGNMENT+'__yield_ego_left_near_time':left,
                 ASSIGNMENT+'__yield_ego_right_near_time':right,
                 ASSIGNMENT+'__yield_ego_left_separated':separated})
-            self.assertEqual(len(report['comparisons']),2)
+            self.assertEqual(len(report['comparisons']),3)
             self.assertLess(report['comparisons'][1]['entry_time_differences_s'][0],
                             report['comparisons'][1]['entry_time_differences_s'][1])
+            self.assertTrue(report['comparisons'][2]['opposite_approach_contrast_passed'])
             self.assertFalse(report['delivery_ready'])
             with self.assertRaisesRegex(ValueError,'Missing exact comparison attempt'):
                 audit_comparisons(ROOT,{ASSIGNMENT+'__yield_ego_left_near_time':left})
+
+    def test_opposite_comparison_binds_current_receipts_and_original_sources(self):
+        report=audit_opposite_context_receipts(ROOT)
+        self.assertTrue(report['fixed_crossing_and_device_passed'])
+        self.assertEqual(report['exception_judgment'],'unresolved')
+        self.assertFalse(report['physical_acceptance_claimed'])
+        manifest=json.loads((ROOT/'execution-manifest.json').read_text())
+        entries=[copy.deepcopy(row) for row in manifest['cases']
+                 if row['case_id'] in report['case_ids']]
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp)
+            for row in entries:
+                source=ROOT/row['compatibility']['receipt']
+                target=folder/source.name
+                target.write_bytes(source.read_bytes())
+                row['compatibility']['receipt']=source.name
+            opposite=entries[1]
+            path=folder/opposite['compatibility']['receipt']
+            receipt=json.loads(path.read_text())
+            receipt['measurement_examples']['entry_timing']['sources'][
+                'crossing_history.jsonl']='0'*64
+            path.write_text(json.dumps(receipt))
+            opposite['compatibility']['sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
+            (folder/'execution-manifest.json').write_text(json.dumps({'cases':entries}))
+            with self.assertRaisesRegex(ValueError,'original source hash differs'):
+                audit_opposite_context_receipts(folder)
 
 if __name__=='__main__':unittest.main()

@@ -17,3 +17,11 @@ Resume commands:
 Pinned CPU preflight and repository tests pass. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The complete strict gate next reports missing result `testing__C157964__NRS-484B-257-1__motor_vehicle_driver` in `strict-gate.log`. This is unfinished worker preparation, not an external dependency.
+
+## 2026-11-23 same-direction Native lane guard
+
+The Native adjacent-lane selector now rejects lane ID zero and a neighbor with the opposite CARLA lane-ID sign, even if its road ID and marking match. This prevents a centerline crossing from being used as the same-direction lane-change target. The existing right-lane test now uses a same-sign lane and explicitly rejects an opposite-sign neighbor. Three CPU tests and the scoped nonready complete check pass; `cpu-tests.log` retains SHA256 `52faaa32758331b884a115ebdeecf56a6b90db64546678f6e950c842e7d32bc5`. C144550 remains **partial** while the controller, exact saved path, fallbacks, proofs and actual marked-lane observations are unfinished. No Native or legal acceptance is claimed.
+
+## 2026-11-23 exact-case Native indicator component
+
+`native_lane_construction.py` now maps all five exact case IDs to planned indicator commands. The late-signal case remains off until an original body-departure observation is supplied; the wrong-direction and rightward cases command the right indicator. `apply_indicator` clears only turn-lamp bits, preserves other Native lights and returns a light-state readback. This controls a planned signal but does not prove camera-visible display or legal signaling; `lane_change_measurements.py` remains the original-frame check. `case-plan.json.native_indicator_policy_cpu_component` binds the source and test hashes. Four CPU tests passed (`cpu-tests.log` SHA256 `4404ea6c23f3c3c12be79309057a055afb3cdbf15390ac58f855143c6edfbd23`), as did pinned `runtime.py preflight` and the scoped nonready complete check. This is a controller component; exact runner integration and saved processing remain unfinished. C144550 remains **partial**.

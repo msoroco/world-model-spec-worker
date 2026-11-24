@@ -2,6 +2,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from enum import IntFlag
 from pathlib import Path
 from types import SimpleNamespace as NS
 
@@ -72,14 +73,41 @@ class LaneChangeTests(unittest.TestCase):
     def test_native_adjacent_marking_both_directions(self):
         mark=NS(type="Solid")
         left=NS(road_id=7,lane_id=-2,lane_type="Driving")
-        right=NS(road_id=7,lane_id=1,lane_type="Driving")
+        right=NS(road_id=7,lane_id=-3,lane_type="Driving")
         wp=NS(road_id=7,lane_id=-1,get_left_lane=lambda:left,get_right_lane=lambda:right,
               left_lane_marking=mark,right_lane_marking=mark)
         self.assertIs(construction.select_adjacent_marked_lane(wp,"left","Driving")["target"],left)
         self.assertIs(construction.select_adjacent_marked_lane(wp,"right","Driving")["target"],right)
+        right.lane_id=1
+        with self.assertRaisesRegex(ValueError,"opposite direction"):
+            construction.select_adjacent_marked_lane(wp,"right","Driving")
+        right.lane_id=-3
         wp.right_lane_marking=NS(type="None")
         with self.assertRaisesRegex(ValueError,"marking"):
             construction.select_adjacent_marked_lane(wp,"right","Driving")
+
+    def test_exact_case_signal_policy_and_native_readback(self):
+        prefix=construction.CASE_PREFIX
+        before=prefix+"left_signal_before_clear_gap"
+        late=prefix+"left_signal_late_clear_gap"
+        wrong=prefix+"left_wrong_signal_clear_gap"
+        right=prefix+"right_signal_before_clear_gap"
+        self.assertEqual(construction.indicator_command(before,False),"left")
+        self.assertEqual(construction.indicator_command(late,False),"off")
+        self.assertEqual(construction.indicator_command(late,True),"left")
+        self.assertEqual(construction.indicator_command(wrong,False),"right")
+        self.assertEqual(construction.indicator_command(right,False),"right")
+        with self.assertRaisesRegex(ValueError,"Unknown exact"):
+            construction.indicator_command(prefix+"unplanned",False)
+        class Lights(IntFlag):
+            LeftBlinker=1
+            RightBlinker=2
+            LowBeam=4
+        vehicle=NS(state=Lights.LowBeam,get_light_state=lambda:vehicle.state,
+                   set_light_state=lambda state:setattr(vehicle,"state",state))
+        self.assertEqual(construction.apply_indicator(vehicle,Lights,"left")["readback_state"],5)
+        self.assertEqual(construction.apply_indicator(vehicle,Lights,"right")["readback_state"],6)
+        self.assertEqual(construction.apply_indicator(vehicle,Lights,"off")["readback_state"],4)
 
 
 if __name__=="__main__":unittest.main()
