@@ -97,6 +97,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     history: list[dict] = []
     body_history: list[dict] = []
     participants_history: list[dict] = []
+    control_history: list[dict] = []
     frame_map: list[dict] = []
     graph_map: list[dict] = []
     archives = {}
@@ -164,6 +165,23 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                     raise ValueError('Native participant body or velocity join differs')
                 participants_history.append({'time_s': time_s,
                     'value': {'frame': frame, **{str(p['actor_id']): p for p in participants}}})
+            read_controls = getattr(adapter, 'read_control_inventory', None)
+            if callable(read_controls):
+                controls = read_controls(frame)
+                inventory = controls.get('control_actor_inventory', {}) if isinstance(controls, dict) else {}
+                devices = controls.get('devices') if isinstance(controls, dict) else None
+                if (not isinstance(controls, dict) or controls.get('frame') != frame or
+                        controls.get('time_s') != time_s or
+                        not isinstance(devices, list) or
+                        inventory.get('frame') != frame or
+                        inventory.get('time_s') != time_s or
+                        inventory.get('method') != 'World.get_actors' or
+                        inventory.get('prefix') != 'traffic.' or
+                        inventory.get('complete') is not True or
+                        sorted(inventory.get('actor_ids', [])) !=
+                        sorted(device.get('actor_id') for device in devices)):
+                    raise ValueError('Native same-frame control actor inventory differs')
+                control_history.append(controls)
             camera_rows = adapter.read_cameras(frame)
             if not isinstance(camera_rows, dict) or set(camera_rows) != CAMERAS:
                 raise ValueError('Native four-camera callback set missing')
@@ -216,6 +234,8 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
             raise ValueError('Native full body capture is incomplete')
         if participants_history and len(participants_history) != FRAMES:
             raise ValueError('Native participant capture is incomplete')
+        if control_history and len(control_history) != FRAMES:
+            raise ValueError('Native control actor capture is incomplete')
         read_geometry = getattr(adapter, 'read_road_geometry', None)
         geometry = read_geometry() if callable(read_geometry) else None
         if geometry is not None and not isinstance(geometry, dict):
@@ -266,6 +286,9 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
         if participants_history:
             hashes['synchronized_motion_records.jsonl'] = _write_jsonl(
                 root / 'synchronized_motion_records.jsonl', participants_history)
+        if control_history:
+            hashes['control_actor_inventory.jsonl'] = _write_jsonl(
+                root / 'control_actor_inventory.jsonl', control_history)
         if recorder_info is not None:
             info_bytes = recorder_info.encode()
             (root / 'recorder_info.txt').write_bytes(info_bytes)
@@ -284,6 +307,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                            len(body_history) == FRAMES and geometry is not None and
                            len(graph_map) == FRAMES and
                            len(participants_history) == FRAMES and
+                           len(control_history) == FRAMES and
                            recorder_info is not None)
         acquisition = {'case_id': case_id,
                        'diagnostic_fixture': not complete_source,

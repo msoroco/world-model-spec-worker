@@ -98,7 +98,7 @@ def generate():
             new = ('    from reciprocal_entrypoint import run_native\n'
                    '    if not args.output_dir:\n'
                    '        raise ValueError("Native attempt output directory required")\n'
-                   '    result = run_native("config.json", args.map_packet, args.output_dir,\n'
+                   '    result = run_native("config.json", map_path, args.output_dir,\n'
                    '                        args.host or "127.0.0.1", int(args.port or 2000))\n'
                    '    print(json.dumps(result, default=str))')
             if runner["content"].count(old) != 1:
@@ -126,7 +126,7 @@ def generate():
             new = ('    from native_entrypoint import run_native\n'
                    '    if not args.output_dir:\n'
                    '        raise ValueError("Native attempt output directory required")\n'
-                   '    result = run_native("config.json", args.map_packet, args.output_dir,\n'
+                   '    result = run_native("config.json", map_path, args.output_dir,\n'
                    '                        args.host or "127.0.0.1", int(args.port or 2000))\n'
                    '    print(json.dumps(result, default=str))')
             if runner["content"].count(old) != 1:

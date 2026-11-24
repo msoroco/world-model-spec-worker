@@ -6,9 +6,20 @@ A production run requires a reviewed local Native adapter and map survey.
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 from construction import build
+
+
+def reviewed_map_packet(argument):
+    path = argument or os.environ.get("C109749_MAP_PACKET")
+    if not path:
+        raise ValueError("reviewed original Native map packet required at capture; set C109749_MAP_PACKET")
+    packet = json.loads(Path(path).read_text(encoding="utf-8"))
+    if packet.get("diagnostic_fixture") or packet.get("reviewed_original_map") is not True:
+        raise ValueError("production capture requires a reviewed original Native map packet")
+    return path, packet
 
 
 def check(config, map_packet):
@@ -45,16 +56,12 @@ def main():
         print(json.dumps({"case_id": request["case_id"], "offline_contract_passed": True,
                           "real_native_map_reviewed": False, "simulation_started": False}))
         return
-    if not args.map_packet:
-        raise ValueError("reviewed original Native map packet required at capture")
-    packet = json.loads(Path(args.map_packet).read_text(encoding="utf-8"))
-    if packet.get("diagnostic_fixture") or packet.get("reviewed_original_map") is not True:
-        raise ValueError("production capture requires a reviewed original Native map packet")
+    map_path, packet = reviewed_map_packet(args.map_packet)
     check(config, packet)
     from reciprocal_entrypoint import run_native
     if not args.output_dir:
         raise ValueError("Native attempt output directory required")
-    result = run_native("config.json", args.map_packet, args.output_dir,
+    result = run_native("config.json", map_path, args.output_dir,
                         args.host or "127.0.0.1", int(args.port or 2000))
     print(json.dumps(result, default=str))
 

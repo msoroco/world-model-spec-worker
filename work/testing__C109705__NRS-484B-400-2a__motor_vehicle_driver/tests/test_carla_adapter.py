@@ -172,6 +172,24 @@ class CarlaAdapterTests(unittest.TestCase):
                 self.adapter.stop_recorder()
             self.adapter.cleanup()
 
+    def test_original_signal_group_inventory(self):
+        light = NS(id=17, type_id='traffic.traffic_light', is_alive=True,
+                   get_transform=lambda: NS(location=NS(x=3., y=4., z=2.)),
+                   get_light_boxes=lambda: [object(), object()],
+                   get_state=lambda: 'TrafficLightState.Green')
+        original_get_actors = self.world.get_actors
+        self.world.get_actors = lambda: [*original_get_actors(), light]
+        self.adapter.start(self.plan)
+        frame = self.adapter.tick()['frame']
+        observed = self.adapter.read_control_inventory(frame)
+        self.assertEqual(observed['control_actor_inventory']['actor_ids'], [17])
+        self.assertEqual(observed['devices'][0]['light_box_method'],
+                         'TrafficLight.get_light_boxes')
+        self.assertEqual(observed['devices'][0]['light_boxes'],
+                         [{'light_box_index': 0}, {'light_box_index': 1}])
+        self.assertEqual(observed['devices'][0]['state'], 'Green')
+        self.adapter.cleanup()
+
     def test_exact_four_camera_frame_and_restoration(self):
         self.adapter.start(self.plan)
         self.assertTrue(self.world.settings.synchronous_mode)
@@ -180,6 +198,7 @@ class CarlaAdapterTests(unittest.TestCase):
         ego = self.adapter.read_ego(frame)
         body = self.adapter.read_body(frame)
         participants = self.adapter.read_participants(frame)
+        controls = self.adapter.read_control_inventory(frame)
         cameras = self.adapter.read_cameras(frame)
         self.assertEqual(ego['ego_body_vertices_xy_m'],
                          [v[:2] for v in body['body_vertices_m']])
@@ -189,6 +208,9 @@ class CarlaAdapterTests(unittest.TestCase):
         self.assertEqual([actor['actor_id'] for actor in participants], [7])
         self.assertEqual(participants[0]['body_vertices_m'],
                          body['body_vertices_m'])
+        self.assertEqual(controls['devices'], [])
+        self.assertEqual(controls['control_actor_inventory']['actor_ids'], [])
+        self.assertTrue(controls['control_actor_inventory']['complete'])
         self.assertEqual(set(cameras), set(self.packet['camera_transforms']))
         self.assertTrue(all(row['png'].startswith(b'\x89PNG') for row in cameras.values()))
         self.assertEqual(self.adapter.read_road_geometry(), self.packet['road_geometry'])

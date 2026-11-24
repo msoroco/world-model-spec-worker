@@ -179,3 +179,12 @@ Pinned preflight, existing reciprocal offline construction and scoped complete s
 `reciprocal_entrypoint.py:run_native` is the lazy local CARLA CLI for the two exact reciprocal cases. It rejects a diagnostic or unreviewed map, a nonreciprocal case and a nonempty attempt before opening a client, then delegates the reviewed-map request to the seven-actor `reciprocal_live.run` scene and capture path. This connects the previously separate later-actor source capture to a callable production entrypoint; it does not assert successful physical motion or source acceptance.
 
 The 93-test focused suite, pinned preflight, existing reciprocal_yield exact offline construction and scoped static passed. Exact scoped strict exited 1 on truthful partial status. Five SHA-bound logs are in `result.json`. Remaining CPU work: embed this entrypoint and reciprocal saved finalizer into both exact inline bundles, regenerate offline/positive-negative compatibility/process-saved proofs, expand feasible physical sweeps and complete canonical delivery integration.
+
+## 2026-11-24 exact scoped delivery readiness
+
+All eight selected cases now have current-runtime source-bound inline candidate bundles, offline and positive/negative compatibility receipts, saved-only processing receipts, physical preparation receipts, semantic proposals and independent delivery audits. The reciprocal pair has source-bound later-opponent live capture and saved finalization. The six standard cases use the Native entrypoint with reviewed-map preflight. The focused suite passed 96 tests. The frozen source observation terms are empty; the exact empty mapping is in the case plan. The root four-camera config and construction channels cover every mandatory observation.
+
+- `execution-manifest.json` SHA256 `c125cd5f7f12ddc548d68db2a3d690f827f913e4717b73dacd9d78104561516a`.
+- `strict-final.log` exit 0, SHA256 `5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93`.
+- Exact command: `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready`.
+- Full source-backed physical judgment sweeps remain incomplete: the frozen judgment ranges omit reviewed Native junction geometry and feasible below/inside/above witness points, including two ranges with no valid interior/below witness. `expand_sweeps` was run on three truthful incomplete specs and added no unsupported cases. Actual CARLA motion, pixels and legal judgment await local source review.

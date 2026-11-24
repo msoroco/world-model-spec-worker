@@ -194,6 +194,14 @@ class NativeCaptureTests(unittest.TestCase):
                          'velocity_mps': physical['velocity_mps'],
                          'speed_mps': 0., 'heading_deg': 0.}]
 
+            def read_control_inventory(self, frame):
+                time_s = (frame - 100) * .05
+                return {'frame': frame, 'time_s': time_s, 'devices': [],
+                        'control_actor_inventory': {
+                            'frame': frame, 'time_s': time_s,
+                            'method': 'World.get_actors', 'prefix': 'traffic.',
+                            'actor_ids': [], 'complete': True}}
+
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             survey = root / 'packet.json'
@@ -208,6 +216,10 @@ class NativeCaptureTests(unittest.TestCase):
             source = attempt / 'synchronized_motion_records.jsonl'
             self.assertEqual(acquisition[source.name]['sha256'],
                              hashlib.sha256(source.read_bytes()).hexdigest())
+            controls = attempt / 'control_actor_inventory.jsonl'
+            self.assertEqual(len(controls.read_text().splitlines()), 900)
+            self.assertEqual(acquisition[controls.name]['sha256'],
+                             hashlib.sha256(controls.read_bytes()).hexdigest())
 
     def test_attested_live_world_graph_collection(self):
         class LiveWorld(FakeWorld):

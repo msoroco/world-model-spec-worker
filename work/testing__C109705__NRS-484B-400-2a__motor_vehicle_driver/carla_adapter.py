@@ -238,6 +238,40 @@ class NativeCarlaAdapter:
                                                _number(vertex.z)] for vertex in vertices]})
         return result
 
+    def read_control_inventory(self, frame):
+        """Snapshot every live traffic actor from the current Native world tick."""
+        if self.current is None or self.current['frame'] != frame:
+            raise ValueError('Native control inventory frame differs')
+        actors = sorted((actor for actor in self.world.get_actors()
+                         if getattr(actor, 'is_alive', False) and
+                         isinstance(getattr(actor, 'type_id', None), str) and
+                         actor.type_id.startswith('traffic.')),
+                        key=lambda actor: actor.id)
+        ids = [actor.id for actor in actors]
+        if any(type(value) is not int or value < 0 for value in ids) or len(set(ids)) != len(ids):
+            raise ValueError('Native traffic actor IDs invalid')
+        devices = []
+        for actor in actors:
+            location = actor.get_transform().location
+            device = {'actor_id': actor.id, 'blueprint': actor.type_id,
+                      'position_m': [_number(location.x), _number(location.y),
+                                     _number(location.z)]}
+            if actor.type_id == 'traffic.traffic_light':
+                boxes = actor.get_light_boxes()
+                if not boxes:
+                    raise ValueError('Native signal group source missing')
+                device['light_box_method'] = 'TrafficLight.get_light_boxes'
+                device['light_boxes'] = [
+                    {'light_box_index': index} for index, _ in enumerate(boxes)]
+                device['state'] = str(actor.get_state()).split('.')[-1]
+            devices.append(device)
+        return {'frame': frame, 'time_s': self.current['time_s'],
+                'devices': devices,
+                'control_actor_inventory': {
+                    'frame': frame, 'time_s': self.current['time_s'],
+                    'method': 'World.get_actors', 'prefix': 'traffic.',
+                    'actor_ids': ids, 'complete': True}}
+
     def read_cameras(self, frame):
         with self.condition:
             if not self.condition.wait_for(lambda: self.callback_error is not None or

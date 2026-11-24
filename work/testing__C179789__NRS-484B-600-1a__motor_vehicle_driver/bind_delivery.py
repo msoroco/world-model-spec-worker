@@ -36,7 +36,7 @@ def main() -> None:
                    ROOT.name + "/prove_delivery_audit_cases.py " + case)
         entry["delivery_acceptance"] = {
             "case_id": case,
-            "sets": ["full-test"],
+            "sets": ["demo-test", "full-test"],
             "checks": list(CHECKS),
             "script": SCRIPT.relative_to(ROOT).as_posix(),
             "script_sha256": sha(SCRIPT),
