@@ -15,7 +15,7 @@ from finalizer import finalize
 from runner import ASSIGNMENT
 from audit_delivery import audit as audit_delivery
 from audit_comparisons import audit_pair,audit as audit_comparisons
-from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context,audit_turn_trajectory,audit_turn_diagnostic,audit_exact_sweeps,compare_exact_sweeps,SWEEP_AXES
+from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context,audit_turn_trajectory,audit_turn_diagnostic,audit_exact_sweeps,compare_exact_sweeps,require_sweep_declarations,SWEEP_AXES
 
 
 def _write_rows(path,rows):
@@ -83,6 +83,17 @@ class AuditTests(unittest.TestCase):
                 audit_delivery(root,diagnostic=True)
 
     def test_exact_sweep_comparison_rejects_changed_source_and_fixed_actor(self):
+        plan=json.loads((ROOT/'case-plan.json').read_text())
+        declared=require_sweep_declarations(plan)
+        self.assertEqual(len(declared),5)
+        broken=copy.deepcopy(plan)
+        broken['comparisons'][-2]['case_ids'].reverse()
+        with self.assertRaisesRegex(ValueError,'sweep comparison declaration'):
+            require_sweep_declarations(broken)
+        broken=copy.deepcopy(plan)
+        broken['comparisons'][-1]['case_ids'].reverse()
+        with self.assertRaisesRegex(ValueError,'opposite-context comparison declaration'):
+            require_sweep_declarations(broken)
         report=audit_exact_sweeps()
         self.assertTrue(report['source_integrity_passed'])
         self.assertEqual(len(report['axes']),2)

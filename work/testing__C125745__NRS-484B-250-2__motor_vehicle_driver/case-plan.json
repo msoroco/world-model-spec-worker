@@ -105,6 +105,47 @@
       "deliberate_differences": [
         "measured absolute entry-time difference without legal cutoff"
       ]
+    },
+    {
+      "comparison_id": "stop_sign_other_release_timing_sweep",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0002",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0001"
+      ],
+      "fixed_conditions": [
+        "same sourced stop sign, median crossing, ego approach, ego commands, and original body-entry measurement"
+      ],
+      "deliberate_differences": [
+        "other vehicle release frames 32, 40, 48; measured other body-entry changes while ego entry remains fixed"
+      ]
+    },
+    {
+      "comparison_id": "stop_sign_ego_hold_timing_sweep",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-2-0000",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-2-0002",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-2-0001"
+      ],
+      "fixed_conditions": [
+        "same sourced stop sign, median crossing, other approach, other commands, and original body-entry measurement"
+      ],
+      "deliberate_differences": [
+        "ego hold after clear 0, 8, 16 frames; measured ego body-entry changes while other entry remains fixed"
+      ]
+    },
+    {
+      "comparison_id": "stop_sign_opposite_approach_context",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn"
+      ],
+      "fixed_conditions": [
+        "same sourced median crossing, governing stop sign, ego highway, measured entry-time separation and unresolved official-device judgment"
+      ],
+      "deliberate_differences": [
+        "other vehicle approaches from an opposite highway and intends a left turn; actual turn and exception judgments remain unresolved"
+      ]
     }
   ],
   "evidence_review": {
@@ -257,7 +298,7 @@
     "source": "tests/test_simultaneous_entries.py",
     "source_sha256": "579227698fa48dfdfe3f9d6ec80038bb4ca7f1c1f07656b852b073cfd7a0ecdf",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "0c20c943083f3bd7f5b1015113c2ad69600bbf7a6f91d75a7e8743c293237389",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
     "observed_original_body_entry_frames": [
       [
         102,
@@ -293,7 +334,7 @@
     ],
     "ticks_per_variant": 50,
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "0c20c943083f3bd7f5b1015113c2ad69600bbf7a6f91d75a7e8743c293237389",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
     "observed": "Other Native brake commands hold before each exact release frame and throttle starts at that frame; ego command traces are identical across the two variants.",
     "scope": "Static fake actors prove control timing and independent ego commands, not motion, actual body-entry time or legal judgment.",
     "remaining": "Run exact dynamically realized timing variants through source-bound compatibility, recorded-only saved processing, independent audit and canonical sweep expansion."
@@ -312,7 +353,7 @@
       "proposals/semantic-index.json": "94693e0f8219ebab9530bb6024c115341f1adcf1a6e2f3eafd18bb6754c96d92"
     },
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "0c20c943083f3bd7f5b1015113c2ad69600bbf7a6f91d75a7e8743c293237389",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
     "semantic_validation_log": ".runtime-work/c125745-semantic-current.log",
     "semantic_validation_log_sha256": "60bd7f80f7992f12be56b955312b4ce075466e1687c83311a977ac940fa9ccce",
     "scope": "Selected cases bind executable other-release frame 40; separated case binds executable eight-frame ego hold. First timing sweep specifies 32/40/48 control setpoints and remains incomplete pending exact expanded cases and source-bound proofs."
@@ -321,7 +362,7 @@
     "source": "tests/test_simultaneous_entries.py",
     "source_sha256": "579227698fa48dfdfe3f9d6ec80038bb4ca7f1c1f07656b852b073cfd7a0ecdf",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "0c20c943083f3bd7f5b1015113c2ad69600bbf7a6f91d75a7e8743c293237389",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
     "release_frames": [
       32,
       40,
@@ -346,7 +387,7 @@
     "source": "tests/test_simultaneous_entries.py",
     "source_sha256": "579227698fa48dfdfe3f9d6ec80038bb4ca7f1c1f07656b852b073cfd7a0ecdf",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "0c20c943083f3bd7f5b1015113c2ad69600bbf7a6f91d75a7e8743c293237389",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
     "fixed_other_release_frame": 40,
     "post_clear_ego_hold_frames": [
       0,
@@ -429,11 +470,11 @@
   },
   "surrogate_grid_source_audit": {
     "auditor": "audit_compatibility_comparisons.py:audit_surrogate_grid",
-    "auditor_sha256": "feecc9c7f4e84ce548b840267fde78d3947f5530c729270a0a1005c14bedb75e",
+    "auditor_sha256": "8e0e4f15a132a13bb531f3a6350f80a0a61efddce6d89ce1c3689d2c3e86b624",
     "test_source": "tests/test_audits.py",
-    "test_source_sha256": "68f5f00514132f13525c90dd8507470a6bec6eeec3ae7b0163da1bcd2ba2898b",
+    "test_source_sha256": "b6e70fb5d758372f50a0b23dedcbb63505e9f1a17f8e79ed592b2e3c4cfe2e73",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "0c20c943083f3bd7f5b1015113c2ad69600bbf7a6f91d75a7e8743c293237389",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
     "retained_report": ".runtime-work/c125745-grid/grid-audit.json",
     "report_sha256": "a54515a04ffe25345b360accbdcd66e4ccb015447d352f250b7613791727d8cd",
     "timing_release_to_other_entry_frames": [
@@ -468,14 +509,14 @@
   },
   "source_context_cpu_audits": {
     "script": "audit_compatibility_comparisons.py",
-    "script_sha256": "3d25b0c5407397fdedf6396fe297808e7cf29a5f69de5ef6ba62288b476d2a36",
+    "script_sha256": "8e0e4f15a132a13bb531f3a6350f80a0a61efddce6d89ce1c3689d2c3e86b624",
     "report": ".runtime-work/c125745-source-context-audit.json",
     "report_sha256": "98f8c57587c94a79d14f81523a2289f2d9044d819ed23b379c40ef0b26189b5c",
     "scope": "synthetic source-bound fixed stop-sign and opposite-approach context only; official status and left-turn intention remain unresolved"
   },
   "turn_trajectory_cpu_audit": {
     "script": "audit_compatibility_comparisons.py",
-    "script_sha256": "3d25b0c5407397fdedf6396fe297808e7cf29a5f69de5ef6ba62288b476d2a36",
+    "script_sha256": "8e0e4f15a132a13bb531f3a6350f80a0a61efddce6d89ce1c3689d2c3e86b624",
     "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-turn-audit PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/audit_compatibility_comparisons.py --turn-diagnostic work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/fourth-diagnostic.json",
     "exit_code": 0,
     "report_sha256": "edcbcc8558da831957ed6775caa244ccfc00386c33f4090d69b0b5472c1868ca",
@@ -46131,7 +46172,7 @@
   },
   "exact_sweep_compatibility_comparison_audit": {
     "script": "audit_compatibility_comparisons.py",
-    "script_sha256": "f6527a2eb70d42d2c0d520a95e919abaf9aaadf70804bbedd889f7cfbc2edc7e",
+    "script_sha256": "8e0e4f15a132a13bb531f3a6350f80a0a61efddce6d89ce1c3689d2c3e86b624",
     "command": ".venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/audit_compatibility_comparisons.py --exact-sweeps",
     "exit_code": 0,
     "output": "{\n  \"format\": \"worker-c125745-exact-sweep-compatibility-audit\",\n  \"axes\": [\n    {\n      \"axis\": \"other_release_frame\",\n      \"measured_entries\": [\n        {\n          \"case_id\": \"testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000\",\n          \"ego_frame\": 1087,\n          \"other_frame\": 1079\n        },\n        {\n          \"case_id\": \"testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0002\",\n          \"ego_frame\": 1087,\n          \"other_frame\": 1087\n        },\n        {\n          \"case_id\": \"testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0001\",\n          \"ego_frame\": 1087,\n          \"other_frame\": 1095\n        }\n      ],\n      \"fixed_crossing_and_device\": true\n    },\n    {\n      \"axis\": \"ego_hold_after_clear_frames\",\n      \"measured_entries\": [\n        {\n          \"case_id\": \"testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-2-0000\",\n          \"ego_frame\": 1087,\n          \"other_frame\": 1087\n        },\n        {\n          \"case_id\": \"testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-2-0002\",\n          \"ego_frame\": 1095,\n          \"other_frame\": 1087\n        },\n        {\n          \"case_id\": \"testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-2-0001\",\n          \"ego_frame\": 1103,\n          \"other_frame\": 1087\n        }\n      ],\n      \"fixed_crossing_and_device\": true\n    }\n  ],\n  \"source_integrity_passed\": true,\n  \"physical_acceptance_claimed\": false,\n  \"legal_acceptance_claimed\": false,\n  \"delivery_ready\": false,\n  \"receipt_sha256\": {\n    \"c125745-1-0000\": \"2502fe7bf184706890cec3a8e32981e77975496d5bd298d5a4c945fcf1e5278e\",\n    \"c125745-1-0002\": \"71f56fbb6da2f0839d272f6d67701df859b6f12c9fe7660a00a17c9953aa5098\",\n    \"c125745-1-0001\": \"00b53d93de151689508cc32b0a497264a8337d1f013920276a5990c85576b610\",\n    \"c125745-2-0000\": \"c858be63e76005de8dfe3fa74d9a53281578e4df609a95b236c33dfbd692b546\",\n    \"c125745-2-0002\": \"cba659da181268697296087e16a4c9c8138beee28cbfa1a2af8398a1ae49456a\",\n    \"c125745-2-0001\": \"c1b46fbe590a048021ad451adc3961e0d90697440e9a8789b3963d7d9613b298\"\n  }\n}\n",
@@ -46196,7 +46237,7 @@
       }
     },
     "test_source": "tests/test_audits.py",
-    "test_source_sha256": "83b271d2b1f81510b87780971ce4bfecaefbd91ab9b234a7026e12a3fe2c3a43",
+    "test_source_sha256": "b6e70fb5d758372f50a0b23dedcbb63505e9f1a17f8e79ed592b2e3c4cfe2e73",
     "test_command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests -p test_audits.py -q",
     "test_exit_code": 0,
     "test_output": "----------------------------------------------------------------------\nRan 8 tests in 0.432s\n\nOK\n",
@@ -46622,5 +46663,116 @@
     "sha256": "89bd69fb40251747c6e6a8b5da641c8608b180aa31409995887a2ce288b3427b",
     "bytes": 99,
     "content_zlib_base64": "eNrT1aUG4ApKzFMwN1IoSS0uKVbIzFMwNNYzMzIr5uLy9+YCAJKXE8g="
+  },
+  "named_sweep_comparison_cpu_audit": {
+    "script": "audit_compatibility_comparisons.py",
+    "script_sha256": "8e0e4f15a132a13bb531f3a6350f80a0a61efddce6d89ce1c3689d2c3e86b624",
+    "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/audit_compatibility_comparisons.py",
+    "exit_code": 0,
+    "output_sha256": "85483788b6b66cf8c1ce5780c50c0f612587785e9af5f6838c8e3aed8e9461c8",
+    "comparison_ids": [
+      "stop_sign_relative_side",
+      "stop_sign_entry_timing",
+      "stop_sign_other_release_timing_sweep",
+      "stop_sign_ego_hold_timing_sweep",
+      "stop_sign_opposite_approach_context"
+    ],
+    "source_integrity_passed": true,
+    "test_source": "tests/test_audits.py",
+    "test_source_sha256": "b6e70fb5d758372f50a0b23dedcbb63505e9f1a17f8e79ed592b2e3c4cfe2e73",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110",
+    "physical_acceptance_claimed": false,
+    "legal_acceptance_claimed": false
+  },
+  "opposite_approach_comparison_cpu_audit": {
+    "comparison_id": "stop_sign_opposite_approach_context",
+    "case_ids": [
+      "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+      "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn"
+    ],
+    "script": "audit_compatibility_comparisons.py",
+    "script_sha256": "8e0e4f15a132a13bb531f3a6350f80a0a61efddce6d89ce1c3689d2c3e86b624",
+    "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-opposite-audit PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/audit_compatibility_comparisons.py",
+    "exit_code": 0,
+    "output_sha256": "85483788b6b66cf8c1ce5780c50c0f612587785e9af5f6838c8e3aed8e9461c8",
+    "result": {
+      "format": "worker-c125745-opposite-context-audit",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn"
+      ],
+      "fixed_crossing_and_sign_passed": true,
+      "opposite_approach_contrast_passed": true,
+      "turn_intention_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "legal_acceptance_claimed": false,
+      "delivery_ready": false,
+      "comparison_id": "stop_sign_opposite_approach_context"
+    },
+    "test_source": "tests/test_audits.py",
+    "test_source_sha256": "b6e70fb5d758372f50a0b23dedcbb63505e9f1a17f8e79ed592b2e3c4cfe2e73",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "5a9bcab9f14fc1cfc474f2737ddabc3213f750d869986ba81f4fda144f083110"
+  },
+  "frame32_fallback2_physical_cpu_diagnostics": {
+    "scope": "Exact frame32 fallback2 source-bound synthetic classifier and current standalone saved-receipt lifecycle; no Native, physical or legal acceptance",
+    "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000",
+    "candidate_id": "fallback2",
+    "manifest_sha256": "3fd0510b3beedfa505a645ee3fbec62e5b89bed27dd2bf62e16b2d59bc644dcd",
+    "construction_sha256": "95041c783131511d54e8fb2b370399f0ec047fc1de77e2ca98a627c180726bb9",
+    "compatibility_receipt_sha256": "ecaa3e99e3eeedfde40434ca87ab250f74f2410ca8fbc553973c535882b92063",
+    "saved_receipt_sha256": "a04c78b3260cc186191fe62273ebcf1e90bafd17e0fdc5c9f1a527c449b2cc52",
+    "script_sha256": "1db8c855bc252528dd38cdb4f9bb7c092771d5d804f82e6fd80331dcb12f4a77",
+    "proofs": {
+      "complete_motion": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-frame32-fallback2-physical PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind complete_motion --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000 --staged-attempt .runtime-work/c125745-frame32-fallback2-current-compat --candidate fallback2 --output .runtime-work/c125745-frame32-fallback2-physical/complete_motion.json",
+        "exit_code": 0,
+        "result_sha256": "3c04fdf2880d50fa08e05c72b2cb3779359a1493a9f826e0c0b048df321aaaa7",
+        "result_bytes": 23704,
+        "result_zlib_base64": "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",
+        "log_sha256": "743f5135a207d8fb887bd0b3001294307ce4d2e00371bc9cb30cd5311c291f6f",
+        "log_bytes": 539,
+        "log_zlib_base64": "eNpFkE2OFDEMhfecYlTraZQ4/yyZPQs4QOQ4TndQVxWqpFqg0dydBBbtpf3eZz+/L4SNY83Ll5elc+t1u8b4JsE4bWL89v3HRXv99QJGXCDGde/7ER98q3TnmI/64CNG+i+/yIsYtby+LLniddsHjWKpv/t58OD34+QxezYW2tdfd+48uXXfpnPFjc9JbR372aZq5T4nbT8P4njDduPZfx/2rdTr559tWIdOFhsCaSXRUwIJ0gm0JjvlvM06WKOccUpnSlhUyAZyKcqRKMxOEuJcQsfe2vzBrbYR9c8/+H3SMXivSGhBEAwZ8pCsKyFbkVXG4nNSAlh454WEQMFaGXzyMqskUrI06f1A4idSjdeaACACe8sGFKDXyKboYCwmqb3JCVOCwESUWSSpCiGDIqO81hP5qJn3WA5cuT3JTEnMK7MShvLIjyKBBgulJJ8LgJGyBJUtamKtWQIkKgr0yKKK5uXj49NfoU6jcQ=="
+      },
+      "incomplete_motion": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-frame32-fallback2-physical PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind incomplete_motion --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000 --staged-attempt .runtime-work/c125745-frame32-fallback2-current-compat --candidate fallback2 --output .runtime-work/c125745-frame32-fallback2-physical/incomplete_motion.json",
+        "exit_code": 0,
+        "result_sha256": "ee064c1b404ebbeedf8a36316d222d1e285d93d894a07d0144a68a8a4bd88a72",
+        "result_bytes": 21921,
+        "result_zlib_base64": "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",
+        "log_sha256": "d7d1bb06b4d7a1e6a0af1b4532c25c35e8f5b0638d172f28cda60df4097ab3cb",
+        "log_bytes": 545,
+        "log_zlib_base64": "eNpFkL2OGzEMhPs8xWHrOJAo6i9l0qdIHkCgKMrWwd4NVrKR4HDvHu2lMEvOzEcM3xamLqmV5evLMqSPtp5T+q7BerQp/fj564QBv53AqhOkdNvGtqeHXBpfJZW9PWRPif/bT/qk5iyfX5bS6Lxuk8aptj/jvsvkj/0uU3sulrbydvt9lSEHuW3rkb3RKveD2weNez986zbSTcah9u2+s6QL9Ysc2tvC21rb+ctrn/Hp1dXFyGg0Bc6gQXtFzhZvfHAFo7PGW2+wcKZqYrFQajWeVRXxmomOI7xvvR+fuLQ+C//9gF8PetWeIhK4Gi2aiByzVbraEnNQwYDNNRiXvQHKEr1osVWclFAcAuIHfezE8kSa+WAbAVSU4MTCjAakmcNoHWWNwZZMOUMUZi6isjaVScCwNQHxQD5akS3VnW7Sn2ThrKJlW4yyXGZ/UhkQHNSaQ6kAVusaTXGELIiiATJXA1hMMRVleX//9A/Wb6Y7"
+      },
+      "missing_evidence": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-frame32-fallback2-physical PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind missing_evidence --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000 --staged-attempt .runtime-work/c125745-frame32-fallback2-current-compat --candidate fallback2 --output .runtime-work/c125745-frame32-fallback2-physical/missing_evidence.json",
+        "exit_code": 0,
+        "result_sha256": "26f2b35fe1aa950636af8acd86037393b3e710fd5eaef81b76f5b4ccd4766ae1",
+        "result_bytes": 5383,
+        "result_zlib_base64": "eNrtWMuS2ygU3fsrKK3bXRaSbCv9F8kylVJdwUUmLYEGkMeeVP/7AJIt2+maRx47eWPD4T64nHug/G1FSOLANOgqdkD2apMP5POXpzDdH85WMmhn4Juf9oBFN/TXYZhw4IawIBnUEY0UEnnydEE7dAfNA2r1YBiuaz0oTqIXAtaitR0qNxtI5dAcoZ1zGaNEa3sT2E8yrYRsnr9arUKEVGzLkuVZCntW05Smuw1sC77Ldvstz8ttke2KXZZzVoPISl5QLkS2YxuBuEsZwDUJ7/ooOepKGOjQxgBtiICs3pQFK3i2KRj3bmFT05xuqRD1ngtKizQVZca3kDPMc0wprZnIaM4znokcbyM4Awxn11m+z4uS0k2J+y0WNKOwzwELkZfFFuo03xe8hrqmJTLGOG7qNBMMkGasyPZ5nkye364l4+hAto8lM9LXV8aCzdMeENp04EImf2rzimZ9YcCa6a5v0Xmb9WR9W6kHn+P5WWRhfcVaBAOK4b1BpyM6nmkwYkZbK1VTHaR12pynstwZ9drKaPaK52BzHXcPzqWS3dBVvdGN8fTy+AeyeabFu6sshM2FItE7HFUjFfpd+aScbjHuwlZKu6rFBsKROTPgfR203/vJVTNXZwLHBbXm50v62OjnOPY942TwfTo/bgVP0lVwksHV5nvEyiaUPL1D7urf6/bc+O/o2qdzs5A8jAhJ70KEzzq7m/jy9I/29Jfb/y/z9N/MV+/9frvpSIMwKclH/GOQBjnRRnoeQEvGMyXSkk5Gqn7fbxNQYdAOFYn9+bbx3qX46mFvSWRXIAWXzMtyC7LDoJ/CS+KVbjfyDIOFqdfulq5ukptE/qdVe3SzyPYi24tsL7K9yPbvlu0OFA7e508L98XRIt2LdC/SvUj3It2/W7rBOez6H3py69p6PfalEL5jHM4VGZv4hVjsfY97RBjdXR7ldmCe0naR9V8v6//16FeT0fgfWRWLah64dL3Tq0nkH+AaD3CU2lQTgR7gayojSWIy8SzHwL6fWvkX8gtcj0I7oV6fj6iCrFavUkWuKe/hOFYz4RIapa2XxkrIkxsM3khuYpnu483xaexL78xpplsye30iXqzJJUXPWxJbi4BnZu+ul9K8iRl4r+0Sz19/aYwFn5XiE4TeuLT89KJB/jI/cub2epky+DrwJjx6LDHYgVTXFkpWb6u/AYKBqms=",
+        "log_sha256": "54a68e9c024770cb5ea477a0a102785e060d3c533dcb04dbbfcf5b733868a028",
+        "log_bytes": 453,
+        "log_zlib_base64": "eNpFkMGO3DAIhu99ilXOTWVjSOIe23sP7QNYGPCMq51EipNRpdW+e+P2sNyAn+8H3gbhZqnq8PVlOKwddb2l9N0DzUgp/fj5a8QFv41AboSUHtux7elp9yqvlnSvT9tTkv/y0Y/uiuHzy6CVb+t20SSV+uc4d7v4x37a1fsoDI/aWje0Z1Vbxfrog1c7O7YdfJyty871ymuppl3QtnMXS3dud+vtt0G2tdTbl99tW7vclylGweB5kQwe/Ox4Ip3DvEyKcaIw0xxQJXMJUQm0lDCLK2azF+Zucuws9o/42pHhegJFABdtmYwgAC/IRgUjTZw9LqSZc4ZoIqLmsg9F2CAIhQWxI/uNWyo7P6x9kE2yiySkwZHotSG7DAgTlJIXLQDkfYlBJ0YxRPMAWUoA1KChoA3v75/+AkLXiyM="
+      },
+      "lifecycle": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-frame32-fallback2-physical PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind lifecycle --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000 --staged-attempt .runtime-work/c125745-frame32-fallback2-current-compat --candidate fallback2 --canonical-saved-receipt work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/sweep-constructions/proof-frame32-fallback2-saved.json --output .runtime-work/c125745-frame32-fallback2-physical/lifecycle.json",
+        "exit_code": 0,
+        "result_sha256": "2c24ba6a7ba92f2e38b8472dbad088f93bf432e144154980f05720ccada47de5",
+        "result_bytes": 521,
+        "result_zlib_base64": "eNptkMFOwzAQRO/9iipnIsVunDQc4c4BjgitNus1NaR2ZLuhEuLfcdJWrQS+eWa8frPfq/W6IIwMVhf36yJxTNa9AzwKqdpaATw9v5T1tn4opapKCbD3yQeYeGdpYNDBThwA6BQvRVnlU9ydxjptNabLbIPD0CN9ypPNE7sUs/Gab0t8TIfAYKyzccd6Sc05R15ziECDj1c5ZFIfMFnvMk2wxl49l+WJgY82XST/5TJn4IHxZkjEiTWMwRPHOPeOCUPKfrbfFkpt8d35vBTKYMcZMBOncOBzxYVZgwm457mM2KjFMWiHrJ/h88cfTPPgm8dj4D0ulc9Y/6b+IAYmtmOCuEOpmnmxWNXUbvuNbCoisW1EJww3UrYb7skI7qoejRYtV0aTos4IVLKluu56SaRksfpZ/QLLZaPV",
+        "log_sha256": "cdb07d7da72fb2944e72a024a2a822499621e968850a7058cbf2fdba99fa0334",
+        "log_bytes": 475,
+        "log_zlib_base64": "eNptUD1PwzAQ3fkVVeZGit04aRhhZ4ARodPlfG4NqR3ZbqiE+O/Y/WABb34f997dV0XotNWYGKyu7leVwWkakT5ktV5lck7HwBpMwAPHzIuNOuPxpk8ck3U7gEchVd8qgKfnl7rdtg+1VE0tAQ4++QAL7y1NDDrYhQMAXeS1qJv8Spi2uHM+TyMw9lRy8/wUjpw5Xtilkv9665Q1zsY962JlR15ziECTjxco5F4+YLLe5exgjb3gLkMLA59sKl//6XKbwBPj1RhxyQvPwRPHWDaLCUPK3Nu6XMdOmb3mZd87U+F+i86BD3jud535j+ZPQmBiOyeIe5SqK1fFpqV+O25k1xCJbScGYbiTst/wSEbw0IxotOi5MZoUDUagkj217TBKIiWr77sfndKfdQ=="
+      }
+    },
+    "wrong_receipt_rejection": {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125745-frame32-fallback2-physical PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind lifecycle --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__c125745-1-0000 --staged-attempt .runtime-work/c125745-frame32-fallback2-current-compat --candidate fallback2 --canonical-saved-receipt work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/sweep-constructions/proof-frame32-fallback3-saved.json --output .runtime-work/c125745-frame32-fallback2-physical/wrong_saved.json",
+      "exit_code": 1,
+      "error_contains": "Canonical saved receipt path differs from manifest",
+      "log_sha256": "820c73af2d212d1a4b5c7588e6512b60b11a774c81385a78a0cedd5c7bf8fcb3",
+      "log_bytes": 887,
+      "log_zlib_base64": "eNrVUbFuGzEM3f0VRJbcAT6rcW0kCNIODdqxQxt0jMBKvJixThIonl3/fXXnFgGaqUOHctEDRTw+vvcg6Og7uj00QyoKQo6igsMQIGDR9nYB8IkDwYUpTlDdzvTlaHIS7VPgVAweTJb0TE4nbDFkHPCUrBCWFDk+mbGQFHN0qeJS+VE4dccke5LO05DMhI1S0Tpt7f3Venu92Vr7+cvXbnOz+dCtt2+6tbVD0iT2QDt2gawXPpCYvDsVrnqnX07R9vxDR6FVPl0sIXAkWL/dLoEj3A3Jj4He14sAsnDU5rkqXPlxyKWRMdqi+ES+wdWeo1/iymGh+pzbFlVpyFobadQ86jwQPXtUOuN67qSk4KGOT1Zy1ha4hz85gEIhqCtf7TpTt8tSDbZ7OpV3DzJS286iX9Xjv6r/P/Wr682c+kuus4WCXJ3/hmGkjyJJmsv737nBnBv8yg0y6g489309A3pJAwwYua96L9vFC8Et/D3B4ie+Aju9"
+    }
   }
 }

@@ -17,12 +17,38 @@ EXPECTED = {
 }
 
 OPPOSITE_CASES = ('stop_ego_left_near_time', 'stop_opposite_left_turn')
+OPPOSITE_COMPARISON = 'stop_sign_opposite_approach_context'
 DEVICE_CASES = ('stop_ego_left_near_time', 'stop_ego_right_near_time',
                 'stop_ego_left_separated', 'stop_opposite_left_turn')
 SWEEP_AXES = {
     'other_release_frame': ('c125745-1-0000', 'c125745-1-0002', 'c125745-1-0001'),
     'ego_hold_after_clear_frames': ('c125745-2-0000', 'c125745-2-0002', 'c125745-2-0001'),
 }
+SWEEP_COMPARISONS = {
+    'stop_sign_other_release_timing_sweep': 'other_release_frame',
+    'stop_sign_ego_hold_timing_sweep': 'ego_hold_after_clear_frames',
+}
+
+
+def require_sweep_declarations(plan):
+    declared = {row['comparison_id']: row for row in plan['comparisons']}
+    require(len(declared) == len(plan['comparisons']) and
+            set(declared) == set(EXPECTED) | set(SWEEP_COMPARISONS) |
+            {OPPOSITE_COMPARISON},
+            'Exact declared comparison set required')
+    opposite = declared[OPPOSITE_COMPARISON]
+    require(opposite['case_ids'] == [HERE.name + '__' + suffix
+                                      for suffix in OPPOSITE_CASES] and
+            opposite.get('fixed_conditions') and
+            opposite.get('deliberate_differences'),
+            'Incomplete opposite-context comparison declaration')
+    for name, axis in SWEEP_COMPARISONS.items():
+        row = declared[name]
+        require(row['case_ids'] == [HERE.name + '__' + suffix
+                                   for suffix in SWEEP_AXES[axis]] and
+                row.get('fixed_conditions') and row.get('deliberate_differences'),
+                'Incomplete exact sweep comparison declaration')
+    return declared
 
 
 def require(value, message):
@@ -328,6 +354,7 @@ def compare_exact_sweeps(receipts):
 
 
 def audit_exact_sweeps():
+    require_sweep_declarations(read(HERE / 'case-plan.json'))
     manifest = read(HERE / 'execution-manifest.json')
     entries = {entry['case_id']: entry for entry in manifest['cases']}
     receipts = {}
@@ -353,8 +380,7 @@ def audit():
     manifest = read(HERE / 'execution-manifest.json')
     plan = read(HERE / 'case-plan.json')
     entries = {entry['case_id']: entry for entry in manifest['cases']}
-    declared = {row['comparison_id']: row for row in plan['comparisons']}
-    require(set(declared) == set(EXPECTED), 'Exact declared comparison set required')
+    declared = require_sweep_declarations(plan)
     receipts = {}
     for key, suffixes in EXPECTED.items():
         case_ids = [HERE.name + '__' + suffix for suffix in suffixes]
@@ -414,13 +440,18 @@ def audit():
     opposite_context = audit_opposite_context({
         'stop_ego_left_near_time': receipts[HERE.name + '__stop_ego_left_near_time'],
         'stop_opposite_left_turn': opposite_receipt})
+    require(opposite_context['case_ids'] == declared[OPPOSITE_COMPARISON]['case_ids'],
+            'Opposite-context comparison case binding changed')
+    opposite_context['comparison_id'] = OPPOSITE_COMPARISON
     all_receipts = dict(receipts)
     all_receipts[opposite_id] = opposite_receipt
     device_context = audit_device_context({
         suffix: all_receipts[HERE.name + '__' + suffix]
         for suffix in DEVICE_CASES})
+    sweep_comparisons = audit_exact_sweeps()
     return {'format': 'worker-c125745-compatibility-comparison-audit',
             'software_comparisons_passed': True, 'comparisons': pairs,
+            'sweep_comparisons': sweep_comparisons,
             'opposite_context': opposite_context,
             'device_context': device_context,
             'scope': 'retained synthetic original-source compatibility receipts',

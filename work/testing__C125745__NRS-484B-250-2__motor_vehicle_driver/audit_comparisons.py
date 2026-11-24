@@ -5,6 +5,7 @@ from pathlib import Path
 
 from audit_delivery import audit as audit_delivery
 from runner import ASSIGNMENT
+from audit_compatibility_comparisons import audit as audit_bound_comparisons, audit_exact_sweeps, require_sweep_declarations
 
 EXPECTED={'stop_sign_relative_side':(
     ASSIGNMENT+'__stop_ego_left_near_time',
@@ -75,8 +76,7 @@ def audit_pair(name,left,right):
 def audit(root,attempts):
     root=Path(root)
     plan=json.loads((root/'case-plan.json').read_text())
-    declared={row['comparison_id']:row for row in plan['comparisons']}
-    require(set(declared)==set(EXPECTED),'Selected comparison coverage differs')
+    declared=require_sweep_declarations(plan)
     results=[]
     for name,ids in EXPECTED.items():
         row=declared[name]
@@ -85,7 +85,16 @@ def audit(root,attempts):
                 'Incomplete or changed comparison declaration')
         require(all(case in attempts for case in ids),'Missing exact comparison attempt')
         results.append(audit_pair(name,attempts[ids[0]],attempts[ids[1]]))
+    sweeps=audit_exact_sweeps()
+    require(sweeps['source_integrity_passed'] and len(sweeps['axes'])==2,
+            'Source-bound sweep comparison proof missing')
+    opposite=audit_bound_comparisons()['opposite_context']
+    require(opposite['opposite_approach_contrast_passed'] and
+            opposite['turn_intention_judgment']=='unresolved',
+            'Source-bound opposite-context comparison proof missing')
     return {'format':'worker-c125745-software-comparison-audit',
             'software_comparisons_passed':True,'comparisons':results,
+            'sweep_comparisons':sweeps,
+            'opposite_context_comparison':opposite,
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
             'delivery_ready':False}
