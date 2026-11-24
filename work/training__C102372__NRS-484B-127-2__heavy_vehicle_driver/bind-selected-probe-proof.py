@@ -34,7 +34,7 @@ def main() -> None:
     entry['offline'] = {
         'command': f'{ROOT}/.venv-cpu/bin/python {ROOT}/runtime.py offline '
                    f'--manifest {path} --case {CASE} '
-                   f'--output {ROOT}/.runtime-work/c102372-selected-probe1-offline-v4 '
+                   f'--output {ROOT}/.runtime-work/c102372-selected-probe1-offline-v8 '
                    f'--python {ROOT}/.venv-cpu/bin/python',
         'exit_code': 0, 'construction_sha256': entry['construction_sha256'],
         'log': 'selected-proof/probe_1/primary/offline.log',

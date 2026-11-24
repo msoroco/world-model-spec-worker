@@ -28,6 +28,18 @@
       ],
       "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
       "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3",
+      "comparison_variable": "dismount before governed U-turn",
+      "kind": "planned_only",
+      "physical_target": "dismount before turning, walk the bicycle through the turn, and obey pedestrian regulations",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Express dismount exception to sign obedience",
+      "target_law_id": "LVMC-11-40-080"
     }
   ],
   "cell_id": "C104538",
@@ -45,6 +57,21 @@
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
         "route and controller policy except requested comparison variable",
         "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "case_ids": [
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3"
+      ],
+      "comparison_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__exception_comparison",
+      "deliberate_differences": [
+        "dismount before turn and walk the bicycle"
+      ],
+      "fixed_conditions": [
+        "frozen hill-crest U-turn cell",
+        "same no-U-turn approach sign",
+        "same bicycle class, camera policy and 600-frame rate"
       ]
     }
   ],
@@ -212,11 +239,13 @@
     },
     {
       "branch": "Textual exceptions, alternatives, or dependencies: except",
-      "case_ids": [],
-      "evidence_or_gap": "Dismounted-turn synthetic control shows dismount at frame 200 before turn at 220 or 225; original rider posture, pedestrian-rule compliance and legal applicability remain unverified.",
+      "case_ids": [
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3"
+      ],
+      "evidence_or_gap": "Separate controlled_3 600-frame synthetic source diagnostic requires dismount before turning and persistent walking-machine rows. Original rider posture, walking path, applicable pedestrian signals and compliance remain to be verified from source-bound Native records and pixels.",
       "requirement": "LVMC-11-40-080",
       "source": "LVMC 11.40.080",
-      "status": "exception_pending"
+      "status": "selected_required"
     }
   ],
   "reuse_count": 0,
@@ -236,6 +265,139 @@
     "source": "LVMC 11.40.080",
     "text": "Whenever authorized signs are erected indicating that no right turn, left turn or U-turn is permitted, it shall be unlawful for any person operating a bicycle, electric bicycle, or electric scooter to disobey the direction of any such sign, except where such person dismounts from the bicycle, electric bicycle, or electric scooter to make any such turn, in which event such person shall then obey the regulations applicable to pedestrians.",
     "text_sha256": "ef930cd48a6a3026411edaec487b216a3c19da7a980f85a893ef987db8f71d73"
+  },
+  "source_observation_mapping": {
+    "dev.governs": {
+      "channels": [
+        "dev.governs"
+      ],
+      "evidence": "Sign approach road/lane and rider Native road/lane are source-joined at each frame; actual applicability requires original review.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "evidence": "Authored sign code and Native landmark readback are joined to original reference camera frames; authorization and actual pixels require later review.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "drv.turning": {
+      "channels": [
+        "drv.turning"
+      ],
+      "evidence": "Rider turn interval is joined to original Native body/heading and camera frames; fixture requests are not physical completion.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "drv.u_turn": {
+      "channels": [
+        "drv.u_turn"
+      ],
+      "evidence": "Native body path and heading reversal with rider turn interval support a later measured U-turn review.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "kin.speed": {
+      "channels": [
+        "kin.speed"
+      ],
+      "evidence": "Original trace velocity supplies measured speed; no statutory walking-speed cutoff is invented.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "ru.bicycle": {
+      "channels": [
+        "ru.bicycle"
+      ],
+      "evidence": "Native bicycle blueprint and per-frame rider actor identity identify the selected machine; original pixels remain pending.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "channels": [
+        "ru.electric_bicycle"
+      ],
+      "evidence": "Native blueprint and rider machine class expose whether this alternative class was selected; this bicycle case records its absence.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "ru.electric_scooter": {
+      "channels": [
+        "ru.electric_scooter"
+      ],
+      "evidence": "Native blueprint and rider machine class expose whether this alternative class was selected; this bicycle case records its absence.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "ru.pedestrian": {
+      "channels": [
+        "ru.pedestrian"
+      ],
+      "evidence": "Dismount before turn and walking-machine rows are mapped for the exception; actual pedestrian status requires original posture and conduct review.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    },
+    "ru.rider_posture": {
+      "channels": [
+        "ru.rider_posture"
+      ],
+      "evidence": "Per-frame rider posture/walking-machine rows and original cameras are required; synthetic labels are unverified.",
+      "source_refs": [
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/runner.py",
+        "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/finalize.py"
+      ]
+    }
+  },
+  "source_scope_alternatives": {
+    "applicability_channels": [
+      "dev.regulatory_sign",
+      "ru.bicycle",
+      "ru.electric_bicycle",
+      "ru.electric_scooter"
+    ],
+    "selected": {
+      "machine": "bicycle",
+      "maneuver": "u_turn",
+      "sign": "no_u_turn"
+    },
+    "unselected_textual_alternatives": [
+      {
+        "reason": "requires a right-turn maneuver outside frozen u_turn cell",
+        "sign": "no_right_turn"
+      },
+      {
+        "reason": "requires a left-turn maneuver outside frozen u_turn cell",
+        "sign": "no_left_turn"
+      },
+      {
+        "machine": "electric_bicycle",
+        "reason": "same statutory mechanism but distinct physical machine outside selected bicycle witness"
+      },
+      {
+        "machine": "electric_scooter",
+        "reason": "same statutory mechanism but distinct physical machine outside selected bicycle witness"
+      }
+    ]
   },
   "sources": [
     {

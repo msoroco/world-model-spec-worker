@@ -50,10 +50,10 @@ def measure_branch_response(root):
 
 def channel_value(name,actor,frame,mapping):
     ego=actor['ego'];landmark=mapping['stop_landmark_readback']
-    if name=='dev.traffic_signal':return actor.get('signal_state_observed')
-    if name=='dev.regulatory_sign':return landmark['type'] if landmark['type']=='206' else None
-    if name=='dev.stop_sign':return landmark['id'] if landmark['type']=='206' else None
-    if name in ('dev.yield_sign','dev.speed_limit_sign','dev.lane_control_signal'):return None
+    if name=='dev.traffic_signal':return actor.get('signal_state_observed') or {'status':'not_observed_in_synthetic_fixture'}
+    if name=='dev.regulatory_sign':return landmark['type'] if landmark['type']=='206' else {'status':'not_observed_in_synthetic_fixture'}
+    if name=='dev.stop_sign':return landmark['id'] if landmark['type']=='206' else {'status':'not_observed_in_synthetic_fixture'}
+    if name in ('dev.yield_sign','dev.speed_limit_sign','dev.lane_control_signal'):return {'status':'not_observed_in_synthetic_fixture'}
     if name=='dev.governs':return {'ego_road_id':actor['observed_road_id'],'ego_lane_id':actor['observed_lane_id'],'device_road_id':landmark['road_id'],'legally_verified':False}
     if name=='dev.position':return {'station_s_m':landmark['s_m'],'ego_center_native_xyz_m':ego['center_native_xyz_m']}
     if name=='kin.velocity':return ego['velocity_native_xyz_mps']
@@ -83,6 +83,8 @@ def finalize(attempt,output):
     for channel in recorded['channels']:
         name=channel['name'];path=channels/(name+'.jsonl')
         path.write_text(''.join(json.dumps({'time_s':a['time_s'],'value':channel_value(name,a,f,mapping)},allow_nan=False)+'\n' for a,f in zip(actors,frames)))
+    context={'official_placement_authority':{'status':'unverified_synthetic_fixture','authority_source':None}}
+    (channels/'official_placement_authority.json').write_text(json.dumps(context)+'\n')
     values=measurement['value'];suffix=config['case_id'].rsplit('__',1)[1]
     requested_stop=suffix in ('signal_red_stop','officer_no_direction_stop')
     matched=(values['stopped_before_frames']>=20 if requested_stop else values['body_at_station_frames']>0)
@@ -101,7 +103,7 @@ def finalize(attempt,output):
             'video_references':['overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'],
             'video_frame_map_reference':'video_frames.jsonl',
             'recording_description':recorded,
-            'recording_evidence':[{'name':c['name'],'unit':c['unit'],'reference':'channels/'+c['name']+'.jsonl'} for c in recorded['channels']],
+            'recording_evidence':[{'name':c['name'],'unit':c['unit'],'reference':'channels/'+c['name']+'.jsonl'} for c in recorded['channels']]+[{'name':'official_placement_authority','unit':'source_document','reference':'channels/official_placement_authority.json'}],
             'realized_observables':{},'provenance_kind':'synthetic_cpu_fixture',
             'accepted':False,'legal_verdict_claimed':False}
     (root/'result.json').write_text(json.dumps(result,indent=2)+'\n')

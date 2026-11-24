@@ -21,9 +21,12 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--source', required=True)
+    parser.add_argument('--kind', choices=('mounted_obey', 'mounted_turn', 'dismounted_turn'), default='mounted_turn')
+    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2'), default='primary')
     args = parser.parse_args()
     source = Path(args.source).resolve()
-    destination = HERE/'v2-mounted-turn-primary-source'
+    stem = 'v2-'+args.kind.replace('_', '-')+'-'+args.candidate
+    destination = HERE/(stem+'-source')
     destination.mkdir(exist_ok=True)
     items = []
     for name in RAW:
@@ -54,13 +57,13 @@ def main():
                ('reference_corner', 1280, 720, 'white'),
                ('driver_reference', 1280, 720, 'red'))]
     specification = {'files': {}, 'graphs': graphs, 'videos': videos}
-    generator = HERE/'v2-mounted-turn-primary-generator.json'
+    generator = HERE/(stem+'-generator.json')
     generator.write_text(json.dumps(specification, separators=(',', ':'))+'\n')
     if generator.stat().st_size > 2*1024*1024:
         raise ValueError('Generator exceeds return cap')
     recipe = {'format': 'worker-fixture-recipe', 'sources': items,
               'generator': {'source': str(generator.relative_to(ROOT)), 'sha256': sha(generator)}}
-    recipe_path = HERE/'v2-mounted-turn-primary-recipe.json'
+    recipe_path = HERE/(stem+'-recipe.json')
     recipe_path.write_text(json.dumps(recipe, indent=2)+'\n')
     print(json.dumps({'source_count': len(items), 'graphs': len(graphs),
                       'videos': len(videos), 'recipe_sha256': sha(recipe_path),

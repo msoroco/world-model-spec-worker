@@ -16,8 +16,9 @@ def rows(kind, candidate):
     result = []
     for frame in range(FRAMES):
         x, y = position(kind, variant, frame)
-        turn = kind != 'mounted_obey' and variant['turn_start_frame'] <= frame <= variant['turn_start_frame'] + 80
-        mounted = kind != 'dismounted_turn' or frame < 200
+        turn_duration = 160 if kind == 'dismounted_turn' else 80
+        turn = kind != 'mounted_obey' and variant['turn_start_frame'] <= frame <= variant['turn_start_frame'] + turn_duration
+        mounted = kind != 'dismounted_turn' or frame < variant['turn_start_frame'] - 40
         result.append({'frame': frame, 'time_s': frame / RATE_HZ,
                        'x_m': round(x, 6), 'y_m': round(y, 6),
                        'actor_id': 'rider-1', 'machine_class': 'bicycle',
@@ -49,7 +50,8 @@ def validate(source, kind, candidate):
         if turns or any(not r['mounted'] for r in source):
             raise ValueError('Mounted obey plan contains a turn or dismount')
     else:
-        if turns != list(range(variant['turn_start_frame'], variant['turn_start_frame'] + 81)):
+        turn_duration = 160 if kind == 'dismounted_turn' else 80
+        if turns != list(range(variant['turn_start_frame'], variant['turn_start_frame'] + turn_duration + 1)):
             raise ValueError('Turn window differs from construction')
         if kind == 'mounted_turn' and any(not r['mounted'] for r in source):
             raise ValueError('Mounted turn plan dismounts')
@@ -59,6 +61,11 @@ def validate(source, kind, candidate):
                 raise ValueError('Dismount must precede turn and persist')
             if any(r['mounted'] for r in source if r['u_turn_active']):
                 raise ValueError('Dismounted turn source remounts during turn')
+            for before, after in zip(source[dismount:], source[dismount + 1:]):
+                speed = ((after['x_m'] - before['x_m'])**2 +
+                         (after['y_m'] - before['y_m'])**2)**.5 * RATE_HZ
+                if speed > 2.05:
+                    raise ValueError('Walking-machine source exceeds planned walking pace')
     return {'frames': FRAMES, 'duration_s': FRAMES / RATE_HZ,
             'first_turn_frame': turns[0] if turns else None,
             'dismount_frame': next((r['frame'] for r in source if not r['mounted']), None),

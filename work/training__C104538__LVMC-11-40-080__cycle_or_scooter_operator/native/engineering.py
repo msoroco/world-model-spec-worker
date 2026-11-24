@@ -21,8 +21,8 @@ KINDS = ("mounted_obey", "mounted_turn", "dismounted_turn")
 
 def parameters(kind: str, name: str) -> dict:
     """Native capture policy; the saved trigger rows remain synthetic only."""
-    if kind not in ("mounted_obey", "mounted_turn") or name not in VARIANTS:
-        raise ValueError("Unknown mounted Native construction")
+    if kind not in KINDS or name not in VARIANTS:
+        raise ValueError("Unknown rider Native construction")
     from geometry import native_route
     return {"case_suffix": kind, "candidate_id": name,
             "native_route_xy_m": native_route(kind, VARIANTS[name]["start_x_m"]),
@@ -43,13 +43,20 @@ def position(kind: str, variant: dict, frame: int) -> tuple[float, float]:
     start = variant["turn_start_frame"]
     x0 = variant["start_x_m"]
     if frame < start:
+        if kind == "dismounted_turn":
+            dismount = start - 40
+            x_dismount = -3.2
+            if frame < dismount:
+                return x0 + (x_dismount-x0)*frame/dismount, 4.0
+            return x_dismount + (0-x_dismount)*(frame-dismount)/(start-dismount), 4.0
         return x0 + (0-x0)*frame/start, 4.0
     if kind == "mounted_obey":
         return min(30.0, (frame-start)*.12), 4.0
-    if frame <= start+80:
-        a = math.pi/2 - math.pi*(frame-start)/80
+    turn_frames = 160 if kind == "dismounted_turn" else 80
+    if frame <= start+turn_frames:
+        a = math.pi/2 - math.pi*(frame-start)/turn_frames
         return 4*math.cos(a), 4*math.sin(a)
-    return max(-25.0, -(frame-start-80)*.12), -4.0
+    return max(-25.0, -(frame-start-turn_frames)*(.07 if kind == "dismounted_turn" else .12)), -4.0
 
 
 def make_rows(kind: str, name: str) -> list[dict]:

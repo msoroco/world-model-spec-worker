@@ -322,10 +322,22 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     'dev.position': survey['landmark_readback'],
                     'ru.bicycle': {'native_actor_id': ego.id, 'native_blueprint': ego.type_id,
                                    'native_body_xy_m': body},
+                    'ru.electric_bicycle': {'native_actor_id': ego.id,
+                                            'native_blueprint': ego.type_id,
+                                            'selected_class': False},
+                    'ru.electric_scooter': {'native_actor_id': ego.id,
+                                            'native_blueprint': ego.type_id,
+                                            'selected_class': False},
                     'ru.rider_posture': {'original_pixel_review': 'pending',
                                         'mounted_from_native_actor': None},
+                    'ru.pedestrian': {'original_pixel_review': 'pending',
+                                      'walking_machine_from_native_actor': None},
+                    'drv.turning': {'requested': case_suffix != 'mounted_obey',
+                                    'observed_from_saved_measurement': None},
                     'drv.u_turn': {'requested': case_suffix == 'mounted_turn',
                                    'observed_from_saved_measurement': None},
+                    'kin.speed': {'measured_mps': observed_speed,
+                                  'source': 'Native actor velocity'},
                     'kin.heading': sample['native_forward_xy'],
                     'rel.occupies': body,
                     'native_body_pose_control': sample,
@@ -431,7 +443,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--case', choices=('mounted_obey', 'mounted_turn'))
+    parser.add_argument('--case', choices=('mounted_obey', 'mounted_turn', 'dismounted_turn'))
     parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'))
     parser.add_argument('--output-dir')
     parser.add_argument('--duration-s', type=int, default=24,

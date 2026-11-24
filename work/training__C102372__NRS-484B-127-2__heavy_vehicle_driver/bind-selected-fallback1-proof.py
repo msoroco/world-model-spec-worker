@@ -36,7 +36,7 @@ def main() -> None:
     fallback['offline'] = {
         'command': f'{ROOT}/.venv-cpu/bin/python {ROOT}/runtime.py offline '
                    f'--manifest {path} --case {CASE} --candidate fallback1 '
-                   f'--output {ROOT}/.runtime-work/c102372-selected-probe1-fallback1-offline-v3 '
+                   f'--output {ROOT}/.runtime-work/c102372-selected-probe1-fallback1-offline-v7 '
                    f'--python {ROOT}/.venv-cpu/bin/python',
         'exit_code': 0, 'construction_sha256': fallback['construction_sha256'],
         'log': 'selected-proof/probe_1/fallback1/offline.log',

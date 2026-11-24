@@ -32,7 +32,7 @@ def write_rows(path, values):
     path.write_text("".join(json.dumps(value, allow_nan=False)+"\n" for value in values))
 
 
-def rebuild_channels(root, description, native, mapping, rider, sign):
+def rebuild_channels(root, description, native, mapping, rider, trace, sign):
     """Derive diagnostic observations from retained rows, never fixture channels."""
     channels = root/"channels"
     if channels.exists():
@@ -41,11 +41,17 @@ def rebuild_channels(root, description, native, mapping, rider, sign):
     for channel in description["channels"]:
         name = channel["name"]
         values = []
-        for n, m, r in zip(native, mapping, rider):
+        for n, m, r, t in zip(native, mapping, rider, trace):
             if name == "ru.bicycle":
                 value = {"actor_id": r["actor_id"], "blueprint": "vehicle.bh.crossbike", "body_xy_m": n["native_body_xy_m"]}
+            elif name in ("ru.electric_bicycle", "ru.electric_scooter"):
+                value = {"actor_id": r["actor_id"], "machine_class": r["machine_class"],
+                         "selected_class": r["machine_class"] == name.split(".", 1)[1]}
             elif name == "ru.rider_posture":
                 value = {"mounted_fixture": r["mounted"], "original_pixel_review": "pending"}
+            elif name == "ru.pedestrian":
+                value = {"walking_machine_fixture": r["walking_machine"],
+                         "original_pixel_review": "pending"}
             elif name == "dev.regulatory_sign":
                 value = {"code": sign["code"], "authorization_proven": False}
             elif name == "dev.governs":
@@ -54,6 +60,10 @@ def rebuild_channels(root, description, native, mapping, rider, sign):
                 value = {"station_m": sign["station_m"], "synthetic_fixture": True}
             elif name == "drv.u_turn":
                 value = {"requested": r["u_turn_active"], "measured_from_saved_source": None}
+            elif name == "drv.turning":
+                value = {"requested": r["u_turn_active"], "measured_from_saved_source": None}
+            elif name == "kin.speed":
+                value = {"velocity_mps": t.get("velocity_mps"), "source": "trace.jsonl"}
             elif name == "kin.heading":
                 value = n["native_forward_xy"]
             elif name == "rel.occupies":
@@ -86,6 +96,22 @@ def measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames):
             "sources": {name: sha(root/name) for name in sources}}
 
 
+def measure_dismounted_turn(root, frames, dismount_frame, first_turn_frame,
+                            walking_turn_frames, turn_frames):
+    sources = ("rider_native_samples.jsonl", "authored-sign.json",
+               "native_samples.jsonl", "reference_corner.mkv", "trace.jsonl",
+               "approach.mkv")
+    return {"method": "measure_dismounted_turn",
+            "value": {"frames": frames, "dismount_frame": dismount_frame,
+                      "first_turn_frame": first_turn_frame,
+                      "walking_turn_frames": walking_turn_frames,
+                      "turn_frames": turn_frames,
+                      "pedestrian_rule_compliance_verified": False,
+                      "original_posture_verified": False,
+                      "sign_authorization_proven": False},
+            "sources": {name: sha(root/name) for name in sources}}
+
+
 def finalize(attempt, output):
     root, target = Path(attempt), Path(output)
     if target.exists() or (root/"result.json").exists():
@@ -93,8 +119,8 @@ def finalize(attempt, output):
     config = json.loads((root/"config.json").read_text())
     kind = config["case_suffix"]
     frames = config["rate_hz"]*config["duration_s"]
-    if kind not in ("mounted_obey", "mounted_turn") or config["rate_hz"] != 20 or frames not in (480, 600):
-        raise ValueError("Exact mounted case/timebase differs")
+    if kind not in ("mounted_obey", "mounted_turn", "dismounted_turn") or config["rate_hz"] != 20 or frames not in (480, 600):
+        raise ValueError("Exact rider case/timebase differs")
     native = rows(root/"native_samples.jsonl")
     mapping = rows(root/"video_frames.jsonl")
     rider = rows(root/"rider_native_samples.jsonl")
@@ -118,6 +144,9 @@ def finalize(attempt, output):
             sign.get("authorization_proven") is not False):
         raise ValueError("Synthetic sign scope differs")
     turn_frames = mounted_turn_frames = 0
+    dismount_frame = None
+    first_turn_frame = None
+    walking_turn_frames = 0
     for i, (n, m, r, t, e, b) in enumerate(zip(native, mapping, rider, trace, evidence, body)):
         frame, time = n["native_frame"], n["time_s"]
         if (r["frame"] != i or r["time_s"] != time or r["actor_id"] != "rider-1" or
@@ -134,12 +163,23 @@ def finalize(attempt, output):
             raise ValueError("Native/body history differs")
         if r["walking_machine"] is r["mounted"]:
             raise ValueError("Rider posture contradicts machine state")
+        if not r["mounted"] and dismount_frame is None:
+            dismount_frame = i
+        if r["u_turn_active"] and first_turn_frame is None:
+            first_turn_frame = i
         turn_frames += int(r["u_turn_active"])
         mounted_turn_frames += int(r["u_turn_active"] and r["mounted"])
+        walking_turn_frames += int(r["u_turn_active"] and r["walking_machine"])
     expected = kind == "mounted_turn"
     measured = mounted_turn_frames > 0
     if measured != expected or (kind == "mounted_obey" and turn_frames):
         raise ValueError("Controlled mounted-turn source differs")
+    if kind == "dismounted_turn":
+        if (dismount_frame is None or first_turn_frame is None or
+                dismount_frame >= first_turn_frame or mounted_turn_frames or
+                walking_turn_frames != turn_frames or
+                any(r["mounted"] for r in rider[dismount_frame:])):
+            raise ValueError("Dismount-before-turn and persistent walking-machine source differs")
     capture = json.loads((root/"capture/manifest.json").read_text())
     if capture.get("frames") != frames or not capture.get("extraction_confirmed"):
         raise ValueError("Capture extraction incomplete")
@@ -148,7 +188,7 @@ def finalize(attempt, output):
     if any(value != frames for value in videos.values()):
         raise ValueError("Source camera frame count differs")
     description = config["recording_description"]
-    rebuild_channels(root, description, native, mapping, rider, sign)
+    rebuild_channels(root, description, native, mapping, rider, trace, sign)
     recording = []
     for channel in description["channels"]:
         reference = "channels/"+channel["name"]+".jsonl"
@@ -161,6 +201,8 @@ def finalize(attempt, output):
         recording.append({"name": context["name"], "unit": context["unit"], "reference": "context.json"})
     result = {"case_id": config["case_id"],
         "measured_values": {"mounted_turn_frames": mounted_turn_frames, "turn_frames": turn_frames,
+                            "dismount_frame": dismount_frame, "first_turn_frame": first_turn_frame,
+                            "walking_turn_frames": walking_turn_frames,
                             "sign_authorization_proven": False},
         "target_checks": [{"target": "mounted bicycle turns through authored no-U-turn region",
             "requested": expected, "measured": measured,
@@ -175,18 +217,34 @@ def finalize(attempt, output):
         "recording_description": description, "recording_evidence": recording,
         "realized_observables": {}, "provenance_kind": "native", "accepted": False,
         "legal_verdict_claimed": False}
+    if kind == "dismounted_turn":
+        result["target_checks"].append({
+            "target": "dismount before U-turn and walk machine through turn",
+            "requested": True,
+            "measured": dismount_frame is not None and first_turn_frame is not None and
+                        dismount_frame < first_turn_frame and walking_turn_frames == turn_frames,
+            "method": "saved synthetic rider/frame joins",
+            "tolerance": "strict ordering and every turn frame walking",
+            "matched": True,
+            "physical_cause_confirmed": False,
+            "cause_evidence": ["rider_native_samples.jsonl", "native_samples.jsonl"]})
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report = {"format": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1",
         "case_id": config["case_id"], "candidate_id": config["candidate_id"],
         "source_kind": manifest["source_kind"], "frames": frames, "video_frames": videos,
         "turn_frames": turn_frames, "mounted_turn_frames": mounted_turn_frames,
+        "dismount_frame": dismount_frame, "first_turn_frame": first_turn_frame,
+        "walking_turn_frames": walking_turn_frames,
         "source_hashes": {name: sha(root/name) for name in
             ("rider_native_samples.jsonl", "authored-sign.json", "native_samples.jsonl",
              "video_frames.jsonl", "capture/manifest.json")},
         "sign_authorization_proven": False, "original_native_capture_executed": False,
         "legal_verdict_claimed": False, "accepted": False,
-        "measurements": {"mounted_turn_observation": measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames)}}
+        "measurements": ({"dismounted_turn_observation": measure_dismounted_turn(
+            root, frames, dismount_frame, first_turn_frame, walking_turn_frames, turn_frames)}
+            if kind == "dismounted_turn" else
+            {"mounted_turn_observation": measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames)})}
     target.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
     (root/"result.json").write_text(json.dumps(result, indent=2, allow_nan=False)+"\n")
     return report

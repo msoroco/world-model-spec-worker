@@ -16,7 +16,7 @@ ROOT = HERE.parents[1]
 SCRATCH = ROOT/'.runtime-work'
 if not os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT', '').startswith(str(SCRATCH)):
     raise RuntimeError('Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work before importing runtime')
-sys.path.insert(0, str(ROOT/'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(ROOT/'runtime/scenario_pipeline'))
 sys.path.insert(0, str(HERE/'native'))
 from worker_exchange.runtime_cli import materialize
 from thirty_second import rows as rider_rows, validate as validate_rider
@@ -44,9 +44,11 @@ def write_rows(path, values):
 def build(destination, kind='mounted_turn', candidate='primary', manifest=None):
     if destination.exists():
         raise ValueError('Use a fresh diagnostic destination')
-    if kind not in ('mounted_obey', 'mounted_turn'):
-        raise ValueError('Unknown mounted case')
-    case = HERE.name+('__controlled_1' if kind == 'mounted_obey' else '__controlled_2')
+    if kind not in ('mounted_obey', 'mounted_turn', 'dismounted_turn'):
+        raise ValueError('Unknown rider case')
+    case = HERE.name+({'mounted_obey': '__controlled_1',
+                       'mounted_turn': '__controlled_2',
+                       'dismounted_turn': '__controlled_3'}[kind])
     manifest = Path(manifest) if manifest is not None else HERE/'draft-thirty-second-execution-manifest.json'
     motor_attempt = motor.make_attempt(destination.parent/'motor', 'witness_2')
     materialize(manifest, case, destination)
@@ -76,13 +78,15 @@ def build(destination, kind='mounted_turn', candidate='primary', manifest=None):
         dx, dy = after['x_m']-before['x_m'], after['y_m']-before['y_m']
         length = math.hypot(dx, dy)
         direction = [dx/length, dy/length] if length > 1e-8 else [1.0, 0.0]
+        velocity = [dx * 10.0, dy * 10.0, 0.0]
         corners = [[round(x+sx, 6), round(y+sy, 6)] for sx, sy in
                    ((-1, -.35), (-1, .35), (1, .35), (1, -.35))]
         body3 = [[a, c, z] for a, c in corners for z in (0, 1.5)]
         n.update(native_center_xy_m=[x, y], native_forward_xy=direction,
                  native_body_xy_m=corners, native_lane_id=-1 if y >= 0 else 1)
         t.update(position={'x': x, 'y': y, 'z': .5}, position_m=[x, y, .5],
-                 heading_deg=math.degrees(math.atan2(direction[1], direction[0])))
+                 heading_deg=math.degrees(math.atan2(direction[1], direction[0])),
+                 velocity_mps=velocity)
         e['ego'].update(body_vertices_m=body3, position_m=[x, y, .5],
                         heading_deg=t['heading_deg'])
         e['world']['road_projection']['lane_id'] = n['native_lane_id']
@@ -114,7 +118,7 @@ def build(destination, kind='mounted_turn', candidate='primary', manifest=None):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', required=True)
-    parser.add_argument('--kind', choices=('mounted_obey', 'mounted_turn'), default='mounted_turn')
+    parser.add_argument('--kind', choices=('mounted_obey', 'mounted_turn', 'dismounted_turn'), default='mounted_turn')
     parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2'), default='primary')
     parser.add_argument('--manifest')
     args = parser.parse_args()
@@ -124,7 +128,7 @@ def main():
     case, manifest = build(attempt, args.kind, args.candidate, args.manifest)
     command = [sys.executable, str(ROOT/'runtime.py'), 'process-saved', '--manifest', str(manifest),
                '--case', case, '--attempt', str(attempt), '--output', str(out/'saved'),
-               '--library', str(ROOT/'runtime/pipeline/library'),
+               '--library', str(ROOT/'runtime/library'),
                '--validator', str(ROOT/'.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck')]
     run = subprocess.run(command, cwd=ROOT, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=900)
