@@ -23,7 +23,8 @@ List every exact case once in consecutive `order`, with `assignment_id`, `case_i
 `capture_command`, `postprocessing_command`, `owner_release_command`, and
 `additional_source_audit_command`. Canonical local dispatch additionally requires
 `prepare_command`, `execute_command`, and `accept_command`, using the corresponding
-prepare-delivery, execute-delivery, and accept-delivery local commands. Include
+prepare-delivery, execute-delivery, and accept-delivery local commands.
+The accept command must include `--review-archive /external/archive`, outside the project, recording outputs, and worker repository. Include
 `candidate_commands` keyed by each fallback ID, each preparing that exact candidate.
 Do not launch these GPU commands in the worker.
 
