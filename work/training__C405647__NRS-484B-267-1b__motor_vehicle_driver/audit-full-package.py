@@ -56,7 +56,7 @@ def audit():
             assert receipt['analysis_sha256'] == hashlib.sha256(analysis.encode()).hexdigest()
             assert receipt['scope'] == 'diagnostic software compatibility only'
             decode = json.loads(decode_path.read_text())
-            assert decode.get('passed') is True and decode.get('frames') == 480
+            assert decode.get('passed') is True and decode.get('frames') == 600
             log_path = (FOLDER / 'full-package-probe.log' if (case, candidate) == ('reference', 'primary')
                         else folder / 'full-package-command.log')
             log_lines = log_path.read_text().splitlines()

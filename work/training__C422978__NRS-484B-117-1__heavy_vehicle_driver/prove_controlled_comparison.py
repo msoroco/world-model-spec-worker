@@ -30,7 +30,7 @@ def fixed(row):
 
 def compare(reference,contrast):
     ref, con = rows(reference), rows(contrast)
-    if len(ref) != 480 or len(con) != 480:
+    if len(ref) != 600 or len(con) != 600:
         raise ValueError('Paired saved frame count differs')
     ref_overlap, con_overlap, con_inside = [], [], []
     for i,(a,b) in enumerate(zip(ref,con)):
@@ -46,7 +46,7 @@ def compare(reference,contrast):
             con_overlap.append(i)
         if b['speed_mps']>.1 and min(by)>=3.5 and max(by)<=7.5:
             con_inside.append(i)
-    if ref_overlap or len(con_overlap)<390 or len(con_inside)<370:
+    if ref_overlap or len(con_overlap)<390 or len(con_inside)<490:
         raise ValueError('Paired synthetic sidewalk contrast absent')
     return {'reference_moving_overlap_frames':len(ref_overlap),
             'contrast_moving_overlap_frames':len(con_overlap),
@@ -72,7 +72,7 @@ def compare_bundles(reference, contrast):
             exception_a['exception_applies'] is not None or exception_b['exception_applies'] is not None or
             spatial_a['authority_kind']!='synthetic_cpu' or spatial_b['authority_kind']!='synthetic_cpu' or
             spatial_a['moving_city_sidewalk_outside_entrance_frames']!=0 or
-            spatial_b['moving_city_sidewalk_outside_entrance_frames']<300):
+            spatial_b['moving_city_sidewalk_outside_entrance_frames']<375):
         raise ValueError('Paired spatial or exception comparison differs')
     return {**actor,
             'reference_city_sidewalk_outside_entrance_frames':spatial_a['moving_city_sidewalk_outside_entrance_frames'],
@@ -102,7 +102,7 @@ def prove():
                       'exception_document_sha256':sha(ref_folder/'authority/synthetic-exception-source.json'),
                       'metric':metric})
         for mutation in ('longitudinal_center','speed','native_frame','body_x'):
-            with tempfile.TemporaryDirectory(dir=CASE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 changed = Path(temporary)/'changed.jsonl'
                 altered = rows(contrast)
                 if mutation == 'longitudinal_center': altered[0]['center_native_xy_m'][0] += 1
@@ -113,7 +113,7 @@ def prove():
                 negatives.append({'candidate':candidate,'mutation':mutation,
                                   'rejected':rejected(lambda:compare(reference,changed))})
         for mutation in ('changed_survey','changed_exception_fact'):
-            with tempfile.TemporaryDirectory(dir=CASE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 altered=Path(temporary)/'contrast'
                 shutil.copytree(con_folder,altered)
                 if mutation=='changed_survey':

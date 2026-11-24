@@ -150,7 +150,7 @@ def measure(folder, context_path):
         if touched: entrance_frames.append(index); entrance_ids.update(touched)
         if on_sidewalk and in_city and not touched: outside.append(index)
     return {'format':'c422978-heavy-spatial-measurement-v1','source_kind':saved['source_kind'],
-            'authority_kind':packet['authority_kind'],'frames':480,
+            'authority_kind':packet['authority_kind'],'frames':600,
             'moving_sidewalk_intersection_frames':len(sidewalk_frames),
             'moving_city_intersection_frames':len(city_frames),
             'moving_entrance_intersection_frames':len(entrance_frames),

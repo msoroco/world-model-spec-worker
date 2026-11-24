@@ -24,9 +24,10 @@ def rows(path):
 def main():
     outputs = []
     for condition in ('condition_a', 'condition_b'):
+      for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         suffix = 'selected_c5852cfd__' + condition
-        raw = ZONE / 'offline' / 'raw-fixtures' / suffix / 'primary'
-        bundle = ZONE / 'drafts' / suffix / 'primary'
+        raw = ZONE / 'offline' / 'raw-fixtures' / suffix / candidate
+        bundle = ZONE / 'drafts' / suffix / candidate
         actors = rows(raw / 'native-raw-actors.jsonl')
         frames = rows(raw / 'video_frames.jsonl')
         request = rows(bundle / 'requested-tracks.jsonl')
@@ -94,16 +95,18 @@ def main():
                                 'driver_reference')]
         target = HERE / 'current-graph-fixture'
         target.mkdir(exist_ok=True)
-        spec = target / (condition + '-generator.json')
+        label = condition if candidate == 'primary' else condition + '-' + candidate
+        spec = target / (label + '-generator.json')
         spec.write_text(json.dumps(generator, separators=(',', ':')) + '\n')
         if spec.stat().st_size > 2 * 1024 * 1024:
             raise ValueError('Generator specification exceeds returned-file limit')
         recipe = {'format': 'worker-fixture-recipe', 'sources': source_items,
                   'generator': {'source': spec.relative_to(ROOT).as_posix(),
                                 'sha256': sha(spec)}}
-        recipe_path = target / (condition + '-recipe.json')
+        recipe_path = target / (label + '-recipe.json')
         recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
-        outputs.append({'condition': condition, 'recipe_sha256': sha(recipe_path),
+        outputs.append({'condition': condition, 'candidate': candidate,
+                        'recipe_sha256': sha(recipe_path),
                         'generator_sha256': sha(spec), 'generator_bytes': spec.stat().st_size,
                         'source_count': len(source_items), 'graph_count': len(generator['graphs'])})
     receipt = {'format': 'c10374-live-graph-diagnostic-fixture-v1',

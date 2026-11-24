@@ -67,7 +67,7 @@ def prove():
     scratch = Path(tempfile.mkdtemp(dir=ROOT / '.runtime-work', prefix='c405647-1b-finalization-'))
     video = scratch / 'synthetic.mkv'
     subprocess.run([str(ffmpeg), '-hide_banner', '-loglevel', 'error', '-f', 'lavfi',
-                    '-i', 'color=c=blue:s=16x16:r=20:d=24', '-c:v', 'ffv1',
+                    '-i', 'color=c=blue:s=16x16:r=20:d=30', '-c:v', 'ffv1',
                     str(video)], check=True, timeout=120)
     results = []
     for entry in manifest['cases']:
@@ -120,7 +120,7 @@ def prove():
                             'result_sha256': sha(output / 'finalization-result.json'),
                             'negative_log_sha256': sha(output / 'finalization-negative.log'),
                             'measurement_negative_log_sha256': sha(output / 'measurement-negative.log'),
-                            'frame_count': 480, 'recording_channels': 3,
+                            'frame_count': 600, 'recording_channels': 3,
                             'physical_acceptance_claimed': False})
             print(case, candidate, 'finalizer positive and changed-join negative passed', flush=True)
     proof = {'format': 'c405647-1b-exact-finalization-proof-v1',

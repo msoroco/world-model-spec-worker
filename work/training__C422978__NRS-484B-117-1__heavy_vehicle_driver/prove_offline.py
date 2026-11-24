@@ -37,7 +37,7 @@ def prove():
         saved_run = subprocess.run([sys.executable, str(bundle/'measure_saved.py'),
                                     str(saved_fixture)], text=True, capture_output=True, check=True)
         saved_measure = json.loads(saved_run.stdout)
-        if saved_measure['frames'] != 480 or saved_measure['source_kind'] != 'synthetic_cpu':
+        if saved_measure['frames'] != 600 or saved_measure['source_kind'] != 'synthetic_cpu':
             raise AssertionError('Packaged saved processor positive failed')
         exception_run = subprocess.run([sys.executable, str(bundle/'measure_exception.py'),
                                         '--attempt', str(saved_fixture), '--packet',
@@ -50,9 +50,9 @@ def prove():
                                       str(saved_fixture/'city-context.json')],
                                      text=True, capture_output=True, check=True)
         context_measure = json.loads(context_run.stdout)
-        if context_measure['frames'] != 480 or context_measure['authority_kind'] != 'synthetic_cpu':
+        if context_measure['frames'] != 600 or context_measure['authority_kind'] != 'synthetic_cpu':
             raise AssertionError('Packaged spatial processor positive failed')
-        with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
+        with tempfile.TemporaryDirectory() as temporary:
             fresh = Path(temporary)/'attempt'
             shutil.copytree(saved_fixture, fresh)
             for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
@@ -64,7 +64,7 @@ def prove():
                         '--survey-sha256', sha(survey), '--calibration', str(calibration),
                         '--diagnostic']
             prepared = subprocess.run(prep_cmd,text=True,capture_output=True,check=True)
-            if json.loads(prepared.stdout)['measurement']['frames'] != 480 or sha(fresh/'city-context.json') != sha(saved_fixture/'city-context.json'):
+            if json.loads(prepared.stdout)['measurement']['frames'] != 600 or sha(fresh/'city-context.json') != sha(saved_fixture/'city-context.json'):
                 raise AssertionError('Packaged spatial preparation positive failed')
             for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
                 (fresh/name).unlink()
@@ -80,7 +80,7 @@ def prove():
                                          str(camera/'sidewalk-video-stub.txt')],
                                         text=True, capture_output=True, check=True)
             camera_visible = json.loads(camera_run.stdout)['visible_frames']
-            if camera_visible != 420:
+            if camera_visible != 525:
                 raise AssertionError('Packaged camera processor positive failed')
         positives.append({'case': case, 'candidate': candidate,
                           'bundle_sha256': {name: sha(bundle/name) for name in entry['file_sha256']},
@@ -91,7 +91,7 @@ def prove():
                           'packaged_survey_hash_negative':True,
                           'packaged_clear_camera_visible_frames':camera_visible})
         for name in SOURCES:
-            with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 altered = Path(temporary)/'candidate'
                 shutil.copytree(bundle, altered)
                 with (altered/name).open('ab') as stream:

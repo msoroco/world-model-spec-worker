@@ -16,7 +16,7 @@ def evaluate(case, candidate, observed, expected_sha, camera=None):
     if sha(observed) != expected_sha:
         raise ValueError('Observed body source hash differs')
     rows = [json.loads(line) for line in observed.read_text().splitlines()]
-    if len(rows) != 480:
+    if len(rows) != 600:
         raise ValueError('Observed body frame count differs')
     kinds = {r.get('source_kind') for r in rows}
     if len(kinds) != 1 or not kinds <= {'synthetic_cpu', 'original_native'}:
@@ -55,20 +55,20 @@ def evaluate(case, candidate, observed, expected_sha, camera=None):
                   'threshold_frame': 65 if case=='contrast' else None,
                   'reference_unsafe_overlap': case=='reference'}
     elif candidate == 'fallback2':
-        value = len(offcenter)>0 if case=='reference' else len(inside)<400
+        value = len(offcenter)>0 if case=='reference' else len(inside)<520
         metric = {'moving_full_body_inside_frames': len(inside),
                   'moving_offcenter_frames': len(offcenter),
-                  'threshold_frames': 400 if case=='contrast' else 0}
+                  'threshold_frames': 520 if case=='contrast' else 0}
     else:
         if not isinstance(camera,dict) or not isinstance(camera.get('source'),str) or \
                 not isinstance(camera.get('sha256'),str):
             raise ValueError('Camera source packet absent')
         if sha(camera['source']) != camera['sha256']:
             raise ValueError('Camera source hash differs')
-        if camera.get('source_kind') not in kinds or camera.get('frames')!=480 or \
-                not isinstance(camera.get('visible_frames'),int) or not 0<=camera['visible_frames']<=480:
+        if camera.get('source_kind') not in kinds or camera.get('frames')!=600 or \
+                not isinstance(camera.get('visible_frames'),int) or not 0<=camera['visible_frames']<=600:
             raise ValueError('Camera visibility packet differs')
-        fraction = camera['visible_frames']/480
+        fraction = camera['visible_frames']/600
         value = fraction<.75
         metric = {'visible_fraction':fraction, 'threshold_fraction':.75,
                   'camera_source_sha256':camera['sha256']}

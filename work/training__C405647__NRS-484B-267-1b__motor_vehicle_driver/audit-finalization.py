@@ -38,7 +38,7 @@ def audit():
             assert report['case_id'] == result['case_id'] == entry['case_id']
             assert report['draft_only'] is True and report['legal_verdict_claimed'] is False
             measurement = report['measurements']['right_edge_geometry']['value']
-            assert measurement['frames'] == row['frame_count'] == 480
+            assert measurement['frames'] == row['frame_count'] == 600
             assert measurement['source_kind'] == 'synthetic_cpu'
             assert result['provenance_kind'] == 'synthetic_local_diagnostic'
             assert measurement['edge_before_catchup'] == (case == 'reference')

@@ -21,7 +21,7 @@ def parameters(case_suffix,candidate_id):
             'comparison_commanded_distance_ft':TARGET_FEET[case_suffix],
             'requested_movement':'left_turn_onto_highway_then_merge',
             'law_id':'NRS-484B-223-3c','cell_id':'C394300',
-            'actor':'motor_vehicle_driver','duration_s':24,'rate_hz':20}
+            'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20}
 
 
 TRIGGERS={

@@ -1,4 +1,4 @@
-"""Validate source-bound 480-frame sidewalk-camera visibility annotations."""
+"""Validate source-bound 600-frame sidewalk-camera visibility annotations."""
 import hashlib
 import json
 import math
@@ -40,7 +40,7 @@ def camera_packet(saved_folder, review_file, video_source, expected_hashes=None)
     annotations = lines(review_file)
     actors = lines(saved_folder/'native-observed.jsonl')
     mapping = lines(saved_folder/'video_frames.jsonl')
-    if len(annotations) != 480:
+    if len(annotations) != 600:
         raise ValueError('Camera review frame count differs')
     visible = 0
     for index,(annotation,actor,frame) in enumerate(zip(annotations,actors,mapping)):
@@ -69,8 +69,8 @@ def camera_packet(saved_folder, review_file, video_source, expected_hashes=None)
             raise ValueError('Invisible subject has a box')
     return {'format':'c422978-heavy-camera-visibility-v1',
             'source':str(review_file.resolve()), 'sha256':hashes['review_sha256'],
-            'source_kind':kind,'frames':480,'visible_frames':visible,
-            'visible_fraction':visible/480,'source_hashes':hashes,
+            'source_kind':kind,'frames':600,'visible_frames':visible,
+            'visible_fraction':visible/600,'source_hashes':hashes,
             'pixel_annotation_truth_verified':False,
             'physical_or_legal_acceptance':False}
 

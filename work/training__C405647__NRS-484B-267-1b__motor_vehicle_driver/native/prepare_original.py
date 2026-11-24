@@ -45,7 +45,7 @@ def prepare(source, destination, case, candidate):
         raise ValueError('Original capture bundle differs from exact CPU construction')
     report = json.loads((source / 'native-capture-report.json').read_text())
     if (report.get('case_suffix') != case or report.get('candidate_id') != candidate or
-        report.get('frames') != 480 or report.get('error') is not None or
+        report.get('frames') != 600 or report.get('error') is not None or
         report.get('restoration') is None or report.get('accepted') is not False):
         raise ValueError('Native capture incomplete or unsealed')
     readback = json.loads((source / 'native-map-readback.json').read_text())
@@ -67,7 +67,7 @@ def prepare(source, destination, case, candidate):
     _verify_original_cameras(source, scope)
     actors = _rows(source / 'observed-actors.jsonl')
     frames = _rows(source / 'video_frames.jsonl')
-    if len(actors) != 480 or len(frames) != 480:
+    if len(actors) != 600 or len(frames) != 600:
         raise ValueError('Original actor/video frame count differs')
     saved = []
     first_time = None

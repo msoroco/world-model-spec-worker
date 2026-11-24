@@ -18,7 +18,7 @@ OUT = HERE / 'drafts'
 CASES = ('reference', 'contrast')
 CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 RATE = 20
-FRAMES = 480
+FRAMES = 600
 
 
 def sha(data):
@@ -134,7 +134,7 @@ def metrics(rows):
 
 def build():
     source = SOURCE.read_bytes()
-    clause = json.loads(source)['law_record']['text']
+    clause = json.loads(source)['law']['text']
     assert 'right-hand edge' in clause and 'paved shoulder' in clause
     plan = json.loads(PLAN.read_bytes())
     assert {c['case_id'] for c in plan['cases']} == {AID + '__' + c for c in CASES}

@@ -36,7 +36,7 @@ def recording():
       'native_body_pose_control':'Original Native pose, velocity, controller request and footprint',
       'camera_frame_join':'Each source camera frame joined to original Native frame and time'}
     return {'channels':[{'name':name,'unit':'structured','sampling_rate_hz':20,
-        'method':method,'time_window':'entire original 24 s / 480 frame attempt',
+        'method':method,'time_window':'entire original 30 s / 600 frame attempt',
         'reference_frame':'surveyed Native map and original frame',
         'uncertainty':'50 ms event brackets and map/body precision; 50-foot threshold may remain unresolved'}
         for name,method in methods.items()],
@@ -84,7 +84,7 @@ def build():
                 'recording_description':captured,
                 'static_checks':['authored map links','route continuity','prospective body pavement containment',
                                  'CPU controller, measurement and camera tests'],
-                'termination_rules':['full 480 original frames','failure retained on capture or restoration error'],
+                'termination_rules':['full 600 original frames','failure retained on capture or restoration error'],
                 'mechanisms':['same-cell inbound-to-center-lane left turn and three merge-station requests',
                               'observed-pose path controller','four synchronized lossless cameras'],
                 'status':'unselected_cpu_draft'}

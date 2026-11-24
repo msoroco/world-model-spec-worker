@@ -41,7 +41,7 @@ def audit():
         if actual!=positives[(case,candidate)] or actual['reported_exception_pattern'] or actual['exception_applies'] is not None or actual['legal_verdict'] is not None or actual['source_hashes']['exception-evidence.json']!=sha(packet_path) or actual['source_hashes']['authority/synthetic-exception-source.json']!=sha(doc):
             raise ValueError('Exception saved measurement differs')
         actor_rows+=actual['frames']
-    if actor_rows!=3840:raise ValueError('Exception saved row count differs')
+    if actor_rows!=4800:raise ValueError('Exception saved row count differs')
     result={'format':'c422978-heavy-exception-independent-audit-v1',
             'positives':8,'negatives':48,'saved_rows_checked':actor_rows,
             'proof_sha256':sha(HERE/'exception-proof.json'),

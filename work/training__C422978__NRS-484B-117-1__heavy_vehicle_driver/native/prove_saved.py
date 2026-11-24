@@ -56,7 +56,7 @@ def fixture(case,candidate):
     (target/'native-capture-report.json').write_text(json.dumps({
         'case_id':source.parent.parent.parent.parent.name+'__'+case,
         'candidate_id':candidate,'bundle_config_sha256':sha(source/'config.json'),
-        'requested_frames':480,'observed_frames':480,'restoration':None,
+        'requested_frames':600,'observed_frames':600,'restoration':None,
         'error':None,'accepted':False,'source_kind':'synthetic_cpu'},indent=2)+'\n')
     return target
 
@@ -75,13 +75,13 @@ def prove():
         for candidate in CANDIDATES:
             folder = fixture(case,candidate)
             result = measure(folder)
-            if (result['frames'] != 480 or result['source_kind'] != 'synthetic_cpu' or
+            if (result['frames'] != 600 or result['source_kind'] != 'synthetic_cpu' or
                     result['city_sidewalk_verified'] or result['legal_verdict'] is not None or
                     (case=='reference' and result['moving_sidewalk_overlap_frames'] != 0) or
-                    (case=='contrast' and result['full_body_inside_sidewalk_frames'] < 370)):
+                    (case=='contrast' and result['full_body_inside_sidewalk_frames'] < 490)):
                 raise AssertionError('Synthetic saved positive differs')
             positives.append({'case':case,'candidate':candidate,'measurement':result})
-            with tempfile.TemporaryDirectory(dir=HERE) as temp:
+            with tempfile.TemporaryDirectory() as temp:
                 copy = Path(temp)/'copy'
                 shutil.copytree(folder,copy)
                 path = copy/'native-observed.jsonl'
@@ -96,7 +96,7 @@ def prove():
             for name,key,mutation in (
                     ('video_frames.jsonl','native_frame','video_join'),
                     ('capture/evidence.jsonl','original_frame','capture_join')):
-                with tempfile.TemporaryDirectory(dir=HERE) as temp:
+                with tempfile.TemporaryDirectory() as temp:
                     copy = Path(temp)/'copy'
                     shutil.copytree(folder,copy)
                     path = copy/name
@@ -105,7 +105,7 @@ def prove():
                     write_rows(path,rows)
                     negatives.append({'case':case,'candidate':candidate,
                                       'mutation':mutation,'rejected':rejected(lambda:measure(copy))})
-            with tempfile.TemporaryDirectory(dir=HERE) as temp:
+            with tempfile.TemporaryDirectory() as temp:
                 copy = Path(temp)/'copy'
                 shutil.copytree(folder,copy)
                 path = copy/'native-map-readback.json'

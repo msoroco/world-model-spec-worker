@@ -78,6 +78,39 @@ def prove(suffix, scratch, env):
         if failed.returncode == 0 or expected not in failed.stdout + failed.stderr:
             raise RuntimeError(label + ' negative failed: ' + failed.stdout + failed.stderr)
         negatives[label] = {'exit_code': failed.returncode, 'expected_error': expected}
+    for label, source_name, change, expected in (
+        ('changed-frame-map', 'video_frames.jsonl',
+         lambda row: row.__setitem__('carla_frame', row['carla_frame'] + 1),
+         'Original steady camera frame mapping invalid'),
+        ('changed-footprint', 'steady-samples.jsonl',
+         lambda row: row['pedestrian_footprint_xy_m'][0].__setitem__(
+             0, row['pedestrian_footprint_xy_m'][0][0] + 1),
+         'Original steady pedestrian footprint differs'),
+    ):
+        target = scratch / (suffix + '-' + label)
+        shutil.copytree(fixture, target, ignore=shutil.ignore_patterns(
+            'result.json', 'analysis-report.json', 'channels'))
+        source_path = target / source_name
+        lines = source_path.read_text().splitlines()
+        first = json.loads(lines[0])
+        change(first)
+        lines[0] = json.dumps(first, allow_nan=False)
+        source_path.write_text('\n'.join(lines) + '\n')
+        failed = run_finalizer(target, env)
+        if failed.returncode == 0 or expected not in failed.stdout + failed.stderr:
+            raise RuntimeError(label + ' negative failed: ' + failed.stdout + failed.stderr)
+        negatives[label] = {'exit_code': failed.returncode, 'expected_error': expected}
+    target = scratch / (suffix + '-prefilled-channels')
+    shutil.copytree(fixture, target, ignore=shutil.ignore_patterns(
+        'result.json', 'analysis-report.json', 'channels'))
+    (target / 'channels').mkdir()
+    (target / 'channels' / 'kin.position.jsonl').write_text('{}\n')
+    failed = run_finalizer(target, env)
+    expected = 'Derived steady channels were supplied instead of rebuilt'
+    if failed.returncode == 0 or expected not in failed.stdout + failed.stderr:
+        raise RuntimeError('prefilled-channels negative failed: ' + failed.stdout + failed.stderr)
+    negatives['prefilled-channels'] = {'exit_code': failed.returncode,
+                                       'expected_error': expected}
     return {'case_id': case, 'recipe_sha256': sha(recipe),
             'construction_sha256': sha(HERE / 'draft-bundles' / suffix /
                                        'primary/construction.json'),

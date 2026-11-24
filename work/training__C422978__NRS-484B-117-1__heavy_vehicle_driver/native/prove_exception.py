@@ -43,7 +43,7 @@ def prove():
             if output['reported_exception_pattern'] or output['exception_applies'] is not None or output['legal_verdict'] is not None:
                 raise AssertionError('Synthetic exception negative pattern differs')
             positives.append({'case':case,'candidate':candidate,'measurement':output})
-            with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 bad_path=Path(temporary)/'packet.json'
                 for name,alter in (
                     ('capture_binding',lambda x:x.update(native_capture_report_sha256='0'*64)),

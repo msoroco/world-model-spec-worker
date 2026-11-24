@@ -51,10 +51,10 @@ for case in ('reference','contrast'):
                 source = OUT / case / candidate / (label+'-camera.txt')
                 source.write_text('synthetic camera visibility '+case+' '+label+'\n')
                 camera = {'source':str(source),'sha256':sha(source),
-                          'source_kind':'synthetic_cpu','frames':480,
-                          'visible_frames':300 if expected else 400}
+                          'source_kind':'synthetic_cpu','frames':600,
+                          'visible_frames':375 if expected else 500}
             receipt = evaluate(case,candidate,path,sha(path),camera)
-            assert receipt['triggered'] is expected
+            assert receipt['triggered'] is expected, (case, candidate, expected, receipt['metric'])
             proof.append({'case':case,'candidate':candidate,'expected':expected,
                           'observed_path':str(path.relative_to(HERE)),
                           'observed_sha256':sha(path), 'camera':camera,

@@ -51,7 +51,7 @@ for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         assert config['candidate_id'] == candidate and config['rate_hz'] == 20
         assert config['road_sha256'] == sha(road) and config['tracks_sha256'] == sha(track_path)
         assert config['assignment_sha256'] == sha(assignment) and config['case_plan_sha256'] == sha(plan)
-        assert config['status'] == 'unselected_native_request' and len(tracks) == 480
+        assert config['status'] == 'unselected_native_request' and len(tracks) == 600
         assert all(r['frame'] == i and abs(r['time_s']-i/20) < 1e-5 and
                    r['subject_blueprint_request'] == 'vehicle.carlamotors.carlacola' and
                    r['source_kind'] == 'authored_native_request' and
@@ -92,4 +92,4 @@ audit = {'format': 'c422978-heavy-native-construction-audit-v1',
          'parser_valid_sidewalk_area_m2': shapes[sidewalk_ids[0]].area,
          'original_native_or_legal_result_proven': False}
 (HERE/'cpu-audit.json').write_text(json.dumps(audit, indent=2) + '\n')
-print('heavy sidewalk Native request audit: 8 variants, 3840 rows, map parsed')
+print('heavy sidewalk Native request audit: 8 variants, 4800 rows, map parsed')

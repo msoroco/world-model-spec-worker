@@ -23,7 +23,7 @@ def audit():
         case, candidate = row['case'], row['candidate']
         raw = [json.loads(line) for line in
                (HERE / 'drafts' / case / candidate / 'requested-tracks.jsonl').read_text().splitlines()]
-        if len(raw) != 480:
+        if len(raw) != 600:
             raise ValueError('construction frame count differs')
         edge = next((i for i, item in enumerate(raw)
                      if item['subject_request']['y_m'] <= -5.95 and

@@ -56,7 +56,7 @@ def prove():
             base=packet(folder)
             context.write_text(json.dumps(base,indent=2)+'\n')
             result=measure(folder,context)
-            if result['source_kind']!='synthetic_cpu' or result['legal_verdict'] is not None or (case=='reference' and result['moving_city_sidewalk_outside_entrance_frames']!=0) or (case=='contrast' and result['moving_city_sidewalk_outside_entrance_frames']<300):
+            if result['source_kind']!='synthetic_cpu' or result['legal_verdict'] is not None or (case=='reference' and result['moving_city_sidewalk_outside_entrance_frames']!=0) or (case=='contrast' and result['moving_city_sidewalk_outside_entrance_frames']<375):
                 raise AssertionError('Synthetic spatial positive differs')
             positives.append({'case':case,'candidate':candidate,'measurement':result})
             mutations={}
@@ -65,7 +65,7 @@ def prove():
             bad=copy.deepcopy(base);bad['city_authority_reviewed']=True;mutations['false_authority']=bad
             bad=copy.deepcopy(base);bad['entrance_polygons'][0]['id']='';mutations['entrance_identity']=bad
             bad=copy.deepcopy(base);bad['source_provenance']['source_sha256']='0'*64;mutations['survey_binding']=bad
-            with tempfile.TemporaryDirectory(dir=HERE) as temp:
+            with tempfile.TemporaryDirectory() as temp:
                 altered=Path(temp)/'city-context.json'
                 for name,bad in mutations.items():
                     negatives.append({'case':case,'candidate':candidate,'mutation':name,

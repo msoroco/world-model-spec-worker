@@ -45,7 +45,7 @@ def audit():
             assert measured['actor_frames_sha256'] == row['actor_frames_sha256']
             assert measured['first_edge_target_frame'] == row['edge_frame']
             assert measured['approach_catchup_frame'] == row['catchup_frame']
-            assert measured['frames'] == 480 and measured['source_kind'] == 'synthetic_cpu'
+            assert measured['frames'] == 600 and measured['source_kind'] == 'synthetic_cpu'
             assert measured['edge_before_catchup'] == (suffix == 'reference')
             assert measured['vehicle_authority_or_lamps_qualified'] is False
             assert measured['legal_immediacy_or_edge_verdict'] is None

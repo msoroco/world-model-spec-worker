@@ -75,7 +75,7 @@ def audit():
                 raise ValueError('Offline source bytes differ: '+name)
         rows = [json.loads(line) for line in (expected_bundle/'requested-tracks.jsonl').read_text().splitlines()]
         config = json.loads((expected_bundle/'config.json').read_text())
-        if (len(rows) != 480 or config['case_suffix'] != case or
+        if (len(rows) != 600 or config['case_suffix'] != case or
                 config['candidate_id'] != candidate or
                 any(row['frame'] != i or row['subject_blueprint_request'] != 'vehicle.carlamotors.carlacola'
                     for i,row in enumerate(rows))):
@@ -86,7 +86,7 @@ def audit():
         saved_fixture = HERE/'native/saved-fixtures'/case/candidate
         saved_run = subprocess.run((sys.executable,str(expected_bundle/'measure_saved.py'),
                                     str(saved_fixture)),capture_output=True,text=True,check=True)
-        if json.loads(saved_run.stdout)['frames'] != 480:
+        if json.loads(saved_run.stdout)['frames'] != 600:
             raise ValueError('Offline packaged saved processing differs')
         exception_run = subprocess.run((sys.executable,str(expected_bundle/'measure_exception.py'),
                                         '--attempt',str(saved_fixture),'--packet',
@@ -104,7 +104,7 @@ def audit():
                                  for p in json.loads((HERE/'native/context-proof.json').read_text())['positives']
                                  if p['case'] == case and p['candidate'] == candidate)):
             raise ValueError('Offline packaged spatial processing differs')
-        with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
+        with tempfile.TemporaryDirectory() as temporary:
             fresh = Path(temporary)/'attempt'
             shutil.copytree(saved_fixture,fresh)
             for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
@@ -116,7 +116,7 @@ def audit():
                   '--survey-sha256',digest(survey),'--calibration',str(calibration),
                   '--diagnostic']
             result=subprocess.run(prep,capture_output=True,text=True,check=True)
-            if json.loads(result.stdout)['measurement']['frames']!=480 or digest(fresh/'city-context.json')!=digest(saved_fixture/'city-context.json'):
+            if json.loads(result.stdout)['measurement']['frames']!=600 or digest(fresh/'city-context.json')!=digest(saved_fixture/'city-context.json'):
                 raise ValueError('Offline packaged spatial preparation differs')
             for name in ('city-context.json','city-survey-source.geojson','city-calibration.json'):
                 (fresh/name).unlink()
@@ -129,10 +129,10 @@ def audit():
                                          str(saved_fixture),str(camera/'camera-review.jsonl'),
                                          str(camera/'sidewalk-video-stub.txt')),
                                         capture_output=True,text=True,check=True)
-            if json.loads(camera_run.stdout)['visible_frames'] != 420:
+            if json.loads(camera_run.stdout)['visible_frames'] != 525:
                 raise ValueError('Offline packaged camera processing differs')
         for name in SOURCE_FILES:
-            with tempfile.TemporaryDirectory(dir=OFFLINE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 altered = Path(temporary)/'copy'
                 shutil.copytree(expected_bundle, altered)
                 (altered/name).write_bytes((altered/name).read_bytes()+b'\n')
@@ -149,12 +149,12 @@ def audit():
         row = positive_index[(case,candidate)]
         target = OFFLINE/case/candidate
         if (row['bundle_sha256'] != {name:digest(target/name) for name in expected} or
-                row['packaged_saved_frames'] != 480 or
+                row['packaged_saved_frames'] != 600 or
                 row['packaged_exception_pending'] is not True or
                 row['packaged_spatial_outside_entrance_frames'] != next(p['measurement']['moving_city_sidewalk_outside_entrance_frames'] for p in json.loads((HERE/'native/context-proof.json').read_text())['positives'] if p['case'] == case and p['candidate'] == candidate) or
                 row['packaged_spatial_preparation_positive'] is not True or
                 row['packaged_survey_hash_negative'] is not True or
-                row['packaged_clear_camera_visible_frames'] != (420 if candidate == 'fallback3' else None)):
+                row['packaged_clear_camera_visible_frames'] != (525 if candidate == 'fallback3' else None)):
             raise ValueError('Offline packaged processor recorded positive differs')
     if {(n['case'],n['candidate'],n['altered_file']) for n in proof['negatives']} != {
             (case,candidate,name) for case,candidate in seen for name in SOURCE_FILES}:

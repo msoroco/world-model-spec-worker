@@ -100,7 +100,7 @@ def build(source, case, candidate, media_source=None):
     write_rows(source / 'capture/native/frames.jsonl', frames)
     (source / 'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
     (source / 'capture/manifest.json').write_text(json.dumps({
-        'extraction_confirmed': True, 'frames': 480,
+        'extraction_confirmed': True, 'frames': 600,
         'acquisition': 'original_live_run', 'observation_contract_version': 2,
         'required_observations': ['rel.same_direction', 'rel.surface_gap',
                                   'kin.position', 'rel.occupies'],
@@ -122,7 +122,7 @@ def build(source, case, candidate, media_source=None):
                                   ('right_edge', '1280x720', 'green'),
                                   ('rear_approach', '1280x720', 'yellow')):
             subprocess.run([str(ffmpeg), '-hide_banner', '-loglevel', 'error',
-                            '-f', 'lavfi', '-i', f'color=c={color}:s={size}:r=20:d=24',
+                            '-f', 'lavfi', '-i', f'color=c={color}:s={size}:r=20:d=30',
                             '-c:v', 'ffv1', str(source / (name + '.mkv'))],
                            check=True, timeout=180)
         compose_four_views({'overview': source / 'overview.mkv',

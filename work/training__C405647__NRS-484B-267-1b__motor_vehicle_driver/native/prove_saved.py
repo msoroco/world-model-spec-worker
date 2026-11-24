@@ -49,7 +49,7 @@ def prove():
                 folder = base / case / candidate
                 save(folder, scope, rows)
                 receipt = measure(folder)
-                if (receipt['frames'] != 480 or receipt['source_kind'] != 'synthetic_cpu' or
+                if (receipt['frames'] != 600 or receipt['source_kind'] != 'synthetic_cpu' or
                     receipt['legal_immediacy_or_edge_verdict'] is not None or
                     receipt['vehicle_authority_or_lamps_qualified'] or
                     (receipt['edge_before_catchup'] != (case == 'reference'))):

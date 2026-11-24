@@ -10,7 +10,7 @@ from triggers import evaluate
 
 HERE=Path(__file__).resolve().parent
 CASES=('reference','contrast')
-STATES={'clear':420,'low_visibility':300}
+STATES={'clear':525,'low_visibility':375}
 
 
 def sha(path):
@@ -41,7 +41,7 @@ def prove():
             review=target/'camera-review.jsonl'
             video=target/'sidewalk-video-stub.txt'
             video.write_text('synthetic CPU camera stub; no pixel video\n'+
-                             ''.join(f'{case}/{state}/{i}\n' for i in range(480)))
+                             ''.join(f'{case}/{state}/{i}\n' for i in range(600)))
             annotations=[]
             for index,(actor,frame) in enumerate(zip(actors,mapping)):
                 visible=index<count
@@ -55,12 +55,12 @@ def prove():
             packet=camera_packet(saved,review,video)
             decision=evaluate(case,'fallback3',saved/'native-observed.jsonl',
                               sha(saved/'native-observed.jsonl'),packet)
-            if (packet['visible_frames']!=count or decision['triggered'] != (count<360) or
+            if (packet['visible_frames']!=count or decision['triggered'] != (count<450) or
                     packet['pixel_annotation_truth_verified'] or packet['physical_or_legal_acceptance']):
                 raise AssertionError('Synthetic camera trigger decision differs')
             positives.append({'case':case,'state':state,'packet':packet,
                               'fallback3_triggered':decision['triggered']})
-            with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 altered=Path(temporary)/'review.jsonl'
                 changed=[dict(row) for row in annotations]
                 changed[0]['native_frame']+=1

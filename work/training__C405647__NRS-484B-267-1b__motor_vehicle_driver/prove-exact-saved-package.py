@@ -45,7 +45,7 @@ def prove():
             if positive.returncode:
                 raise ValueError(f'{case}/{candidate}: exact positive failed: {positive.stdout[-1000:]}')
             measured = json.loads(positive.stdout)
-            if (measured['source_kind'] != 'synthetic_cpu' or measured['frames'] != 480 or
+            if (measured['source_kind'] != 'synthetic_cpu' or measured['frames'] != 600 or
                     measured['edge_before_catchup'] != (case == 'reference') or
                     measured['legal_immediacy_or_edge_verdict'] is not None):
                 raise ValueError(f'{case}/{candidate}: exact saved measurement differs')

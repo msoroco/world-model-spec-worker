@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 AID = 'training__C405647__NRS-484B-267-1b__motor_vehicle_driver'
 FRAME = 'authored_opendrive_xy'
-EXPECTED_ASSIGNMENT_SHA256 = '5fdf7db6dbb934d4ebe21ebea78baeaaf7cb93d6df595dbfbf0b86d1e7822ffa'
+EXPECTED_ASSIGNMENT_SHA256 = '0ee3f348d7db64723f6be4dab6257853965bc6626f68567df96d31ee3b5d01cd'
 
 
 def sha(path):
@@ -60,7 +60,7 @@ def _verify_original_cameras(folder, scope):
         if probe.returncode:
             raise ValueError('original camera probe failed')
         streams = json.loads(probe.stdout).get('streams', [])
-        if len(streams) != 1 or (streams[0].get('width'), streams[0].get('height')) != dimensions or streams[0].get('codec_name') != 'ffv1' or streams[0].get('nb_read_frames') != '480':
+        if len(streams) != 1 or (streams[0].get('width'), streams[0].get('height')) != dimensions or streams[0].get('codec_name') != 'ffv1' or streams[0].get('nb_read_frames') != '600':
             raise ValueError('original camera codec/dimensions/frames differ')
         decoded = subprocess.run([ffmpeg, '-nostdin', '-v', 'error', '-i', str(video),
                                   '-map', '0:v:0', '-f', 'null', '-'],
@@ -88,7 +88,7 @@ def measure(folder):
             raise ValueError('original cameras need decoded frame proof')
         _verify_original_cameras(folder, scope)
     packet = rows(actor_path)
-    if len(packet) != 480:
+    if len(packet) != 600:
         raise ValueError('saved frame count differs')
     centers, outer_edges, gaps, speeds, headings = [], [], [], [], []
     previous_native_frame = None

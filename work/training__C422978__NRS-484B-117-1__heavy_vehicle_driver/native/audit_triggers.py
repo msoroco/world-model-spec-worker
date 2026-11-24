@@ -22,10 +22,10 @@ for fixture in proof['fixtures']:
     path=HERE/fixture['observed_path']
     assert fixture['observed_sha256']==sha(path)
     rows=[json.loads(line) for line in path.read_text().splitlines()]
-    assert len(rows)==480
+    assert len(rows)==600
     policy='fallback1' if case=='contrast' and not expected and candidate in ('fallback1','fallback2') else 'primary'
     requests=[json.loads(line) for line in (HERE/'drafts'/case/policy/'requested-tracks.jsonl').read_text().splitlines()]
-    assert len(requests)==480
+    assert len(requests)==600
     overlap=[]; inside=[]; offcenter=[]
     for i,(row,request) in enumerate(zip(rows,requests)):
         x,y=request['requested_center_xy_m']; y=-y
@@ -55,22 +55,22 @@ for fixture in proof['fixtures']:
     elif candidate=='fallback2':
         assert metric=={'moving_full_body_inside_frames':len(inside),
                         'moving_offcenter_frames':len(offcenter),
-                        'threshold_frames':400 if case=='contrast' else 0}
-        calculated=bool(offcenter) if case=='reference' else len(inside)<400
+                        'threshold_frames':520 if case=='contrast' else 0}
+        calculated=bool(offcenter) if case=='reference' else len(inside)<520
     else:
         camera=fixture['camera']
         assert camera['sha256']==sha(Path(camera['source']))
-        assert camera['source_kind']=='synthetic_cpu' and camera['frames']==480
+        assert camera['source_kind']=='synthetic_cpu' and camera['frames']==600
         visible=camera['visible_frames']
-        assert metric=={'visible_fraction':visible/480,'threshold_fraction':.75,
+        assert metric=={'visible_fraction':visible/600,'threshold_fraction':.75,
                         'camera_source_sha256':camera['sha256']}
-        calculated=visible/480<.75
+        calculated=visible/600<.75
     assert calculated is expected
 assert len(seen)==12 and proof['original_native_observed'] is False
 assert proof['delivery_or_legal_result'] is False
 audit={'format':'c422978-heavy-native-trigger-audit-v1','passed':True,
        'proof_sha256':sha(HERE/'trigger-proof.json'), 'fixtures':12,
-       'raw_rows_reconstructed':5760,'source_hash_negatives':2,
+       'raw_rows_reconstructed':7200,'source_hash_negatives':2,
        'physical_or_legal_result_proven':False}
 (HERE/'trigger-audit.json').write_text(json.dumps(audit,indent=2)+'\n')
-print('heavy trigger independent audit: 12 fixtures, 5760 rows')
+print('heavy trigger independent audit: 12 fixtures, 7200 rows')

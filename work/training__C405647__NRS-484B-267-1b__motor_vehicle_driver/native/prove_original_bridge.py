@@ -16,7 +16,7 @@ def prove():
         shutil.copyfile(HERE / 'drafts' / 'reference' / 'primary' / 'config.json',
                         source / 'config.json')
         report = {'case_suffix': 'reference', 'candidate_id': 'primary',
-                  'frames': 479, 'error': None, 'restoration': {}, 'accepted': False}
+                  'frames': 599, 'error': None, 'restoration': {}, 'accepted': False}
         (source / 'native-capture-report.json').write_text(json.dumps(report))
         scenarios = [
             ('incomplete_capture', 'Native capture incomplete or unsealed'),
@@ -25,7 +25,7 @@ def prove():
         ]
         for name, expected in scenarios:
             if name != 'incomplete_capture':
-                report['frames'] = 480
+                report['frames'] = 600
                 (source / 'native-capture-report.json').write_text(json.dumps(report))
             if name == 'missing_original_cameras':
                 (source / 'native-map-readback.json').write_text(json.dumps(

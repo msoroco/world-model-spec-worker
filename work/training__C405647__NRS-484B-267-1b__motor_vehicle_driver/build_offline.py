@@ -22,7 +22,7 @@ class ConstructionTests(unittest.TestCase):
         config = json.loads(Path('config.json').read_text())
         result = check(config['case_suffix'], config['candidate_id'])
         self.assertTrue(result['passed'])
-        self.assertEqual(result['native_track_rows'], 480)
+        self.assertEqual(result['native_track_rows'], 600)
         self.assertEqual(result['camera_count'], 4)
         self.assertFalse(result['carla_imported'])
 
@@ -78,7 +78,7 @@ def build():
                       'case_suffix': case, 'supported_case_ids': [case_id],
                       'case': {'case_id': case_id}, 'cell_id': 'C405647',
                       'law_id': 'NRS-484B-267-1b', 'actor': 'motor_vehicle_driver',
-                      'duration_s': 24, 'rate_hz': 20,
+                      'duration_s': 30, 'rate_hz': 20,
                       'required_atoms': ['rel.same_direction', 'rel.surface_gap',
                                          'kin.position', 'rel.occupies'],
                       'case_specific_saved_observables': {
@@ -103,7 +103,7 @@ def build():
             recording = {'channels': [
                 {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
                  'method': 'Original Native actor and four-camera frame join',
-                 'time_window': 'entire 24 s / 480 frame attempt',
+                 'time_window': 'entire 30 s / 600 frame attempt',
                  'reference_frame': 'Native imported OpenDRIVE and original camera frame',
                  'uncertainty': '50 ms frame bracket; legal source qualification separate'}
                 for name in ('subject_pose_body_speed', 'approach_pose', 'camera_frame_join')],
@@ -117,7 +117,7 @@ def build():
                                                  'status': 'portable_saved_finalizer_cpu_draft'},
                             'recording_description': recording,
                             'static_checks': ['paired OpenDRIVE tracks and exact candidate CPU preflight'],
-                            'termination_rules': ['480 original actor/video frame joins',
+                            'termination_rules': ['600 original actor/video frame joins',
                                                   'failure retained on capture or restoration error'],
                             'mechanisms': ['same frozen-cell paired approach',
                                            'observed-pose actor control', 'four lossless cameras'],
@@ -130,7 +130,7 @@ def build():
             if candidate == 'primary':
                 entry.update(ref)
             else:
-                ref['trigger'] = {'source': 'source-hashed authored 480-frame track',
+                ref['trigger'] = {'source': 'source-hashed authored 600-frame track',
                                   **draft_config['measured_trigger']}
                 ref['changed_knobs'] = {'fallback1': ['lateral_start_frame'],
                                         'fallback2': ['lateral_duration_frames'],

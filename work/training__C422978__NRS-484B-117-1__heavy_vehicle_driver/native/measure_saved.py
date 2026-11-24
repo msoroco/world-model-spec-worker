@@ -31,7 +31,7 @@ def measure(folder, expected_hashes=None):
     evidence = records(files['capture/evidence.jsonl'])
     map_record = json.loads(files['native-map-readback.json'].read_text())
     report = json.loads(files['native-capture-report.json'].read_text())
-    if any(len(group) != 480 for group in (observed, video, evidence)):
+    if any(len(group) != 600 for group in (observed, video, evidence)):
         raise ValueError('Saved Native frame count differs')
     kinds = {row.get('source_kind') for row in observed}
     if len(kinds) != 1 or not kinds <= {'synthetic_cpu', 'original_native'}:
@@ -43,8 +43,8 @@ def measure(folder, expected_hashes=None):
             map_record.get('subject_blueprint') != BLUEPRINT or
             not isinstance(width,(int,float)) or not math.isfinite(width) or
             not 1.5 <= width <= 3.6 or
-            report.get('observed_frames') != 480 or
-            report.get('requested_frames') != 480 or
+            report.get('observed_frames') != 600 or
+            report.get('requested_frames') != 600 or
             report.get('error') is not None or report.get('accepted') is not False):
         raise ValueError('Saved map, body geometry or capture report differs')
     if kind == 'original_native' and report.get('restoration') is None:
@@ -100,7 +100,7 @@ def measure(folder, expected_hashes=None):
         longest = max(longest,run)
         prior = index
     return {'format':'c422978-heavy-saved-sidewalk-measurement-v1',
-            'source_kind':kind, 'frames':480, 'moving_frames':len(moving),
+            'source_kind':kind, 'frames':600, 'moving_frames':len(moving),
             'moving_sidewalk_overlap_frames':len(overlap),
             'first_moving_sidewalk_overlap_frame':overlap[0] if overlap else None,
             'longest_moving_sidewalk_overlap_frames':longest,

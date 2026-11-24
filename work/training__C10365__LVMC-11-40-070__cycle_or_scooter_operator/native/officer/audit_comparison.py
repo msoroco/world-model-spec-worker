@@ -15,14 +15,15 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def audit(a, b):
+def audit(a, b, candidate):
     bundle_a, raw_a, video_a, review_a = a
     bundle_b, raw_b, video_b, review_b = b
     ca = json.loads((bundle_a / 'config.json').read_text())
     cb = json.loads((bundle_b / 'config.json').read_text())
     if not ca['case_id'].endswith('__probe_a') or not cb['case_id'].endswith('__probe_b'):
         raise ValueError('Exact controlled pair differs')
-    fixed = ('assignment_id', 'assignment_sha256', 'source_text', 'rate_hz', 'frames',
+    fixed = ('assignment_id', 'assignment_sha256', 'source_text', 'candidate_id',
+             'rate_hz', 'frames',
              'rider_blueprint', 'camera_sources', 'camera_policy', 'road_sha256',
              'device_id', 'device_station_x_m', 'officer_position_xy_m',
              'officer_blueprint_filter')
@@ -54,7 +55,8 @@ def audit(a, b):
         raise ValueError('Device-obedience source contrast differs')
     if pb['crossing_frame'] is None or pb['officer_direction_reviewed'] != 'proceed':
         raise ValueError('Officer-exception source contrast differs')
-    return {'format': 'c10365-source-comparison-audit-v1', 'passed': True,
+    return {'format': 'c10365-source-comparison-audit-v2', 'passed': True,
+            'candidate': candidate,
             'case_ids': [ca['case_id'], cb['case_id']], 'frames_per_case': 600,
             'fixed_config_fields': list(fixed),
             'measured': {'device_obedience_stopped': pa['stopped'],
@@ -69,16 +71,16 @@ def audit(a, b):
             'original_native_observed': False, 'physical_legal_verdict': None}
 
 
-def reject(a, b, path, mutate, expected):
+def reject(a, b, candidate, path, mutate, expected):
     original = path.read_text()
     try:
         mutate(path)
         try:
-            audit(a, b)
+            audit(a, b, candidate)
         except ValueError as exc:
             if expected not in str(exc):
                 raise AssertionError(str(exc)) from exc
-            return {'mutation': expected, 'error': str(exc)}
+            return {'candidate': candidate, 'mutation': expected, 'error': str(exc)}
         raise AssertionError('Altered comparison accepted: ' + expected)
     finally:
         path.write_text(original)
@@ -92,34 +94,42 @@ def run():
     (ROOT / '.runtime-work').mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='c10365-comparison-') as temp:
         base = Path(temp)
-        a_dir, b_dir = base / 'a', base / 'b'
-        a_dir.mkdir()
-        b_dir.mkdir()
-        a_bundle = HERE / 'drafts/probe_a/primary'
-        b_bundle = HERE / 'drafts/probe_b/primary'
-        a = (a_bundle, *fixture(a_bundle, a_dir))
-        b = (b_bundle, *fixture(b_bundle, b_dir))
-        positive = audit(a, b)
-        negatives = [
-            reject(a, b, b[2], lambda p: write_rows(p, [dict(row, native_frame=999)
+        positives, negatives = [], []
+        for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+            a_dir, b_dir = base / candidate / 'a', base / candidate / 'b'
+            a_dir.mkdir(parents=True)
+            b_dir.mkdir(parents=True)
+            a_bundle = HERE / 'drafts/probe_a' / candidate
+            b_bundle = HERE / 'drafts/probe_b' / candidate
+            a = (a_bundle, *fixture(a_bundle, a_dir))
+            b = (b_bundle, *fixture(b_bundle, b_dir))
+            positives.append(audit(a, b, candidate))
+            negatives.extend([
+            reject(a, b, candidate, b[2], lambda p: write_rows(p, [dict(row, native_frame=999)
                    if i == 100 else row for i, row in enumerate(read_rows(p))]),
                    'Matched 600-frame video mapping differs'),
-            reject(a, b, b[1], lambda p: write_rows(p, [dict(row, observed_lane_id=-2)
+            reject(a, b, candidate, b[1], lambda p: write_rows(p, [dict(row, observed_lane_id=-2)
                    if i == 100 else row for i, row in enumerate(read_rows(p))]),
                    'Fixed native source differs'),
-            reject(a, b, b[1], lambda p: write_rows(p, [dict(row, officer_actor=dict(
+            reject(a, b, candidate, b[1], lambda p: write_rows(p, [dict(row, officer_actor=dict(
                    row['officer_actor'], center_native_xyz_m=[99, 99, 1]))
                    if i == 100 else row for i, row in enumerate(read_rows(p))]),
                    'Fixed officer staging differs'),
-            reject(a, b, b[3], lambda p: p.write_text(json.dumps(dict(
+            reject(a, b, candidate, b[3], lambda p: p.write_text(json.dumps(dict(
                    json.loads(p.read_text()), device_id='unmatched'))),
                    'Fixed reviewed context differs'),
-        ]
-    receipt = {'format': 'c10365-source-comparison-proof-v1',
-               'positive': positive, 'negatives': negatives,
+            reject(a, b, candidate, b[3], lambda p: p.write_text(json.dumps(dict(
+                   json.loads(p.read_text()), officer_authority_reviewed=False))),
+                   'Contrary officer direction and response not demonstrated'),
+            reject(a, b, candidate, b[3], lambda p: p.write_text(json.dumps(dict(
+                   json.loads(p.read_text()), officer_direction='none_contrary'))),
+                   'Contrary officer direction and response not demonstrated'),
+            ])
+    receipt = {'format': 'c10365-source-comparison-proof-v2',
+               'positives': positives, 'negatives': negatives,
                'original_native_observed': False, 'physical_legal_verdict': None}
     (HERE / 'source-comparison-proof.json').write_text(json.dumps(receipt, indent=2) + '\n')
-    return {'positives': 1, 'negatives': len(negatives)}
+    return {'positives': len(positives), 'negatives': len(negatives)}
 
 
 if __name__ == '__main__':

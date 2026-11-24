@@ -26,11 +26,11 @@ def prove():
         for candidate in CANDIDATES:
             original=HERE/'saved-fixtures'/case/candidate
             survey=original/'city-survey-source.geojson';calibration=original/'city-calibration.json'
-            with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 copy=Path(temporary)/'attempt';shutil.copytree(original,copy)
                 for name in SPATIAL:(copy/name).unlink()
                 result=prepare(copy,survey,sha(survey),calibration,True)
-                if result['measurement']['frames']!=480 or result['measurement']['authority_kind']!='synthetic_cpu':
+                if result['measurement']['frames']!=600 or result['measurement']['authority_kind']!='synthetic_cpu':
                     raise AssertionError('Prepared synthetic packet differs')
                 for name in SPATIAL:
                     if (copy/name).read_bytes()!=(original/name).read_bytes():
@@ -40,7 +40,7 @@ def prove():
                                   'outside_entrance_frames':result['measurement']['moving_city_sidewalk_outside_entrance_frames']})
                 negatives.append({'case':case,'candidate':candidate,'mutation':'existing_destination',
                                   'rejected':rejected(lambda:prepare(copy,survey,sha(survey),calibration,True))})
-            with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+            with tempfile.TemporaryDirectory() as temporary:
                 copy=Path(temporary)/'attempt';shutil.copytree(original,copy)
                 for name in SPATIAL:(copy/name).unlink()
                 negatives.append({'case':case,'candidate':candidate,'mutation':'survey_hash',

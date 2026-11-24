@@ -73,7 +73,7 @@ def finalize(attempt, output):
     actor = rows(attempt / 'actor-frames.jsonl')
     trace = rows(attempt / 'trace.jsonl')
     mapping = rows(attempt / 'video_frames.jsonl')
-    if len(actor) != len(trace) or len(trace) != len(mapping) or len(mapping) != 480:
+    if len(actor) != len(trace) or len(trace) != len(mapping) or len(mapping) != 600:
         raise ValueError('Saved actor/trace/video frame counts differ')
     for index, (a, t, m) in enumerate(zip(actor, trace, mapping)):
         if (a.get('frame') != index or a.get('video_frame') != index or
@@ -130,7 +130,7 @@ def finalize(attempt, output):
                                  'cause_evidence': list(SOURCES)}],
               'setup_confirmed': False, 'behavior_attempted': False,
               'maneuver_completed': False,
-              'termination_reason': 'full diagnostic 480-frame saved window',
+              'termination_reason': 'full diagnostic 600-frame saved window',
               'physical_failure_flags': ['Original Native behavior and statutory sources unverified'],
               'trace_reference': 'trace.jsonl', 'video_references': list(VIDEOS),
               'video_frame_map_reference': 'video_frames.jsonl',

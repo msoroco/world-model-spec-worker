@@ -50,7 +50,7 @@ def save(path, value):
 
 def requested(case, policy):
     rows = []
-    for frame in range(480):
+    for frame in range(600):
         progress = min(1.0, max(0.0, (frame-policy['lateral_start_frame']) /
                                   policy['lateral_duration_frames']))
         smooth = progress*progress*(3-2*progress)
@@ -85,7 +85,7 @@ def build():
     source = json.loads(assignment.read_text())
     if source['cell_id'] != 'C422978' or source['law_id'] != 'NRS-484B-117-1' or source['actor'] != 'heavy_vehicle_driver':
         raise ValueError('Frozen heavy-vehicle assignment differs')
-    if 'sidewalk area' not in source['law_record']['text']:
+    if 'sidewalk area' not in source['law']['text']:
         raise ValueError('Frozen sidewalk statute differs')
     road = HERE / 'road.xodr'
     road.write_text(ROAD)
@@ -102,7 +102,7 @@ def build():
                 'case_id': AID + '__' + case, 'case_suffix': case,
                 'candidate_id': candidate, 'law_id': 'NRS-484B-117-1',
                 'cell_id': 'C422978', 'actor': 'heavy_vehicle_driver',
-                'rate_hz': 20, 'duration_s': 24, 'policy': policy,
+                'rate_hz': 20, 'duration_s': 30, 'policy': policy,
                 'road_sha256': sha(road), 'tracks_sha256': sha(tracks),
                 'assignment_sha256': sha(assignment), 'case_plan_sha256': sha(plan),
                 'status': 'unselected_native_request'})
@@ -112,7 +112,7 @@ def build():
                             'trigger': {
                                 'primary': 'baseline requested heavy-vehicle motion',
                                 'fallback1': 'saved original body first enters sidewalk later than frame 75',
-                                'fallback2': 'saved original full-body sidewalk occupancy below 360 frames',
+                                'fallback2': 'saved original full-body sidewalk occupancy below 450 frames',
                                 'fallback3': 'source-hashed original camera body visibility below 75 percent',
                             }[candidate]})
     manifest = {'format': 'c422978-heavy-sidewalk-native-request-v1',

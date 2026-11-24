@@ -17,7 +17,7 @@ def sha(path):
 
 def metrics(path):
     rows = [json.loads(line) for line in path.read_text().splitlines()]
-    if len(rows) != 480:
+    if len(rows) != 600:
         raise ValueError('Statutory audit saved row count differs')
     overlap, inside, lane = [], [], 0
     for index, row in enumerate(rows):
@@ -77,7 +77,7 @@ def audit():
         if pair not in cached:
             path = CASE/'native/saved-fixtures'/pair[0]/pair[1]/'native-observed.jsonl'
             cached[pair] = (sha(path),metrics(path))
-            source_rows += 480
+            source_rows += 600
         if (row['saved_actor_sha256'],row['synthetic_measurement']) != cached[pair]:
             raise ValueError('Statutory measurement differs from saved actor rows')
         exception = exception_index[pair]
@@ -85,7 +85,7 @@ def audit():
                 row['exception_packet_sha256'] != sha(CASE/'native/saved-fixtures'/pair[0]/pair[1]/'exception-evidence.json') or
                 exception['exception_applies'] is not None or exception['legal_verdict'] is not None):
             raise ValueError('Statutory exception packet differs')
-    if seen != expected or source_rows != 3840:
+    if seen != expected or source_rows != 4800:
         raise ValueError('Statutory topic cross product incomplete')
     result = {'format':'c422978-heavy-independent-statutory-audit-v1',
               'review_sha256':sha(review_path), 'topics':len(TOPICS),

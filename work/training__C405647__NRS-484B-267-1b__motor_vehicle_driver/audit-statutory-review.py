@@ -1,4 +1,4 @@
-"""Independent frozen-topic and 480-row saved-evidence audit."""
+"""Independent frozen-topic and 600-row saved-evidence audit."""
 import hashlib
 import json
 import sys
@@ -48,7 +48,7 @@ for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
     pair = next(x for x in comparison['pairs'] if x['candidate'] == candidate)
     for case in ('reference', 'contrast'):
         rows = packet(case, candidate)[1]
-        assert len(rows) == 480 and all(r['source_kind'] == 'synthetic_cpu' for r in rows)
+        assert len(rows) == 600 and all(r['source_kind'] == 'synthetic_cpu' for r in rows)
         edge = next((i for i, r in enumerate(rows)
                      if r['subject']['center_xy_m'][1] <= -5.95 and
                      min(v[1] for v in r['subject']['body_xy_m']) >= -7), None)
@@ -67,7 +67,7 @@ assert review['status'] == 'cpu_constructed_pending_original_and_legal_review'
 assert review['runnable_branch_claimed'] is False and review['legal_verdict_claimed'] is False
 audit = {'format': 'c405647-1b-independent-statutory-review-audit-v1',
          'review_sha256': sha(HERE / 'statutory-branch-review.json'),
-         'topic_count': 11, 'candidate_count': 8, 'saved_rows_recomputed': 3840,
+         'topic_count': 11, 'candidate_count': 8, 'saved_rows_recomputed': 4800,
          'negative_count': 16, 'runnable_branch_proven': False}
 (HERE / 'statutory-branch-audit.json').write_text(json.dumps(audit, indent=2) + '\n')
-print('independent statutory audit: 11 topics, 8 candidates, 3840 saved rows')
+print('independent statutory audit: 11 topics, 8 candidates, 4800 saved rows')

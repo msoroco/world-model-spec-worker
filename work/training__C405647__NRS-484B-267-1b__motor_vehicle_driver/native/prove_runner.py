@@ -26,7 +26,7 @@ def prove():
             if result.returncode:
                 raise ValueError('Runner preflight failed: ' + result.stderr)
             receipt = json.loads(result.stdout)
-            if (not receipt['passed'] or receipt['native_track_rows'] != 480 or
+            if (not receipt['passed'] or receipt['native_track_rows'] != 600 or
                 receipt['camera_count'] != 4 or receipt['carla_imported'] or
                 receipt['physical_success_claimed'] or receipt['original_pixels_seen']):
                 raise ValueError('Runner preflight claims physical evidence or lacks capture')

@@ -64,7 +64,7 @@ def audit():
             config = json.loads(files['config.json'])
             if (config['case_id'] != case_id or config['candidate_id'] != ref['id'] or
                 config['case_suffix'] != suffix or config['status'] != 'unselected_native_runner_prototype' or
-                (config['duration_s'], config['rate_hz']) != (24, 20) or
+                (config['duration_s'], config['rate_hz']) != (30, 20) or
                 config['source_packets'] != [] or config['physical_execution_or_legal_outcome_verified']):
                 raise ValueError('config identity or physical status differs')
             if set(config['required_atoms']) != {'rel.same_direction', 'rel.surface_gap',

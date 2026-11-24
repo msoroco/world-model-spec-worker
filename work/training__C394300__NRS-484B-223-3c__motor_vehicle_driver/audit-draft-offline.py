@@ -28,6 +28,11 @@ def main():
         contract=json.loads((FOLDER/entry['measurement_contract']).read_text())
         plan=json.loads((FOLDER/'case-plan.json').read_text())
         source=json.loads((FOLDER/entry['construction']).read_text())
+        config=json.loads(next(f['content'] for f in source['files'] if f['path']=='config.json'))
+        assert config['duration_s']==30 and config['rate_hz']==20
+        assert 'full 600 original frames' in source['termination_rules']
+        assert all(channel['time_window']=='entire original 30 s / 600 frame attempt'
+                   for channel in source['recording_description']['channels'])
         runner=next(f['content'] for f in source['files'] if f['path']=='runner.py')
         assert runner.index('frame=world.tick();time_s') < runner.index('observed_speed=observed_speed_mps(ego)')
         assert '"native_body_xy_m":body,"speed_mps":observed_speed' in runner

@@ -34,7 +34,7 @@ def fixed(row):
 
 
 def check_pair(reference, contrast):
-    if len(reference) != len(contrast) or len(reference) != 480:
+    if len(reference) != len(contrast) or len(reference) != 600:
         raise ValueError('Controlled frame count differs')
     for a, b in zip(reference, contrast):
         if fixed(a) != fixed(b):
@@ -71,7 +71,7 @@ def prove():
             assert analysis['case_id'] == entry['case_id']
             value = analysis['measurements']['right_edge_geometry']['value']
             assert value['actor_frames_sha256'] == rows_sha(rows)
-            assert value['source_kind'] == 'synthetic_cpu' and value['frames'] == 480
+            assert value['source_kind'] == 'synthetic_cpu' and value['frames'] == 600
             assert value['vehicle_authority_or_lamps_qualified'] is False
             assert value['legal_immediacy_or_edge_verdict'] is None
             assert analysis['physical_acceptance_claimed'] is False
@@ -88,7 +88,7 @@ def prove():
         assert measured['reference']['catchup_frame'] == measured['contrast']['catchup_frame']
         assert measured['reference']['stop_frame'] == measured['contrast']['stop_frame']
         result.append({'candidate': candidate, 'bindings': bindings, 'measured': measured,
-                       'fixed_rows': 480, 'changed_field': 'subject lateral position and body footprint'})
+                       'fixed_rows': 600, 'changed_field': 'subject lateral position and body footprint'})
         for name, mutation in (
             ('approach', lambda r: r[75]['approach']['center_xy_m'].__setitem__(0, 999.0)),
             ('speed', lambda r: r[75]['subject'].__setitem__('speed_mps', 99.0)),

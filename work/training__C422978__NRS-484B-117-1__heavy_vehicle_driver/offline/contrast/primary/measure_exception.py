@@ -47,7 +47,7 @@ def measure(folder, packet_path):
     electric_three_wheel=(values['solely_electric'] is True and values['designed_three_wheels'] is True)
     role=(values['authorized_emergency_vehicle'] is True and values['emergency_operation_at_event'] is True) or (values['law_enforcement_officer_or_employee'] is True and values['law_enforcement_official_duty_at_event'] is True) or (values['security_guard_under_definition'] is True and values['security_guard_official_duty_at_event'] is True)
     return {'format':'c422978-heavy-exception-measurement-v1',
-            'source_kind':saved['source_kind'],'frames':480,
+            'source_kind':saved['source_kind'],'frames':600,
             'reported_facts':values,
             'reported_exception_pattern':bool(electric_three_wheel and role),
             'review_status':'pending_independent_review','exception_applies':None,

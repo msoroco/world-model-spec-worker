@@ -56,7 +56,7 @@ def construction(case, candidate):
         config['native_requests_sha256'] != sha((folder / 'native-requests.jsonl').read_bytes())):
         raise ValueError('Exact CPU construction hash or identity differs')
     return {**config, 'case_suffix': case, 'camera_plan': _camera_plan(candidate),
-            'requested_track_rows': 480, 'duration_s': 24, 'rate_hz': 20}
+            'requested_track_rows': 600, 'duration_s': 30, 'rate_hz': 20}
 
 
 def _write_new(path, value):
@@ -74,7 +74,7 @@ def check(case, candidate):
         raise ValueError('Runner Native requests differ from exact saved construction')
     if sha(road().encode()) != plan['map_sha256']:
         raise ValueError('Runner road differs from exact saved construction')
-    assert len(tracks) == 480 and len(plan['camera_plan']) == 4
+    assert len(tracks) == 600 and len(plan['camera_plan']) == 4
     assert [camera['name'] for camera in plan['camera_plan']] == [
         'overview', 'front_lamp', 'right_edge', 'rear_approach']
     assert [(camera['width'], camera['height']) for camera in plan['camera_plan']] == [
@@ -283,7 +283,7 @@ def execute(case, candidate, output, host, port):
                                              'carla_frame': frame,
                                              'time_s': time_s}, allow_nan=False) + '\n')
                 frames += 1
-        if frames != 480:
+        if frames != 600:
             raise RuntimeError('Original Native frame count incomplete')
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
@@ -312,7 +312,7 @@ def execute(case, candidate, output, host, port):
                 error = error or {'restore_error': str(exc)}
         _write_new(output / 'native-capture-report.json', {
             'case_suffix': case, 'candidate_id': candidate, 'frames': frames,
-            'expected_frames': 480, 'restoration': restored, 'error': error,
+            'expected_frames': 600, 'restoration': restored, 'error': error,
             'accepted': False, 'front_red_lamp_qualified': False,
             'vehicle_authority_verified': False,
             'saved_processing_requires_original_pixel_annotation': True})

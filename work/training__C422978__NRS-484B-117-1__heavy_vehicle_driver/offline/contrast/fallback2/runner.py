@@ -45,7 +45,7 @@ def check(bundle, case, candidate):
     expected = {'case_id': AID+'__'+case, 'case_suffix': case,
                 'candidate_id': candidate, 'cell_id': 'C422978',
                 'law_id': 'NRS-484B-117-1', 'actor': 'heavy_vehicle_driver',
-                'rate_hz': 20, 'duration_s': 24,
+                'rate_hz': 20, 'duration_s': 30,
                 'status': 'unselected_native_request'}
     if any(config.get(key) != value for key, value in expected.items()):
         raise ValueError('Exact heavy-vehicle configuration differs')
@@ -63,7 +63,7 @@ def check(bundle, case, candidate):
     if lanes.get(1) != 'driving' or lanes.get(-1) != 'driving' or lanes.get(-2) != 'sidewalk':
         raise ValueError('Authored two-way road or sidewalk lane absent')
     rows = [json.loads(line) for line in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
-    if len(rows) != 480:
+    if len(rows) != 600:
         raise ValueError('Heavy-vehicle request frame count differs')
     for index, row in enumerate(rows):
         if (row['frame'] != index or abs(row['time_s']-index/20) > 1e-6 or
@@ -213,7 +213,7 @@ def execute(bundle, output, case, candidate, host, port):
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native-observed.jsonl').open('x') as observed, \
              (output/'video_frames.jsonl').open('x') as mapping_file:
-            for index in range(480):
+            for index in range(600):
                 target = requests[min(479, index+15)]['requested_center_xy_m']
                 command, command_record = control(carla, ego, (target[0], -target[1]),
                                                    wheelbase, max_steer)
@@ -246,7 +246,7 @@ def execute(bundle, output, case, candidate, host, port):
                     'native_frame': frame, 'carla_frame': frame,
                     'time_s': time_s}, allow_nan=False)+'\n')
                 frames += 1
-        if frames != 480:
+        if frames != 600:
             raise RuntimeError('Original Native frame count incomplete')
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
@@ -280,7 +280,7 @@ def execute(bundle, output, case, candidate, host, port):
         write_new(output/'native-capture-report.json', {
             'case_id': AID+'__'+case, 'candidate_id': candidate,
             'bundle_config_sha256': sha(Path(bundle)/'config.json'),
-            'requested_frames': 480, 'observed_frames': frames,
+            'requested_frames': 600, 'observed_frames': frames,
             'restoration': restored, 'error': error, 'accepted': False,
             'city_sidewalk_verified': False, 'legal_outcome_claimed': False})
     if error:

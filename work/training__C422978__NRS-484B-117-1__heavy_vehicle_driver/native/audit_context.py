@@ -52,7 +52,7 @@ def audit():
                 raise ValueError('Independent spatial row audit differs')
             for mutation in ('map_binding','singular_transform','false_authority','entrance_identity','survey_binding'):
                 if (case,candidate,mutation) not in negative:raise ValueError('Spatial negative missing')
-    if checked!=3840:raise ValueError('Spatial actor frame coverage differs')
+    if checked!=4800:raise ValueError('Spatial actor frame coverage differs')
     result={'format':'c422978-heavy-spatial-independent-audit-v1','positive_count':8,'negative_count':40,
             'rows_checked':checked,'proof_sha256':sha(HERE/'context-proof.json'),
             'original_city_authority_observed':False,'delivery_ready':False}

@@ -25,7 +25,7 @@ def audit():
     plan = read(HERE / 'case-plan.json')
     manifest = read(HERE / 'draft-execution-manifest.json')
     proof = read(HERE / 'exact-finalization-proof.json')
-    assert contract['format'] == 'worker-measurement-contract-v1'
+    assert contract['format'] == 'worker-measurement-contract'
     assert contract['negative'] == {
         'remove': ['actor-frames.jsonl'],
         'error_contains': 'Missing required source: actor-frames.jsonl'}

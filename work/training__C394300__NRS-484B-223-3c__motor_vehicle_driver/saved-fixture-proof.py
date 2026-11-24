@@ -1,4 +1,4 @@
-"""480-frame synthetic saved positives and source negatives for unselected 3(c)."""
+"""600-frame synthetic saved positives and source negatives for unselected 3(c)."""
 import hashlib
 import json
 import math
@@ -45,8 +45,8 @@ def make_base(destination,suffix,full_resolution=False):
     (destination/'context.json').write_text(json.dumps({'surveyed_center_turn_lane':geometry}))
     path=parameters(suffix,'primary')['native_route_xy_m']
     samples=[];trace=[];evidence=[];mapping=[];body_history=[];capture_frames=[]
-    for i in range(480):
-        station=i*(len(path)-1)/479
+    for i in range(600):
+        station=i*(len(path)-1)/599
         j=min(int(station),len(path)-2);fraction=station-j
         a,b=path[j],path[j+1]
         x=a[0]*(1-fraction)+b[0]*fraction
@@ -97,7 +97,7 @@ def make_base(destination,suffix,full_resolution=False):
     shutil.copyfile(road,destination/'road.xodr')
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
     (destination/'capture/manifest.json').write_text(json.dumps({
-        'extraction_confirmed':True,'frames':480,'required_observations':[],
+        'extraction_confirmed':True,'frames':600,'required_observations':[],
         'sources':{'road.xodr':sha(destination/'road.xodr'),
                    'trace.jsonl':sha(destination/'trace.jsonl')},
         'synthetic_diagnostic':True}))
@@ -119,8 +119,8 @@ def make_base(destination,suffix,full_resolution=False):
         name=camera['name']
         size=f'{camera["width"]}x{camera["height"]}' if full_resolution else '32x32'
         subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',
-            '-frames:v','480','-c:v','ffv1',str(destination/(name+'.mkv'))],
+            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=30',
+            '-frames:v','600','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=60)
 
 
@@ -160,8 +160,8 @@ def run():
                       'above_50_ft':'exceeds_50_feet'}[suffix]
             observed=report['measurements']['after_left_turn_distance_interval']['value']['threshold_relation']
             if observed!=expected:raise RuntimeError(f'Unexpected sampled interval: {suffix} {observed}')
-            if report['original_joins']['frames']!=480 or set(report['video_frames'].values())!={480}:
-                raise RuntimeError('Original 480-frame joins or video decode incomplete')
+            if report['original_joins']['frames']!=600 or set(report['video_frames'].values())!={600}:
+                raise RuntimeError('Original 600-frame joins or video decode incomplete')
             if (result['setup_confirmed'] or result['behavior_attempted'] or
                 result['maneuver_completed'] or result['provenance_kind']!='synthetic_local_diagnostic' or
                 report['acquisition_provenance']['native_executed'] or
@@ -179,7 +179,7 @@ def run():
                 if failed.returncode==0 or expected_error not in failed.stdout:
                     raise RuntimeError('Negative saved fixture not rejected: '+failed.stdout)
                 failures.append(expected_error)
-            records.append({'case_suffix':suffix,'case_id':result['case_id'],'frames':480,
+            records.append({'case_suffix':suffix,'case_id':result['case_id'],'frames':600,
                 'positive_exit_code':0,'negative_exit_codes':[1,1],
                 'negative_errors':failures,'threshold_relation':observed,
                 'distance_interval_m':report['measurements']['after_left_turn_distance_interval']['value']['distance_interval_m'],
@@ -188,7 +188,7 @@ def run():
                 'native_attempt_validator_passed':True,'rebuild_required':True,
                 'analysis_report_sha256':sha(positive/'analysis-report.json'),
                 'result_sha256':sha(positive/'result.json'),
-                'scope':'480-frame synthetic saved software diagnostic; no Native, Core/render or compatibility receipt'})
+                'scope':'600-frame synthetic saved software diagnostic; no Native, Core/render or compatibility receipt'})
     return records
 
 

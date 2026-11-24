@@ -41,7 +41,7 @@ def audit():
         capture = lines(folder/'capture/evidence.jsonl')
         survey = json.loads((folder/'native-map-readback.json').read_text())
         report = json.loads((folder/'native-capture-report.json').read_text())
-        if any(len(rows) != 480 for rows in (requested,actor,video,capture)):
+        if any(len(rows) != 600 for rows in (requested,actor,video,capture)):
             raise ValueError('Saved fixture frame count differs')
         if (survey['observed_body_width_m'] != 2.4 or
                 survey['city_location_verified'] or report['accepted'] or

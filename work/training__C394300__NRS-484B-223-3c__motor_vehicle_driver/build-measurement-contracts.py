@@ -23,7 +23,7 @@ def build():
             rows.append({'disposition_index':index,'requirement':source['requirement'],
                          'source':source['source'],'output_key':key,'method':method,
                          'value_type':'object','kind':kind,'inputs':inputs})
-        contract={'format':'worker-measurement-contract-v1','case_id':case_id,
+        contract={'format':'worker-measurement-contract','case_id':case_id,
                   'requirements':rows,
                   'negative':{'remove':['native_samples.jsonl'],
                               'error_contains':'Missing required source: native_samples.jsonl'}}

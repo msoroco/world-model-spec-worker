@@ -46,7 +46,7 @@ for pair in proof['pairs']:
     packets = {case: packet(case, candidate) for case in ('reference', 'contrast')}
     reference = packets['reference'][1]
     contrast = packets['contrast'][1]
-    assert len(reference) == len(contrast) == pair['fixed_rows'] == 480
+    assert len(reference) == len(contrast) == pair['fixed_rows'] == 600
     assert not rejected(reference, contrast)
     assert packets['reference'][0]['assignment_sha256'] == packets['contrast'][0]['assignment_sha256']
     assert packets['reference'][0]['source_kind'] == packets['contrast'][0]['source_kind'] == 'synthetic_cpu'

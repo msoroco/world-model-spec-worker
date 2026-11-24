@@ -66,7 +66,7 @@ def audit():
         if facts[0]!=facts[1]:
             raise ValueError('Controlled reported facts differ')
         ref, con = lines(ref_path),lines(con_path)
-        if len(ref)!=480 or len(con)!=480:
+        if len(ref)!=600 or len(con)!=600:
             raise ValueError('Controlled saved-source frame count differs')
         ref_hits, con_hits, con_inside = [], [], []
         ref_outside,con_outside=[],[]
@@ -100,7 +100,7 @@ def audit():
                     'reference_city_sidewalk_outside_entrance_frames':len(ref_outside),
                     'contrast_city_sidewalk_outside_entrance_frames':len(con_outside),
                     'reported_exception_pattern':False}
-        if pair['metric'] != expected or ref_hits or len(con_hits)<390 or ref_outside or len(con_outside)<300:
+        if pair['metric'] != expected or ref_hits or len(con_hits)<390 or ref_outside or len(con_outside)<375:
             raise ValueError('Controlled comparison metric differs')
     if seen != set(CANDIDATES) or {(n['candidate'],n['mutation']) for n in proof['negatives']} != {
             (candidate,mutation) for candidate in CANDIDATES for mutation in MUTATIONS} or \

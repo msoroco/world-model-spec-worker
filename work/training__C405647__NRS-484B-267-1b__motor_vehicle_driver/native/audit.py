@@ -25,7 +25,7 @@ def rows(path):
 
 
 def check_rows(authored, native, case):
-    if len(authored) != 480 or len(native) != 480:
+    if len(authored) != 600 or len(native) != 600:
         raise ValueError('wrong frame count')
     for frame, (a, n) in enumerate(zip(authored, native)):
         if a['frame'] != frame or n['frame'] != frame or a['time_s'] != frame / 20:

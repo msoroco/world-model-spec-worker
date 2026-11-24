@@ -8,7 +8,7 @@ from measure_camera import camera_packet
 
 HERE=Path(__file__).resolve().parent
 CASES=('reference','contrast')
-STATES={'clear':420,'low_visibility':300}
+STATES={'clear':525,'low_visibility':375}
 MUTATIONS=('native_join','review_provenance','box_bounds','source_hash')
 
 
@@ -50,7 +50,7 @@ def audit():
         annotations=lines(review)
         actors=lines(saved/'native-observed.jsonl')
         mapping=lines(saved/'video_frames.jsonl')
-        if len(annotations)!=480 or len(actors)!=480 or len(mapping)!=480:
+        if len(annotations)!=600 or len(actors)!=600 or len(mapping)!=600:
             raise ValueError('Camera fixture rows differ')
         visible=0
         for index,(row,actor,frame) in enumerate(zip(annotations,actors,mapping)):
@@ -69,14 +69,14 @@ def audit():
             rows_recomputed+=1
         packet=positive['packet']
         if (visible!=STATES[state] or packet['visible_frames']!=visible or
-                packet['visible_fraction']!=visible/480 or
+                packet['visible_fraction']!=visible/600 or
                 packet['source_hashes']!={'review_sha256':sha(review),'video_sha256':sha(video),
                                            'actor_sha256':sha(saved/'native-observed.jsonl'),
                                            'video_mapping_sha256':sha(saved/'video_frames.jsonl')} or
                 packet!=camera_packet(saved,review,video,packet['source_hashes']) or
-                positive['fallback3_triggered']!=(visible<360)):
+                positive['fallback3_triggered']!=(visible<450)):
             raise ValueError('Camera packet or fallback3 threshold differs')
-        with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        with tempfile.TemporaryDirectory() as temporary:
             altered=Path(temporary)/'review.jsonl'
             for mutation in MUTATIONS:
                 changed=[dict(row) for row in annotations]
