@@ -115,6 +115,40 @@ def measure_approach(attempt):
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
 
 
+def rebuild_channels(attempt, description):
+    """Derive disposable channel projections from the retained original rows."""
+    source = rows(attempt / 'native_samples.jsonl')
+    mapping = rows(attempt / 'video_frames.jsonl')
+    geometry = json.loads((attempt / 'road_geometry.json').read_text())
+    folder = attempt / 'channels'
+    folder.mkdir(exist_ok=True)
+    for channel in description['channels']:
+        name = channel['name']
+        target = folder / (name + '.jsonl')
+        if target.exists():
+            continue
+        values = []
+        for index, sample in enumerate(source):
+            if name == 'drv.turning':
+                value = {'authored_intent': 'left turn', 'observed_forward': sample['native_forward_xy']}
+            elif name in ('st.intersection', 'st.lane_enters', 'st.one_way_roadway', 'st.lane_direction'):
+                value = geometry
+            elif name == 'st.centre_line':
+                value = geometry['approach_centerline_point_native_m']
+            elif name == 'rel.occupies':
+                value = sample['native_body_xy_m']
+            elif name == 'kin.position':
+                value = sample['native_center_xy_m']
+            elif name == 'native_body_pose_control':
+                value = sample
+            elif name == 'camera_frame_join':
+                value = mapping[index]
+            else:
+                raise ValueError('Unknown recorded channel: ' + name)
+            values.append({'time_s': sample['time_s'], 'value': value})
+        target.write_text(''.join(json.dumps(row, allow_nan=False) + '\n' for row in values))
+
+
 def finalize(attempt,output):
     from worker_exchange.native_output import validate_result
     attempt=Path(attempt).resolve();output=Path(output).resolve()
@@ -135,6 +169,7 @@ def finalize(attempt,output):
     actual=measured['value'];requested={'controlled_1':1.75,'controlled_2':5.25}[config['case_suffix']]
     mean=actual['sampled_right_offset_m']['mean'];matched=abs(mean-requested)<=.35
     description=config['recording_description']
+    rebuild_channels(attempt, description)
     recording_evidence=[]
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'

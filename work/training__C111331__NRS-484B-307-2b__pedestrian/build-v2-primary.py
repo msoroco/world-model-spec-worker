@@ -136,7 +136,7 @@ def main():
     plan = json.loads((HERE / 'case-plan.json').read_text())
     proposal = next(item for item in plan['cases'] if item['case_id'] == config['case_id'])
     (proposal_dir / 'cases.json').write_text(json.dumps({'cases': [proposal]}, indent=2) + '\n')
-    runtime_sha = sha(ROOT / 'runtime/pipeline/SOURCE-MANIFEST.json')
+    runtime_sha = sha(ROOT / 'runtime/SOURCE-MANIFEST.json')
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': HERE.name,
         'runtime_manifest_sha256': runtime_sha,
         'status': 'unselected_current_v2_cpu_primary_proof',

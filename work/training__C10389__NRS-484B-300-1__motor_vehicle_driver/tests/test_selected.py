@@ -26,7 +26,7 @@ def main():
     manifest = execution(ROOT, aid)
     assignment = read(ROOT / 'inputs' / aid / 'assignment.json')
     stages = semantic(HERE, assignment, manifest)
-    assert stages['selected_cases'] == 2 and stages['stage_count'] == 8
+    assert stages['selected_cases'] == 12 and stages['stage_count'] == 8
     assert check_receipts(ROOT, HERE, manifest)
     for entry in manifest['cases']:
         assert validate_case(HERE, entry, assignment['selection_targets'])['case_id'] == entry['case_id']
@@ -35,15 +35,23 @@ def main():
         assert receipt['original_native_observed'] is False
         assert {f['kind'] for f in receipt['fixtures']} == {
             'complete_motion', 'incomplete_motion', 'missing_evidence'}
-        diagnostic = read(HERE / 'delivery-proofs' / probe / 'diagnostic.json')
+        diagnostic_path = (HERE / 'delivery-proofs' / probe / 'diagnostic.json') if probe.startswith('probe_') else (HERE / 'delivery-proof' / probe / 'primary-diagnostic.json')
+        diagnostic = read(diagnostic_path)
         assert diagnostic['accepted'] is False and diagnostic['diagnostic_only'] is True
     comparison = read(HERE / 'comparison-proof/diagnostic.json')
     assert comparison['accepted'] is False and len(comparison['case_ids']) == 2
-    print(json.dumps({'assignment_id': aid, 'selected_cases': 2,
-                      'candidate_constructions': 6, 'semantic_stages': 8,
+    branch_comparison = read(HERE / 'cases/branch-requests/branch-comparison-proof.json')
+    assert len(branch_comparison['comparisons']) == 3
+    applicability = read(HERE / 'cases/branch-requests/signal-law-applicability.json')
+    assert applicability['authored_source']['junction_count'] == 0
+    assert 'not established' in applicability['disposition']
+    placement = read(HERE / 'cases/branch-requests/placement-pair-proof.json')
+    assert placement['official_placement_verified'] is False
+    print(json.dumps({'assignment_id': aid, 'selected_cases': 12,
+                      'candidate_constructions': 26, 'semantic_stages': 8,
                       'package_receipts_validated': True,
-                      'independent_delivery_contracts': 2,
-                      'physical_synthetic_fixture_suites': 2,
+                      'independent_delivery_contracts': 12,
+                      'physical_synthetic_fixture_suites': 12,
                       'comparison_diagnostic': True,
                       'original_native_observed': False,
                       'delivery_ready_claimed': False}))

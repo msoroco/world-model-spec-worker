@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -47,6 +48,9 @@ def build(suffix):
         x, y = n['native_center_xy_m']
         t['position_m'] = [x, y, 0.5]
         t['speed_mph'] = t['speed_mps'] / 0.44704
+        heading = math.radians(t['heading_deg'])
+        t['velocity_mps'] = [t['speed_mps'] * math.cos(heading),
+                             t['speed_mps'] * math.sin(heading), 0.0]
         t['control'] = {'throttle': 0, 'brake': 0, 'hand_brake': False}
         e.update(replay_frame=frame, replay_simulation_time_s=time, actor_id=107)
         e['ego'].update(position_m=[x, y, 0.5], heading_deg=t['heading_deg'],
@@ -69,8 +73,9 @@ def build(suffix):
                                                             'threedbbox': box}}],
                        'edges': []})
         frames.append({'frame': frame, 'simulation_time': time, 'time_s': time,
-                       'base': f'graphs/base/{name}.pkl',
+                       'base': f'graphs/base/{name}.adapter.json',
                        'abstract': f'graphs/abstract/{name}.pkl',
+                       'adapter_graph': f'graphs/base/{name}.adapter.json',
                        'synthetic_diagnostic': True})
     assert len(trace) == len(evidence) == len(native) == len(frames) == 480
     write_rows(source / 'trace.jsonl', trace)
@@ -88,7 +93,8 @@ def build(suffix):
     destination.mkdir(parents=True, exist_ok=True)
     files = []
     for path in sorted(source.rglob('*')):
-        if not path.is_file() or path.suffix == '.mkv' or path.name == 'config.json':
+        if (not path.is_file() or path.suffix == '.mkv' or path.name == 'config.json'
+                or 'channels' in path.relative_to(source).parts):
             continue
         relative = path.relative_to(source)
         target = destination / relative

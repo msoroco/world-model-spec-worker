@@ -352,6 +352,1986 @@
         "test_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/current-v3-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__probe_2 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-v3-current-compat/probe_2-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-v3-current-saved/probe_2-primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-active-decoder/.lake/build/bin/adapterCheck",
         "feedback_test_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/current-v3-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__probe_2 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-v3-missing-source/probe_2-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-v3-missing-source-saved/probe_2-primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-active-decoder/.lake/build/bin/adapterCheck"
       }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/signal_red_stop/construction.json",
+      "construction_sha256": "c6b20ea19d6f324f68e4020dbdd5233b20a727c1f53fb2ecb073fc3ea9b0e00a",
+      "measurement_contract": "cases/branch-requests/signal_red_stop/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/signal_red_stop/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/signal_red_stop-fallback1/construction.json",
+          "construction_sha256": "3af2105bf9ea29e2f09f5f782777ce37974ebe1c24a1fc348379f449785f7aea",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/signal_red_stop-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "3af2105bf9ea29e2f09f5f782777ce37974ebe1c24a1fc348379f449785f7aea",
+            "log": "cases/branch-requests/signal_red_stop-fallback1/offline.log",
+            "log_sha256": "bd6910d18b4217083ff8ca0c91e4ada33926cb1a9768a19e733229185ffeae02"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/signal_red_stop-fallback1/compatibility.json",
+            "sha256": "998442c74bbec8cb29cce70f207a00e5ea31a14c9a6b3ad0351e07af9ab4c236",
+            "log": "cases/branch-requests/current-proof-grid/signal_red_stop-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/signal_red_stop-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/signal_red_stop-fallback1/processing.json",
+            "processing_sha256": "a60d40cef41bed13c9562dccff6d2507d78eb744198624fb2a0a544ddab0dff8",
+            "log": "cases/branch-requests/current-proof-grid/signal_red_stop-fallback1/saved-analysis.log",
+            "log_sha256": "b3601916442b74f6adaef9401e978572d61b1c156608f6d30287b0d1fbdc8559",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "3af2105bf9ea29e2f09f5f782777ce37974ebe1c24a1fc348379f449785f7aea"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop --candidate primary --output .runtime-work/c10389-branch-offline-v3/signal_red_stop-primary",
+        "exit_code": 0,
+        "construction_sha256": "c6b20ea19d6f324f68e4020dbdd5233b20a727c1f53fb2ecb073fc3ea9b0e00a",
+        "log": "cases/branch-requests/signal_red_stop/offline.log",
+        "log_sha256": "6a165aa65e12c9ab9226b0b88a82cc3f4d53efdca0b013acacceeb274bab0114"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/compatibility.json",
+        "sha256": "4584bdf42a25ffae9460283550a47e0eab042c0df7511ffaf37ed0164ee5730f",
+        "log": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/processing.json",
+        "processing_sha256": "6ffc219c2d73a70c36e2b7c6d04000af656ab88b2ba146434a6f0d4345f3c86f",
+        "log": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/saved-analysis.log",
+        "log_sha256": "b3601916442b74f6adaef9401e978572d61b1c156608f6d30287b0d1fbdc8559",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "c6b20ea19d6f324f68e4020dbdd5233b20a727c1f53fb2ecb073fc3ea9b0e00a"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/signal_red_stop/proof.json",
+        "sha256": "b992b4848bba384b35237cc569883e71dc1e97de10d9ab27d7379fbaa5e028b9"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/negative-analysis.log",
+        "log_sha256": "508a6d1cc9e5d94dfdda87cbd762a6e6341ef8d608162e8ea8c283796c36b738"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_red_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_red_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_red_stop/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_red_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_red_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_red_stop/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/signal_red_stop/primary-positive.log",
+        "test_log_sha256": "fd9a8d8dd18a45ae1ad8aba97b0e670b58bbf70f1f1eb32e7e630090e3f956ee",
+        "negative_log": "delivery-proof/signal_red_stop/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/signal_red_stop/primary-diagnostic.json",
+        "diagnostic_result_sha256": "6e94cf9c46b6087eb8d9e257e91d0ac00674f5353dbba7da02db06216f715a6f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/signal_red_stop-primary/processing.json",
+        "test_log_sha256": "6ffc219c2d73a70c36e2b7c6d04000af656ab88b2ba146434a6f0d4345f3c86f",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/signal_red_proceed/construction.json",
+      "construction_sha256": "a4c9d7abf8e22291cc2062ac4fb088302ff46b4311f32582fea8ec980805ab39",
+      "measurement_contract": "cases/branch-requests/signal_red_proceed/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/signal_red_proceed/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/signal_red_proceed-fallback1/construction.json",
+          "construction_sha256": "6c3b2a801c6ee48e8518dde3601730dfcad811ccbc2062a9400435951fc2034c",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/signal_red_proceed-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6c3b2a801c6ee48e8518dde3601730dfcad811ccbc2062a9400435951fc2034c",
+            "log": "cases/branch-requests/signal_red_proceed-fallback1/offline.log",
+            "log_sha256": "8510b00e1cfe5e19a2fe4ea7f784d480265829c1e633d677ff5db99a03a0faad"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/signal_red_proceed-fallback1/compatibility.json",
+            "sha256": "b62c11147a3c7370dc08afd1a7daeb31d039919eda9e37f5003eab848df7271b",
+            "log": "cases/branch-requests/current-proof-grid/signal_red_proceed-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/signal_red_proceed-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/signal_red_proceed-fallback1/processing.json",
+            "processing_sha256": "01ec1c1882b0665a0b05c0fc1139c095a5dbe9e8b70532315c044030a09db4a7",
+            "log": "cases/branch-requests/current-proof-grid/signal_red_proceed-fallback1/saved-analysis.log",
+            "log_sha256": "c6fc8cc2843084122b8d9ae214bac2f297078d9ac9b08136a6c6bd2227561db1",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "6c3b2a801c6ee48e8518dde3601730dfcad811ccbc2062a9400435951fc2034c"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed --candidate primary --output .runtime-work/c10389-branch-offline-v3/signal_red_proceed-primary",
+        "exit_code": 0,
+        "construction_sha256": "a4c9d7abf8e22291cc2062ac4fb088302ff46b4311f32582fea8ec980805ab39",
+        "log": "cases/branch-requests/signal_red_proceed/offline.log",
+        "log_sha256": "bdd69483ab418965063841c98b0b433eba44d64644b8a50971afb28d89c46db2"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/compatibility.json",
+        "sha256": "dbff4029145646ab00fde8d6ace4617e1e692346e224698eb14335625c0849f1",
+        "log": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/processing.json",
+        "processing_sha256": "6db91c3bff3e88c7764780802f6e21366e62c08d0a1d1071f0456f52aa69ace2",
+        "log": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/saved-analysis.log",
+        "log_sha256": "c6fc8cc2843084122b8d9ae214bac2f297078d9ac9b08136a6c6bd2227561db1",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "a4c9d7abf8e22291cc2062ac4fb088302ff46b4311f32582fea8ec980805ab39"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/signal_red_proceed/proof.json",
+        "sha256": "437dd0b45a3a2dd0059ba479931bcda92397c867c808a027942b1a3a6582ca2d"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/negative-analysis.log",
+        "log_sha256": "c883d7205138676222b57af6b9ba3870e1b8555658303fa4e294c91bb3b69d52"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_red_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_red_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_red_proceed/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_red_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_red_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_red_proceed/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/signal_red_proceed/primary-positive.log",
+        "test_log_sha256": "5d831e4eb896450078859a537e10c24358d9569461e75173b7deac267ec35cd1",
+        "negative_log": "delivery-proof/signal_red_proceed/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/signal_red_proceed/primary-diagnostic.json",
+        "diagnostic_result_sha256": "a88a7f80219a69a5af08254aa532616a14051b773f60c916156bdd1ceca8d5be"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_red_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/signal_red_proceed-primary/processing.json",
+        "test_log_sha256": "6db91c3bff3e88c7764780802f6e21366e62c08d0a1d1071f0456f52aa69ace2",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/signal_green_stop/construction.json",
+      "construction_sha256": "38d4e794fc1892bccdac497e2372ad3d542dff5af2d3a88f4db4bdf234112908",
+      "measurement_contract": "cases/branch-requests/signal_green_stop/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/signal_green_stop/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/signal_green_stop-fallback1/construction.json",
+          "construction_sha256": "61f6f9e914553ad49387dcd0398d01e3ba9639d8a5e7e7849b976463dd316310",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/signal_green_stop-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "61f6f9e914553ad49387dcd0398d01e3ba9639d8a5e7e7849b976463dd316310",
+            "log": "cases/branch-requests/signal_green_stop-fallback1/offline.log",
+            "log_sha256": "10c0e5b60c05e4f658c919eb4f052d9db626058568c8d016f96a48cc4c778aa3"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/signal_green_stop-fallback1/compatibility.json",
+            "sha256": "442173f7ca6fb33ec3ae5eea694a9c23b86548d9ef21b83336e11e1412b148a0",
+            "log": "cases/branch-requests/current-proof-grid/signal_green_stop-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/signal_green_stop-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/signal_green_stop-fallback1/processing.json",
+            "processing_sha256": "1486c3d9a483a62ce3f4bed227e50eb11cecd2dfd4558416654f43a2552c3dbb",
+            "log": "cases/branch-requests/current-proof-grid/signal_green_stop-fallback1/saved-analysis.log",
+            "log_sha256": "50fc3efd6b0b28312d549977971f1ccb28f70a76091c3a2c5ff0bf8dda3877af",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "61f6f9e914553ad49387dcd0398d01e3ba9639d8a5e7e7849b976463dd316310"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop --candidate primary --output .runtime-work/c10389-branch-offline-v3/signal_green_stop-primary",
+        "exit_code": 0,
+        "construction_sha256": "38d4e794fc1892bccdac497e2372ad3d542dff5af2d3a88f4db4bdf234112908",
+        "log": "cases/branch-requests/signal_green_stop/offline.log",
+        "log_sha256": "a69bd1c446b97f4a4697ae56afcc60412fe9cf1bac4f87b0a6ce9f929a832ea8"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/compatibility.json",
+        "sha256": "f5447ce684c1cd2895d5849d3faac4ef3dccda7fce8fa32df7a5a5a722fe6672",
+        "log": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/processing.json",
+        "processing_sha256": "ba34d177c9f0e664aa508ec7f975813c96a6c0243f888f001116ba4234695987",
+        "log": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/saved-analysis.log",
+        "log_sha256": "50fc3efd6b0b28312d549977971f1ccb28f70a76091c3a2c5ff0bf8dda3877af",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "38d4e794fc1892bccdac497e2372ad3d542dff5af2d3a88f4db4bdf234112908"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/signal_green_stop/proof.json",
+        "sha256": "1b27bfb9a9cbdfa2f6c63982d9ae0ca1332f1ce722203d9c4e37ffa4328e1301"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/negative-analysis.log",
+        "log_sha256": "67b359efdbf9929242a86048ce5ea91d2a8aa17f409891f839870004510721e7"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_green_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_green_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_green_stop/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_green_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_green_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_green_stop/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/signal_green_stop/primary-positive.log",
+        "test_log_sha256": "ae8884adcc35f25cc67ccc4217b389a6d432ff6b1f2427b6774499167b3a1775",
+        "negative_log": "delivery-proof/signal_green_stop/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/signal_green_stop/primary-diagnostic.json",
+        "diagnostic_result_sha256": "b4a58794194e241f1d97bd7ab30874fb3b3e01bd4cb63da2d27336bb4a6a5b7d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/signal_green_stop-primary/processing.json",
+        "test_log_sha256": "ba34d177c9f0e664aa508ec7f975813c96a6c0243f888f001116ba4234695987",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/signal_green_proceed/construction.json",
+      "construction_sha256": "14cd1e1d456c428047c2acc9a06e0ef484a07f4c6d651330c9a13b09bf647ff6",
+      "measurement_contract": "cases/branch-requests/signal_green_proceed/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/signal_green_proceed/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/signal_green_proceed-fallback1/construction.json",
+          "construction_sha256": "0a9ee5981387957f934ad6c74db69d165d3a1c1d0ee7e66f38164c4d5b93a010",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/signal_green_proceed-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "0a9ee5981387957f934ad6c74db69d165d3a1c1d0ee7e66f38164c4d5b93a010",
+            "log": "cases/branch-requests/signal_green_proceed-fallback1/offline.log",
+            "log_sha256": "fca8103d40de1530d8b00a8740d48e7984d01f93ad012025ad6ab5b824593e1d"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/signal_green_proceed-fallback1/compatibility.json",
+            "sha256": "704719c3bad2be857d12abb727596fa12035d8919d7c779a50059d584abcaf82",
+            "log": "cases/branch-requests/current-proof-grid/signal_green_proceed-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/signal_green_proceed-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/signal_green_proceed-fallback1/processing.json",
+            "processing_sha256": "9faa728b82182e57cab7551d724113ca1ddf37b30a45fb667e2d2ad713ea958c",
+            "log": "cases/branch-requests/current-proof-grid/signal_green_proceed-fallback1/saved-analysis.log",
+            "log_sha256": "d64510786bac7d9813b2be98443222ea3251b088483bde06d2037c4d05e15c79",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "0a9ee5981387957f934ad6c74db69d165d3a1c1d0ee7e66f38164c4d5b93a010"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed --candidate primary --output .runtime-work/c10389-branch-offline-v3/signal_green_proceed-primary",
+        "exit_code": 0,
+        "construction_sha256": "14cd1e1d456c428047c2acc9a06e0ef484a07f4c6d651330c9a13b09bf647ff6",
+        "log": "cases/branch-requests/signal_green_proceed/offline.log",
+        "log_sha256": "9256cdd5ae3c4d2c9a09fda8864c03b1889672a004af79790aa523393ef2e2bc"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/compatibility.json",
+        "sha256": "6e3c5f76582550c4be90982cabf2d6d94f064f7dffff430155525c9ee0cc2072",
+        "log": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/processing.json",
+        "processing_sha256": "9eb7ab86c868b5223b1b6a69a553d10277ca1324ad2e2be05997854241502607",
+        "log": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/saved-analysis.log",
+        "log_sha256": "d64510786bac7d9813b2be98443222ea3251b088483bde06d2037c4d05e15c79",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "14cd1e1d456c428047c2acc9a06e0ef484a07f4c6d651330c9a13b09bf647ff6"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/signal_green_proceed/proof.json",
+        "sha256": "de4e2d02d59a48d63629ccdc24df5dd23dfd9fa569c3f431b2dd6111d01bc113"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/negative-analysis.log",
+        "log_sha256": "d22c53e386d98e95f9cc89b91959415b27f6b62c834a7f6c172f3c1b51428b97"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_green_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_green_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_green_proceed/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/signal_green_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/signal_green_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/signal_green_proceed/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/signal_green_proceed/primary-positive.log",
+        "test_log_sha256": "827720b292bbb1f226ddb911fd8fe0c412d69d2730ba3a1ac24f2f813c0d4328",
+        "negative_log": "delivery-proof/signal_green_proceed/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/signal_green_proceed/primary-diagnostic.json",
+        "diagnostic_result_sha256": "e68ca867cc1d494b8724d456a27ab4ab1db98d1425fd9af500b73e748d670e15"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__signal_green_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/signal_green_proceed-primary/processing.json",
+        "test_log_sha256": "9eb7ab86c868b5223b1b6a69a553d10277ca1324ad2e2be05997854241502607",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/officer_no_direction_stop/construction.json",
+      "construction_sha256": "e74bf3d0d5ee4d5bc18127b91b5f6a1abd2f4bb9e00189adc3d0b8243b849344",
+      "measurement_contract": "cases/branch-requests/officer_no_direction_stop/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/officer_no_direction_stop/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/officer_no_direction_stop-fallback1/construction.json",
+          "construction_sha256": "9299902498b9891c088e76367ddb447683be371165041ac3f8f51ab9c3d2ac7a",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/officer_no_direction_stop-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "9299902498b9891c088e76367ddb447683be371165041ac3f8f51ab9c3d2ac7a",
+            "log": "cases/branch-requests/officer_no_direction_stop-fallback1/offline.log",
+            "log_sha256": "d729f1774b6a3612c3cbf5f3c3ec4f3673998175d3dbc12036d7edb2c99b18df"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-fallback1/compatibility.json",
+            "sha256": "a71dcd97a85648b87266a610381b453ebcfa49656fcbe599aca294f870187f11",
+            "log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-fallback1/processing.json",
+            "processing_sha256": "b2d6e73c4f9b5fdd5fc9d154c34acdc112c8c8547241d561dbf3af88174e3b61",
+            "log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-fallback1/saved-analysis.log",
+            "log_sha256": "13f807ed996396fda32407beaaea98885efc61eba9b578842cc2089787455c48",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "9299902498b9891c088e76367ddb447683be371165041ac3f8f51ab9c3d2ac7a"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop --candidate primary --output .runtime-work/c10389-branch-offline-v3/officer_no_direction_stop-primary",
+        "exit_code": 0,
+        "construction_sha256": "e74bf3d0d5ee4d5bc18127b91b5f6a1abd2f4bb9e00189adc3d0b8243b849344",
+        "log": "cases/branch-requests/officer_no_direction_stop/offline.log",
+        "log_sha256": "7dfdd3b265f2a65ca6816d146432f7326f9b4d5803886cb95c0ca2e9b4554f88"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/compatibility.json",
+        "sha256": "23dcdcedb0b6c4b3460ac09dae88c2405dbe2b3e74e6bac62515501ecac09533",
+        "log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/processing.json",
+        "processing_sha256": "91b9b03ba2447bb71339c1a6fccd0a3ed475b795dc24008699dde49820cb1280",
+        "log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/saved-analysis.log",
+        "log_sha256": "13f807ed996396fda32407beaaea98885efc61eba9b578842cc2089787455c48",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "e74bf3d0d5ee4d5bc18127b91b5f6a1abd2f4bb9e00189adc3d0b8243b849344"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_no_direction_stop/proof.json",
+        "sha256": "e66124d48d88ca696aa7651abe46d75b9f755e3cc68f8500dcdda54d32b9e5c5"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/negative-analysis.log",
+        "log_sha256": "e5e398776c8e334774fc827a9aaf514adbe332d61a86eb0a3b9036b6274f31ff"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_no_direction_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_no_direction_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_no_direction_stop/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_no_direction_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_no_direction_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_no_direction_stop/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/officer_no_direction_stop/primary-positive.log",
+        "test_log_sha256": "b1bd7e2a7949ddd7ba9b40fe15f57eabe0f8b66bb38b11a55ef896af96635d95",
+        "negative_log": "delivery-proof/officer_no_direction_stop/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/officer_no_direction_stop/primary-diagnostic.json",
+        "diagnostic_result_sha256": "25c1f5d0de67346e2d2476937d17872757de68b6eccf5ef2f2e662c7ac307e31"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/officer_no_direction_stop-primary/processing.json",
+        "test_log_sha256": "91b9b03ba2447bb71339c1a6fccd0a3ed475b795dc24008699dde49820cb1280",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/officer_no_direction_proceed/construction.json",
+      "construction_sha256": "2fb47b150d6326636fa41bb0bfc4904ee3bc1417d2b45f1ca4cf5b3e77de0108",
+      "measurement_contract": "cases/branch-requests/officer_no_direction_proceed/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/officer_no_direction_proceed/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/officer_no_direction_proceed-fallback1/construction.json",
+          "construction_sha256": "39830c32c118b5b123f01b02748b4378e2120ca5e8c92a1d57b0d3cf040413c0",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/officer_no_direction_proceed-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "39830c32c118b5b123f01b02748b4378e2120ca5e8c92a1d57b0d3cf040413c0",
+            "log": "cases/branch-requests/officer_no_direction_proceed-fallback1/offline.log",
+            "log_sha256": "9fb719ed5ee13692c226614f7e028782f1daf3d7dec140a5ab6bfa84ce9091d0"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-fallback1/compatibility.json",
+            "sha256": "a0dcbda51b494f19d9fcae8c562082468bd557c327e9ead366daf8adbe44fb95",
+            "log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-fallback1/processing.json",
+            "processing_sha256": "2d6ff1c306c65ffe38bedf2c8068beeb2d9a6b512101777fd7c7e45688eea1b7",
+            "log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-fallback1/saved-analysis.log",
+            "log_sha256": "ae8dcff466390b7e010a86b9042f6c5c93ff2a7874cdd3d65ac27e84aa7bbf1c",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "39830c32c118b5b123f01b02748b4378e2120ca5e8c92a1d57b0d3cf040413c0"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed --candidate primary --output .runtime-work/c10389-branch-offline-v3/officer_no_direction_proceed-primary",
+        "exit_code": 0,
+        "construction_sha256": "2fb47b150d6326636fa41bb0bfc4904ee3bc1417d2b45f1ca4cf5b3e77de0108",
+        "log": "cases/branch-requests/officer_no_direction_proceed/offline.log",
+        "log_sha256": "71c9ca681629d5e2612aec12393740a4a9cb1ddbd48363200d1bea541d65fd06"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/compatibility.json",
+        "sha256": "c2c908a2fddd9e8770f44ca69c1a40946184b020993c09b68ae30396091c17df",
+        "log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/processing.json",
+        "processing_sha256": "bcc4a2d1a1e38216c59af698cf728f26aaad1aa085dd5c01f3fd0f932d9001e9",
+        "log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/saved-analysis.log",
+        "log_sha256": "ae8dcff466390b7e010a86b9042f6c5c93ff2a7874cdd3d65ac27e84aa7bbf1c",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "2fb47b150d6326636fa41bb0bfc4904ee3bc1417d2b45f1ca4cf5b3e77de0108"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_no_direction_proceed/proof.json",
+        "sha256": "0b26cb512832d23b9c42423b594377a21db2c34fd2461275f964837e98e5aab1"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/negative-analysis.log",
+        "log_sha256": "58e6a9fa5ed27e73fadbee04e917bd353a9a667cbf968a8739c81fdf3ccb9e67"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_no_direction_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_no_direction_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_no_direction_proceed/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_no_direction_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_no_direction_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_no_direction_proceed/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/officer_no_direction_proceed/primary-positive.log",
+        "test_log_sha256": "1f86fd2329986734cbe0aac986d829089b331fa564794e12be53882d6d53a6a9",
+        "negative_log": "delivery-proof/officer_no_direction_proceed/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/officer_no_direction_proceed/primary-diagnostic.json",
+        "diagnostic_result_sha256": "7b335079a0cd5a1deea283427a62509b0c897f27c9ead1dd8645d9681d7e6128"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_no_direction_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/officer_no_direction_proceed-primary/processing.json",
+        "test_log_sha256": "bcc4a2d1a1e38216c59af698cf728f26aaad1aa085dd5c01f3fd0f932d9001e9",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/officer_directed_stop/construction.json",
+      "construction_sha256": "2d08fdc5ddf3178bf71b6ab78f5ae915dabaae48a907ea65ecb972a5c4e46970",
+      "measurement_contract": "cases/branch-requests/officer_directed_stop/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/officer_directed_stop/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/officer_directed_stop-fallback1/construction.json",
+          "construction_sha256": "8c3ee8940b2148d9c3bd451fff26b28301228b8d776164aaeee9e8f44e6aed00",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/officer_directed_stop-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "8c3ee8940b2148d9c3bd451fff26b28301228b8d776164aaeee9e8f44e6aed00",
+            "log": "cases/branch-requests/officer_directed_stop-fallback1/offline.log",
+            "log_sha256": "43aeb07443ceda9418631edd6702b39c9b6211ffd04d58f2e8662255645e2404"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/officer_directed_stop-fallback1/compatibility.json",
+            "sha256": "602f89a8fb093143432c0e67590afc612ba98c99d9a09b2b45513c3cecbe4df6",
+            "log": "cases/branch-requests/current-proof-grid/officer_directed_stop-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/officer_directed_stop-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/officer_directed_stop-fallback1/processing.json",
+            "processing_sha256": "974d2ac0d5f92bd74367b26b47e04e453939e88bb465eee331e2dfe662170235",
+            "log": "cases/branch-requests/current-proof-grid/officer_directed_stop-fallback1/saved-analysis.log",
+            "log_sha256": "db10edd77ef2b3b39a54f8934a94d5cadbe91c48f56191bbf987cd13e4f71c50",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "8c3ee8940b2148d9c3bd451fff26b28301228b8d776164aaeee9e8f44e6aed00"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop --candidate primary --output .runtime-work/c10389-branch-offline-v3/officer_directed_stop-primary",
+        "exit_code": 0,
+        "construction_sha256": "2d08fdc5ddf3178bf71b6ab78f5ae915dabaae48a907ea65ecb972a5c4e46970",
+        "log": "cases/branch-requests/officer_directed_stop/offline.log",
+        "log_sha256": "8ff0afbe948720f16bf44e0913b654c3e9e50f0fc5f736c51b10aba16afbf283"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/compatibility.json",
+        "sha256": "b6e519d36c3447c75bed609330cbbeb2f5871aac0ceb16b1f6db6f32cae74bb0",
+        "log": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/processing.json",
+        "processing_sha256": "8b2c6834955c2c7534c9e261b2c75336ae14a89a1116209502f38bd906906761",
+        "log": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/saved-analysis.log",
+        "log_sha256": "db10edd77ef2b3b39a54f8934a94d5cadbe91c48f56191bbf987cd13e4f71c50",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "2d08fdc5ddf3178bf71b6ab78f5ae915dabaae48a907ea65ecb972a5c4e46970"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_directed_stop/proof.json",
+        "sha256": "98ccd915824f64039b0e3cc78d130f17bffc4091d2f02dd403229cc5c8c95194"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/negative-analysis.log",
+        "log_sha256": "8f03c63e67bf6b05b972e56035afe62ba646e0f4fd39d1d6f5b51ccd5d507f90"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_directed_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_directed_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_directed_stop/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_directed_stop-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_directed_stop-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_directed_stop/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/officer_directed_stop/primary-positive.log",
+        "test_log_sha256": "4e1de3451792ce1300cf479e7ce48ce9bddbe4d160e9d584a823727dff8ede84",
+        "negative_log": "delivery-proof/officer_directed_stop/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/officer_directed_stop/primary-diagnostic.json",
+        "diagnostic_result_sha256": "a94407fa2ea2618a8e0956f40d3e34f16da0fa348629f45250fe5ec21b8c0e34"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/officer_directed_stop-primary/processing.json",
+        "test_log_sha256": "8b2c6834955c2c7534c9e261b2c75336ae14a89a1116209502f38bd906906761",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/officer_directed_proceed/construction.json",
+      "construction_sha256": "47990ab74f894f409e5fa131943693041625d89eb0a02fc42dec0f263f2d8539",
+      "measurement_contract": "cases/branch-requests/officer_directed_proceed/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/officer_directed_proceed/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/officer_directed_proceed-fallback1/construction.json",
+          "construction_sha256": "a2383b981685e91c6fd677bd5f19a2728d488024203dbf631824f84ad2d54037",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed --candidate fallback1 --output .runtime-work/c10389-branch-offline-v3/officer_directed_proceed-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "a2383b981685e91c6fd677bd5f19a2728d488024203dbf631824f84ad2d54037",
+            "log": "cases/branch-requests/officer_directed_proceed-fallback1/offline.log",
+            "log_sha256": "552d847c58a0ed0a4756fbdbedd5ac7967c8f4fbe114027308a0fcec57862e50"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/officer_directed_proceed-fallback1/compatibility.json",
+            "sha256": "855158b090753a4349aad57a69fc34a48057d47af25b1355a3fd75bcb4582c9b",
+            "log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/officer_directed_proceed-fallback1/processing.json",
+            "processing_sha256": "e460eeb406c2417578ec09e24280c120b91cd617d2980051b1a0cf79177d8d9a",
+            "log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-fallback1/saved-analysis.log",
+            "log_sha256": "da472daa72e40bb30922f01e760a080617005f619d79ba15f55c78974d26dc85",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "a2383b981685e91c6fd677bd5f19a2728d488024203dbf631824f84ad2d54037"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed --candidate primary --output .runtime-work/c10389-branch-offline-v3/officer_directed_proceed-primary",
+        "exit_code": 0,
+        "construction_sha256": "47990ab74f894f409e5fa131943693041625d89eb0a02fc42dec0f263f2d8539",
+        "log": "cases/branch-requests/officer_directed_proceed/offline.log",
+        "log_sha256": "c1b99301f3cc1227073f1a267fe78b7355225f6ed51275db88cd3f23005269e8"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/compatibility.json",
+        "sha256": "966be6901af03bba72f5ac2b14884442d789f224db5f191344b9659593c270f4",
+        "log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/processing.json",
+        "processing_sha256": "2645b4e8716566cc0210efa1fe4a6d31015781305bd9275ccc5a527c0df2cbd4",
+        "log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/saved-analysis.log",
+        "log_sha256": "da472daa72e40bb30922f01e760a080617005f619d79ba15f55c78974d26dc85",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "47990ab74f894f409e5fa131943693041625d89eb0a02fc42dec0f263f2d8539"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_directed_proceed/proof.json",
+        "sha256": "833f98c64564c1ebdd7fc5ea42217749cb19ae971a98e80048a83ae1a73b21b2"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/negative-analysis.log",
+        "log_sha256": "2e6d2da92746c456c9e2e313152a9e29bc8adf9dea223f6dc83be9866fd426d9"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_directed_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_directed_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_directed_proceed/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/compat-v3/officer_directed_proceed-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-branch-compat-repo/.runtime-work/saved-v3/officer_directed_proceed-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/officer_directed_proceed/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/officer_directed_proceed/primary-positive.log",
+        "test_log_sha256": "c8825f77cc6f96dd7c6283fe89a3842a24f5b023ea2e1bf9bfd24a13ef61afed",
+        "negative_log": "delivery-proof/officer_directed_proceed/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/officer_directed_proceed/primary-diagnostic.json",
+        "diagnostic_result_sha256": "d520f2aab23655bb250d1deeda2fe1d40f0c4b0dddec497484c8c3c9ccf5f113"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__officer_directed_proceed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/officer_directed_proceed-primary/processing.json",
+        "test_log_sha256": "2645b4e8716566cc0210efa1fe4a6d31015781305bd9275ccc5a527c0df2cbd4",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/placement_record_absent/construction.json",
+      "construction_sha256": "d6e06428d459d1dd7cd1c1ca02d788fe7af481cea01e75d0f6fd696e64e643d3",
+      "measurement_contract": "cases/branch-requests/placement_record_absent/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/placement_record_absent/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/placement_record_absent-fallback1/construction.json",
+          "construction_sha256": "03db61abe85f08f96b16765cb61e390c54119c2527b0940e8df8433675b021ff",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent --candidate fallback1 --output .runtime-work/c10389-placement-offline-v4/placement_record_absent-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "03db61abe85f08f96b16765cb61e390c54119c2527b0940e8df8433675b021ff",
+            "log": "cases/branch-requests/placement_record_absent-fallback1/offline.log",
+            "log_sha256": "235d108354c699c5714b12e8cbca17f0291365f575e315ae5510974c6b5ef2b4"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/placement_record_absent-fallback1/compatibility.json",
+            "sha256": "24fa0317fe43a55e39a40469c16b6e5a082698a1a3bff8dd0b2b20aa0f06d146",
+            "log": "cases/branch-requests/current-proof-grid/placement_record_absent-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/placement_record_absent-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/placement_record_absent-fallback1/processing.json",
+            "processing_sha256": "14b0a53c8b05b96a5e9a35ffe72cf6bb48c2407259d9695ed517cfbea9ef5cc3",
+            "log": "cases/branch-requests/current-proof-grid/placement_record_absent-fallback1/saved-analysis.log",
+            "log_sha256": "a92ba6e4c0ac1294d8192937b9e0349fe8254cac36fd19e0c8fb6532a4cfc902",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "03db61abe85f08f96b16765cb61e390c54119c2527b0940e8df8433675b021ff"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent --candidate primary --output .runtime-work/c10389-placement-offline-v4/placement_record_absent-primary",
+        "exit_code": 0,
+        "construction_sha256": "d6e06428d459d1dd7cd1c1ca02d788fe7af481cea01e75d0f6fd696e64e643d3",
+        "log": "cases/branch-requests/placement_record_absent/offline.log",
+        "log_sha256": "6d9d9f17bdb763310b0ab9d5f486e8c5f7f0aeac05dd75dd6efb58eecf3e8ffa"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/compatibility.json",
+        "sha256": "5f4aa2d3206115d3c605dcc385a71c06c2085446582632c82c38ed2c0f300a2d",
+        "log": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/processing.json",
+        "processing_sha256": "72925a6da1f475c86b01f2c4668e29f72c86825f11387c7fe79430a0a1cc5ade",
+        "log": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/saved-analysis.log",
+        "log_sha256": "a92ba6e4c0ac1294d8192937b9e0349fe8254cac36fd19e0c8fb6532a4cfc902",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "d6e06428d459d1dd7cd1c1ca02d788fe7af481cea01e75d0f6fd696e64e643d3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/placement_record_absent/proof.json",
+        "sha256": "4c369fae118df0a5e1713571b21f98c4bf3edf14139abf0549c0405e80ffb819"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/negative-analysis.log",
+        "log_sha256": "a6b998370103d70a4948c48965ddbfdd69e544a3f29559ba56c513bd12ee710b"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/compat-v5/placement_record_absent-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/saved-v5/placement_record_absent-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/placement_record_absent/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/compat-v5/placement_record_absent-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/saved-v5/placement_record_absent-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/placement_record_absent/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/placement_record_absent/primary-positive.log",
+        "test_log_sha256": "6fd13d3352c0bea478334fded7ffe02a470eec960cd76d880cbf5eb43680d6ae",
+        "negative_log": "delivery-proof/placement_record_absent/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/placement_record_absent/primary-diagnostic.json",
+        "diagnostic_result_sha256": "5d26a811b9d25725d5fc7e30deaff64bd1971a80040d016b27081bbe65e28031"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_absent --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/placement_record_absent-primary/processing.json",
+        "test_log_sha256": "72925a6da1f475c86b01f2c4668e29f72c86825f11387c7fe79430a0a1cc5ade",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
+    },
+    {
+      "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied",
+      "kind": "delivery",
+      "construction": "cases/branch-requests/placement_record_supplied/construction.json",
+      "construction_sha256": "a01a6f880e5475e6d56de36614ad75317c2731051f2408fa2b3dae283cc8501d",
+      "measurement_contract": "cases/branch-requests/placement_record_supplied/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10389-branch-current-v2-analysis"
+      },
+      "fixture_recipe": "work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/cases/branch-requests/placement_record_supplied/recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original signal/officer source visibility and physical behavior require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/branch-requests/placement_record_supplied-fallback1/construction.json",
+          "construction_sha256": "6df3e99cccde667c197f2c575ec3afa8c5af8fb26705019cfee9f388a5f7c384",
+          "trigger": {
+            "source": "original source four-view video",
+            "metric": "signal/officer source visibility",
+            "failure_condition": "source face or body not legible in primary overview"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied --candidate fallback1 --output .runtime-work/c10389-placement-offline-v4/placement_record_supplied-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6df3e99cccde667c197f2c575ec3afa8c5af8fb26705019cfee9f388a5f7c384",
+            "log": "cases/branch-requests/placement_record_supplied-fallback1/offline.log",
+            "log_sha256": "957bdc9c855a3782654cdbcfb0f6cee898d1d219d5bfe8c346b7233ee7706a68"
+          },
+          "compatibility": {
+            "receipt": "cases/branch-requests/current-proof-grid/placement_record_supplied-fallback1/compatibility.json",
+            "sha256": "230b098b642d21f0797af093135d9e7847e80a7213810c2267bc3b6246ae21c0",
+            "log": "cases/branch-requests/current-proof-grid/placement_record_supplied-fallback1/analysis.log",
+            "negative_log": "cases/branch-requests/current-proof-grid/placement_record_supplied-fallback1/negative-analysis.log"
+          },
+          "saved_cpu_proof": {
+            "processing": "cases/branch-requests/current-proof-grid/placement_record_supplied-fallback1/processing.json",
+            "processing_sha256": "ee5af768baca22ba58f5bf32a483cf7eba02f564854701aacf69d18c9f95ef95",
+            "log": "cases/branch-requests/current-proof-grid/placement_record_supplied-fallback1/saved-analysis.log",
+            "log_sha256": "6a8010fb2b19e33f2a00d0cbf40864a017151e2feaa3e4629ceb947307c42749",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "selected_construction_sha256": "6df3e99cccde667c197f2c575ec3afa8c5af8fb26705019cfee9f388a5f7c384"
+          }
+        }
+      ],
+      "id": "primary",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied --candidate primary --output .runtime-work/c10389-placement-offline-v4/placement_record_supplied-primary",
+        "exit_code": 0,
+        "construction_sha256": "a01a6f880e5475e6d56de36614ad75317c2731051f2408fa2b3dae283cc8501d",
+        "log": "cases/branch-requests/placement_record_supplied/offline.log",
+        "log_sha256": "2c91478b7cf01b7f413b009a750500d9dbf8b530dea6395da215b81479f0ebd3"
+      },
+      "compatibility": {
+        "receipt": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/compatibility.json",
+        "sha256": "32ddca54bd6ca51b5f68f00fb27bea2fbddb8544d18f013a75f1d8697c607d62",
+        "log": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/analysis.log",
+        "negative_log": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/negative-analysis.log"
+      },
+      "saved_cpu_proof": {
+        "processing": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/processing.json",
+        "processing_sha256": "51af0ee64c94f52ac637c0d436dbd31d9835590c5409e4d939cdb29178a46f82",
+        "log": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/saved-analysis.log",
+        "log_sha256": "6a8010fb2b19e33f2a00d0cbf40864a017151e2feaa3e4629ceb947307c42749",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "a01a6f880e5475e6d56de36614ad75317c2731051f2408fa2b3dae283cc8501d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/placement_record_supplied/proof.json",
+        "sha256": "339f32c55f703bf68ffd8c9dd589a85c1bc10e08fed31756bfb35913a24a68d5"
+      },
+      "negative": {
+        "log": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/negative-analysis.log",
+        "log_sha256": "955be1e79be6ae05039de6c07ea3fa88643df11607f38a1b8667def28bfb9f66"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.position": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "device_body": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.lane_control_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Read original Native actor, map, device and synchronized camera sources; retain unknown authority",
+          "evidence": "native-raw-actors.jsonl, native-map-readback.json, video_frames.jsonl and source camera video"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/compat-v5/placement_record_supplied-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/saved-v5/placement_record_supplied-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/placement_record_supplied/primary-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/branch_delivery_audit.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/placement-draft-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/compat-v5/placement_record_supplied-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10389-placement-compat-repo/.runtime-work/saved-v5/placement_record_supplied-primary/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/delivery-proof/placement_record_supplied/primary-negative-unused.json",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "90a45b67c3c9951f6826ace3e828240619b8cdeade9d76a11a531eac04a8fb62",
+        "test_log": "delivery-proof/placement_record_supplied/primary-positive.log",
+        "test_log_sha256": "aa67a19d052353dfa83c1cb4e3fbfc790d460773b1c4553d5a5a64c9b9d59c99",
+        "negative_log": "delivery-proof/placement_record_supplied/primary-negative.log",
+        "negative_log_sha256": "ebc8dbcbfd910a976f7267613536720ebb5c1916478c4d90e20be1876c7019ca",
+        "diagnostic_result": "delivery-proof/placement_record_supplied/primary-diagnostic.json",
+        "diagnostic_result_sha256": "1756f21259ff10b1d4e8f6942d3ecedb92478eff2bf974d62107545389ede3f8"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C10389__NRS-484B-300-1__motor_vehicle_driver/execution-manifest.json --case training__C10389__NRS-484B-300-1__motor_vehicle_driver__placement_record_supplied --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/branch-requests/current-proof-grid/placement_record_supplied-primary/processing.json",
+        "test_log_sha256": "51af0ee64c94f52ac637c0d436dbd31d9835590c5409e4d939cdb29178a46f82",
+        "diagnostic_only": true,
+        "original_native_observed": false
+      }
     }
   ]
 }
