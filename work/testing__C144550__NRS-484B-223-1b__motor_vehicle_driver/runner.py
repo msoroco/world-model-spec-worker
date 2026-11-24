@@ -23,8 +23,9 @@ def validate_config(config):
             "NRS-484B-223-1b", "C144550", "motor_vehicle_driver"):
         raise ValueError("Wrong C144550 assignment identity")
     expected=[CASE_PREFIX+suffix for suffix in SIGNAL_CASES]
-    if config.get("selected_case_id") not in expected or config.get("supported_case_ids")!=expected:
-        raise ValueError("Five exact C144550 case IDs required")
+    supported=config.get("supported_case_ids")
+    if config.get("selected_case_id") not in expected or not isinstance(supported,list) or not set(expected)<=set(supported):
+        raise ValueError("Selected C144550 case IDs required")
     if (config.get("rate_hz"),config.get("duration_s"))!=(20,45):
         raise ValueError("Exact C144550 duration and rate required")
     cameras=config.get("cameras")

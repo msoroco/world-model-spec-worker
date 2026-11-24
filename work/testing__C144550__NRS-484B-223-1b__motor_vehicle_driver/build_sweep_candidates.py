@@ -31,7 +31,7 @@ def write(path, value):
 
 def build():
     stage = json.loads((HERE / "physical-sweep-stage-proof.json").read_text())
-    if set(stage["case_ids"]) != set(SOURCE):
+    if set(stage["case_ids"]) != {HERE.name + "__" + case for case in SOURCE}:
         raise ValueError("Generated sweep identity changed")
     selected = json.loads((HERE / "execution-manifest.json").read_text())
     zero = json.loads((HERE / "zero-execution-manifest.json").read_text())
@@ -43,12 +43,13 @@ def build():
               "runtime_manifest_sha256": sha(ROOT / "runtime/SOURCE-MANIFEST.json"),
               "cases": []}
     for case, donor in SOURCE.items():
+        qualified_case = HERE.name + "__" + case
         original = entries[donor]
         donor_path = HERE / original["construction"]
         construction = json.loads(donor_path.read_text())
-        constructed_id = case
+        constructed_id = qualified_case
         construction["case_id"] = constructed_id
-        construction["recording_description"] = copy.deepcopy(sweep_cases[case]["recording_description"])
+        construction["recording_description"] = copy.deepcopy(sweep_cases[qualified_case]["recording_description"])
         files = {item["path"]: item for item in construction["files"]}
         config = json.loads(files["config.json"]["content"])
         config["selected_case_id"] = constructed_id
@@ -75,7 +76,7 @@ def build():
                 if anchor not in content:
                     raise ValueError("Recording evidence insertion point missing")
                 content = content.replace(anchor,
-                    '    sweep_specs=' + repr(sweep_cases[case]["sweep_measurements"]) + '\n'
+                    '    sweep_specs=' + repr(sweep_cases[qualified_case]["sweep_measurements"]) + '\n'
                     '    departure=observations["first_body_leaves_lane"]["frame"]\n'
                     '    first_signal=observations["first_appropriate_signal"]\n'
                     '    movement=next(row for row in observations["samples"] if row["frame"]==departure)\n'
@@ -109,14 +110,10 @@ def build():
                 old_guard = 'case_id.endswith("__left_signal_at_departure_clear_gap")'
                 if old_guard not in content:
                     raise ValueError("Zero-stage guard missing")
-                content = content.replace(old_guard, '(' + old_guard + ' or case_id == "' + case + '")', 1)
+                content = content.replace(old_guard, '(' + old_guard + ' or case_id == "' + qualified_case + '")', 1)
             files[name]["content"] = content
             files[name]["source"] = None
         runner = files["runner.py"]["content"]
-        runner = runner.replace('expected=[CASE_PREFIX+suffix for suffix in SIGNAL_CASES]',
-                                'expected=[suffix if suffix == "' + case + '" else CASE_PREFIX+suffix for suffix in SIGNAL_CASES]')
-        runner = runner.replace('suffix=case_id[len(CASE_PREFIX):]',
-                                'suffix=case_id[len(CASE_PREFIX):] if case_id.startswith(CASE_PREFIX) else case_id')
         files["runner.py"]["content"] = runner
         files["runner.py"]["source"] = None
         path = HERE / "sweep-cases" / case / "construction.json"
@@ -133,7 +130,10 @@ def build():
     write(HERE / "sweep-execution-manifest.json", output)
     staging = ROOT / ".runtime-work" / "c144550-sweep-compat-stage"
     plan = json.loads((HERE / "case-plan.json").read_text())
-    plan["requirement_dispositions"][0]["case_ids"].extend(SOURCE)
+    for case in SOURCE:
+        case_id = HERE.name + "__" + case
+        if case_id not in plan["requirement_dispositions"][0]["case_ids"]:
+            plan["requirement_dispositions"][0]["case_ids"].append(case_id)
     write(staging / "case-plan.json", plan)
     shutil.copyfile(HERE / "measurement-contract.json", staging / "measurement-contract.json")
     (staging / "proposals").mkdir(parents=True, exist_ok=True)
