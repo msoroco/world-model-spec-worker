@@ -96,6 +96,50 @@ def measure_witness(attempt):
             'method':'measure_witness','sources':parked['sources']}
 
 
+def derive_channels(attempt,description):
+    """Reconstruct recording channels from retained original source rows only."""
+    attempt=Path(attempt)
+    destination=attempt/'channels'
+    if destination.exists() and any(destination.iterdir()):
+        raise ValueError('Preexisting derived channels cannot replace original sources')
+    destination.mkdir(exist_ok=True)
+    motion=rows(attempt/'native_samples.jsonl')
+    mapping=rows(attempt/'video_frames.jsonl')
+    survey=json.loads((attempt/'road_geometry.json').read_text())
+    if len(motion)!=len(mapping):
+        raise ValueError('Native motion/frame mapping length differs')
+    by_name={name:[] for name in (item['name'] for item in description['channels'])}
+    for sample,frame in zip(motion,mapping):
+        if sample['native_frame']!=frame['native_frame'] or sample['time_s']!=frame['time_s']:
+            raise ValueError('Derived channel Native frame/time join differs')
+        speed=sample['speed_m_s']
+        values={
+            'drv.standing_or_parked':{'speed_m_s':speed},
+            'st.intersection':survey,
+            'rel.occupies':{'body_xy_m':sample['body_xy_m'],
+                            'intersection_polygon_xy_m':survey['intersection_polygon_xy_m']},
+            'drv.forced_halt':{'traffic_conflict':sample['exceptions']['traffic_conflict'],
+                               'other_traffic_actor_count':sample['exception_source']['other_traffic_actor_count']},
+            'dev.human_direction':{'police_direction':sample['exceptions']['police_direction'],
+                                   'authored_law_direction_count':sample['exception_source']['authored_law_direction_count']},
+            'dev.traffic_signal':{'traffic_device':sample['exceptions']['traffic_device'],
+                                  'native_signal_count':sample['exception_source']['native_signal_count']},
+            'kin.velocity':{'speed_m_s':speed},
+            'native_body_pose_control':sample,
+            'camera_frame_join':frame}
+        for name in by_name:
+            if name not in values:
+                raise ValueError('No source-derived channel mapping: '+name)
+            by_name[name].append({'time_s':frame['time_s'],'value':values[name]})
+    for name,values in by_name.items():
+        with (destination/(name+'.jsonl')).open('x') as stream:
+            for value in values:
+                stream.write(json.dumps(value,allow_nan=False)+'\n')
+    return {'channels':len(by_name),'rows_per_channel':len(motion),
+            'source_sha256':{name:sha(attempt/name) for name in
+              ('native_samples.jsonl','video_frames.jsonl','road_geometry.json')}}
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -119,6 +163,7 @@ def finalize(attempt,output):
     target_x={'probe_a':-13.0,'probe_b':0.0}[config['case_suffix']]
     parked=math.dist(endpoint,[target_x,-1.75])<=.8 and saved_motion[-1]['speed_m_s']<=.05 and actual['parked_frames']>=40
     description=config['recording_description']
+    derived=derive_channels(attempt,description)
     recording_evidence=[]
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'
@@ -161,6 +206,7 @@ def finalize(attempt,output):
                             'intersection_parking_footprint':measured,
                             'parking_within_intersection_witness':measure_witness(attempt)},
             'original_joins':original,'video_frames':video_counts,
+            'derived_channels':derived,
             'scope':'saved original Native sources and source video decode, not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

@@ -82,7 +82,8 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "diagnostic_source_proof": "native/blind-person-source-proof.json"
     },
     {
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_2",
@@ -95,7 +96,8 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "diagnostic_source_proof": "native/blind-person-source-proof.json"
     }
   ],
   "comparisons": [
@@ -127,7 +129,7 @@
     },
     {
       "term": "rel.centre_distance",
-      "purpose": "'comes in contact with' — the proximity that triggers the duty",
+      "purpose": "'comes in contact with' \u2014 the proximity that triggers the duty",
       "status": "measurement_mapping_pending"
     },
     {
@@ -175,7 +177,9 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Executable Native map/routes/controllers/cameras and exact selected-case construction remain unimplemented.",
+    "Pinned-runtime offline, compatibility, saved-only, fallback and independent audits remain unproved.",
+    "Synthetic source measurement does not establish original Native motion, cane appearance, blindness, assistant identity, physical injury avoidance or legal outcome."
   ],
   "selected_branch": null,
   "observations": [
@@ -192,7 +196,7 @@
     {
       "name": "rel.centre_distance",
       "mandatory": true,
-      "reason": "'comes in contact with' — the proximity that triggers the duty"
+      "reason": "'comes in contact with' \u2014 the proximity that triggers the duty"
     },
     {
       "name": "drv.stopped",
@@ -230,5 +234,114 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "ru.pedestrian_with_white_cane_or_guide_animal",
+      "measurement": "pedestrian.json marker, blindness, marker_source; frames.jsonl person_marker_observed",
+      "evidence_boundary": "Source-only synthetic marker; real cane colour, blindness and assistance need camera/annotation proof",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "drv.approaching",
+      "measurement": "frames.jsonl ego_front_x_m, ego_speed_mps, person_y_m",
+      "evidence_boundary": "Longitudinal closure from retained Native body and velocity",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "rel.centre_distance",
+      "measurement": "road.json pedestrian_x_m; frames.jsonl ego_front_x_m",
+      "evidence_boundary": "Longitudinal source geometry; full two-dimensional centre distance remains to implement",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "drv.stopped",
+      "measurement": "frames.jsonl ego_speed_mps and ego_front_x_m; first_full_stop_frame",
+      "evidence_boundary": "0.05 m/s diagnostic epsilon is engineering only",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "kin.accel_longitudinal",
+      "measurement": "frames.jsonl ego_speed_mps at 20 Hz; first_deceleration_frame",
+      "evidence_boundary": "Finite difference speed; real acceleration source remains to implement",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "measurement": "road.json pedestrian_x_m; frames.jsonl speed and position; minimum_time_to_conflict_s",
+      "evidence_boundary": "Diagnostic longitudinal TTC while person laterally occupies lane",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "ru.subject",
+      "measurement": "frames.jsonl ego_id and ego_role; pedestrian.json person_id",
+      "evidence_boundary": "Driver role and person identity joined each frame",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "rel.contact",
+      "measurement": "frames.jsonl ego_front_x_m and person_y_m; first_geometric_contact_frame",
+      "evidence_boundary": "Geometric overlap proxy, not physical collision sensor",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    },
+    {
+      "term": "rel.surface_gap",
+      "measurement": "road.json pedestrian_x_m; frames.jsonl ego_front_x_m; minimum_surface_gap_before_release_m",
+      "evidence_boundary": "Longitudinal proxy; real body polygons and lateral clearance remain to implement",
+      "source_refs": [
+        "native/measure_blind_person.py",
+        "native/blind-person-source-proof.json"
+      ],
+      "status": "diagnostic_mapping_proved_real_native_pending"
+    }
+  ],
+  "diagnostic_source_proof": {
+    "path": "native/blind-person-source-proof.json",
+    "kind": "synthetic_native_sample",
+    "frames": 600,
+    "rate_hz": 20,
+    "scenario_count": 5,
+    "negative_source_checks": 5,
+    "claims": [
+      "retained source hash/frame/actor/motion joins",
+      "controlled stop versus nonstop and premature release diagnostics"
+    ],
+    "limits": [
+      "no original Native capture",
+      "no physical or legal verdict",
+      "no saved-processing proof"
+    ]
+  }
 }

@@ -1,5 +1,15 @@
 # NRS-484B-227-1 at C124163
 
+## Current CPU construction checkpoint
+
+`native/measure_median.py` implements source-hashed polygon overlap measurements for median, physical opening, and continuous divider. `prove-median-crossing.py` retains two 600-frame, 20 Hz textual source fixtures and proves the measurement output and six rejection paths (changed source hash, synthetic-to-Native relabel, and frame/time gap for each probe). The source traces differ only by a 12 m x translation with fixed timing, y path, speed, and body shape: probe A has 85 opening-overlap frames and zero barrier-overlap frames; probe B has zero opening-overlap frames and 85 barrier-overlap frames. Proof SHA-256: `6f118d964efe24652692bc657a94a77e600991eb2c00259a063fa9529e8fcc68`.
+
+`audit-median-crossing.py` independently reads the frozen law, retained geometry and raw body rows, checks source hashes and provenance, recomputes overlap counts, and verifies the controlled difference. Audit SHA-256: `2c9d406f744e36352e4fa37cc1143ea943eaad859e26874aac9457e84d32eb9b`; passed. These fixtures are synthetic geometry diagnostics only. They are not a left-turn Native route, public-authority establishment, selected delivery case, accepted recording, or legal verdict.
+
+Verification commands: `.venv-cpu/bin/python work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/prove-median-crossing.py` and `.venv-cpu/bin/python work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/audit-median-crossing.py` both exit 0. Pinned `.venv-cpu/bin/python runtime.py preflight` exits 0; `current-preflight.log` SHA-256 `cd831dd8d5ae1839c2ef54d382d288b90284a3b4df30538bc68f298cdc72db80`. `.venv-cpu/bin/python worker_check.py --assignment training__C124163__NRS-484B-227-1__motor_vehicle_driver --complete` exits 0; `current-scoped-complete.log` SHA-256 `df6f0553cf6759321f29b4479cedb806317e215adb6fe3cfe3429bb7e4822436`. The scoped complete check establishes a valid partial checkpoint, not delivery readiness.
+
+Remaining worker-owned CPU work: implement exact left-turn Native routes and controllers through an established opening and across a continuous divider in the frozen cell; preserve the statutory right-hand-roadway and crossover/intersection alternatives; build four distinct 30-second constructions per selected case with four camera sources, saved-source measurement/finalization, current offline and compatibility proofs including missing-source negatives, Core/Lean/final decode, independent delivery and comparison audits, and accepted-recording equivalence review. Keep status partial until assignment-scoped strict readiness passes.
+
 Actor: `motor_vehicle_driver`. Frozen cell: `median_opening` / `left_turn` / `median_barrier`.
 
 Witness branch: Left turn through a physical median opening; exception scope remains unresolved..

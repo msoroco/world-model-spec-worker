@@ -2,6 +2,10 @@
 
 Status: partial. No delivery recording is selected or claimed.
 
+## 2026-11-23 unselected contrast construction checkpoint
+
+The contrast case has an exact 600-frame/20-Hz primary and three fallbacks. It requests `Position` instead of the reference `LowBeam|Position`, while retaining the rear position-light request, vendor, controller, weather context and four-camera capture. All four contrast candidates pass pinned `runtime.py offline` (16 tests, no simulation). The independent comparison audit checks the exact case/config/runner differences, identical other bundled files, and hashes of each returned offline log. Matrix SHA-256 `6eb97462a72b95131b585ff48fac38ce9804efd5d00540d8c4b000768de0164a`; manifest SHA-256 `860c8647ab0d1a379a3fcaac5a668af130a1d5f8111f03aad5b0b8fc6678a192`; audit SHA-256 `cbbb0d237227c3559cb0ebf53cee9956053bf346b3d75559aad1dd67d3bca13d`. Run `.venv-cpu/bin/python work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/prove_contrast_matrix.py` to repeat the audit. These are unselected command proposals: actual front reach, tail emission and calibrated original review remain unverified. No physical contrast or legal result is claimed.
+
 ## 2026-11-23 unselected fallback construction checkpoint
 
 An independent fallback audit now compares the four materialized construction bundles, requires all non-config source files to match the primary byte for byte, checks the exact allowed config paths, and binds matrix and manifest hashes. Four positives and four mutated lamp/vendor/duration/runner negatives passed (receipt SHA-256 `4db203d963d68d5b74a31561ffb066d69dec279c186d4207c84f4c3d593993e9`). This verifies unselected software proposals only; original Native visibility and selected delivery remain unverified.

@@ -55,7 +55,9 @@ def main():
         for candidate in CANDIDATES:
             source = HERE / "draft-candidates" / suffix / candidate / "construction.json"
             construction = json.loads(source.read_text())
-            construction["files"] = [dict(file, content=long_content(file["path"], file["content"]))
+            construction["files"] = [dict(file, content=long_content(
+                file["path"], (HERE / 'native/finalize.py').read_text()
+                if file["path"] == 'finalize.py' else file["content"]))
                                      for file in construction["files"]]
             for channel in construction["recording_description"]["channels"]:
                 channel["time_window"] = "30 s / 600 joined frames"
