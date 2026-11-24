@@ -7,7 +7,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 NATIVE = HERE / 'native'
 BASE = HERE.name
-SOURCES = ('construction.py', 'runner.py', 'source_join.py', 'road.xodr')
+SOURCES = ('construction.py', 'runner.py', 'source_join.py', 'signals.py', 'road.xodr')
 
 
 def sha(path):
@@ -37,6 +37,8 @@ def build():
                  for source in SOURCES]
         files.append({'path': 'tests/test_construction.py',
                       'content': (NATIVE / 'tests/test_construction.py').read_text()})
+        files.append({'path': 'tests/test_signals.py',
+                      'content': (NATIVE / 'tests/test_signals.py').read_text()})
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         construction = {'case_id': case_id, 'cell_id': 'C111331',
                         'law_id': 'NRS-484B-307-2b', 'actor': 'pedestrian',

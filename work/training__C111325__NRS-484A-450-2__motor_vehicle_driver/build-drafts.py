@@ -30,13 +30,21 @@ def main():
                   'cameras': cameras, 'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case}, 'status': 'unselected_native_draft',
                   'recording_description': {'channels': [
-                      {'name': 'vehicle_body_pose', 'unit': 'structured'},
-                      {'name': 'vehicle_speed', 'unit': 'm/s'},
-                      {'name': 'frame_join', 'unit': 'structured'}],
+                      {'name': name, 'unit': unit, 'sampling_rate_hz': 20,
+                       'method': 'Retained Native-shaped sample and frame join',
+                       'time_window': 'entire 30 s / 600-frame attempt',
+                       'reference_frame': 'original Native frame identity',
+                       'uncertainty': '50 ms sampling; physical acquisition unverified'}
+                      for name, unit in (('vehicle_body_pose', 'structured'),
+                                         ('vehicle_speed', 'm/s'), ('frame_join', 'structured'))],
+                      'context_inputs': [],
                       'limitations': ['Native capture, physical sign and crosswalk, and statutory branches unverified']}}
+        config['mandatory_channels'] = [c['name'] for c in config['recording_description']['channels']]
+        config['case']['recording_description'] = config['recording_description']
         sources = {'runner.py': (HERE / 'native/runner.py').read_text(),
                    'measure_stop.py': (HERE / 'native/measure_stop.py').read_text(),
-                   'road.xodr': (HERE / 'native/road.xodr').read_text(),
+                   'finalize.py': (HERE / 'native/finalize.py').read_text(),
+                   'authored-road.xodr': (HERE / 'native/road.xodr').read_text(),
                    'config.json': json.dumps(config, indent=2) + '\n',
                    'tests/test_primary.py': tests}
         construction = {'case_id': case, 'law_id': config['law_id'],

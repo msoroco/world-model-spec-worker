@@ -55,7 +55,7 @@ def check(config):
                 for camera in config.get('cameras', [])]
     if declared != list(CAMERAS):
         raise ValueError('Current four-camera profile differs')
-    root = ET.parse(HERE / 'road.xodr').getroot()
+    root = ET.parse(HERE / 'authored-road.xodr').getroot()
     roads = {int(road.get('id')) for road in root.findall('road')}
     approach = next(road for road in root.findall('road') if road.get('id') == '1')
     signs = approach.findall('signals/signal')

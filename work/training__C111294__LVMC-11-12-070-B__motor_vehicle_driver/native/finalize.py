@@ -70,9 +70,10 @@ def finalize(attempt, output):
         raise ValueError('Four original source cameras need exactly 600 frames')
     expected = case.endswith('probe_1')
     matched = observed['through_yield_response_observed'] == expected
+    observed_record = {key: value for key, value in observed.items() if key != 'legal_verdict'}
     result = {
         'case_id': case,
-        'measured_values': {'priority_sequence': observed},
+        'measured_values': {'priority_sequence': observed_record},
         'target_checks': [{'target': 'through vehicle yield response after entrant prior stop',
                            'requested': expected, 'measured': observed['through_yield_response_observed'],
                            'method': 'joined original 600-frame two-actor speed and position',
@@ -103,7 +104,7 @@ def finalize(attempt, output):
               'observed': observed, 'video_frame_counts': camera_counts,
               'derived_channel_sha256': {name: sha(channels / (name + '.jsonl')) for name in values},
               'original_source_sha256': {name: sha(attempt / name) for name in
-                                         ('native_samples.jsonl', 'source-manifest.json',
+                                         ('native_samples.jsonl', 'diagnostic-source-manifest.json',
                                           'road.xodr', 'video_frames.jsonl', 'trace.jsonl')},
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     output.parent.mkdir(parents=True, exist_ok=True)

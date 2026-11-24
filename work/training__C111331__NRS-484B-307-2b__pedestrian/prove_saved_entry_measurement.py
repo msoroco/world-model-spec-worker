@@ -31,7 +31,7 @@ def make_source(contrary=False):
         "format": "pedestrian-entry-raw-v1",
         "hz": 20,
         "frame_count": 600,
-        "camera_ids": ["front", "left", "right", "rear"],
+        "camera_ids": ["overview", "approach", "reference_corner", "driver_reference"],
         "pedestrian_id": "walker.subject",
         "crosswalk": {"id": "crosswalk.1", "bounds_xy": [0.0, 0.0, 6.0, 2.0]},
         "governing_devices": {"traffic_head": "signal.vehicle.approach", "pedestrian_head": "signal.pedestrian.crosswalk"},

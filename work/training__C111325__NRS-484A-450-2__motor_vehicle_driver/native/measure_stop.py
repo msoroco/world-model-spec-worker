@@ -18,10 +18,15 @@ def sha(path):
 
 def measure(root, expected_case):
     root = Path(root)
-    for name in ('road.xodr', 'native_samples.jsonl', 'source-manifest.json'):
+    for name in ('road.xodr', 'native_samples.jsonl'):
         if not (root / name).is_file():
             raise ValueError('Missing required source: ' + name)
-    manifest = json.loads((root / 'source-manifest.json').read_text())
+    manifest_path = root / 'diagnostic-source-manifest.json'
+    if not manifest_path.is_file() and (root / 'source-manifest.json').is_file():
+        manifest_path = root / 'source-manifest.json'
+    if not manifest_path.is_file():
+        raise ValueError('Missing required source: diagnostic-source-manifest.json')
+    manifest = json.loads(manifest_path.read_text())
     if manifest.get('case_id') != expected_case or manifest.get('source_kind') != 'synthetic_native_sample':
         raise ValueError('Diagnostic source identity differs')
     for name in ('road.xodr', 'native_samples.jsonl'):

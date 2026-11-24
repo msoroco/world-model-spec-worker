@@ -30,7 +30,7 @@ def main():
     native = generated['rows'](True)
     lines(source / 'native_samples.jsonl', native)
     (source / 'road.xodr').write_bytes((HERE / 'native/road.xodr').read_bytes())
-    write(source / 'source-manifest.json', {
+    write(source / 'diagnostic-source-manifest.json', {
         'case_id': CASE, 'source_kind': 'synthetic_native_sample',
         'sha256': {name: sha(source / name) for name in ('road.xodr', 'native_samples.jsonl')}})
     mapping, trace, evidence, frames, graphs = [], [], [], [], []
@@ -58,10 +58,7 @@ def main():
                                  'speed_provenance': 'synthetic_native_sample'},
                          'world': {'weather': {}, 'road_projection': {
                              'road_id': ego['road_id'], 'section_id': 0,
-                             'lane_id': -1, 's_m': float(index) / 10}},
-                         'original_observations': {'participants': [{
-                             'actor_id': 108, 'position_m': [entrant['x_m'], entrant['y_m'], 0.5],
-                             'heading_deg': 0.0, 'speed_mps': entrant['speed_mps']} ]}})
+                             'lane_id': -1, 's_m': float(index) / 10}}})
         frames.append({'frame': frame, 'simulation_time': time, 'time_s': time,
                        'adapter_graph': f'graphs/base/{frame:08d}.adapter.json',
                        'synthetic_diagnostic': True})
@@ -70,7 +67,11 @@ def main():
                        'nodes': [{'id': 'ego', 'attributes': {
                            'vertex': [0.0, y-1, 0.5], 'sem_class': 'ego',
                            'forward': [0.0, -1.0, 0.0], 'entity_id': 107,
-                           'carla_speed': speed, 'special_class': 'ego'}}],
+                           'carla_speed': speed, 'special_class': 'ego'}},
+                          {'id': 'entrant', 'attributes': {
+                           'vertex': [entrant['x_m'], entrant['y_m'], 0.5],
+                           'sem_class': 'vehicle.audi.tt', 'forward': [1.0, 0.0, 0.0],
+                           'entity_id': 108, 'carla_speed': entrant['speed_mps']}}],
                        'edges': []})
     lines(source / 'video_frames.jsonl', mapping)
     lines(source / 'trace.jsonl', trace)

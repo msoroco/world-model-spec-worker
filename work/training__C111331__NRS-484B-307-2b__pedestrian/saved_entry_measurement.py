@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 
-CAMERAS = ("front", "left", "right", "rear")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def measure(source):

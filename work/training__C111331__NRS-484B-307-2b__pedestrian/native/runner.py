@@ -13,6 +13,7 @@ import subprocess
 import traceback
 
 from construction import VIEWS, check_map, proposal
+from signals import resolve as resolve_signal_heads, sample as sample_signal_heads
 
 HERE = Path(__file__).resolve().parent
 
@@ -78,6 +79,7 @@ def execute(config, output, host, port):
         world.apply_settings(settings)
         world.set_weather(carla.WeatherParameters.ClearNoon)
         library = world.get_blueprint_library()
+        heads = resolve_signal_heads(world.get_actors())
         walkers = sorted(library.filter('walker.pedestrian.*'), key=lambda bp: bp.id)
         if not walkers:
             raise RuntimeError('No Native pedestrian blueprint available')
@@ -124,6 +126,7 @@ def execute(config, output, host, port):
                 traffic = sorted((actor for actor in world.get_actors()
                                   if actor.type_id.startswith('traffic.traffic_light')),
                                  key=lambda actor: actor.id)
+                observed = sample_signal_heads(heads)
                 source = {'video_frame': index, 'native_frame': frame,
                           'time_s': time_s, 'pedestrian_id': walker.id,
                           'pedestrian_xy_m': [pose.location.x, pose.location.y],
@@ -135,6 +138,8 @@ def execute(config, output, host, port):
                               for light in traffic],
                           'traffic_head_id': config['traffic_head_id'],
                           'pedestrian_head_id': config['pedestrian_head_id'],
+                          'observed_traffic_signal': observed['traffic'],
+                          'observed_pedestrian_signal': observed['pedestrian'],
                           'requested_pedestrian_indication': config['requested_pedestrian_indication'],
                           'governance_confirmed': False}
                 capture.capture(frame, time_s, extra={'c111331_source': source})
