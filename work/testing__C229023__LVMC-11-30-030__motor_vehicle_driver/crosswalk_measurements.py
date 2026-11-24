@@ -14,6 +14,14 @@ from pathlib import Path
 ASSIGNMENT_ID = "testing__C229023__LVMC-11-30-030__motor_vehicle_driver"
 CASE_SUFFIXES = ("unmarked_wait", "unmarked_pass", "marked_wait", "marked_pass",
                  "unmarked_other_stop_wait", "unmarked_other_stop_pass")
+EXPECTED_CONTEXT = {
+    "unmarked_wait": ("unmarked", "permit_pedestrian"),
+    "unmarked_pass": ("unmarked", "permit_pedestrian"),
+    "marked_wait": ("marked", "permit_pedestrian"),
+    "marked_pass": ("marked", "permit_pedestrian"),
+    "unmarked_other_stop_wait": ("unmarked", "other"),
+    "unmarked_other_stop_pass": ("unmarked", "other"),
+}
 
 
 def _sha(path):
@@ -21,7 +29,7 @@ def _sha(path):
 
 
 def _point(value):
-    if not isinstance(value, list) or len(value) != 2 or any(not isinstance(x, (int, float)) or not math.isfinite(x) for x in value):
+    if not isinstance(value, list) or len(value) != 2 or any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x) for x in value):
         raise ValueError("finite two-dimensional point required")
     return value
 
@@ -46,7 +54,7 @@ def _body_extents(vertices, origin, axis):
         raise ValueError("eight original world-space body vertices required")
     stations = []
     for vertex in vertices:
-        if not isinstance(vertex, list) or len(vertex) != 3 or any(not isinstance(x, (int, float)) or not math.isfinite(x) for x in vertex):
+        if not isinstance(vertex, list) or len(vertex) != 3 or any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x) for x in vertex):
             raise ValueError("finite three-dimensional body vertex required")
         stations.append(_projection(vertex[:2], origin, axis))
     if max(stations) - min(stations) <= 0:
@@ -87,6 +95,9 @@ def measure(*, case_id, context_path, trace_path, receipt_path):
     purpose = context.get("stopped_vehicle_purpose")
     if not isinstance(purpose, dict) or purpose.get("claim") not in ("permit_pedestrian", "other") or not purpose.get("source_ref"):
         raise ValueError("stopped vehicle purpose needs an independent source")
+    expected_crossing, expected_purpose = EXPECTED_CONTEXT[case_id[len(ASSIGNMENT_ID) + 2:]]
+    if crossing["kind"] != expected_crossing or purpose["claim"] != expected_purpose:
+        raise ValueError("original crossing kind or stopped purpose differs from exact case")
     if not context.get("pedestrian_identity") or not context.get("lead_vehicle_identity") or not context.get("ego_vehicle_identity"):
         raise ValueError("all three actor identities required")
     road = context.get("road_axis")
@@ -104,7 +115,7 @@ def measure(*, case_id, context_path, trace_path, receipt_path):
     prev = None
     for row in rows:
         frame, time_s = row.get("frame"), row.get("time_s")
-        if not isinstance(frame, int) or not isinstance(time_s, (int, float)) or not math.isfinite(time_s):
+        if isinstance(frame, bool) or not isinstance(frame, int) or isinstance(time_s, bool) or not isinstance(time_s, (int, float)) or not math.isfinite(time_s):
             raise ValueError("original frame/time missing")
         if prev is not None and (frame != prev[0] + 1 or abs(time_s - prev[1] - .05) > .002):
             raise ValueError("original frame order or cadence mismatch")
@@ -115,7 +126,7 @@ def measure(*, case_id, context_path, trace_path, receipt_path):
         ego_rear, ego_front = _body_extents(row.get("ego_vertices"), origin, axis)
         lead_rear, lead_front = _body_extents(row.get("lead_vertices"), origin, axis)
         for key in ("ego_speed_mps", "lead_speed_mps"):
-            if not isinstance(row.get(key), (int, float)) or not math.isfinite(row[key]) or row[key] < 0:
+            if isinstance(row.get(key), bool) or not isinstance(row.get(key), (int, float)) or not math.isfinite(row[key]) or row[key] < 0:
                 raise ValueError("original speed missing or invalid")
         observations.append({"frame": frame, "time_s": time_s,
                              "ego_station_m": _projection(ego, origin, axis),

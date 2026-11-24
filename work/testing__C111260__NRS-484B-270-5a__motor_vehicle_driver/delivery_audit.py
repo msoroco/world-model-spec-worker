@@ -21,7 +21,8 @@ def _module(name):
     return module
 
 
-def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False):
+def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False,
+                video_manifest_sha256=None):
     root = Path(attempt).resolve()
     packet_path = root / "encounter-packet.json"
     if not packet_path.is_file() or packet_path.is_symlink():
@@ -41,6 +42,17 @@ def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False):
         raise ValueError("saved actor and pixel case join differs")
     if saved["original_frames"] != pixels["original_frames_per_camera"]:
         raise ValueError("saved actor and pixel frame count differs")
+    video = None
+    if video_manifest_sha256 is not None:
+        manifest_path = root / 'video-media.json'
+        if not manifest_path.is_file() or manifest_path.is_symlink():
+            raise ValueError('externally sealed composed video manifest missing')
+        if hashlib.sha256(manifest_path.read_bytes()).hexdigest() != video_manifest_sha256:
+            raise ValueError('externally sealed composed video manifest hash drift')
+        video = _module('video_media').audit_composed(
+            root, {'path': manifest_path.name, 'sha256': video_manifest_sha256})
+        if video['case_id'] != case_id or video['original_frames'] != saved['original_frames']:
+            raise ValueError('composed video and original encounter differ')
     return {
         "format": "c111260-saved-source-audit-v1",
         "case_id": case_id,
@@ -51,7 +63,7 @@ def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False):
         "observed_response": saved["response"],
         "source_hashes": saved["source_hashes"],
         "media_sha256": pixels["media_sha256"],
-        "full_video_decode": False,
+        "full_video_decode": bool(video and video['full_video_decode']),
         "actual_pixels": False,
         "physical_completion": False,
         "legal_judgment": "unresolved",

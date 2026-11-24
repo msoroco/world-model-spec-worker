@@ -12,7 +12,9 @@ import saved_aspect
 
 class EventCaptureTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        scratch = ROOT.parents[1] / '.runtime-work/c111610-7a-event-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.root = Path(self.temp.name)
         self.site = {"official_head_id": "17", "ego_approach_id": "north",
                      "arrow_movement": "left"}

@@ -40,3 +40,16 @@ Next CPU work: bind a real source-surveyed diagonal site and official pedestrian
 Next CPU work: source-review a real site and its official diagonal pedestrian device and NRS 484B.290 exception; bind those sources to each exact construction, add original capture and four-camera media with full decode, author semantic proposals, finalizer and delivery audit, run per-case offline/compatibility and process-saved proofs, then rerun strict.
 
 `audit_saved_comparison` accepts only the two declared reference/variant pairs and rejects diagnostic measurements in delivery mode. It checks the same sealed site, 20 Hz/four-camera contract, device inventory and ID, exception-review state and original crossing frames while requiring the observed instruction contrast. It does not require identical simulator actor IDs across separate captures. The negative test changes site hash, camera contract and crossing frames. The focused suite now passes 8 tests; all three log hashes in `result.json` were refreshed after the scoped checks.
+
+## Original diagonal acquisition and local source binding, 2026-11-24
+
+`native_capture.py` now captures exactly 900 synchronous 20 Hz original Native frames from walker, official diagonal-device and four camera identity readers. It rejects frame/time drift, changed device or inventory identity, missing views and non-Native readbacks before sealing the saved walker/device/frame-map packet. Reviewed map, corner, authorization, device-inventory and exception-review bytes are copied into the attempt and source-bound. The local site uses attempt-relative references so identical sites have stable hashes across separate exact captures; `diagonal_crossing.validate_site` resolves those refs against the sealed attempt root. The bridge runs saved-only measurement before retaining its acquisition receipt. Unattested capture defaults to diagnostic and cannot publish non-diagnostic evidence. Original camera media and physical/legal findings remain unverified.
+
+Pinned preflight, 11 focused tests and scoped static passed. Exact scoped strict exited 1 on truthful partial. New SHA-bound logs:
+
+- `cpu-native-preflight.log` SHA256 `c91a159dd6a3195d541e40ffb98b512a80485d1384d674a898634dab5d87ab7b` exit 0.
+- `cpu-native-tests.log` SHA256 `16b687dbe9bbed204193dcbcfe198cc5ae88a1748fc9b4d858f84b36e2e30712` exit 0.
+- `cpu-native-static.log` SHA256 `eb23bd8689dc8a4f3633aa409b7e3f48122673352264b6aad3782b4eab2f5d15` exit 0.
+- `cpu-native-strict.log` SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` exit 1.
+
+Remaining CPU work: source-surveyed official diagonal device and NRS 484B.290 review, original camera media/full decode, exact runnable construction bundles and finalizers, canonical semantic proposals/manifest, offline and positive/negative compatibility, saved independent delivery and comparison receipts.

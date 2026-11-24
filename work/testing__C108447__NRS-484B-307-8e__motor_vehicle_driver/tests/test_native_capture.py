@@ -219,7 +219,7 @@ class NativeCaptureTests(unittest.TestCase):
                                 signal_observer=signals, destination_street_id='street-B',
                                 output=Path(td) / 'trace.json', ticks=20,
                                 control_applier=lambda actor, command: actor.apply_control(command),
-                                camera_observer=lambda frame, name: None if name == 'destination' else sink.getvalue(),
+                                camera_observer=lambda frame, name: None if name == 'driver_reference' else sink.getvalue(),
                                 media_directory=Path(td))
         self.assertEqual(ego.controls[-1]['brake'], 1.0)
 

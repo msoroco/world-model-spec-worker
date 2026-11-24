@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1e__pedestrian",
   "input_sha256": "a6783ac09cade183f65b2d3d63c367a8543b58c76d0ffbc1f1b472aab2728c79",
   "status": "partial",
-  "readiness_kind": "source_sealed_saved_measurement_probe",
+  "readiness_kind": "source_sealed_original_diagonal_acquisition_probe",
   "applied_update": 0,
   "tests": [
     {
@@ -22,10 +22,34 @@
       "exit_code": 0,
       "log": "static-check.log",
       "sha256": "eb23bd8689dc8a4f3633aa409b7e3f48122673352264b6aad3782b4eab2f5d15"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-native-preflight.log",
+      "sha256": "c91a159dd6a3195d541e40ffb98b512a80485d1384d674a898634dab5d87ab7b"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1e__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-tests.log",
+      "sha256": "16b687dbe9bbed204193dcbcfe198cc5ae88a1748fc9b4d858f84b36e2e30712"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1e__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-native-static.log",
+      "sha256": "eb23bd8689dc8a4f3633aa409b7e3f48122673352264b6aad3782b4eab2f5d15"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1e__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact diagonal crossing cases and two controlled comparisons remain planned. Source-gated Native walker construction, source-sealed saved-only 20 Hz walker/device/four-camera measurement, and independent saved comparison isolation pass 8 CPU tests with tamper, source/path, frame/time, camera, provenance, case and fixed-condition negatives. Delivery remains partial: no original surveyed site/official diagonal device packet, canonical stage proposals, full exact runner/config/manifest, media acquisition/decode audit, offline and positive/negative compatibility receipts, or process-saved proof. The strict assignment gate rejects partial status."
+  "reason": "Native acquisition bridge now records 900 consecutive 20 Hz walker, governing diagonal-device and four-camera frame IDs, copies reviewed site source bytes into each saved attempt, seals the packet and runs saved-only measurement before publication. Attempt-relative source paths preserve fixed-site hashes across exact cases. Unattested capture remains diagnostic. Pinned preflight, 11 focused tests and scoped static pass; exact strict rejects truthful partial. Reviewed official diagonal device/exception source, original camera media and decode, runnable bundles, canonical proposals/manifest, compatibility and delivery receipts remain CPU work."
 }

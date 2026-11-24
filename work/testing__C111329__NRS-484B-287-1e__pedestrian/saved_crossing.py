@@ -89,7 +89,7 @@ def process_saved(attempt_dir: str | Path, case_id: str, output: str | Path,
     if manifest.get("fps") != 20 or manifest.get("camera_ids") != list(CAMERAS):
         raise ValueError("20 Hz four-camera acquisition contract missing")
     site, site_hash = _sealed_json(attempt, manifest.get("site"), "site")
-    plan = validate_site(site)
+    plan = validate_site(site, attempt)
     walker, walker_hash = _sealed_json(attempt, manifest.get("walker"), "walker")
     device, device_hash = _sealed_json(attempt, manifest.get("device"), "device")
     cameras, cameras_hash = _sealed_json(attempt, manifest.get("camera_frames"), "camera frames")

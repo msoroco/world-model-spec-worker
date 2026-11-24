@@ -2,7 +2,7 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3",
   "status": "partial",
-  "readiness_kind": "partial_sealed_reciprocal_three_actor_diagnostic_capture_checkpoint",
+  "readiness_kind": "partial_reciprocal_live_entrypoint_and_saved_finalization_tested",
   "applied_update": 0,
   "tests": [
     {
@@ -232,10 +232,40 @@
       "exit_code": 0,
       "log": "cpu-reciprocal-finalization-static.log",
       "sha256": "5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-entry/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-entry/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-entrypoint-tests.log",
+      "sha256": "3bdae6a2f63baee753dfd769909cc29a73dbe00a591cf620691f77bad18868a6"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-entry/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-entry/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-entrypoint-preflight.log",
+      "sha256": "51aee3e8a04c9248a2a06cfa3015c79fc0b0ef5b6c415441307b8416a84921cc"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-entry/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-entry/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield --output .runtime-work/c109749-entry/offline-yield",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-entrypoint-offline.log",
+      "sha256": "fabffd98b53536a95898b71301afd0b674a38bb8b21d0cfc28d97a94ca3249d0"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-entry/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-entry/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-entrypoint-static.log",
+      "sha256": "5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c109749-entry/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c109749-entry/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-reciprocal-entrypoint-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Reciprocal saved finalization now combines existing exact-case finalizer with sealed 900-frame third-actor source join, retaining its independent actor measurements and SHA in the output; diagnostic positive and deleted-source rejection pass. Full focused tests, pinned preflight, existing reciprocal offline and scoped static pass. Strict remains partial pending inline bundle integration, regenerated compatibility/process-saved, physical sweeps and reviewed CARLA source."
+  "reason": "Exact reciprocal_yield and reciprocal_no_yield now have a lazy local CARLA entrypoint that prevalidates reviewed Native map, case and fresh output and delegates to the seven-actor reciprocal live capture path. The focused suite passes 93 tests; pinned preflight, reciprocal exact offline and scoped static pass. Exact strict remains partial. Both reciprocal inline bundles still need production wiring and regenerated compatibility/process-saved proofs, plus feasible sweeps and canonical delivery integration; original physical motion and pixels remain unverified."
 }

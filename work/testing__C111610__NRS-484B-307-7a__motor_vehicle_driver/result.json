@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver",
   "input_sha256": "7849b3f79ded9ca0946ccb914924986ae950a1c6b9b003495300df870fc85bdf",
   "status": "partial",
-  "readiness_kind": "partial_source_bound_saved_arrow_pair_audit",
+  "readiness_kind": "partial_original_four_camera_arrow_capture_and_audit",
   "applied_update": 0,
   "tests": [
     {
@@ -88,10 +88,34 @@
       "exit_code": 1,
       "log": "cpu-saved-pair-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-camera-tests.log",
+      "sha256": "9f34ad43bd1262ed3e3fd32df90f7985f0c03426fe2f39ccb3661e050affadc5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-camera-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-camera-static.log",
+      "sha256": "815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-camera-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact arrow diagnostic bundles pass prior pinned offline checks. Saved finalizer and new saved pair audit now reprocess separately sealed original aspect/event histories for exact comparisons and reject changed fixed source or tampered events; 23 focused tests, pinned preflight and scoped static pass. Reviewed physical Native head/site, canonical runner/manifest, semantic proposals, per-case source-bound compatibility, full four-camera saved delivery and original legal review remain; strict rejects truthful partial."
+  "reason": "Five exact arrow diagnostic bundles retain pinned offline passes. Source-bound aspect/actor finalization and pair replay now have same-tick four-camera PNG capture plus independent full decode of 900 frames/3600 images, with hash, frame-map and profile rejection; 25 tests, preflight/static pass. Reviewed Native head/site and production adapter, canonical runner/manifest, semantic proposals, per-case compatibility, saved delivery integration and legal review remain. Strict rejects truthful partial."
 }

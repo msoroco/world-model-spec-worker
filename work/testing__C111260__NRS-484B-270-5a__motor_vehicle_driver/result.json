@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver",
   "input_sha256": "7a15dcb6740754d27c56bbd17b65fcdee2dc311aa7ee359355bc7f34eeb38d25",
   "status": "partial",
-  "readiness_kind": "partial_source_bound_saved_delivery_audit",
+  "readiness_kind": "partial_original_lossless_video_source_audit",
   "applied_update": 0,
   "tests": [
     {
@@ -52,10 +52,34 @@
       "exit_code": 1,
       "log": "cpu-rider-person-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-video-preflight.log",
+      "sha256": "97d2c1ffb850c94a84059cef261c8a31cb569a80786f45bd6dc82022c6419e97"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-video-tests.log",
+      "sha256": "efccc524ac1f9bc038ce2e07b93d0bcdcdb69c27b5ea57e0016a9cb8e98337f6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-video-static.log",
+      "sha256": "f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-video-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "The original rider-person ID from the source site is now required in every capture and saved-history row, distinct from the bicycle/scooter actor ID, so resealing a changed human rider does not pass. Twenty-five focused tests, pinned preflight and scoped static pass. Exact strict exits 1 on truthful partial. Canonical Native rider adapter/runner, per-case bundles, composed video, compatibility proofs, semantic proposals/manifest and acceptance receipts remain CPU work."
+  "reason": "Sealed 900-frame four-camera PNG archives now compose into source-hashed lossless 20 Hz FFV1 videos; independent ffprobe and full decode verify frame count, dimensions and source hashes. Saved delivery audit can require an externally sealed video manifest and rejoin case/duration before marking full_video_decode true. Pinned preflight, 28 focused tests and scoped static pass; exact strict rejects truthful partial. Reviewed Native site/adapter, six executable bundles, semantic proposals/manifest, compatibility and canonical acceptance receipts remain CPU work. No physical or legal claim is made."
 }

@@ -75,7 +75,7 @@ class CrosswalkConstructionTests(unittest.TestCase):
             with self.subTest(name=name, value=value):
                 s = self.site()
                 s[name] = value
-                with self.assertRaisesRegex(ValueError, "positive source vehicle half widths"):
+                with self.assertRaisesRegex(ValueError, "positive site vehicle half widths"):
                     self.run_build(s)
 
     def sourced_site(self, root):

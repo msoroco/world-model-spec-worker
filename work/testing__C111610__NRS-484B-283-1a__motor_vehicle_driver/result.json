@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver",
   "input_sha256": "8e3606471525b5f206c97bd40bd7ad7cede67b27554dfe39c51f395b6f07baed",
-  "readiness_kind": "original_carla_adapter_and_saved_delivery_in_progress",
-  "reason": "Seven exact cases and five comparisons remain partial. Lazy CARLA-facing adapter now reads synchronous original world tick/snapshot, distinct actor poses/brake and four exact-frame sensor PNGs into the 600-frame capture writer; a complete fake-world capture feeds saved actor/camera join. 33 focused tests, pinned preflight and scoped static pass. Original reviewed site and production controller/sensors, canonical bundles/manifest, semantic proposals, offline/compatibility and independent delivery/comparison acceptance remain unfinished; physical realization and pixels require local GPU review.",
+  "readiness_kind": "partial_live_world_lease_and_saved_delivery_in_progress",
+  "reason": "Live crosswalk wrapper now establishes and restores synchronous 20 Hz world settings, requires six separately registered actor/sensor resources, connects the original CARLA adapter to the 600-frame source writer, and cleans actors on complete capture and partial scene-factory failure. Thirty-five focused tests, pinned preflight and scoped static pass. Exact strict remains partial. Original reviewed site and concrete scene/sensor/controller factory, seven canonical bundles/manifest, semantic proposals, offline/compatibility/process-saved and independent delivery acceptance remain CPU work; physical motion/pixels unverified.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -97,6 +97,30 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-carla-adapter-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111610-live/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111610-live/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-live-crosswalk-tests.log",
+      "sha256": "3eab9f5c127d3ac3d78e0fed3f77ec81d881dd734cb64af567c9a879cd77abfd"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111610-live/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111610-live/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-live-crosswalk-preflight.log",
+      "sha256": "770bfa19fa32dc455dcf5d502a868aa21ff5ba6a3370dddbef3c220a1e3a30fa"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111610-live/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111610-live/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-live-crosswalk-static.log",
+      "sha256": "e5747523924cafcfcb63f346271e3ef25d46c51d37527c8af4b11f5026889978"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111610-live/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111610-live/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-live-crosswalk-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]

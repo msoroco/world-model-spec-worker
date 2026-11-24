@@ -20,19 +20,25 @@ def _point(value):
     return point
 
 
-def _source(packet, name):
+def _source(packet, name, root=None):
     item = packet.get("sources", {}).get(name)
     if not isinstance(item, dict) or not item.get("path") or not item.get("sha256"):
         raise ValueError(f"missing source: {name}")
     file = Path(item["path"])
+    if root is not None:
+        base = Path(root).resolve()
+        original = base / file
+        file = original.resolve()
+        if not file.is_relative_to(base) or original.is_symlink():
+            raise ValueError(f"source escapes attempt: {name}")
     if not file.is_file() or hashlib.sha256(file.read_bytes()).hexdigest() != item["sha256"]:
         raise ValueError(f"source hash mismatch: {name}")
     return item
 
 
-def validate_site(packet):
+def validate_site(packet, root=None):
     for name in ("map", "corner_survey", "authorization", "device_inventory", "exception_review"):
-        _source(packet, name)
+        _source(packet, name, root)
     if packet.get("coordinate_frame") != "map_xy_m":
         raise ValueError("unsupported coordinate frame")
     corners = [_point(p) for p in packet["corners_clockwise"]]

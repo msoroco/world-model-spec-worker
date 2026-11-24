@@ -70,15 +70,19 @@ def build() -> dict:
                  'purpose': {'source': 'diagnostic authored context',
                              'value': 'other' if suffix == 'other_purpose' else 'avoid_red'},
                  'status': 'diagnostic_unreviewed'}
+        frame_map = ''.join(json.dumps({'video_frame': index, 'carla_frame': row['frame'],
+                                        'time_s': row['time_s']}, sort_keys=True) + '\n'
+                            for index, row in enumerate(samples))
         spec = {'files': {'road.xodr': xodr, 'authority.json': authority_text,
-                          'map-packet.json': encoded(packet), 'trace.json': encoded(trace)},
+                          'map-packet.json': encoded(packet), 'trace.json': encoded(trace),
+                          'video_frames.jsonl': frame_map},
                 'graphs': [],
                 'videos': [{'path': f'{name}.mkv', 'frames': 20, 'width': width,
                             'height': height, 'fps': 20, 'color': 'black'}
                            for name, width, height in [('overview', 1920, 1080),
                                                        ('approach', 1280, 720),
-                                                       ('property', 1280, 720),
-                                                       ('destination', 1280, 720)]]}
+                                                       ('reference_corner', 1280, 720),
+                                                       ('driver_reference', 1280, 720)]]}
         source = folder / 'specification.json'
         source.write_text(encoded(spec))
         reference = str(source.relative_to(ROOT))

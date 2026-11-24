@@ -77,3 +77,16 @@ SHA-256 source and proof index:
 - `cpu-recorder-preflight.log`: `cac705a2fd913031abca5a004ae61ac7a6cfbe835828722d7c494045ae927b66`
 - `cpu-recorder-static.log`: `48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c`
 - `cpu-recorder-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
+
+## Original event and four-camera media session join, 2026-11-24
+
+`native_session.py` now wires the 900-tick Native event/frame-map capture to `OriginalCameraRecorder.read`, seals the four FFV1 media refs, joins source-hashed profile and context refs, and calls the independent saved-only `delivery_audit.audit_saved_delivery` full decoder. It publishes `media-capture-receipt.json` with `camera_capture_complete: true` only after the audit succeeds. On audit failure the original capture receipt remains explicitly incomplete. The test joins 900 event/camera frames and proves a failed audit cannot publish a complete receipt; the existing recorder test covers real FFV1 encode/decode with a small diagnostic profile. No real CARLA footage, physical visibility or legal right-of-way is claimed.
+
+Pinned preflight, 26 focused tests and scoped static passed. Exact scoped strict exits 1 on truthful partial. New SHA-bound logs:
+
+- `cpu-session-preflight.log` SHA256 `a3a56efdb818eee16f50801fbdae2f110b6506eff664ff6a67a41191b03e4996` exit 0.
+- `cpu-session-tests.log` SHA256 `48ad3f7146069db6fdbb540a1d3d0e253c78ff1319ed5dc0755f5b78c676262c` exit 0.
+- `cpu-session-static.log` SHA256 `48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c` exit 0.
+- `cpu-session-strict.log` SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` exit 1.
+
+Remaining CPU work: source-reviewed original site/profile/context, operator world/actor/control ownership, four exact construction and finalizer bundles, canonical semantic proposals/manifest, offline and positive/negative compatibility proofs, saved-only delivery/comparison receipts.

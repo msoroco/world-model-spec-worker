@@ -28,7 +28,7 @@ def check() -> dict:
     cameras = config.get('cameras', [])
     if [(item.get('name'), item.get('width'), item.get('height')) for item in cameras] != [
             ('overview', 1920, 1080), ('approach', 1280, 720),
-            ('property', 1280, 720), ('destination', 1280, 720)]:
+            ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]:
         raise ValueError('four original camera profiles required')
     if config.get('capture_provenance') != 'original Native samples required':
         raise ValueError('original Native capture provenance required')

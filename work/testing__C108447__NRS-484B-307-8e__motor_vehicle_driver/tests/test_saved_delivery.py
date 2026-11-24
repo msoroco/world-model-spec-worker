@@ -94,7 +94,7 @@ class SavedDeliveryTests(unittest.TestCase):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
     def test_missing_camera_rejected(self):
-        del self.bundle['cameras']['destination']
+        del self.bundle['cameras']['driver_reference']
         with self.assertRaisesRegex(ValueError, 'four original camera'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
@@ -160,18 +160,18 @@ class SavedDeliveryTests(unittest.TestCase):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
     def test_original_media_tamper_rejected(self):
-        path = self.root / 'property.zip'
+        path = self.root / 'reference_corner.zip'
         with ZipFile(path, 'a') as archive:
             archive.writestr('extra.txt', 'different')
-        self.bundle['cameras']['property']['sha256'] = audit.sha(path.read_bytes())
+        self.bundle['cameras']['reference_corner']['sha256'] = audit.sha(path.read_bytes())
         with self.assertRaisesRegex(ValueError, 'image inventory differs'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
     def test_resealed_duplicate_image_member_rejected(self):
-        path = self.root / 'property.zip'
+        path = self.root / 'reference_corner.zip'
         with ZipFile(path, 'a') as archive:
             archive.writestr('100.png', archive.read('100.png'))
-        self.bundle['cameras']['property']['sha256'] = audit.sha(path.read_bytes())
+        self.bundle['cameras']['reference_corner']['sha256'] = audit.sha(path.read_bytes())
         with self.assertRaisesRegex(ValueError, 'duplicate entries'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
@@ -192,7 +192,7 @@ class SavedDeliveryTests(unittest.TestCase):
     def test_camera_frame_map_rebind_rejected(self):
         rows = (self.root / 'frames.jsonl').read_text().splitlines()
         row = json.loads(rows[5])
-        row['cameras']['property']['member'] = 'other.png'
+        row['cameras']['reference_corner']['member'] = 'other.png'
         rows[5] = json.dumps(row)
         self.bundle['frame_map'] = self.write('frames.jsonl', '\n'.join(rows) + '\n')
         with self.assertRaisesRegex(ValueError, 'original frame map image join'):

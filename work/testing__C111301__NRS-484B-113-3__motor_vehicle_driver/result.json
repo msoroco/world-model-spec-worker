@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
   "input_sha256": "d2a20dd00035ab889eee7c4e18e73079dbb58fdafdc3f4cc022350b24a46c9e5",
   "status": "partial",
-  "readiness_kind": "partial_construction",
+  "readiness_kind": "partial_native_backing_tick_sources_tested",
   "applied_update": 0,
   "tests": [
     {
@@ -52,10 +52,34 @@
       "exit_code": 1,
       "log": "cpu-sealed-path-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-capture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-capture/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-backing-tests.log",
+      "sha256": "5d012bd768d3e9613f7e6d24cc144e79ea8cbfec77b07fd881ab7a9c8229c2fb"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-capture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-capture/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-native-backing-preflight.log",
+      "sha256": "42d0c6615a95e4c71379b9d629eee5d7552c15d300418fed66f278834bd9d18c"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-capture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-capture/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-native-backing-static.log",
+      "sha256": "6f95550e204df71bfd17832f265d6b90b00c340394b06d6de0449007baf6c293"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-capture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-capture/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-backing-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Saved backing processor now rejects linked original source paths, including symlinks to files inside the attempt, so the separately hashed OpenDRIVE map source is a regular retained file. A linked-map negative and 24-test assignment suite pass; test scratch remains under .runtime-work. Pinned preflight and scoped static pass; exact strict exits 1 on truthful partial. Canonical runner/constructions, semantic proposals, Native capture, positive/negative offline/compatibility and independent delivery audit remain CPU work; physical backing, pedestrian visibility and legal right of way unverified."
+  "reason": "NativeBackingRecorder now reads original vehicle/pedestrian transform, velocity and applied control per Native tick, computes pedestrian corridor from the source-bound reverse route, requires four same-world-frame camera images, and writes only a complete 900-row 20 Hz telemetry/frame-map pair. Twenty-six assignment tests, pinned preflight and scoped static pass; exact strict remains partial. It still needs a full CARLA world/actor/camera/video capture runner, canonical two-case bundles and semantic proposals, exact offline/compatibility/process-saved and independent delivery proof; physical backing and pedestrian visibility remain unverified."
 }

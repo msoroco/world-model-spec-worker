@@ -19,7 +19,7 @@ class BundleTest(unittest.TestCase):
 
     def test_native_capture_import_is_cpu_lazy(self):
         from native_capture import CAMERAS
-        self.assertEqual(CAMERAS, ('overview', 'approach', 'property', 'destination'))
+        self.assertEqual(CAMERAS, ('overview', 'approach', 'reference_corner', 'driver_reference'))
 
 
 if __name__ == '__main__':

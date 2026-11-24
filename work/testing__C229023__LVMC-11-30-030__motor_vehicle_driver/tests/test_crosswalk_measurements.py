@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import pathlib
 import subprocess
 import sys
@@ -22,7 +23,7 @@ def body(x, y):
 
 class CrosswalkMeasurements(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        self.temp = tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"])
         self.root = pathlib.Path(self.temp.name)
         self.case = ASSIGNMENT_ID + "__unmarked_pass"
         self.context_path = self.root / "context.json"
@@ -114,6 +115,31 @@ class CrosswalkMeasurements(unittest.TestCase):
         self.receipt["diagnostic_fixture"] = True
         self.write()
         with self.assertRaisesRegex(ValueError, "diagnostic fixture"):
+            self.run_measure()
+
+    def test_boolean_motion_and_geometry_values_rejected(self):
+        for name, value, message in (("frame", True, "frame/time"),
+                                     ("time_s", True, "frame/time"),
+                                     ("ego_speed_mps", True, "speed"),
+                                     ("ego_center", [True, 1], "point")):
+            with self.subTest(name=name):
+                original = self.rows[1][name]
+                self.rows[1][name] = value
+                self.write()
+                with self.assertRaisesRegex(ValueError, message):
+                    self.run_measure()
+                self.rows[1][name] = original
+
+    def test_exact_case_rejects_changed_crossing_or_purpose(self):
+        self.context["crosswalk"]["kind"] = "marked"
+        self.context["crosswalk"]["marking_source"] = "original-marking"
+        self.write()
+        with self.assertRaisesRegex(ValueError, "differs from exact case"):
+            self.run_measure()
+        self.context["crosswalk"]["kind"] = "unmarked"
+        self.context["stopped_vehicle_purpose"]["claim"] = "other"
+        self.write()
+        with self.assertRaisesRegex(ValueError, "differs from exact case"):
             self.run_measure()
 
 

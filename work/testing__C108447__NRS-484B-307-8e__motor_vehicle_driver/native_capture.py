@@ -19,7 +19,7 @@ from PIL import Image
 
 from route_controller import apply_carla_control, steering_command, validate_roadway_route, validate_route
 
-CAMERAS = ('overview', 'approach', 'property', 'destination')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def _require(ok: bool, message: str) -> None:

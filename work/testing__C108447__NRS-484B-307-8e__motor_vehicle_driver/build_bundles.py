@@ -14,11 +14,11 @@ FOLDER = Path(__file__).resolve().parent
 ASSIGNMENT = FOLDER.name
 SOURCES = ('runner.py', 'native_capture.py', 'route_controller.py',
            'property_route.py', 'case_observation.py', 'map_binding.py',
-           'saved_delivery.py', 'comparison_audit.py')
+           'saved_delivery.py', 'comparison_audit.py', 'analysis.py')
 CAMERAS = [('overview', 1920, 1080, 'fixed whole intersection'),
            ('approach', 1280, 720, 'fixed approach signal and body path'),
-           ('property', 1280, 720, 'fixed parcel connector and boundary'),
-           ('destination', 1280, 720, 'fixed intersecting street entry')]
+           ('reference_corner', 1280, 720, 'fixed parcel connector and boundary'),
+           ('driver_reference', 1280, 720, 'fixed intersecting street entry')]
 
 
 def sha(path: Path) -> str:
@@ -89,9 +89,29 @@ def build() -> dict:
         suffix = case_id.rsplit('__', 1)[1]
         path = FOLDER / 'constructions' / (suffix + '.json')
         write(path, construction)
+        from analysis import ROWS
+        dispositions = plan['requirement_dispositions']
+        if len(dispositions) != len(ROWS):
+            raise ValueError('Selected property requirements differ from analysis')
+        contract_path = FOLDER / 'contracts' / (suffix + '.json')
+        write(contract_path, {
+            'format': 'worker-measurement-contract', 'case_id': case_id,
+            'requirements': [
+                {'disposition_index': index, 'requirement': disposition['requirement'],
+                 'source': disposition['source'], 'kind': 'measured',
+                 'method': method, 'output_key': key, 'value_type': 'object',
+                 'inputs': list(inputs)}
+                for index, (disposition, (key, method, inputs))
+                in enumerate(zip(dispositions, ROWS))],
+            'negative': {'remove': ['authority.json'],
+                         'error_contains': 'Missing required source: authority.json'},
+            'unresolved_judgments': ['parcel authority', 'avoidance intent',
+                                     'physical movement', 'legal outcome']})
         manifest['cases'].append({'case_id': case_id, 'kind': 'delivery',
                                   'construction': str(path.relative_to(FOLDER)),
                                   'construction_sha256': sha(path),
+                                  'measurement_contract': str(contract_path.relative_to(FOLDER)),
+                                  'measurement_procedure': {'entrypoint': 'analysis.py'},
                                   'fixture_recipe': str((FOLDER / 'diagnostics' / suffix / 'fixture-recipe.json').relative_to(ROOT)),
                                   'candidate_risk': case['physical_risk_assessment'],
                                   'candidates': [],

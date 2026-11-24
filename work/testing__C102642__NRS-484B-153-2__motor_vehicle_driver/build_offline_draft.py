@@ -97,6 +97,7 @@ def build() -> None:
                  "site_contract.py": (HERE / "site_contract.py").read_text(),
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
                  "carla_adapter.py": (HERE / "carla_adapter.py").read_text(),
+                 "native_runner.py": (HERE / "native_runner.py").read_text(),
                  "door_interaction.py": (HERE / "door_interaction.py").read_text(),
                  "delivery_measure.py": (HERE / "delivery_measure.py").read_text(),
                  "delivery_audit.py": (HERE / "delivery_audit.py").read_text(),

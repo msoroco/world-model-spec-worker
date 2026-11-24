@@ -62,3 +62,16 @@ The prior history checked that the bicycle or scooter actor ID stayed consistent
 Two new negative tests cover a changed rider before acquisition sealing and a resealed changed rider during saved finalization. The full focused suite passes 25 tests (`cpu-rider-person-tests.log`, SHA-256 `87885ee7d2ce7b3e1e862dbbc1275a254734dbfd348181d3be718f68fb501331`). Pinned preflight passes (`cpu-rider-person-preflight.log`, SHA-256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`); scoped static passes (`cpu-rider-person-static.log`, SHA-256 `f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366`). Exact scoped strict exits 1 on truthful partial status (`cpu-rider-person-strict.log`, SHA-256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`). Commands and hashes are in `result.json`.
 
 Next CPU work remains a source-bound Native rider adapter and runner, six exact bundles, composed source media and full decode, selected-requirement compatibility, semantic proposals/manifest and canonical delivery/comparison acceptance receipts. Physical mounted state and due-care judgment remain subject to later original review.
+
+## Sealed original video composition and saved decode, 2026-11-24
+
+`video_media.py` composes each of the four source-hashed 900-frame PNG archives into lossless 20 Hz FFV1 video without substituting frames. It rejects changed archives and symlink or escaping sources, verifies source dimensions and frame count with FFprobe, fully decodes with FFmpeg, and SHA-seals the four-video manifest. `delivery_audit.audit_saved` now optionally requires an externally supplied video-manifest hash, independently redecodes all four videos and checks exact case/duration before reporting `full_video_decode: true`. Its PNG-only path remains `false`. Small 2×2 CPU fixtures test composition, changed video bytes and changed original archive; no rider visibility or physical/legal acceptance is claimed.
+
+Pinned preflight, 28 focused tests and scoped static passed. Exact scoped strict exited 1 on truthful partial. New SHA-bound logs:
+
+- `cpu-video-preflight.log` SHA256 `97d2c1ffb850c94a84059cef261c8a31cb569a80786f45bd6dc82022c6419e97` exit 0.
+- `cpu-video-tests.log` SHA256 `efccc524ac1f9bc038ce2e07b93d0bcdcdb69c27b5ea57e0016a9cb8e98337f6` exit 0.
+- `cpu-video-static.log` SHA256 `f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366` exit 0.
+- `cpu-video-strict.log` SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` exit 1.
+
+Remaining CPU work: reviewed Native site and rider adapter, six exact runnable construction bundles, semantic proposals and execution manifest, offline and positive/negative compatibility proofs, and canonical independent delivery/comparison receipts.

@@ -68,7 +68,7 @@ def build(site_path: str | Path, *, crosswalk_kind: str, ego_behavior: str) -> d
         combined_half_width = site.get("combined_vehicle_half_width_m")
         if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0
                for v in (ego_half_width, combined_half_width)):
-            raise ValueError("positive source vehicle half widths required")
+            raise ValueError("positive site vehicle half widths required")
         if not road[0] + ego_half_width <= pass_y <= road[1] - ego_half_width:
             raise ValueError("passing vehicle footprint leaves road bounds")
         if abs(pass_y - lead[1]) < combined_half_width:

@@ -62,3 +62,23 @@ The saved-media command line now accepts an exact source-hashed manifest, requir
 - `cpu-bundles-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
 - `cpu-bundles-static.log` SHA256 `d335ac8877e30febadcb5366d0c1d9ab7b2949d3897022e1d86298fe7ffec1e4`.
 - `cpu-bundles-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
+
+## 2026-11-24 synchronized four-view capture checkpoint
+
+`camera_capture.py` requires four distinct original Native camera sensors and one BGRA frame from each on every event tick. It rejects missing or reused sensors, stale/misaligned frames, non-Native sources, invalid pixels and changing dimensions; four FFV1 streams and a 900-frame manifest are source-hashed. `native_session.py` records cameras on the event tick callback, runs independent full FFmpeg decode of all four videos before writing its receipt, and cleans up encoders and the spawned ego on failure. All six exact diagnostic bundles carry this implementation. The operator must still supply a reviewed site, a Native event/camera adapter, actual source footage and pixel review; these CPU tests make no physical or legal acceptance claim.
+
+Pinned preflight, 29 focused tests, six exact offline checks and scoped static passed. Exact scoped strict exited 1 on truthful partial status. New SHA-bound logs in `result.json.tests`:
+
+- `cpu-camera-build.log` SHA256 `b79e7729570b9217e7d2c99557393d9657190f277abd6ec82ff4b2bf49436d0a` exit 0.
+- `cpu-camera-preflight.log` SHA256 `9006dc6b66d3a3050d354f51650c2255b5b94e53135161e0735bdf3430658604` exit 0.
+- `cpu-camera-tests.log` SHA256 `8db53208f8a4f05bdec3f7128f28aee660b0882ecfc7be35d9a4196bbcde805c` exit 0.
+- `cpu-camera-offline-two_cycles_clear.log` SHA256 `5cefc983f0ca7225f4a1d9bd04fd261f05eb63babaabbc4c7ddf38253e401a4d` exit 0.
+- `cpu-camera-offline-one_cycle_entry.log` SHA256 `3128e232e89e443e8dcf8cc8f26357e9a170116c3ecfea26a477418cd29a5906` exit 0.
+- `cpu-camera-offline-rolling_entry.log` SHA256 `4ea828fc853804c1163dcd50333894148b05018a07242082bc97b089808bfed6` exit 0.
+- `cpu-camera-offline-no_causal_record.log` SHA256 `567496240fb13ee55890b1fae59f1602aefc2d9e540edc41e2c71ecbab953463` exit 0.
+- `cpu-camera-offline-pedestrian_crosswalk.log` SHA256 `ef4ebe369d629ea40e178510c2c96e43b7f4a93e867989dde891e3a3ced261df` exit 0.
+- `cpu-camera-offline-lawful_traffic.log` SHA256 `360681879cec80cccfce7d485be4feea4df4d5398e10f14e66e261c307a28a49` exit 0.
+- `cpu-camera-static.log` SHA256 `d335ac8877e30febadcb5366d0c1d9ab7b2949d3897022e1d86298fe7ffec1e4` exit 0.
+- `cpu-camera-strict.log` SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` exit 1.
+
+Remaining CPU work: source-surveyed composite head, stop hierarchy and detector/malfunction evidence; concrete operator-owned CARLA adapter and actual synchronized footage; canonical semantic proposals and manifest; positive/negative compatibility; saved-only delivery and independent review receipts.

@@ -54,6 +54,9 @@ class FourViewRecorder:
         views = self.adapter.read_views(frame)
         if not isinstance(views, dict) or set(views) != set(VIEWS):
             raise CameraCaptureError('four original camera views required')
+        sensor_ids = [views[name].get('sensor_id') for name in VIEWS]
+        if any(not isinstance(value, str) or not value for value in sensor_ids) or len(set(sensor_ids)) != 4:
+            raise CameraCaptureError('four distinct Native camera sensors required')
         for name in VIEWS:
             item = views[name]
             if not isinstance(item, dict) or item.get('source_kind') != 'native_camera_sensor':
@@ -101,8 +104,13 @@ class FourViewRecorder:
         failures = []
         for name, process in self.processes.items():
             if process.stdin and not process.stdin.closed:
-                process.stdin.close()
+                try:
+                    process.stdin.close()
+                except BrokenPipeError:
+                    pass
             stderr = process.stderr.read() if process.stderr else b''
+            if process.stderr:
+                process.stderr.close()
             code = process.wait()
             if code:
                 failures.append(f'{name}: {stderr.decode(errors="replace")[:200]}')

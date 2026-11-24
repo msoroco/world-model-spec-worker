@@ -17,9 +17,9 @@ from PIL import Image
 from case_observation import audit_case
 from property_route import analyze_files
 
-CAMERAS = ('overview', 'approach', 'property', 'destination')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 PROFILE = {'overview': (1920, 1080), 'approach': (1280, 720),
-           'property': (1280, 720), 'destination': (1280, 720)}
+           'reference_corner': (1280, 720), 'driver_reference': (1280, 720)}
 
 
 def require(ok: bool, message: str) -> None:

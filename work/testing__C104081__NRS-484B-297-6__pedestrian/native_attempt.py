@@ -33,7 +33,7 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
                        survey_sha256: str, adapter, source_reader_factory,
                        camera_recorder, output: Path, *, restore_api,
                        camera_profile_sha256: str, traffic_plan_sha256: str,
-                       pedestrian_blueprint: str) -> dict:
+                       pedestrian_blueprint: str, camera_rig=None) -> dict:
     """Capture, audit, destroy owned actors and verify original world restore.
 
     ``restore_api`` is the pinned runtime worker_exchange.world_restore module.
@@ -91,6 +91,11 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
                     adapter.destroy(handle)
                 except BaseException as exc:
                     cleanup_errors.append(f"actor destruction: {exc}")
+        if camera_rig is not None:
+            try:
+                camera_rig.close()
+            except BaseException as exc:
+                cleanup_errors.append(f"camera actor destruction: {exc}")
         try:
             restored = restore_api.restore(client, saved)
             if restored.get("restored") is not True:

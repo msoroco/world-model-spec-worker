@@ -173,3 +173,9 @@ Five focused reciprocal-live tests cover same-tick readback, alias rejection, wa
 - `tests/test_reciprocal_native_capture.py` SHA256 `32f0cb2e446425d18c635408d234df19f34eb74f9385d9c23a1da7c56420c205`
 
 Pinned preflight, existing reciprocal offline construction and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: inline bundle wiring and regenerated compatibility/process-saved receipts for both reciprocal cases, followed by canonical delivery integration.
+
+## 2026-11-24 reciprocal production entrypoint checkpoint
+
+`reciprocal_entrypoint.py:run_native` is the lazy local CARLA CLI for the two exact reciprocal cases. It rejects a diagnostic or unreviewed map, a nonreciprocal case and a nonempty attempt before opening a client, then delegates the reviewed-map request to the seven-actor `reciprocal_live.run` scene and capture path. This connects the previously separate later-actor source capture to a callable production entrypoint; it does not assert successful physical motion or source acceptance.
+
+The 93-test focused suite, pinned preflight, existing reciprocal_yield exact offline construction and scoped static passed. Exact scoped strict exited 1 on truthful partial status. Five SHA-bound logs are in `result.json`. Remaining CPU work: embed this entrypoint and reciprocal saved finalizer into both exact inline bundles, regenerate offline/positive-negative compatibility/process-saved proofs, expand feasible physical sweeps and complete canonical delivery integration.

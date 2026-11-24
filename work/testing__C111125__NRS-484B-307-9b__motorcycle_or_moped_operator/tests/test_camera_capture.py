@@ -18,6 +18,7 @@ class Adapter:
 
     def read_views(self, frame):
         return {name: {'source_kind': 'native_camera_sensor',
+                       'sensor_id': name + '-sensor',
                        'frame': frame + (1 if name == self.bad_frame else 0),
                        'width': 16, 'height': 16,
                        'bgra': bytes((frame % 256, 30, 60, 255)) * 256}
@@ -62,6 +63,19 @@ class CameraCaptureTests(unittest.TestCase):
         recorder.record({'frame': 10})
         with self.assertRaisesRegex(CameraCaptureError, 'incomplete'):
             recorder.finish()
+        recorder.abort()
+
+    def test_reused_sensor_rejected(self):
+        adapter = Adapter()
+        original = adapter.read_views
+        def reused(frame):
+            views = original(frame)
+            views['approach']['sensor_id'] = views['overview']['sensor_id']
+            return views
+        adapter.read_views = reused
+        recorder = FourViewRecorder(self.root, adapter, 'exact-case')
+        with self.assertRaisesRegex(CameraCaptureError, 'distinct Native camera sensors'):
+            recorder.record({'frame': 0})
         recorder.abort()
 
 

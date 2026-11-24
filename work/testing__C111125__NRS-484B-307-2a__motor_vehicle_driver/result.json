@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver",
   "input_sha256": "d0b28463b250a5ea0a6980c21da20a27580aa54714fc8dfac70b67fee6fd0e9f",
   "status": "partial",
-  "readiness_kind": "original_four_camera_lossless_recorder_cpu_draft",
+  "readiness_kind": "original_event_camera_media_join_cpu_draft",
   "applied_update": 0,
   "tests": [
     {
@@ -28,10 +28,34 @@
       "exit_code": 1,
       "log": "cpu-recorder-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-session-preflight.log",
+      "sha256": "a3a56efdb818eee16f50801fbdae2f110b6506eff664ff6a67a41191b03e4996"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-session-tests.log",
+      "sha256": "48ad3f7146069db6fdbb540a1d3d0e253c78ff1319ed5dc0755f5b78c676262c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-session-static.log",
+      "sha256": "48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-session-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "CARLA-lazy four-camera callback recorder now checks original Native frame identity and production dimensions, saves ordered PNGs, encodes lossless 20 Hz FFV1 videos, and seals each output hash. Twenty-three focused tests, pinned preflight and scoped static pass; no exact offline bundle/manifest exists yet. Owner runner wiring, source-reviewed site/profile, selected-requirement finalizer and diagnostic recipes, semantic proposals, compatibility/process-saved and independent delivery/comparison receipts remain CPU work. Exact scoped strict rejects truthful partial."
+  "reason": "Native session bridge now joins 900-tick circular-green event and four-camera acquisition, source-hashed profile/context/frame map, lossless media refs and independent full-decode audit into one saved attempt. A complete media receipt is published only after audit passes; failure retains truthful incomplete event receipt. Pinned preflight, 26 focused tests and scoped static pass. Exact construction bundles, canonical semantic proposals/manifest, offline/compatibility proofs, reviewed physical site and original footage remain CPU work; exact strict rejects truthful partial."
 }
