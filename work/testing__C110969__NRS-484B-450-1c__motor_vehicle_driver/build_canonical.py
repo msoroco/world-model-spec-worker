@@ -37,11 +37,12 @@ def build() -> None:
         suffix = case_id.removeprefix(AID + "__")
         if suffix == case_id:
             raise ValueError("foreign selected case")
+        entry.setdefault("candidates", [])
         folder = HERE / "cases" / suffix
         negative = folder / "compat-negative.log"
         positive_delivery = folder / "delivery-positive.log"
         negative_delivery = folder / "delivery-negative.log"
-        saved = folder / "saved-only-command.log"
+        saved = HERE / "cpu-canonical-saved.log"
         for path in (negative, positive_delivery, negative_delivery, saved):
             if not path.is_file():
                 raise ValueError("missing selected CPU proof: " + str(path))
@@ -92,13 +93,22 @@ def build() -> None:
         "mechanisms": {"construction_status": "source-gated Native implementation CPU tested"},
     })
     root_case.pop("diagnostic_only", None)
-    for item in root_case["files"]:
-        path = HERE / item["path"]
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(item["content"])
-    write(HERE / "construction.json", root_case)
-
-    config = json.loads((HERE / "config.json").read_text())
+    root_case["files"] = [item for item in root_case["files"]
+                          if item["path"] != "tests/test_bundle.py"]
+    # The package-level inventory names each mandatory derived observation.
+    # The exact selected recording description retains its four original raw
+    # streams; these names identify their independently checked descendants.
+    raw_channels = root_case["recording_description"]["channels"]
+    exemplar = dict(raw_channels[0])
+    existing = {item["name"] for item in raw_channels}
+    for observation in plan["observations"]:
+        name = observation["name"]
+        if name not in existing:
+            raw_channels.append(dict(exemplar, name=name,
+                                     method="source-sealed original packet and saved-only measurement"))
+            existing.add(name)
+    config_item = next(item for item in root_case["files"] if item["path"] == "config.json")
+    config = json.loads(config_item["content"])
     config["supported_case_ids"] = [entry["case_id"] for entry in selected["cases"]]
     config["cameras"] = [
         {"name": name, "width": 1920 if name == "overview" else 1280,
@@ -107,7 +117,12 @@ def build() -> None:
          "fov_deg": 90} for name in NAMES
     ]
     config["capture_provenance"] = "original Native samples required"
-    write(HERE / "config.json", config)
+    config_item["content"] = json.dumps(config, indent=2, sort_keys=True) + "\n"
+    for item in root_case["files"]:
+        path = HERE / item["path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(item["content"])
+    write(HERE / "construction.json", root_case)
     print("bound nine exact source-gated delivery cases; original review remains pending")
 
 

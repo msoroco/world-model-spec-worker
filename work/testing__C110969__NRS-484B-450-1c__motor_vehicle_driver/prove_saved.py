@@ -9,7 +9,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-MANIFEST = ROOT / 'execution-manifest.candidate.json'
+MANIFEST = ROOT / 'execution-manifest.json'
 VALIDATOR = REPO / '.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
 SCRATCH = REPO / '.runtime-work/c110969-saved-proof'
 SUFFIXES = ('outside_reference', 'inside_stop', 'inside_stand', 'inside_park',

@@ -2,12 +2,12 @@
   "applied_update": 0,
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "f284bffb1992eb71aa3dc8fd755986eb28718589d69f1470e660ce06c4f6cc1a",
-  "readiness_kind": "partial_pinned_native_result_projection",
-  "reason": "Three exact source-bound diagnostic compatibility runs and post-bind saved-only replays pass, including 900 joins, four-camera render/final decode, Core/Lean, original-source preservation and missing-source negative checks. Independent speed comparison, exact offline bundles, three-case synthetic physical outcome triads and lifecycle closure proofs pass. CPU readiness still needs camera-plan rebind and final readiness validation. Frozen reviewed route/access-aisle originals remain absent; no physical or legal acceptance is claimed. Exact scoped strict gate exits 1 on truthful partial status.",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
@@ -740,6 +740,43 @@
       "exit_code": 0,
       "log": "cpu-rebind-compat-fallback1-above-receipt.json",
       "sha256": "8953438a51da61f66de17674eee3d9067f32681e344695366a1029f13338e005"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --attempt .runtime-work/c10301-next/rebind-acq-primary-below --output .runtime-work/c10301-next/rebind-saved-primary-below --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-rebind-saved-primary-below.log",
+      "sha256": "32b30587a6bc86b95034f538d8a2c7974f39bf365cde80a854ac8ebd4dad380b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --attempt .runtime-work/c10301-next/rebind-acq-fallback1-below --output .runtime-work/c10301-next/rebind-saved-fallback1-below --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-rebind-saved-fallback1-below.log",
+      "sha256": "55a280eafc871e7be1ce66475ce22673fa15727cf49db11ea79ec265f94fb325"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --attempt .runtime-work/c10301-next/rebind-acq-primary-equal --output .runtime-work/c10301-next/rebind-saved-primary-equal --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-rebind-saved-primary-equal.log",
+      "sha256": "5a89d572ee3e0d9f869c7b86b0e594bbfdb2d7fb88146dd8cffd56b9f4bd7854"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --attempt .runtime-work/c10301-next/rebind-acq-fallback1-equal --output .runtime-work/c10301-next/rebind-saved-fallback1-equal --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-rebind-saved-fallback1-equal.log",
+      "sha256": "ce7fa1458eb4dc702307c853ab10c7a76aa3416c84f1a51b5cd43f734acc882e"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --attempt .runtime-work/c10301-next/rebind-acq-primary-above --output .runtime-work/c10301-next/rebind-saved-primary-above --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-rebind-saved-primary-above.log",
+      "sha256": "50b54af78870db0f7895d859ff7563ed5cb64749df5bf9b767d8cc043d75db4f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --attempt .runtime-work/c10301-next/rebind-acq-fallback1-above --output .runtime-work/c10301-next/rebind-saved-fallback1-above --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-rebind-saved-fallback1-above.log",
+      "sha256": "e03deca970a8b2c17a071cd54146fbae52cceaeb23883a04e24e75fc08c4ed1d"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

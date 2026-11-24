@@ -64,3 +64,20 @@ module, CARLA server, Unreal editor, or imported signal `.uasset`. An actual
 probe receipt therefore remains to be produced by the local CARLA operator and
 reviewed with original rendered pixels before the selected Native source packet
 can identify a real asset.
+
+After obtaining both the staged original-source draft and a real probe receipt,
+bind their exact hashes before independent review:
+
+```sh
+.venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/source-kit/bind_asset_probe.py \
+  "$PWD/.runtime-work/c147332-source-draft/draft-context.json" \
+  "$PWD/.runtime-work/c147332-native-asset-probe.json" \
+  "$PWD/.runtime-work/c147332-source-draft/probe-binding.json"
+```
+
+The binding rejects changed originals or an altered probe and remains
+`pending_independent_review`. The reviewer must inspect both originals, the
+actual imported device and original rendered pixels, and establish the
+site/gantry/approach/lane association. Only then may a reviewed source packet
+be retained and used through `C147332_REVIEWED_SOURCE_PACKET`. The binding
+itself is neither a reviewed source packet nor a physical receipt.

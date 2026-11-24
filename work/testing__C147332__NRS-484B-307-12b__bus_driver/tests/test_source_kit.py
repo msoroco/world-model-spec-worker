@@ -8,12 +8,54 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "source-kit"))
 from acquire_source_packet import stage
 from probe_native_asset import probe
+from bind_asset_probe import bind
 
 
 KIT = Path(__file__).resolve().parents[1] / "source-kit"
 
 
 class SourceKitTest(unittest.TestCase):
+    def test_asset_probe_binding_preserves_pending_review_and_source_bytes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            site = {"route": "fixture route", "travel_direction": "northbound",
+                    "milepost_or_cross_streets": "fixture marker",
+                    "gantry_or_device_id": "fixture gantry",
+                    "bus_approach": "fixture bus approach", "governed_lane": "red_lane"}
+            for name in ("highway", "official_device"):
+                (root / (name + ".source")).write_text(name + " fixture bytes")
+            from hashlib import sha256
+            draft = {"format": "worker-red-x-source-draft-v1",
+                     "review_status": "pending_independent_review", "site": site}
+            for name in ("highway", "official_device"):
+                source = root / (name + ".source")
+                draft[name] = {"source_path": source.name,
+                               "source_sha256": sha256(source.read_bytes()).hexdigest(),
+                               "reviewer": None}
+            draft_path, probe_path, output = (root / "draft-context.json",
+                                               root / "probe.json", root / "binding.json")
+            draft_path.write_text(json.dumps(draft))
+            receipt = {"blueprint_id": "static.fixture_red_x", "attribute": "display_state",
+                       "red_x_value": "red_x", "blueprint_readback": True,
+                       "rendered_pixels_reviewed": False,
+                       "official_device_design_reviewed": False}
+            probe_path.write_text(json.dumps(receipt))
+            binding = bind(draft_path, probe_path, output)
+            self.assertEqual(binding["review_status"], "pending_independent_review")
+            self.assertEqual(binding["native_asset_blueprint_id"], receipt["blueprint_id"])
+            self.assertIn("rendered_red_x_pixels", binding["review_required"])
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                bind(draft_path, probe_path, output)
+            receipt["rendered_pixels_reviewed"] = True
+            probe_path.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError, "unreviewed red-X blueprint"):
+                bind(draft_path, probe_path, root / "changed.json")
+            receipt["rendered_pixels_reviewed"] = False
+            probe_path.write_text(json.dumps(receipt))
+            (root / "official_device.source").write_text("changed source")
+            with self.assertRaisesRegex(ValueError, "missing or changed"):
+                bind(draft_path, probe_path, root / "changed.json")
+
     def test_imported_blueprint_probe_checks_mutable_red_x_state(self):
         class Attribute:
             is_modifiable = True
