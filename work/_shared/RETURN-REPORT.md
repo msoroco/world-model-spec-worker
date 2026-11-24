@@ -1,6 +1,6 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 19 of 253 assignments are ready and 234 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 21 of 253 assignments are ready and 232 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
 
@@ -1732,3 +1732,31 @@ The shared ordered queue builder/auditor now compare selected counts only when `
 Hygiene at 10:56 UTC: 60,107 returned files scanned; none exceeds its 2 MiB limit (queue uses the allowed 5 MiB limit), and no temporary/cache directories were found under `work/`. The text scan found no trailing whitespace. Exact conflict-marker search found none; standard unittest separator lines of many `=` characters are log content, not merge markers.
 
 C110919/NRS-484B-307-2a owner has expanded selected construction observation channels from 10 to 17 to cover all frozen source terms. Six selected current-runtime offline checks pass. The controlled_1 primary public positive, removed-source negative and recorded-only saved processing pass with 600 frames. Canonical six-stage semantic delivery validation passes for two selected cases while the lawful-presence judgment remains explicitly unresolved. Remaining selected public/saved matrix, physical and delivery receipts are in progress; status stays partial.
+
+## 2026-11-24 11:07 UTC assignment 230 promotion
+
+C131364/LVMC-11-43-010-C1 roundabout is `ready/delivery_prepared` with two exact selected left-exit lane witnesses and one fallback each. The owner refreshed source-shaped lane readback and the retained roundabout-route observation channel, then passed four exact 600-frame offline/public positive/missing-source negative/recorded-only saved chains, selected source audit, semantic, delivery, package and scoped strict readiness twice. Lead independently verified manifest SHA-256 `7dea33dfccdea1bcf879f096913b6c173c0d75eab9f9fe68fe1819cb88800a1a`, all four public receipts (11 checks each), all four saved receipts (`passed:true`, `recorded_only:true`, `missing_evidence:false`), reran source and semantic audits, and reran the exact scoped strict gate; it exited 0 with `static_checks_passed:true`. The original Native roundabout, lane occupancy, pixels, intended exit and legal review remain local checks. Status is truthful CPU preparation, not physical acceptance. The owner moved to C229398/LVMC-11-52-060 in partition 00.
+
+Current inventory is 20 ready and 233 partial. The ordered queue was rebuilt after the promotion and index194 selected-candidate changes; deterministic builder check and independent audit pass (755 cases, 354 comparisons, zero dispatchable; SHA-256 `555d35a3c9cb61ee8b55e6a09b881ef00b94fdf359817138064408602cd67cba`).
+
+## 2026-11-24 11:11 UTC assignment 194 promotion
+
+C110919/NRS-484B-307-2a right turn under circular green is `ready/delivery_prepared`. Two selected controlled cases and four source-preserving fallbacks have 600-frame current-runtime offline/public positive/missing-source negative/recorded-only saved proofs. All six retained public receipts list 11 checks; saved receipts are recorded-only with no missing evidence. The owner completed canonical six-stage semantic validation, physical diagnostic fixtures, independent delivery and comparison audits (+1.05 versus -0.75 s synthetic clearance), and source-shaped Native physical-review branch tests that reject stale review and missing camera. After the final delivery script and manifest rebinding, the owner exact scoped strict gate passed. Lead independently inspected the prior stable six receipts, reran semantic, selected comparison and case1 delivery audit, then reran the exact scoped strict gate on the frozen final files; it exited 0 with `static_checks_passed:true`. Final manifest SHA-256 `27bc60089f23657d40c0e1bf5622071a26caecd920612224608e50d41b7603a9`; result SHA-256 `baf5c0be4c45d7077e2e1aeeb3417db93e55ddbf7e06552074d24d2679964c00`; HANDOFF SHA-256 `91ee9940dffbfa5152f32f2f071508d63381de80e61861f8a56081e81acd1861`. No original signal/user/yield/pixel or legal acceptance is claimed. Owner moved to C104393/NRS-484B-413-2 in partition 05.
+
+Current inventory is 21 ready and 232 partial. Ordered queue build, deterministic check and independent audit pass after this promotion: 755 cases, 354 comparisons, zero dispatchable; SHA-256 `eb7e66a068456caac3973cfb29085e3e4256c7b705d11fa93ef10ba6d1ecacf5`.
+
+C110763/NRS-484B-113-2 owner propagated canonical source recording descriptions to all eight selected constructions. First three current-runtime reproof chains are complete, semantic index validates eight stages/two selected cases, and physical diagnostic receipts are rebound. Remaining five chains, runner/construction and selected acceptance/comparison bindings remain active CPU work; status partial. C229398/LVMC-11-52-060 owner confirmed the prior selected manifest bound an older runtime, so it is rebinding and replaying current pinned proofs. Status partial.
+
+## 2026-11-24 11:15 UTC active owner checkpoints
+
+C110763/NRS-484B-113-2 has four refreshed condition_a selected chains passing pinned offline, current public positive/source-negative and recorded-only saved processing; independent delivery audit passes the primary and rejects missing Native source. Refreshed root Native bundle and four-camera/source-observation plan pass four root unit tests. Condition_b reproof and final acceptance bindings are still running; status partial.
+
+C229398/LVMC-11-52-060 current-runtime cutover uncovered that an older decoder binary rejects the active `limousine` ontology value. The owner built the exact active TrafficSpec Lean decoder under `.runtime-work/`; three selected primary current-runtime offline/public positive/negative/recorded-only saved chains now pass and nine fallback chains are running. Status partial. C104393/NRS-484B-413-2 owner found the selected manifest bound an older runtime source SHA and is rebuilding recipes/receipts against the active runtime; status partial.
+
+Returned-work hygiene scan after these owner updates inspected 60,231 files: zero oversize files, zero temp/cache directories under `work/`, and zero textual trailing-whitespace lines. An exact merge-marker search earlier in this turn found none. The full batch strict gate remains unpassed while 232 assignments are partial; no ready status is inferred from these intermediate diagnostics.
+
+## 2026-11-24 11:19 UTC cutover correction
+
+C110763/NRS-484B-113-2 reached 7/8 refreshed candidate paths and both selected primary delivery audits plus an independent 0-versus-3.52 m² body-overlap comparison. Before readiness, direct execution-manifest validation found the selected manifest still declared an older runtime SHA (`ade64f...` instead of active `5e2dd81...`). The owner is rebinding that assignment manifest and rerunning exact compatibility/saved receipts; the prior 7/8 run is historical. Status remains partial.
+
+C104393/NRS-484B-413-2 first current-runtime primary exposed a historical synthetic trace missing original-form `velocity_mps` needed by the measured-speed overlay. The owner added source-shaped velocity vectors to its local generator, rebound recipe/source hashes, and is rerunning the exact public primary. Status remains partial.

@@ -39,32 +39,20 @@ def main():
         for ref in [entry] + entry["candidates"]:
             candidate = ref["id"]
             key = f"{label}-{candidate}"
-            if key == "a-primary":
-                attempt = SCRATCH / "compat-a-primary-v5"
-                saved = SCRATCH / "saved-a-primary"
-                offline = run(["offline", "--manifest", MANIFEST, "--case", case,
-                               "--candidate", candidate,
-                               "--output", SCRATCH / "offline-a-primary-final"],
-                              HERE / "owner104-offline-a-primary-final.log")
-                compatibility = {"log": "owner104-compat-a-primary-v5.log",
-                                 "log_sha256": sha(HERE / "owner104-compat-a-primary-v5.log"), "exit_code": 0}
-                saved_proof = {"log": "owner104-saved-a-primary.log",
-                               "log_sha256": sha(HERE / "owner104-saved-a-primary.log"), "exit_code": 0}
-            else:
-                offline_output = SCRATCH / f"offline-{key}-final"
-                attempt = SCRATCH / f"compat-{key}-final"
-                saved = SCRATCH / f"saved-{key}-final"
-                offline = run(["offline", "--manifest", MANIFEST, "--case", case,
-                               "--candidate", candidate, "--output", offline_output],
-                              HERE / f"owner104-offline-{key}-final.log")
-                compatibility = run(["compatibility", "--manifest", MANIFEST, "--case", case,
-                                     "--candidate", candidate, "--output", attempt,
-                                     "--library", ROOT / "runtime/library", "--validator", VALIDATOR],
-                                    HERE / f"owner104-compat-{key}-final.log")
-                saved_proof = run(["process-saved", "--manifest", MANIFEST, "--case", case,
-                                   "--attempt", attempt, "--output", saved,
-                                   "--library", ROOT / "runtime/library", "--validator", VALIDATOR],
-                                  HERE / f"owner104-saved-{key}-final.log")
+            offline_output = SCRATCH / f"offline-{key}-v2"
+            attempt = SCRATCH / f"compat-{key}-v2"
+            saved = SCRATCH / f"saved-{key}-v2"
+            offline = run(["offline", "--manifest", MANIFEST, "--case", case,
+                           "--candidate", candidate, "--output", offline_output],
+                          HERE / f"owner104-offline-{key}-v2.log")
+            compatibility = run(["compatibility", "--manifest", MANIFEST, "--case", case,
+                                 "--candidate", candidate, "--output", attempt,
+                                 "--library", ROOT / "runtime/library", "--validator", VALIDATOR],
+                                HERE / f"owner104-compat-{key}-v2.log")
+            saved_proof = run(["process-saved", "--manifest", MANIFEST, "--case", case,
+                               "--attempt", attempt, "--output", saved,
+                               "--library", ROOT / "runtime/library", "--validator", VALIDATOR],
+                              HERE / f"owner104-saved-{key}-v2.log")
             receipt_path = attempt / "compatibility.json"
             receipt = json.loads(receipt_path.read_text())
             if not receipt["passed"] or receipt["construction_sha256"] != ref["construction_sha256"]:

@@ -11,7 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
 from worker_exchange import media
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -160,8 +160,8 @@ def selftest(case, negative=False):
                   if x['case_id'] == case), None)
     require(entry is not None and entry['kind'] == 'delivery', 'Exact selected case missing')
     feet = int(case.split('__')[-1])
-    spec = read(HERE / f'diagnostic-{feet}.json')
-    receipt_name = f'current-{feet}-saved-processing-receipt.json'
+    spec = read(HERE / f'current-{feet}-graph.json')
+    receipt_name = f'current-active-{feet}-primary-saved-receipt.json'
     receipt = read(HERE / receipt_name)
     require(receipt.get('passed') is True and receipt.get('case_id') == case and
             receipt.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256'],
