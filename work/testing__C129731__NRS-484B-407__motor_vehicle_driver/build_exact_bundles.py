@@ -137,22 +137,27 @@ if __name__ == '__main__':
 
 def recording_description() -> dict:
     channels = [
-        {"name": name, "unit": "source record", "sampling_rate_hz": 20,
+        {"name": name, "unit": "structured record", "sampling_rate_hz": 20,
          "method": method, "time_window": "45 s original reversal attempt",
          "reference_frame": "original Native frame and elapsed time",
          "uncertainty": "Physical road geometry, motion and pixels require original review"}
         for name, method in (
             ("ego_motion", "Observed ego heading and turn phase"),
+            ("road_geometry", "Original frame-joined curve or crest and terrain geometry"),
+            ("approaching_vehicle_routes", "Original participant and approach-route motion"),
             ("sight_rays", "Nine-point rays from both approach directions to 500 feet"),
+            ("frame_map", "Original synchronized Native and video frame identities"),
             ("frame_join", "Original Native frame and elapsed-time join"),
             ("original_camera_index", "Four frame-joined original RGB views"),
         )]
     return {"channels": channels,
             "context_inputs": [
-                {"name": "road_geometry", "unit": "source record",
-                 "method": "SHA-bound reviewed mountain-road site and loaded OpenDRIVE"},
                 {"name": "case_setup", "unit": "source record",
-                 "method": "Exact reviewed spawn, route, camera and distance setup"}],
+                 "method": "Exact reviewed spawn, route, camera and distance setup"},
+                {"name": "qualified_road_and_vehicle", "unit": "structured record",
+                 "method": "Original road, vehicle and driver context review"},
+                {"name": "actual_driver_view_context", "unit": "structured record",
+                 "method": "Original other-driver position and view context when available"}],
             "limitations": ["Actual reversal, sight lines, full video and legal visibility remain unverified"]}
 
 

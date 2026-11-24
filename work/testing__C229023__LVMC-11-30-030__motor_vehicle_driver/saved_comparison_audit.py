@@ -23,20 +23,17 @@ def _close_xy(left, right, tolerance_m: float = 0.25) -> bool:
     return math.dist(left, right) <= tolerance_m
 
 
-def _recompute(root: Path, case_id: str,
-               fixture_mode: bool = False) -> tuple[dict, dict, dict, list[dict]]:
+def _recompute(root: Path, case_id: str) -> tuple[dict, dict, dict, list[dict]]:
     measured = measure(case_id=case_id, context_path=root / "context.json",
-                       trace_path=root / "trace.jsonl", receipt_path=root / "receipt.json",
-                       fixture_mode=fixture_mode)
-    media = audit_video(directory=root, case_id=case_id, fixture_mode=fixture_mode)
+                       trace_path=root / "trace.jsonl", receipt_path=root / "receipt.json")
+    media = audit_video(directory=root, case_id=case_id)
     context = json.loads((root / "context.json").read_text(encoding="utf-8"))
     trace = _rows(root / "trace.jsonl")
     return measured, media, context, trace
 
 
 def audit(*, left_dir: str | Path, right_dir: str | Path,
-          comparison_id: str, plan_path: str | Path | None = None,
-          fixture_mode: bool = False) -> dict:
+          comparison_id: str, plan_path: str | Path | None = None) -> dict:
     if plan_path is None:
         plan_path = Path(__file__).with_name("case-plan.json")
     plan_raw = Path(plan_path).read_bytes()
@@ -58,9 +55,7 @@ def audit(*, left_dir: str | Path, right_dir: str | Path,
             raise ValueError("saved report exact case differs")
         if report.get("physical_acceptance") != "unverified" or report.get("legal_verdict_claimed") is not False:
             raise ValueError("saved report asserts unsupported physical or legal acceptance")
-        if report.get("diagnostic_fixture") is not fixture_mode:
-            raise ValueError("saved report provenance differs")
-        measured, media, context, trace = _recompute(root, case_id, fixture_mode)
+        measured, media, context, trace = _recompute(root, case_id)
         if report.get("measured_values") != measured or report.get("media") != media:
             raise ValueError("saved report differs from original source recomputation")
         expected_observed = {

@@ -35,11 +35,25 @@ def _recording_evidence(attempt: Path, report: dict, core_supplied: bool) -> lis
     for ray in rays:
         grouped.setdefault(ray["frame"], []).append(ray)
     times = {row["frame"]: row["time_s"] for row in frame_map}
+    road = json.loads((attempt / "road_geometry.json").read_text())
+    approach_path = attempt / "approach_motion.json"
+    approach = json.loads(approach_path.read_text()) if approach_path.is_file() else None
+    approach_by_frame = {row["frame"]: row for row in approach.get("samples", [])} if approach else {}
     channels = {
         "ego_motion": [{"time_s": row["time_s"], "value": row}
                        for row in motion],
         "sight_rays": [{"time_s": times[number], "value": grouped[number]}
                        for number in sorted(grouped)],
+        "road_geometry": [{"time_s": row["time_s"], "value": road}
+                          for row in frame_map],
+        "approaching_vehicle_routes": [
+            {"time_s": row["time_s"],
+             "value": approach_by_frame.get(row["frame"],
+                                             {"source_status": "no_position_sample_at_frame" if approach else
+                                              "baseline_reference_no_approach_probe"})}
+            for row in frame_map],
+        "frame_map": [{"time_s": row["time_s"], "value": row}
+                      for row in frame_map],
         "frame_join": [{"time_s": row["time_s"], "value": row}
                        for row in frame_map],
         "original_camera_index": [
@@ -59,19 +73,23 @@ def _recording_evidence(attempt: Path, report: dict, core_supplied: bool) -> lis
             raise ValueError("Refusing to overwrite derived recording channel")
         destination.write_text("".join(json.dumps(row, separators=(",", ":"),
                                           allow_nan=False) + "\n" for row in rows))
-        evidence.append({"name": name, "unit": "source record",
+        evidence.append({"name": name, "unit": "structured record",
                          "reference": str(destination.relative_to(attempt))})
     contexts = {
-        "road_geometry": json.loads((attempt / "road_geometry.json").read_text()),
         "case_setup": {"selected_case_id": report["case_id"],
                        "source_inventory_sha256": _sha(attempt / "inventory.json")},
+        "qualified_road_and_vehicle": {
+            "source_status": "review_pending", "road_source": _sha(attempt / "road_geometry.json")},
+        "actual_driver_view_context": {
+            "source_status": "review_pending", "legal_visibility_judgment": "unresolved"},
     }
     for name, value in contexts.items():
         destination = folder / (name + ".json")
         if destination.exists():
             raise ValueError("Refusing to overwrite derived recording context")
         destination.write_text(json.dumps({name: value}, allow_nan=False) + "\n")
-        evidence.append({"name": name, "unit": "source record",
+        evidence.append({"name": name, "unit": "source record" if name == "case_setup" else
+                         "structured record",
                          "reference": str(destination.relative_to(attempt))})
     return evidence
 
@@ -193,8 +211,11 @@ def build_canonical_result(attempt: Path, report: dict) -> dict:
                        "physical_cause_confirmed": False,
                        "cause_evidence": {"approach_motion.json": _sha(probe)}})
     description = construction["recording_description"]
-    if not isinstance(description.get("channels"), list) or len(description["channels"]) != 4:
-        raise ValueError("Four declared Native recording channels required")
+    declared = {channel.get("name") for channel in description.get("channels", [])}
+    required = {"ego_motion", "sight_rays", "road_geometry", "approaching_vehicle_routes",
+                "frame_map", "frame_join", "original_camera_index"}
+    if not required <= declared or len(declared) != len(description["channels"]):
+        raise ValueError("Required Native recording channels missing")
     evidence = _recording_evidence(attempt, report, core_supplied)
     result = {"case_id": report["case_id"],
               "measured_values": {key: item["value"] for key, item in values.items()},

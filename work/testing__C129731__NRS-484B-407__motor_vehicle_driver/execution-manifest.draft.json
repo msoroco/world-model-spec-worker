@@ -28,15 +28,33 @@
         "reason": "Original mountain-road reversal clearance and 500-foot route stations require source review and physical validation.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
+            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
+          ],
+          "construction": "construction-fallback1-distance_reference.json",
+          "construction_sha256": "8e6595868e3439c5299e141503dc91761e99e53c85e7f1d7781d226ec558db09",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_reference-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "8e6595868e3439c5299e141503dc91761e99e53c85e7f1d7781d226ec558db09",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-distance_reference.log",
+            "log_sha256": "f019547ed50a8503d178924f99956c225c7464adcdacd9f193e74858b81d2201"
+          },
+          "trigger": {
+            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation",
+            "metric": "observed reversal completion and route-control saturation",
+            "source": "original turn_history.jsonl and trace.jsonl"
+          }
+        }
+      ],
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
-      "compatibility": {
-        "log": "cpu-compat-analysis-distance_reference.log",
-        "receipt": "cpu-compatibility-distance_reference.json",
-        "sha256": "11efef0246a0037a9d5e645544e864b2f522d16d14d62fe2bd4eeffed9f2d84f"
-      },
       "compatibility_status": "pinned_900_frame_diagnostic_positive_negative_passed_original_native_pending",
       "construction": "construction-distance_reference.json",
-      "construction_sha256": "c970878cc929e0930a2d2379ab6d16fe79b3c27d5b4ac043746d3cdc6650fdda",
+      "construction_sha256": "3b5e1bee2ee0a5a4b97b78bac9d79caa0700b772fe4dcfc580f4fb45725b3b5e",
       "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/fixtures/distance_reference/core-fixture-recipe.json",
       "fixture_recipe_draft": "fixtures/distance_reference/fixture-recipe.json",
       "measurement_contract": "selected-measurement-contract.draft.json",
@@ -47,33 +65,17 @@
       "negative": {
         "log": "negative-compat-distance_reference.log"
       },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference --output .runtime-work/c129731-offline-distance_reference-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "3b5e1bee2ee0a5a4b97b78bac9d79caa0700b772fe4dcfc580f4fb45725b3b5e",
+        "exit_code": 0,
+        "log": "cpu-offline-distance_reference.log",
+        "log_sha256": "0ae53605fa92bf6840636bec29fdc151ee07a927453629fef0b3dad081d62d72"
+      },
       "physical_preparation": {
         "receipt": "physical-distance_reference-preparation.json",
-        "sha256": "673b5d37e359336d30eb9d992bc4c8a15b39d0ea66448a326c9c83ee94e0e0ac"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "construction-fallback1-distance_reference.json",
-          "construction_sha256": "288a93cf7cde45cf73794538551bb6c850251f3dbb7290abbed834731014297b",
-          "trigger": {
-            "source": "original turn_history.jsonl and trace.jsonl",
-            "metric": "observed reversal completion and route-control saturation",
-            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation"
-          },
-          "changed_knobs": [
-            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
-            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
-          ],
-          "offline": {
-            "exit_code": 0,
-            "construction_sha256": "288a93cf7cde45cf73794538551bb6c850251f3dbb7290abbed834731014297b",
-            "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_reference-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "log": "cpu-offline-fallback1-distance_reference.log",
-            "log_sha256": "e6b5d74d0103aabe085647e3acc35cd4eaf01c61f6a0745b0e5481a223d55013"
-          }
-        }
-      ]
+        "sha256": "d4541e4a5d0ae6d2af83065489e674ea7a96335de042b1cbe17da94c6d3c85bc"
+      }
     },
     {
       "acquisition": {
@@ -102,15 +104,33 @@
         "reason": "Original mountain-road reversal clearance and 500-foot route stations require source review and physical validation.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
+            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
+          ],
+          "construction": "construction-fallback1-distance_below_500ft.json",
+          "construction_sha256": "b4ae1e83498e3eaa817a7fcab1e3c194b046ab4dbf5a79858bffc87a48f1865d",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_below_500ft-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "b4ae1e83498e3eaa817a7fcab1e3c194b046ab4dbf5a79858bffc87a48f1865d",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-distance_below_500ft.log",
+            "log_sha256": "c5546e8c012a65e8fd58dbec6cbf4b53cefceb5a0873beda3a448f84d7bb78ef"
+          },
+          "trigger": {
+            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation",
+            "metric": "observed reversal completion and route-control saturation",
+            "source": "original turn_history.jsonl and trace.jsonl"
+          }
+        }
+      ],
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
-      "compatibility": {
-        "log": "cpu-compat-analysis-distance_below_500ft.log",
-        "receipt": "cpu-compatibility-distance_below_500ft.json",
-        "sha256": "5a92d3d28b72f6c160a6fca7c5b6dcf45cd956f78e3748b2f65da27f03368607"
-      },
       "compatibility_status": "pinned_900_frame_diagnostic_positive_negative_passed_original_native_pending",
       "construction": "construction-distance_below_500ft.json",
-      "construction_sha256": "4667d97be6ea9a166bdd361f4053eeef71b0f2f35cbf34b7cb3760f204987302",
+      "construction_sha256": "99ccf2f4ac5c1c53d478a8e969e8ced222739cfec59b328c5e08267272f027f3",
       "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/fixtures/distance_below_500ft/core-fixture-recipe.json",
       "fixture_recipe_draft": "fixtures/distance_below_500ft/fixture-recipe.json",
       "measurement_contract": "selected-measurement-contract.draft.json",
@@ -121,33 +141,17 @@
       "negative": {
         "log": "negative-compat-distance_below_500ft.log"
       },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft --output .runtime-work/c129731-offline-distance_below_500ft-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "99ccf2f4ac5c1c53d478a8e969e8ced222739cfec59b328c5e08267272f027f3",
+        "exit_code": 0,
+        "log": "cpu-offline-distance_below_500ft.log",
+        "log_sha256": "247ab8f29a4ce55c4bcd79d26fc7f7f42562fedd6b57a00ceb4416ddf3c373ff"
+      },
       "physical_preparation": {
         "receipt": "physical-distance_below_500ft-preparation.json",
-        "sha256": "8485867a8fc43eb397e0da008ba521db8ac4a86c96aea09b79848e50e1388847"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "construction-fallback1-distance_below_500ft.json",
-          "construction_sha256": "dffd2d3e427d51e137e842463aa6579bb770cc2a0017c1ed498794a03db55ba0",
-          "trigger": {
-            "source": "original turn_history.jsonl and trace.jsonl",
-            "metric": "observed reversal completion and route-control saturation",
-            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation"
-          },
-          "changed_knobs": [
-            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
-            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
-          ],
-          "offline": {
-            "exit_code": 0,
-            "construction_sha256": "dffd2d3e427d51e137e842463aa6579bb770cc2a0017c1ed498794a03db55ba0",
-            "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_below_500ft-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "log": "cpu-offline-fallback1-distance_below_500ft.log",
-            "log_sha256": "2cb50aeb274503a96fdf39d153495516338bbeb2af99f91342ca196334f812f9"
-          }
-        }
-      ]
+        "sha256": "2d575f464310e439624c6da29b9a27774621ae102960abfdefaf0bc5f95159d9"
+      }
     },
     {
       "acquisition": {
@@ -176,15 +180,33 @@
         "reason": "Original mountain-road reversal clearance and 500-foot route stations require source review and physical validation.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
+            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
+          ],
+          "construction": "construction-fallback1-distance_at_500ft.json",
+          "construction_sha256": "bd30c6540966bede381893724f6a171b11496a22d62ac1509bd2a8f9ca773d4f",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_at_500ft-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "bd30c6540966bede381893724f6a171b11496a22d62ac1509bd2a8f9ca773d4f",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-distance_at_500ft.log",
+            "log_sha256": "26f721e53019b84928a40ac95f16edad20c8e4e0e69b51b798bbeec246b08b77"
+          },
+          "trigger": {
+            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation",
+            "metric": "observed reversal completion and route-control saturation",
+            "source": "original turn_history.jsonl and trace.jsonl"
+          }
+        }
+      ],
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
-      "compatibility": {
-        "log": "cpu-compat-analysis-distance_at_500ft.log",
-        "receipt": "cpu-compatibility-distance_at_500ft.json",
-        "sha256": "3d8b89a2f4440216ff60dec06809e41c9217036b69baea3e91b36eb0cc71ed3e"
-      },
       "compatibility_status": "pinned_900_frame_diagnostic_positive_negative_passed_original_native_pending",
       "construction": "construction-distance_at_500ft.json",
-      "construction_sha256": "23b51b1610e6efc7c95842391357597a2b158d197ad2a85f0ff34835784b74af",
+      "construction_sha256": "97e4857b3fa4cb1824326b6f3fec640d104ce3e4b077c633201190169cca6930",
       "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/fixtures/distance_at_500ft/core-fixture-recipe.json",
       "fixture_recipe_draft": "fixtures/distance_at_500ft/fixture-recipe.json",
       "measurement_contract": "selected-measurement-contract.draft.json",
@@ -195,33 +217,17 @@
       "negative": {
         "log": "negative-compat-distance_at_500ft.log"
       },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft --output .runtime-work/c129731-offline-distance_at_500ft-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "97e4857b3fa4cb1824326b6f3fec640d104ce3e4b077c633201190169cca6930",
+        "exit_code": 0,
+        "log": "cpu-offline-distance_at_500ft.log",
+        "log_sha256": "b32181d56c4b3fb15ecbf573a752a2f465fa9c44a5cec716dd5e1fd1efe4fc74"
+      },
       "physical_preparation": {
         "receipt": "physical-distance_at_500ft-preparation.json",
-        "sha256": "b3c1c5532640561304da938d26c834beb79011da6719747eee68c478c12cac06"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "construction-fallback1-distance_at_500ft.json",
-          "construction_sha256": "8f58078285df28aeef7ea5f25d31171759500a528851da91a93eadc3c98185b9",
-          "trigger": {
-            "source": "original turn_history.jsonl and trace.jsonl",
-            "metric": "observed reversal completion and route-control saturation",
-            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation"
-          },
-          "changed_knobs": [
-            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
-            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
-          ],
-          "offline": {
-            "exit_code": 0,
-            "construction_sha256": "8f58078285df28aeef7ea5f25d31171759500a528851da91a93eadc3c98185b9",
-            "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_at_500ft-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "log": "cpu-offline-fallback1-distance_at_500ft.log",
-            "log_sha256": "b2dad73f8d5c474c1e7093646a9ab37a14a0a57fedf174aaf3da9e20798ea82d"
-          }
-        }
-      ]
+        "sha256": "8f6bc471664cb77efab1119b91edb3e980889f16d97c7b5077e5aa5e3c4eb94d"
+      }
     },
     {
       "acquisition": {
@@ -250,15 +256,33 @@
         "reason": "Original mountain-road reversal clearance and 500-foot route stations require source review and physical validation.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
+            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
+          ],
+          "construction": "construction-fallback1-distance_above_500ft.json",
+          "construction_sha256": "bde6993be98f034439d7b7e832e8bec88ebc7c25cb902cdce853e4a9431c31df",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_above_500ft-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "bde6993be98f034439d7b7e832e8bec88ebc7c25cb902cdce853e4a9431c31df",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-distance_above_500ft.log",
+            "log_sha256": "2744ec3b162704e5df3307418cbe83a7784a8fa27f7c9a84d6be0c101004670c"
+          },
+          "trigger": {
+            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation",
+            "metric": "observed reversal completion and route-control saturation",
+            "source": "original turn_history.jsonl and trace.jsonl"
+          }
+        }
+      ],
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft",
-      "compatibility": {
-        "log": "cpu-compat-analysis-distance_above_500ft.log",
-        "receipt": "cpu-compatibility-distance_above_500ft.json",
-        "sha256": "ed639afe1d73d632ef508ee67ea81f0fc7f40c658bf9edc59aad23b16537d5bb"
-      },
       "compatibility_status": "pinned_900_frame_diagnostic_positive_negative_passed_original_native_pending",
       "construction": "construction-distance_above_500ft.json",
-      "construction_sha256": "9b7b29c9cf2c2eb61480204932b52dbf119eaa7a326cf991d0b1a6aa6cdab5cd",
+      "construction_sha256": "ea3ec1cd69838a80aaccd4563f928c2defa221d74e5511f745fbd68507158be5",
       "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/fixtures/distance_above_500ft/core-fixture-recipe.json",
       "fixture_recipe_draft": "fixtures/distance_above_500ft/fixture-recipe.json",
       "measurement_contract": "selected-measurement-contract.draft.json",
@@ -269,33 +293,17 @@
       "negative": {
         "log": "negative-compat-distance_above_500ft.log"
       },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft --output .runtime-work/c129731-offline-distance_above_500ft-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "ea3ec1cd69838a80aaccd4563f928c2defa221d74e5511f745fbd68507158be5",
+        "exit_code": 0,
+        "log": "cpu-offline-distance_above_500ft.log",
+        "log_sha256": "576eb3aae930141af0113df12cfebc5721464eb302b502c00e4bbb20aee7aeae"
+      },
       "physical_preparation": {
         "receipt": "physical-distance_above_500ft-preparation.json",
-        "sha256": "4dafcad048c9e28a8c0afd2460a6690a5108447515910d03400798c7f191aaff"
-      },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "construction-fallback1-distance_above_500ft.json",
-          "construction_sha256": "6b9b3ae08d75686e54e29cc6e8eb353ae7548c5820b37084bfb0664a9220c5fc",
-          "trigger": {
-            "source": "original turn_history.jsonl and trace.jsonl",
-            "metric": "observed reversal completion and route-control saturation",
-            "failure_condition": "Original 45-second capture ends before the authored 180-degree reversal is completed or shows sustained steering saturation"
-          },
-          "changed_knobs": [
-            "route follower steering gain 0.8 to 1.1 with 0.8 saturation cap",
-            "throttle cap 0.5 to 0.35 and brake cap 0.5 to 0.6"
-          ],
-          "offline": {
-            "exit_code": 0,
-            "construction_sha256": "6b9b3ae08d75686e54e29cc6e8eb353ae7548c5820b37084bfb0664a9220c5fc",
-            "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.draft.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft --candidate fallback1 --output .runtime-work/c129731-offline-fallback1-distance_above_500ft-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "log": "cpu-offline-fallback1-distance_above_500ft.log",
-            "log_sha256": "6287fe417e233413fac3a376ca54bc2a781133ddccc32a04f6bd4533aff30140"
-          }
-        }
-      ]
+        "sha256": "a06fab67cf34a3830f6f542bf998e63d28279bed26b96470768cd3188dd06b68"
+      }
     }
   ],
   "format": "worker-execution-manifest",

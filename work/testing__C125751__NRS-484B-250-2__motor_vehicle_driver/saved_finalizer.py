@@ -48,7 +48,7 @@ def build_result(attempt, survey_path, video_relative):
         video_references=['runtime-export/'+role+'.mkv' for role in
                           ('overview','approach','reference_corner','driver_reference')]
     else:
-        trace_reference=manifest['trace']['path']
+        trace_reference='trace.jsonl' if (attempt/'capture/evidence.jsonl').is_file() else manifest['trace']['path']
         video_references=[video_relative]
     return {'case_id':case_id, 'measured_values':observation,
             'target_checks':targets, 'setup_confirmed':False,

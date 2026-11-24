@@ -1,7 +1,7 @@
 """Bind six exact crosswalk constructions and contracts to selected delivery.
 
-The manifest remains partial until source-shaped compatibility, fallbacks,
-saved processing, and independent acceptance proofs are supplied.
+The manifest remains partial until independent delivery acceptance and the
+remaining canonical handoff proofs are supplied.
 """
 
 from __future__ import annotations
@@ -19,6 +19,32 @@ REPO = HERE.parents[1]
 
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _compatibility(suffix: str, case_id: str, candidate_id: str,
+                   construction_sha256: str) -> dict:
+    prefix = "primary" if candidate_id == "primary" else "fallback1"
+    base = Path("cases") / suffix
+    receipt = base / (prefix + "-compatibility.json")
+    analysis_log = base / (prefix + "-compatibility-analysis.log")
+    negative_log = base / (prefix + "-compatibility-negative.log")
+    proof = json.loads((HERE / receipt).read_text())
+    if (proof.get("format") != "worker-package-compatibility" or
+            proof.get("passed") is not True or proof.get("case_id") != case_id or
+            proof.get("candidate_id") != candidate_id or
+            proof.get("construction_sha256") != construction_sha256 or
+            proof.get("runtime_manifest_sha256") != _sha(REPO / "runtime" / "SOURCE-MANIFEST.json") or
+            _sha(HERE / analysis_log) != proof.get("log_sha256") or
+            _sha(HERE / negative_log) != proof.get("negative_log_sha256")):
+        raise ValueError("stale selected compatibility receipt: " + case_id + "/" + candidate_id)
+    result = json.loads((HERE / "result.json").read_text())
+    compact_name = "cpu-compatibility-" + ("fallback-" if candidate_id != "primary" else "") + suffix.replace("_", "-") + ".log"
+    test = next((item for item in result["tests"] if item.get("log") == compact_name), None)
+    if test is None or test.get("exit_code") != 0 or _sha(HERE / compact_name) != test.get("sha256"):
+        raise ValueError("selected compatibility command missing: " + case_id + "/" + candidate_id)
+    return {"command": test["command"], "exit_code": 0,
+            "receipt": str(receipt), "sha256": _sha(HERE / receipt),
+            "log": str(analysis_log), "negative_log": str(negative_log)}
 
 
 def build(seal_offline: bool = False) -> dict:
@@ -58,10 +84,12 @@ def build(seal_offline: bool = False) -> dict:
                        + " --python $PWD/.venv-cpu/bin/python",
                        "exit_code": 0, "construction_sha256": row["construction_sha256"],
                        "log": log_name, "log_sha256": _sha(log)}
-        candidates = [fallback["candidates"][case_id]] if case_id in fallback["candidates"] else []
+        candidates = [dict(fallback["candidates"][case_id])] if case_id in fallback["candidates"] else []
         for candidate in candidates:
             if _sha(HERE / candidate["construction"]) != candidate["construction_sha256"]:
                 raise ValueError("fallback construction changed")
+            candidate["compatibility"] = _compatibility(
+                suffix, case_id, candidate["id"], candidate["construction_sha256"])
         selected = {
             "case_id": case_id, "kind": "delivery",
             "construction": row["construction"],
@@ -74,11 +102,11 @@ def build(seal_offline: bool = False) -> dict:
             "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
             "offline": offline,
+            "compatibility": _compatibility(suffix, case_id, "primary", row["construction_sha256"]),
+            "negative": {"log": str(Path("cases") / suffix / "primary-compatibility-negative.log")},
             "missing_proofs": [
-                "physical-risk fallback source-shaped compatibility and original motion review",
-                "source-shaped positive/negative compatibility and selected measurement",
-                "saved-only processing and independent delivery/comparison acceptance",
-                "reviewed original road intersection, stopped-purpose and Native camera source packets",
+                "independent selected delivery acceptance and canonical local dispatch",
+                "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation",
             ],
         }
         recipe = HERE / ("fixture-recipe-" + suffix + ".json")

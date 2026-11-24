@@ -16,6 +16,11 @@ def build() -> None:
     manifest = json.loads((HERE / "execution-manifest.draft.json").read_text())
     result = json.loads((HERE / "result.json").read_text())
     tests = {row["log"]: row for row in result["tests"]}
+    proposal = json.loads((HERE / "proposals/cases.json").read_text())
+    selected_ids = {case["case_id"] for case in proposal["cases"]
+                    if case["target_type"] != "baseline"}
+    manifest["cases"] = [entry for entry in manifest["cases"]
+                         if entry["case_id"] in selected_ids]
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[-1]
         offline = tests["cpu-offline-" + suffix + ".log"]

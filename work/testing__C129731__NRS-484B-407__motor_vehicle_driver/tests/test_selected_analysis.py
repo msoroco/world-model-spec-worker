@@ -109,6 +109,13 @@ class SelectedAnalysisTests(unittest.TestCase):
         self.assertEqual(result["measured_values"]["heading_change_deg"], 180)
         self.assertFalse(result["maneuver_completed"])
         self.assertEqual(result["physical_checks"]["maneuver"]["status"], "unverified")
+        evidence = {item["name"]: item for item in result["recording_evidence"]}
+        self.assertTrue({"ego_motion", "sight_rays", "road_geometry",
+                         "approaching_vehicle_routes", "frame_map", "frame_join",
+                         "original_camera_index", "qualified_road_and_vehicle",
+                         "actual_driver_view_context"} <= set(evidence))
+        self.assertEqual(json.loads((self.root / evidence["actual_driver_view_context"]["reference"]).read_text())
+                         ["actual_driver_view_context"]["source_status"], "review_pending")
         self.assertIn("measurements", report)
 
     def test_core_timeline_must_join_all_original_sight_frames(self):
