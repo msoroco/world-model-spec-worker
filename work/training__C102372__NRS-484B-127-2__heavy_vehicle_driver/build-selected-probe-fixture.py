@@ -62,11 +62,26 @@ def main() -> None:
         row['synthetic_diagnostic'] = True
     (DEST / 'trace.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n'
                                              for row in trace))
+    history = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
+                'ego_vertices_m': row['ego']['body_vertices_m'],
+                'lead_vertices_m': row['lead']['body_vertices_m']} for row in native]
+    (DEST / 'truck_history.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n'
+                                                     for row in history))
+    write_json(DEST / 'truck_context.json', {
+        'source_kind': 'synthetic_cpu_fixture',
+        'case_id': HERE.name + '__probe_1',
+        'road_sha256': digest(DEST / 'road.xodr'),
+        'legal_verdict_claimed': False})
     capture = json.loads((DEST / 'capture/manifest.json').read_text())
     capture['sources']['trace.jsonl'] = digest(DEST / 'trace.jsonl')
+    capture['sources']['truck_history.jsonl'] = digest(DEST / 'truck_history.jsonl')
     write_json(DEST / 'capture/manifest.json', capture)
-    for relative in ('trace.jsonl', 'capture/manifest.json'):
-        files[relative]['sha256'] = digest(DEST / relative)
+    for relative in ('trace.jsonl', 'capture/manifest.json',
+                     'truck_history.jsonl', 'truck_context.json'):
+        target = DEST / relative
+        files[relative] = {'path': relative,
+                           'source': target.relative_to(ROOT).as_posix(),
+                           'sha256': digest(target)}
     construction = json.loads((HERE / 'draft-candidates/probe_1/primary/construction.json').read_text())
     config = json.loads(next(item['content'] for item in construction['files']
                              if item['path'] == 'config.json'))

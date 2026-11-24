@@ -10,6 +10,9 @@ TERMS = ('dev.traffic_signal', 'dev.regulatory_sign', 'dev.stop_sign',
 
 def rows(native):
     native = Path(native)
+    report = json.loads((native / 'native-capture-report.json').read_text())
+    if report.get('error') is not None or report.get('observed_frames') != 600 or report.get('requested_frames') != 600 or not isinstance(report.get('restoration'), dict) or report['restoration'].get('restored') is not True:
+        raise ValueError('Complete restored original Native attempt required')
     map_row = json.loads((native / 'native-map-readback.json').read_text())
     if map_row.get('source_kind') != 'original_native':
         raise ValueError('Original Native map readback required')

@@ -44,6 +44,15 @@ def main() -> None:
         {'name': name, 'mandatory': True,
          'reason': 'Source-bound original Native and four-camera frame join used by the selected finalizer'}
         for name in ('ego_body_pose', 'lead_body_pose', 'surface_gap_m', 'camera_frame_join')]
+    plan['camera_plan'] = {
+        'profile': 'overview1080-capability', 'duration_s': 30,
+        'composition': 'synchronized_four_view_primary',
+        'coverage': [
+            {'view': 'overview', 'subject': 'subject and lead truck bodies across the hill crest', 'interval': '0-30 s'},
+            {'view': 'approach', 'subject': 'subject approach and following lane', 'interval': '0-30 s'},
+            {'view': 'reference_corner', 'subject': 'lead truck body and road-lane reference', 'interval': '0-30 s'},
+            {'view': 'driver_reference', 'subject': 'subject truck and opposing-lane context', 'interval': '0-30 s'}],
+        'physical_limit': 'CPU fixtures test frame joins and decode; original pixels and body visibility require local review.'}
     gaps = [
         {'id': 'gap_500ft_continuous', 'requirement': 'Continuous measured qualified-truck space on both sides of 500 ft',
          'source': REVIEW, 'why_existing_insufficient': 'Frozen requests list 149.352, 152.4 and 155.448 m but do not expose original joined body traces or a source-hashed equivalence receipt here.'},

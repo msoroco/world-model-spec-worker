@@ -21,7 +21,7 @@ def main():
     try:
         list(rows(fixture))
     except ValueError as exc:
-        assert str(exc)=='Original Native map readback required'
+        assert str(exc)=='Complete restored original Native attempt required'
     else:
         raise AssertionError('Synthetic readback was accepted as original')
     print(json.dumps({'root_request_checked':True,'camera_count':4,'source_channels':11,

@@ -18,6 +18,11 @@ def main() -> None:
     for old in draft['cases']:
         entry = dict(old)
         entry['kind'] = 'delivery'
+        entry['candidate_risk'] = {
+            'status': 'physical',
+            'reason': 'The original 600-frame truck motion may miss the source-measured gap target; fallback1 changes only the ego speed request while preserving case, law, capture and observations.'}
+        entry['candidates'] = [candidate for candidate in entry['candidates']
+                               if candidate['id'] == 'fallback1']
         if entry['case_id'].endswith('__probe_1'):
             entry['fixture_recipe'] = (HERE / 'selected-fixture/probe_1/recipe.json').relative_to(ROOT).as_posix()
             entry['measurement_contract'] = 'selected-fixture/probe_1/measurement-contract.json'

@@ -69,7 +69,10 @@ def check(config):
         raise ValueError('Full 600-frame Native window differs')
     expected=cameras(candidate)
     identities=[{key:camera[key] for key in ('name','width','height')} for camera in expected]
-    if config.get('cameras')!=identities:
+    declared=config.get('cameras',[])
+    if ([{key:camera.get(key) for key in ('name','width','height')} for camera in declared]
+            != identities or any(camera.get('fov_deg',actual['fov_deg'])!=actual['fov_deg']
+                                for camera,actual in zip(declared,expected))):
         raise ValueError('Declared four-camera profile differs')
     if len(config.get('recording_description',{}).get('channels',[]))<4:
         raise ValueError('Truck measurement channels absent')
@@ -233,6 +236,7 @@ def execute(config,output,host,port):
             channels[item['name']]=(output/'channels'/(item['name']+'.jsonl')).open('x')
         start=world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native_samples.jsonl').open('x') as samples,\
+             (output/'truck_history.jsonl').open('x') as truck_history,\
              (output/'video_frames.jsonl').open('x') as joins:
             for index in range(FRAMES):
                 gap=min(p[0] for p in body(lead))-max(p[0] for p in body(ego))
@@ -284,6 +288,11 @@ def execute(config,output,host,port):
                     camera_pose.location.y,camera_pose.location.z],
                     'yaw_deg':camera_pose.rotation.yaw,'pitch_deg':camera_pose.rotation.pitch}
                 samples.write(json.dumps(row,allow_nan=False)+'\n')
+                truck_history.write(json.dumps({
+                    'frame':frame,'time_s':index/RATE_HZ,
+                    'ego_vertices_m':row['ego']['body_vertices_m'],
+                    'lead_vertices_m':row['lead']['body_vertices_m']},
+                    allow_nan=False)+'\n')
                 capture.capture(frame,elapsed,extra={'c102372_native':row})
                 for name,stream in channels.items():
                     value={'ego_body_pose':row['ego'],'lead_body_pose':row['lead'],
@@ -313,6 +322,10 @@ def execute(config,output,host,port):
             'conditions_permit':{'source':'original_weather_and_road_readback',
                 'status':'requires_independent_physical_review'},
             'physical_conditions_verified':False})
+        write_new(output/'truck_context.json',{
+            'source_kind':'original_native_body_readback',
+            'case_id':config['case_id'],'road_sha256':sha(output/'road.xodr'),
+            'legal_verdict_claimed':False})
     except BaseException as exc:
         error={'type':type(exc).__name__,'message':str(exc),'traceback':traceback.format_exc()}
     finally:

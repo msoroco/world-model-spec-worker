@@ -165,7 +165,8 @@ def finalize(attempt,output):
         'provenance_kind':'native' if json.loads((attempt/'following_context.json').read_text())[
             'source_kind']=='native_observation' else 'synthetic_cpu',
         'accepted':False,'legal_verdict_claimed':False}
-    from worker_exchange.native_output import validate_result
+    from worker_exchange.native_output import physical_result, validate_result
+    result=physical_result(attempt,result)
     validate_result(result)
     report={'format':'c102372-saved-analysis-v1','case_id':config['case_id'],
         'candidate_id':config['candidate_id'],

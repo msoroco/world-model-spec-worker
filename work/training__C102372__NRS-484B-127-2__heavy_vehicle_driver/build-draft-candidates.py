@@ -89,9 +89,12 @@ def build():
                 'supported_case_ids':[case_id],'case_suffix':suffix,
                 'candidate_id':candidate,'law_id':'NRS-484B-127-2',
                 'cell_id':'C102372','actor':'heavy_vehicle_driver',
-                'rate_hz':20,'duration_s':30,'case':{'case_id':case_id},
-                'knobs':knobs,'cameras':[{key:camera[key] for key in
-                    ('name','width','height')} for camera in cameras(candidate)],
+                'rate_hz':20,'duration_s':30,
+                'case':{'case_id':case_id,'recording_description':description},
+                'knobs':knobs,'cameras':[{**{key:camera[key] for key in
+                    ('name','width','height','fov_deg')},
+                    'pose_strategy':'ego-mounted original camera readback'}
+                    for camera in cameras(candidate)],
                 'required_atoms':['ru.truck','st.lane','rel.surface_gap',
                                   'rel.ahead_behind_in_lane'],
                 'recording_description':description,'source_packets':[],

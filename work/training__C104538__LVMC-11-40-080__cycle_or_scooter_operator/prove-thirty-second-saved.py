@@ -41,11 +41,13 @@ def write_rows(path, values):
     Path(path).write_text(''.join(json.dumps(value, allow_nan=False)+'\n' for value in values))
 
 
-def build(destination):
+def build(destination, kind='mounted_turn', candidate='primary', manifest=None):
     if destination.exists():
         raise ValueError('Use a fresh diagnostic destination')
-    case = HERE.name+'__controlled_2'
-    manifest = HERE/'draft-thirty-second-execution-manifest.json'
+    if kind not in ('mounted_obey', 'mounted_turn'):
+        raise ValueError('Unknown mounted case')
+    case = HERE.name+('__controlled_1' if kind == 'mounted_obey' else '__controlled_2')
+    manifest = Path(manifest) if manifest is not None else HERE/'draft-thirty-second-execution-manifest.json'
     motor_attempt = motor.make_attempt(destination.parent/'motor', 'witness_2')
     materialize(manifest, case, destination)
     for name in ('native_samples.jsonl', 'video_frames.jsonl', 'body_history.jsonl',
@@ -58,8 +60,8 @@ def build(destination):
                         '-frames:v', '600', '-c:v', 'ffv1', '-pix_fmt', 'yuv444p',
                         str(destination/(name+'.mkv'))], check=True, timeout=360)
     shutil.copytree(motor_attempt/'capture', destination/'capture')
-    rider = rider_rows('mounted_turn', 'primary')
-    validate_rider(rider, 'mounted_turn', 'primary')
+    rider = rider_rows(kind, candidate)
+    validate_rider(rider, kind, candidate)
     native = read_rows(destination/'native_samples.jsonl')
     mapping = read_rows(destination/'video_frames.jsonl')
     trace = read_rows(destination/'trace.jsonl')
@@ -99,7 +101,7 @@ def build(destination):
     (destination/'capture/manifest.json').write_text(json.dumps(capture, allow_nan=False)+'\n')
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.bh.crossbike\n')
     source_manifest = {'source_kind': 'synthetic_native_shaped_diagnostic',
-                       'case_suffix': 'mounted_turn', 'candidate_id': 'primary',
+                       'case_suffix': kind, 'candidate_id': candidate,
                        'rider_samples_sha256': sha(destination/'rider_native_samples.jsonl'),
                        'sign_sha256': sha(destination/'authored-sign.json'),
                        'original_native_capture_executed': False}
@@ -112,11 +114,14 @@ def build(destination):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', required=True)
+    parser.add_argument('--kind', choices=('mounted_obey', 'mounted_turn'), default='mounted_turn')
+    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2'), default='primary')
+    parser.add_argument('--manifest')
     args = parser.parse_args()
     out = Path(args.output).resolve()
     out.mkdir(parents=True, exist_ok=True)
     attempt = out/'attempt'
-    case, manifest = build(attempt)
+    case, manifest = build(attempt, args.kind, args.candidate, args.manifest)
     command = [sys.executable, str(ROOT/'runtime.py'), 'process-saved', '--manifest', str(manifest),
                '--case', case, '--attempt', str(attempt), '--output', str(out/'saved'),
                '--library', str(ROOT/'runtime/pipeline/library'),
