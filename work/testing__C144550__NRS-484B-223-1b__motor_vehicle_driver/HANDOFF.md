@@ -1,3 +1,13 @@
+## 2026-11-23 C144550 second-case fallback completion
+
+Pinned static verification passed for all five primary receipts, and identity and SHA-256 verification passed for all six bound fallback compatibility/saved receipt pairs. The scoped nonready check passed.
+
+The late-signal case now has all three fallback constructions proved through current source-bound compatibility, missing-source negative analysis and recorded-only saved processing. The first-case three fallbacks and all five primaries were already proved; six of fifteen fallback proof sets are complete. The three late-signal fallbacks change target route distance, ego target speed and overview camera pose respectively. Nine fallback proof sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `91d3bb8ceef671132791a2e8b53340e6606d04eb728f39c106fecca6307d3d5a`. The diagnostic source rows are synthetic and do not establish Native motion or legal acceptance.
+
+## 2026-11-23 C144550 late-signal fallback CPU checkpoint
+
+Late-signal fallback1 and fallback2 passed current source-bound compatibility, missing-lane-history negative analysis and recorded-only saved processing. Their manifest receipt hashes and candidate identities were checked. With all five exact primaries and the three first-case fallbacks, this gives five of fifteen fallback proof sets complete. Ten fallback proof sets, the canonical semantic chain and independent delivery audits remain. C144550 stays partial. Current manifest SHA256: `1191ee85a6686b8b37609446eda7c495d510ce8422a3cbb4c032b77a6ae699cd`. Scoped nonready `worker_check --complete` passed; current CPU preflight also passed. These are diagnostic software proofs only. The historical `cpu-tests.log` is indexed in shared HANDOFF and must be restored or rerun before strict readiness.
+
 ## 2026-11-23 C144550 first-case fallback CPU proofs
 
 Pinned five-primary static receipt verification and all three fallback receipt hash/identity checks passed; the C144550 scoped nonready complete check and CPU preflight passed. Their current logs are under ignored `.runtime-work/`. The full strict delivery gate has not passed because 14 packages remain partial.

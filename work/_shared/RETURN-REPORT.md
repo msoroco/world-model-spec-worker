@@ -1,14 +1,32 @@
+## 2026-11-23 C144550 second-case fallback completion
+
+Pinned static verification passed for all five primary receipts, and identity and SHA-256 verification passed for all six bound fallback compatibility/saved receipt pairs. The scoped nonready check passed.
+
+The late-signal case now has all three fallback constructions proved through current source-bound compatibility, missing-source negative analysis and recorded-only saved processing. The first-case three fallbacks and all five primaries were already proved; six of fifteen fallback proof sets are complete. The three late-signal fallbacks change target route distance, ego target speed and overview camera pose respectively. Nine fallback proof sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `91d3bb8ceef671132791a2e8b53340e6606d04eb728f39c106fecca6307d3d5a`. The diagnostic source rows are synthetic and do not establish Native motion or legal acceptance.
+
+## 2026-11-23 consolidated capacity archive update
+
+`work/_shared/small-archives-consolidated-20261123.tar.xz` now has SHA256 `2c24538d4ca3232e8b0e47c3c4922e14ad29b3dd1537352271b8ef810322ca21` and 13 members. It also contains the two partial-package historical test-log archives and the C215286 physical-fixture-results archive described below; their standalone paths were removed. Recover one by `tar -xOf work/_shared/small-archives-consolidated-20261123.tar.xz work/_shared/NAME > /tmp/NAME`, then `tar -xOf /tmp/NAME MEMBER > MEMBER`. Both archive layers were byte-verified. Restore or rerun archived proof outputs before a package moves to ready. The return tree has 8,595 files after consolidation.
+
+## 2026-11-23 C215286 diagnostic physical fixture archive
+
+Six historical `*-physical-result.json` outputs from partial C215286 were byte-verified under their original member paths in `work/_shared/c215286-historical-physical-fixture-results-20261123.tar.xz` (SHA256 `94fa8403032f31b5c4c1d59b8ff659e829cc32ca48a2f856fb905ab95960a032`, 2,092 bytes) and then moved to create return capacity. Recover a member with `tar -xOf work/_shared/c215286-historical-physical-fixture-results-20261123.tar.xz MEMBER > MEMBER`. C215286's nonready scoped complete check passed after archival. Restore or rerun these physical fixture results before strict readiness; its status remains partial.
+
+## 2026-11-23 C144550 late-signal fallback CPU checkpoint
+
+Late-signal fallback1 and fallback2 passed current source-bound compatibility, missing-lane-history negative analysis and recorded-only saved processing. Their manifest receipt hashes and candidate identities were checked. With all five exact primaries and the three first-case fallbacks, this gives five of fifteen fallback proof sets complete. Ten fallback proof sets, the canonical semantic chain and independent delivery audits remain. C144550 stays partial. Current manifest SHA256: `1191ee85a6686b8b37609446eda7c495d510ce8422a3cbb4c032b77a6ae699cd`. Scoped nonready `worker_check --complete` passed; current CPU preflight also passed. These are diagnostic software proofs only. The historical `cpu-tests.log` is indexed in shared HANDOFF and must be restored or rerun before strict readiness.
+
 ## 2026-11-23 C144550 first-case fallback CPU proofs
 
 Pinned five-primary static receipt verification and all three fallback receipt hash/identity checks passed; the C144550 scoped nonready complete check and CPU preflight passed. Their current logs are under ignored `.runtime-work/`. The full strict delivery gate has not passed because 14 packages remain partial.
 
 All three distinct clear-gap fallbacks now pass current source-bound compatibility, missing-lane-history negative analysis and recorded-only saved processing. The manifest binds their returned receipt hashes. The three offline constructions were already pinned. The first fallback changes the target actor route distance, the second lowers ego target speed, and the third moves the overview camera. These CPU diagnostics establish software replay only. Five primaries and three first-case fallbacks are proved; twelve fallback proof sets plus semantic and delivery audits remain. C144550 remains partial. Current manifest SHA256: `8f614c44dcbca108563df4a9087cc67c76ed784dbff9ea3cc57a4c09f988c7aa`. The partial-package historical test-log archive index is in `work/_shared/HANDOFF.md`; the C144550 test log must be restored from it before strict readiness.
 
-Current return count is 8,597 of the 8,600-file limit; earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
+Current return count is 8,598 of the 8,600-file limit; earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
 
 ## 2026-11-23 C144550 five-primary proof checkpoint
 
-All five exact primaries now pass current source-bound compatibility, missing-source negative checks and recorded-only saved processing on distinct synthetic originals. All five bound receipts pass pinned static verification and the C144550 scoped nonready complete check passes. The right-direction case reflects lateral geometry and swaps lane identities with right-lamp original observations; its departure has the appropriate right signal and an 8.0 m measured target gap. A 900-frame controlled left/right source comparison passed. C144550 remains partial until 15 fallback compatibility/saved proofs, semantic stages and independent delivery audits are done. C129731 passed scoped strict revalidation after historical acceptance archival (log SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`). The shared archive was consolidated at SHA256 `31a6d2b328009382fe20c037bc4c7f7ccf57631b6f65dd4524edd577f55dc1c9`; recovery is indexed in shared HANDOFF.
+All five exact primaries now pass current source-bound compatibility, missing-source negative checks and recorded-only saved processing on distinct synthetic originals. All five bound receipts pass pinned static verification and the C144550 scoped nonready complete check passes. The right-direction case reflects lateral geometry and swaps lane identities with right-lamp original observations; its departure has the appropriate right signal and an 8.0 m measured target gap. A 900-frame controlled left/right source comparison passed. C144550 remains partial until 15 fallback compatibility/saved proofs, semantic stages and independent delivery audits are done. C129731 passed scoped strict revalidation after historical acceptance archival (log SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`). The shared archive was consolidated at SHA256 `2c24538d4ca3232e8b0e47c3c4922e14ad29b3dd1537352271b8ef810322ca21`; recovery is indexed in shared HANDOFF.
 
 ## 2026-11-23 C144550 close-gap primary
 
