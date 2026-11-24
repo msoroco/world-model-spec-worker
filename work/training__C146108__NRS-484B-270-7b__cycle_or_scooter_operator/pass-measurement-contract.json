@@ -1,0 +1,30 @@
+{
+  "format": "c146108-source-bound-pass-measurement-contract-v1",
+  "assignment_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator",
+  "law_id": "NRS-484B-270-7b",
+  "cell_id": "C146108",
+  "source_refs": [
+    {"path": "inputs/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/assignment.json", "sha256": "f43e0326fe58dc3d8d5a6eed5e2644bd9e3d10de1d023e38a82dafd8a81a6c2e"},
+    {"path": "inputs/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/witnesses.json", "sha256": "692c41adaad777a5408098d78eeb37154ebeef036f801f83d3cef672dd79596e"}
+  ],
+  "measurement_entrypoint": "native/pass_measure.py",
+  "required_retained_sources": ["pass-context.json", "participant-poses.jsonl"],
+  "source_observation_mapping": [
+    {"term": "drv.overtaking", "method": "Original rider and motor positions demonstrate behind, alongside and clear-ahead event order", "source": "participant-poses.jsonl"},
+    {"term": "ru.motor_vehicle", "method": "Sourced motor-vehicle classification needs original Native identity review", "source": "pass-context.json"},
+    {"term": "rel.surface_gap", "method": "Minimum separation of full axis-aligned body rectangles across the entire measured pass", "source": "participant-poses.jsonl and pass-context.json"},
+    {"term": "drv.time_to_conflict", "method": "Initial longitudinal gap divided by pose-derived closing speed estimates time to rear overlap; no safety cutoff is implied", "source": "participant-poses.jsonl and pass-context.json"},
+    {"term": "drv.passing_side", "method": "Rider side at first along-vehicle frame relative to motor position", "source": "participant-poses.jsonl"},
+    {"term": "kin.speed", "method": "Longitudinal closing speed calculated from adjacent original poses and 20 Hz frame times", "source": "participant-poses.jsonl"},
+    {"term": "ru.occupant_count", "method": "Explicit sourced motor occupant count, subject to original-vehicle review", "source": "pass-context.json"}
+  ],
+  "comparison": {
+    "fixed": ["electric bicycle and motor-vehicle identities", "body dimensions", "longitudinal trajectories", "one-way multilane geometry", "20 Hz and 30 seconds"],
+    "varied": ["lateral surface gap during the same full pass"],
+    "diagnostic_modes": ["wide", "narrow"]
+  },
+  "endangerment_judgment": "unreviewed",
+  "legal_verdict_claimed": false,
+  "physical_acceptance_claimed": false,
+  "limitations": ["No source-backed numeric cutoff equates clearance with safety", "Generated source shapes are not original Native observations", "Axis-aligned rectangles are a software diagnostic proxy", "Occupant exposure and evasive response require independent review"]
+}

@@ -1,0 +1,14 @@
+{
+  "format": "roundabout-exit-lane-source-capture-contract",
+  "assignment_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver",
+  "selected_delivery_case": false,
+  "capture_rate_hz": 20,
+  "duration_s": 30,
+  "required_decoded_frames": 600,
+  "cameras": ["forward", "rear", "left", "right"],
+  "required_saved_sources": ["video_frames.jsonl", "native_lane_trace.jsonl", "roundabout_topology.json", "camera_forward.mkv", "camera_rear.mkv", "camera_left.mkv", "camera_right.mkv"],
+  "trace_origin": "Original Native pose and map road/lane identity on capture; synthetic_native_sample only in CPU diagnostics",
+  "topology_review": "Reviewer binds entry road, circulatory road, right exit road, right/left lane adjacency, route intention declaration and four camera byte hashes to original sources. Distinguish intended exit from observed exit.",
+  "measurement": "Join every saved frame, require full 30 seconds and four decoded cameras, derive entry and right exit from Native map road identities, measure lane used over the entire circulatory interval, count lane changes and path length from retained pose. Report observations without a legal verdict.",
+  "limits": "Synthetic CPU proof does not establish actual map topology, accepted-recording equivalence, Native motion, video acceptance or statutory compliance."
+}

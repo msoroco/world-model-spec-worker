@@ -1,0 +1,30 @@
+{
+  "format": "c111250-source-bound-measurement-contract-v1",
+  "assignment_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver",
+  "law_id": "NRS-484B-213-2b",
+  "cell_id": "C111250",
+  "source_refs": [
+    {"path": "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json", "sha256": "8420f03e26cfad1bc035369803b9a6f062940452ca0557f51b5231c98fcfe552"},
+    {"path": "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/witnesses.json", "sha256": "5c816af0ffeb109f60f34759002e748a7ee0c0e4b6ea8ebf3abfff376d633f15"}
+  ],
+  "measurement_entrypoint": "native/zone_measure.py",
+  "required_retained_sources": ["road-context.json", "vehicle-footprints.jsonl"],
+  "source_observation_mapping": [
+    {"term": "st.intersection", "method": "Original reviewed intersection entry and exit geometry in road-context.json; current fixture geometry is diagnostic", "source": "road-context.json"},
+    {"term": "st.railway_crossing", "method": "Separate physically present grade crossing branch required; unavailable in fixed intersection fixture", "source": "unresolved_physical_context"},
+    {"term": "drv.approaching", "method": "Footprint front entering proposed straight-line 30.48 m zone before entry", "source": "vehicle-footprints.jsonl"},
+    {"term": "rel.centre_distance", "method": "Original footprint extremum relative to reviewed intersection boundary; legal datum unresolved", "source": "road-context.json and vehicle-footprints.jsonl"},
+    {"term": "st.centre_line", "method": "Source reviewed physical centerline, represented by y=0 only in diagnostic", "source": "road-context.json"},
+    {"term": "rel.occupies", "method": "Any original full-body footprint corner on left side of centerline per frame", "source": "vehicle-footprints.jsonl"},
+    {"term": "drv.in_intersection", "method": "Full footprint interval overlaps reviewed intersection entry and exit", "source": "road-context.json and vehicle-footprints.jsonl"},
+    {"term": "st.one_way_roadway", "method": "Explicit roadway direction context; positive one-way excludes subsection 2 applicability", "source": "road-context.json"}
+  ],
+  "comparison": {
+    "fixed": ["intersection geometry", "approach axis", "frame rate", "duration", "vehicle dimensions"],
+    "varied": ["left-side occupancy timing", "explicit one-way applicability context"],
+    "diagnostic_modes": ["right", "approach_left", "traversal_left", "one_way"]
+  },
+  "legal_verdict_claimed": false,
+  "physical_acceptance_claimed": false,
+  "limitations": ["No original Native recording is present", "No physically reviewed public highway, centerline, intersection boundaries or one-way designation", "Railroad crossing branch is not constructible from this fixed intersection diagnostic", "Engineering footprint datum is not an asserted legal boundary rule"]
+}

@@ -1,0 +1,31 @@
+{
+  "format": "c111603-source-bound-arrow-measurement-contract-v1",
+  "assignment_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-4a",
+  "cell_id": "C111603",
+  "source_refs": [
+    {"path": "inputs/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/assignment.json", "sha256": "53d599188cd23f326e34c02edcd75522df12840c6771fdf55b996d26298a2d7c"},
+    {"path": "inputs/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/witnesses.json", "sha256": "70b5f21bf036655fed1b6a2feb36c3053d51c0bb2609c7a4d5a1b8cd6e811c59"}
+  ],
+  "measurement_entrypoint": "native/arrow_measure.py",
+  "required_retained_sources": ["intersection-context.json", "signal_frames.jsonl", "motion_frames.jsonl"],
+  "source_observation_mapping": [
+    {"term": "dev.traffic_signal", "method": "Frame-synchronized green-arrow-alone and illumination program; original device pixels still require review", "source": "signal_frames.jsonl"},
+    {"term": "dev.governs", "method": "Original head orientation, approach and device authority require independent physical review", "source": "unresolved_physical_context"},
+    {"term": "drv.turning", "method": "Ego heading direction during original intersection motion, with route geometry review pending", "source": "motion_frames.jsonl"},
+    {"term": "kin.heading", "method": "Original ego transform heading joined by Native frame and time", "source": "motion_frames.jsonl"},
+    {"term": "drv.entering_intersection", "method": "First original ego center inside sourced intersection bounds", "source": "motion_frames.jsonl and intersection-context.json"},
+    {"term": "ru.pedestrian", "method": "Original pedestrian position and identity; lawfulness remains independently unverified", "source": "motion_frames.jsonl"},
+    {"term": "st.crosswalk", "method": "Sourced adjacent crosswalk bounds; diagnostic geometry is not original physical review", "source": "intersection-context.json"},
+    {"term": "drv.in_intersection", "method": "Original other-traffic position within sourced intersection bounds; lawfulness remains independently unverified", "source": "motion_frames.jsonl and intersection-context.json"},
+    {"term": "drv.yields_to", "method": "Temporal overlap of moving ego with crosswalk pedestrian or other intersection traffic; yielding causation needs independent review", "source": "motion_frames.jsonl"}
+  ],
+  "comparison": {
+    "fixed": ["green left arrow program except deliberate unlit interval", "intersection and crosswalk geometry", "20 Hz and 30 seconds", "participant identities"],
+    "varied": ["ego pause during participant occupancy", "turn heading direction", "arrow illumination interval"],
+    "diagnostic_modes": ["yield", "crosswalk_overlap", "wrong_direction", "unlit"]
+  },
+  "legal_verdict_claimed": false,
+  "physical_acceptance_claimed": false,
+  "limitations": ["No original Native device or camera pixels", "A program state cannot establish governing head or arrow legibility", "Position alone cannot establish pedestrian or other-driver lawfulness", "Moving-interval overlap is a timing proxy, not proof of a yielding duty or causation"]
+}

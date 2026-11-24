@@ -1,11 +1,19 @@
 # training__C111250__NRS-484B-213-2b__motor_vehicle_driver
 
-Status: **blocked**. No selected delivery cases, CARLA construction, CPU candidate proof, CARLA execution, or accepted recording is claimed.
+Status: **partial**. No selected delivery cases, CARLA construction, CPU candidate proof, CARLA execution, or accepted recording is claimed.
 
 Exact source: `inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json` SHA-256 `886a3f44c82efa9a271693e9a127f0019abb2b31cda8123d6ab31fe444446a19`; witnesses: `inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/witnesses.json` SHA-256 `5c816af0ffeb109f60f34759002e748a7ee0c0e4b6ea8ebf3abfff376d633f15`. The statutory text and source citation are retained in `case-plan.json`; recovered summary is unreviewed.
 
 Frozen cell: `intersection` / `travel` / `centerline`; actor `motor_vehicle_driver`. Proposed contrast: **left-side occupancy relative to boundary**. 3 unselected planning probes are in `case-plan.json`. Baseline is unselected.
 
-Blocker: One-way exception is an explicit applicability-negative context; railroad branch needs a physically present crossing, not a generic intersection. 0 unique accepted membership IDs are contextual and have no local source-hashed equivalence proof.
+Open source/context review: One-way exception is an explicit applicability-negative context; railroad branch needs a physically present crossing, not a generic intersection. 0 unique accepted membership IDs are contextual and have no local source-hashed equivalence proof.
 
 Resume: review exact branch and exception context against law and witness, prove any eligible accepted equivalence, resolve same-cell physical support, then implement four distinct Native candidates for each genuinely selected case. Run runtime offline/compatibility recipes, semantic-stage and saved positive/negative audits, comparison audits, and set `ready` / `delivery_prepared` only after all worker-owned CPU proofs pass. Keep legal standards unresolved pending measured evidence.
+
+## Source-bound intersection-zone CPU checkpoint
+
+`native/zone_measure.py` measures the complete 600-frame, 20 Hz full-vehicle-footprint sequence against an explicitly supplied straight intersection geometry. It separates the first 100-foot approach-zone entry, left-side occupancy during approach, left-side occupancy while traversing, and left-side occupancy completed before the zone. It reports the one-way-highway context as an applicability exception without issuing a legal verdict. It requires and SHA-256-binds `road-context.json` and `vehicle-footprints.jsonl`; missing source and broken frame/time joins reject. The 30.48 m footprint-front datum is an engineering proxy whose legal interpretation remains open. `zone-measurement-contract.json` maps every frozen observation term to an actual source or a precise unresolved context.
+
+`prove-zone-measurement.py` generated four 600-frame source-shaped positive fixtures under `.runtime-work/c111250-proof`: right-side approach with left occupancy ending before the zone, left occupancy during approach, left occupancy during traversal, and an explicit one-way exception context with otherwise identical left occupancy. Two negatives rejected missing original footprint source and corrupt original time order. Exit 0, proof log `zone-measurement-proof.log` SHA-256 `96feb3c3b2f2f22e660ddc5e89e93ef678d938d93ff821505e7e5d8948bee2d1`; measurement source SHA-256 `cd198ded6eb9b5b05673a94e1d5618867155f989ae918a6791aaf90601e0d604`. This is a software measurement checkpoint, not Native motion or physical highway evidence.
+
+Next CPU construction: author a Native straight-through two-way intersection with reviewed centerline and complete approach/traversal camera capture, connect original retained footprint sources to this measurement, select exact delivery cases only after source review, then build and test primary/fallback bundles through pinned offline, saved positive/negative, comparison and independent acceptance checks. The railroad-grade-crossing alternative needs a physically present crossing in a compatible cell; the one-way exception needs source-reviewed roadway direction. No exact case is ready.
