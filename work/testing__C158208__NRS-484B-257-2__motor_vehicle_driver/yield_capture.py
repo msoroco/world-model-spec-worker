@@ -34,6 +34,9 @@ def _vertices(actor):
 
 
 def _boundary(review):
+    if (type(review.get("marked_stop_line_observed")) is not bool
+            or type(review.get("near_crosswalk_observed")) is not bool):
+        raise ValueError("Missing reviewed stop-line and crosswalk findings")
     boundary = review.get("reference_boundary")
     if not isinstance(boundary, dict) or boundary.get("source") not in (
             "marked_stop_line", "near_crosswalk", "nearest_view_point"):
@@ -133,12 +136,18 @@ def bind_site_review(root, findings):
             raise ValueError("Missing original camera: " + name)
         hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     review = dict(findings)
+    if (review.get("method") != "original_source_camera_frame_review"
+            or not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip()
+            or review.get("sign_face_observed") not in ("yield", "unverified")
+            or review.get("proper_sign_judgment") != "unresolved"):
+        raise ValueError("Missing explicit original-camera sign review")
     if review.get("native_yield_sign_id") != context.get("native_yield_sign_id"):
         raise ValueError("Review sign identity differs")
     _boundary(review)
-    review["intersection_context_sha256"] = hashlib.sha256((root / "intersection_context.json").read_bytes()).hexdigest()
-    review["camera_sha256"] = hashes
-    review["reviewed_carla_frames"] = [row["carla_frame"] for row in frames]
-    review["reviewed_frame_count"] = len(frames)
+    if (review.get("intersection_context_sha256") != hashlib.sha256((root / "intersection_context.json").read_bytes()).hexdigest()
+            or review.get("camera_sha256") != hashes
+            or review.get("reviewed_carla_frames") != [row["carla_frame"] for row in frames]
+            or review.get("reviewed_frame_count") != len(frames)):
+        raise ValueError("Original-camera review source or frame coverage differs")
     (root / "site_review.json").write_text(json.dumps(review, sort_keys=True, indent=2) + "\n")
     return review

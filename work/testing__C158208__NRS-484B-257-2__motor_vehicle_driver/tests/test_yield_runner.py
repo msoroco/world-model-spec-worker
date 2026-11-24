@@ -19,7 +19,8 @@ class RunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             for kind in KINDS:
-                config = dict(base, selected_case_id=PREFIX + kind)
+                config = dict(base, selected_case_id=PREFIX + kind,
+                              case=dict(base["case"], case_id=PREFIX + kind))
                 stage = runner.validate_config(config)
                 site = {"native_map_id": "signed-map", "intersection_id": 158209,
                         "native_yield_sign_id": 88,

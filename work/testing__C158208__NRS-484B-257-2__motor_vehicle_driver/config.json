@@ -63,29 +63,56 @@
       {
         "name": "ego_speed_mps",
         "unit": "m/s",
-        "method": "original Native velocity at each four-camera-joined tick",
-        "time_window": "entire source capture",
+        "method": "original Native ego velocity at each four-camera-joined tick",
+        "time_window": "entire original capture",
         "reference_frame": "original Native frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "between-frame speed unresolved"
+        "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
       },
       {
-        "name": "ego_other_body_occupancy",
-        "unit": "structured record",
-        "method": "original Native bounding-box vertices against reviewed intersection polygon",
-        "time_window": "entire source capture",
+        "name": "ego_body_in_intersection",
+        "unit": "count",
+        "method": "original ego bounding-box overlap with reviewed intersection polygon",
+        "time_window": "entire original capture",
         "reference_frame": "original Native frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "between-frame occupancy unresolved"
+        "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
       },
       {
-        "name": "signed_entrance_reference",
-        "unit": "structured record",
-        "method": "original body position relative to reviewed ordered subsection-1 reference",
-        "time_window": "pre-entry through crossing",
+        "name": "other_body_in_intersection",
+        "unit": "count",
+        "method": "original other bounding-box overlap with reviewed intersection polygon",
+        "time_window": "entire original capture",
         "reference_frame": "original Native frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "legal safe-speed and nearest-view judgments unresolved"
+        "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+      },
+      {
+        "name": "other_distance_to_intersection_center_m",
+        "unit": "m",
+        "method": "other body center distance to reviewed polygon centroid",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+      },
+      {
+        "name": "other_center_closing_mps",
+        "unit": "m/s",
+        "method": "finite difference of original other body-center distance",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+      },
+      {
+        "name": "ego_before_yield_reference",
+        "unit": "count",
+        "method": "complete original ego body before reviewed ordered reference",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
       }
     ],
     "context_inputs": [
@@ -124,6 +151,84 @@
       "ego_forward_xy": [
         1.0,
         0.0
+      ]
+    }
+  },
+  "case": {
+    "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_speed_mps",
+          "unit": "m/s",
+          "method": "original Native ego velocity at each four-camera-joined tick",
+          "time_window": "entire original capture",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+        },
+        {
+          "name": "ego_body_in_intersection",
+          "unit": "count",
+          "method": "original ego bounding-box overlap with reviewed intersection polygon",
+          "time_window": "entire original capture",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+        },
+        {
+          "name": "other_body_in_intersection",
+          "unit": "count",
+          "method": "original other bounding-box overlap with reviewed intersection polygon",
+          "time_window": "entire original capture",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+        },
+        {
+          "name": "other_distance_to_intersection_center_m",
+          "unit": "m",
+          "method": "other body center distance to reviewed polygon centroid",
+          "time_window": "entire original capture",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+        },
+        {
+          "name": "other_center_closing_mps",
+          "unit": "m/s",
+          "method": "finite difference of original other body-center distance",
+          "time_window": "entire original capture",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+        },
+        {
+          "name": "ego_before_yield_reference",
+          "unit": "count",
+          "method": "complete original ego body before reviewed ordered reference",
+          "time_window": "entire original capture",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "signed_intersection_status_and_all_entrances",
+          "unit": "structured record",
+          "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+        },
+        {
+          "name": "site_and_officer_review",
+          "unit": "structured record",
+          "method": "original four-camera review bound to context and frame IDs"
+        }
+      ],
+      "limitations": [
+        "authored road status and sign geometry require original-source physical confirmation",
+        "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+        "CPU fixture colors do not prove original-pixel visibility"
       ]
     }
   }

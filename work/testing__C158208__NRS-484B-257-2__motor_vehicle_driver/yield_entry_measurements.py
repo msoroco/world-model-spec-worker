@@ -33,6 +33,13 @@ def _inside(vertices,polygon):
     return body.intersects(polygon)
 
 
+def _center(vertices):
+    if not isinstance(vertices,list) or len(vertices)<4:
+        raise ValueError("Missing complete vehicle body")
+    return [sum(_number(point[axis],"body coordinate") for point in vertices)/len(vertices)
+            for axis in (0,1)]
+
+
 def analyze(root:Path)->dict:
     root=Path(root);hashes={}
     for name in REQUIRED:
@@ -105,12 +112,29 @@ def analyze(root:Path)->dict:
         samples.append({"frame":fid,"time_s":time,"ego_speed_mps":speed,
                         "ego_body_before_yield_reference":before,
                         "ego_body_in_intersection":ego_inside,
-                        "other_body_in_intersection":other_inside})
+                        "other_body_in_intersection":other_inside,
+                        "other_body_center_xy_m":_center(row["other_body_vertices_xy_m"])})
     if first_entry is None:raise ValueError("No observed ego entry")
     prior=[s for s in samples if s["time_s"]<first_entry["time_s"]]
     before_speeds=[s["ego_speed_mps"] for s in prior if s["ego_body_before_yield_reference"]]
     slowed=bool(len(before_speeds)>=2 and min(before_speeds)<before_speeds[0])
+    center=polygon.centroid
+    for index,sample in enumerate(samples):
+        point=sample["other_body_center_xy_m"]
+        distance=math.hypot(point[0]-center.x,point[1]-center.y)
+        sample["other_distance_to_intersection_center_m"]=distance
+        if index:
+            elapsed=sample["time_s"]-samples[index-1]["time_s"]
+            former=samples[index-1]["other_body_center_xy_m"]
+            old_distance=samples[index-1]["other_distance_to_intersection_center_m"]
+            sample["other_center_speed_mps"]=math.hypot(point[0]-former[0],point[1]-former[1])/elapsed
+            sample["other_center_closing_mps"]=(old_distance-distance)/elapsed
+        else:
+            sample["other_center_speed_mps"]=None
+            sample["other_center_closing_mps"]=None
     return {"format":"worker-yield-sign-intersection-observations","sources":hashes,
+            "native_yield_sign_id":ctx["native_yield_sign_id"],
+            "non_through_highway":ctx["non_through_highway"],
             "first_ego_entry":first_entry,"observed_slowed_or_stopped_before_reference":slowed,
             "other_entrance_device":other[0]["device"],
             "other_not_obligated_by_stop_or_yield":other[0]["device"] not in ("stop","yield"),

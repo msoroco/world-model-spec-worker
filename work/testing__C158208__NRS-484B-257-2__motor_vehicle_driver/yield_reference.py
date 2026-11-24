@@ -22,6 +22,9 @@ def inspect(root, context):
     if not source.is_file():
         raise ValueError("Missing original signed-entrance site review")
     review = json.loads(source.read_text())
+    if (review.get("method") != "original_source_camera_frame_review"
+            or not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip()):
+        raise ValueError("Missing explicit original-camera site reviewer")
     if review.get("intersection_context_sha256") != sha(root / "intersection_context.json"):
         raise ValueError("Signed-entrance context changed after review")
     if review.get("native_yield_sign_id") != context["native_yield_sign_id"]:

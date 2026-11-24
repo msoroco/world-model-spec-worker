@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import json
 import sys
@@ -14,6 +15,9 @@ spec.loader.exec_module(capture)
 measure_spec = importlib.util.spec_from_file_location("yield_entry_measurements", ROOT / "yield_entry_measurements.py")
 measure = importlib.util.module_from_spec(measure_spec)
 measure_spec.loader.exec_module(measure)
+review_spec = importlib.util.spec_from_file_location("prepare_review", ROOT / "prepare_review.py")
+prepare = importlib.util.module_from_spec(review_spec)
+review_spec.loader.exec_module(prepare)
 
 
 class Body:
@@ -37,7 +41,9 @@ class CaptureTests(unittest.TestCase):
     def inputs(self):
         context = {"native_yield_sign_id": 25, "ego_entrance_device": "yield",
                    "non_through_highway": True, "ego_approach_road_id": 7}
-        review = {"native_yield_sign_id": 25, "sign_face_observed": "yield",
+        review = {"method": "original_source_camera_frame_review",
+                  "reviewer": "CPU diagnostic fixture, no physical claim",
+                  "native_yield_sign_id": 25, "sign_face_observed": "yield",
                   "proper_sign_judgment": "unresolved",
                   "marked_stop_line_observed": True, "near_crosswalk_observed": False,
                   "reference_boundary": {"source": "marked_stop_line",
@@ -70,6 +76,19 @@ class CaptureTests(unittest.TestCase):
                 writer.add(world, 101, 1.1, cameras)
             for name in capture.CAMERAS:
                 (root / (name + ".mkv")).write_text("synthetic hash-binding fixture " + name)
+            draft = prepare.template(root)
+            self.assertEqual(draft["reviewed_carla_frames"], [100, 101])
+            with self.assertRaisesRegex(ValueError, "explicit original-camera sign review"):
+                capture.bind_site_review(root, draft)
+            review["intersection_context_sha256"] = hashlib.sha256((root / "intersection_context.json").read_bytes()).hexdigest()
+            review["camera_sha256"] = {name: hashlib.sha256((root / (name + ".mkv")).read_bytes()).hexdigest()
+                                       for name in capture.CAMERAS}
+            review["reviewed_carla_frames"] = [100, 101]
+            review["reviewed_frame_count"] = 2
+            review["camera_sha256"]["overview"] = "stale"
+            with self.assertRaisesRegex(ValueError, "source or frame coverage"):
+                capture.bind_site_review(root, review)
+            review["camera_sha256"] = draft["camera_sha256"]
             bound = capture.bind_site_review(root, review)
             self.assertEqual(bound["reviewed_carla_frames"], [100, 101])
             self.assertEqual(set(bound["camera_sha256"]), set(capture.CAMERAS))
@@ -109,6 +128,11 @@ class CaptureTests(unittest.TestCase):
                 writer.add(world, frame, frame / 20, {name: frame for name in capture.CAMERAS})
             for name in capture.CAMERAS:
                 (root / (name + ".mkv")).write_text("synthetic join fixture " + name)
+            review["intersection_context_sha256"] = hashlib.sha256((root / "intersection_context.json").read_bytes()).hexdigest()
+            review["camera_sha256"] = {name: hashlib.sha256((root / (name + ".mkv")).read_bytes()).hexdigest()
+                                       for name in capture.CAMERAS}
+            review["reviewed_carla_frames"] = [100, 101, 102]
+            review["reviewed_frame_count"] = 3
             capture.bind_site_review(root, review)
             observed = measure.analyze(root)
             self.assertEqual(observed["first_ego_entry"]["frame"], 102)

@@ -26,6 +26,10 @@ def validate_config(config):
         raise ValueError("Wrong exact C158208 assignment identity")
     case_id = config.get("selected_case_id")
     stage = primary(case_id)
+    if (not isinstance(config.get("case"), dict)
+            or config["case"].get("case_id") != case_id
+            or config["case"].get("recording_description") != config.get("recording_description")):
+        raise ValueError("Exact case recording description differs")
     if config.get("supported_case_ids") != [PREFIX + kind for kind in KINDS]:
         raise ValueError("Five exact signed-entrance case IDs required")
     if config.get("rate_hz") != 20 or config.get("duration_s") != 30:

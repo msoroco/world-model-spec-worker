@@ -44,6 +44,8 @@ class YieldEntryTests(unittest.TestCase):
             path.write_text("diagnostic camera source "+name)
             cameras[name]=hashlib.sha256(path.read_bytes()).hexdigest()
         (root/"site_review.json").write_text(json.dumps({
+            "method":"original_source_camera_frame_review",
+            "reviewer":"CPU diagnostic fixture, no physical claim",
             "intersection_context_sha256":hashlib.sha256((root/"intersection_context.json").read_bytes()).hexdigest(),
             "native_yield_sign_id":25,"sign_face_observed":"yield",
             "proper_sign_judgment":"unresolved","marked_stop_line_observed":True,
@@ -69,6 +71,8 @@ class YieldEntryTests(unittest.TestCase):
             self.assertTrue(result["observed_slowed_or_stopped_before_reference"])
             self.assertTrue(result["other_not_obligated_by_stop_or_yield"])
             self.assertTrue(result["other_inside_at_ego_entry"])
+            self.assertGreater(result["samples"][2]["other_center_closing_mps"],0)
+            self.assertEqual(result["immediate_hazard_judgment"],"unresolved")
             self.assertEqual(result["subsection_one_reference"]["reference_kind"],"marked_stop_line")
             self.assertEqual(result["legal_conclusion"],"unresolved")
             self.fixture(root,"stop")
