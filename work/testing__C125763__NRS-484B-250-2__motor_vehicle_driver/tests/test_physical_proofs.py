@@ -3,7 +3,6 @@ import json
 import base64
 import unittest
 import zlib
-import tarfile
 from pathlib import Path
 
 PACKAGE=Path(__file__).resolve().parents[1]
@@ -11,11 +10,8 @@ PACKAGE=Path(__file__).resolve().parents[1]
 
 class PhysicalProofTests(unittest.TestCase):
     def test_historical_canonical_snapshot_is_explicitly_stale(self):
-        archive_path=PACKAGE.parent/'_shared/cpu-proof-history-plus-20261123.tar.xz'
-        with tarfile.open(archive_path,'r:xz') as packed:
-            source=packed.extractfile('consolidated-proof-archives-20261123.json')
-            self.assertIsNotNone(source)
-            wrapper=json.load(source)
+        archive_path=PACKAGE.parent/'_shared/consolidated-proof-archives-20261123.json'
+        wrapper=json.loads(archive_path.read_text())
         nested=next(row for row in wrapper['files'] if row['original_path'].endswith('/c125763-stale-canonical-snapshot-20261123.json'))
         source=zlib.decompress(base64.b64decode(nested['content_zlib_base64']))
         self.assertEqual(hashlib.sha256(source).hexdigest(),nested['sha256'])

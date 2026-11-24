@@ -1,14 +1,13 @@
 import base64
 import hashlib
 import json
-import tarfile
 import unittest
 import zlib
 from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parents[1]
-HISTORY = HERE.parent / '_shared' / 'cpu-proof-history-plus-20261123.tar.xz'
+HISTORY = HERE.parent / '_shared'
 NESTED_SHA256 = {
     'c125745-stale-axis-diagnostics-2026-11-23.json': 'af55976737ce91916ed74698733b4f785e1604ff4fe6d396efff0a3ce3f72772',
     'c125745-sweep-fallback1-proofs-2026-11-23.json': 'cfd2e8ca423c4627a6dbec3ab9a7f30969082aa653c6247d1c56c3feea5a2c32',
@@ -21,15 +20,9 @@ def source_bytes(path):
     if source.is_file():
         return source.read_bytes()
     name = source.name
-    if name not in NESTED_SHA256 or source.parent.resolve() != HISTORY.parent:
+    if name not in NESTED_SHA256 or source.parent.resolve() != HISTORY:
         raise FileNotFoundError(source)
-    with tarfile.open(HISTORY, 'r:xz') as packed:
-        inner = packed.extractfile('cpu-proof-history-20261123.tar.xz')
-        assert inner is not None
-        with tarfile.open(fileobj=inner, mode='r:xz') as history:
-            member = history.extractfile(name)
-            assert member is not None
-            data = member.read()
+    data = (HISTORY / name).read_bytes()
     assert hashlib.sha256(data).hexdigest() == NESTED_SHA256[name]
     return data
 
@@ -54,13 +47,8 @@ def construction_bytes(item):
 def historical_bytes(item):
     archive_path = HERE / item['historical_construction_archive']
     if archive_path.suffix == '.xz':
-        with tarfile.open(archive_path, 'r:xz') as packed:
-            source = packed.extractfile(
-                'work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/'
-                'sweep-constructions/historical-unqualified-bundles.json')
-            archive = json.load(source)
-    else:
-        archive = json.loads(archive_path.read_text())
+        archive_path = HERE / 'sweep-constructions/historical-unqualified-bundles.json'
+    archive = json.loads(archive_path.read_text())
     member = archive['files'][item['historical_construction_member']]
     raw = zlib.decompress(base64.b64decode(member['zlib_base64'], validate=True))
     assert len(raw) == member['bytes']

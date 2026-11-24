@@ -7,7 +7,6 @@ import json
 import sys
 import tempfile
 import shutil
-import tarfile
 import zlib
 from pathlib import Path
 
@@ -83,22 +82,19 @@ def run(kind,case,output):
    else:
     plan=read(HERE/'case-plan.json')['first_fallback3_fixed_duration_repair_20261124']
     binding=plan['current_manifest_saved_replay']
-    archive=REPO/'work/_shared/small-archives-consolidated-20261123.tar.xz'
-    if sha(archive)!=plan['archive_sha256']:
-     raise ValueError('Current saved replay archive changed')
-    with tarfile.open(archive,'r:xz') as bundle:
-     index_bytes=bundle.extractfile(binding['archive_member_prefix']+'index.json').read()
-     if hashlib.sha256(index_bytes).hexdigest()!=binding['index_sha256']:
-      raise ValueError('Current saved replay index changed')
-     index=json.loads(index_bytes)
-     if index['manifest_sha256']!=binding['manifest_sha256'] or index['case_id']!=case:
-      raise ValueError('Current saved replay index differs')
-     proof=next(x for x in index['proofs'] if x['candidate']=='primary')
-     saved_bytes=bundle.extractfile(proof['member']).read()
-     saved_sha=hashlib.sha256(saved_bytes).hexdigest()
-     if saved_sha!=proof['sha256']:
-      raise ValueError('Current saved replay receipt changed')
-     saved_data=json.loads(saved_bytes)
+    index_path=REPO/binding['archive_member_prefix']/'index.json'
+    index_bytes=index_path.read_bytes()
+    if hashlib.sha256(index_bytes).hexdigest()!=binding['index_sha256']:
+     raise ValueError('Current saved replay index changed')
+    index=json.loads(index_bytes)
+    if index['manifest_sha256']!=binding['manifest_sha256'] or index['case_id']!=case:
+     raise ValueError('Current saved replay index differs')
+    proof=next(x for x in index['proofs'] if x['candidate']=='primary')
+    saved_bytes=(REPO/proof['member']).read_bytes()
+    saved_sha=hashlib.sha256(saved_bytes).hexdigest()
+    if saved_sha!=proof['sha256']:
+     raise ValueError('Current saved replay receipt changed')
+    saved_data=json.loads(saved_bytes)
     if saved_data.get('passed') is not True or saved_data.get('recorded_only') is not True or saved_data.get('candidate_id')!='primary':
      raise ValueError('Current saved replay primary did not pass')
    write(attempt/'construction.json',construction)

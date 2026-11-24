@@ -1,3 +1,7 @@
+## 2026-11-24 restored historical text source reader
+
+The historical physical-proof test and `physical_fixture_proof.py` now read restored plain-text JSON sources in `work/_shared/` instead of the retired binary archives. The focused historical test passes, and the exact `yield_ego_left_near_time` lifecycle fixture passes against the restored source. The prior-ready result remains ready and unchanged under `PREVIOUS_READINESS.json`. A wider 41-test run still has one pre-existing current-manifest replay hash mismatch (`b77a0f6e...` recorded versus `af9b42b0...` present); its log is in `.runtime-work/c125763-archive-refresh-tests.log`. No prior-ready runtime migration or proof regeneration was performed.
+
 ## 2026-11-23 three current physical-preparation receipts returned
 
 Archived 13 superseded unpromoted compatibility receipts byte-exactly in `work/_shared/c125763-superseded-compatibility-20261123.json` (SHA256 `db6d8a8bd9bdcd350da22864f4bda85af5e421f94c3d0d6449420dc3b89f76ad`). Their paths, SHA256 values and compressed original bytes are retained; each restored payload hash was verified before deletion. This preserved the 8,600-file cap. The active manifest uses the promoted exact compatibility receipts, and no active manifest or Python code references these archived filenames.

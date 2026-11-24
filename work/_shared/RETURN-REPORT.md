@@ -1,3 +1,11 @@
+C125763 historical source readers were mechanically updated to restored text. Its focused historical test and `yield_ego_left_near_time` lifecycle fixture pass; prior-ready status remains unchanged. The wider historical suite retains one pre-existing manifest replay hash mismatch and was not used to alter readiness.
+
+## 2026-11-24 archive restoration and C125745 CPU proof checkpoint
+
+Newly ready assignment IDs: none. Batch: 29 ready, 14 partial. Active assignment: `testing__C125745__NRS-484B-250-2__motor_vehicle_driver`; exact cases exercised in the restored fixture replay: `c125745-1-0000`, `c125745-1-0001`, `c125745-1-0002`, `c125745-2-0000`, `c125745-2-0001`, `c125745-2-0002`, plus `stop_ego_left_near_time` primary. Its 48 positive staged commands reproduced prior output hashes; three wrong saved-receipt probes rejected; the primary four CPU fixture modes passed. The 76-test suite, current runtime verify/preflight, and scoped nonready complete check passed. Official-device governance and opposite left-turn intent remain incomplete worker-owned CPU construction and proof work. C125745 remains partial; its strict assignment gate has not passed.
+
+Ten binary `.tar.xz` archives were recursively expanded to 286 missing plain UTF-8 files and removed. Existing newer files were preserved; generated `.pyc` files were removed. The unscoped quick check now passes file decoding but fails at `Execution manifest binds another runtime` for prior-ready manifests. The 29 retained-ready assignments remain unchanged, as directed by the runtime refresh; `PREVIOUS_READINESS.json` records their previous runtime validation. This is not a blocker to C125745 construction and proof work. No full strict batch gate passed, and no Git command was run.
+
 ## 2026-11-24 C125745 physical provenance and saved proof bundle
 
 The CPU physical fixture now writes `provenance_kind: synthetic_fixture` for direct and staged synthetic samples. Its first-case complete, incomplete, missing-evidence and lifecycle outcomes were rerun; the physical receipt SHA256 is `1f7f8a85b86d1bb0f66b6e1d76440775363600cce5bf1d7d5d988c80ecdbf8ad`. The nine staged diagnostics ran all 36 outcome commands successfully and their embedded result/log hashes were rebound. These checks make no Native or legal acceptance claim.
@@ -1007,3 +1015,7 @@ The nine frame24/frame32/frame40 fallback physical diagnostic sets reran all 36 
 Next: finish the two controlled judgment sweep specs without inventing legal thresholds or silently relabeling review-only work; then rerun the package suite and `.venv-cpu/bin/python worker_check.py --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` before changing status. Keep the remote push rejection separate from CPU readiness; it was a remote pack write/rename error, not a local work-file validation failure.
 
 The current independent source-bound comparison audit passed and returned `comparison-current-audit.json`. It verifies the timing and side comparisons plus the opposite-approach and fixed-device contexts, while explicitly leaving official-device, physical and legal judgments unresolved.
+
+## 2026-11-24 opposite-turn route construction audit
+
+The independent `audit_turn_route.py` binds the opposite-turn primary and three fallback site packets to their exact execution-manifest construction hashes and reviewed synthetic source documents. All four command an exit left of the other vehicle's original approach (15, 20, 15 and 15 m lateral); straight and right-side exit mutations are rejected. `turn-route-proof.json` contains the hashes and negative checks. The package suite passes 76 tests in `cpu-tests-turn-route.log`, and the assignment-scoped nonready check passes. This closes a commanded-path consistency gap only. Original Native trajectory, official-device governance, legal turn intent, and the two qualitative controlled sweeps remain incomplete. C125745 remains partial.
