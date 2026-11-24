@@ -26,7 +26,9 @@ def main():
     base_road = None
     for label, entry in zip(('marked', 'unmarked'), manifest['cases']):
         case = ASSIGNMENT.name + '__crossref_287c_' + label
-        require(entry['case_id'] == case and not entry['candidates'], '287(c) case differs')
+        require(entry['case_id'] == case and len(entry['candidates']) == 1 and
+                entry['candidates'][0]['id'] == 'fallback1' and
+                entry['candidate_risk']['status'] == 'physical', '287(c) case or fallback differs')
         path = HERE / entry['construction']
         require(sha(path) == entry['construction_sha256'], '287(c) construction changed')
         construction = json.loads(path.read_text())
@@ -50,6 +52,20 @@ def main():
                 construction['actor'] == 'pedestrian' and
                 construction['law_id'] == 'NRS-484B-283-1b', 'Frozen cell differs')
         files = {f['path']: f['content'] for f in construction['files']}
+        fallback_entry = entry['candidates'][0]
+        fallback_path = HERE / fallback_entry['construction']
+        require(sha(fallback_path) == fallback_entry['construction_sha256'] and
+                fallback_entry['trigger']['source'] == 'original_native_pedestrian_footprint_and_road_edge' and
+                fallback_entry['trigger']['metric'] == 'native_initial_footprint_clearance_m_below',
+                '287(c) physical fallback source or hash differs')
+        fallback = json.loads(fallback_path.read_text())
+        fallback_files = {f['path']: f['content'] for f in fallback['files']}
+        require(fallback['case_id'] == case and fallback_files['road.xodr'] == files['road.xodr'] and
+                json.loads(fallback_files['config.json'])['candidate_id'] == 'fallback1',
+                '287(c) fallback changes case or comparison road')
+        require((HERE / label / 'fallback1/offline.log').is_file() and
+                '"offline_passed": true' in (HERE / label / 'fallback1/offline.log').read_text().lower(),
+                '287(c) fallback offline proof absent')
         require(context['authored_road_sha256'] == hashlib.sha256(files['road.xodr'].encode()).hexdigest() and
                 context['authored_adjacent_intersection_targets'] == 2 and
                 context['authored_dynamic_device_targets'] == 2 and
@@ -117,6 +133,8 @@ def main():
                      'synthetic_capture_manifest_sha256': sha(capture_manifest_path),
                      'offline_log': str(offline.relative_to(HERE)),
                      'offline_log_sha256': sha(offline),
+                     'fallback_construction_sha256': sha(fallback_path),
+                     'fallback_offline_log_sha256': sha(HERE / label / 'fallback1/offline.log'),
                      'marked_crossing_target': label == 'marked'})
     result = {'format': 'c230222-287c-authored-source-review-v1',
               'cases': rows, 'comparison_variable': 'marked_crossing_target',

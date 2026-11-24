@@ -8,8 +8,22 @@
       "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_marked",
       "kind": "unselected_cpu_diagnostic",
       "construction": "crossref-287c-native/marked/construction.json",
-      "construction_sha256": "f9732390dce471f3db13401c6025fc5df8ce691ce56ba6bfc6eaddaf3939ac69",
-      "candidates": [],
+      "construction_sha256": "c69b05fd7bd3e95dc4be507df7a58c38f1e4c3d470a9db043eac6fa7eeaceca5",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "crossref-287c-native/marked/fallback1/construction.json",
+          "construction_sha256": "c1970ea0950bd8a4bd4815c55886b2b510e45edc2d00f204522b5d449d38bafe",
+          "trigger": {
+            "source": "original_native_pedestrian_footprint_and_road_edge",
+            "metric": "native_initial_footprint_clearance_m_below",
+            "failure_condition": "native_initial_footprint_clearance_m_below 1.25"
+          },
+          "changed_knobs": [
+            "pedestrian spawn and two-meter pre-roll"
+          ]
+        }
+      ],
       "measurement_contract": "crossref-287c-native/marked/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -17,16 +31,30 @@
       },
       "fixture_recipe": "work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/marked/recipe.json",
       "candidate_risk": {
-        "status": "none",
-        "reason": "Initial CPU source feasibility only; physical fallback review remains pending"
+        "status": "physical",
+        "reason": "Original Native walker footprint may overlap the curb edge; use the fallback only when source-measured initial clearance falls below 1.25 m."
       }
     },
     {
       "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_287c_unmarked",
       "kind": "unselected_cpu_diagnostic",
       "construction": "crossref-287c-native/unmarked/construction.json",
-      "construction_sha256": "ffe94d6fbb3d9b40fe5a9a06b40ca08efe7a2de8d3aae60dcb8ab8d2aad26a9e",
-      "candidates": [],
+      "construction_sha256": "3008b9140102c149fc80ec8358fc394db8b9976c4c9a4f0ff8025248a8ffc8fb",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "crossref-287c-native/unmarked/fallback1/construction.json",
+          "construction_sha256": "bdddcd9bfff55c3dc4a2e84cc0d5386828192b0aaaedd2944b42a611cc26d5d2",
+          "trigger": {
+            "source": "original_native_pedestrian_footprint_and_road_edge",
+            "metric": "native_initial_footprint_clearance_m_below",
+            "failure_condition": "native_initial_footprint_clearance_m_below 1.25"
+          },
+          "changed_knobs": [
+            "pedestrian spawn and two-meter pre-roll"
+          ]
+        }
+      ],
       "measurement_contract": "crossref-287c-native/unmarked/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -34,8 +62,8 @@
       },
       "fixture_recipe": "work/training__C230222__NRS-484B-283-1b__pedestrian/crossref-287c-native/unmarked/recipe.json",
       "candidate_risk": {
-        "status": "none",
-        "reason": "Initial CPU source feasibility only; physical fallback review remains pending"
+        "status": "physical",
+        "reason": "Original Native walker footprint may overlap the curb edge; use the fallback only when source-measured initial clearance falls below 1.25 m."
       }
     }
   ]

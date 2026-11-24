@@ -21,6 +21,10 @@ def write(path, value):
 def main():
     plan_path = HERE / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
+    plan['requirement_dispositions'] = [
+        row for row in plan['requirement_dispositions']
+        if row['branch'] != 'Textual exceptions, alternatives, or dependencies: except, authorized emergency vehicle'
+    ]
     manifest_path = HERE / 'current-execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     variants = (

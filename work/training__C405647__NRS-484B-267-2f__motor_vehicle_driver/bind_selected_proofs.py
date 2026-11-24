@@ -48,6 +48,18 @@ def main():
             raise ValueError('Visible movement public or saved-only matrix did not pass')
         public_results.extend(visible_public['results'])
         saved_results.extend(visible_saved['results'])
+    for suffix, public_name, saved_name in (
+        ('visible_hand_signal', 'hand-matrix.json', 'hand-saved-matrix.json'),
+        ('officer_direction', 'officer-direction-matrix.json',
+         'officer-direction-saved-matrix.json'),
+    ):
+        if any(entry['case_id'].endswith('__' + suffix) for entry in current['cases']):
+            variant_public = read(HERE / 'current-public' / public_name)
+            variant_saved = read(HERE / 'current-public' / saved_name)
+            if not variant_public['all_passed'] or not variant_saved['all_passed']:
+                raise ValueError('Selected variant public or saved proof failed: ' + suffix)
+            public_results.extend(variant_public['results'])
+            saved_results.extend(variant_saved['results'])
     pr = {(r['case'], r['candidate']): r for r in public_results}
     sr = {(r['case_id'], r['candidate_id']): r for r in saved_results}
     for entry in current['cases']:
@@ -61,6 +73,10 @@ def main():
         construction = read(HERE / entry['construction'])
         channels = [c['name'] for c in construction['recording_description']['channels']]
         source = 'original vehicle_poses.jsonl, video_frames.jsonl, emergency_context.json, four synchronized MKV cameras'
+        if suffix == 'visible_hand_signal':
+            source += ', driver_hand_track.jsonl and hand_signal_review.json'
+        elif suffix == 'officer_direction':
+            source += ', officer_track.jsonl and officer_direction.json'
         entry['acquisition'] = {name: {'entrypoint': 'runner.py',
                                        'evidence': source,
                                        'method': '600-frame original Native pose, body, light-state, context and camera join; synthetic CPU fixture is diagnostic only'}
@@ -83,6 +99,8 @@ def main():
                 raise ValueError('Candidate proof file missing: ' + base)
             offline_version = {'official_approach': 'offline-v4-', 'stopped_referral': 'offline-v2-'}.get(suffix, 'offline-v3-')
             offline_attempt = ('offline-visible-draft-primary' if suffix == 'visible_movement'
+                               else 'offline-hand-signal-draft-primary-v2' if suffix == 'visible_hand_signal'
+                               else 'offline-officer-draft-primary' if suffix == 'officer_direction'
                                else offline_version + base)
             dest['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/current-execution-manifest.json --case ' + case_id + ' --candidate ' + cid + ' --output .runtime-work/c405647-267-2f/' + offline_attempt + ' --python "$PWD/.venv-cpu/bin/python"',
                                'exit_code': 0, 'construction_sha256': dest['construction_sha256'],

@@ -3,7 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from topology import road as connected_road
+from topology import road as connected_road, inspect as inspect_connected_road
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
@@ -130,10 +130,13 @@ def geometry_source(marked):
     return '''"""CPU check of authored 287(c) targets; Native topology and operation remain unverified."""
 from pathlib import Path
 import xml.etree.ElementTree as ET
+from topology_check import inspect
 
 
 def check(path=Path(__file__).resolve().parent / 'road.xodr'):
-    root = ET.parse(path).getroot()
+    content = Path(path).read_text()
+    topology = inspect(content)
+    root = ET.fromstring(content)
     roads = root.findall('road')
     junctions = root.findall('junction')
     signals = root.findall('.//signals/signal')
@@ -149,6 +152,8 @@ def check(path=Path(__file__).resolve().parent / 'road.xodr'):
             'vehicle_conflict_y_m': 0, 'adjacent_intersection_targets': 2,
             'device_targets': 2, 'marked_crosswalk_targets': %d,
             'authored_junction_connection_count': 8,
+            'through_road_connected': topology['through_road_connected'],
+            'lane_links_checked': topology['lane_links_checked'],
             'native_map_loaded': False, 'official_device_operation_verified': False,
             'legal_road_and_safety_place_status_verified': False}
 ''' % (int(marked), int(marked))
@@ -185,7 +190,10 @@ def build():
         files['runner.py']['content'] = runner
         files['road.xodr']['content'] = connected_road(
             next(x['content'] for x in SOURCE['files'] if x['path'] == 'road.xodr'), marked)
+        inspect_connected_road(files['road.xodr']['content'])
         files['geometry.py']['content'] = geometry_source(marked)
+        files['topology_check.py'] = {'path': 'topology_check.py',
+                                      'content': (HERE / 'topology.py').read_text()}
         files['signal_control.py'] = {'path': 'signal_control.py', 'content': SIGNALS}
         tests = '''import unittest
 from geometry import check
@@ -268,8 +276,24 @@ class SourceTargets(unittest.TestCase):
         entry['construction_sha256'] = digest(path.read_bytes())
         entry['measurement_contract'] = label + '/measurement-contract.json'
         entry['fixture_recipe'] = 'work/' + BASE + '/crossref-287c-native/' + label + '/recipe.json'
-        entry['candidates'] = []
-        entry['candidate_risk'] = {'status': 'none', 'reason': 'Initial CPU source feasibility only; physical fallback review remains pending'}
+        fallback = json.loads(json.dumps(construction))
+        fallback_files = {item['path']: item for item in fallback['files']}
+        fallback_config = json.loads(fallback_files['config.json']['content'])
+        fallback_config['candidate_id'] = 'fallback1'
+        fallback_files['config.json']['content'] = json.dumps(fallback_config, indent=2) + '\n'
+        fallback_path = folder / 'fallback1' / 'construction.json'
+        fallback_path.parent.mkdir(exist_ok=True)
+        fallback_path.write_text(json.dumps(fallback, indent=2) + '\n')
+        entry['candidates'] = [{
+            'id': 'fallback1',
+            'construction': str(fallback_path.relative_to(HERE)),
+            'construction_sha256': digest(fallback_path.read_bytes()),
+            'trigger': {'source': 'original_native_pedestrian_footprint_and_road_edge',
+                        'metric': 'native_initial_footprint_clearance_m_below',
+                        'failure_condition': 'native_initial_footprint_clearance_m_below 1.25'},
+            'changed_knobs': ['pedestrian spawn and two-meter pre-roll']}]
+        entry['candidate_risk'] = {'status': 'physical',
+            'reason': 'Original Native walker footprint may overlap the curb edge; use the fallback only when source-measured initial clearance falls below 1.25 m.'}
         entries.append(entry)
     manifest = dict(SOURCE_MANIFEST)
     manifest['cases'] = entries
@@ -279,6 +303,8 @@ class SourceTargets(unittest.TestCase):
     for entry in public['cases']:
         entry['construction'] = 'crossref-287c-native/' + entry['construction']
         entry['measurement_contract'] = 'crossref-287c-native/' + entry['measurement_contract']
+        for candidate in entry['candidates']:
+            candidate['construction'] = 'crossref-287c-native/' + candidate['construction']
     (ASSIGNMENT / 'crossref-287c-manifest.json').write_text(json.dumps(public, indent=2) + '\n')
     print(json.dumps({'cases': len(entries), 'marked': True, 'native_executed': False}))
 

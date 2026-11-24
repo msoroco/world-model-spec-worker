@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import xml.etree.ElementTree as ET
+from topology import inspect as inspect_topology
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 ROLES = {'south': '28701', 'north': '28702'}
@@ -25,6 +26,7 @@ def read(path):
 
 
 def inspect_road(content, marked):
+    topology = inspect_topology(content.decode() if isinstance(content, bytes) else content)
     root = ET.fromstring(content)
     roads = root.findall('road')
     junctions = root.findall('junction')
@@ -43,7 +45,9 @@ def inspect_road(content, marked):
             all(x.get('s') == '26.5' for x in marks),
             'Original Native marked crossing differs')
     return {'road_count': len(roads), 'junction_count': len(junctions),
-            'device_count': len(signals), 'marking_count': len(marks)}
+            'device_count': len(signals), 'marking_count': len(marks),
+            'through_road_connected': topology['through_road_connected'],
+            'lane_links_checked': topology['lane_links_checked']}
 
 
 def inspect_frames(samples, frame_map):

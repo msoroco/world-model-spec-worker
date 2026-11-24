@@ -26,6 +26,7 @@ def main():
             '287(c) comparison plan differs')
     contexts = []
     inventories = []
+    candidate_fixed = {'primary': [], 'fallback1': []}
     for label, case_id in zip(('marked', 'unmarked'), expected):
         recipe = json.loads((HERE / label / 'recipe.json').read_text())
         inventory = {x['path']: x['sha256'] for x in recipe['sources']}
@@ -42,6 +43,26 @@ def main():
         require(contract['case_id'] == case_id and
                 contract['negative']['remove'] == ['curb-samples.jsonl'],
                 '287(c) exact-case negative contract differs')
+        for candidate_id, construction_path in (
+                ('primary', HERE / label / 'construction.json'),
+                ('fallback1', HERE / label / 'fallback1/construction.json')):
+            construction = json.loads(construction_path.read_text())
+            files = {item['path']: item['content'] for item in construction['files']}
+            config = json.loads(files['config.json'])
+            require(config['candidate_id'] == candidate_id and config['case_id'] == case_id,
+                    '287(c) candidate identity differs')
+            for key in ('case_id', 'selected_case_id', 'case_suffix'):
+                config.pop(key)
+            config.pop('case')
+            config.pop('supported_case_ids')
+            candidate_fixed[candidate_id].append({
+                'config': config,
+                'engineering': files['engineering.py'],
+                'runner': files['runner.py'],
+                'signal_control': files['signal_control.py']})
+    for candidate_id, rows in candidate_fixed.items():
+        require(rows[0] == rows[1],
+                '287(c) ' + candidate_id + ' changed fixed controller or capture policy')
     for inventory in inventories:
         inventory.pop('curb-context.json')
         inventory.pop('capture/manifest.json')
@@ -61,6 +82,7 @@ def main():
                'comparison_id': pair_id, 'case_ids': expected,
                'fixed_fixture_sources_sha256': inventories[0],
                'source_proof_sha256': sha(HERE / 'source-proof.json'),
+               'candidate_fixed_checks': ['primary', 'fallback1'],
                'case_plan_sha256': sha(ASSIGNMENT / 'case-plan.json'),
                'native_executed': False,
                'original_device_operation_and_marking_verified': False,

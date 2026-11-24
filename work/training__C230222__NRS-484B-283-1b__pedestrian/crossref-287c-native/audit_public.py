@@ -61,12 +61,41 @@ def audit():
                 not saved['physical_acceptance_claimed'] and
                 not saved['legal_acceptance_claimed'],
                 '287(c) recorded-only receipt or its limits differ')
+        fallback = entry['candidates'][0]
+        fallback_dir = HERE / label / 'fallback1/proofs'
+        fallback_receipt = json.loads((fallback_dir / 'compatibility.json').read_text())
+        fallback_saved = json.loads((fallback_dir / 'processing.json').read_text())
+        require(fallback['id'] == 'fallback1' and
+                sha(ASSIGNMENT / fallback['construction']) == fallback['construction_sha256'] and
+                fallback_receipt['passed'] and fallback_receipt['case_id'] == case and
+                fallback_receipt['candidate_id'] == 'fallback1' and
+                fallback_receipt['construction_sha256'] == fallback['construction_sha256'] and
+                fallback_receipt['fixture_recipe_sha256'] == sha(HERE / label / 'recipe.json') and
+                fallback_receipt['measurement_contract_sha256'] == sha(ASSIGNMENT / entry['measurement_contract']) and
+                fallback_receipt['log_sha256'] == sha(fallback_dir / 'positive-analysis.log') and
+                fallback_receipt['negative_log_sha256'] == sha(fallback_dir / 'negative-analysis.log') and
+                fallback_receipt['negative_removed'] == 'curb-samples.jsonl' and
+                fallback_receipt['negative_error_contains'] in (fallback_dir / 'negative-analysis.log').read_text(),
+                '287(c) fallback public compatibility is stale')
+        require(fallback_saved['passed'] and fallback_saved['recorded_only'] and
+                fallback_saved['originals_preserved'] and fallback_saved['case_id'] == case and
+                fallback_saved['candidate_id'] == 'fallback1' and
+                fallback_saved['native_revision']['construction_sha256'] == fallback['construction_sha256'] and
+                fallback_saved['analysis_log_sha256'] == sha(fallback_dir / 'positive-analysis.log') and
+                fallback_saved['timestamp_joins']['passed'] and
+                fallback_saved['timestamp_joins']['frames'] == 600 and
+                not fallback_saved['physical_acceptance_claimed'] and
+                not fallback_saved['legal_acceptance_claimed'],
+                '287(c) fallback recorded-only receipt differs')
         rows.append({'case_id': case,
                      'construction_sha256': entry['construction_sha256'],
                      'compatibility_sha256': sha(compatibility_path),
                      'positive_log_sha256': sha(positive_path),
                      'negative_log_sha256': sha(negative_path),
                      'saved_processing_sha256': sha(saved_path),
+                     'fallback_construction_sha256': fallback['construction_sha256'],
+                     'fallback_compatibility_sha256': sha(fallback_dir / 'compatibility.json'),
+                     'fallback_saved_processing_sha256': sha(fallback_dir / 'processing.json'),
                      'public_positive': True,
                      'missing_source_rejected': True,
                      'recorded_only_saved': True})

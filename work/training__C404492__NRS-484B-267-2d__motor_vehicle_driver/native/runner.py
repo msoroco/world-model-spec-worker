@@ -17,7 +17,7 @@ def config():
     cfg=json.loads((Path(__file__).resolve().parent/'config.json').read_text())
     case=AID+'__'+cfg.get('case_suffix','')
     if (cfg.get('assignment_id')!=AID or cfg.get('case_id')!=case or cfg.get('selected_case_id')!=case
-            or cfg.get('case_suffix') not in ('controlled_1','controlled_2')
+            or cfg.get('case_suffix') not in ('controlled_1','controlled_2','official_1','official_2')
             or cfg.get('candidate_id') not in ('primary','fallback1','fallback2')
             or cfg.get('law_id')!='NRS-484B-267-2d' or cfg.get('cell_id')!='C404492'
             or cfg.get('actor')!='motor_vehicle_driver' or cfg.get('frames')!=COUNT
@@ -39,13 +39,17 @@ def config():
 
 
 def survey_check(s):
-    for key in ('map_name','map_source','lane_boundaries_source','emergency_authorization_source',
+    official=config()['case_suffix'].startswith('official_')
+    authority_source=('regulatory_agency_vehicle_source' if official
+                      else 'emergency_authorization_source')
+    for key in ('map_name','map_source','lane_boundaries_source',authority_source,
                 'qualifying_flash_equipment_source','officer_direction_review_source',
                 'ego_blueprint','emergency_blueprint','ego_spawn_xyz_m',
                 'emergency_spawn_xyz_m','camera_world_transforms'):
         if not s.get(key):raise ValueError('Missing reviewed Native survey source: '+key)
-    if s.get('emergency_vehicle_authorized') is not True or s.get('qualifying_flash_equipment_reviewed') is not True:
-        raise ValueError('Emergency authorization or light equipment not reviewed')
+    authority_key=('official_regulatory_vehicle' if official else 'emergency_vehicle_authorized')
+    if s.get(authority_key) is not True or s.get('qualifying_flash_equipment_reviewed') is not True:
+        raise ValueError('Reference vehicle authority or light equipment not reviewed')
     if type(s.get('officer_directed_otherwise')) is not bool:
         raise ValueError('Officer direction exception missing')
     if len(s['ego_spawn_xyz_m'])!=3 or len(s['emergency_spawn_xyz_m'])!=3:
@@ -148,7 +152,7 @@ def execute(output,survey,host,port):
                 travel_rad=math.radians(heading)
                 travel_x,travel_y=math.cos(travel_rad),math.sin(travel_rad)
                 emergency.set_target_velocity(carla.Vector3D(x=4*travel_x,y=4*travel_y,z=0))
-                ego_requested=5 if cfg['case_suffix']=='controlled_2' and i<380 else 4
+                ego_requested=5 if cfg['case_suffix'] in ('controlled_2','official_2') and i<380 else 4
                 ego.set_target_velocity(carla.Vector3D(x=ego_requested*travel_x,y=ego_requested*travel_y,z=0))
                 native=world.tick();snap=world.get_snapshot()
                 if snap.frame!=native:raise RuntimeError('Original Native frame mismatch')
@@ -181,6 +185,8 @@ def execute(output,survey,host,port):
             'case_id':cfg['case_id'],
             'review_kind':'original_source_review','ego_actor_id':ego.id,
             'emergency_actor_id':emergency.id,'qualification_review_required':True,
+            'reference_vehicle_kind':('official_regulatory_vehicle' if cfg['case_suffix'].startswith('official_')
+                                      else 'authorized_emergency_vehicle'),
             'native_lane_pair':native_lanes,
             'camera_sha256':{}},indent=2)+'\n')
     finally:

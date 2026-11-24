@@ -1,5 +1,6 @@
 """Connect both cross streets to the midblock through road in OpenDRIVE."""
 import copy
+import math
 import xml.etree.ElementTree as ET
 
 
@@ -116,4 +117,38 @@ def inspect(content):
             raise ValueError('Main road is disconnected from adjacent junction')
         if roads[connector].get('junction') != str(number):
             raise ValueError('Main through connector belongs to wrong junction')
-    return {'roads': 11, 'junctions': 2, 'connections': 8}
+    for incoming, connector, outgoing in ((1, 8, 9), (9, 10, 11),
+                                          (2, 3, 4), (5, 6, 7)):
+        a, b, c = (roads[ident] for ident in (incoming, connector, outgoing))
+        successor = a.find('link/successor')
+        predecessor = c.find('link/predecessor')
+        if successor is None or predecessor is None or successor.get('elementType') != 'junction' or predecessor.get('elementType') != 'junction':
+            raise ValueError('Approach road lacks junction link')
+        if successor.get('elementId') != b.get('junction') or predecessor.get('elementId') != b.get('junction'):
+            raise ValueError('Approach road points to wrong junction')
+        if b.find('link/predecessor').get('elementId') != str(incoming) or b.find('link/successor').get('elementId') != str(outgoing):
+            raise ValueError('Connector road link differs')
+        def endpoints(item):
+            geometry = item.find('planView/geometry')
+            x, y, heading, length = (float(geometry.get(key)) for key in ('x', 'y', 'hdg', 'length'))
+            return (x, y), (x + length * math.cos(heading), y + length * math.sin(heading))
+        a_start, a_end = endpoints(a)
+        b_start, b_end = endpoints(b)
+        c_start, c_end = endpoints(c)
+        if math.dist(a_end, b_start) > .001 or math.dist(b_end, c_start) > .001:
+            raise ValueError('Connector endpoints are disconnected')
+        for lane_id in ('-1', '1'):
+            lane = b.find(".//lane[@id='" + lane_id + "']")
+            if lane is None or lane.find('link/predecessor').get('id') != lane_id or lane.find('link/successor').get('id') != lane_id:
+                raise ValueError('Connector lane link differs')
+    for junction in junctions.values():
+        for connection in junction.findall('connection'):
+            connector = roads[int(connection.get('connectingRoad'))]
+            lane_link = connection.find('laneLink')
+            if lane_link is None or lane_link.get('from') != lane_link.get('to') or lane_link.get('to') not in ('-1', '1'):
+                raise ValueError('Junction lane connection differs')
+            if connector.get('junction') != junction.get('id'):
+                raise ValueError('Junction connection targets wrong connector')
+    return {'roads': 11, 'junctions': 2, 'connections': 8,
+            'through_road_connected': True, 'lane_links_checked': 8,
+            'native_map_loaded': False}
