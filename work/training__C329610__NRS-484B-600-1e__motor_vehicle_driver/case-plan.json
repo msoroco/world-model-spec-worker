@@ -64,7 +64,7 @@
     {
       "name": "ru.subject",
       "mandatory": true,
-      "reason": "the vehicle judged — any kind"
+      "reason": "the vehicle judged \u2014 any kind"
     }
   ],
   "sources": [
@@ -103,5 +103,54 @@
     "kin.speed",
     "kin.velocity",
     "ru.subject"
-  ]
+  ],
+  "statutory_review": {
+    "source": "inputs/training__C329610__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
+    "text": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+    "scope": "Any vehicle kind or character; speed cap is continuous and independent of posted limit. Requested speed labels do not establish actual Native speed.",
+    "limit_mph": 80,
+    "engineering_tolerance_is_not_legal_threshold": true
+  },
+  "source_observation_mapping": [
+    {
+      "term": "kin.speed",
+      "measurement": "Convert magnitude of frame-joined original Native velocity vector from m/s to mph, retaining every 20 Hz frame",
+      "channels": [
+        "original Native actor velocity",
+        "frame map"
+      ],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "kin.velocity",
+      "measurement": "Retain original xyz velocity and actor identity from each Native post-tick sample",
+      "channels": [
+        "original Native actor velocity"
+      ],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "ru.subject",
+      "measurement": "Native ego blueprint and driver role joined to full vehicle footage",
+      "channels": [
+        "original Native actor metadata",
+        "four camera source videos"
+      ],
+      "source_refs": [
+        "inputs/training__C329610__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  ],
+  "construction_checkpoint": {
+    "manifest": "draft-native-manifest.json",
+    "comparison_proof": "native/request-comparison-proof.json",
+    "comparison_proof_sha256": "b811bd0688b39693c71461d2b4ca27cabe90fc78e038905e5ea9a4ca4bd610f6",
+    "selected": false,
+    "original_native_observed": false
+  },
+  "evidence_review_pending_note": "Three accepted recording IDs are membership context only; no local source-hashed equivalence receipt was found for this exact speed requirement. Do not claim existing coverage from membership."
 }

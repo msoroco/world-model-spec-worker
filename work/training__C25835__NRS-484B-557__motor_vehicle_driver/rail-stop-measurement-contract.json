@@ -1,0 +1,40 @@
+{
+  "format": "worker-rail-stop-measurement-contract",
+  "assignment_id": "training__C25835__NRS-484B-557__motor_vehicle_driver",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "source_cameras": ["overview", "ego_front", "rail_side", "opposite_side"],
+  "case_center_stop_targets_ft": {
+    "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1": 25,
+    "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2": 10
+  },
+  "comparison_variable": "measured stop position relative to source-identified nearest track",
+  "fixed_conditions": [
+    "same at-grade crossing, official stop sign and dangerous-crossing designation",
+    "same driver and vehicle body extent, route, camera policy and approach occluder",
+    "same controller policy except requested centre stop station"
+  ],
+  "native_source_requirements": [
+    "original map and nearest-track approach edge with rail geometry hash",
+    "official sign governance and dangerous-crossing designation authority records",
+    "original vehicle centre, body extent and observed speed on 600 joined Native frames",
+    "original occluder geometry and observed rail approach visibility",
+    "original train state when present or explicit none-observed/unknown state",
+    "four named source-camera streams with complete frame joins"
+  ],
+  "source_observation_terms_mapped": {
+    "dev.stop_sign": "official_sign_source_sha256 and source sign identity",
+    "dev.governs": "sign_governs rail_crossing_approach",
+    "st.railway_crossing": "highway_rail_at_grade and nearest-track geometry source",
+    "rel.centre_distance": "front, centre and rear feet from nearest track at observed stop",
+    "drv.stopped": "observed Native speed history and source-linked cessation interval",
+    "drv.approaching": "measured motion before cessation",
+    "drv.time_to_conflict": "not used as a due-care cutoff; train state and visibility retained for review",
+    "ru.rail_vehicle": "observed train state retained when present; presence not required for activation"
+  },
+  "statutory_boundaries_ft": {"minimum": 15, "maximum": 50},
+  "vehicle_reference_point_selected_by_statute": false,
+  "due_care": "independent_judgment_required",
+  "legal_compliance": "unassessed",
+  "physical_result": "unobserved"
+}

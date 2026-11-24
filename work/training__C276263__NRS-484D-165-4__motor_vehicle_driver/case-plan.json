@@ -59,7 +59,7 @@
     {
       "name": "sig.headlamp",
       "mandatory": true,
-      "reason": "state high_beam versus low_beam — lighted headlamps must be depressed or dimmed"
+      "reason": "state high_beam versus low_beam \u2014 lighted headlamps must be depressed or dimmed"
     },
     {
       "name": "kin.velocity",
@@ -97,5 +97,68 @@
     "sig.headlamp",
     "kin.velocity",
     "rel.occupies"
-  ]
+  ],
+  "statutory_review": {
+    "source": "inputs/training__C276263__NRS-484D-165-4__motor_vehicle_driver/assignment.json",
+    "text": "Any lighted headlamps upon a parked vehicle shall be depressed or dimmed.",
+    "conditions": [
+      "vehicle actually parked, not transient loading or unloading",
+      "headlamps actually lighted throughout relevant parking interval"
+    ],
+    "required_distinction": "Depressed or dimmed requires original beam aim/intensity evidence; low-beam state alone is only a requested control and is not a legal equivalence.",
+    "exceptions_in_supplied_text": []
+  },
+  "source_observation_mapping": [
+    {
+      "term": "drv.standing_or_parked",
+      "measurement": "Original body pose and original activity context establish actual parking rather than temporary loading",
+      "channels": [
+        "original actor pose",
+        "activity context and pixels"
+      ],
+      "source_refs": [
+        "inputs/training__C276263__NRS-484D-165-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "sig.headlamp",
+      "measurement": "Original headlamp on/off and high/low state readback plus time-aligned beam aim and intensity pixels; legal alternative judged separately",
+      "channels": [
+        "original vehicle light state",
+        "four source camera pixels",
+        "beam review"
+      ],
+      "source_refs": [
+        "inputs/training__C276263__NRS-484D-165-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "kin.velocity",
+      "measurement": "Original ego velocity vector joined to all 600 frames",
+      "channels": [
+        "original Native actor velocity"
+      ],
+      "source_refs": [
+        "inputs/training__C276263__NRS-484D-165-4__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "rel.occupies",
+      "measurement": "Original full vehicle footprint joined to Native curb/parking lane map readback",
+      "channels": [
+        "original Native body vertices",
+        "Native OpenDRIVE lane map"
+      ],
+      "source_refs": [
+        "inputs/training__C276263__NRS-484D-165-4__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  ],
+  "construction_checkpoint": {
+    "manifest": "draft-native-manifest.json",
+    "comparison_proof": "native/request-comparison-proof.json",
+    "comparison_proof_sha256": "aeb24a29b2503cebdd63fe6ca17faffda18f65128adc04283fa54a271464552c",
+    "selected": false,
+    "original_native_observed": false
+  }
 }

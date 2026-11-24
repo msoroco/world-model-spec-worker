@@ -1,0 +1,32 @@
+{
+  "format": "c239014-roundabout-entry-measurement-draft-v1",
+  "law_id": "LVMC-11-43-010-B",
+  "cell_id": "C239014",
+  "case_ids": [
+    "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a",
+    "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b"
+  ],
+  "comparison_variable": "entry_release_time_relative_to_circulating_traffic",
+  "rate_hz": 20,
+  "minimum_duration_s": 30,
+  "source_plan": {
+    "actor_readback": "native-raw-actors.jsonl with ego and all circulating actors, measured after each world tick",
+    "frame_join": "video_frames.jsonl and trace.jsonl must share original Native frame/time identity",
+    "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
+    "video_requirement": "four synchronized original source streams, 600 frames each"
+  },
+  "term_to_measurement": {
+    "st.roundabout": "map readback, ring and entry lane topology, plus overview pixels",
+    "drv.approaching": "ego actor road/lane pose before yield line",
+    "drv.entering_intersection": "first original ego body crossing of ring entry boundary",
+    "rel.occupies": "circulating actor bodies within ring at entry",
+    "drv.yields_to": "ordering of circulating actor conflict crossing and ego entry, with no forced reaction claim",
+    "rel.surface_gap": "frame bracket to previous and next circulating actor conflict-neighborhood occupancy",
+    "drv.time_to_conflict": "projected actor travel time to source-defined common conflict neighborhood",
+    "drv.hard_deceleration": "circulating actor velocity differences with tick identity, separately from legal judgment",
+    "drv.stopped": "ego original speed and body position over contiguous pre-entry wait frames",
+    "drv.arrival_order": "source-frame ordering of circulating actor and ego conflict-boundary crossings"
+  },
+  "numeric_policy": "Six-metre conflict neighborhood in diagnostic is an engineering test proxy only; sufficient statutory gap is not numerically defined here.",
+  "status": "draft_source_plan_cpu_request_tested_native_capture_and_saved_processing_pending"
+}

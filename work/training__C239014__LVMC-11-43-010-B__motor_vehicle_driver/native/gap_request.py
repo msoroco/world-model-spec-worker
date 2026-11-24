@@ -33,28 +33,28 @@ def request_row(frame, condition):
     t = frame / RATE_HZ
     entry_time = 17.0 if condition == "waited_entry" else 12.5
     if t < 7:
-        ego_x, ego_y, speed, phase = -43 + 4 * t, -20, 4.0, "approach"
+        ego_x, ego_y, speed, phase = 0, -48 + 4 * t, 4.0, "approach"
     elif t < entry_time:
-        ego_x, ego_y, speed, phase = -15, -20, 0.0, "entry_wait"
+        ego_x, ego_y, speed, phase = 0, -20, 0.0, "entry_wait"
     else:
-        arc = min((t - entry_time) * 0.24, 2.1)
-        ego_x = -20 * math.cos(arc)
-        ego_y = -20 * math.sin(arc)
+        arc = -math.pi / 2 + min((t - entry_time) * 0.24, 2.1)
+        ego_x = 20 * math.cos(arc)
+        ego_y = 20 * math.sin(arc)
         speed, phase = 4.8, "circulation"
     # Each circulating actor is already inside the ring before ego entry.
-    lead_arc = (t - 12) * 0.35
-    follower_arc = (t - 24) * 0.35
+    lead_arc = -math.pi / 2 + (t - 12) * 0.35
+    follower_arc = -math.pi / 2 + (t - 24) * 0.35
     return {
         "frame": frame, "time_s": t, "source_kind": "authored_native_request",
         "case_id": CASE_IDS[condition], "condition": condition,
         "ego": {"x_m": round(ego_x, 6), "y_m": round(ego_y, 6),
                 "speed_mps": speed, "phase": phase},
         "circulating": [
-            {"id": "lead", "x_m": round(-20 * math.cos(lead_arc), 6),
-             "y_m": round(-20 * math.sin(lead_arc), 6), "speed_mps": 7.0,
+            {"id": "lead", "x_m": round(20 * math.cos(lead_arc), 6),
+             "y_m": round(20 * math.sin(lead_arc), 6), "speed_mps": 7.0,
              "inside_roundabout": True},
-            {"id": "follower", "x_m": round(-20 * math.cos(follower_arc), 6),
-             "y_m": round(-20 * math.sin(follower_arc), 6), "speed_mps": 7.0,
+            {"id": "follower", "x_m": round(20 * math.cos(follower_arc), 6),
+             "y_m": round(20 * math.sin(follower_arc), 6), "speed_mps": 7.0,
              "inside_roundabout": True},
         ],
         "original_native_observed": False, "legal_verdict": None,
@@ -114,7 +114,7 @@ def meter(source):
     # not a statutory definition of a sufficient traffic gap.
     near = []
     for row in data:
-        close = any(math.dist((actor["x_m"], actor["y_m"]), (-20, 0)) <= 6.0
+        close = any(math.dist((actor["x_m"], actor["y_m"]), (0, -20)) <= 6.0
                     for actor in row["circulating"])
         if close:
             near.append(row["frame"])
@@ -140,6 +140,15 @@ def prove(output):
     output = Path(output)
     meters = {entry["condition"]: meter(output / entry["path"])
               for entry in manifest["entries"]}
+    continuity = {}
+    for entry in manifest["entries"]:
+        sequence = rows(output / entry["path"])
+        jumps = [math.dist((a["ego"]["x_m"], a["ego"]["y_m"]),
+                           (b["ego"]["x_m"], b["ego"]["y_m"]))
+                 for a, b in zip(sequence, sequence[1:])]
+        continuity[entry["condition"]] = max(jumps)
+        if max(jumps) > 0.4:
+            raise AssertionError("Authored ego request teleports between frames")
     if meters["waited_entry"]["traffic_near_at_entry"]:
         raise AssertionError("Waited diagnostic still overlaps circulating traffic")
     if not meters["early_entry"]["traffic_near_at_entry"]:
@@ -187,7 +196,8 @@ def prove(output):
     else:
         raise AssertionError("Unsealed original provenance was accepted")
     return {"format": "c239014-entry-gap-diagnostic-proof-v1",
-            "manifest": manifest, "meters": meters, "negative_rejections": negatives,
+            "manifest": manifest, "meters": meters,
+            "maximum_ego_step_m": continuity, "negative_rejections": negatives,
             "diagnostic_only": True, "native_executed": False,
             "legal_verdict_claimed": False}
 

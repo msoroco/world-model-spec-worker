@@ -40,7 +40,9 @@ def proof(case, candidate, construction_sha):
     assert receipt["construction_sha256"] == construction_sha
     assert receipt["log_sha256"] == digest(copied["analysis_log"])
     assert receipt["negative_log_sha256"] == digest(copied["negative_log"])
-    offline = FOLDER / f"current-600-offline-{case}-{candidate}.log"
+    offline = FOLDER / f"selected-offline-{case}-{candidate}.log"
+    if not offline.is_file():
+        offline = FOLDER / f"current-600-offline-{case}-{candidate}.log"
     saved_name = f"current-600-saved-{suffix}-primary.log" if candidate == "primary" else f"current-600-saved-{case}-{candidate}.log"
     saved = FOLDER / saved_name
     assert offline.is_file() and saved.is_file()
@@ -50,7 +52,7 @@ def proof(case, candidate, construction_sha):
         "offline": {
             "exit_code": 0,
             "construction_sha256": construction_sha,
-            "command": f".venv-cpu/bin/python runtime.py offline --manifest work/{FOLDER.name}/current-compat-matrix-manifest.json --case {receipt['case_id']} --candidate {candidate} --output .runtime-work/c110763-selected-offline-{case}-{candidate}",
+            "command": f".venv-cpu/bin/python runtime.py offline --manifest work/{FOLDER.name}/execution-manifest.json --case {receipt['case_id']} --candidate {candidate} --output .runtime-work/c110763-selected-offline-v2-{case}-{candidate}",
             "log": offline.name,
             "log_sha256": digest(offline),
         },
@@ -72,15 +74,34 @@ def proof(case, candidate, construction_sha):
 def main():
     draft = json.loads((FOLDER / "current-compat-matrix-manifest.json").read_text())
     draft = copy.deepcopy(draft)
+    draft["format"] = "worker-execution-manifest"
     draft["status"] = "selected_cpu_partial"
     for entry, case in zip(draft["cases"], ("condition_a", "condition_b")):
+        entry["kind"] = "delivery"
         entry.update(proof(case, "primary", entry["construction_sha256"]))
         entry["native_handoff"] = {
             "python_env_var": "CARLA_PYTHON",
             "host_env_var": "CARLA_HOST",
             "port_env_var": "CARLA_PORT",
         }
+        entry["negative"] = {"log": f"selected-{case}-primary-negative-analysis.log"}
+        construction = json.loads((FOLDER / entry["construction"]).read_text())
+        config = json.loads(next(file["content"] for file in construction["files"] if file["path"] == "config.json"))
+        required = set(config.get("required_atoms", [])) | {item["name"] for item in construction["recording_description"]["channels"]}
+        entry["acquisition"] = {
+            name: {
+                "entrypoint": "finalize.py",
+                "method": "derive from retained frame-joined original Native samples, surveyed road geometry, and four synchronized source camera files",
+                "evidence": "native_samples.jsonl; video_frames.jsonl; road_geometry.json; overview, approach, reference_corner, driver_reference source videos",
+            }
+            for name in sorted(required)
+        }
         entry["selection_status"] = "candidate_selected_cpu_partial"
+        physical = FOLDER / "selected-physical" / case / "proof.json"
+        if physical.is_file():
+            entry["physical_preparation"] = {
+                "receipt": str(physical.relative_to(FOLDER)), "sha256": digest(physical)
+            }
         for candidate in entry["candidates"]:
             candidate.update(proof(case, candidate["id"], candidate["construction_sha256"]))
     write(FOLDER / "execution-manifest.json", draft)

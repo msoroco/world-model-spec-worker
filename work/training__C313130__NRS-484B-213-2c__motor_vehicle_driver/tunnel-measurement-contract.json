@@ -1,0 +1,38 @@
+{
+  "format": "worker-tunnel-approach-measurement-contract",
+  "assignment_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "source_cameras": ["overview", "ego_front", "portal_side", "opposing_approach"],
+  "case_modes": {
+    "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1": "requested_right_side",
+    "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2": "requested_left_side"
+  },
+  "statutory_approach_distance_ft": 100,
+  "comparison_variable": "source-measured whole-body lateral occupancy while approaching within 100 feet of tunnel portal",
+  "fixed_conditions": [
+    "same two-way highway, source-identified tunnel portal and road centre",
+    "same approach path origin, vehicle body extent, occluder, sight-ray policy and cameras",
+    "same speed policy; requested lateral target differs before the 100-foot zone"
+  ],
+  "native_source_requirements": [
+    "original Native map and tunnel portal geometry",
+    "original Native survey of one-way or two-way highway status",
+    "original road centre and four-corner vehicle footprint on 600 frames",
+    "incoming-lane virtual observer rays with retained clear/blocked brackets and source hash",
+    "all four source-camera streams joined to Native frame and time"
+  ],
+  "source_observation_terms_mapped": {
+    "st.elevated_structure": "source-identified tunnel portal and Native map geometry",
+    "drv.approaching": "observed positive speed and body before tunnel portal",
+    "rel.centre_distance": "body front distance to portal in metres compared with exact 100-foot conversion",
+    "st.sight_distance": "source-hashed incoming-lane ray bracket; clear-to-limit is a lower bound",
+    "drv.sight_distance_adequate": "not asserted by ray proxy; legal view obstruction needs independent review",
+    "st.centre_line": "source-identified highway centre y coordinate",
+    "rel.occupies": "four-corner body footprint relative to highway centre",
+    "st.one_way_roadway": "original Native direction survey retained as exception context"
+  },
+  "legal_view_obstructed": "independent_judgment_required",
+  "legal_compliance": "unassessed",
+  "physical_result": "unobserved"
+}

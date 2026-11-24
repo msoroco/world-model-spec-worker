@@ -1,0 +1,38 @@
+{
+  "format": "worker-alley-parking-rolling-hour-measurement-contract",
+  "assignment_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver",
+  "capture_duration_s": 30,
+  "capture_rate_hz": 20,
+  "source_cameras": ["overview", "ego_front", "alley_entrance", "parking_side"],
+  "separate_source_ledger_minimum_span_s": 3600,
+  "rolling_window_s": 3600,
+  "statutory_parked_limit_s": 1800,
+  "case_requested_total_parked_s": {
+    "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1": 1500,
+    "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2": 2100
+  },
+  "comparison_variable": "source-measured cumulative parked seconds in each covered rolling hour",
+  "fixed_conditions": [
+    "same surveyed alley, vehicle, lawful-parking source review and camera setup",
+    "same rolling-window measurement and civil/Native time join",
+    "same parking pose; separate source ledger target duration varies"
+  ],
+  "native_source_requirements": [
+    "original Native map and surveyed alley boundary",
+    "original vehicle identity and parking intervals spanning at least one hour",
+    "original civil/Native time join and nonoverlapping intervals",
+    "independent source review of otherwise-lawful parking under other rules",
+    "600 original Native capture frames with all four source-camera joins"
+  ],
+  "source_observation_terms_mapped": {
+    "st.alley": "source-surveyed alley boundary and original map",
+    "drv.standing_or_parked": "source-ledger intervals of the same vehicle parked within the alley",
+    "kin.time": "parked interval start/end timestamps integrated over rolling windows",
+    "env.civil_time": "civil/Native time source and capture-to-ledger join",
+    "rel.occupies": "source alley occupancy for every parked interval and capture frame",
+    "kin.position": "vehicle identity and position history retained across moves; move does not reset rolling time"
+  },
+  "otherwise_lawful": "requires_independent_review_of_other_rules",
+  "legal_compliance": "unassessed",
+  "physical_result": "unobserved"
+}

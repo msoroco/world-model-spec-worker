@@ -108,5 +108,80 @@
     "kin.position",
     "kin.yaw_rate",
     "drv.wrong_way"
-  ]
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "st.roundabout",
+      "measurement": "Authored connected roundabout road IDs 21 and 23, center island and roadway annulus; actual Native topology must be read back",
+      "channels": [
+        "roundabout-road.xodr",
+        "native map readback"
+      ],
+      "source_refs": [
+        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json",
+        "native/roundabout-road.xodr"
+      ]
+    },
+    {
+      "term": "rel.occupies",
+      "measurement": "Frame-joined original ego position within measured circulatory road boundary",
+      "channels": [
+        "original native ego position",
+        "native map readback"
+      ],
+      "source_refs": [
+        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/witnesses.json"
+      ]
+    },
+    {
+      "term": "kin.heading",
+      "measurement": "Original ego yaw retained as context, not a directional substitute",
+      "channels": [
+        "original native ego pose"
+      ],
+      "source_refs": [
+        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "kin.position",
+      "measurement": "Original consecutive ego x/y positions in authored OpenDRIVE frame",
+      "channels": [
+        "original native ego pose"
+      ],
+      "source_refs": [
+        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/witnesses.json"
+      ]
+    },
+    {
+      "term": "kin.yaw_rate",
+      "measurement": "Original yaw-rate trace retained as corroboration only; translational signed radial cross product measures direction",
+      "channels": [
+        "original native ego pose",
+        "native/roundabout_direction.py"
+      ],
+      "source_refs": [
+        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/witnesses.json"
+      ]
+    },
+    {
+      "term": "drv.wrong_way",
+      "measurement": "Source-bound direction and lane-flow comparison; legal judgment deferred to independent audit",
+      "channels": [
+        "original native ego position",
+        "native map readback",
+        "native/roundabout_direction.py"
+      ],
+      "source_refs": [
+        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  ],
+  "construction_checkpoint": {
+    "manifest": "draft-native-manifest.json",
+    "comparison_proof": "native/request-comparison-proof.json",
+    "comparison_proof_sha256": "78fd780905d1ab753bca1b3baf292d690cdbd7256f71d614dbfe9b880ffc97b6",
+    "selected": false,
+    "original_native_observed": false
+  }
 }

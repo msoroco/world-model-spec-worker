@@ -1,0 +1,126 @@
+{
+  "format": "worker-cpu-alley-parking-hour-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "25_minutes": {
+      "format": "worker-source-alley-parking-rolling-hour-measurement",
+      "source_covered_seconds": 3600.0,
+      "capture_frames": 600,
+      "capture_rate_hz": 20,
+      "capture_start_s": 0.0,
+      "parked_interval_count": 1,
+      "max_parked_seconds_in_sourced_rolling_hour": 1500.0,
+      "max_window_start_s": 0.0,
+      "statutory_comparison_seconds": 1800.0,
+      "measured_greater_than_30_minutes": false,
+      "otherwise_lawful_prerequisite": "independently_reviewed_source_claim_requires_original_audit",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty-second video cannot establish a one-hour history; the separately hashed ledger must be audited",
+        "Civil/Native time continuity and vehicle identity need original source review",
+        "A move within the alley does not erase time already parked in the rolling hour",
+        "Other parking rules determine the otherwise-lawfully-parked prerequisite"
+      ]
+    },
+    "35_minutes": {
+      "format": "worker-source-alley-parking-rolling-hour-measurement",
+      "source_covered_seconds": 3600.0,
+      "capture_frames": 600,
+      "capture_rate_hz": 20,
+      "capture_start_s": 0.0,
+      "parked_interval_count": 1,
+      "max_parked_seconds_in_sourced_rolling_hour": 2100.0,
+      "max_window_start_s": 0.0,
+      "statutory_comparison_seconds": 1800.0,
+      "measured_greater_than_30_minutes": true,
+      "otherwise_lawful_prerequisite": "independently_reviewed_source_claim_requires_original_audit",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty-second video cannot establish a one-hour history; the separately hashed ledger must be audited",
+        "Civil/Native time continuity and vehicle identity need original source review",
+        "A move within the alley does not erase time already parked in the rolling hour",
+        "Other parking rules determine the otherwise-lawfully-parked prerequisite"
+      ]
+    },
+    "exact_30_minutes": {
+      "format": "worker-source-alley-parking-rolling-hour-measurement",
+      "source_covered_seconds": 3600.0,
+      "capture_frames": 600,
+      "capture_rate_hz": 20,
+      "capture_start_s": 0.0,
+      "parked_interval_count": 1,
+      "max_parked_seconds_in_sourced_rolling_hour": 1800.0,
+      "max_window_start_s": 0.0,
+      "statutory_comparison_seconds": 1800.0,
+      "measured_greater_than_30_minutes": false,
+      "otherwise_lawful_prerequisite": "independently_reviewed_source_claim_requires_original_audit",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty-second video cannot establish a one-hour history; the separately hashed ledger must be audited",
+        "Civil/Native time continuity and vehicle identity need original source review",
+        "A move within the alley does not erase time already parked in the rolling hour",
+        "Other parking rules determine the otherwise-lawfully-parked prerequisite"
+      ]
+    },
+    "split_20_plus_15_minutes": {
+      "format": "worker-source-alley-parking-rolling-hour-measurement",
+      "source_covered_seconds": 3600.0,
+      "capture_frames": 600,
+      "capture_rate_hz": 20,
+      "capture_start_s": 0.0,
+      "parked_interval_count": 2,
+      "max_parked_seconds_in_sourced_rolling_hour": 2100.0,
+      "max_window_start_s": 0.0,
+      "statutory_comparison_seconds": 1800.0,
+      "measured_greater_than_30_minutes": true,
+      "otherwise_lawful_prerequisite": "independently_reviewed_source_claim_requires_original_audit",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty-second video cannot establish a one-hour history; the separately hashed ledger must be audited",
+        "Civil/Native time continuity and vehicle identity need original source review",
+        "A move within the alley does not erase time already parked in the rolling hour",
+        "Other parking rules determine the otherwise-lawfully-parked prerequisite"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_ledger_hash",
+      "rejected": "Missing source hash: parking_ledger_sha256"
+    },
+    {
+      "test": "unreviewed_prerequisite",
+      "rejected": "Otherwise lawful parking prerequisite not reviewed"
+    },
+    {
+      "test": "short_ledger",
+      "rejected": "Original ledger covers less than one hour"
+    },
+    {
+      "test": "overlapping_intervals",
+      "rejected": "Overlapping parked intervals double count time"
+    },
+    {
+      "test": "outside_alley_interval",
+      "rejected": "Parked interval alley/lawful source missing"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second four-camera capture"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "vehicle_identity_break",
+      "rejected": "Capture vehicle identity differs"
+    }
+  ]
+}

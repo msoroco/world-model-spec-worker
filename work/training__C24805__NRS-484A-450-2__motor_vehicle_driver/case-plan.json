@@ -31,16 +31,16 @@
       "target_law_id": "NRS-484A-450-2",
       "kind": "planned_only",
       "target_type": "compliant_attempt",
-      "physical_target": "stop before governing crosswalk, line, or nearest view point",
-      "comparison_variable": "stop_location_hierarchy"
+      "physical_target": "Request a full pre-entry halt at a candidate point with source visibility and nearest point still to be measured",
+      "comparison_variable": "requested_stop_behavior"
     },
     {
       "case_id": "training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484A-450-2",
       "kind": "planned_only",
       "target_type": "violating_attempt",
-      "physical_target": "cross governing boundary without stopping",
-      "comparison_variable": "stop_location_hierarchy"
+      "physical_target": "Request rolling pre-entry motion on the identical approach",
+      "comparison_variable": "requested_stop_behavior"
     }
   ],
   "comparisons": [
@@ -51,10 +51,14 @@
         "training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_b"
       ],
       "deliberate_differences": [
-        "stop_location_hierarchy"
+        "requested_stop_behavior"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+        "same blind intersection road and stop sign",
+        "neither marked crosswalk nor marked stop line in authored source",
+        "same approaching traffic request",
+        "same camera policy and duration",
+        "same physical actor and route"
       ]
     }
   ],
@@ -154,5 +158,154 @@
     "drv.stopped",
     "drv.crossing_line",
     "drv.entering_intersection"
-  ]
+  ],
+  "statutory_branch_review": [
+    {
+      "reference": "near-side crosswalk, marked or unmarked",
+      "priority": 1,
+      "status": "pending_source_and_construction",
+      "note": "Would govern before the stop line or view-point alternative; no accepted evidence or executable case in this package."
+    },
+    {
+      "reference": "clearly marked stop line when there is no crosswalk",
+      "priority": 2,
+      "status": "pending_source_and_construction",
+      "note": "Requires both marked and unmarked crosswalk absence and source-backed line marking."
+    },
+    {
+      "reference": "point nearest intersecting highway where driver has a view of approaching traffic when neither reference exists",
+      "priority": 3,
+      "status": "authored_draft_unselected",
+      "note": "This authored road removes a marked crosswalk and contains no marked stop line. Unmarked crosswalk absence, driver view and nearest point are unverified; no numerical visibility cutoff is imposed."
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "dev.stop_sign",
+      "measurement": "authored OpenDRIVE STOP signal plus actual Native map/sign readback",
+      "channels": [
+        "authored OpenDRIVE STOP signal plus actual Native map/sign readback"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "dev.governs",
+      "measurement": "orientation and approach-lane Native readback",
+      "channels": [
+        "orientation and approach-lane Native readback"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "st.lane_enters",
+      "measurement": "Native approach lane/intersection topology",
+      "channels": [
+        "Native approach lane/intersection topology"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "drv.approaching",
+      "measurement": "original ego pose and velocity timeline",
+      "channels": [
+        "original ego pose and velocity timeline"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "st.crosswalk",
+      "measurement": "Native roadway and sidewalk connection readback; marked and unmarked",
+      "channels": [
+        "Native roadway and sidewalk connection readback; marked and unmarked"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "st.stop_line",
+      "measurement": "Native road marking and camera pixels",
+      "channels": [
+        "Native road marking and camera pixels"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "st.intersection",
+      "measurement": "Native junction bounds and original ego body vertices",
+      "channels": [
+        "Native junction bounds and original ego body vertices"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "st.sight_distance",
+      "measurement": "shared incoming-lane virtual observer rays and original target/occluder source",
+      "channels": [
+        "shared incoming-lane virtual observer rays and original target/occluder source"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "rel.visible",
+      "measurement": "actual driver-reference pixels and source-bound ray/projection audit",
+      "channels": [
+        "actual driver-reference pixels and source-bound ray/projection audit"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "drv.stopped",
+      "measurement": "original velocity and continuous zero-speed window",
+      "channels": [
+        "original velocity and continuous zero-speed window"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "drv.crossing_line",
+      "measurement": "original full body vertices joined to governing boundary",
+      "channels": [
+        "original full body vertices joined to governing boundary"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "drv.entering_intersection",
+      "measurement": "original full body vertices joined to junction boundary",
+      "channels": [
+        "original full body vertices joined to junction boundary"
+      ],
+      "source_refs": [
+        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  ],
+  "construction_checkpoint": {
+    "manifest": "draft-native-manifest.json",
+    "comparison_proof": "native/request-comparison-proof.json",
+    "comparison_proof_sha256": "c3a62f9194f486985d7f9987e6555946886210cffcae1a324023b1a766438cae",
+    "selected": false,
+    "original_native_observed": false
+  }
 }
