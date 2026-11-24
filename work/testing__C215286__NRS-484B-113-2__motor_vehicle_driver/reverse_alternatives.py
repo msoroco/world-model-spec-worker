@@ -60,11 +60,23 @@ def analyze(root, alternative):
             or not context.get("geometry_source")
             or not context.get("camera_source")):
         raise ValueError("Incomplete source-identified reverse site")
+    bindings = ["site_packet_source", "geometry_source", "camera_source"]
+    if alternative == "street_corner":
+        bindings.append("road_topology_source")
+    for label in bindings:
+        binding = context.get(label)
+        if not isinstance(binding, dict) or not binding.get("path") or not binding.get("sha256"):
+            raise ValueError("Missing original source binding: " + label)
+        rel = Path(binding["path"])
+        if rel.is_absolute() or ".." in rel.parts:
+            raise ValueError("Unsafe original source path")
+        _, digest = _read(root / rel)
+        if digest != binding["sha256"]:
+            raise ValueError("Changed original site source: " + label)
+        hashes[str(rel)] = digest
     polygon_key = ("intersection_polygon_xy_m" if alternative == "intersection"
                    else "street_corner_region_xy_m")
     region = _polygon(context.get(polygon_key), polygon_key)
-    if alternative == "street_corner" and not context.get("road_topology_source"):
-        raise ValueError("Missing street-corner road topology source")
     histories = [json.loads(line) for line in source_text["reverse_history.jsonl"].splitlines()
                  if line.strip()]
     frames = [json.loads(line) for line in source_text["video_frames.jsonl"].splitlines()

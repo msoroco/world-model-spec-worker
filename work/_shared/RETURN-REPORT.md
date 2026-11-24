@@ -1345,3 +1345,11 @@ The no-flags whole batch quick checker was started after the UTF-8 cleanup check
 ## 2026-11-24 C215286 alternative construction checkpoint
 
 C215286 remains partial. Authored straight intersection and curved street-corner reverse routes, a CARLA-lazy 900-frame four-camera Native capture entrypoint, source-hashed synthetic diagnostic site packets and source-tamper checks. The package 22-test suite and assignment-scoped `--complete` check pass. Exact alternative manifests, real site-source selection, saved finalization and independent delivery proofs remain worker-owned. The selected crosswalk cases and all prior-ready results were left intact.
+
+C215286 update: exact intersection and corner alternative offline bundles now pass; saved finalizer and site-hash rejection code authored; 23 package tests pass. The selected manifest remains the crosswalk pair, and C215286 remains partial pending full alternative proof and real Native site source.
+
+## 2026-11-24 C215286 four-case alternative checkpoint
+
+C215286 remains partial. Four exact intersection/corner entry and stop-before diagnostic bundles pass runtime offline; independent 900-frame synthetic comparison receipts and changed-fixed-site/no-corner-turn negative tests pass. The package suite passes 27 tests. The selected execution manifest still contains the crosswalk pair; alternative semantic, full delivery and real Native site-source work remains. Whole-batch quick check got past the former binary archive error and now fails on a retained prior-ready execution manifest binding the previous runtime (`.runtime-work/worker-check-quick-20261124.log`); 34 results ready, 9 partial. Scoped C215286 `--complete` passes.
+
+Final return-tree check this turn: 10,452 files under work/, zero non-UTF-8 files, zero files over size limits, zero trailing-whitespace lines and zero conflict markers. No Git command was run.

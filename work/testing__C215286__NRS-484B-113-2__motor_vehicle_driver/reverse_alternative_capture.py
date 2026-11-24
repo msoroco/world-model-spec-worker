@@ -5,6 +5,7 @@ joins for the independent saved-source analyzer; no physical outcome is assumed.
 """
 
 import argparse
+import hashlib
 import json
 import math
 from contextlib import ExitStack
@@ -19,9 +20,15 @@ from reverse_control import reverse_vehicle
 
 ASSIGNMENT = "testing__C215286__NRS-484B-113-2__motor_vehicle_driver"
 CASES = {
-    ASSIGNMENT + "__reverse_into_intersection": "intersection",
-    ASSIGNMENT + "__reverse_around_street_corner": "street_corner",
+    ASSIGNMENT + "__reverse_into_intersection": ("intersection", True),
+    ASSIGNMENT + "__reverse_stops_before_intersection": ("intersection", False),
+    ASSIGNMENT + "__reverse_around_street_corner": ("street_corner", True),
+    ASSIGNMENT + "__reverse_stops_before_street_corner": ("street_corner", False),
 }
+
+
+def _site_name(alternative, expected_entry):
+    return alternative + ("_site.json" if expected_entry else "_stop_site.json")
 
 
 def _body(actor):
@@ -54,11 +61,10 @@ def _sensor_frame(queue, frame):
 def _load_site(root, case_id):
     if case_id not in CASES:
         raise ValueError("Unknown exact backing alternative case")
-    alternative = CASES[case_id]
-    path = root / ("intersection_site.json" if alternative == "intersection"
-                   else "street_corner_site.json")
+    alternative, expected_entry = CASES[case_id]
+    path = root / _site_name(alternative, expected_entry)
     site = json.loads(path.read_text())
-    if site.get("alternative") != alternative:
+    if site.get("alternative") != alternative or site.get("expected_entry") is not expected_entry:
         raise ValueError("Alternative site identity differs")
     for key in ("native_map_id", "road_id", "geometry_source", "camera_source",
                 "route_xy_m", "start_transform", "start_body_vertices_xy_m",
@@ -75,11 +81,11 @@ def _load_site(root, case_id):
         rel = Path(ref["path"])
         if rel.is_absolute() or ".." in rel.parts:
             raise ValueError("Unsafe original source path")
-        import hashlib
         if hashlib.sha256((root / rel).read_bytes()).hexdigest() != ref["sha256"]:
             raise ValueError("Changed original site source: " + key)
     review = review_route(site["route_xy_m"], site["start_body_vertices_xy_m"],
-                          site["region_polygon_xy_m"], alternative=alternative)
+                          site["region_polygon_xy_m"], alternative=alternative,
+                          expected_entry=expected_entry)
     return site, review
 
 
@@ -165,11 +171,18 @@ def capture(output, host, port, case_id):
             raise ValueError("Native reverse vehicle spawn failed")
         actual = review_route(site["route_xy_m"], _body(actor),
                               site["region_polygon_xy_m"],
-                              alternative=site["alternative"])
+                              alternative=site["alternative"],
+                              expected_entry=site["expected_entry"])
         context = {
             "alternative": site["alternative"],
+            "expected_entry": site["expected_entry"],
             "native_map_id": site["native_map_id"],
             "road_id": site["road_id"],
+            "site_packet_source": {
+                "path": _site_name(site["alternative"], site["expected_entry"]),
+                "sha256": hashlib.sha256((output / _site_name(
+                    site["alternative"], site["expected_entry"])).read_bytes()).hexdigest(),
+            },
             "geometry_source": site["geometry_source"],
             "camera_source": site["camera_source"],
             "road_topology_source": site.get("road_topology_source"),

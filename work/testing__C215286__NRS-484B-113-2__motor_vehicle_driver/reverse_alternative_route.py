@@ -26,7 +26,7 @@ def _delta(a, b):
     return (b - a + 180.0) % 360.0 - 180.0
 
 
-def review_route(route_xy, start_body_xy, region_xy, *, alternative):
+def review_route(route_xy, start_body_xy, region_xy, *, alternative, expected_entry=True):
     """Check the planned complete-body sweep and the reverse turn geometry."""
     if alternative not in ("intersection", "street_corner"):
         raise ValueError("Unknown backing alternative")
@@ -47,8 +47,10 @@ def review_route(route_xy, start_body_xy, region_xy, *, alternative):
         raise ValueError("Reverse route has an abrupt steering corner")
     if alternative == "intersection" and cumulative_turn > 10:
         raise ValueError("Intersection construction must use a straight backing route")
-    if alternative == "street_corner" and cumulative_turn < 30:
+    if alternative == "street_corner" and expected_entry and cumulative_turn < 30:
         raise ValueError("Street-corner construction lacks a planned turn")
+    if not expected_entry and cumulative_turn > 10:
+        raise ValueError("Stop-before construction turns before selected region")
     first_heading = headings[0]
     overlaps = []
     for index, center in enumerate(route):
@@ -58,11 +60,14 @@ def review_route(route_xy, start_body_xy, region_xy, *, alternative):
                               xoff=center[0] - route[0][0],
                               yoff=center[1] - route[0][1])
         overlaps.append(footprint.intersection(region).area)
-    if not any(value > 0 for value in overlaps[1:]):
+    if expected_entry and not any(value > 0 for value in overlaps[1:]):
         raise ValueError("Planned reverse body never enters selected region")
+    if not expected_entry and any(value > 0 for value in overlaps):
+        raise ValueError("Stop-before body enters selected region")
     return {"alternative": alternative, "route_xy_m": [list(row) for row in route],
             "planned_body_region_overlap_area_m2": overlaps,
             "planned_heading_change_deg": _delta(headings[0], headings[-1]),
+            "expected_entry": expected_entry,
             "actual_motion_confirmed": False}
 
 

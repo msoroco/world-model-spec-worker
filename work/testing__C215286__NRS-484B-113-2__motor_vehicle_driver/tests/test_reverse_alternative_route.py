@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 from reverse_alternative_route import ReverseRouteController, review_route
-from reverse_alternative_capture import ASSIGNMENT, _load_site
+from reverse_alternative_capture import ASSIGNMENT, CASES, _load_site
 
 
 BODY = [[15, -1], [17, -1], [17, 1], [15, 1]]
@@ -18,7 +18,13 @@ class ReverseAlternativeRouteTests(unittest.TestCase):
                                     ("reverse_around_street_corner", "street_corner")):
             site, review = _load_site(root, ASSIGNMENT + "__" + suffix)
             self.assertEqual(site["alternative"], alternative)
+            self.assertEqual(CASES[ASSIGNMENT + "__" + suffix], (alternative, True))
             self.assertFalse(review["actual_motion_confirmed"])
+        for suffix in ("reverse_stops_before_intersection",
+                       "reverse_stops_before_street_corner"):
+            site, review = _load_site(root, ASSIGNMENT + "__" + suffix)
+            self.assertFalse(site["expected_entry"])
+            self.assertEqual(max(review["planned_body_region_overlap_area_m2"]), 0)
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
             site = json.loads((root / "intersection_site.json").read_text())
@@ -58,6 +64,16 @@ class ReverseAlternativeRouteTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "lacks a planned turn"):
             review_route(route, BODY, [[8, -3], [12, -3], [12, 3], [8, 3]],
                          alternative="street_corner")
+
+    def test_stop_before_routes_keep_complete_body_clear(self):
+        route = [[16, 0], [15, 0], [14, 0]]
+        for alternative, region in (
+            ("intersection", [[8, -3], [12, -3], [12, 3], [8, 3]]),
+            ("street_corner", [[-2, -10], [11, -10], [11, 2], [-2, 2]])):
+            review = review_route(route, BODY, region, alternative=alternative,
+                                  expected_entry=False)
+            self.assertEqual(max(review["planned_body_region_overlap_area_m2"]), 0)
+            self.assertFalse(review["expected_entry"])
 
 
 if __name__ == "__main__":
