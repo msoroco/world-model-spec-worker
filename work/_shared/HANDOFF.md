@@ -1,3 +1,90 @@
+
+## 2026-11-23 nested archive consolidation
+
+`work/_shared/nested-capacity-pair-20261123.tar.xz` preserves two prior shared return artifacts, SHA256 `e8b953923d1ec65a5041e1e5522bc07a5475cf0965c4d88d3f5c2a6b83f0d37b`. Restore with `tar -xOf work/_shared/nested-capacity-pair-20261123.tar.xz MEMBER_PATH`.
+
+- `work/_shared/archived-small-archives-20261122.json` SHA256 `ceebb19aee2de79d6fb92215b55981d9058b05a4a5678f0d5b5c6c543c60fd29`
+- `work/_shared/c149237-result-only-logs-20261123.tar.xz` SHA256 `bc86cea5e442eabd5f262c5b3137d5fe3b87965191d2b184ff944a5128bbcdba`
+
+
+## 2026-11-23 return file capacity archive
+
+`work/_shared/historical-unbound-proofs-20261123.tar.xz` preserves 73 historical or case-plan-only artifacts byte-for-byte (SHA256 `fc2aee0a534597f84b243a3b065fa37a7e61585fc266cdbe98c64734535536cf`, 439652 bytes). Restore any member with `tar -xOf work/_shared/historical-unbound-proofs-20261123.tar.xz MEMBER_PATH`; verify its SHA256 against the member inventory below. Current manifest and result referenced files were excluded.
+
+- `work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/cases/fallback1-construction.json` SHA256 `68c457f058678cd72531a81a29ebebb1df3e529f3721b450cbb721f863fc36fd`
+- `work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/cases/fallback2-construction.json` SHA256 `fbe29f5c032362a1709d86d4058617f33ebe13206aa2fca3bbd529e870ac19df`
+- `work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/cases/fallback3-construction.json` SHA256 `9895ae04a032a74cfce462fc4d8cfb0c60f8a825cde56222e782418f876e1328`
+- `work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/primary-compatibility.json` SHA256 `18a726f619fa46c52c7d974aa65d314a095e6d0576530b5aaae7e38d55de2e09`
+- `work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/current-json-cutover-replay.json` SHA256 `de3462da9db9b115b433551a3cac76da661e2273f9a766d9c19405f0f19d92a8`
+- `work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/diagnostic-comparison-negative.json` SHA256 `b26fe46070718b5fa305a683c9564f30dc8df29ac8e6e7c4ea98ee73325f7ea5`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/approaching-comparison-receipt.json` SHA256 `ecde11fd5536a5319ef656efa2b2e5fba5ebdc4e326350fa372881d40a7f87d5`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/audited-far-near-comparison-receipt.json` SHA256 `9690e603c6461209ffacb231f8ebfe5d0db9406048bad78a7c6dcd428e19ed49`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/audited-far-near-comparison-receipt.json` SHA256 `0aa521d32a415df182c8b23b4cde5b47dd2912f3402fc66e1005562a058b1c83`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/physical-complete_motion.json` SHA256 `d34e5bb9f17e9436871e3e17ba939651ec2364a0956bbabf09b051444ee2e55c`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/physical-incomplete_motion.json` SHA256 `003d8cca30fe6d95fc324363b43fbb5e383af36b3deca939b56655609ac4a6fc`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/physical-lifecycle.json` SHA256 `093b10ff59cabd3e3f5a276d7eee0f503d537b58b033faf343646b9edc56b6ca`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/physical-missing_evidence.json` SHA256 `81e59bf3f9b7a1604633e18949375260d251a9b365e306bae422fae395953f11`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/proof-index.json` SHA256 `66c5dc746e89d9d9643223f77b7eda907daa8d25678b228c2a80739e887d484d`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/clearance_guard/source-far-near-comparison-receipt.json` SHA256 `0476cfc2395e6db1e031930d21720226d96c252ad932a438a76d88c002e2b84c`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/far-near-comparison-receipt.json` SHA256 `0476cfc2395e6db1e031930d21720226d96c252ad932a438a76d88c002e2b84c`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/inside-comparison-receipt.json` SHA256 `72c7ecdc3a12889016ca37c6184595cf373191e160fefb4d90ea3c6ad257b7bf`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/reciprocal-matched-comparison-receipt.json` SHA256 `650845dc7bf5ebbbf0a3f92f5b762972678aaafb2e46057dabf6efa3b19159c7`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal-advance-comparison-receipt.json` SHA256 `dca3b2e06e8bd808e8ee444fbcf10010774a8abe2115990d91445cfa88bda3c0`
+- `work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal-comparison-receipt.json` SHA256 `54a49fc60e703aa55011dbf397559aa57387083f3537916688e39fb51edab540`
+- `work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/physical-classifier-proof.json` SHA256 `fd5845b9877ce4df87ba596857b6f6598849581f5f35814be92158585768cbfb`
+- `work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/first-fallback3-repair-construction.json` SHA256 `c51e8b9fecbfd398d24985be253b54fa552ec78094a74c37e3bad1d6139f6974`
+- `work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/first-fallback3-repair-probe-recipe.json` SHA256 `c5a146b1baa9bb1bd416b468dfbd37af0c61bc98e32ea2c0ca4b663a45454bc9`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/off-turn-context.json` SHA256 `80de0279f0c715749cf909cec4fd54a3a07ef5632c3ef3f6a7ba18fb35b2b303`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/operative-turn-context.json` SHA256 `80de0279f0c715749cf909cec4fd54a3a07ef5632c3ef3f6a7ba18fb35b2b303`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-diagnostic-recipe.json` SHA256 `4ae43849e021b57c2da4334ff34df8fcd57e2e72a74ab6c6f515589466f5493d`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-fallback1-compatibility-receipt.json` SHA256 `321993968032e7373a5e1a4ac8d79f7a5d9c9efd9e596f6a998ee02291f1eac8`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-fallback2-compatibility-receipt.json` SHA256 `ea1d5ae3dde8058a8a80d0ea70ed496ac42dd00f7cc2b4fc429dc1060792d9ae`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-fallback3-compatibility-receipt.json` SHA256 `a648952517638d5d5e67ea6b8a14f16abdbf08dd21a718f38409339153640dd4`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-primary-compatibility-receipt.json` SHA256 `a23cc3c9eee5006de02a201d3a21d10eee0abc77ef40c0eb3ac78a66f38463f4`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-turn-v2-cpu-proof.json` SHA256 `f6fb957a7d615955135f3cb83a82774b33b48a1adcff903e869d4502a032bf08`
+- `work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/straight-fallback-proof-manifest.json` SHA256 `98b450d1690e870db5c56ab3d68811354ae96cf3fe921dbd1b1a72c929610c8a`
+- `work/testing__C129731__NRS-484B-407__motor_vehicle_driver/crest-branch-comparison.json` SHA256 `fc6d73d8dab7e68d688d2a3156d39452d089eef4418c52276260b6196c57aa20`
+- `work/testing__C129731__NRS-484B-407__motor_vehicle_driver/curve-beyond-compatibility.json` SHA256 `40ff2acee67e5ab542fea211d5671be4cee94b42cccd983b01c6d19a344db773`
+- `work/testing__C129731__NRS-484B-407__motor_vehicle_driver/physical-proofs/at/complete-motion.json` SHA256 `1f1eada9f0d2465b6746b11cedf4b7c1aafdf80129f5bff9874544cfd097a80c`
+- `work/testing__C129731__NRS-484B-407__motor_vehicle_driver/physical-proofs/at/incomplete-motion.json` SHA256 `38b6f5a04d7ae90e7369d7a50830eeb1fd84e5d0e3425470a0f98f4c2949ee2e`
+- `work/testing__C129731__NRS-484B-407__motor_vehicle_driver/physical-proofs/at/missing-evidence.json` SHA256 `77fd401f347a42116e4f0736a8fb0ff5f4905a8ebc77195079b184e5df9e58a6`
+- `work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/above/source-audit.json` SHA256 `1783824200cd3755fe4ad63b5e12001dd39ad5307a9339a43d185b82ffc0aa60`
+- `work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/at/source-audit.json` SHA256 `4e96f9e58023e8a1caf9a2c3b3eac97e14102548fe2b354773f2a1866fcc221b`
+- `work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/below/source-audit.json` SHA256 `6bf7a6e407e98efef6f13758a0f021f320223d5593bee2cd63715047f8d83c1d`
+- `work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/outside/source-audit.json` SHA256 `865faf25a0b3ea6ccb63f0a1d869a838bcd67b3926174bb07db0fc3eeafec78b`
+- `work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest-rate-boundary-processing.json` SHA256 `82bc826ed39f212baa1f45f9b4bf4a173bc6dd66a70d0257747db873e12df035`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment-check.log` SHA256 `730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/compat-current.log` SHA256 `4b1a20c73c9d47d9e61f4567b439355c6b96d9929f1792eff434d103633bfcd5`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/compat-primary.log` SHA256 `a3fc0bbf1b1ab43a03374c06f4f3241b220bbb349b47be5cf57bf907686cc896`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/current-primary-compatibility.json` SHA256 `4b1a20c73c9d47d9e61f4567b439355c6b96d9929f1792eff434d103633bfcd5`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/current-primary-negative-analysis.log` SHA256 `a478e2086cfdba35e85943895fc5ebacf3cebb62dc90cd172f28cd1750d04604`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/current-primary-saved-processing.json` SHA256 `2648bf0963f44d0a8f00c9f7c0c8e842c76ff1c588177f61d2f8d31e8dc64b56`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/primary-saved-current.log` SHA256 `2648bf0963f44d0a8f00c9f7c0c8e842c76ff1c588177f61d2f8d31e8dc64b56`
+- `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/primary-saved.log` SHA256 `a63f9f6aa2383717e95bd33b117b50b0b1b0af52be822ad4eed2509fd238402b`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/combination-comparison.json` SHA256 `cec1e04676a9571c2c57b7c614c218f420c1abb97191430f5ed8cc02b5d1dadf`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/full-converter-proof-v4.json` SHA256 `2d3a534beadf5c09591f2181d2192b413c0364450009dabac5d1217d1aa59ae4`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/gap-boundary-comparison-v17.json` SHA256 `062f46c7bac1cbe3d9655d51b828047f95d528245496c883cc940cd4ec61737c`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/lane-exception-comparison-v17.json` SHA256 `b7cc1a4c1d33c70242e9f6c0273e5ec368e71da2e79c1d47eeaa0b5c43e37e47`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/overtaking-exception-comparison-v17.json` SHA256 `e38b2a518f98fb8114a7144e266e6e2c829baebf1943b37b0a2f84781a94b550`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/qualitative-sweep-comparison.json` SHA256 `e85951bed57ae3f6a16dda9fdd657eda4039dcafbe4fe1bcedbad35f812226db`
+- `work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/width-boundary-comparison-v17.json` SHA256 `d982475bf4b5badd572deb1bd9326216c8f5530cc28d42461f856bba6d67deeb`
+- `work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/comparison-proofs/audit-commands.log` SHA256 `c7c93124ed46eab9a1922e72dd6b0653b9bda2b695d7d5acb97f69799dafd005`
+- `work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/dispatch-plan.json` SHA256 `32622960f12a37bd8d7829e42d5e5c4c6916727d22d8cafd8b6741199da1613e`
+- `work/testing__C158190__NRS-484B-257-2__motor_vehicle_driver/comparison-audit-receipts.json` SHA256 `4aba23b2ae491e1bdca01358666645153e17dbb4e99880ceabdb6f69b780e71b`
+- `work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/signal-comparison-audit.json` SHA256 `46b02e6eb1da396a23f5f72f01ac6f5e55b316508a225fa9d978eae8fc30beac`
+- `work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/comparison-cpu-negative.log` SHA256 `fd82993af6ec45b531fe3af4e3038af877dd8ca4a5aa3a54fe1be65ad96fa2e7`
+- `work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/stop-stationary-negative.log` SHA256 `2730190f12cf26cbde5be824683518b82fee3ebfad73bbe68405009a6067c674`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/business_signal_interruption-negative.log` SHA256 `6da92f8fed059f8e611e992ddb5140fec3906456fa21be8e69e3d9b55a785935`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/business_threshold_below_at-negative.log` SHA256 `5499d67c7b00f23df19789f898ce6e4a938815a5c125c292addd7c7011fc60d5`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/business_wet_weather-negative.log` SHA256 `765f6d741dda6366ecd20559be1f2ed4098f8fae534ee0479547674c77df9fe1`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/district_boundary_100_300-negative.log` SHA256 `5c437d60bbce3cd822550d522e7c6e6f3411d417237b84129300be409050130f`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/district_business_residential_100-negative.log` SHA256 `21aec740342efc858909f89d586ea5d555e3f437ac036caed70110ce57f396b1`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/other_area_threshold_at_above-negative.log` SHA256 `efe33d9e2351dafad7e09e5649440ce57321545a540e1a2a4038222d904efcc3`
+- `work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparisons/other_area_threshold_below_at-negative.log` SHA256 `94f44b479fcb0515ba4f109ed2361168d357fe393a30d979818fcab4dd659030`
+- `work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/delivery-proofs/business_signal_distance-comparison.json` SHA256 `9bd8559cf2ae1881be926a83b7e9764a00953245581c8e4de3c65720b2d7193b`
+- `work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/delivery-proofs/continuity-comparison.json` SHA256 `aba40f5d67b41d29f42af4a104a3450185fc3bdf00b2eae395bea9abe29e4db3`
+- `work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/delivery-proofs/other_signal_distance-comparison.json` SHA256 `15b000151b0d554ca4d325de379acca9a99fc527058554534126d6f37322651e`
+
 ## 2026-11-23 C215286 current-runtime completion proof checkpoint
 
 C215286 remains **partial**. The short-of-crosswalk primary and three fallbacks previously bound an x=10 m reverse goal; with the source-shaped crosswalk beginning at x=8 m, a nonintersecting complete body needed a center beyond x=13 m, outside the pinned 3 m goal tolerance. All four exact embedded configurations now target x=14 m, and a regression test checks each against the pinned physical assessor. The short and over branches each passed all four current-runtime exact offline runs, positive/missing-source compatibility with `.adapter.json` graphs and original-frame adapter paths, and recorded-only saved processing. `execution-manifest.json` binds their fresh hashes. Six source-shaped synthetic physical results plus two physical-preparation receipts passed the pinned physical validator for met/not_met/unverified outcomes. The execution-manifest, candidate and primary compatibility validators pass; 14 CPU tests pass. These prove software preparation only.
