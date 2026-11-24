@@ -26,6 +26,7 @@ capture_sources=load("officer_capture_sources")
 finalizer=load("finalizer")
 camera=load("officer_camera")
 site=load("officer_site")
+site_measurements=load("yield_site_measurements")
 native_capture=load("officer_native_capture")
 runner=load("runner")
 builder=load("build_primary_construction")
@@ -238,18 +239,38 @@ class OfficerTests(unittest.TestCase):
                 finalizer.finalize(root,root/"report.json",physical_assessor=lambda a,r:r,
                                    result_writer=lambda a,r:None)
 
+    def test_signed_entrance_channels_require_exact_site_and_original_sight_review(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.saved_fixture(root)
+            config=json.loads((root/"config.json").read_text())
+            history=[json.loads(line) for line in (root/"officer_history.jsonl").read_text().splitlines()]
+            frames=[json.loads(line) for line in (root/"video_frames.jsonl").read_text().splitlines()]
+            review=json.loads((root/"officer_review.json").read_text())
+            channels,context=site_measurements.analyze(root,config,history,frames,review)
+            self.assertEqual(len(channels["through_vehicle_position"]),len(frames))
+            self.assertEqual(context["yield_site_review"]["proper_sign_judgment"],"unresolved")
+            wrong=json.loads(json.dumps(review));wrong["site_review"]["sign_id"]="other"
+            with self.assertRaisesRegex(ValueError,"exact signed-entrance"):
+                site_measurements.analyze(root,config,history,frames,wrong)
+            wrong=json.loads(json.dumps(review));wrong["frames"][0].pop("through_highway_sight_clear")
+            with self.assertRaisesRegex(ValueError,"through-highway sight review"):
+                site_measurements.analyze(root,config,history,frames,wrong)
+            (root/"officer-site.xodr").write_text("different site")
+            with self.assertRaisesRegex(ValueError,"OpenDRIVE source differs"):
+                site_measurements.analyze(root,config,history,frames,review)
+
     def test_through_highway_actor_must_have_original_body_and_motion(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);self.saved_fixture(root)
             context=json.loads((root/"officer_context.json").read_text())
-            context["through_actor_id"]=77
+            context["through_actor_id"]=78
             context["through_route_source"]="officer-site.xodr#157964,157965"
             (root/"officer_context.json").write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError,"Original through actor identity missing"):
                 measure.analyze(root)
             rows=[json.loads(line) for line in (root/"officer_history.jsonl").read_text().splitlines()]
             for row in rows:
-                row["through"]={"actor_id":77,"speed_mps":3.0,
+                row["through"]={"actor_id":78,"speed_mps":3.0,
                                 "body_vertices_xy_m":[[10.0,10.0]]*8}
             (root/"officer_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
             review=json.loads((root/"officer_review.json").read_text())

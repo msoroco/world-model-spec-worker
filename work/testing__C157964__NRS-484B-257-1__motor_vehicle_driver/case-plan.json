@@ -167,5 +167,186 @@
       ],
       "evidence_or_gap": "Saved original-camera review and frame-joined complete ego-body source are measured in CPU diagnostics; Native physical control, police authority, and legal conclusion remain unverified."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego body, officer, through vehicle and intersection",
+        "interval": "full 30 s source capture"
+      },
+      {
+        "view": "approach",
+        "subject": "officer arm direction, erected sign and ego approach",
+        "interval": "full 30 s source capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "signed entrance, near-side geometry and body entry",
+        "interval": "full 30 s source capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "through-highway sight line and approaching traffic",
+        "interval": "full 30 s source capture"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "the erected sign; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "officer-site.xodr",
+        "officer_review.json"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "or the yield sign; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "officer-site.xodr",
+        "officer_review.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "the sign faces the subject's approach; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "officer-site.xodr",
+        "officer_review.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "the governed lane is an approach to the intersection entered; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "ego_crossing_body"
+      ],
+      "source_refs": [
+        "officer-site.xodr",
+        "officer_context.json"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "the clearly marked stop line; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "officer_review.json",
+        "reference_corner.mkv"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "the near-side crosswalk; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "officer_review.json",
+        "reference_corner.mkv"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "the point where the view of the through highway opens; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "ego_distance_to_junction_m",
+        "through_highway_sight_clear"
+      ],
+      "source_refs": [
+        "driver_reference.mkv",
+        "officer_review.json"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "'a clear view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "through_highway_sight_clear"
+      ],
+      "source_refs": [
+        "driver_reference.mkv",
+        "officer_review.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "the halt at a stop sign; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "ego_approach_speed"
+      ],
+      "source_refs": [
+        "officer_history.jsonl"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "'slowed or stopped' at a yield sign; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "ego_approach_speed"
+      ],
+      "source_refs": [
+        "officer_history.jsonl"
+      ]
+    },
+    "drv.priority_roadway": {
+      "evidence": "the through highway; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "through_vehicle_position"
+      ],
+      "source_refs": [
+        "officer-site.xodr",
+        "officer_context.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "other vehicles that have entered from the through highway; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "through_vehicle_position",
+        "ego_crossing_body"
+      ],
+      "source_refs": [
+        "officer_history.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "operationalizes 'approaching so closely as to constitute an immediate hazard'; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "through_vehicle_position",
+        "through_vehicle_speed",
+        "ego_crossing_body",
+        "ego_approach_speed"
+      ],
+      "source_refs": [
+        "officer_history.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "the yield owed while crossing; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "through_vehicle_position",
+        "through_vehicle_speed",
+        "ego_crossing_body",
+        "ego_approach_speed"
+      ],
+      "source_refs": [
+        "officer_history.jsonl"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "the exception: traffic controlled by a police officer; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [
+        "officer_control_observed",
+        "officer_direction_observed"
+      ],
+      "source_refs": [
+        "officer_review.json",
+        "approach.mkv"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "the exception: traffic controlled by a signal; inspect listed original sources and retain legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "officer-site.xodr",
+        "overview.mkv"
+      ]
+    }
+  }
 }

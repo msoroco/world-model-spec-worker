@@ -7,7 +7,7 @@
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "6a5d9bd182b81d844be1ecd873ac1e5f45348ebbe06a7e3996fea005a56a0184",
+      "construction_sha256": "582df0fb2fa45dc1e91e4a613c9d66bf0317c0aa934b1bdec25de7f02a7c675b",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "officer_active_stop_then_go-fallback1-construction.json",
-          "construction_sha256": "d63de8a3e208fb15b3109ba072c80d25d8eabde1b3c2cb451182180912712e98",
+          "construction_sha256": "b95923deaa1918582c1e8141966e0be2f838bde6a167ecf37d3ebbba4286fffb",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -25,7 +25,21 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --candidate fallback1 --output .runtime-work/c157964-v8-officer_active_stop_then_go-fallback1-offline",
+            "construction_sha256": "b95923deaa1918582c1e8141966e0be2f838bde6a167ecf37d3ebbba4286fffb",
+            "exit_code": 0,
+            "log": "construction-fallback1-officer_active_stop_then_go.log",
+            "log_sha256": "e86b5dbf209a6e2062082ce52107365b2da6775fa0108669ea7b65cce0eebf0e"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-officer_active_stop_then_go-fallback1.json",
+            "sha256": "412a2d78eb9084fe73e6777359349226e27599118d3b092152846306b8e646af",
+            "log": "proof-compatibility-analysis-officer_active_stop_then_go-fallback1.log",
+            "negative_log": "proof-compatibility-negative-officer_active_stop_then_go-fallback1.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --candidate fallback1 --output .runtime-work/c157964-v8-officer_active_stop_then_go-fallback1-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+          }
         }
       ],
       "measurement_contract": "officer_active_stop_then_go-measurement-contract.json",
@@ -84,13 +98,72 @@
           "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
           "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-v8-officer_active_stop_then_go-primary-offline",
+        "construction_sha256": "582df0fb2fa45dc1e91e4a613c9d66bf0317c0aa934b1bdec25de7f02a7c675b",
+        "exit_code": 0,
+        "log": "construction-primary-officer_active_stop_then_go.log",
+        "log_sha256": "66a13f5f6b07ce0afb692c4637255df46902fa77c7681fccbdb59a96f328610f"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-officer_active_stop_then_go-primary.json",
+        "sha256": "85cb52a954c3256b2757003ebccd686225335f00d03557243e824d08cc0e5413",
+        "log": "proof-compatibility-analysis-officer_active_stop_then_go-primary.log",
+        "negative_log": "proof-compatibility-negative-officer_active_stop_then_go-primary.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-v8-officer_active_stop_then_go-primary-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/officer_active_stop_then_go/receipt.json",
+        "sha256": "c1e3b87e4e1d50ffa0016ff4e6e21fb2573d825046bcb5853e138bc30cccf10d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --attempt '$ATTEMPT' --output '$OUTPUT' --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "feedback_command": "find \"$OUTPUT\" -name feedback.json -print -exec cat {} +",
+        "test_log": "saved-processing-officer_active_stop_then_go.log",
+        "test_log_sha256": "4e78693b3d85f80c3fd0c7f6a3ebb9c1e483f22984115c62a1bf7baaf8e45097",
+        "test_exit_code": 0,
+        "scope": "Saved-only synthetic CPU replay; Native capture remains unexecuted"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "912cde3ab38b55cf541c72e8d62b1648c5873ab48e4e00d05a88c1b46a96fe83",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-officer_active_stop_then_go-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --diagnostic-selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-officer_active_stop_then_go-diagnostic.json",
+        "test_log_sha256": "1adcfd45644244eac875e88d6974fc4a550b2fce6250c976c73ff8de357d922e",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-officer_active_stop_then_go-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native non-diagnostic source required",
+        "negative_log": "delivery-audit-officer_active_stop_then_go-native-rejection.log",
+        "negative_log_sha256": "542a46b3905776eb9a33baff624df3dacd43dc411ebd0a079a0bc9dd8a046327",
+        "scope": "CPU synthetic source diagnostic only; Native pixel and physical audit branches remain unexecuted"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
       "kind": "delivery",
       "construction": "officer_active_hold-construction.json",
-      "construction_sha256": "af22d2b9ce2692d497bd4b30746c387ddd5b17e616ca8c286d342e2031693225",
+      "construction_sha256": "1210d49b22782dd89f4588d92d3795dbe4cc7eb9bda4780245c4c09bf4ee3426",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -99,7 +172,7 @@
         {
           "id": "fallback1",
           "construction": "officer_active_hold-fallback1-construction.json",
-          "construction_sha256": "f9752ccc7c04ddf9363ffaff9ec95be0eebd06bcab810c40c062e34bc961aca0",
+          "construction_sha256": "9be86c23b79d69ce363c498168b63741f1124f7121a863405b2a99a2c8342c93",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -108,7 +181,21 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --candidate fallback1 --output .runtime-work/c157964-v8-officer_active_hold-fallback1-offline",
+            "construction_sha256": "9be86c23b79d69ce363c498168b63741f1124f7121a863405b2a99a2c8342c93",
+            "exit_code": 0,
+            "log": "construction-fallback1-officer_active_hold.log",
+            "log_sha256": "900ad582ba9734497bd376feb18a17e77b94efe48f15ebca4e899bc5602b9178"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-officer_active_hold-fallback1.json",
+            "sha256": "f0dd0c624bf05212dc343f7ff435c5bbc8f2fe3d2cdcbb27040c4f47f3b8dd3b",
+            "log": "proof-compatibility-analysis-officer_active_hold-fallback1.log",
+            "negative_log": "proof-compatibility-negative-officer_active_hold-fallback1.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --candidate fallback1 --output .runtime-work/c157964-v8-officer_active_hold-fallback1-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+          }
         }
       ],
       "measurement_contract": "officer_active_hold-measurement-contract.json",
@@ -167,13 +254,72 @@
           "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
           "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-v8-officer_active_hold-primary-offline",
+        "construction_sha256": "1210d49b22782dd89f4588d92d3795dbe4cc7eb9bda4780245c4c09bf4ee3426",
+        "exit_code": 0,
+        "log": "construction-primary-officer_active_hold.log",
+        "log_sha256": "2562fb4bacebd9b647e041fed98d07adbca14c61a6ace6c870d89292e16bee5a"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-officer_active_hold-primary.json",
+        "sha256": "6342f0c6276f321f9280af926464c82472780d7a02dd9556c81de981f740cf81",
+        "log": "proof-compatibility-analysis-officer_active_hold-primary.log",
+        "negative_log": "proof-compatibility-negative-officer_active_hold-primary.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-v8-officer_active_hold-primary-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/officer_active_hold/receipt.json",
+        "sha256": "0308bcd2b409325058547dd636bf37d461a37059861bb01a69ecf4eba206ae04"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --attempt '$ATTEMPT' --output '$OUTPUT' --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "feedback_command": "find \"$OUTPUT\" -name feedback.json -print -exec cat {} +",
+        "test_log": "saved-processing-officer_active_hold.log",
+        "test_log_sha256": "cc66f4552cdc17c14d315931f3436ca86015c800eef942b55fc8e7dc0bda188a",
+        "test_exit_code": 0,
+        "scope": "Saved-only synthetic CPU replay; Native capture remains unexecuted"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "912cde3ab38b55cf541c72e8d62b1648c5873ab48e4e00d05a88c1b46a96fe83",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-officer_active_hold-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --diagnostic-selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-officer_active_hold-diagnostic.json",
+        "test_log_sha256": "150cecbc05b8a79de6148940e190b8bcb1843a95e7f1a519fd5d05dbcdd61246",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-officer_active_hold-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native non-diagnostic source required",
+        "negative_log": "delivery-audit-officer_active_hold-native-rejection.log",
+        "negative_log_sha256": "542a46b3905776eb9a33baff624df3dacd43dc411ebd0a079a0bc9dd8a046327",
+        "scope": "CPU synthetic source diagnostic only; Native pixel and physical audit branches remain unexecuted"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
       "kind": "delivery",
       "construction": "officer_present_inactive-construction.json",
-      "construction_sha256": "0f9ee54430fc35098fc13a989dba86bfee7e29b73984af4498612ee8694ed745",
+      "construction_sha256": "e6970ecee1473808825d1b673ec717fdd017ec07c3807a3b37786baa762b3d0d",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -182,7 +328,7 @@
         {
           "id": "fallback1",
           "construction": "officer_present_inactive-fallback1-construction.json",
-          "construction_sha256": "87621a6fd0c4ccdf8bb1e83c7e711ad12e63683054179b3abd556f8bb3f9afec",
+          "construction_sha256": "2858607dd9f316ca7253ca66cf07b84741f7dbcfb3ebed031303a1e0106bf930",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -191,7 +337,21 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --candidate fallback1 --output .runtime-work/c157964-v8-officer_present_inactive-fallback1-offline",
+            "construction_sha256": "2858607dd9f316ca7253ca66cf07b84741f7dbcfb3ebed031303a1e0106bf930",
+            "exit_code": 0,
+            "log": "construction-fallback1-officer_present_inactive.log",
+            "log_sha256": "0b6504edd6cae318abb65cc8b2252c0e5a1a73b358f5b92a129de20cf4ab78ca"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-officer_present_inactive-fallback1.json",
+            "sha256": "838b1e02233a09cf505d2a7b2d5950c4012aaed80a6f2bee34f40d46179e2046",
+            "log": "proof-compatibility-analysis-officer_present_inactive-fallback1.log",
+            "negative_log": "proof-compatibility-negative-officer_present_inactive-fallback1.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --candidate fallback1 --output .runtime-work/c157964-v8-officer_present_inactive-fallback1-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+          }
         }
       ],
       "measurement_contract": "officer_present_inactive-measurement-contract.json",
@@ -250,13 +410,72 @@
           "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
           "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-v8-officer_present_inactive-primary-offline",
+        "construction_sha256": "e6970ecee1473808825d1b673ec717fdd017ec07c3807a3b37786baa762b3d0d",
+        "exit_code": 0,
+        "log": "construction-primary-officer_present_inactive.log",
+        "log_sha256": "2d190b6f725bc2dfd2907dde50c5799ec8c99d8c7dde545eca1eaa9fbafe188a"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-officer_present_inactive-primary.json",
+        "sha256": "8d5c250dd02b6f10168a75accff2f479d962cef33abbce7b42d8520a1eaa7241",
+        "log": "proof-compatibility-analysis-officer_present_inactive-primary.log",
+        "negative_log": "proof-compatibility-negative-officer_present_inactive-primary.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-v8-officer_present_inactive-primary-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/officer_present_inactive/receipt.json",
+        "sha256": "ae400aaa00e41212c3029261bebef94af66c2a684c67ef062c410d4a78db06a0"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --attempt '$ATTEMPT' --output '$OUTPUT' --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "feedback_command": "find \"$OUTPUT\" -name feedback.json -print -exec cat {} +",
+        "test_log": "saved-processing-officer_present_inactive.log",
+        "test_log_sha256": "8fe3a970442c9e701d970e3930d6d2c591fd0a5b3b3c7899a23d752ddd05713a",
+        "test_exit_code": 0,
+        "scope": "Saved-only synthetic CPU replay; Native capture remains unexecuted"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "912cde3ab38b55cf541c72e8d62b1648c5873ab48e4e00d05a88c1b46a96fe83",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-officer_present_inactive-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --diagnostic-selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-officer_present_inactive-diagnostic.json",
+        "test_log_sha256": "feb28780e9e91ece37a6b371b6125b576c42bd568be5e8c558134f1cd3edb4b2",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-officer_present_inactive-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native non-diagnostic source required",
+        "negative_log": "delivery-audit-officer_present_inactive-native-rejection.log",
+        "negative_log_sha256": "542a46b3905776eb9a33baff624df3dacd43dc411ebd0a079a0bc9dd8a046327",
+        "scope": "CPU synthetic source diagnostic only; Native pixel and physical audit branches remain unexecuted"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
       "kind": "delivery",
       "construction": "no_officer_yield_nearest_view-construction.json",
-      "construction_sha256": "ba8a7b7a504ae568aabb4d6fe4dc3d6c80dc37b3add03503f4418a6632219b69",
+      "construction_sha256": "feecd027e925f0da95bf86b51ba78b3fed6c3535fe8aa0fdadd2a2f4846a83ae",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -265,7 +484,7 @@
         {
           "id": "fallback1",
           "construction": "no_officer_yield_nearest_view-fallback1-construction.json",
-          "construction_sha256": "0812be937d75e730f127dd8a4c943d37252b5d9b6383cca9c3aa6c8170f92d34",
+          "construction_sha256": "fcfec36f21675c25352a184d1a7106e7e8d0b9e037f90b0f849e15f232d0cde8",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -274,7 +493,21 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --candidate fallback1 --output .runtime-work/c157964-v8-no_officer_yield_nearest_view-fallback1-offline",
+            "construction_sha256": "fcfec36f21675c25352a184d1a7106e7e8d0b9e037f90b0f849e15f232d0cde8",
+            "exit_code": 0,
+            "log": "construction-fallback1-no_officer_yield_nearest_view.log",
+            "log_sha256": "266c772a377ad4568378cc8d8d214ab6c28c977b7372a97f3c2ecdcc1ec350b5"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-no_officer_yield_nearest_view-fallback1.json",
+            "sha256": "e680fdf2adb8f36cd094fbda94d54dae6d5f1ee1798a58255e32f047116b00b9",
+            "log": "proof-compatibility-analysis-no_officer_yield_nearest_view-fallback1.log",
+            "negative_log": "proof-compatibility-negative-no_officer_yield_nearest_view-fallback1.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --candidate fallback1 --output .runtime-work/c157964-v8-no_officer_yield_nearest_view-fallback1-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+          }
         }
       ],
       "measurement_contract": "no_officer_yield_nearest_view-measurement-contract.json",
@@ -333,6 +566,65 @@
           "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
           "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-v8-no_officer_yield_nearest_view-primary-offline",
+        "construction_sha256": "feecd027e925f0da95bf86b51ba78b3fed6c3535fe8aa0fdadd2a2f4846a83ae",
+        "exit_code": 0,
+        "log": "construction-primary-no_officer_yield_nearest_view.log",
+        "log_sha256": "5281b0e425848a8b64bab2b55c564ededa6e3aace67753c4424e58e6a336987c"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-no_officer_yield_nearest_view-primary.json",
+        "sha256": "9cd063a9b2abd8592f2a974d7d21e9f482a41c7743bd2758b716a94544189183",
+        "log": "proof-compatibility-analysis-no_officer_yield_nearest_view-primary.log",
+        "negative_log": "proof-compatibility-negative-no_officer_yield_nearest_view-primary.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-v8-no_officer_yield_nearest_view-primary-compatibility --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/no_officer_yield_nearest_view/receipt.json",
+        "sha256": "b4db92aca548833067c7201252333f9eb7ee4afa7b41de3a6402a35f8d59f119"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --attempt '$ATTEMPT' --output '$OUTPUT' --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "feedback_command": "find \"$OUTPUT\" -name feedback.json -print -exec cat {} +",
+        "test_log": "saved-processing-no_officer_yield_nearest_view.log",
+        "test_log_sha256": "762de2d61ef262fc6d7fd63c9b159acac9967aa219e9603d38157670fb9f7f63",
+        "test_exit_code": 0,
+        "scope": "Saved-only synthetic CPU replay; Native capture remains unexecuted"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "912cde3ab38b55cf541c72e8d62b1648c5873ab48e4e00d05a88c1b46a96fe83",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-no_officer_yield_nearest_view-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --diagnostic-selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-no_officer_yield_nearest_view-diagnostic.json",
+        "test_log_sha256": "d05b57af9f81c1356f5e16ff0921361572a54e3047271571e6ebc06357a10469",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c157964-audit-module-output .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-saved-v9-no_officer_yield_nearest_view-attempt --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native non-diagnostic source required",
+        "negative_log": "delivery-audit-no_officer_yield_nearest_view-native-rejection.log",
+        "negative_log_sha256": "542a46b3905776eb9a33baff624df3dacd43dc411ebd0a079a0bc9dd8a046327",
+        "scope": "CPU synthetic source diagnostic only; Native pixel and physical audit branches remain unexecuted"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]
