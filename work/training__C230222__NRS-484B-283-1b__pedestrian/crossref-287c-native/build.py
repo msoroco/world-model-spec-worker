@@ -50,6 +50,8 @@ def digest(data):
 
 def road(marked):
     root = ET.fromstring(next(x['content'] for x in SOURCE['files'] if x['path'] == 'road.xodr'))
+    root.find('header').attrib.update({'north': '45', 'south': '-45',
+                                       'east': '25', 'west': '-25'})
     main = root.find('road')
     main.set('name', 'C230222_midblock_between_adjacent_intersection_targets')
     main.set('length', '80')
@@ -72,21 +74,54 @@ def road(marked):
             'country': 'US', 'type': '1000001', 'subtype': '0',
             'value': '0', 'unit': '', 'height': '0.6', 'width': '0.3'})
     for number, y in ((1, -30), (2, 30)):
-        cross = ET.fromstring(ET.tostring(main))
-        cross.set('id', str(number + 1))
-        cross.set('name', 'adjacent_intersection_' + str(number) + '_crossroad_target')
-        cross.set('length', '40')
-        cross.set('junction', str(number))
-        crossgeom = cross.find('planView/geometry')
-        crossgeom.set('x', '-20')
-        crossgeom.set('y', str(y))
-        crossgeom.set('hdg', '0')
-        crossgeom.set('length', '40')
-        cross.find('objects').clear()
-        cross.find('signals').clear()
-        root.append(cross)
-        ET.SubElement(root, 'junction', {'id': str(number),
-                                        'name': 'adjacent_intersection_' + str(number) + '_target'})
+        west_id, connector_id, east_id = (3 * number - 1, 3 * number, 3 * number + 1)
+        for part, road_id, x, length, junction in (
+            ('west_approach', west_id, -20, 16.5, '-1'),
+            ('connector', connector_id, -3.5, 7, str(number)),
+            ('east_approach', east_id, 3.5, 16.5, '-1'),
+        ):
+            cross = ET.fromstring(ET.tostring(main))
+            cross.set('id', str(road_id))
+            cross.set('name', 'adjacent_intersection_' + str(number) + '_' + part)
+            cross.set('length', str(length))
+            cross.set('junction', junction)
+            crossgeom = cross.find('planView/geometry')
+            crossgeom.set('x', str(x))
+            crossgeom.set('y', str(y))
+            crossgeom.set('hdg', '0')
+            crossgeom.set('length', str(length))
+            cross.find('objects').clear()
+            cross.find('signals').clear()
+            link = cross.find('link')
+            link.clear()
+            if part == 'west_approach':
+                ET.SubElement(link, 'successor', {'elementType': 'junction',
+                                                 'elementId': str(number)})
+            elif part == 'connector':
+                ET.SubElement(link, 'predecessor', {'elementType': 'road',
+                                                   'elementId': str(west_id),
+                                                   'contactPoint': 'end'})
+                ET.SubElement(link, 'successor', {'elementType': 'road',
+                                                 'elementId': str(east_id),
+                                                 'contactPoint': 'start'})
+                for lane_id in ('-1', '1'):
+                    lane = cross.find(".//lane[@id='" + lane_id + "']")
+                    lane_link = ET.SubElement(lane, 'link')
+                    ET.SubElement(lane_link, 'predecessor', {'id': lane_id})
+                    ET.SubElement(lane_link, 'successor', {'id': lane_id})
+            else:
+                ET.SubElement(link, 'predecessor', {'elementType': 'junction',
+                                                   'elementId': str(number)})
+            root.append(cross)
+        junction = ET.SubElement(root, 'junction', {'id': str(number),
+                                'name': 'adjacent_intersection_' + str(number) + '_target'})
+        for connection_id, incoming, point, lane in (
+            ('0', west_id, 'start', '-1'), ('1', east_id, 'end', '1')
+        ):
+            connection = ET.SubElement(junction, 'connection', {
+                'id': connection_id, 'incomingRoad': str(incoming),
+                'connectingRoad': str(connector_id), 'contactPoint': point})
+            ET.SubElement(connection, 'laneLink', {'from': lane, 'to': lane})
     return ET.tostring(root, encoding='unicode') + '\n'
 
 
@@ -102,14 +137,17 @@ def check(path=Path(__file__).resolve().parent / 'road.xodr'):
     junctions = root.findall('junction')
     signals = root.findall('.//signals/signal')
     marks = [x for x in root.findall('.//objects/object') if x.get('type') == 'crosswalk']
-    if len(roads) != 3 or len(junctions) != 2 or len(signals) != 2 or len(marks) != %d:
+    if len(roads) != 7 or len(junctions) != 2 or len(signals) != 2 or len(marks) != %d:
         raise ValueError('287(c) authored geometry or device targets differ')
+    if any(len(j.findall('connection')) != 2 for j in junctions):
+        raise ValueError('Adjacent junction lane connections differ')
     if {x.get('id') for x in signals} != {'28701', '28702'}:
         raise ValueError('Adjacent device identity differs')
     return {'authored_road_id': 1, 'length_m': 80, 'width_m': 7,
             'curb_edge_x_m': -3.5, 'vehicle_lane_center_x_m': -1.75,
             'vehicle_conflict_y_m': 0, 'adjacent_intersection_targets': 2,
             'device_targets': 2, 'marked_crosswalk_targets': %d,
+            'authored_junction_connection_count': 4,
             'native_map_loaded': False, 'official_device_operation_verified': False,
             'legal_road_and_safety_place_status_verified': False}
 ''' % (int(marked), int(marked))

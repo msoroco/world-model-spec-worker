@@ -68,7 +68,11 @@ def measure(root):
         d=math.hypot(e['x_m']-m['x_m'],e['y_m']-m['y_m'])
         distances.append(d);ego_speeds.append(e['speed_mps']);em_speeds.append(m['speed_mps']);light.append(m['special1_light_on'])
         derived.append({'video_frame':i,'native_frame':n,'time_s':t,'separation_m':d,
-                        'ego_x_m':e['x_m'],'emergency_x_m':m['x_m'],
+                        'ego_x_m':e['x_m'],'ego_y_m':e['y_m'],
+                        'ego_half_length_m':e['half_length_m'],
+                        'ego_half_width_m':e['half_width_m'],
+                        'emergency_x_m':m['x_m'],
+                        'emergency_half_length_m':m['half_length_m'],
                         'ego_speed_mps':e['speed_mps'],'emergency_speed_mps':m['speed_mps'],
                         'emergency_velocity_x_mps':m['velocity_x_mps'],'heading_dot':math.cos(e['heading_rad']-m['heading_rad']),
                         'light_state_special1':m['special1_light_on']})
@@ -80,12 +84,32 @@ def measure(root):
     if not distances[220]<distances[120]:raise ValueError('Subsequent closing relationship not measured')
     if not all(x['heading_dot']<-.8 for x in derived[:220]):raise ValueError('Opposing distinct routes not measured')
     if set(light)!={True,False}:raise ValueError('Flashing light state changes not measured')
+    suffix=c.get('case_id','').rsplit('__',1)[-1]
+    if suffix not in ('controlled_1','controlled_2'):
+        raise ValueError('Exact response case missing')
+    passed_frames=[x['video_frame'] for x in derived[120:] if
+                   x['emergency_x_m']+x['emergency_half_length_m'] <
+                   x['ego_x_m']-x['ego_half_length_m']]
+    first_pass=passed_frames[0] if passed_frames else None
+    if suffix=='controlled_1':
+        if first_pass is None or first_pass<220:
+            raise ValueError('Approaching emergency pass not measured after right-edge stop')
+        if (derived[100]['ego_y_m']<=derived[119]['ego_y_m'] or
+            any(abs(x['ego_y_m']+2.5)>.15 or abs(x['ego_speed_mps'])>.15
+                for x in derived[120:first_pass])):
+            raise ValueError('Right-edge position and stop-until-passed response not measured')
+        if not all(x['ego_y_m']-x['ego_half_width_m']>=-3.65 for x in derived[120:first_pass]):
+            raise ValueError('Right-edge body extends beyond authored road')
+    elif any(x['ego_speed_mps']<2.5 or abs(x['ego_y_m']+1.75)>.15 for x in derived[120:220]):
+        raise ValueError('Continued-travel comparison response not measured')
     return {'format':'source-bound-two-phase-emergency-approach-v1','assignment_id':AID,
             'source_sha256':{**{k:sha(v) for k,v in sources.items()},**cam_hashes},
             'samples':COUNT,'initial_subject_approach_m':distances[0]-distances[80],
             'subsequent_emergency_approach_m':distances[120]-distances[220],
             'ego_speed_before_mps':sum(ego_speeds[20:80])/60,
             'ego_speed_after_mps':sum(ego_speeds[160:220])/60,
+            'right_edge_stop_until_passed_observed':suffix=='controlled_1',
+            'emergency_pass_frame':first_pass,
             'light_phase_changes':sum(a!=b for a,b in zip(light,light[1:])),
             'per_frame_geometry':derived,'subsection_1_duty_resolved':False,'legal_result':None,
             'physical_acceptance_claimed':False}

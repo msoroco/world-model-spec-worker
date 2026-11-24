@@ -1,0 +1,83 @@
+{
+  "template_id": "NRS-484B-267-2f@motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2f",
+  "actor": "motor_vehicle_driver",
+  "quote": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If the authorized emergency vehicle or official vehicle of a regulatory agency: (1) Approaches the driver’s vehicle, proceed as required pursuant to subsection 1 [NRS-484B-267-1a, NRS-484B-267-1b, NRS-484B-267-1c]; or (2) Stops, proceed as required pursuant to NRS 484B.607 [NRS-484B-607-1a, NRS-484B-607-1b, NRS-484B-607-1c, NRS-484B-607-1d]. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-267-2f",
+    "activation": {
+      "condition": "A qualifying emergency or regulatory vehicle is moving or visibly preparing to move with qualifying flashing lights.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "On approach to the driver, follow subsection 1; on stopping, follow NRS 484B.607.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when otherwise directed by a law enforcement officer",
+        "description": "Original officer direction may change the response."
+      }
+    ],
+    "timing": {
+      "description": "Track vehicle state across approach; do not assign a numeric legal switching threshold.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "note": "Authorization and role need an original source; blueprint identity alone is insufficient."
+      },
+      {
+        "phrase": "moving or preparing to move in any direction",
+        "note": "Join original motion and visibly indicated preparation; no speed cutoff defines preparation."
+      },
+      {
+        "phrase": "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "note": "Original equipment and pixels require independent review."
+      },
+      {
+        "phrase": "except when otherwise directed by a law enforcement officer",
+        "note": "Officer identity, direction content, recipient and time require original review."
+      },
+      {
+        "phrase": "Approaches the driver’s vehicle, proceed as required pursuant to subsection 1",
+        "note": "The three supplied subsection 1 duties require separate measured response; the current speed pair is only a diagnostic."
+      },
+      {
+        "phrase": "Stops, proceed as required pursuant to NRS 484B.607",
+        "note": "Record the stopped alternative; the exact 484B.607 duties are absent from the frozen corpus."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_speed_response",
+      "kind": "controller",
+      "range_or_domain": [
+        "reduce_to_1_mps",
+        "continue_at_3_mps"
+      ]
+    },
+    {
+      "name": "observed_emergency_approach",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ]
+    },
+    {
+      "name": "officer_direction",
+      "kind": "world_setup",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ]
+    }
+  ]
+}

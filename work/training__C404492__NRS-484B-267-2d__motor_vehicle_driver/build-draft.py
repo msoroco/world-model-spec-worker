@@ -37,7 +37,8 @@ def main():
                 'value_type':'array','kind':'measured',
                 'inputs':['video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl','emergency_context.json',
                           'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv']}],
-            'negative':{'remove':['trace.jsonl'],'error_contains':'Original frame, poses and reviewed context required'},
+            'negative':{'remove':['vehicle_poses.jsonl'],
+                        'error_contains':'Missing required source: vehicle_poses.jsonl'},
             'legal_result':None,'original_source_review_required':True}
         contract_path=HERE/'measurement-contracts'/(suffix+'.json')
         write(contract_path,contract)

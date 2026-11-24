@@ -7,7 +7,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE / 'native'))
-from runner import road_xml
+from runner import road_xml, subject_response
 
 
 def digest(path):
@@ -24,16 +24,21 @@ def build(suffix):
     source = HERE / 'current-fixture' / suffix
     source.mkdir(parents=True, exist_ok=True)
     frames, poses, trace, evidence, native_frames, graphs = [], [], [], [], [], []
-    ego_x, em_x = -75.0, -15.0
+    ego_x, ego_y, em_x = -75.0, -1.75, -15.0
+    request = {'case_suffix': suffix, 'requested_initial_subject_speed_mps': 3,
+               'requested_subsequent_subject_speed_mps': 0 if suffix == 'controlled_1' else 3}
     for i in range(600):
         time, native = i / 20, 1000 + i
-        ego_speed = 1 if suffix == 'controlled_1' and i >= 100 else 3
+        ego_vx, ego_vy, phase = subject_response(i, request, ego_x, em_x)
+        ego_speed = (ego_vx ** 2 + ego_vy ** 2) ** .5
         em_speed = 2 if i >= 100 else 0
-        ego_x += ego_speed / 20
+        ego_x += ego_vx / 20
+        ego_y += ego_vy / 20
         em_x -= em_speed / 20
-        ego = {'actor_id': 107, 'x_m': round(ego_x, 5), 'y_m': -1.75,
-               'heading_rad': 0, 'velocity_x_mps': ego_speed, 'velocity_y_mps': 0,
-               'speed_mps': ego_speed, 'half_length_m': 2, 'half_width_m': 1}
+        ego = {'actor_id': 107, 'x_m': round(ego_x, 5), 'y_m': round(ego_y, 5),
+               'heading_rad': 0, 'velocity_x_mps': ego_vx, 'velocity_y_mps': ego_vy,
+               'speed_mps': ego_speed, 'half_length_m': 2, 'half_width_m': 1,
+               'requested_response_phase': phase}
         em = {'actor_id': 108, 'x_m': round(em_x, 5), 'y_m': 1.75,
               'heading_rad': 3.141592653589793, 'velocity_x_mps': -em_speed,
               'velocity_y_mps': 0, 'speed_mps': em_speed,
@@ -49,7 +54,7 @@ def build(suffix):
                       'position_m': [ego['x_m'], ego['y_m'], .5],
                       'heading_deg': 0, 'speed_mps': ego_speed,
                       'speed_mph': ego_speed / .44704,
-                      'velocity_mps': [ego_speed, 0, 0],
+                      'velocity_mps': [ego_vx, ego_vy, 0],
                       'control': {'throttle': .2, 'brake': 0, 'hand_brake': False}})
         body = [[ego['x_m'] + dx, ego['y_m'] + dy, z]
                 for dx in (-2, 2) for dy in (-1, 1) for z in (0, 1.5)]

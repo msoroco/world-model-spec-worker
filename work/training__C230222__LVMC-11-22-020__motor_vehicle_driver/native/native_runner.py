@@ -6,6 +6,8 @@ import queue
 import subprocess
 from pathlib import Path
 
+from body_geometry import scene_clearance
+
 FRAMES = 600
 RATE = 20
 PREFIX = 'training__C230222__LVMC-11-22-020__motor_vehicle_driver__'
@@ -14,7 +16,7 @@ VIEWS = ('overview', 'approach', 'curb_reference', 'driver_reference')
 
 def check(config):
     case = config.get('case_id')
-    if (case not in (PREFIX + 'controlled_draft', PREFIX + 'erratic_draft') or
+    if (case not in (PREFIX + 'probe_a', PREFIX + 'probe_b') or
             config.get('selected_case_id') != case or
             config.get('law_id') != 'LVMC-11-22-020' or
             config.get('cell_id') != 'C230222' or
@@ -92,6 +94,7 @@ def execute(config, output, host, port):
     original = snapshot(client)
     actors, sensors = [], []
     packets = queue.Queue()
+    collision_events = queue.Queue()
     errors, encoders = [], {}
     restoration, count, failure = {'restored': False}, 0, None
     try:
@@ -107,6 +110,11 @@ def execute(config, output, host, port):
         if ego is None:
             raise RuntimeError('Requested spawn occupied')
         actors.append(ego)
+        collision_bp = world.get_blueprint_library().find('sensor.other.collision')
+        collision_sensor = world.spawn_actor(collision_bp, carla.Transform(), attach_to=ego)
+        actors.append(collision_sensor)
+        sensors.append(collision_sensor)
+        collision_sensor.listen(lambda event: collision_events.put(event))
         for camera in config['cameras']:
             bp = world.get_blueprint_library().find('sensor.camera.rgb')
             bp.set_attribute('image_size_x', str(camera['width']))
@@ -130,7 +138,9 @@ def execute(config, output, host, port):
         with PipelineCapture(client, ego, output, config['case_id'],
                              required_observations=config['required_atoms']) as capture, \
                 FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'native-ego-frames.jsonl').open('x', buffering=1) as motion:
+                (output / 'native-ego-frames.jsonl').open('x', buffering=1) as motion, \
+                (output / 'native-body-geometry.jsonl').open('x', buffering=1) as geometry, \
+                (output / 'native-collision-events.jsonl').open('x', buffering=1) as collisions:
             for index in range(FRAMES):
                 phase = phase_at(config, index)
                 ego.apply_control(carla.VehicleControl(
@@ -148,14 +158,32 @@ def execute(config, output, host, port):
                 frame_map.append(native, index / RATE,
                                  native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
                 pose = ego.get_transform()
+                body = scene_clearance(ego, world.get_actors())
+                geometry.write(json.dumps({
+                    'source_kind': 'original_native', 'native_frame': native,
+                    'time_s': index / RATE, **body}) + '\n')
+                collided = False
+                while True:
+                    try:
+                        event = collision_events.get_nowait()
+                    except queue.Empty:
+                        break
+                    collisions.write(json.dumps({
+                        'source_kind': 'original_native',
+                        'native_frame': int(event.frame),
+                        'other_actor_id': int(event.other_actor.id),
+                        'other_actor_type': event.other_actor.type_id}) + '\n')
+                    if event.frame == native:
+                        collided = True
                 motion.write(json.dumps({
                     'source_kind': 'original_native', 'native_frame': native,
                     'time_s': index / RATE, 'position_m': xyz(pose.location),
                     'velocity_mps': xyz(ego.get_velocity()),
                     'acceleration_mps2': xyz(ego.get_acceleration()),
                     'yaw_deg': pose.rotation.yaw,
-                    'minimum_surface_gap_m': None,
-                    'contact': None, 'pedestrian_visible': None}) + '\n')
+                    'minimum_surface_gap_m': body['minimum_surface_gap_m'],
+                    'contact': True if collided else None,
+                    'pedestrian_visible': None}) + '\n')
                 count += 1
         for view in VIEWS:
             result = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error',

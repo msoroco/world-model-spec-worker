@@ -274,7 +274,7 @@ def pixel_checker(boxes, frames, required_claims=PIXEL_CLAIMS):
 
 def media_module():
     for parent in Path(__file__).resolve().parents:
-        package = parent / 'runtime/pipeline/scenario_pipeline'
+        package = parent / 'runtime/scenario_pipeline'
         if package.is_dir():
             sys.path.insert(0, str(package))
             from worker_exchange import media

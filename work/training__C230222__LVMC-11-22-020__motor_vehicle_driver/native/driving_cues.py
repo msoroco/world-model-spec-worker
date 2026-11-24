@@ -8,6 +8,8 @@ import json
 import math
 from pathlib import Path
 
+from body_geometry import planar_gap
+
 FRAMES = 600
 RATE = 20
 
@@ -28,13 +30,18 @@ def finite(value):
 def measure(source):
     source = Path(source)
     paths = {name: source / name for name in
-             ('native-ego-frames.jsonl', 'video_frames.jsonl', 'driving-context.json')}
+             ('native-ego-frames.jsonl', 'native-body-geometry.jsonl',
+              'native-collision-events.jsonl', 'video_frames.jsonl',
+              'driving-context.json')}
     for name, path in paths.items():
         require(path.is_file(), 'Missing required source: ' + name)
     motion = rows(paths['native-ego-frames.jsonl'])
+    geometry = rows(paths['native-body-geometry.jsonl'])
+    collision_events = rows(paths['native-collision-events.jsonl'])
     mapping = rows(paths['video_frames.jsonl'])
     context = json.loads(paths['driving-context.json'].read_text())
-    require(len(motion) == len(mapping) == FRAMES, 'Complete 600-frame source required')
+    require(len(motion) == len(mapping) == len(geometry) == FRAMES,
+            'Complete 600-frame source required')
     require(context.get('source_kind') in ('original_native', 'synthetic_native_sample'),
             'Native source provenance required')
     require(context.get('cell_id') == 'C230222' and
@@ -46,10 +53,23 @@ def measure(source):
     first_native = motion[0].get('native_frame')
     require(type(first_native) is int, 'First Native frame missing')
     previous_yaw = None
-    for index, (item, frame) in enumerate(zip(motion, mapping)):
+    event_frames = set()
+    for event in collision_events:
+        require(event.get('source_kind') == context['source_kind'] and
+                type(event.get('native_frame')) is int and
+                type(event.get('other_actor_id')) is int and
+                type(event.get('other_actor_type')) is str,
+                'Collision event source invalid')
+        event_frames.add(event['native_frame'])
+    for index, (item, frame, body) in enumerate(zip(motion, mapping, geometry)):
         expected_native = first_native + index
         expected_time = index / RATE
         require(item.get('source_kind') == context['source_kind'], 'Mixed motion provenance')
+        require(body.get('source_kind') == context['source_kind'] and
+                body.get('native_frame') == expected_native and
+                finite(body.get('time_s')) and
+                abs(body['time_s'] - expected_time) < 1e-6,
+                'Original body geometry join differs')
         require(item.get('native_frame') == frame.get('native_frame') == expected_native
                 and frame.get('video_frame') == index, 'Native/video frame join differs')
         require(finite(item.get('time_s')) and finite(frame.get('time_s')) and
@@ -69,6 +89,31 @@ def measure(source):
                 (contact is None or type(contact) is bool) and
                 (pedestrian is None or type(pedestrian) is bool),
                 'Driving context source incomplete')
+        own = body.get('ego_footprint_xy_m')
+        participants = body.get('participants')
+        require(type(participants) is list and type(own) is list,
+                'Original body geometry missing')
+        original_gaps = []
+        for participant in participants:
+            require(type(participant.get('actor_id')) is int and
+                    type(participant.get('type_id')) is str and
+                    participant['type_id'].startswith(('vehicle.', 'walker.')),
+                    'Original participant identity missing')
+            measured_gap = planar_gap(own, participant.get('footprint_xy_m'))
+            require(finite(participant.get('planar_gap_m')) and
+                    abs(measured_gap - participant['planar_gap_m']) < 1e-5,
+                    'Participant gap differs from original body corners')
+            original_gaps.append(measured_gap)
+        computed_gap = min(original_gaps, default=None)
+        require(body.get('gap_method') ==
+                'original_native_2d_body_footprint_separation' and
+                body.get('minimum_surface_gap_m') == computed_gap and
+                gap == computed_gap, 'Motion gap differs from original body geometry')
+        if contact is True:
+            require(expected_native in event_frames,
+                    'Contact cue lacks original collision event')
+        if context['source_kind'] == 'original_native':
+            require(contact is not False, 'Absence of a collision event is unknown')
         speed = math.hypot(velocity[0], velocity[1])
         longitudinal = (acceleration[0] * velocity[0] + acceleration[1] * velocity[1]) / speed if speed > 0 else None
         yaw_rate = None if previous_yaw is None else ((yaw - previous_yaw + 180) % 360 - 180) * RATE
@@ -89,6 +134,7 @@ def measure(source):
             'legal_review_required': True,
             'limitations': ['No engineering threshold defines careless or imprudent.',
                             'Motion cues alone do not establish municipal highway status.',
+                            'Planar box clearance is not a 3D collision or legal conclusion.',
                             'Time to conflict requires participant trajectories and is not inferred here.']}
 
 

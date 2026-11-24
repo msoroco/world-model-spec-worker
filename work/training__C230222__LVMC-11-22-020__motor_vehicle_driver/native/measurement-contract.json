@@ -4,6 +4,8 @@
   "source_script": "native/driving_cues.py",
   "source_files": [
     "native-ego-frames.jsonl",
+    "native-body-geometry.jsonl",
+    "native-collision-events.jsonl",
     "video_frames.jsonl",
     "driving-context.json"
   ],
@@ -18,13 +20,13 @@
     "contact",
     "pedestrian_visible"
   ],
-  "provenance_rule": "Reject absent or mismatched Native frame and time joins; hash every source file. Original-source review must establish any highway-in-City context.",
-  "null_rule": "A null surface gap or context value means unknown, never absence or compliance.",
+  "provenance_rule": "Reject absent or mismatched original Native frame/time/body joins; recompute planar clearance from every retained participant body footprint and hash every source. Contact requires an original collision event; no event leaves contact unknown.",
+  "null_rule": "A null surface gap means no retained participant body for that frame, not infinite clearance; null contact/pedestrian/jurisdiction means unknown, never absence or compliance.",
   "legal_rule": "No measurement is a numerical legal definition of careless or imprudent; the meter emits no legal verdict.",
   "remaining_source_work": [
     "Derive participant trajectories and time to conflict from retained raw Native packets.",
-    "Derive contact and minimum surface gap from original actor geometry and collision events.",
-    "Review four synchronized camera streams and jurisdiction/highway source evidence."
+    "Review original collision event timing, four synchronized camera streams, pedestrian visibility, and jurisdiction/highway source evidence.",
+    "Bind exact selected probes, compatibility, saved processing and independent delivery/comparison audits."
   ],
   "diagnostic_only": true
 }

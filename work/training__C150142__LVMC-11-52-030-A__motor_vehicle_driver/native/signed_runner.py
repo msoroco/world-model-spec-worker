@@ -113,8 +113,8 @@ def execute(output, host, port):
             'native-capture-report.json','capture/evidence.jsonl')):
         raise ValueError('Retain prior attempt; choose a new capture directory')
     repo = repository()
-    sys.path.insert(0, str(repo / 'runtime/pipeline/scenario_pipeline'))
-    sys.path.insert(0, str(repo / 'runtime/pipeline/python'))
+    sys.path.insert(0, str(repo / 'runtime/scenario_pipeline'))
+    sys.path.insert(0, str(repo / 'runtime/python'))
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture

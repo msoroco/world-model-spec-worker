@@ -1,5 +1,6 @@
 """Two-phase emergency approach capture. CPU --check never starts CARLA."""
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -68,9 +69,40 @@ def transform(carla,xyz,rotation):
                            carla.Rotation(pitch=rotation[0],yaw=rotation[1],roll=rotation[2]))
 
 
+def validate_native_lanes(ego_lane, emergency_lane):
+    """Confirm authored opposite-direction lane placement from Native readback."""
+    if ego_lane is None or emergency_lane is None:
+        raise ValueError('Native driving lane readback missing')
+    if (ego_lane.road_id != 405647 or emergency_lane.road_id != 405647 or
+            ego_lane.lane_id != -1 or emergency_lane.lane_id != 1):
+        raise ValueError('Native opposing routes differ from authored lanes')
+    return {'road_id': 405647, 'ego_lane_id': -1,
+            'emergency_lane_id': 1}
+
+
+def subject_response(frame, config, ego_x, emergency_x, ego_half_length=2.0,
+                     emergency_half_length=2.0):
+    """Request a right-edge stop until the approaching vehicle has passed.
+
+    The stop and pass condition are engineering controls. Original poses and
+    video must establish what actually happened before any physical conclusion.
+    """
+    if frame < 100:
+        return (config['requested_initial_subject_speed_mps'], 0.0, 'initial_approach')
+    if config['case_suffix'] == 'controlled_2':
+        return (config['requested_subsequent_subject_speed_mps'], 0.0, 'continued_travel')
+    if 100 <= frame < 120:
+        return (1.0, -0.75, 'move_to_right_edge')
+    passed = emergency_x + emergency_half_length < ego_x - ego_half_length
+    if not passed:
+        return (0.0, 0.0, 'stopped_until_passed')
+    return (1.0, 0.0, 'resumed_after_pass')
+
+
 def execute(output,survey,host,port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap,seal_capture
     from worker_exchange.world_restore import snapshot,restore
     c=config();survey_check(survey,c);output=Path(output).resolve()
     if any((output/name).exists() for name in ('video_frames.jsonl','vehicle_poses.jsonl')):
@@ -78,7 +110,7 @@ def execute(output,survey,host,port):
     client=carla.Client(host,port);client.set_timeout(120)
     saved=snapshot(client);world=client.get_world()
     if saved['settings'].synchronous_mode:raise RuntimeError('Exclusive asynchronous world required')
-    actors=[];encoders={};queues={}
+    actors=[];encoders={};queues={};capture_writer=None;restored=None;encoder_codes={}
     try:
         # The authored road is loaded only after the reviewed map/road identity is confirmed.
         if survey['map_name']!='C405647-two-phase-emergency' or survey['road_geometry_source']!='authored:runner.road_xml':
@@ -86,6 +118,12 @@ def execute(output,survey,host,port):
         world=client.generate_opendrive_world(road_xml())
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=1/RATE
         world.apply_settings(settings)
+        mapping=world.get_map()
+        lane_readback=validate_native_lanes(
+            mapping.get_waypoint(transform(carla,survey['ego_spawn_xyz_m'],[0,0,0]).location,
+                                 project_to_road=False,lane_type=carla.LaneType.Driving),
+            mapping.get_waypoint(transform(carla,survey['emergency_spawn_xyz_m'],[0,180,0]).location,
+                                 project_to_road=False,lane_type=carla.LaneType.Driving))
         lib=world.get_blueprint_library()
         ego=world.try_spawn_actor(lib.find(survey['ego_blueprint']),transform(carla,survey['ego_spawn_xyz_m'],[0,0,0]))
         emergency=world.try_spawn_actor(lib.find(survey['emergency_blueprint']),transform(carla,survey['emergency_spawn_xyz_m'],[0,180,0]))
@@ -102,17 +140,25 @@ def execute(output,survey,host,port):
                 '-f','rawvideo','-pix_fmt','bgra','-s',f"{x['width']}x{x['height']}",
                 '-r',str(RATE),'-i','-','-frames:v',str(COUNT),'-c:v','ffv1',
                 str(output/(x['name']+'.mkv'))],stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+        capture_writer=PipelineCapture(client,ego,output,c['case_id'],
+                                       required_observations=c['required_atoms'])
         first=None
         with FrameMap(output/'video_frames.jsonl') as fmap,(output/'vehicle_poses.jsonl').open('x') as trace:
             for i in range(COUNT):
                 # First ego moves toward stationary emergency. Emergency moves toward ego after frame 100.
                 emergency.set_light_state(carla.VehicleLightState(special if (i//10)%2==0 else 0))
                 emergency.set_target_velocity(carla.Vector3D(x=-c['requested_subsequent_emergency_speed_mps'] if i>=100 else 0,y=0,z=0))
-                ego_target=c['requested_subsequent_subject_speed_mps'] if i>=100 else c['requested_initial_subject_speed_mps']
-                ego.set_target_velocity(carla.Vector3D(x=ego_target,y=0,z=0))
+                ego_pose=ego.get_transform(); emergency_pose=emergency.get_transform()
+                ego_extent=ego.bounding_box.extent.x; emergency_extent=emergency.bounding_box.extent.x
+                ego_vx,ego_vy,phase=subject_response(
+                    i,c,ego_pose.location.x,emergency_pose.location.x,
+                    ego_extent,emergency_extent)
+                ego.set_target_velocity(carla.Vector3D(x=ego_vx,y=ego_vy,z=0))
                 native=world.tick();snap=world.get_snapshot()
                 if snap.frame!=native:raise RuntimeError('Original Native frame mismatch')
                 if first is None:first=snap.timestamp.elapsed_seconds
+                capture_writer.capture(native,snap.timestamp.elapsed_seconds-first,
+                                       extra={'emergency_actor_id':emergency.id})
                 mapped={}
                 for name,q in queues.items():
                     image=q.get(timeout=30)
@@ -126,16 +172,23 @@ def execute(output,survey,host,port):
                         'heading_rad':p.rotation.yaw*math.pi/180,'velocity_x_mps':v.x,'velocity_y_mps':v.y,
                         'speed_mps':math.hypot(v.x,v.y),'half_length_m':e.x,'half_width_m':e.y})
                 records[1]['special1_light_on']=bool(emergency.get_light_state() & special)
+                records[0]['requested_response_phase']=phase
                 trace.write(json.dumps({'video_frame':i,'native_frame':native,'source_kind':'original_native_pose',
                                         'ego':records[0],'emergency':records[1]})+'\n')
         for name,p in encoders.items():
             p.stdin.close();err=p.stderr.read()
-            if p.wait(timeout=180):raise RuntimeError('Camera encode failed: '+name+' '+err.decode()[-300:])
+            encoder_codes[name]=p.wait(timeout=180)
+            if encoder_codes[name]:raise RuntimeError('Camera encode failed: '+name+' '+err.decode()[-300:])
+        capture_writer.close(confirmed=True)
         (output/'emergency_context.template.json').write_text(json.dumps({'assignment_id':AID,
-            'ego_actor_id':ego.id,'emergency_actor_id':emergency.id,'camera_sha256':{},
+            'ego_actor_id':ego.id,'emergency_actor_id':emergency.id,
+            'camera_sha256':{name+'.mkv':hashlib.sha256((output/(name+'.mkv')).read_bytes()).hexdigest()
+                             for name in CAMERAS},
+            'native_lane_readback':lane_readback,
             'independent_source_review_required':True},indent=2)+'\n')
-        return {'case_id':c['case_id'],'original_frames':COUNT,'physical_acceptance_claimed':False}
     finally:
+        if capture_writer is not None and not capture_writer.closed:
+            capture_writer.close(confirmed=False)
         for p in encoders.values():
             if p.poll() is None:p.kill();p.wait()
         for actor in reversed(actors):
@@ -143,7 +196,14 @@ def execute(output,survey,host,port):
                 if hasattr(actor,'stop'):actor.stop()
                 actor.destroy()
             except Exception:pass
-        restore(client,saved)
+        restored=restore(client,saved)
+    (output/'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind':'native','diagnostic_fixture':False,
+        'native_executed':True},indent=2)+'\n')
+    seal_capture(output,frames=COUNT,restoration=restored,errors=[],
+                 encoder_exit_codes=encoder_codes,context={'native_lane_readback':lane_readback})
+    return {'case_id':c['case_id'],'original_frames':COUNT,
+            'capture_sealed':True,'physical_acceptance_claimed':False}
 
 if __name__=='__main__':
     ap=argparse.ArgumentParser();ap.add_argument('--check',action='store_true')

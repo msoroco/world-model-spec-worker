@@ -56,8 +56,26 @@ def main():
                 'Synthetic source context does not match authored road')
         road = ET.fromstring(files['road.xodr'])
         main = road.find('road')
-        require(len(road.findall('road')) == 3 and len(road.findall('junction')) == 2,
+        require(len(road.findall('road')) == 7 and len(road.findall('junction')) == 2,
                 'Two adjacent intersection targets required')
+        road_by_id = {x.get('id'): x for x in road.findall('road')}
+        for number in (1, 2):
+            west, connector, east = (str(3 * number - 1), str(3 * number),
+                                     str(3 * number + 1))
+            junction = next(x for x in road.findall('junction') if x.get('id') == str(number))
+            connections = junction.findall('connection')
+            require({(x.get('incomingRoad'), x.get('connectingRoad'), x.get('contactPoint'))
+                     for x in connections} == {(west, connector, 'start'),
+                                                (east, connector, 'end')} and
+                    {tuple(sorted(link.attrib.items())) for x in connections
+                     for link in x.findall('laneLink')} ==
+                    {tuple(sorted({'from': lane, 'to': lane}.items()))
+                     for lane in ('-1', '1')},
+                    'Adjacent junction connection or lane links differ')
+            require(road_by_id[connector].get('junction') == str(number) and
+                    road_by_id[west].find('link/successor').get('elementId') == str(number) and
+                    road_by_id[east].find('link/predecessor').get('elementId') == str(number),
+                    'Adjacent crossroad approach topology differs')
         require(main.get('length') == '80' and
                 main.find('planView/geometry').get('y') == '-40',
                 'Midblock curb crossing road differs')

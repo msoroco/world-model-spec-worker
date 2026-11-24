@@ -121,80 +121,88 @@
     "st.highway",
     "ru.pedestrian"
   ],
-  "source_observation_mapping": [
-    {
-      "term": "drv.time_to_conflict",
-      "measurement": "participant_trajectories",
-      "status": "pending_raw_source",
+  "source_observation_mapping": {
+    "drv.time_to_conflict": {
+      "evidence": "Participant trajectories and closing time require a future saved-source derivation; no legal cutoff is assigned.",
+      "channels": [],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
         "native/measurement-contract.json"
       ]
     },
-    {
-      "term": "drv.hard_deceleration",
-      "measurement": "longitudinal_acceleration_mps2",
-      "status": "derived_kinematic_cue",
+    "drv.hard_deceleration": {
+      "evidence": "Longitudinal acceleration derives from original Native ego acceleration and velocity; hard is a review cue, not a fixed legal threshold.",
+      "channels": [
+        "curbside_driving_cues"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-ego-frames.jsonl"
       ]
     },
-    {
-      "term": "kin.yaw_rate",
-      "measurement": "yaw_rate_degps",
-      "status": "derived_kinematic_cue",
+    "kin.yaw_rate": {
+      "evidence": "Yaw rate derives from adjacent original Native ego yaw samples at 20 Hz.",
+      "channels": [
+        "curbside_driving_cues"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-ego-frames.jsonl"
       ]
     },
-    {
-      "term": "kin.speed",
-      "measurement": "speed_mps",
-      "status": "derived_kinematic_cue",
+    "kin.speed": {
+      "evidence": "Speed magnitude derives from original Native ego velocity.",
+      "channels": [
+        "curbside_driving_cues"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-ego-frames.jsonl"
       ]
     },
-    {
-      "term": "rel.surface_gap",
-      "measurement": "minimum_surface_gap_m",
-      "status": "source_field_requires_original_geometry",
+    "rel.surface_gap": {
+      "evidence": "Planar participant-body gap recomputes from every retained original Native actor bounding-box corner; no participant leaves the gap unknown.",
+      "channels": [
+        "curbside_driving_cues"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-body-geometry.jsonl",
+        "native-ego-frames.jsonl"
       ]
     },
-    {
-      "term": "rel.contact",
-      "measurement": "contact",
-      "status": "source_field_requires_original_collision_event",
+    "rel.contact": {
+      "evidence": "Positive contact requires an original Native collision sensor event; no event leaves contact unknown.",
+      "channels": [
+        "curbside_driving_cues"
+      ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-collision-events.jsonl",
+        "native-ego-frames.jsonl"
       ]
     },
-    {
-      "term": "st.highway",
-      "measurement": "highway_in_city_evidence",
-      "status": "pending_original_jurisdiction_review",
+    "st.highway": {
+      "evidence": "Native map identity is recorded; municipal highway status still requires original source review.",
+      "channels": [],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "driving-context.json"
       ]
     },
-    {
-      "term": "ru.pedestrian",
-      "measurement": "pedestrian_visible",
-      "status": "source_field_requires_original_video_review",
+    "ru.pedestrian": {
+      "evidence": "Native actor identity is retained but pedestrian visibility requires original camera review; no presence or visibility is inferred from missing actors.",
+      "channels": [],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native-body-geometry.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "curb_reference.mkv",
+        "driver_reference.mkv"
       ]
     }
-  ],
+  },
   "cpu_diagnostic": {
     "measurement_contract": "native/measurement-contract.json",
     "meter": "native/driving_cues.py",
@@ -202,19 +210,19 @@
     "status": "source_shaped_software_fixture_only",
     "sample_count": 600,
     "sampling_rate_hz": 20,
-    "negative_count": 6,
+    "negative_count": 9,
     "legal_verdict": null
   },
   "unselected_native_draft": {
     "manifest": "draft-native-manifest.json",
     "offline_proof": "draft-native-offline-proof.json",
     "cases": [
-      "training__C230222__LVMC-11-22-020__motor_vehicle_driver__controlled_draft",
-      "training__C230222__LVMC-11-22-020__motor_vehicle_driver__erratic_draft"
+      "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a",
+      "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b"
     ],
     "duration_s": 30,
     "camera_count": 4,
     "selection_status": "unselected_diagnostic_only",
-    "construction_limit": "Native runner retains motion and four cameras; minimum surface gap, contact and pedestrian visibility are null pending original actor-geometry/collision/pixel implementation."
+    "construction_limit": "Native runner now retains original actor bounding-box geometry and collision sensor events. No absent-contact inference, verified curbside map geometry, time to conflict, pedestrian visibility, municipal highway status, selected delivery or saved audits yet."
   }
 }

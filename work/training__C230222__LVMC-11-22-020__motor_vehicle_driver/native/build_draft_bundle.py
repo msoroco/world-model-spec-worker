@@ -1,4 +1,4 @@
-"""Build two unselected exact 30-second curbside Native proposals."""
+"""Build Native proposals for the two exact curbside cases."""
 import hashlib
 import json
 from pathlib import Path
@@ -23,6 +23,32 @@ import json
 import unittest
 from pathlib import Path
 from runner import FRAMES, RATE, check, phase_at
+from body_geometry import scene_clearance
+
+class Vec:
+    def __init__(self, x, y, z=0):
+        self.x, self.y, self.z = x, y, z
+
+class Box:
+    def __init__(self):
+        self.location, self.extent = Vec(0, 0), Vec(1, 0.5)
+
+class Pose:
+    def __init__(self, x, y, yaw=0):
+        self.x, self.y, self.yaw = x, y, yaw
+    def transform(self, point):
+        import math
+        angle = math.radians(self.yaw)
+        return Vec(self.x + point.x * math.cos(angle) - point.y * math.sin(angle),
+                   self.y + point.x * math.sin(angle) + point.y * math.cos(angle))
+
+class Actor:
+    def __init__(self, actor_id, x, y, yaw=0, kind='vehicle.test'):
+        self.id, self.type_id = actor_id, kind
+        self.bounding_box = Box()
+        self.pose = Pose(x, y, yaw)
+    def get_transform(self):
+        return self.pose
 
 class ExactCaptureContract(unittest.TestCase):
     def setUp(self):
@@ -60,6 +86,24 @@ class ExactCaptureContract(unittest.TestCase):
     def test_endpoint_rejection(self):
         with self.assertRaises(ValueError):
             phase_at(self.config, FRAMES)
+
+    def test_original_body_clearance_both_directions(self):
+        ego = Actor(1, 0, 0)
+        ahead = Actor(2, 4, 0)
+        behind = Actor(3, -4, 0)
+        for other in (ahead, behind):
+            result = scene_clearance(ego, [ego, other])
+            self.assertAlmostEqual(result['minimum_surface_gap_m'], 2)
+            self.assertEqual(len(result['participants']), 1)
+        overlapping = scene_clearance(ego, [Actor(4, 0.5, 0.1, 30)])
+        self.assertEqual(overlapping['minimum_surface_gap_m'], 0)
+
+    def test_unknown_gap_without_source_participant(self):
+        ego = Actor(1, 0, 0)
+        sensor = Actor(7, 0, 0, kind='sensor.camera.rgb')
+        result = scene_clearance(ego, [ego, sensor])
+        self.assertIsNone(result['minimum_surface_gap_m'])
+        self.assertEqual(result['participants'], [])
 '''
 
 
@@ -93,7 +137,8 @@ def config(case_id, erratic):
 def main():
     entries = []
     runner = (NATIVE / 'native_runner.py').read_text()
-    for label, erratic in (('controlled_draft', False), ('erratic_draft', True)):
+    body_geometry = (NATIVE / 'body_geometry.py').read_text()
+    for label, erratic in (('probe_a', False), ('probe_b', True)):
         case_id = PREFIX + label
         proposal = {
             'actor': 'motor_vehicle_driver', 'case_id': case_id,
@@ -101,12 +146,14 @@ def main():
             'entrypoint': 'runner.py',
             'files': [
                 {'path': 'runner.py', 'content': runner},
+                {'path': 'body_geometry.py', 'content': body_geometry},
                 {'path': 'config.json', 'content': json.dumps(config(case_id, erratic), indent=2) + '\n'},
                 {'path': 'tests/test_offline.py', 'content': TESTS},
             ],
-            'measurement_plan': 'Retain 600 original Native motion/frame-map rows and four synchronized source cameras. Original geometry and collision review remain necessary.',
+            'measurement_plan': 'Retain 600 original Native motion, body-geometry and frame-map rows, original collision events and four synchronized source cameras. Original geometry, collision and video review remain necessary.',
             'mechanisms': ['synchronous 20 Hz Native capture',
-                           'four source-camera encodes', 'source-bound motion trace'],
+                           'four source-camera encodes', 'source-bound motion trace',
+                           'original Native actor bounding-box geometry and collision sensor events'],
             'recording_description': {
                 'channels': [{'name': 'curbside_driving_cues', 'unit': 'structured',
                               'sampling_rate_hz': 20, 'time_window': '600 frames',

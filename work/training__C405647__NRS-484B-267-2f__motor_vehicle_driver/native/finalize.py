@@ -22,6 +22,8 @@ def measure_approach_response(measured, context):
             'subsequent_emergency_closing_m': measured['subsequent_emergency_approach_m'],
             'ego_speed_before_mps': measured['ego_speed_before_mps'],
             'ego_speed_after_mps': measured['ego_speed_after_mps'],
+            'right_edge_stop_until_passed_observed': measured['right_edge_stop_until_passed_observed'],
+            'emergency_pass_frame': measured['emergency_pass_frame'],
             'light_phase_changes': measured['light_phase_changes'],
             'officer_direction_reviewed': context['officer_directed_otherwise'],
             'subsection_1_source_refs': ['NRS-484B-267-1a', 'NRS-484B-267-1b',

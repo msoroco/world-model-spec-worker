@@ -21,17 +21,21 @@ def main():
             cfg={'assignment_id':AID,'case_id':case,'selected_case_id':case,'case_suffix':suffix,
                  'candidate_id':candidate,'law_id':'NRS-484B-267-2f','cell_id':'C405647',
                  'actor':'motor_vehicle_driver','rate_hz':20,'duration_s':30,'frames':600,
+                 'supported_case_ids':[AID+'__controlled_1',AID+'__controlled_2'],
                  'cameras':[{'name':x,'width':1920 if x=='overview' else 1280,
                              'height':1080 if x=='overview' else 720,'fps':20,
                              'fov_deg':90 if x=='overview' else 85,
                              'pose_strategy':'fixed_world_aim_at_opposing_vehicle'} for x in CAMERAS],
                  'requested_initial_subject_speed_mps':3,
                  'requested_subsequent_emergency_speed_mps':2.5 if candidate=='fallback1' else 2,
-                 'requested_subsequent_subject_speed_mps':1 if suffix=='controlled_1' else 3,
+                 'requested_subsequent_subject_speed_mps':0 if suffix=='controlled_1' else 3,
+                 'requested_right_edge_center_y_m':-2.5,
+                 'requested_right_edge_shift_frames':[100,119],
+                 'requested_stop_until_emergency_rear_passes_ego_rear':suffix=='controlled_1',
                  'requested_ego_lane_center_y_m':-2.1 if candidate=='fallback2' else -1.75,
                  'requested_emergency_spawn_x_m':-15,
                  'physical_acceptance_claimed':False,'required_atoms':[],'source_packets':[],
-                 'recording_description':'Two distinct opposite-direction vehicles; original 600-frame pose/velocity/light-state trace, four cameras, reviewed authorization/equipment/officer sources; controlled speed response is an engineering request, not a legal threshold'}
+                 'recording_description':'Two distinct opposite-direction vehicles; original 600-frame pose/velocity/light-state trace, four cameras, reviewed authorization/equipment/officer sources; controlled_1 requests a right-edge move and stop until the emergency vehicle has passed; controlled_2 continues travel. All requests are engineering controls, not legal thresholds'}
             files=[{'path':n,'content':(HERE/'native'/n).read_text()} for n in ('runner.py','measure_approach.py','tests/test_native.py')]
             files.append({'path':'config.json','content':json.dumps(cfg,indent=2)+'\n'})
             construction={'format':'worker-construction','assignment_id':AID,'case_id':case,
