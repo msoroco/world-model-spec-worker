@@ -1,6 +1,6 @@
 # training__C230259__NRS-484B-600-1a__motor_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -12,6 +12,14 @@ Cell: road / travel / other_vehicle; actor: motor_vehicle_driver. Frozen witness
 
 same traffic, surface, width, weather, visibility and other highway conditions within each sweep Vary only `measured_speed` (m/s) across [8, 12, 16, 20]. Record speed, traffic interactions, pavement and weather throughout; sweep physical speed without verdicts. The definitions are not selected recordings, and requested settings are not measured results.
 
-## Blockers and resumption
+## New CPU construction and proof
 
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Reasonable or proper has no numeric legal threshold; no safe/unsafe labels. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+`proposals/build_semantic.py` constructs six source-bound draft stages: relevance batch, relevance, exact-law template, judgment observables, bindings and cases. The cases preserve the four planned requested speed values and keep measured speed unknown. The `reasonable or proper` sweep remains explicitly incomplete pending source review and physical feasibility. `proposals/test_semantic.py` validates all six against the pinned runtime stage contracts; `proposals/semantic-stage-cpu-proof.json` binds their hashes. Validation log SHA-256: `c8e266de88b71cbd70075d3f82793293c933e730b683deb7b65599d73a41ce99`.
+
+`analysis/speed_conditions.py` measures original-frame speed and joins contemporaneous participant, road, weather and four source-camera frame identities. It has no legal cutoff. `analysis/test_speed_conditions.py` passes a 600-frame, 30-second `synthetic_native_sample` diagnostic and rejects missing camera, weather, traffic and a short capture. Log SHA-256: `94f37debcfbef1af44fab4c3b106e4bb0d06282ee2eb9a45169a1b4fb8b40ee0`. This is a CPU software proof only; its invented speed is not original Native velocity.
+
+The assignment-scoped checkpoint `.venv-cpu/bin/python worker_check.py --assignment training__C230259__NRS-484B-600-1a__motor_vehicle_driver --complete` passes static checks. The strict ready gate has not passed.
+
+## Remaining CPU work
+
+Review every accepted recording's source-backed facts and equivalence before deciding which comparison branches need new captures. Resolve the speed sweep's full source-grounded range and separate traffic, surface, width, weather and other-condition comparisons. Build exact selected-case Native construction, primary and three distinct risk fallbacks where the active delivery contract requires them, synchronized four-camera capture, source-bound saved finalization, positive/negative compatibility, and independent delivery and comparison audits. Revalidate all against the current runtime and run the scoped strict gate before any ready label. Original physical speed and camera evidence must be checked later in CARLA; the qualitative statutory judgment remains unresolved.

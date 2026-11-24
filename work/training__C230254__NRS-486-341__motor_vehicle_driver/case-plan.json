@@ -230,9 +230,48 @@
     "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
     "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
     "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Deprive of full use is qualitative and remains legally unresolved."
+    "Full use and deprivation are qualitative legal judgments; measured gaps and overlaps must remain evidence, never a legal cutoff or automatic verdict."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "source_review_20261123": {
+    "law_clause": "Every motorcycle or moped when being driven on the highway is entitled to full use of the traffic lane it is occupying, and a person shall not drive another motor vehicle in a manner which would deprive any such motorcycle or moped of such use.",
+    "protected_alternatives": [
+      "motorcycle",
+      "moped"
+    ],
+    "current_cell_support": "The C230254 control is motorcycle; moped remains a separate protected alternative requiring compatible classification and scene support.",
+    "chapter_specific_highway": "Record public maintenance and public vehicular access under NRS 486.031 before treating the road as a chapter 486 highway.",
+    "classification_sources": "Record vehicle body, seat/saddle, wheels and applicable chapter 486 exclusions for the protected vehicle; do not infer classification from catalog control label.",
+    "legal_standard": "Full use and deprivation remain unresolved qualitative judgments; no clearance cutoff, collision, overlap, lane change, or motorcycle reaction is mandated by the text.",
+    "source_refs": [
+      "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json",
+      "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/witnesses.json"
+    ]
+  },
+  "measurement_foundation": {
+    "module": "native/lane_use.py",
+    "function": "measure_frame",
+    "raw_source_requirements": [
+      "synchronized Native actor identities and poses",
+      "actor bounding-box extents and orientations",
+      "road map lane polygon in common metric frame",
+      "source-backed protected-vehicle classification",
+      "chapter 486 highway context"
+    ],
+    "measured_fields": [
+      "motorcycle_footprint_area_m2",
+      "ego_footprint_area_m2",
+      "motorcycle_lane_overlap_fraction",
+      "ego_lane_overlap_fraction",
+      "footprint_surface_gap_m",
+      "footprint_overlap_area_m2",
+      "source_refs"
+    ],
+    "status": "CPU geometry and saved-only source-shaped JSONL finalization unit proven; no Native source acquisition or runtime process-saved integration",
+    "proof_log": "native/lane-use-unit-proof.log",
+    "proof_sha256": "2f30f9cef1a03301019eeef0cb2e1f6b303858f95a501e0ec614b70725b783e9",
+    "saved_only_finalizer": "native/finalize_lane_use.py"
+  }
 }

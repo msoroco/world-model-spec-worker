@@ -44,6 +44,19 @@ if __name__ == "__main__":
                                          "limit_mph": 35, "pixel_sha256": "4" * 64}]
     displaced = measure(posted, trace(30))
     assert displaced["default_governed_frames"] == 0 and displaced["posted_governed_frames"] == FRAMES
+    partial_high = copy.deepcopy(source)
+    partial_high["applicable_posted_signs"] = [{"governs_from_m": 50, "governs_to_m": 150,
+                                                "limit_mph": 35, "pixel_sha256": "4" * 64}]
+    high = measure(partial_high, trace(30))
+    assert 0 < high["posted_governed_frames"] < FRAMES
+    assert high["default_governed_frames"] + high["posted_governed_frames"] == FRAMES
+    assert high["posted_frames_above_governing_limit"] == 0
+    partial_low = copy.deepcopy(partial_high)
+    partial_low["applicable_posted_signs"][0]["limit_mph"] = 15
+    low = measure(partial_low, trace(30))
+    assert low["posted_governed_frames"] == high["posted_governed_frames"]
+    assert low["posted_frames_above_governing_limit"] == low["posted_governed_frames"]
+    assert low["default_frames_above_25_mph"] == high["default_frames_above_25_mph"]
     negative = []
     bad = copy.deepcopy(source)
     bad.pop("sign_survey_sha256")
@@ -58,10 +71,19 @@ if __name__ == "__main__":
     bad_rows = trace(25)
     bad_rows[200]["source_cameras"].pop("roadside_sign")
     negative.append(reject("missing_camera", source, bad_rows, "Four source camera"))
+    conflicting = copy.deepcopy(partial_high)
+    conflicting["applicable_posted_signs"].append({"governs_from_m": 75,
+                                                  "governs_to_m": 125,
+                                                  "limit_mph": 20,
+                                                  "pixel_sha256": "5" * 64})
+    negative.append(reject("conflicting_signs", conflicting, trace(30),
+                           "Conflicting posted-sign governance"))
     proof = {"format": "worker-cpu-default-speed-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
              "positive": {"20_mph": slow, "25_mph": at, "30_mph": fast,
-                          "posted_35_mph": displaced}, "negative": negative}
+                          "posted_35_mph": displaced},
+             "partial_posted_diagnostics": {"higher_35_mph": high, "lower_15_mph": low},
+             "negative": negative}
     path = Path(__file__).with_name("speed-proof.json")
     path.write_text(json.dumps(proof, indent=2, allow_nan=False) + "\n")
     print(json.dumps({"passed": True, "negative_count": len(negative),

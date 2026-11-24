@@ -1,0 +1,96 @@
+{
+  "format": "worker-cpu-device-parking-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "scenes": {
+    "false": {
+      "case": "false",
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_device_verified": false
+    },
+    "true": {
+      "case": "true",
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_device_verified": false
+    }
+  },
+  "positive": {
+    "outside_zone": {
+      "format": "worker-source-prohibited-parking-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_parked_frame": 200,
+      "parked_frame_count": 251,
+      "first_parked_body": {
+        "frame": 200,
+        "center_x_m": 12.0,
+        "rear_x_m": 9.75,
+        "front_x_m": 14.25
+      },
+      "parked_zone_overlap_frame_count": 0,
+      "device_prohibited_place_occupied_while_parked": false,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Recorded rest plus applied parking brake is a diagnostic, not a complete legal park definition.",
+        "Zone overlap uses a longitudinal body interval and requires original sign scope and body/pixel review.",
+        "All statutory exceptions and device conditions need independent source review."
+      ]
+    },
+    "inside_zone": {
+      "format": "worker-source-prohibited-parking-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_parked_frame": 200,
+      "parked_frame_count": 251,
+      "first_parked_body": {
+        "frame": 200,
+        "center_x_m": -10.0,
+        "rear_x_m": -12.25,
+        "front_x_m": -7.75
+      },
+      "parked_zone_overlap_frame_count": 251,
+      "device_prohibited_place_occupied_while_parked": true,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Recorded rest plus applied parking brake is a diagnostic, not a complete legal park definition.",
+        "Zone overlap uses a longitudinal body interval and requires original sign scope and body/pixel review.",
+        "All statutory exceptions and device conditions need independent source review."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_device_source",
+      "rejected": "Missing source hash: regulatory_device"
+    },
+    {
+      "test": "unofficial_device",
+      "rejected": "Official no-parking device missing"
+    },
+    {
+      "test": "inactive_condition",
+      "rejected": "Device condition or parked action unresolved"
+    },
+    {
+      "test": "police_exception",
+      "rejected": "Exception context unresolved: police_direction_exception"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera join failed"
+    },
+    {
+      "test": "not_parked",
+      "rejected": "Parked stationary interval missing"
+    }
+  ]
+}

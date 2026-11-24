@@ -25,6 +25,8 @@ for i in range(FRAME_COUNT):
         "ego_x_m": 8.0 * t, "ego_y_m": 0.0, "ego_vx_mps": 8.0, "ego_vy_mps": 0.0, "ego_radius_m": 1.0,
         "rider_x_m": 30.0 + 4.0 * t, "rider_y_m": 3.0, "rider_vx_mps": 4.0,
         "rider_vy_mps": 0.0, "rider_radius_m": 0.5,
+        "bicycle_x_m": 30.0 + 4.0 * t, "bicycle_y_m": 3.0,
+        "bicycle_vx_mps": 4.0, "bicycle_vy_mps": 0.0,
         "collision_sensor_contact": False,
     })
 
@@ -47,4 +49,14 @@ reject(lambda: measure_trace(bad_rows, identity), "20 Hz join")
 bad_rows = [dict(row) for row in rows]
 del bad_rows[25]["collision_sensor_contact"]
 reject(lambda: measure_trace(bad_rows, identity), "collision sensor")
+bad_rows = [dict(row) for row in rows]
+bad_rows[25]["bicycle_y_m"] = 8.0
+reject(lambda: measure_trace(bad_rows, identity), "not associated")
+bad_rows = [dict(row) for row in rows]
+bad_rows[25]["bicycle_vx_mps"] = 0.0
+reject(lambda: measure_trace(bad_rows, identity), "not associated")
+bad_rows = [dict(row) for row in rows]
+for key in ("rider_x_m", "bicycle_x_m"):
+    bad_rows[25][key] += 2.0
+reject(lambda: measure_trace(bad_rows, identity), "pose motion differs")
 print("PASS: 600-frame cyclist response and raw-trace measurement positive/negative CPU proof")

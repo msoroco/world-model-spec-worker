@@ -2,6 +2,14 @@
 
 Status: partial. A source-shaped yield and gap proof is present; this is not a deployable delivery package.
 
+## 2026-11-23 multi-traffic controller checkpoint
+
+`native/multi_traffic_yield.py` now checks a complete 600-frame, 20 Hz trace against an explicit inventory of every approaching highway vehicle. It requires separate authority, lane, conflict-point and actor-inventory source identifiers, raw actor geometry in every frame, highway presence and approach flags, and observed ego yielding. It derives per-vehicle surface gaps, projected arrival gaps and through-vehicle deceleration, then evaluates the earlier and later engineering yield-request settings against identical hashed source rows. A present actor with unavailable arrival time conservatively retains the diagnostic yield request. The settings are not statutory hazard or safety definitions.
+
+`native/prove_multi_traffic_yield.py` passed a two-through-vehicle entry/exit diagnostic and rejected a missing inventoried actor, an approaching vehicle off the highway, nonfinite raw geometry, a broken time join, no approaching traffic, missing controlled-access source, wrong lane identity and an unknown controller setting. The same source produced 340 earlier-policy request frames versus 0 later-policy request frames; this is a software comparison only. Log `native/multi-traffic-yield-proof.log` SHA-256 `a469b5fc9a858accfdec47ff1b5341c85ab6fc820b6a4a5a51b2e9923866533c`. Implementation SHA-256 `0c120f4813236aefcc5701d804903893cfeab5adafb006997ccf51368ed47511`; proof SHA-256 `feab9dcbb8ff289aa4c8f0e75ee3d86dd48699e76635a77c6bedf4ebe5298236`.
+
+The case plan's two planned entry cases now state the actual comparison variable: engineering yield-request gap with the same network and traffic source. This does not select them for delivery. Next CPU work: bind a verified public-authority controlled-access source and actual access geometry to a Native construction; capture and retain all relevant highway traffic and four cameras; execute exact offline, compatibility, saved-processing, fallback and independent audits. Independently plan exit coverage because the fixed catalog maneuver is entry. No physical, legal or canonical outcome is claimed.
+
 ## 2026-11-23 CPU construction checkpoint
 
 `native/controlled_access_yield.py` defines two engineering yield-controller settings and measures a 600-frame, 20 Hz trace of separate ramp and highway actors. It requires source identifiers for controlled-access status, distinct lanes and conflict point; measures surface gap, projected arrival-time gap, through-vehicle deceleration and observed yielding. The controller thresholds are diagnostic settings, not legal definitions of immediate hazard or reasonable safety. Entry and exit are explicit route kinds; a measured entry does not cover the exit branch.

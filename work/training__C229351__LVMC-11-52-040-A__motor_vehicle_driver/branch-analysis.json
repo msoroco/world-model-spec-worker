@@ -1,0 +1,58 @@
+{
+  "format": "worker-assignment-branch-analysis",
+  "assignment_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver",
+  "source": "inputs/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/assignment.json",
+  "source_law_text": "Except as otherwise provided in this Chapter: No person shall stand or park a vehicle in a roadway other than parallel with the edge of the roadway headed in the direction of lawful traffic movement.",
+  "source_topic_ids": ["text-0", "text-1", "reviewed-scope-0"],
+  "decomposition": [
+    {
+      "branch": "roadway standing",
+      "activation": "A person stands a vehicle in a roadway, with Chapter exception status independently checked.",
+      "observations": ["responsible person and vehicle", "roadway boundary", "standing purpose and duration from source evidence", "resting pose", "edge tangent", "lawful traffic direction"]
+    },
+    {
+      "branch": "roadway parking",
+      "activation": "A person parks a vehicle in a roadway, with Chapter exception status independently checked.",
+      "observations": ["responsible person and vehicle", "roadway boundary", "parking purpose from source evidence", "resting pose", "edge tangent", "lawful traffic direction"]
+    },
+    {
+      "branch": "edge-parallel orientation",
+      "activation": "Standing or parked vehicle in a roadway, absent an applicable Chapter exception.",
+      "observations": ["unsigned angle between vehicle heading and identified roadway-edge tangent", "same source geometry across comparison"]
+    },
+    {
+      "branch": "lawful-traffic heading",
+      "activation": "Standing or parked vehicle in a roadway, absent an applicable Chapter exception.",
+      "observations": ["signed vehicle heading compared with independently established lawful traffic direction", "same direction source across comparison"]
+    },
+    {
+      "branch": "Chapter exception applicability",
+      "activation": "The opening clause requires review of other applicable Chapter provisions.",
+      "observations": ["exact governing provision", "location-specific permission or control", "scope and conditions of exception"],
+      "unresolved": "Frozen text here does not identify an applicable Chapter exception; the summary's angle-parking example is provisional, not authority."
+    }
+  ],
+  "comparison_design": [
+    {
+      "id": "edge_angle_pair",
+      "case_settings": ["parallel_with_lawful_heading", "angled_with_traffic_side_heading"],
+      "controlled_change": "resting vehicle yaw; retain identical edge geometry, lawful lane direction, resting location, activity and source cameras",
+      "limitation": "Changing yaw changes both measured angles; this pair tests the edge-angle branch, not an isolated legal verdict."
+    },
+    {
+      "id": "travel_direction_pair",
+      "case_settings": ["parallel_with_lawful_heading", "parallel_against_lawful_heading"],
+      "controlled_change": "resting vehicle yaw by 180 degrees; retain edge geometry, position, activity and source cameras",
+      "limitation": "Both poses are edge-parallel; signed heading distinguishes them."
+    }
+  ],
+  "measurement_contract": {
+    "saved_pose_extract": "ordered Native frame identity, timestamp, measured pose, heading and speed",
+    "road_edge_context": "source-identified roadway boundary, edge tangent and lawful traffic direction",
+    "cpu_code": "parking_measure.py",
+    "outputs": ["edge_parallel_angle_deg", "lawful_traffic_heading_angle_deg", "speed_mps"],
+    "no_legal_threshold": "No angle epsilon, minimum resting time, curb distance or legal conclusion is encoded."
+  },
+  "existing_evidence": "Frozen assignment lists zero full-train memberships; no accepted original is asserted equivalent or replayed.",
+  "status": "partial_cpu_foundation"
+}

@@ -1,6 +1,6 @@
 """Positive and negative 600-frame diagnostic geometry proof."""
 
-from safety_zone_geometry import FRAME_COUNT, FRAME_RATE, THIRTY_FEET_M, measure_frame, measure_trace
+from safety_zone_geometry import FRAME_COUNT, FRAME_RATE, THIRTY_FEET_M, audit_selected_pair, measure_frame, measure_trace
 
 
 def reject(call, phrase):
@@ -31,6 +31,19 @@ rows = [{
 m = measure_trace(rows, zone)
 assert m["stopped_between_frames"] == 400
 assert m["legal_conclusion"] is None
+between_rows = [dict(row, vehicle_footprint_corners_m=inside) for row in rows]
+outside_rows = [dict(row, vehicle_footprint_corners_m=outside) for row in rows]
+pair = audit_selected_pair(between_rows, outside_rows, zone)
+assert pair["between"]["stopped_between_frames"] == 400
+assert pair["outside"]["stopped_between_frames"] == 0
+assert pair["isolation_checked"] and not pair["physical_zone_confirmed"]
+bad_pair = [dict(row) for row in outside_rows]
+bad_pair[100]["vehicle_stopped"] = False
+reject(lambda: audit_selected_pair(between_rows, bad_pair, zone), "changed fixed")
+bad_pair = [dict(row) for row in outside_rows]
+bad_pair[100]["stop_state_source"] = "other_source"
+reject(lambda: audit_selected_pair(between_rows, bad_pair, zone), "changed fixed")
+reject(lambda: audit_selected_pair(between_rows, between_rows, zone), "lacks isolated")
 reject(lambda: measure_trace(rows[:-1], zone), "600 frames")
 bad = [dict(row) for row in rows]
 bad[100]["time_s"] = 99.0

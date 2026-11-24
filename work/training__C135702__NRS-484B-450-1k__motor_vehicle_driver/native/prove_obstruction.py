@@ -9,6 +9,7 @@ from measure_obstruction import measure, sha256
 
 
 def _row(index: int, obstructed: bool) -> dict:
+    traffic_x = -10.0 if obstructed else -80.0 + index * 3.0 / 20.0
     return {
         "native_frame": index,
         "time_s": index / 20,
@@ -17,7 +18,7 @@ def _row(index: int, obstructed: bool) -> dict:
         "obstruction_kind": "excavation",
         "ego_body_xy_m": [0.1, -3.4, 4.9, 0.5 if obstructed else -1.2],
         "ego_speed_m_s": 0.0,
-        "passing_body_xy_m": [-6.0 + index * 0.01, -0.8, -2.0 + index * 0.01, 0.8],
+        "passing_body_xy_m": [traffic_x, -0.8, traffic_x + 4.0, 0.8],
         "passing_speed_m_s": 0.0 if obstructed else 3.0,
         "exceptions": {"traffic_conflict": False, "law_direction": False,
                        "police_direction": False, "traffic_device": False},
@@ -56,6 +57,7 @@ def main() -> None:
             assert result["exception_flags_all_false"] and not result["physical_cause_confirmed"]
             assert result["legal_obstruction_verdict"] == "unresolved_requires_review"
             assert result["passing_halt_frames"] == (600 if obstructed else 0)
+            assert result["passing_crossed_obstruction_x"] is (not obstructed)
             results[name] = {"source_sha256": source_hash, "measurement": result}
         assert results["narrow_gap_halt"]["measurement"]["minimum_open_width_m"] < results["clear_gap_pass"]["measurement"]["minimum_open_width_m"]
         damaged = [_row(index, True) for index in range(600)]
@@ -68,12 +70,21 @@ def main() -> None:
         source_hash = _write(path, damaged)
         _reject(path, source_hash, "Exception source review incomplete")
         damaged[301] = _row(301, True)
+        damaged[302]["passing_body_xy_m"][0] += 1.0
+        damaged[302]["passing_body_xy_m"][2] += 1.0
+        source_hash = _write(path, damaged)
+        _reject(path, source_hash, "Passing body motion differs from sampled speed")
+        damaged[302] = _row(302, True)
+        damaged[303]["passing_speed_m_s"] = 2.0
+        source_hash = _write(path, damaged)
+        _reject(path, source_hash, "Passing body motion differs from sampled speed")
+        damaged[303] = _row(303, True)
         source_hash = _write(path, damaged)
         _reject(path, "0" * 64, "Original Native source hash differs")
         path.unlink()
         _reject(path, source_hash, "Missing required source")
         print(json.dumps({"format": "c135702-obstruction-cpu-proof-v1", "results": results,
-                          "negative_rejections": 4, "scope": "synthetic saved samples only"}, sort_keys=True))
+                          "negative_rejections": 6, "scope": "synthetic saved samples only"}, sort_keys=True))
 
 
 if __name__ == "__main__":

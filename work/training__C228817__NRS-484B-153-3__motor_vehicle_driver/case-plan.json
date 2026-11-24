@@ -103,39 +103,55 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
-      ]
+      ],
+      "independent_cpu_audit": {
+        "script": "native/audit_comparison.py",
+        "script_sha256": "4493ca4a7e514217c3a1ac8e5ab6b7ac1e5c796fea7076d973f60be61efeb0e8",
+        "diagnostic_proof": "native/comparison-proof.json",
+        "diagnostic_proof_sha256": "bc3010782f9fedb1aea2e62c45c393710e19ac5bfbe00d4a7754766359c65913",
+        "test_log": "native/comparison-proof.log",
+        "test_log_sha256": "6180978d15d828c153b23bfff5e32749d7da9de79d0e3e11d3d50fe27647ad45",
+        "test_exit_code": 0,
+        "physical_comparison_complete": false,
+        "required_original_inputs": [
+          "two distinct source-hashed Native trace envelopes",
+          "four distinct source-camera videos per case",
+          "common map, actor, transfer and camera construction context"
+        ],
+        "legal_necessity": "unresolved_requires_contextual_review"
+      }
     }
   ],
   "mandatory_observation_terms": [
     {
       "term": "sig.door_open",
       "purpose": "the door on the traffic side, and how long it stays open",
-      "status": "measurement_mapping_pending"
+      "status": "cpu_source_shaped_mapping_tested_original_pending"
     },
     {
       "term": "kin.time",
       "purpose": "the duration the door is open",
-      "status": "measurement_mapping_pending"
+      "status": "cpu_source_shaped_mapping_tested_original_pending"
     },
     {
       "term": "drv.standing_or_parked",
       "purpose": "the vehicle is stationary while the door stands open",
-      "status": "measurement_mapping_pending"
+      "status": "cpu_source_shaped_mapping_tested_original_pending"
     },
     {
       "term": "ru.occupant_count",
       "purpose": "a change in occupancy is the evidence of loading or unloading of passengers",
-      "status": "measurement_mapping_pending"
+      "status": "cpu_source_shaped_mapping_tested_original_pending"
     },
     {
       "term": "ru.pedestrian",
       "purpose": "a person moving to or from the door",
-      "status": "measurement_mapping_pending"
+      "status": "cpu_source_shaped_mapping_tested_original_pending"
     },
     {
       "term": "st.lane",
       "purpose": "the passing-traffic side",
-      "status": "measurement_mapping_pending"
+      "status": "cpu_source_shaped_mapping_tested_original_pending"
     }
   ],
   "candidate_plans": [],
@@ -209,5 +225,69 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "sig.door_open": {
+      "evidence": "Continuous sourced door state, hinge side and driver operator identity in Native trace; original pixel check pending.",
+      "channels": [
+        "door_open",
+        "door_side",
+        "door_operator_actor_id"
+      ],
+      "source_refs": [
+        "native/measure_door.py",
+        "native/measurement-contract.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "Contiguous original Native frame/time join at 20 Hz; elapsed open interval is descriptive only.",
+      "channels": [
+        "native_frame",
+        "native_time_s"
+      ],
+      "source_refs": [
+        "native/measure_door.py"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Finite measured ego speed during the door-open interval; parking purpose remains contextual.",
+      "channels": [
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "native/measure_door.py"
+      ]
+    },
+    "ru.occupant_count": {
+      "evidence": "Passenger event requires sourced occupancy delta and pedestrian ID; Native actor and pixel confirmation pending.",
+      "channels": [
+        "occupancy_delta",
+        "transfer_events"
+      ],
+      "source_refs": [
+        "native/measure_door.py"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Sourced pedestrian identity joined to passenger transfer frame; real trajectory and pixel review pending.",
+      "channels": [
+        "pedestrian_actor_id",
+        "transfer_events"
+      ],
+      "source_refs": [
+        "native/measure_door.py"
+      ]
+    },
+    "st.lane": {
+      "evidence": "Passing trajectory lateral offsets determine traffic side; full Native road/lane and pixel readback pending.",
+      "channels": [
+        "lateral_offsets_m",
+        "transit_frames",
+        "door_side"
+      ],
+      "source_refs": [
+        "native/measure_door.py"
+      ]
+    }
+  }
 }

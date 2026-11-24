@@ -86,3 +86,22 @@ def measure_trace(rows: list[dict], zone: dict) -> dict:
         "legal_conclusion": None,
         "source_kind": "unverified_raw_map_and_actor_fields",
     }
+
+
+def audit_selected_pair(between_rows: list[dict], outside_rows: list[dict], zone: dict) -> dict:
+    """Check that the planned stopped-position pair holds other sources fixed."""
+    if len(between_rows) != FRAME_COUNT or len(outside_rows) != FRAME_COUNT:
+        raise ValueError("selected pair must contain 600 frames per condition")
+    variable = "vehicle_footprint_corners_m"
+    for first, second in zip(between_rows, outside_rows):
+        if set(first) != set(second):
+            raise ValueError("selected pair source channels differ")
+        if {key: value for key, value in first.items() if key != variable} != {key: value for key, value in second.items() if key != variable}:
+            raise ValueError("selected pair changed fixed stop-state or timing source")
+    between = measure_trace(between_rows, zone)
+    outside = measure_trace(outside_rows, zone)
+    if between["stopped_between_frames"] < 1 or outside["stopped_between_frames"] != 0 or outside["stopped_within_30_feet_of_end_frames"] != 0:
+        raise ValueError("selected pair lacks isolated safety-zone position change")
+    return {"between": between, "outside": outside,
+            "comparison_variable": "stopped_vehicle_position_relative_to_safety_zone",
+            "isolation_checked": True, "physical_zone_confirmed": False}

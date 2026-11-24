@@ -81,3 +81,28 @@ def measure_loading(rows: list[dict], zone: dict) -> dict:
         "zone_validity_conclusion": None,
         "source_kind": "unverified_raw_fields",
     }
+
+
+def audit_selected_pair(loading_rows: list[dict], no_transfer_rows: list[dict], zone: dict) -> dict:
+    """Check the selected comparison changes only passenger transfer evidence.
+
+    This is an isolation check on supplied raw fields, not an opinion that a
+    marked zone or transfer happened in CARLA.
+    """
+    if len(loading_rows) != FRAME_COUNT or len(no_transfer_rows) != FRAME_COUNT:
+        raise ValueError("selected pair must contain 600 frames per condition")
+    variable = {"passenger_crossed_doorway", "occupant_count"}
+    for first, second in zip(loading_rows, no_transfer_rows):
+        if set(first) != set(second):
+            raise ValueError("selected pair source channels differ")
+        if {key: value for key, value in first.items() if key not in variable} != {key: value for key, value in second.items() if key not in variable}:
+            raise ValueError("selected pair changed fixed zone, time, vehicle or door fields")
+    loading = measure_loading(loading_rows, zone)
+    no_transfer = measure_loading(no_transfer_rows, zone)
+    if loading["transfer_during_halt_in_zone_frames"] < 1 or no_transfer["transfer_during_halt_in_zone_frames"] != 0:
+        raise ValueError("selected pair lacks isolated passenger transfer")
+    if loading_rows[0]["occupant_count"] == loading_rows[-1]["occupant_count"] or no_transfer_rows[0]["occupant_count"] != no_transfer_rows[-1]["occupant_count"]:
+        raise ValueError("selected pair occupant exchange differs from transfer branch")
+    return {"loading": loading, "no_transfer": no_transfer,
+            "comparison_variable": "actual_passenger_loading",
+            "isolation_checked": True, "physical_transfer_confirmed": False}

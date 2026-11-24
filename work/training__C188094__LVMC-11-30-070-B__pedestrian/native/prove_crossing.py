@@ -48,6 +48,18 @@ if __name__ == "__main__":
     assert a["roadway_entry_frame"] == b["roadway_entry_frame"]
     assert a["entry_crosswalk_kinds"] == ["marked"]
     assert b["entry_crosswalk_kinds"] == []
+    assert a["entire_roadway_point_path_within_crosswalk"] is True
+    assert b["entire_roadway_point_path_within_crosswalk"] is False
+    unmarked = measure(source, trace(21))
+    assert unmarked["entry_crosswalk_kinds"] == ["unmarked"]
+    assert unmarked["entire_roadway_point_path_within_crosswalk"] is True
+    drift_rows = trace(0)
+    for i, row in enumerate(drift_rows):
+        row["pedestrian_x_m"] = min(12.0, max(0.0, (i - 150) * .1))
+    drift = measure(source, drift_rows)
+    assert drift["entry_crosswalk_kinds"] == ["marked"]
+    assert drift["entire_roadway_point_path_within_crosswalk"] is False
+    assert drift["first_roadway_frame_outside_all_crosswalks"] > drift["roadway_entry_frame"]
     assert a["legal_compliance"] == b["legal_compliance"] == "unassessed"
     negative = []
     bad = copy.deepcopy(source)
@@ -66,9 +78,15 @@ if __name__ == "__main__":
     bad_rows = copy.deepcopy(marked)
     bad_rows[220]["source_cameras"].pop("crosswalk_side")
     negative.append(reject("missing_camera", source, bad_rows, "Four source camera"))
+    bad_rows = copy.deepcopy(marked)
+    bad_rows[220]["pedestrian_x_m"] = 15
+    negative.append(reject("pedestrian_teleport", source, bad_rows, "Pedestrian path continuity"))
     proof = {"format": "worker-cpu-business-district-crossing-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
-             "positive": {"marked": a, "outside": b}, "negative": negative}
+             "positive": {"marked": a, "outside": b},
+             "path_diagnostics": {"unmarked": unmarked,
+                                  "marked_entry_then_exit": drift},
+             "negative": negative}
     path = Path(__file__).with_name("crossing-proof.json")
     path.write_text(json.dumps(proof, indent=2, allow_nan=False) + "\n")
     print(json.dumps({"passed": True, "negative_count": len(negative),

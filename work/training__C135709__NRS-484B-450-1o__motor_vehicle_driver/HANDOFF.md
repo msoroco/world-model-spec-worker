@@ -1,17 +1,11 @@
-# training__C135709__NRS-484B-450-1o__motor_vehicle_driver
+# C135709 / NRS 484B.450(1)(o) CPU checkpoint
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. The planned parking cases remain unselected. No original Native event, legal verdict, accepted recording, or physical device verification is claimed. The frozen full-train membership is empty for this assignment.
 
-## Source and scope
+The law covers stopping, standing and parking wherever an official device prohibits the action, subject to traffic-conflict necessity, law compliance, police direction, or official-device direction. The current witness concerns parking on a narrow road within a governed zone. The planned pair varies only parked vehicle overlap with the zone while holding the device, action, exceptions, actor, weather and capture fixed.
 
-NRS 484B.450(1)(o): A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: At any place where official traffic-control devices prohibit stopping, standing or parking.
+`prohibited_parking_scene.py` authors the narrow road, official NO_PARKING sign, governed longitudinal zone, paired park points and four camera requests for 600 frames at 20 Hz. `measure_prohibited_parking.py` requires original map/device/zone/condition/civil-time/body/motion/exception/camera hashes, joins every Native frame and camera, and measures parked body overlap with the governed zone. `prohibited-parking-measurement-contract.json` records source and legal limits.
 
-Cell: narrow_road / park / parking_restriction_device; actor: motor_vehicle_driver. Frozen witness count: 1. Membership rows: {'full-train': 0}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+Run `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/prove_prohibited_parking.py`. `prohibited-parking-proof.json` contains synthetic source-shaped outside- and inside-zone fixtures and seven negative tests. This is only a CPU diagnostic, not an exact runtime offline/compatibility, saved-processing or acceptance proof.
 
-## Proposed comparison
-
-narrow road and official no-parking device with applicable zone; no traffic conflict, police direction or overriding law Vary only `device_prohibited_place_occupancy` (bool) across [False, True]. Record native device, governed area, vehicle footprint and stationary interval. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Stop, stand and park modes and emergency/authority exceptions need separate cases. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Next CPU work: source the official device and active conditions; enumerate stop/stand modes and all four exception branches; bind selected exact cases to the pinned runtime with source acquisition; run offline and positive/negative compatibility, saved processing, and independent delivery/comparison audits. Keep partial until the assignment strict gate passes. CARLA and original pixels remain local operator work.

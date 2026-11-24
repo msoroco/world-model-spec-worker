@@ -1,0 +1,92 @@
+{
+  "format": "worker-cpu-yield-crosswalk-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "scenes": {
+    "before_crosswalk": {
+      "case": "before_crosswalk",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    },
+    "past_crosswalk": {
+      "case": "past_crosswalk",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    }
+  },
+  "positive": {
+    "before_crosswalk": {
+      "format": "worker-source-yield-crosswalk-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_stop_frame": 100,
+      "first_stop_front_x_m": -9.0,
+      "first_stop_before_crosswalk": true,
+      "first_stop_in_crosswalk": false,
+      "stopped_frame_count": 100,
+      "first_crosswalk_entry_frame": 212,
+      "first_intersection_entry_frame": 222,
+      "intersecting_vehicle_y_at_stop_m": -15.0,
+      "safety_stop_requirement": "sourced_context_only",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "0.1 m/s is a recorded-rest diagnostic, not a statutory threshold.",
+        "Whether safety requires a stop remains a sourced independent judgment.",
+        "Original crosswalk, sign, traffic and body pixels require later review."
+      ]
+    },
+    "past_crosswalk": {
+      "format": "worker-source-yield-crosswalk-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_stop_frame": 100,
+      "first_stop_front_x_m": -4.0,
+      "first_stop_before_crosswalk": false,
+      "first_stop_in_crosswalk": true,
+      "stopped_frame_count": 100,
+      "first_crosswalk_entry_frame": 95,
+      "first_intersection_entry_frame": 202,
+      "intersecting_vehicle_y_at_stop_m": -15.0,
+      "safety_stop_requirement": "sourced_context_only",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "0.1 m/s is a recorded-rest diagnostic, not a statutory threshold.",
+        "Whether safety requires a stop remains a sourced independent judgment.",
+        "Original crosswalk, sign, traffic and body pixels require later review."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_crosswalk_source",
+      "rejected": "Missing source hash: near_crosswalk"
+    },
+    {
+      "test": "absent_crosswalk_branch",
+      "rejected": "Governing yield sign and near-side crosswalk required"
+    },
+    {
+      "test": "unsourced_safety_condition",
+      "rejected": "Conditional safety-stop context unsourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    }
+  ]
+}

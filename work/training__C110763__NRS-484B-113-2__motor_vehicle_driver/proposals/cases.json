@@ -4,9 +4,35 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__probe_1",
-      "target_law_id": "NRS-484B-113-2",
-      "target_type": "attempt",
+      "case_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral shared setup definition; no simulated or observed baseline outcome.",
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s",
+          "source": "original Native velocity and heading"
+        },
+        "intersection_boundary": {
+          "kind": "world_setup",
+          "value": [
+            -7.0,
+            -7.0,
+            7.0,
+            7.0
+          ],
+          "unit": "m",
+          "source": "authored OpenDRIVE junction; original survey pending"
+        },
+        "reverse_stop_center_x_m": {
+          "kind": "controller",
+          "value": 10.0,
+          "unit": "m",
+          "source": "authored reverse route stop target"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -80,6 +106,15 @@
             "time_window": "30 s / 600 joined frames",
             "reference_frame": "Native map and original frame",
             "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "source_camera_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "four original synchronized source-camera files and frame index; no synthetic frame substitutes for original capture",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "original Native and decoded video frame IDs",
+            "uncertainty": "one 50 ms sample; original pixels pending"
           }
         ],
         "context_inputs": [
@@ -87,17 +122,223 @@
             "name": "surveyed_intersection",
             "unit": "structured",
             "method": "Native OpenDRIVE junction boundary and lane survey"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured",
+            "method": "surveyed original OpenDRIVE junction polygon and frame-joined body footprint"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured",
+            "method": "surveyed original crosswalk polygon or verified absence on the selected road"
+          },
+          {
+            "name": "corner_geometry",
+            "unit": "structured",
+            "method": "surveyed original corner geometry and frame-joined vehicle path"
           }
         ],
         "limitations": [
           "Synthetic CPU proof is not observed CARLA behavior or legal verdict"
         ]
-      }
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "boundary_probe",
+      "rationale": "Compare fixed authored reverse endpoint requests on one surveyed approach; legal and original physical outcomes remain unresolved.",
+      "paired_probe_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__reverse_endpoint_pair",
+      "deliberate_differences": [
+        "reverse_stop_center_x_m"
+      ],
+      "probe": {
+        "primary_variable": "reverse_stop_center_x_m",
+        "comparison_or_standard": "same-geometry reverse endpoint request, with original overlap to be measured",
+        "target_value_or_branch": 10.0
+      },
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s",
+          "source": "original Native velocity and heading"
+        },
+        "intersection_boundary": {
+          "kind": "world_setup",
+          "value": [
+            -7.0,
+            -7.0,
+            7.0,
+            7.0
+          ],
+          "unit": "m",
+          "source": "authored OpenDRIVE junction; original survey pending"
+        },
+        "reverse_stop_center_x_m": {
+          "kind": "controller",
+          "value": 10.0,
+          "unit": "m",
+          "source": "authored reverse route stop target"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "source_camera_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "four original synchronized source-camera files and frame index; no synthetic frame substitutes for original capture",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "original Native and decoded video frame IDs",
+            "uncertainty": "one 50 ms sample; original pixels pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_intersection",
+            "unit": "structured",
+            "method": "Native OpenDRIVE junction boundary and lane survey"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured",
+            "method": "surveyed original OpenDRIVE junction polygon and frame-joined body footprint"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured",
+            "method": "surveyed original crosswalk polygon or verified absence on the selected road"
+          },
+          {
+            "name": "corner_geometry",
+            "unit": "structured",
+            "method": "surveyed original corner geometry and frame-joined vehicle path"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU proof is not observed CARLA behavior or legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "back into an intersection",
+        "on or over a crosswalk",
+        "around a street corner"
+      ]
     },
     {
       "case_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-113-2",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
+      "rationale": "Compare fixed authored reverse endpoint requests on one surveyed approach; legal and original physical outcomes remain unresolved.",
+      "paired_probe_id": "training__C110763__NRS-484B-113-2__motor_vehicle_driver__reverse_endpoint_pair",
+      "deliberate_differences": [
+        "reverse_stop_center_x_m"
+      ],
+      "probe": {
+        "primary_variable": "reverse_stop_center_x_m",
+        "comparison_or_standard": "same-geometry reverse endpoint request, with original overlap to be measured",
+        "target_value_or_branch": 8.0
+      },
+      "variable_assignments": {
+        "reverse_motion": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s",
+          "source": "original Native velocity and heading"
+        },
+        "intersection_boundary": {
+          "kind": "world_setup",
+          "value": [
+            -7.0,
+            -7.0,
+            7.0,
+            7.0
+          ],
+          "unit": "m",
+          "source": "authored OpenDRIVE junction; original survey pending"
+        },
+        "reverse_stop_center_x_m": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m",
+          "source": "authored reverse route stop target"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -171,6 +412,15 @@
             "time_window": "30 s / 600 joined frames",
             "reference_frame": "Native map and original frame",
             "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "source_camera_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "four original synchronized source-camera files and frame index; no synthetic frame substitutes for original capture",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "original Native and decoded video frame IDs",
+            "uncertainty": "one 50 ms sample; original pixels pending"
           }
         ],
         "context_inputs": [
@@ -178,12 +428,82 @@
             "name": "surveyed_intersection",
             "unit": "structured",
             "method": "Native OpenDRIVE junction boundary and lane survey"
+          },
+          {
+            "name": "intersection_geometry",
+            "unit": "structured",
+            "method": "surveyed original OpenDRIVE junction polygon and frame-joined body footprint"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured",
+            "method": "surveyed original crosswalk polygon or verified absence on the selected road"
+          },
+          {
+            "name": "corner_geometry",
+            "unit": "structured",
+            "method": "surveyed original corner geometry and frame-joined vehicle path"
           }
         ],
         "limitations": [
           "Synthetic CPU proof is not observed CARLA behavior or legal verdict"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "back into an intersection",
+        "on or over a crosswalk",
+        "around a street corner"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "C110763-113-2-branch-1",
+      "target_law_id": "NRS-484B-113-2",
+      "judgment_refs": [
+        {
+          "phrase": "back into an intersection",
+          "note": "Determine original reverse motion and full vehicle-body intersection-boundary overlap from synchronized Native state and surveyed map; this cell covers only the intersection branch."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical observation grid remains unselected pending source-grounded geometry and feasible controller range; no legal cutoff is assigned.",
+      "missing_inputs": [
+        "Surveyed original source geometry and original Native motion for this statutory branch",
+        "Feasible physical sweep range and resolution grounded in the selected construction"
+      ]
+    },
+    {
+      "sweep_id": "C110763-113-2-branch-2",
+      "target_law_id": "NRS-484B-113-2",
+      "judgment_refs": [
+        {
+          "phrase": "on or over a crosswalk",
+          "note": "Separate statutory branch; require original body footprint and crosswalk geometry, not inferred from intersection overlap."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical observation grid remains unselected pending source-grounded geometry and feasible controller range; no legal cutoff is assigned.",
+      "missing_inputs": [
+        "Surveyed original source geometry and original Native motion for this statutory branch",
+        "Feasible physical sweep range and resolution grounded in the selected construction"
+      ]
+    },
+    {
+      "sweep_id": "C110763-113-2-branch-3",
+      "target_law_id": "NRS-484B-113-2",
+      "judgment_refs": [
+        {
+          "phrase": "around a street corner",
+          "note": "Separate statutory branch; require original body motion and corner geometry, not inferred from intersection overlap."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical observation grid remains unselected pending source-grounded geometry and feasible controller range; no legal cutoff is assigned.",
+      "missing_inputs": [
+        "Surveyed original source geometry and original Native motion for this statutory branch",
+        "Feasible physical sweep range and resolution grounded in the selected construction"
+      ]
     }
   ]
 }

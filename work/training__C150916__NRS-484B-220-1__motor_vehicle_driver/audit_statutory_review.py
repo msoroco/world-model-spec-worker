@@ -26,7 +26,7 @@ def audit():
     source=json.loads(files['branch_source_sha256'].read_text())['laws']['NRS-484B-220-1']
     assignment=json.loads(files['assignment_sha256'].read_text())
     plan=json.loads(files['case_plan_sha256'].read_text())
-    if source['law']['text']!=assignment['law_record']['text']:
+    if source['law']['text']!=assignment['law']['text']:
         raise ValueError('One-way frozen law text differs')
     topics=source['topics'];cases={row['case_id']:row for row in plan['cases']}
     expected={(topic,case) for topic in topics for case in cases};seen=set()

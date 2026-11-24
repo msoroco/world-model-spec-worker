@@ -54,6 +54,8 @@ def measure(context, rows):
         raise ValueError("Incomplete 30-second Native trace")
     previous_native = None
     entered = []
+    roadway_memberships = []
+    previous_position = None
     for index, row in enumerate(rows):
         if not isinstance(row, dict) or row.get("video_frame") != index:
             raise ValueError("Video frame identity gap")
@@ -68,24 +70,35 @@ def measure(context, rows):
             raise ValueError("Four source camera frame join failed")
         x = finite(row.get("pedestrian_x_m"), "pedestrian x")
         y = finite(row.get("pedestrian_y_m"), "pedestrian y")
+        if previous_position is not None and math.hypot(x - previous_position[0], y - previous_position[1]) > 0.2:
+            raise ValueError("Pedestrian path continuity absent")
+        previous_position = (x, y)
         if row.get("pedestrian_on_overpass_deck") is True:
             raise ValueError("At-grade crossing conflated with overpass deck")
         entered.append(inside(x, y, roadway))
+        roadway_memberships.append([kind for kind, bounds in prepared if inside(x, y, bounds)])
     entries = [i for i in range(1, FRAMES) if entered[i] and not entered[i - 1]]
     if len(entries) != 1:
         raise ValueError("Expected one sourced roadway entry")
     entry = entries[0]
     x, y = rows[entry]["pedestrian_x_m"], rows[entry]["pedestrian_y_m"]
     memberships = [kind for kind, bounds in prepared if inside(x, y, bounds)]
+    outside_frames = [i for i, occupied in enumerate(entered)
+                      if occupied and not roadway_memberships[i]]
     return {"format": "worker-source-business-district-crossing-measurement",
             "frame_count": FRAMES, "rate_hz": RATE_HZ,
             "roadway_entry_frame": entry,
             "roadway_entry_point_m": {"x": x, "y": y},
             "entry_crosswalk_kinds": memberships,
             "entry_within_any_marked_or_unmarked_crosswalk": bool(memberships),
+            "roadway_frames": sum(entered),
+            "roadway_frames_outside_all_crosswalks": len(outside_frames),
+            "first_roadway_frame_outside_all_crosswalks": outside_frames[0] if outside_frames else None,
+            "entire_roadway_point_path_within_crosswalk": not outside_frames,
             "business_district_physical_status": "pending_independent_review",
             "legal_compliance": "unassessed",
-            "limitations": ["Crosswalk survey must include all applicable marked and unmarked crossings",
+            "limitations": ["Point-path metric does not establish full pedestrian body containment",
+                            "Crosswalk survey must include all applicable marked and unmarked crossings",
                             "Business-district legal region requires independent source review"]}
 
 

@@ -71,17 +71,32 @@ def measure(context, rows):
         raise ValueError("Expected one sourced crossing entry")
     entry = entries[0]
     preclear_stops = [i for i in range(entry, FRAMES)
-                      if stopped[i] and clearance[i] < COMPLETE_CLEARANCE_M]
+                      if stopped[i] and clearance[i] < COMPLETE_CLEARANCE_M - 1e-9]
     space_cause_frames = [i for i in preclear_stops if causes[i] == "opposite_space_observed"]
+    undercarriage_cause_frames = [i for i in preclear_stops if causes[i] == "undercarriage_observed"]
+    undercarriage = "not_observed_in_preclear_stop"
+    if undercarriage_cause_frames:
+        value = context.get("undercarriage_source_sha256")
+        if not isinstance(value, str) or len(value) != 64 or any(char not in "0123456789abcdef" for char in value):
+            raise ValueError("Missing source hash: undercarriage_source_sha256")
+        available = finite(context.get("minimum_undercarriage_clearance_m"), "undercarriage clearance")
+        required = finite(context.get("rail_grade_required_clearance_m"), "rail grade required clearance")
+        if available < 0 or required <= available:
+            raise ValueError("Undercarriage cause lacks sourced clearance deficit")
+        undercarriage = {"minimum_vehicle_clearance_m": available,
+                         "required_rail_grade_clearance_m": required,
+                         "clearance_deficit_m": required - available,
+                         "source_sha256": value}
     return {"format": "worker-source-rail-crossing-episode-measurement",
             "frame_count": FRAMES, "rate_hz": RATE_HZ,
             "crossing_entry_frame": entry,
             "pre_entry_opposite_space_m": opposite_space,
             "maximum_trailing_end_clearance_past_reference_rail_m": max(clearance[entry:]),
-            "trailing_end_reached_15_feet": any(value >= COMPLETE_CLEARANCE_M for value in clearance[entry:]),
+            "trailing_end_reached_15_feet": any(value >= COMPLETE_CLEARANCE_M - 1e-9 for value in clearance[entry:]),
             "stopped_before_15_foot_clearance_frames": len(preclear_stops),
             "opposite_space_cause_observed_frames": len(space_cause_frames),
-            "undercarriage_clearance_alternative": "pending_separate_source_review",
+            "undercarriage_cause_observed_frames": len(undercarriage_cause_frames),
+            "undercarriage_clearance_alternative": undercarriage,
             "legal_compliance": "unassessed",
             "limitations": ["Reference rail identity and trailing-end geometry require independent original review",
                             "Pre-entry space and attributed stop cause need original source review",

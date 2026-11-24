@@ -24,7 +24,7 @@ def build():
     saved_proof=json.loads(saved_proof_path.read_text())
     saved={item['case']:item['measurement'] for item in saved_proof['positives']}
     if (source['original_assignment_id']!=CASE.name or
-            source['law']['text']!=assignment['law_record']['text'] or
+            source['law']['text']!=assignment['law']['text'] or
             set(topics)!={'text-0','reviewed-scope-0','reviewed-scope-1'} or
             {row['requirement'] for row in plan['requirement_dispositions']}!=set(topics) or
             set(cases)!={CASE.name+'__designated',CASE.name+'__opposite'} or

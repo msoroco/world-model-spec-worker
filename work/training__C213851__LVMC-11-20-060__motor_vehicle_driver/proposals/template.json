@@ -1,0 +1,89 @@
+{
+  "template_id": "LVMC-11-20-060@motor_vehicle_driver",
+  "law_id": "LVMC-11-20-060",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of a vehicle within a business or residence district emerging or entering an alley, driveway or building shall stop such vehicle immediately prior to driving onto a sidewalk or onto the sidewalk area extending across any alleyway or driveway, yielding the right-of-way to any pedestrian as may be necessary to avoid collision, and upon entering the roadway shall yield the right-of-way to all vehicles approaching on said roadway.",
+  "structure": {
+    "activation": {
+      "condition": "driver of a vehicle within a business or residence district emerging or entering an alley, driveway or building",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "stop immediately before the sidewalk area; yield to pedestrians when necessary to avoid collision; upon roadway entry yield to approaching vehicles",
+      "source_clauses": [
+        "shall stop such vehicle immediately prior to driving onto a sidewalk or onto the sidewalk area extending across any alleyway or driveway",
+        "yielding the right-of-way to any pedestrian as may be necessary to avoid collision",
+        "upon entering the roadway shall yield the right-of-way to all vehicles approaching on said roadway"
+      ],
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "ordered sidewalk stop, pedestrian yield, and conditional roadway entry yield",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "immediately prior to driving onto a sidewalk",
+        "note": "Retain stopping interval and the first sidewalk-footprint contact; no legal distance or duration cutoff is supplied."
+      },
+      {
+        "phrase": "as may be necessary to avoid collision",
+        "note": "Retain pedestrian and vehicle trajectories and relative spacing; do not turn a conflict proxy into legal necessity."
+      },
+      {
+        "phrase": "all vehicles approaching on said roadway",
+        "note": "This duty is conditional on entering the roadway and cannot be realized by this road-exit-only cell."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "driveway_sidewalk_geometry",
+      "kind": "world_setup",
+      "range_or_domain": "source-verified connected road, driveway and sidewalk polygon"
+    },
+    {
+      "name": "district_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-supported business or residence district"
+    },
+    {
+      "name": "pedestrian_route",
+      "kind": "world_setup",
+      "range_or_domain": "separate pedestrian sidewalk route"
+    },
+    {
+      "name": "roadway_traffic_context",
+      "kind": "world_setup",
+      "range_or_domain": "observed roadway vehicles; entry duty conditional"
+    },
+    {
+      "name": "ego_trajectory",
+      "kind": "subject_behavior",
+      "range_or_domain": "original pose, footprint and heading history"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original measured speed history"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "predeclared m/s approach target"
+    },
+    {
+      "name": "commanded_stop_policy",
+      "kind": "controller",
+      "range_or_domain": "predeclared stop-before-sidewalk or no-stop attempt"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "road-to-driveway path"
+    }
+  ]
+}

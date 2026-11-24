@@ -1,17 +1,11 @@
-# training__C111343__NRS-484A-450-3__motor_vehicle_driver
+# C111343 / NRS 484A.450(3) CPU checkpoint
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. Neither planned case is selected. No original Native capture, legal safety judgment, physical success, or accepted recording is claimed. The frozen full-train membership has no rows for this assignment.
 
-## Source and scope
+The exact law makes the stop conditional on safety. If a stop is required, a present nearest-side crosswalk is the first stopping reference; absent one, a clearly marked stop line is next; absent both, the nearest point with a view of intersecting-highway traffic applies. The current witness supports the present-crosswalk branch. The paired planned cases hold the sign, crosswalk, other traffic, weather, actor, and capture fixed while changing the first stop position.
 
-NRS 484A.450(3): The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway.
+`yield_crosswalk_scene.py` authors perpendicular roads, a governing YIELD sign, a present near-side crosswalk, intersecting traffic, two stop-position policies and four camera requests for 600 frames at 20 Hz. `measure_yield_crosswalk.py` requires original map/sign/crosswalk/body/motion/traffic/safety-context/camera source hashes, joins every Native frame to four camera frames, and measures first recorded rest of the front bumper relative to the near edge, crosswalk entry, and intersection entry. `yield-crosswalk-measurement-contract.json` distinguishes this geometry from the independent safety finding.
 
-Cell: intersection / travel / yield_sign; actor: motor_vehicle_driver. Frozen witness count: 1. Membership rows: {'full-train': 0}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+Run `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/prove_yield_crosswalk.py`. `yield-crosswalk-proof.json` records source-shaped synthetic before-crosswalk and within-crosswalk traces plus six negative checks. It is a CPU diagnostic, not an exact runtime offline/compatibility, saved-processing or acceptance proof.
 
-## Proposed comparison
-
-yield sign and approaching traffic requiring stop for safety; nearest-side crosswalk physically present Vary only `conditional_stop_position` (category) across ['before_crosswalk', 'past_crosswalk']. Measure crosswalk/stop-line geometry, ego footprint and zero-speed interval before entry. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Whether safety requires a stop is unresolved; no-crosswalk stop-line and nearest-view alternatives remain pending. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Next CPU work: source the safety-stop condition, add the absent-crosswalk stop-line and nearest-viewpoint branches, bind selected exact cases to the pinned runtime with source acquisition, test offline/positive-negative compatibility and saved processing, and implement independent delivery and comparison audits. Keep partial until the assignment strict gate passes. CARLA and actual pixels remain local operator work.

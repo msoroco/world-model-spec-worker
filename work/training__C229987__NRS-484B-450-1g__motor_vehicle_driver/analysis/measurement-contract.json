@@ -1,0 +1,41 @@
+{
+  "format": "worker-signal-approach-measurement-contract-v1",
+  "assignment_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver",
+  "law_source": "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+  "planned_cases": [
+    "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
+    "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
+    "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35"
+  ],
+  "reference_frame": "metres along the governed approach lane, increasing toward the roadside signal station",
+  "raw_sources_required": [
+    "Native frame timestamps and vehicle speed",
+    "Native four-corner vehicle footprint at each frame",
+    "surveyed roadway approach origin and unit tangent",
+    "surveyed roadside signal position and positional uncertainty",
+    "Native traffic state and indication sequence",
+    "source evidence for highway status, official signal status, roadside placement and governed movement",
+    "source evidence for halt purpose, other traffic, applicable law, officer directions and device directions"
+  ],
+  "saved_outputs": [
+    "per-frame front, centre and rear distance to projected signal station",
+    "per-frame geometric approach-side status with uncertainty",
+    "per-frame speed and sampled low-speed interval",
+    "context source references retained for independent audit"
+  ],
+  "comparison": {
+    "variable": "requested longitudinal halt location relative to the signal station",
+    "requested_values_ft": [25, 30, 35],
+    "fixed_conditions": "same law, cell, actor, roadway approach, signal, governed movement, weather, cameras, capture rate and halt purpose",
+    "audit": "Compare measured Native geometry and source paths across cases; never substitute the requested values for measured distances."
+  },
+  "engineering_parameters": {
+    "stationary_speed_proxy_mps": 0.15,
+    "purpose": "Identify samples for review only; not a legal definition of stop, stand or park."
+  },
+  "unresolved": [
+    "The statute does not define a vehicle reference point or how positional uncertainty applies at exactly 30 feet.",
+    "A sampled low-speed interval alone cannot establish a voluntary destination stop or an exception.",
+    "CARLA geometry, motion, signal governance, official status and camera coverage remain unverified."
+  ]
+}

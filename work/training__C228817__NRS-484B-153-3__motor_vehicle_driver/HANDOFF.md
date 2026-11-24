@@ -29,3 +29,15 @@ SHA-256 bindings:
 - `native/measurement-contract.json`: `d2e6b2ddd5a59ed5ad78986742f372f8b4753b46b6683cf5f76f6b6ab0eeba6f`
 
 Remaining CPU work: exact Native construction and door actuation/capture wiring, four distinct source-preserving candidates where required, offline/compatibility and saved-only proofs, semantic proposal and independent audits, branch/evidence review and comparison. Accepted membership remains metadata only without original source-hashed equivalence. Keep partial until scoped strict delivery gate passes.
+
+## 2026-11-23 independent comparison checkpoint
+
+`native/audit_comparison.py` independently measures both 600-frame trace envelopes and rejects changes to road, actor, passing-vehicle start, transfer event, camera policy, door side, and source identity. It reports the measured door-close difference while leaving necessity and immediacy unresolved. The diagnostic pair measured a 9.4 s difference and rejected eight altered-source or altered-control comparisons. The CLI requires external SHA-256 bindings for both packet files. This is source-shaped CPU proof only; original Native packets and source-camera video have not been captured.
+
+The `case-plan.json` now maps all six source observation terms to explicit Native trace fields and records the independent comparison command and proof hashes. The mapping still needs original Native capture and pixel review.
+
+Command: `.venv-cpu/bin/python work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/native/prove_comparison.py` (exit 0). Scoped checkpoint: `.venv-cpu/bin/python worker_check.py --assignment training__C228817__NRS-484B-153-3__motor_vehicle_driver --complete` (exit 0, static checks passed).
+
+Hashes: `native/audit_comparison.py` 4493ca4a7e514217c3a1ac8e5ab6b7ac1e5c796fea7076d973f60be61efeb0e8; `native/comparison-proof.json` bc3010782f9fedb1aea2e62c45c393710e19ac5bfbe00d4a7754766359c65913; `native/comparison-proof.log` 6180978d15d828c153b23bfff5e32749d7da9de79d0e3e11d3d50fe27647ad45.
+
+Next CPU work: wire an exact CARLA/OpenDRIVE scene and door actuator with source-camera capture into the frozen runtime, then test one primary through offline, compatibility and process-saved before expanding to distinct fallbacks and independent delivery audits. Preserve the four historical accepted recording IDs as membership context until source-hashed equivalence is available. Status remains partial.

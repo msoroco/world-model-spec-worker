@@ -1,17 +1,11 @@
-# training__C146108__LVMC-11-30-030__motor_vehicle_driver
+# C146108 / LVMC 11.30.030 CPU checkpoint
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. The planned hold/pass cases remain unselected. No original Native event, legal verdict, physical completion or accepted recording is claimed. The frozen full-train membership is empty for this assignment.
 
-## Source and scope
+The law covers a marked crosswalk and an unmarked crosswalk at an intersection. The lead vehicle must be stopped to permit a pedestrian to cross, and the ego must approach from the rear before overtaking and passing. The current witness supports a marked crossing. The paired request holds road, crosswalk, lead, pedestrian, ego actor, weather and capture fixed while varying the pass policy.
 
-LVMC 11.30.030: Whenever any vehicle is stopped at a marked crosswalk or at any unmarked crosswalk at an intersection to permit a pedestrian to cross the roadway, the driver of any other vehicle approaching from the rear shall not overtake and pass such stopped vehicle.
+`crosswalk_pass_scene.py` authors a one-way two-lane road, marked crosswalk, stopped lead vehicle, crossing pedestrian, paired ego policies and four camera requests for 600 frames at 20 Hz. `measure_crosswalk_pass.py` requires original road/marking/lane/body/motion/camera hashes, joins all Native and camera frames, checks rear approach and lead rest, then measures adjacent longitudinal overlap and ego ahead while the pedestrian crosses. `crosswalk-pass-measurement-contract.json` records source requirements and limits.
 
-Cell: one_way_multilane / overtake / other_vehicle; actor: motor_vehicle_driver. Frozen witness count: 1. Membership rows: {'full-train': 0}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+Run `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C146108__LVMC-11-30-030__motor_vehicle_driver/prove_crosswalk_pass.py`. `crosswalk-pass-proof.json` has synthetic hold and pass traces plus seven negative source, actor and frame tests. It is a CPU diagnostic, not an exact runtime offline/compatibility, saved-processing or acceptance proof.
 
-## Proposed comparison
-
-leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road Vary only `pass_stopped_vehicle_at_crosswalk` (bool) across [False, True]. Measure crosswalk markings, pedestrian crossing, leading vehicle halt, ego overtaking trajectory. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Unmarked intersection crosswalk is alternative context needing separate construction. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Next CPU work: add the unmarked intersection crosswalk branch, independently source the lead's stop purpose, bind selected exact cases to the pinned runtime and source acquisition, run offline and positive/negative compatibility and saved processing, then implement independent delivery and comparison audits. Keep partial until the scoped strict gate passes. CARLA and actual pixels remain local operator work.

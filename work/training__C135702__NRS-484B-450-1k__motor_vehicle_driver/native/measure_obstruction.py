@@ -72,6 +72,9 @@ def measure(path: Path, expected_sha256: str) -> dict:
     exception_flags = []
     alongside_frames = 0
     passing_halt_frames = 0
+    passing_crossed_obstruction_x = False
+    prior_traffic_center = None
+    prior_traffic_speed = None
     for index, row in enumerate(rows):
         if row.get("native_frame") != index or abs(_number(row.get("time_s"), "time_s") - index / 20) > 1e-7:
             raise ValueError("Native frame/time join differs")
@@ -83,6 +86,18 @@ def measure(path: Path, expected_sha256: str) -> dict:
             raise ValueError("Parked body not on sampled highway surface")
         speed = _number(row.get("ego_speed_m_s"), "ego_speed_m_s")
         other_speed = _number(row.get("passing_speed_m_s"), "passing_speed_m_s")
+        if speed < 0 or other_speed < 0:
+            raise ValueError("Negative sampled vehicle speed")
+        traffic_center = (traffic[0] + traffic[2]) / 2
+        if prior_traffic_center is not None:
+            expected_displacement = (prior_traffic_speed + other_speed) / 40
+            actual_displacement = traffic_center - prior_traffic_center
+            if abs(actual_displacement - expected_displacement) > 0.03:
+                raise ValueError("Passing body motion differs from sampled speed")
+        prior_traffic_center = traffic_center
+        prior_traffic_speed = other_speed
+        if traffic_center >= obstruction[2]:
+            passing_crossed_obstruction_x = True
         flags = row.get("exceptions")
         source = row.get("exception_source")
         if not isinstance(flags, dict) or set(flags) != {"traffic_conflict", "law_direction", "police_direction", "traffic_device"} or any(type(v) is not bool for v in flags.values()):
@@ -113,6 +128,7 @@ def measure(path: Path, expected_sha256: str) -> dict:
         "maximum_open_width_m": max(widths),
         "passing_body_width_m": max(traffic_widths),
         "passing_halt_frames": passing_halt_frames,
+        "passing_crossed_obstruction_x": passing_crossed_obstruction_x,
         "minimum_passing_speed_m_s": min(traffic_speeds),
         "maximum_passing_speed_m_s": max(traffic_speeds),
         "exception_flags_all_false": not any(exception_flags),

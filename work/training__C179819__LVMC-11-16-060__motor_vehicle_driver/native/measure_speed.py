@@ -79,6 +79,11 @@ def measure(context, rows):
             "posted_governed_frames": sum(limit != DEFAULT_MPH for limit in governing),
             "default_frames_above_25_mph": sum(limit == DEFAULT_MPH and speed > DEFAULT_MPH
                                                for limit, speed in zip(governing, speeds_mph)),
+            "posted_frames_above_governing_limit": sum(
+                limit != DEFAULT_MPH and speed > limit
+                for limit, speed in zip(governing, speeds_mph)),
+            "different_posted_limit_mph_values": sorted({limit for limit in governing
+                                                          if limit != DEFAULT_MPH}),
             "governing_limit_mph_values": sorted(set(governing)),
             "prima_facie_legal_status": "requires_independent_review",
             "legal_compliance": "unassessed",

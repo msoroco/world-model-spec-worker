@@ -43,18 +43,30 @@ def measure_trace(rows: list[dict], rider_provenance: dict) -> dict:
     minimum_accel = float("inf")
     contacts = 0
     previous_speed = None
+    previous_motion = None
     for i, row in enumerate(rows):
         if row.get("frame") != i or abs(row.get("time_s", -1) - i / FRAME_RATE) > 1e-6:
             raise ValueError("source frame identity or 20 Hz join failed")
         fields = ("ego_x_m", "ego_y_m", "ego_vx_mps", "ego_vy_mps", "ego_radius_m",
-                  "rider_x_m", "rider_y_m", "rider_vx_mps", "rider_vy_mps", "rider_radius_m")
+                  "rider_x_m", "rider_y_m", "rider_vx_mps", "rider_vy_mps", "rider_radius_m",
+                  "bicycle_x_m", "bicycle_y_m", "bicycle_vx_mps", "bicycle_vy_mps")
         try:
             values = [float(row[k]) for k in fields]
         except (KeyError, TypeError, ValueError) as exc:
             raise ValueError("missing raw actor geometry or velocity") from exc
         if not all(isfinite(v) for v in values) or values[4] <= 0 or values[9] <= 0:
             raise ValueError("invalid raw actor geometry or velocity")
-        ex, ey, evx, evy, er, rx, ry, rvx, rvy, rr = values
+        ex, ey, evx, evy, er, rx, ry, rvx, rvy, rr, bx, by, bvx, bvy = values
+        if hypot(rx - bx, ry - by) > 1.5 or hypot(rvx - bvx, rvy - bvy) > 0.5:
+            raise ValueError("Rider and bicycle sampled motion are not associated")
+        current_motion = ((ex, ey, evx, evy), (rx, ry, rvx, rvy), (bx, by, bvx, bvy))
+        if previous_motion is not None:
+            for old, new in zip(previous_motion, current_motion):
+                expected_x = (old[2] + new[2]) / (2 * FRAME_RATE)
+                expected_y = (old[3] + new[3]) / (2 * FRAME_RATE)
+                if hypot(new[0] - old[0] - expected_x, new[1] - old[1] - expected_y) > 0.15:
+                    raise ValueError("Actor pose motion differs from sampled velocity")
+        previous_motion = current_motion
         dx, dy = rx - ex, ry - ey
         gap = hypot(dx, dy) - er - rr
         minimum_gap = min(minimum_gap, gap)

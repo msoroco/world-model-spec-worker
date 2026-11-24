@@ -1,17 +1,11 @@
-# training__C149985__NRS-484B-457-1__motor_vehicle_driver
+# C149985 / NRS 484B.457(1) CPU checkpoint
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. The three right-curb boundary cases remain unselected. No original Native motion, accepted recording, physical success or legal verdict is claimed. The frozen full-train membership has no rows for this assignment.
 
-## Source and scope
+The default rule concerns stopped or parked vehicles on a highway with adjacent curbs: right-hand wheels parallel to and within 18 inches of the right-hand curb. Subsections (2) and (3) allow local ordinances for left-curb parking on a one-way highway and angle parking, with a separate DOT-maintained-highway determination condition for angle parking. The current witness is the default right-curb branch. The planned comparison varies requested clearance at 16, 18 and 20 inches while holding the road, curb, vehicle, heading, parking action, weather and capture fixed.
 
-NRS 484B.457(1); with 484B.457(2), 484B.457(3): Except as otherwise provided in this section [(2) and (3) appended below], every vehicle stopped or parked upon a highway where there are adjacent curbs must be stopped or parked with the right-hand wheels of the vehicle parallel to and within 18 inches of the right-hand curb. Local authorities may by ordinance permit parking of vehicles with the left-hand wheels adjacent to and within 18 inches of the left-hand curb of a one-way highway. Local authorities may by ordinance permit angle parking on any highway, except that angle parking must not be permitted on any highway constructed and maintained by the Department of Transportation under the authority granted by chapter 408 of NRS unless the Department has determined that the highway is of sufficient width to permit angle parking without interfering with the free movement of traffic.
+`right_curb_scene.py` authors a one-way road with both curbs, three right-wheel target positions, parking-brake policy and four cameras for 600 frames at 20 Hz. `measure_right_curb.py` requires original map/curb/wheel/body/motion/parking/ordinance/camera hashes, joins every Native and camera frame, and measures both right-wheel outer-edge gaps and heading difference over the parked interval. `right-curb-measurement-contract.json` records the 18-inch statutory boundary and need for source uncertainty review.
 
-Cell: one_way_road / parallel_park / curb; actor: motor_vehicle_driver. Frozen witness count: 1. Membership rows: {'full-train': 0}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+Run `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/prove_right_curb.py`. `right-curb-proof.json` contains synthetic source-shaped 16/18/20-inch fixtures and seven negative tests. It is a CPU diagnostic, not an exact runtime offline/compatibility, saved-processing or legal acceptance proof.
 
-## Proposed comparison
-
-adjacent right-hand curb; parked vehicle parallel and same heading; no local ordinance exception Vary only `right_wheel_curb_clearance` (in) across [16, 18, 20]. Measure right-wheel outer edge to curb, parallel heading, physical wheel positions. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Local ordinance left-curb and angle-parking permissions need verified authority; exact 18-inch boundary has measurement uncertainty. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Next CPU work: source the local ordinance alternatives and DOT determination, add stopped-vehicle and exception comparisons, bind selected exact cases to the pinned runtime and source acquisition, run offline and positive/negative compatibility and saved processing, and implement independent delivery/comparison audits. Keep partial until the scoped strict gate passes. CARLA and original pixels remain local operator work.

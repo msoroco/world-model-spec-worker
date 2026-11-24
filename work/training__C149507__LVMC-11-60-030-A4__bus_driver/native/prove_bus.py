@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from measure_bus import CAMERAS, FRAMES, measure
+from measure_bus import CAMERAS, FRAMES, LIMIT_M, measure
 
 
 def context():
@@ -46,6 +46,21 @@ if __name__ == "__main__":
     assert b["all_loading_frames_within_18_inches"] is False
     assert a["stopped_loading_interval_frames"] == b["stopped_loading_interval_frames"] == [100, 599]
     assert a["unduly_impede"] == b["unduly_impede"] == "requires_independent_judgment"
+    boundary = {"exact_18_inches": measure(source, trace(LIMIT_M)),
+                "just_over_18_inches": measure(source, trace(LIMIT_M + .0001))}
+    assert boundary["exact_18_inches"]["all_loading_frames_within_18_inches"] is True
+    assert boundary["just_over_18_inches"]["all_loading_frames_within_18_inches"] is False
+    locations = {}
+    for kind in ("bus_stop", "bus_stand", "passenger_loading_zone", "origin", "destination"):
+        variant = copy.deepcopy(source)
+        variant["location_kind"] = kind
+        measured = measure(variant, near)
+        assert measured["stopped_loading_interval_frames"] == [100, 599]
+        assert measured["all_loading_frames_within_18_inches"] is True
+        assert measured["legal_compliance"] == "unassessed"
+        locations[kind] = {"stopped_loading_interval_frames": measured["stopped_loading_interval_frames"],
+                           "all_loading_frames_within_18_inches": measured["all_loading_frames_within_18_inches"],
+                           "legal_compliance": measured["legal_compliance"]}
     negative = []
     bad = copy.deepcopy(source)
     bad.pop("wheel_geometry_sha256")
@@ -59,6 +74,9 @@ if __name__ == "__main__":
     bad = copy.deepcopy(source)
     bad["public_street"] = False
     negative.append(reject("not_public_street", bad, near, "Public street"))
+    bad = copy.deepcopy(source)
+    bad["location_kind"] = "curb_anywhere"
+    negative.append(reject("unqualified_location", bad, near, "Qualifying loading location"))
     negative.append(reject("short_capture", source, near[:-1], "Incomplete 30-second"))
     bad_rows = copy.deepcopy(near)
     bad_rows[250]["source_cameras"].pop("curb_wheel")
@@ -72,7 +90,12 @@ if __name__ == "__main__":
     negative.append(reject("no_loading", source, bad_rows, "stopped loading interval"))
     proof = {"format": "worker-cpu-bus-wheel-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
-             "positive": {"near": a, "far": b}, "negative": negative}
+             "positive": {"near": a, "far": b},
+             "wheel_gap_boundary_diagnostics": {
+                 key: {"wheel_to_curb_gap_m_range": value["wheel_to_curb_gap_m_range"],
+                       "all_loading_frames_within_18_inches": value["all_loading_frames_within_18_inches"]}
+                 for key, value in boundary.items()},
+             "qualifying_location_diagnostics": locations, "negative": negative}
     path = Path(__file__).with_name("bus-proof.json")
     path.write_text(json.dumps(proof, indent=2, allow_nan=False) + "\n")
     print(json.dumps({"passed": True, "negative_count": len(negative),

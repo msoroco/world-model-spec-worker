@@ -1,0 +1,43 @@
+{
+  "format": "source-bound-school-bus-speed-contract",
+  "assignment_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-360-1",
+  "law_text": "A school bus shall not exceed: A speed of 55 miles per hour when transporting pupils to and from school.",
+  "scope_note": "The frozen actor is motor_vehicle_driver; a retained source must identify that judged driver as the driver of the school bus before this law can be applied.",
+  "required_sources": [
+    "video_frames.jsonl",
+    "bus_motion.jsonl",
+    "passenger_trip_review.json",
+    "camera_forward.mkv",
+    "camera_rear.mkv",
+    "camera_left.mkv",
+    "camera_right.mkv"
+  ],
+  "required_original_samples": 600,
+  "sample_rate_hz": 20,
+  "minimum_span_s": 29.9,
+  "join_fields": [
+    "video_frame",
+    "native_frame",
+    "time_s"
+  ],
+  "velocity_source": "original_native_velocity for original review; synthetic_native_sample only in diagnostic fixture",
+  "driver_identity_fields": [
+    "judged_driver_actor_id",
+    "bus_driver_actor_id",
+    "bus_actor_id",
+    "driver_bus_join_source"
+  ],
+  "review_fields": [
+    "reviewer",
+    "bus_blueprint",
+    "school_bus_confirmed",
+    "trip_purpose",
+    "trip_purpose_source",
+    "pupils_aboard",
+    "observed_pupil_count",
+    "pupil_evidence_frames",
+    "camera_sha256"
+  ],
+  "output": "maximum_observed_mph and frames_above_55_mph, with source hashes and without physical acceptance or legal verdict"
+}

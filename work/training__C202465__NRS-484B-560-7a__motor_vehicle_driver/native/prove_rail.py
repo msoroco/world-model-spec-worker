@@ -41,11 +41,24 @@ def reject(label, source, rows, expected):
 
 if __name__ == "__main__":
     clear, short = measure(context(20), trace(17, None)), measure(context(2), trace(14, "opposite_space_observed"))
+    boundary = measure(context(20), trace(16.572, None))
+    just_short = measure(context(20), trace(16.571, None))
+    grade_context = context(20)
+    grade_context.update({"undercarriage_source_sha256": "5" * 64,
+                          "minimum_undercarriage_clearance_m": 0.16,
+                          "rail_grade_required_clearance_m": 0.24})
+    grade = measure(grade_context, trace(14, "undercarriage_observed"))
     assert clear["trailing_end_reached_15_feet"] is True
     assert short["trailing_end_reached_15_feet"] is False
     assert clear["stopped_before_15_foot_clearance_frames"] == 0
     assert short["stopped_before_15_foot_clearance_frames"] > 0
     assert short["opposite_space_cause_observed_frames"] > 0
+    assert boundary["trailing_end_reached_15_feet"] is True
+    assert boundary["stopped_before_15_foot_clearance_frames"] == 0
+    assert just_short["trailing_end_reached_15_feet"] is False
+    assert just_short["stopped_before_15_foot_clearance_frames"] > 0
+    assert grade["undercarriage_cause_observed_frames"] > 0
+    assert abs(grade["undercarriage_clearance_alternative"]["clearance_deficit_m"] - 0.08) < 1e-12
     negative = []
     bad = copy.deepcopy(context(2))
     bad.pop("rail_geometry_sha256")
@@ -63,9 +76,16 @@ if __name__ == "__main__":
     bad_rows = trace(14, None)
     bad_rows[250]["native_frame"] = bad_rows[249]["native_frame"]
     negative.append(reject("repeated_native_frame", context(2), bad_rows, "Native frame identity"))
+    negative.append(reject("missing_undercarriage_source", context(20),
+                           trace(14, "undercarriage_observed"), "Missing source hash: undercarriage"))
+    bad = copy.deepcopy(grade_context)
+    bad["rail_grade_required_clearance_m"] = 0.15
+    negative.append(reject("no_undercarriage_deficit", bad,
+                           trace(14, "undercarriage_observed"), "lacks sourced clearance deficit"))
     proof = {"format": "worker-cpu-rail-clearance-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
-             "positive": {"clear": clear, "short": short}, "negative": negative}
+             "positive": {"clear": clear, "short": short, "boundary": boundary,
+                          "just_short": just_short, "grade": grade}, "negative": negative}
     path = Path(__file__).with_name("rail-proof.json")
     path.write_text(json.dumps(proof, indent=2, allow_nan=False) + "\n")
     print(json.dumps({"passed": True, "negative_count": len(negative),

@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from measure_fixture import CAMERAS, FRAMES, measure
+from measure_fixture import CAMERAS, FRAMES, SIDE_BAND_M, measure
 
 
 def context():
@@ -46,6 +46,18 @@ if __name__ == "__main__":
     assert a["within_five_foot_side_band_at_rest"] is False
     assert b["within_five_foot_side_band_at_rest"] is True
     assert a["directly_in_front_frame_count_at_rest"] == b["directly_in_front_frame_count_at_rest"] == 0
+    front = measure(source, trace(1))
+    assert front["directly_in_front_frame_count_at_rest"] == 500
+    assert front["within_five_foot_side_band_at_rest"] is False
+    at_boundary = measure(source, trace(4 + SIDE_BAND_M))
+    beyond_boundary = measure(source, trace(4 + SIDE_BAND_M + .0001))
+    assert at_boundary["within_five_foot_side_band_at_rest"] is True
+    assert beyond_boundary["within_five_foot_side_band_at_rest"] is False
+    assert at_boundary["directly_in_front_frame_count_at_rest"] == 0
+    chute_source = copy.deepcopy(source)
+    chute_source["fixture_kind"] = "sidewalk_chute"
+    chute = measure(chute_source, band)
+    assert chute["within_five_foot_side_band_at_rest"] is True
     negative = []
     bad = copy.deepcopy(source)
     bad.pop("fixture_identity_sha256")
@@ -69,7 +81,13 @@ if __name__ == "__main__":
     negative.append(reject("no_stop", source, bad_rows, "five-second stop"))
     proof = {"format": "worker-cpu-sidewalk-fixture-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
-             "positive": {"outside": a, "side_band": b}, "negative": negative}
+             "positive": {"outside": a, "side_band": b},
+             "branch_diagnostics": {
+                 "direct_front": front,
+                 "exact_five_feet": at_boundary,
+                 "just_beyond_five_feet": beyond_boundary,
+                 "sidewalk_chute": chute},
+             "negative": negative}
     path = Path(__file__).with_name("fixture-proof.json")
     path.write_text(json.dumps(proof, indent=2, allow_nan=False) + "\n")
     print(json.dumps({"passed": True, "negative_count": len(negative),

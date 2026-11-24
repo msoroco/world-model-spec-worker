@@ -1,0 +1,500 @@
+{
+  "cell_id": "C213851",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral route definition for the road-to-driveway sidewalk crossing.",
+      "variable_assignments": {
+        "driveway_sidewalk_geometry": {
+          "kind": "world_setup",
+          "value": "connected road-to-private-driveway path crossing a source-verified sidewalk area",
+          "unit": "structured"
+        },
+        "district_context": {
+          "kind": "world_setup",
+          "value": "source-supported residence district",
+          "unit": "structured"
+        },
+        "pedestrian_route": {
+          "kind": "world_setup",
+          "value": "separate pedestrian on sidewalk with fixed route",
+          "unit": "structured"
+        },
+        "roadway_traffic_context": {
+          "kind": "world_setup",
+          "value": "fixed roadway traffic observation; roadway-entry duty not exercised",
+          "unit": "structured"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk",
+          "unit": "category"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "road-to-driveway",
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose_speed_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego pose, speed, bounding box and sidewalk overlap",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          },
+          {
+            "name": "pedestrian_vehicle_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego and pedestrian poses, speeds and footprints",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          },
+          {
+            "name": "roadway_vehicle_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego and approaching roadway vehicle poses and footprints",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_geometry",
+            "unit": "structured",
+            "method": "source-verified sidewalk polygon and driveway edge"
+          },
+          {
+            "name": "pedestrian_sidewalk_route",
+            "unit": "structured",
+            "method": "source-verified pedestrian sidewalk waypoints"
+          },
+          {
+            "name": "roadway_entry_geometry",
+            "unit": "structured",
+            "method": "source-verified roadway boundary and approach lanes"
+          }
+        ],
+        "limitations": [
+          "This cell exits the road into a driveway; it does not physically exercise upon-entering-roadway yield.",
+          "Attempted stop policy and synthetic values are not observed Native results or legal conclusions."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+      "target_law_id": "LVMC-11-20-060",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled physical stop-policy attempt; no legal judgment is assigned.",
+      "variable_assignments": {
+        "driveway_sidewalk_geometry": {
+          "kind": "world_setup",
+          "value": "connected road-to-private-driveway path crossing a source-verified sidewalk area",
+          "unit": "structured"
+        },
+        "district_context": {
+          "kind": "world_setup",
+          "value": "source-supported residence district",
+          "unit": "structured"
+        },
+        "pedestrian_route": {
+          "kind": "world_setup",
+          "value": "separate pedestrian on sidewalk with fixed route",
+          "unit": "structured"
+        },
+        "roadway_traffic_context": {
+          "kind": "world_setup",
+          "value": "fixed roadway traffic observation; roadway-entry duty not exercised",
+          "unit": "structured"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk",
+          "unit": "category"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "road-to-driveway",
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose_speed_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego pose, speed, bounding box and sidewalk overlap",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          },
+          {
+            "name": "pedestrian_vehicle_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego and pedestrian poses, speeds and footprints",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          },
+          {
+            "name": "roadway_vehicle_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego and approaching roadway vehicle poses and footprints",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_geometry",
+            "unit": "structured",
+            "method": "source-verified sidewalk polygon and driveway edge"
+          },
+          {
+            "name": "pedestrian_sidewalk_route",
+            "unit": "structured",
+            "method": "source-verified pedestrian sidewalk waypoints"
+          },
+          {
+            "name": "roadway_entry_geometry",
+            "unit": "structured",
+            "method": "source-verified roadway boundary and approach lanes"
+          }
+        ],
+        "limitations": [
+          "This cell exits the road into a driveway; it does not physically exercise upon-entering-roadway yield.",
+          "Attempted stop policy and synthetic values are not observed Native results or legal conclusions."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediately prior to driving onto a sidewalk",
+        "as may be necessary to avoid collision",
+        "all vehicles approaching on said roadway"
+      ],
+      "paired_probe_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop_pair",
+      "deliberate_differences": [
+        "commanded_stop_policy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_policy",
+        "comparison_or_standard": "same sidewalk geometry, pedestrian route and capture profile",
+        "target_value_or_branch": "stop_before_sidewalk"
+      }
+    },
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop",
+      "target_law_id": "LVMC-11-20-060",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled physical stop-policy attempt; no legal judgment is assigned.",
+      "variable_assignments": {
+        "driveway_sidewalk_geometry": {
+          "kind": "world_setup",
+          "value": "connected road-to-private-driveway path crossing a source-verified sidewalk area",
+          "unit": "structured"
+        },
+        "district_context": {
+          "kind": "world_setup",
+          "value": "source-supported residence district",
+          "unit": "structured"
+        },
+        "pedestrian_route": {
+          "kind": "world_setup",
+          "value": "separate pedestrian on sidewalk with fixed route",
+          "unit": "structured"
+        },
+        "roadway_traffic_context": {
+          "kind": "world_setup",
+          "value": "fixed roadway traffic observation; roadway-entry duty not exercised",
+          "unit": "structured"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": "cross_without_stop",
+          "unit": "category"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "road-to-driveway",
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose_speed_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego pose, speed, bounding box and sidewalk overlap",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          },
+          {
+            "name": "pedestrian_vehicle_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego and pedestrian poses, speeds and footprints",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          },
+          {
+            "name": "roadway_vehicle_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined ego and approaching roadway vehicle poses and footprints",
+            "time_window": "entire 30 s or longer original Native capture",
+            "reference_frame": "source-verified map and original frame times",
+            "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_geometry",
+            "unit": "structured",
+            "method": "source-verified sidewalk polygon and driveway edge"
+          },
+          {
+            "name": "pedestrian_sidewalk_route",
+            "unit": "structured",
+            "method": "source-verified pedestrian sidewalk waypoints"
+          },
+          {
+            "name": "roadway_entry_geometry",
+            "unit": "structured",
+            "method": "source-verified roadway boundary and approach lanes"
+          }
+        ],
+        "limitations": [
+          "This cell exits the road into a driveway; it does not physically exercise upon-entering-roadway yield.",
+          "Attempted stop policy and synthetic values are not observed Native results or legal conclusions."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediately prior to driving onto a sidewalk",
+        "as may be necessary to avoid collision",
+        "all vehicles approaching on said roadway"
+      ],
+      "paired_probe_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop_pair",
+      "deliberate_differences": [
+        "commanded_stop_policy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_policy",
+        "comparison_or_standard": "same sidewalk geometry, pedestrian route and capture profile",
+        "target_value_or_branch": "cross_without_stop"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c213851_judgment_0",
+      "target_law_id": "LVMC-11-20-060",
+      "judgment_refs": [
+        {
+          "phrase": "immediately prior to driving onto a sidewalk",
+          "note": "Retain stopping interval and the first sidewalk-footprint contact; no legal distance or duration cutoff is supplied.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "stop_to_sidewalk_relation",
+                "unit": "structured",
+                "description": "vehicle zero-speed frames and footprint-to-sidewalk contact ordering"
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "sidewalk_geometry",
+                "unit": "structured",
+                "description": "source-verified sidewalk area and driveway boundary"
+              }
+            ],
+            "sweep_dimensions": [
+              {
+                "name": "stop_position",
+                "unit": "m",
+                "description": "measured stop position relative to sidewalk boundary"
+              }
+            ],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "ego_pose_speed_footprint",
+                "unit": "structured",
+                "description": "original frame-joined pose, speed and footprint throughout approach and crossing"
+              }
+            ],
+            "limitations": [
+              "Immediately prior has no statutory numeric distance or stop-duration threshold in this text."
+            ]
+          }
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Freeze the source question and exact missing physical inputs before choosing a range.",
+      "missing_inputs": [
+        "Native-verified sidewalk boundary and feasible stop positions have not been constructed; no fixed physical range can be justified."
+      ]
+    },
+    {
+      "sweep_id": "c213851_judgment_1",
+      "target_law_id": "LVMC-11-20-060",
+      "judgment_refs": [
+        {
+          "phrase": "as may be necessary to avoid collision",
+          "note": "Retain pedestrian and vehicle trajectories and relative spacing; do not turn a conflict proxy into legal necessity.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "pedestrian_relative_motion",
+                "unit": "structured",
+                "description": "separate pedestrian and vehicle paths with synchronized positions"
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "pedestrian_sidewalk_route",
+                "unit": "structured",
+                "description": "pedestrian route and sidewalk area"
+              }
+            ],
+            "sweep_dimensions": [
+              {
+                "name": "pedestrian_arrival_offset",
+                "unit": "s",
+                "description": "measured offset of pedestrian and vehicle arrival at crossing area"
+              }
+            ],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "pedestrian_vehicle_trace",
+                "unit": "structured",
+                "description": "original frame-joined pedestrian and vehicle footprint, pose and speed histories"
+              }
+            ],
+            "limitations": [
+              "A time-to-conflict measure is diagnostic; this law supplies no legal collision-necessity cutoff."
+            ]
+          }
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Freeze the source question and exact missing physical inputs before choosing a range.",
+      "missing_inputs": [
+        "Pedestrian route and safe arrival-offset range have not been physically constructed or source-verified."
+      ]
+    },
+    {
+      "sweep_id": "c213851_judgment_2",
+      "target_law_id": "LVMC-11-20-060",
+      "judgment_refs": [
+        {
+          "phrase": "all vehicles approaching on said roadway",
+          "note": "This duty is conditional on entering the roadway and cannot be realized by this road-exit-only cell.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "roadway_approach_relation",
+                "unit": "structured",
+                "description": "vehicle approach routes and subject roadway-entry footprint history"
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "roadway_entry_geometry",
+                "unit": "structured",
+                "description": "source-verified roadway boundary and incoming lanes"
+              }
+            ],
+            "sweep_dimensions": [
+              {
+                "name": "approaching_vehicle_arrival_offset",
+                "unit": "s",
+                "description": "measured traffic arrival offset relative to subject entry"
+              }
+            ],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "roadway_vehicle_trace",
+                "unit": "structured",
+                "description": "original frame-joined roadway traffic and subject pose and footprint histories"
+              }
+            ],
+            "limitations": [
+              "Current exit_road cell does not establish subject roadway entry; a distinct compatible cell is required for this conditional branch."
+            ]
+          }
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Freeze the source question and exact missing physical inputs before choosing a range.",
+      "missing_inputs": [
+        "Current exit_road catalog maneuver does not exercise roadway entry; select a compatible roadway-entry cell for this branch."
+      ]
+    }
+  ]
+}

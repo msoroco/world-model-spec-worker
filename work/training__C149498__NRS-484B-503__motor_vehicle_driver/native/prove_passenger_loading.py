@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 
-from passenger_loading import FRAME_COUNT, FRAME_RATE, measure_loading, sign_effective
+from passenger_loading import FRAME_COUNT, FRAME_RATE, audit_selected_pair, measure_loading, sign_effective
 
 
 def reject(call, phrase):
@@ -41,6 +41,23 @@ assert measured["frames"] == 600 and measured["duration_s"] == 30.0
 assert measured["transfer_during_halt_in_zone_frames"] == 1
 assert measured["legal_expeditiousness_conclusion"] is None
 assert measured["zone_validity_conclusion"] is None
+no_transfer = [dict(row, passenger_crossed_doorway=False, occupant_count=1) for row in rows]
+pair = audit_selected_pair(rows, no_transfer, zone)
+assert pair["isolation_checked"] and not pair["physical_transfer_confirmed"]
+assert pair["loading"]["transfer_during_halt_in_zone_frames"] == 1
+assert pair["no_transfer"]["transfer_during_halt_in_zone_frames"] == 0
+bad_pair = [dict(row) for row in no_transfer]
+bad_pair[200]["door_open"] = False
+reject(lambda: audit_selected_pair(rows, bad_pair, zone), "changed fixed")
+bad_pair = [dict(row) for row in no_transfer]
+bad_pair[200]["civil_timestamp"] = base.isoformat()
+reject(lambda: audit_selected_pair(rows, bad_pair, zone), "changed fixed")
+bad_pair = [dict(row) for row in no_transfer]
+bad_pair[240]["passenger_crossed_doorway"] = True
+reject(lambda: audit_selected_pair(rows, bad_pair, zone), "isolated passenger transfer")
+bad_pair = [dict(row) for row in no_transfer]
+bad_pair[-1]["occupant_count"] = 2
+reject(lambda: audit_selected_pair(rows, bad_pair, zone), "occupant exchange")
 reject(lambda: measure_loading(rows[:-1], zone), "600 frames")
 bad = [dict(row) for row in rows]
 bad[240]["time_s"] = 15.0

@@ -1,6 +1,6 @@
 # training__C229398__NRS-484B-457-1__motor_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, newly accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -15,3 +15,15 @@ adjacent right-hand curb; parked vehicle parallel and same heading; no local ord
 ## Blockers and resumption
 
 Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Local ordinance left-curb and angle-parking permissions need verified authority; exact 18-inch boundary has measurement uncertainty. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+
+## Current CPU construction and diagnostic checkpoint
+
+`curb_scene_request.py` authors the C229398 road with both curb objects and 12 distinct scene requests: 16, 18, 20 inch requested right-wheel gaps, each with a primary and three physical-risk tuning variants. These are controller requests and XML geometry only. No CARLA or Native feasibility is claimed, and candidate selection triggers and exact runtime receipts remain to be implemented.
+
+`curb_measurement.py` measures Native-source-shaped right front/rear wheel outer points against a straight right curb, verifies 600 frame/time identities and all four source camera joins, checks the observed parking interval and vehicle heading, and reports an uncertainty bracket around the statutory 18 inch boundary. The diagnostic never turns the engineering rest threshold into a legal definition. It rejects unresolved or assumed ordinance authority.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C229398__NRS-484B-457-1__motor_vehicle_driver/prove_curb_measurement.py` passed. `curb-cpu-proof.json` records 12 scene request validations, 16/18/20 inch source-shaped positive measurements, and eight negative controls: missing wheel source hash, invented ordinance, short trace, missing camera, duplicate Native frame, wheel beyond curb, wrong wheel side, and no parked interval. Fixture source hashes and speeds are synthetic; no original Native sample was observed.
+
+The three accepted membership rows in frozen `assignment.json` name recordings with requested gaps of 15, 18, and 21 inches in `review-context/review.json`. The frozen input provides no source receipt paths or measured wheel/curb geometry for those rows. Their membership is preserved as historical context. A source-backed equivalence review must inspect the actual evidence inventory before any case is dropped or reused.
+
+Next CPU steps: implement the scene requests as executable runtime construction and controller code, prove exact primary and three fallbacks through current offline/compatibility and saved-only paths with four real source-camera fixture streams, author canonical semantic proposals and source-bound independent audit, and prove the controlled comparison. Independently review local ordinance and DOT determination branches before selecting exact cases. Physical realization, original-camera pixels and canonical acceptance remain local GPU work only after CPU preparation passes.

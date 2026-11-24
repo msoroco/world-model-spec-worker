@@ -1,0 +1,57 @@
+{
+  "template_id": "NRS-484B-600-1a@motor_vehicle_driver",
+  "phrase": "reasonable or proper",
+  "note": "Keep actual speed and contemporaneous traffic, surface, width, weather and other highway conditions separate; no numeric legal cutoff is supplied.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "description": "original frame-joined vehicle velocity magnitude, retaining full time series"
+      },
+      {
+        "name": "surrounding_traffic",
+        "unit": "structured",
+        "description": "participant identity, position, velocity, interactions and occupancy joined by original frame"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "road_surface_width_weather",
+        "unit": "structured",
+        "description": "surveyed surface and width and measured weather, visibility, friction and geometry"
+      },
+      {
+        "name": "traffic_configuration",
+        "unit": "structured",
+        "description": "authored participant and control setup; check actual realization"
+      }
+    ],
+    "sweep_dimensions": [
+      {
+        "name": "speed_controller_target_mps",
+        "unit": "m/s",
+        "description": "engineering speed request axis; actual speed is a separate observed channel"
+      }
+    ],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "native_motion_and_participants",
+        "unit": "structured",
+        "description": "original Native frame map, ego and participant motion with join/readback"
+      },
+      {
+        "name": "source_camera_views",
+        "unit": "video",
+        "description": "four synchronized original source-camera videos and per-frame decode map"
+      }
+    ],
+    "limitations": [
+      "The statute supplies no numeric boundary for reasonable or proper speed.",
+      "Requested controller speed cannot substitute for measured Native speed or legal judgment.",
+      "Accepted recording membership alone cannot establish coverage of contemporaneous conditions."
+    ]
+  }
+}

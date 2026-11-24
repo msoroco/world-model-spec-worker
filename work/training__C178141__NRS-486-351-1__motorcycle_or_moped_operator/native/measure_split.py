@@ -45,6 +45,14 @@ def measure(context, rows):
             raise ValueError(f"Missing source hash: {key}")
     if context.get("subject_kind") not in {"motorcycle", "moped"}:
         raise ValueError("Motorcycle or moped identity not sourced")
+    police_hash = context.get("police_duty_source_sha256")
+    if not isinstance(police_hash, str) or len(police_hash) != 64 or any(
+            char not in "0123456789abcdef" for char in police_hash):
+        raise ValueError("Police-duty source hash absent")
+    officer = context.get("subject_is_police_officer")
+    duty = context.get("subject_performing_police_duty")
+    if type(officer) is not bool or type(duty) is not bool or (duty and not officer):
+        raise ValueError("Police-officer duty identity inconsistent")
     if context.get("adjacent_lane_ids") != ["lane_left", "lane_right"]:
         raise ValueError("Adjacent traffic lanes not sourced")
     if len(rows) != FRAMES:
@@ -91,6 +99,9 @@ def measure(context, rows):
             "between_vehicle_intervals": intervals, "between_vehicle_frames": sum(between),
             "left_vehicle_speed_mps_range": [min(left_speeds), max(left_speeds)],
             "right_vehicle_speed_mps_range": [min(right_speeds), max(right_speeds)],
+            "subject_kind_source_claim": context["subject_kind"],
+            "police_duty_source_sha256": police_hash,
+            "police_officer_performing_duty_source_claim": officer and duty,
             "police_duty_exception": "requires_independent_source_review",
             "legal_compliance": "unassessed",
             "limitations": ["Lateral centre ordering and body overlap are measurements, not a legal lane-splitting cutoff",

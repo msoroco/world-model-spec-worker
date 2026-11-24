@@ -93,7 +93,9 @@ def measure(context, rows):
     return {"format": "worker-source-sidewalk-fixture-stop-measurement",
             "frame_count": FRAMES, "rate_hz": RATE_HZ, "rest_interval_frames": longest,
             "side_clearance_m_range_at_rest": [min(gaps), max(gaps)],
-            "within_five_foot_side_band_at_rest": any(0 < gap <= SIDE_BAND_M for gap in gaps),
+            "within_five_foot_side_band_at_rest": any(
+                0 < gap and (gap <= SIDE_BAND_M or math.isclose(gap, SIDE_BAND_M, rel_tol=0, abs_tol=1e-9))
+                for gap in gaps),
             "directly_in_front_frame_count_at_rest": sum(fronts),
             "physical_result": "pending_original_source_review", "legal_compliance": "unassessed",
             "limitations": ["Fixture identity and front orientation need independent source review",
