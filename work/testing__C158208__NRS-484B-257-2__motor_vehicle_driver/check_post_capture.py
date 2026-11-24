@@ -12,7 +12,9 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
+sys.dont_write_bytecode = True
 from check_source_fixture import ensure_validator
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -43,7 +45,7 @@ def run(*args):
     return result.stdout
 
 
-def one(entry, temporary):
+def one(entry, temporary, manifest):
     case = entry["case_id"]
     kind = case.split("__")[-1]
     materialized = temporary / (kind + "-materialized")
@@ -51,7 +53,7 @@ def one(entry, temporary):
     positive = temporary / (kind + "-positive")
     negative = temporary / (kind + "-negative")
     negative_output = temporary / (kind + "-negative-output")
-    run("materialize", "--manifest", MANIFEST, "--case", case, "--output", materialized)
+    run("materialize", "--manifest", manifest, "--case", case, "--output", materialized)
     run("fixture", "--recipe", ROOT / entry["fixture_recipe"], "--output", fixture)
     for path in fixture.iterdir():
         target = materialized / path.name
@@ -62,7 +64,7 @@ def one(entry, temporary):
         else:
             shutil.copy2(path, target)
     before = source_hashes(materialized)
-    base = ("--manifest", MANIFEST, "--case", case,
+    base = ("--manifest", manifest, "--case", case,
             "--library", ROOT / "runtime/library", "--validator", VALIDATOR)
     run("process-saved", *base, "--attempt", materialized, "--output", positive)
     receipt = read(positive / "v0001/processing.json")
@@ -102,15 +104,16 @@ def one(entry, temporary):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--case")
+    parser.add_argument("--manifest", type=Path, default=MANIFEST)
     args = parser.parse_args()
     ensure_validator()
-    manifest = read(MANIFEST)
+    manifest = read(args.manifest)
     entries = [e for e in manifest["cases"] if not args.case or e["case_id"] == args.case]
     if not entries or (args.case and len(entries) != 1):
         raise ValueError("Select an exact case")
     OUTPUT_ROOT.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(dir=OUTPUT_ROOT, prefix="c158208-saved-fixtures-") as name:
-        output = [one(entry, Path(name)) for entry in entries]
+        output = [one(entry, Path(name), args.manifest) for entry in entries]
     print(json.dumps({"format": "c158208-post-capture-cpu-check", "cases": output}, sort_keys=True))
 
 

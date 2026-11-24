@@ -1,0 +1,372 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+      "construction": "construction.json",
+      "construction_sha256": "4da5a6469f07c8375913e3253d3a8bdf3c3201171cd84c4b7f30b8b13688c9e8",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "status": "selected_cpu_preparation_incomplete",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/draft-execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside --output .runtime-work/c158208-2572-offline-yield_other_inside-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "4da5a6469f07c8375913e3253d3a8bdf3c3201171cd84c4b7f30b8b13688c9e8",
+        "log": "cases/yield_other_inside/primary-offline.log",
+        "log_sha256": "e0fff480bb3bd5412a3940c2b52003ee741e13283b6611a80ac6457452753aa5"
+      },
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/yield_other_inside/primary-compatibility.json",
+        "sha256": "2b029036ab059f34a82d416489ff8f09cd6b22cae71b7d956e5ae9e5b749f1e4",
+        "log": "cases/yield_other_inside/primary-compatibility-analysis.log",
+        "negative_log": "cases/yield_other_inside/primary-negative-analysis.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/probe-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside --output .runtime-work/c158208-compatibility-yield_other_inside-v7 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "other occupancy or yield timing may drift; original approach camera may not retain the sign and participant in visible pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_other_inside/fallback1-construction.json",
+          "construction_sha256": "dab06f2720b2ef4d5b046a1e8f8488b6230efbe93be6a73a3e297e6a1ef78af0",
+          "trigger": {
+            "source": "approach.mkv and site_review.json",
+            "metric": "source-pixel sign and participant coverage at entry",
+            "failure_condition": "Original approach view does not keep the yield sign and relevant participant visibly identifiable through the sampled entry interval"
+          },
+          "changed_knobs": [
+            "Approach camera pose x -38 to -34 m, y 16 to 14 m, z 9 to 12 m, yaw -30 to -32 degrees, pitch -13 to -18 degrees"
+          ],
+          "remedy": "Reposition the original approach camera for source visibility; preserve the exact case motion, law and recording contract.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_other_inside-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "dab06f2720b2ef4d5b046a1e8f8488b6230efbe93be6a73a3e297e6a1ef78af0",
+            "log": "cases/yield_other_inside/fallback1-offline.log",
+            "log_sha256": "1ff3f629f1455485f859590013ea04e9c44312522177939bfe52aae714ceb986"
+          },
+          "compatibility": {
+            "receipt": "cases/yield_other_inside/fallback1-compatibility.json",
+            "sha256": "69d373fe5ba27f8f3354d216e67c15d435e8092c49d2e487692dca4b9c4864ed",
+            "log": "cases/yield_other_inside/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/yield_other_inside/fallback1-negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_other_inside-compat-v2 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "test_log": "selected-post-capture.log",
+        "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching",
+      "construction": "cases/yield_other_approaching/construction.json",
+      "construction_sha256": "a6377bd2edf2f3f27e1fb794f16583a3d6e2dd2ea5dc1741bdcf650d2dd3e038",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "status": "selected_cpu_preparation_incomplete",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/draft-execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching --output .runtime-work/c158208-2572-offline-yield_other_approaching-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "a6377bd2edf2f3f27e1fb794f16583a3d6e2dd2ea5dc1741bdcf650d2dd3e038",
+        "log": "cases/yield_other_approaching/primary-offline.log",
+        "log_sha256": "cd0e5d28d3d0d142b2b5255eef452056b8f93e0c3f3acdd12c5e4568749c45c4"
+      },
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe-yield_other_approaching.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/yield_other_approaching/primary-compatibility.json",
+        "sha256": "1ebc2aba774290d34edb5a16568430eef9204c01fa1dd5ec5cec19603d36cbe5",
+        "log": "cases/yield_other_approaching/primary-compatibility-analysis.log",
+        "negative_log": "cases/yield_other_approaching/primary-negative-analysis.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/probe-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching --output .runtime-work/c158208-compatibility-yield_other_approaching-v7 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "conflict timing may miss observed crossing; original approach camera may not retain the sign and participant in visible pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_other_approaching/fallback1-construction.json",
+          "construction_sha256": "fd08b0e5ef20f9e477ee2f54431b8abcb440a8919849c283fa462668967937c4",
+          "trigger": {
+            "source": "approach.mkv and site_review.json",
+            "metric": "source-pixel sign and participant coverage at entry",
+            "failure_condition": "Original approach view does not keep the yield sign and relevant participant visibly identifiable through the sampled entry interval"
+          },
+          "changed_knobs": [
+            "Approach camera pose x -38 to -34 m, y 16 to 14 m, z 9 to 12 m, yaw -30 to -32 degrees, pitch -13 to -18 degrees"
+          ],
+          "remedy": "Reposition the original approach camera for source visibility; preserve the exact case motion, law and recording contract.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_other_approaching-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "fd08b0e5ef20f9e477ee2f54431b8abcb440a8919849c283fa462668967937c4",
+            "log": "cases/yield_other_approaching/fallback1-offline.log",
+            "log_sha256": "c9d14f49af234db411a2dbd0d505feac95da34ca09522fb538bf9cd16b4804fe"
+          },
+          "compatibility": {
+            "receipt": "cases/yield_other_approaching/fallback1-compatibility.json",
+            "sha256": "3ee7e1ebbe55b0ea4977f285f55b279fe016a6364cb49902a7a589ac975f711b",
+            "log": "cases/yield_other_approaching/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/yield_other_approaching/fallback1-negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_other_approaching-compat-v2 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "test_log": "selected-post-capture.log",
+        "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated",
+      "construction": "cases/yield_other_obligated/construction.json",
+      "construction_sha256": "a330cea571605ceac7262fe0f1ae9d2f1f7260ec13d57af2eaf57cdda1510ffb",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "status": "selected_cpu_preparation_incomplete",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/draft-execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated --output .runtime-work/c158208-2572-offline-yield_other_obligated-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "a330cea571605ceac7262fe0f1ae9d2f1f7260ec13d57af2eaf57cdda1510ffb",
+        "log": "cases/yield_other_obligated/primary-offline.log",
+        "log_sha256": "d6ca6578603c98ae2eae2beaa3ef6977b819842820e876782588ac2e3ceb915c"
+      },
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe-yield_other_obligated.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/yield_other_obligated/primary-compatibility.json",
+        "sha256": "65927870be4aef54e2c46939c3347e27e7211ee76e2ee6a207078c934ceee241",
+        "log": "cases/yield_other_obligated/primary-compatibility-analysis.log",
+        "negative_log": "cases/yield_other_obligated/primary-negative-analysis.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/probe-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated --output .runtime-work/c158208-compatibility-yield_other_obligated-v7 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "all-entrance device governance may be ambiguous; original approach camera may not retain the sign and participant in visible pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_other_obligated/fallback1-construction.json",
+          "construction_sha256": "d58c21f2daf95d4a841502a3c4a641b77dd9b57eb36b2e9409ecf809f1655cb8",
+          "trigger": {
+            "source": "approach.mkv and site_review.json",
+            "metric": "source-pixel sign and participant coverage at entry",
+            "failure_condition": "Original approach view does not keep the yield sign and relevant participant visibly identifiable through the sampled entry interval"
+          },
+          "changed_knobs": [
+            "Approach camera pose x -38 to -34 m, y 16 to 14 m, z 9 to 12 m, yaw -30 to -32 degrees, pitch -13 to -18 degrees"
+          ],
+          "remedy": "Reposition the original approach camera for source visibility; preserve the exact case motion, law and recording contract.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_other_obligated-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d58c21f2daf95d4a841502a3c4a641b77dd9b57eb36b2e9409ecf809f1655cb8",
+            "log": "cases/yield_other_obligated/fallback1-offline.log",
+            "log_sha256": "8eab02529f413efea31a05a0c2f0d61e8871d7fa07c102dbe8f21da761e8f0f1"
+          },
+          "compatibility": {
+            "receipt": "cases/yield_other_obligated/fallback1-compatibility.json",
+            "sha256": "99cac18ff9f723367924cc41ecf9210c56e233065584f35e62eece5fe359b992",
+            "log": "cases/yield_other_obligated/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/yield_other_obligated/fallback1-negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_other_obligated-compat-v2 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "test_log": "selected-post-capture.log",
+        "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow",
+      "construction": "cases/yield_no_slow/construction.json",
+      "construction_sha256": "0520427aa9e0da967ca8ca27fce6dadc3dab34bae5832e8267b3f21a523d1e25",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "status": "selected_cpu_preparation_incomplete",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/draft-execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow --output .runtime-work/c158208-2572-offline-yield_no_slow-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "0520427aa9e0da967ca8ca27fce6dadc3dab34bae5832e8267b3f21a523d1e25",
+        "log": "cases/yield_no_slow/primary-offline.log",
+        "log_sha256": "51e40e04f946c37e53623b77fce07f93fad976b6dd69843e7b376ccafc9629b6"
+      },
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe-yield_no_slow.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/yield_no_slow/primary-compatibility.json",
+        "sha256": "c621535d454ddbddf25316179fdd8805e2fd9257b5a4360cdf09826e3d27e155",
+        "log": "cases/yield_no_slow/primary-compatibility-analysis.log",
+        "negative_log": "cases/yield_no_slow/primary-negative-analysis.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/probe-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow --output .runtime-work/c158208-compatibility-yield_no_slow-v7 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "controller may slow for traffic or geometry; original approach camera may not retain the sign and participant in visible pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_no_slow/fallback1-construction.json",
+          "construction_sha256": "17637884f457fc337541f54d9e404aa557c072227a65639e8d8fa34379ea150e",
+          "trigger": {
+            "source": "approach.mkv and site_review.json",
+            "metric": "source-pixel sign and participant coverage at entry",
+            "failure_condition": "Original approach view does not keep the yield sign and relevant participant visibly identifiable through the sampled entry interval"
+          },
+          "changed_knobs": [
+            "Approach camera pose x -38 to -34 m, y 16 to 14 m, z 9 to 12 m, yaw -30 to -32 degrees, pitch -13 to -18 degrees"
+          ],
+          "remedy": "Reposition the original approach camera for source visibility; preserve the exact case motion, law and recording contract.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_no_slow-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "17637884f457fc337541f54d9e404aa557c072227a65639e8d8fa34379ea150e",
+            "log": "cases/yield_no_slow/fallback1-offline.log",
+            "log_sha256": "32070cd688059cd10943ba5481b01d594562c363aac91e1896c6d1015bba6116"
+          },
+          "compatibility": {
+            "receipt": "cases/yield_no_slow/fallback1-compatibility.json",
+            "sha256": "ea09c3db26d421f8d5686a09438a5040f8d5eff14f82a616f9206e4b1186bb7b",
+            "log": "cases/yield_no_slow/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/yield_no_slow/fallback1-negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-yield_no_slow-compat-v2 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "test_log": "selected-post-capture.log",
+        "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception",
+      "construction": "cases/officer_control_exception/construction.json",
+      "construction_sha256": "9393920a8aec7749b62eccc12a9ca7f826e316ffaaf57002539ef4651f7cf460",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "status": "selected_cpu_preparation_incomplete",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/draft-execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception --output .runtime-work/c158208-2572-offline-officer_control_exception-v12 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9393920a8aec7749b62eccc12a9ca7f826e316ffaaf57002539ef4651f7cf460",
+        "log": "cases/officer_control_exception/primary-offline.log",
+        "log_sha256": "033393f157eef572bcce0bf557f3ecbd11f26886f3b2eb2351142fe4e77eec54"
+      },
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-officer.json",
+      "fixture_recipe": "work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/diagnostic-recipe-officer_control_exception.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/officer_control_exception/primary-compatibility.json",
+        "sha256": "d52a2111f515bf2ab031abb301f485c9e41c2dfeb471b414ba9b83517cecca0e",
+        "log": "cases/officer_control_exception/primary-compatibility-analysis.log",
+        "negative_log": "cases/officer_control_exception/primary-negative-analysis.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/probe-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception --output .runtime-work/c158208-compatibility-officer_control_exception-v7 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "visible direction may not establish authority; original approach camera may not retain the sign and participant in visible pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/officer_control_exception/fallback1-construction.json",
+          "construction_sha256": "85f46cb32bc9f49662126e43f42f3ab4fd7faf181fbf9a07355eccb0b6a8d938",
+          "trigger": {
+            "source": "approach.mkv and site_review.json",
+            "metric": "source-pixel sign and participant coverage at entry",
+            "failure_condition": "Original approach view does not keep the yield sign and relevant participant visibly identifiable through the sampled entry interval"
+          },
+          "changed_knobs": [
+            "Approach camera pose x -38 to -34 m, y 16 to 14 m, z 9 to 12 m, yaw -30 to -32 degrees, pitch -13 to -18 degrees"
+          ],
+          "remedy": "Reposition the original approach camera for source visibility; preserve the exact case motion, law and recording contract.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-officer_control_exception-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "85f46cb32bc9f49662126e43f42f3ab4fd7faf181fbf9a07355eccb0b6a8d938",
+            "log": "cases/officer_control_exception/fallback1-offline.log",
+            "log_sha256": "7880ba09d8c90307427b52044b0ef489318e7e425260832d534c5f0cf8d150f1"
+          },
+          "compatibility": {
+            "receipt": "cases/officer_control_exception/fallback1-compatibility.json",
+            "sha256": "6b49f44b024790c5164d2604703992cad1b8e90a5fde0a25149e5abad57f4520",
+            "log": "cases/officer_control_exception/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/officer_control_exception/fallback1-negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c158208-fallback-officer_control_exception-compat-v2 --library runtime/library --validator .runtime-work/c158208-current-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/check_post_capture.py --manifest work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json",
+        "test_log": "selected-post-capture.log",
+        "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}
