@@ -41,11 +41,16 @@ def build():
         for candidate in ('primary', 'fallback1', 'fallback2'):
             source = HERE / 'selected-v4' / suffix / candidate / 'construction.json'
             construction = json.loads(source.read_text())
-            # Draft-path copies are already materialized under stable root paths.
-            # Their candidate-specific source paths would change the implementation
-            # inventory even though the portable package uses the same files.
-            construction['files'] = [item for item in construction['files']
-                                     if '/native/drafts/' not in item['path']]
+            # Materialize the candidate's exact draft inputs at one portable
+            # path so all alternatives retain the same implementation inventory.
+            for item in construction['files']:
+                if '/native/drafts/' in item['path']:
+                    item['path'] = item['path'].split('/native/drafts/')[0] + \
+                        '/native/drafts/selected/' + item['path'].rsplit('/', 1)[1]
+                if item['path'] == 'tests/test_exact.py':
+                    item['content'] = item['content'].replace(
+                        f'"drafts" / "{suffix}" / "{candidate}"',
+                        '"drafts" / "selected"')
             construction['recording_description'] = description
             construction['measurement_plan']['source_observation_channels'] = list(TERMS)
             target_file = next(item for item in construction['files'] if item['path'] == 'finalize.py')

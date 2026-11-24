@@ -1,11 +1,27 @@
 {
+  "cell_id": "C10316",
+  "actor": "pedestrian",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__witness_1",
-      "target_law_id": "NRS-484B-283-1d4",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected common crossing context.",
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_steady_start_s": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "requested_prior_entry_state": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -13,7 +29,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -22,7 +38,7 @@
             "unit": "unit vector",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -31,7 +47,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -40,7 +56,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Requested frame-synchronized Walk and steady indication",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -49,7 +65,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and steady source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -67,19 +83,145 @@
           "Entry versus steady timing and post-steady progress alone do not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_steady_start_s",
-      "requested_setting": 4.0,
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "entered the highway lawfully pursuant to subparagraph (1) or (2)",
+        "other place of safety",
+        "as soon as possible",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__witness_1",
+      "target_law_id": "NRS-484B-283-1d4",
+      "target_type": "judgment_sweep",
+      "rationale": "Preserve exact requested entry timing or prior entry branch while original signal and legal applicability remain open.",
+      "paired_probe_id": "c10316-d4-steady-and-prior-entry",
+      "deliberate_differences": [
+        "requested_steady_start_s",
+        "requested_prior_entry_state"
+      ],
+      "probe": {
+        "primary_variable": "requested_steady_start_s",
+        "comparison_or_standard": "original entry state and progress under exact clause",
+        "target_value_or_branch": 4.0
+      },
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_steady_start_s": {
+          "kind": "world_setup",
+          "value": 4.0
+        },
+        "requested_prior_entry_state": {
+          "kind": "world_setup",
+          "value": "Walk"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian pose and footprint",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "unit vector",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian transform",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original body versus authored highway edges",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "native_display_program",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Requested frame-synchronized Walk and steady indication",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "display_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB frame hash joined to Native frame and steady source",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Requested debug display is not a verified physical pedestrian signal",
+          "Original display pixels and signal governance require independent saved audit",
+          "Entry versus steady timing and post-steady progress alone do not assign a legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "entered the highway lawfully pursuant to subparagraph (1) or (2)",
+        "other place of safety",
+        "as soon as possible",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__witness_2",
       "target_law_id": "NRS-484B-283-1d4",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "target_type": "judgment_sweep",
+      "rationale": "Preserve exact requested entry timing or prior entry branch while original signal and legal applicability remain open.",
+      "paired_probe_id": "c10316-d4-steady-and-prior-entry",
+      "deliberate_differences": [
+        "requested_steady_start_s",
+        "requested_prior_entry_state"
+      ],
+      "probe": {
+        "primary_variable": "requested_steady_start_s",
+        "comparison_or_standard": "original entry state and progress under exact clause",
+        "target_value_or_branch": 0.5
+      },
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_steady_start_s": {
+          "kind": "world_setup",
+          "value": 0.5
+        },
+        "requested_prior_entry_state": {
+          "kind": "world_setup",
+          "value": "steady"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -87,7 +229,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -96,7 +238,7 @@
             "unit": "unit vector",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -105,7 +247,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -114,7 +256,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Requested frame-synchronized Walk and steady indication",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -123,7 +265,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and steady source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -141,19 +283,45 @@
           "Entry versus steady timing and post-steady progress alone do not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_steady_start_s",
-      "requested_setting": 0.5,
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "entered the highway lawfully pursuant to subparagraph (1) or (2)",
+        "other place of safety",
+        "as soon as possible",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__exception_1_1",
       "target_law_id": "NRS-484B-283-1d4",
-      "target_type": "planned_exception_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "target_type": "judgment_sweep",
+      "rationale": "Preserve exact requested entry timing or prior entry branch while original signal and legal applicability remain open.",
+      "paired_probe_id": "c10316-d4-steady-and-prior-entry",
+      "deliberate_differences": [
+        "requested_steady_start_s",
+        "requested_prior_entry_state"
+      ],
+      "probe": {
+        "primary_variable": "requested_prior_entry_state",
+        "comparison_or_standard": "original entry state and progress under exact clause",
+        "target_value_or_branch": "flashing_countdown"
+      },
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_steady_start_s": {
+          "kind": "world_setup",
+          "value": 4.0
+        },
+        "requested_prior_entry_state": {
+          "kind": "world_setup",
+          "value": "flashing_countdown"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -161,7 +329,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -170,7 +338,7 @@
             "unit": "unit vector",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -179,7 +347,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -188,7 +356,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Requested frame-synchronized Walk or no-countdown flashing before steady indication",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -197,7 +365,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and prior-entry source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -215,19 +383,45 @@
           "Entry versus steady timing and post-steady progress alone do not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_prior_entry_indication",
-      "requested_setting": "flashing_no_countdown",
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "entered the highway lawfully pursuant to subparagraph (1) or (2)",
+        "other place of safety",
+        "as soon as possible",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__exception_1_2",
       "target_law_id": "NRS-484B-283-1d4",
-      "target_type": "planned_exception_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "target_type": "judgment_sweep",
+      "rationale": "Preserve exact requested entry timing or prior entry branch while original signal and legal applicability remain open.",
+      "paired_probe_id": "c10316-d4-steady-and-prior-entry",
+      "deliberate_differences": [
+        "requested_steady_start_s",
+        "requested_prior_entry_state"
+      ],
+      "probe": {
+        "primary_variable": "requested_prior_entry_state",
+        "comparison_or_standard": "original entry state and progress under exact clause",
+        "target_value_or_branch": "Walk"
+      },
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_steady_start_s": {
+          "kind": "world_setup",
+          "value": 4.0
+        },
+        "requested_prior_entry_state": {
+          "kind": "world_setup",
+          "value": "Walk"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -235,7 +429,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -244,7 +438,7 @@
             "unit": "unit vector",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -253,7 +447,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -262,7 +456,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Requested frame-synchronized Walk or no-countdown flashing before steady indication",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -271,7 +465,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and prior-entry source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -289,12 +483,58 @@
           "Entry versus steady timing and post-steady progress alone do not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_prior_entry_indication",
-      "requested_setting": "walk",
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "entered the highway lawfully pursuant to subparagraph (1) or (2)",
+        "other place of safety",
+        "as soon as possible",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c10316-d4-original-signal-and-exception-review",
+      "target_law_id": "NRS-484B-283-1d4",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+          "note": "Original pixels and direction must identify a governing pedestrian signal."
+        },
+        {
+          "phrase": "entered the highway lawfully pursuant to subparagraph (1) or (2)",
+          "note": "Prior lawful entry depends on original Walk or countdown source and cited clauses."
+        },
+        {
+          "phrase": "other place of safety",
+          "note": "Original destination and its safety status need independent review."
+        },
+        {
+          "phrase": "as soon as possible",
+          "note": "The declared progress surrogate is engineering evidence, not a legal cutoff."
+        },
+        {
+          "phrase": "Except as otherwise provided in NRS 484B.287",
+          "note": "Cited crossing exceptions need original context."
+        },
+        {
+          "phrase": "484B.290",
+          "note": "Blind pedestrian applicability needs original context."
+        },
+        {
+          "phrase": "484B.350",
+          "note": "School crossing guard applicability needs original context."
+        }
+      ],
+      "rationale": "Four exact source shaped probes are prepared; original governing signal and cited-law applicability require local review.",
+      "missing_inputs": [
+        "Original signal pixels and governance",
+        "Independent exception and legal judgment review"
+      ]
     }
   ]
 }

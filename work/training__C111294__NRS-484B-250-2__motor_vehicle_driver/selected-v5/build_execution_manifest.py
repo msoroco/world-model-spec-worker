@@ -21,8 +21,9 @@ def build():
     manifest = json.loads((BASE / 'selected-v5-manifest.json').read_text())
     script = BASE / 'selected-v5/audit_delivery.py'
     comparison = BASE / 'selected-v3/audit_comparison.py'
-    comparison_positive = BASE / 'selected-v3/comparison-positive.log'
-    comparison_negative = BASE / 'selected-v3/comparison-negative.log'
+    comparison_positive = BASE / 'selected-v5/comparison-positive.log'
+    comparison_negative = BASE / 'selected-v5/comparison-negative.log'
+    comparison_negative_script = BASE / 'selected-v5/prove_comparison_negative.py'
     for entry in manifest['cases']:
         case_id = entry['case_id']
         suffix = case_id.rsplit('__', 1)[1]
@@ -79,7 +80,9 @@ def build():
             'command': f'.venv-cpu/bin/python work/{BASE.name}/selected-v3/audit_comparison.py',
             'test_log': proof_ref(comparison_positive), 'test_log_sha256': sha(comparison_positive),
             'test_exit_code': 0,
-            'negative_command': f'.venv-cpu/bin/python work/{BASE.name}/selected-v3/audit_comparison.py --probe-other-history changed',
+            'negative_script': proof_ref(comparison_negative_script),
+            'negative_script_sha256': sha(comparison_negative_script),
+            'negative_command': f'.venv-cpu/bin/python work/{BASE.name}/selected-v5/prove_comparison_negative.py',
             'negative_log': proof_ref(comparison_negative), 'negative_log_sha256': sha(comparison_negative),
             'negative_exit_code': 1, 'negative_expected_error': 'Other participant changed'}
     manifest['status'] = 'selected_cpu_proven_original_pending'

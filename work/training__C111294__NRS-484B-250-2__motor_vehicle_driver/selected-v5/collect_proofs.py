@@ -7,7 +7,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
 REPO = ASSIGNMENT.parents[1]
-SCRATCH = REPO / '.runtime-work/c111294-2502-selected-v5-final'
+SCRATCH = REPO / '.runtime-work/c111294-2502-selected-v5-portable2'
 
 
 def sha(path):

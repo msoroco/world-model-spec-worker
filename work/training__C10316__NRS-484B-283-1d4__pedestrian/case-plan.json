@@ -21,7 +21,7 @@
   "witness_branches": [
     "Proceeding to cross during illuminated steady indication"
   ],
-  "selected_branch": null,
+  "selected_branch": "Proceeding to cross during illuminated steady indication",
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-283-1d4",
@@ -32,7 +32,7 @@
         "training__C10316__NRS-484B-283-1d4__pedestrian__witness_1",
         "training__C10316__NRS-484B-283-1d4__pedestrian__witness_2"
       ],
-      "evidence_or_gap": "Two unselected synthetic witness sources, pinned contracts, eight exact offline candidate bundles and eight synthetic v1 positive/negative package checks pass independent CPU audits. Physical steady signal and lawful entry, exception review, strict v2 recipe, Native observation and delivery acceptance remain unverified."
+      "evidence_or_gap": "Exact selected cases and risk-based fallbacks pass current offline, public compatibility and recorded-only saved replay CPU proofs. Original Native signal, pedestrian behavior, applicability and legal conclusion remain subject to delivery acceptance."
     },
     {
       "requirement": "NRS-484B-283-1d4",
@@ -43,7 +43,7 @@
         "training__C10316__NRS-484B-283-1d4__pedestrian__exception_1_1",
         "training__C10316__NRS-484B-283-1d4__pedestrian__exception_1_2"
       ],
-      "evidence_or_gap": "Prior-entry remains an unselected measurement requirement. Two 240-frame continuous synthetic sources pass a source-measured engineering progress bound; two paused variants fail. Pinned contracts, eight exact offline bundles and eight synthetic v1 positive/negative packages pass independent audits. Legal sufficiency, lawful physical entry, qualifying physical signal, introductory exceptions, selected v2 delivery and acceptance remain unverified."
+      "evidence_or_gap": "Exact selected cases and risk-based fallbacks pass current offline, public compatibility and recorded-only saved replay CPU proofs. Original Native signal, pedestrian behavior, applicability and legal conclusion remain subject to delivery acceptance."
     }
   ],
   "activation_conditions": [
@@ -71,7 +71,7 @@
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__witness_1",
       "target_law_id": "NRS-484B-283-1d4",
-      "kind": "planned_only",
+      "kind": "delivery_prepared_cpu",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian enters lawfully before steady Don’t Walk and continues toward safety",
       "comparison_variable": "pedestrian_signal_entry_timing",
@@ -101,12 +101,15 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "'as soon as possible' has a saved-source engineering progress bound; legal sufficiency remains unresolved"
+      ],
+      "gap_ids": [
+        "steady_entry_timing"
       ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__witness_2",
       "target_law_id": "NRS-484B-283-1d4",
-      "kind": "planned_only",
+      "kind": "delivery_prepared_cpu",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian begins crossing only after steady Don’t Walk is illuminated",
       "comparison_variable": "pedestrian_signal_entry_timing",
@@ -136,12 +139,15 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "'as soon as possible' has a saved-source engineering progress bound; legal sufficiency remains unresolved"
+      ],
+      "gap_ids": [
+        "steady_entry_timing"
       ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__exception_1_1",
       "target_law_id": "NRS-484B-283-1d4",
-      "kind": "planned_only",
+      "kind": "delivery_prepared_cpu",
       "target_type": "controlled_attempt",
       "physical_target": "hold selected activation with a pedestrian who entered lawfully on the walk indication, or during a countdown, may continue and must proceed to a place of safety as soon as possible absent",
       "comparison_variable": "exception_1_applicability",
@@ -171,12 +177,15 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "'as soon as possible' has a saved-source engineering progress bound; legal sufficiency remains unresolved"
+      ],
+      "gap_ids": [
+        "lawful_prior_entry"
       ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d4__pedestrian__exception_1_2",
       "target_law_id": "NRS-484B-283-1d4",
-      "kind": "planned_only",
+      "kind": "delivery_prepared_cpu",
       "target_type": "controlled_attempt",
       "physical_target": "hold selected activation with a pedestrian who entered lawfully on the walk indication, or during a countdown, may continue and must proceed to a place of safety as soon as possible present",
       "comparison_variable": "exception_1_applicability",
@@ -206,6 +215,9 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "'as soon as possible' has a saved-source engineering progress bound; legal sufficiency remains unresolved"
+      ],
+      "gap_ids": [
+        "lawful_prior_entry"
       ]
     }
   ],
@@ -290,49 +302,29 @@
   ],
   "observations": [
     {
-      "name": "dev.pedestrian_signal",
+      "name": "kin.position",
       "mandatory": true,
-      "reason": "state dont_walk_steady"
+      "reason": "Original Native pedestrian pose and footprint"
     },
     {
-      "name": "dev.governs",
+      "name": "kin.heading",
       "mandatory": true,
-      "reason": "it faces the pedestrian's direction"
-    },
-    {
-      "name": "ru.subject",
-      "mandatory": true,
-      "reason": "the pedestrian judged"
-    },
-    {
-      "name": "drv.entering_intersection",
-      "mandatory": true,
-      "reason": "entry after the steady indication"
+      "reason": "Original Native pedestrian transform"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
-      "reason": "whether the pedestrian was already crossing"
+      "reason": "Full original body versus authored highway edges"
     },
     {
-      "name": "st.road_edge",
+      "name": "native_display_program",
       "mandatory": true,
-      "reason": "the curb to reach"
+      "reason": "Requested frame-synchronized Walk and steady indication"
     },
     {
-      "name": "st.sidewalk",
+      "name": "display_camera_frame_join",
       "mandatory": true,
-      "reason": "or sidewalk"
-    },
-    {
-      "name": "st.safety_zone",
-      "mandatory": true,
-      "reason": "or safety zone"
-    },
-    {
-      "name": "kin.speed",
-      "mandatory": true,
-      "reason": "'as soon as possible' — continued progress without delay"
+      "reason": "Original RGB frame hash joined to Native frame and steady source"
     }
   ],
   "candidate_plans": {
@@ -344,7 +336,7 @@
       "fallback2",
       "fallback3"
     ],
-    "status": "unselected_exact_offline_and_synthetic_v1_package_passed_without_native_or_v2_proof",
+    "status": "selected_primary_and_two_fallbacks_cpu_proved",
     "exact_bundle_manifest": "draft-execution-manifest.json",
     "offline_summary": "draft-offline-summary.json",
     "independent_audit": "audit-draft-offline.py",
@@ -366,12 +358,12 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "Synthetic witness and prior-entry source, saved, exact offline and v1 package proofs pass; physical governing signal, Native walker and triggers, lawful prior entry, as-soon-as-possible judgment, strict v2 recipe, introductory statutory exceptions and independent delivery acceptance remain unfinished worker work."
+    "CPU delivery is prepared; Native physical signal, original pixels, governing direction and legal applicability require the post-capture audit."
   ],
   "runtime_uncertainties": [
-    "Synthetic witness and prior-entry source, saved, exact offline and v1 package proofs pass; physical governing signal, Native walker and triggers, lawful prior entry, as-soon-as-possible judgment, strict v2 recipe, introductory statutory exceptions and independent delivery acceptance remain unfinished worker work.",
-    "The saved-source engineering progress bound is declared and tested synthetically; legal sufficiency and physical behavior remain unverified.",
-    "Introductory NRS 484B.287, 484B.290 and 484B.350 applicability is unreviewed; no CARLA run or accepted recording is claimed."
+    "Native physical signal, original pixels and governing direction require the post-capture audit.",
+    "Saved engineering progress bound is tested synthetically; legal sufficiency and physical behavior remain unverified.",
+    "Introductory exception applicability requires original source review; no CARLA recording or legal verdict is claimed."
   ],
   "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
   "source_measurement": {
@@ -400,7 +392,7 @@
       "fallback2",
       "fallback3"
     ],
-    "status": "unselected_exact_offline_and_synthetic_v1_package_passed_without_native_or_v2_proof",
+    "status": "selected_primary_and_two_fallbacks_cpu_proved",
     "exact_bundle_manifest": "draft-exception-execution-manifest.json",
     "offline_summary": "draft-exception-offline-summary.json",
     "independent_audit": "audit-exception-offline.py",
@@ -450,5 +442,165 @@
     "official_reference_dependencies": 2,
     "total_dependencies": 12,
     "official_reference_packet": "official-cited-context.json"
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "whole alley crossing and pedestrian signal",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian approach and first highway entry",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian body and authored crossing edges",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "signal icon, illumination and direction",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.pedestrian_signal": {
+      "evidence": "state dont_walk_steady; original physical source review pending",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "it faces the pedestrian's direction; original physical source review pending",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "the pedestrian judged; original physical source review pending",
+      "channels": [
+        "kin.position",
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "entry after the steady indication; original physical source review pending",
+      "channels": [
+        "kin.position",
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "whether the pedestrian was already crossing; original physical source review pending",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "the curb to reach; original physical source review pending",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "or sidewalk; original physical source review pending",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.safety_zone": {
+      "evidence": "or safety zone; original physical source review pending",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "'as soon as possible' — continued progress without delay; original physical source review pending",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "steady-samples.jsonl",
+        "exception-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    }
+  },
+  "evidence_review": {
+    "method": "Inspect the frozen accepted-recording inventory for this assignment and the original assignment source; no accepted recording inventory exists for this binding.",
+    "reviewer": "assignment owner CPU source review",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "steady_entry_timing",
+        "requirement": "NRS 484B.283(1)(d)(4) entry relative to steady indication",
+        "source": "inputs/training__C10316__NRS-484B-283-1d4__pedestrian/assignment.json",
+        "why_existing_insufficient": "No accepted recording exists with original signal and pedestrian entry time joined."
+      },
+      {
+        "id": "lawful_prior_entry",
+        "requirement": "NRS 484B.283(1)(d)(4) lawful prior entry and continued progress to safety",
+        "source": "inputs/training__C10316__NRS-484B-283-1d4__pedestrian/assignment.json",
+        "why_existing_insufficient": "No accepted recording exists with original prior-entry, safety progress and introductory exception review."
+      }
+    ]
   }
 }

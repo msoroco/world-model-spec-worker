@@ -1,3 +1,15 @@
+# Current return, 2026-11-24
+
+Status: **ready for exact GPU delivery**, after the assignment-scoped strict CPU gate exited 0. Four exact selected 600-frame cases and two controlled comparisons cover NRS 484B.283(1)(d)(4) at C10316. The selected primary plus two risk-based fallbacks per case give 12 candidate chains. All 16 candidate offline bundles passed; the selected 12 each passed current runtime public compatibility (including missing-source rejection) and recorded-only saved replay. Four root fixture tests passed. The 12-stage semantic index, physical preparation lifecycle, independent delivery positive/negative audits, and both comparison audits passed. The delivery acceptance contract explicitly requires original Native signal, pixel, source-join, participation, and physical-completion review before accepting a GPU recording. No physical signal or legal verdict is claimed here.
+
+Exact scoped command: `PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.runtime-work" MPLCONFIGDIR="$PWD/.runtime-work/mplconfig" .venv-cpu/bin/python worker_check.py --assignment training__C10316__NRS-484B-283-1d4__pedestrian --complete --require-delivery-ready`. Initial finalization run exited 0; repeat after this handoff update.
+
+Frozen evidence: `execution-manifest.json` SHA-256 `18253fefeddd5aa4380b4d6c50a0552ee126fd94a0cbad45474f0f7cbf9b0963`; `proposals/semantic-index.json` SHA-256 `3df1aeb694c0a983dbce81dba63e46ef87f89d4627eff46ad6105e5278c7559a`; `current-public/comparison-audit.json` SHA-256 `0a1144ab6a061dbef1c96399fc535e5ddb4c91285cb5cf1f75a1241472bc6ba0`. The `current-public/proof.json` manifest hash records the provisional prebinding manifest; the final selected manifest binds those exact 12 artifact receipts and was independently checked by the scoped strict gate. Scratch and generated runtime outputs remain under `.runtime-work/`. Shared queue and report integration belong to the lead.
+
+## Historical checkpoints
+
+The sections below record earlier partial work and retain their dates. Their old status statements are superseded by the current return above.
+
 # NRS-484B-283-1d4 at C10316
 
 Actor: `pedestrian`. Frozen cell: `alley` / `travel` / `crosswalk`.
