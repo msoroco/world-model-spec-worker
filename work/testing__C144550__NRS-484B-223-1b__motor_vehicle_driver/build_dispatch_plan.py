@@ -32,13 +32,14 @@ def run():
                                " --output $ATTEMPT --host $CARLA_HOST --port $CARLA_PORT --python $CARLA_PYTHON",
             "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest " + MANIFEST +
                                       " --case " + case + " --attempt $ATTEMPT --output $OUTPUT --library " +
-                                      LIBRARY + " --validator " + VALIDATOR,
+                                      LIBRARY + " --validator " + VALIDATOR +
+                                      " --owner-release-receipt $ATTEMPT/owner-release.json",
             "owner_release_command": "SCENARIO_CASE_ID=" + case +
                                      " .venv-cpu/bin/python runtime.py owner-released --attempt $ATTEMPT" +
-                                     " --receipt $OWNER_RECEIPT --acknowledge-owner-released",
+                                     " --receipt $ATTEMPT/owner-release.json --acknowledge-owner-released",
             "additional_source_audit_command": ".venv-cpu/bin/python work/" + ASSIGNMENT +
                                                "/native_delivery_preflight.py --attempt $ATTEMPT --case " + case +
-                                               " --owner-receipt $OWNER_RECEIPT",
+                                               " --owner-receipt $ATTEMPT/owner-release.json",
             "independent_delivery_audit_command": ".venv-cpu/bin/python work/" + ASSIGNMENT +
                                                   "/delivery_acceptance.py --attempt $ATTEMPT --case " + case +
                                                   " --pixel-review $PIXEL_REVIEW --output $DELIVERY_AUDIT",

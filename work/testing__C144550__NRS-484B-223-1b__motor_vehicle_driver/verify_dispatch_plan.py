@@ -16,6 +16,9 @@ for row, entry in zip(dispatch["cases"], manifest["cases"]):
                 "additional_source_audit_command", "independent_delivery_audit_command",
                 "prepare_command", "execute_command", "accept_command"):
         assert row["case_id"] in row[key], (row["case_id"], key)
+    assert "--receipt $ATTEMPT/owner-release.json" in row["owner_release_command"]
+    assert "--owner-release-receipt $ATTEMPT/owner-release.json" in row["postprocessing_command"]
+    assert "--owner-receipt $ATTEMPT/owner-release.json" in row["additional_source_audit_command"]
     assert set(row["candidate_commands"]) == {item["id"] for item in entry["candidates"]}
     for name, command in row["candidate_commands"].items():
         assert name in command and row["case_id"] in command and "prepare-delivery" in command

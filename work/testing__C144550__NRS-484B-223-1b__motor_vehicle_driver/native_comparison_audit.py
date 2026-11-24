@@ -18,7 +18,7 @@ ROOT = HERE.parents[1]
 output_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
 if not output_root or not Path(output_root).resolve().is_relative_to(ROOT / ".runtime-work"):
     raise ValueError("Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
-from delivery_acceptance import audit_sources, read, sha, verify_physical, verify_seal  # noqa: E402
+from delivery_acceptance import CHECKS, audit_sources, read, sha, verify_physical, verify_seal  # noqa: E402
 
 
 VARIABLES = {
@@ -62,8 +62,14 @@ def prove(comparison_id, index_path, diagnostic=False):
             receipt = read(receipt_path)
             if (receipt.get("format") != "worker-c144550-delivery-audit"
                     or receipt.get("case_id") != case_id or receipt.get("passed") is not True
+                    or receipt.get("diagnostic_fixture") is not False
+                    or receipt.get("checks") != {key: True for key in CHECKS}
+                    or receipt.get("auditor_sha256") != sha(HERE / "delivery_acceptance.py")
+                    or not receipt.get("pixel_review_sha256")
+                    or receipt.get("physical_acceptance_claimed") is not False
                     or receipt.get("capture_seal_sha256") != sha(attempt / "capture-seal.json")
-                    or receipt.get("owner_release_sha256") != sha(attempt / "owner-release.json")):
+                    or receipt.get("owner_release_sha256") != sha(attempt / "owner-release.json")
+                    or receipt.get("source_audit", {}).get("lane_history_sha256") != sha(attempt / "lane_history.jsonl")):
                 raise ValueError("Accepted independent delivery receipt missing or stale")
         source_audit = audit_sources(attempt, case_id)
         verify_physical(result, attempt)
