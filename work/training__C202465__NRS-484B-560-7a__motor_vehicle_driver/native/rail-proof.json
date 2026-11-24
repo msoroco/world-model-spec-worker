@@ -1,0 +1,70 @@
+{
+  "format": "worker-cpu-rail-clearance-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "clear": {
+      "format": "worker-source-rail-crossing-episode-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "crossing_entry_frame": 30,
+      "pre_entry_opposite_space_m": 20.0,
+      "maximum_trailing_end_clearance_past_reference_rail_m": 5.0,
+      "trailing_end_reached_15_feet": true,
+      "stopped_before_15_foot_clearance_frames": 0,
+      "opposite_space_cause_observed_frames": 0,
+      "undercarriage_clearance_alternative": "pending_separate_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Reference rail identity and trailing-end geometry require independent original review",
+        "Pre-entry space and attributed stop cause need original source review",
+        "A speed threshold here is an engineering stop detector, not a statutory duration definition"
+      ]
+    },
+    "short": {
+      "format": "worker-source-rail-crossing-episode-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "crossing_entry_frame": 34,
+      "pre_entry_opposite_space_m": 2.0,
+      "maximum_trailing_end_clearance_past_reference_rail_m": 2.0,
+      "trailing_end_reached_15_feet": false,
+      "stopped_before_15_foot_clearance_frames": 500,
+      "opposite_space_cause_observed_frames": 500,
+      "undercarriage_clearance_alternative": "pending_separate_source_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Reference rail identity and trailing-end geometry require independent original review",
+        "Pre-entry space and attributed stop cause need original source review",
+        "A speed threshold here is an engineering stop detector, not a statutory duration definition"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_rail_source",
+      "rejected": "Missing source hash: rail_geometry_sha256"
+    },
+    {
+      "test": "not_at_grade",
+      "rejected": "At-grade railroad crossing not sourced"
+    },
+    {
+      "test": "invalid_rail_order",
+      "rejected": "Invalid rail or vehicle geometry"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "repeated_native_frame",
+      "rejected": "Native frame identity gap"
+    }
+  ]
+}

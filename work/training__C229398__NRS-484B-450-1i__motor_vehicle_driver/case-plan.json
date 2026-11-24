@@ -139,37 +139,37 @@
       "name": "drv.standing_or_parked",
       "mandatory": true,
       "source_note": "stopping, standing or parking",
-      "status": "unmapped_to_native_and_core"
+      "status": "diagnostic_meter_implemented_native_acquisition_pending"
     },
     {
       "name": "st.railway_crossing",
       "mandatory": true,
       "source_note": "the crossing and its nearest rail",
-      "status": "unmapped_to_native_and_core"
+      "status": "diagnostic_meter_implemented_native_acquisition_pending"
     },
     {
       "name": "rel.centre_distance",
       "mandatory": true,
       "source_note": "the distance from the vehicle to the nearest rail, against 50 feet",
-      "status": "unmapped_to_native_and_core"
+      "status": "diagnostic_meter_implemented_native_acquisition_pending"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
       "source_note": "the resting position",
-      "status": "unmapped_to_native_and_core"
+      "status": "diagnostic_meter_implemented_native_acquisition_pending"
     },
     {
       "name": "kin.extent",
       "mandatory": true,
       "source_note": "the body extent, since the distance is to the vehicle, not its centre",
-      "status": "unmapped_to_native_and_core"
+      "status": "diagnostic_meter_implemented_native_acquisition_pending"
     },
     {
       "name": "drv.forced_halt",
       "mandatory": true,
       "source_note": "the traffic-conflict exception",
-      "status": "unmapped_to_native_and_core"
+      "status": "diagnostic_meter_implemented_native_acquisition_pending"
     }
   ],
   "sources": [
@@ -192,49 +192,78 @@
     "The nearest rail, not the crossing center or an abstract sign, defines distance.",
     "No verified CARLA mechanism or target-specific Native construction for this assignment.",
     "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "No measured saved evidence or independent acceptance audit.",
+    "Source-only 600-frame meter proof passes; physical railroad survey, actual Native acquisition, exact runtime offline/compatibility/saved proofs and independent audits remain pending."
   ],
   "source_observation_mapping": {
     "drv.standing_or_parked": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Per-frame measured speed and rest timeline, with vehicle state requiring later Native verification.",
+      "channels": [
+        "speed_mps",
+        "at_rest"
+      ],
       "source_refs": [
-        "inputs/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/assignment.json"
+        "native/rail_footprint_meter.py",
+        "native/unselected-rail-construction.json",
+        "native/rail-footprint-proof.log"
       ]
     },
     "st.railway_crossing": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Both surveyed physical rail polylines with stable rail IDs; map/native survey remains to be acquired.",
+      "channels": [
+        "rails.polyline_xy_m",
+        "nearest_rail_id"
+      ],
       "source_refs": [
-        "inputs/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/assignment.json"
+        "native/rail_footprint_meter.py",
+        "native/unselected-rail-construction.json",
+        "native/rail-footprint-proof.log"
       ]
     },
     "rel.centre_distance": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Replaced center proxy with minimum body footprint-to-nearest-rail distance; 15.24 m is the statutory 50-foot comparison, not an invented threshold.",
+      "channels": [
+        "footprint_to_nearest_rail_m",
+        "inside_50ft_band"
+      ],
       "source_refs": [
-        "inputs/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/assignment.json"
+        "native/rail_footprint_meter.py",
+        "native/unselected-rail-construction.json",
+        "native/rail-footprint-proof.log"
       ]
     },
     "rel.occupies": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Resting footprint and frame map establish where the body occupied space at each measured instant.",
+      "channels": [
+        "vehicle_footprint_xy_m",
+        "at_rest"
+      ],
       "source_refs": [
-        "inputs/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/assignment.json"
+        "native/rail_footprint_meter.py",
+        "native/unselected-rail-construction.json",
+        "native/rail-footprint-proof.log"
       ]
     },
     "kin.extent": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Four vehicle footprint corners sourced from pose and bounding box; no center-point proxy.",
+      "channels": [
+        "vehicle_footprint_xy_m"
+      ],
       "source_refs": [
-        "inputs/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/assignment.json"
+        "native/rail_footprint_meter.py",
+        "native/unselected-rail-construction.json",
+        "native/rail-footprint-proof.log"
       ]
     },
     "drv.forced_halt": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Traffic-conflict reason remains a separate sourced Native control/actor trace; the meter retains unknown reasons rather than inferring an exception.",
+      "channels": [
+        "halt_reason"
+      ],
       "source_refs": [
-        "inputs/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/assignment.json"
+        "native/rail_footprint_meter.py",
+        "native/unselected-rail-construction.json",
+        "native/rail-footprint-proof.log"
       ]
     }
   },

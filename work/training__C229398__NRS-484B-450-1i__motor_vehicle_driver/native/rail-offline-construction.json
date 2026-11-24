@@ -1,0 +1,39 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__selected_98183a3f__condition_a",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C229398__NRS-484B-450-1i__motor_vehicle_driver__selected_98183a3f__condition_a\",\n  \"selected_case_id\": \"training__C229398__NRS-484B-450-1i__motor_vehicle_driver__selected_98183a3f__condition_a\",\n  \"law_id\": \"NRS-484B-450-1i\",\n  \"cell_id\": \"C229398\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"duration_frames\": 600,\n  \"rail_source_kind\": \"map_survey_or_native_survey\",\n  \"target_footprint_gap_m\": 12.5,\n  \"physical_verified\": false,\n  \"legal_verdict\": null,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"fps\": 20,\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"control_phases\": [\n    {\n      \"name\": \"approach\",\n      \"first_frame\": 0,\n      \"last_frame\": 199\n    },\n    {\n      \"name\": \"hold\",\n      \"first_frame\": 200,\n      \"last_frame\": 599\n    }\n  ]\n}\n"
+    },
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Unselected railroad-rail curbside capture contract; no simulator is launched by --check.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\n\n\ndef check(cfg):\n    if cfg.get(\"case_id\") != \"training__C229398__NRS-484B-450-1i__motor_vehicle_driver__selected_98183a3f__condition_a\":\n        raise ValueError(\"wrong exact case\")\n    if (cfg.get(\"law_id\"),cfg.get(\"cell_id\"),cfg.get(\"actor\")) != (\"NRS-484B-450-1i\",\"C229398\",\"motor_vehicle_driver\"):\n        raise ValueError(\"wrong law, cell or actor\")\n    if cfg.get(\"rate_hz\") != 20 or cfg.get(\"duration_s\") != 30 or cfg.get(\"duration_frames\") != 600:\n        raise ValueError(\"full 30-second 20 Hz window required\")\n    if cfg.get(\"rail_source_kind\") != \"map_survey_or_native_survey\" or cfg.get(\"target_footprint_gap_m\") != 12.5:\n        raise ValueError(\"rail survey or placement changed\")\n    cameras=cfg.get(\"cameras\")\n    if not isinstance(cameras,list) or [c.get(\"name\") for c in cameras] != [\"overview\",\"approach\",\"reference_corner\",\"driver_reference\"]:\n        raise ValueError(\"four named cameras required\")\n    if any(c.get(\"fps\")!=20 or c.get(\"width\",0)<16 or c.get(\"height\",0)<16 for c in cameras):\n        raise ValueError(\"camera profile incomplete\")\n    phases=cfg.get(\"control_phases\")\n    if not isinstance(phases,list) or [(p.get(\"first_frame\"),p.get(\"last_frame\")) for p in phases] != [(0,199),(200,599)]:\n        raise ValueError(\"controller does not cover all frames\")\n    if cfg.get(\"physical_verified\") is not False or cfg.get(\"legal_verdict\") is not None:\n        raise ValueError(\"physical or legal claim in draft\")\n    return {\"checked\":True,\"frames\":600,\"fps\":20,\"simulation_started\":False}\n\n\nif __name__==\"__main__\":\n    parser=argparse.ArgumentParser();parser.add_argument(\"--check\",action=\"store_true\")\n    args=parser.parse_args()\n    if not args.check:\n        raise SystemExit(\"Draft requires Native survey/acquisition before execution\")\n    print(json.dumps(check(json.loads(Path(\"config.json\").read_text()))))\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\n\nclass DraftContract(unittest.TestCase):\n    def setUp(self):\n        self.cfg=json.loads(Path(\"config.json\").read_text())\n\n    def test_full_window(self):\n        self.assertEqual(check(self.cfg)[\"frames\"],600)\n\n    def test_missing_camera_rejected(self):\n        bad=copy.deepcopy(self.cfg);bad[\"cameras\"].pop()\n        with self.assertRaisesRegex(ValueError,\"four named cameras\"):\n            check(bad)\n\n    def test_short_controller_rejected(self):\n        bad=copy.deepcopy(self.cfg);bad[\"control_phases\"][-1][\"last_frame\"]=598\n        with self.assertRaisesRegex(ValueError,\"controller\"):\n            check(bad)\n\n    def test_physical_claim_rejected(self):\n        bad=copy.deepcopy(self.cfg);bad[\"physical_verified\"]=True\n        with self.assertRaisesRegex(ValueError,\"physical or legal\"):\n            check(bad)\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "raw_rail_survey_and_vehicle_pose",
+        "method": "Native map survey, ego transform, bounding box, velocity and control trace",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named source cameras",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      }
+    ],
+    "limitations": [
+      "Actual rail geometry, body motion and camera pixels unverified"
+    ]
+  },
+  "status": "draft_cpu_offline_only"
+}

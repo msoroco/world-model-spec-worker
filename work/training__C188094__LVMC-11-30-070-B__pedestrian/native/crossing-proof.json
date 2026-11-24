@@ -1,0 +1,72 @@
+{
+  "format": "worker-cpu-business-district-crossing-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "marked": {
+      "format": "worker-source-business-district-crossing-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "roadway_entry_frame": 160,
+      "roadway_entry_point_m": {
+        "x": 0,
+        "y": -3.0
+      },
+      "entry_crosswalk_kinds": [
+        "marked"
+      ],
+      "entry_within_any_marked_or_unmarked_crosswalk": true,
+      "business_district_physical_status": "pending_independent_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Crosswalk survey must include all applicable marked and unmarked crossings",
+        "Business-district legal region requires independent source review"
+      ]
+    },
+    "outside": {
+      "format": "worker-source-business-district-crossing-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "roadway_entry_frame": 160,
+      "roadway_entry_point_m": {
+        "x": 12,
+        "y": -3.0
+      },
+      "entry_crosswalk_kinds": [],
+      "entry_within_any_marked_or_unmarked_crosswalk": false,
+      "business_district_physical_status": "pending_independent_review",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Crosswalk survey must include all applicable marked and unmarked crossings",
+        "Business-district legal region requires independent source review"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_district_source",
+      "rejected": "Missing source hash: business_district_evidence_sha256"
+    },
+    {
+      "test": "unknown_district",
+      "rejected": "Business district source finding absent"
+    },
+    {
+      "test": "missing_crosswalk_survey",
+      "rejected": "Missing complete marked and unmarked crosswalk survey"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "deck_not_roadway",
+      "rejected": "At-grade crossing conflated with overpass deck"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    }
+  ]
+}

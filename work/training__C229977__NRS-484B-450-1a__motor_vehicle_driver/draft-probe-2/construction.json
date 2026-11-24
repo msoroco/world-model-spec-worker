@@ -1,0 +1,45 @@
+{
+  "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2",
+  "law_id": "NRS-484B-450-1a",
+  "cell_id": "C229977",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Exact unselected sidewalk-stop construction and post-tick source packet.\"\"\"\nimport argparse\nimport json\nimport math\nimport xml.etree.ElementTree as ET\nfrom pathlib import Path\n\nASSIGNMENT = \"training__C229977__NRS-484B-450-1a__motor_vehicle_driver\"\nCAMERAS = (\"overview\", \"approach\", \"sidewalk_boundary\", \"driver_reference\")\nHERE = Path(__file__).resolve().parent\n\n\ndef request(frame, case_id):\n    if type(frame) is not int or not 0 <= frame < 600:\n        raise ValueError(\"frame outside 600-frame contract\")\n    if case_id not in (ASSIGNMENT + \"__probe_1\", ASSIGNMENT + \"__probe_2\"):\n        raise ValueError(\"unknown exact case\")\n    sidewalk = case_id.endswith(\"probe_2\")\n    return {\"target_speed_mps\": 0.0 if 160 <= frame < 500 else 4.0,\n            \"target_lateral_m\": -5.0 if sidewalk else -1.75,\n            \"requested_sidewalk_occupancy\": sidewalk}\n\n\ndef capture_row(index, native_frame, elapsed_s, actor):\n    if type(index) is not int or not 0 <= index < 600 or type(native_frame) is not int:\n        raise ValueError(\"original frame identity required\")\n    if not isinstance(elapsed_s, (float, int)) or not math.isfinite(elapsed_s):\n        raise ValueError(\"original Native time required\")\n    pose = actor.get_transform()\n    velocity = actor.get_velocity()\n    vertices = actor.bounding_box.get_world_vertices(pose)\n    if len(vertices) != 8:\n        raise ValueError(\"original vehicle body required\")\n    return {\"frame\": index, \"native_frame\": native_frame, \"time_s\": elapsed_s,\n            \"actor_id\": actor.id, \"blueprint_id\": actor.type_id,\n            \"actor_pose_source\": \"native_post_tick\", \"velocity_source\": \"native_post_tick\",\n            \"speed_mps\": math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2),\n            \"body_vertices_m\": [[v.x, v.y, v.z] for v in vertices]}\n\n\ndef check(config):\n    if (config.get(\"law_id\"), config.get(\"cell_id\"), config.get(\"actor\")) != (\n            \"NRS-484B-450-1a\", \"C229977\", \"motor_vehicle_driver\"):\n        raise ValueError(\"frozen identity differs\")\n    case = config.get(\"case_id\")\n    if case not in (ASSIGNMENT + \"__probe_1\", ASSIGNMENT + \"__probe_2\"):\n        raise ValueError(\"case identity differs\")\n    if config.get(\"rate_hz\") != 20 or config.get(\"duration_s\") != 30:\n        raise ValueError(\"30-second timing differs\")\n    if [c[\"name\"] for c in config.get(\"cameras\", [])] != list(CAMERAS):\n        raise ValueError(\"four-camera profile differs\")\n    root = ET.parse(HERE / \"road.xodr\").getroot()\n    road = root.find(\"road\")\n    if road is None or road.get(\"id\") != \"1\" or road.get(\"length\") != \"100\":\n        raise ValueError(\"authored highway absent\")\n    lane = root.find(\".//lane[@id='-2']\")\n    if lane is None or lane.get(\"type\") != \"sidewalk\" or float(lane.find(\"width\").get(\"a\")) != 3:\n        raise ValueError(\"authored sidewalk lane absent\")\n    intended = -5.0 if case.endswith(\"probe_2\") else -1.75\n    if request(200, case)[\"target_lateral_m\"] != intended:\n        raise ValueError(\"controlled sidewalk target differs\")\n    return {\"passed\": True, \"case_id\": case, \"frames\": 600, \"rate_hz\": 20,\n            \"cameras\": list(CAMERAS), \"sidewalk_lane_id\": -2,\n            \"native_capture_implemented\": False, \"physical_observation_claimed\": False}\n\n\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    args = parser.parse_args()\n    if not args.check:\n        raise SystemExit(\"Native CARLA orchestration remains unfinished\")\n    print(json.dumps(check(json.loads((HERE / \"config.json\").read_text())), sort_keys=True))\n"
+    },
+    {
+      "path": "road.xodr",
+      "content": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C229977_unselected_sidewalk\" version=\"1\" date=\"2026-11-23\" north=\"20\" south=\"-20\" east=\"100\" west=\"0\" vendor=\"worker\"/><road id=\"1\" name=\"sidewalk_stop_approach\" length=\"100\" junction=\"-1\"><planView><geometry s=\"0\" x=\"0\" y=\"0\" hdg=\"0\" length=\"100\"><line/></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\"/></elevationProfile><lanes><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"/></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane><lane id=\"-2\" type=\"sidewalk\" level=\"false\"><width sOffset=\"0\" a=\"3\" b=\"0\" c=\"0\" d=\"0\"/></lane></right></laneSection></lanes></road></OpenDRIVE>\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2\",\n  \"selected_case_id\": \"training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2\",\n  \"supported_case_ids\": [\n    \"training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2\"\n  ],\n  \"law_id\": \"NRS-484B-450-1a\",\n  \"cell_id\": \"C229977\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"sidewalk_boundary\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"case\": {\n    \"case_id\": \"training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2\"\n  },\n  \"status\": \"unselected_native_draft\",\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"vehicle_body_pose\",\n        \"unit\": \"structured\"\n      },\n      {\n        \"name\": \"vehicle_speed\",\n        \"unit\": \"m/s\"\n      },\n      {\n        \"name\": \"sidewalk_overlap\",\n        \"unit\": \"m2\"\n      }\n    ],\n    \"limitations\": [\n      \"Native road, lateral controller, actual sidewalk use and exceptions unverified\"\n    ]\n  }\n}\n"
+    },
+    {
+      "path": "tests/test_draft.py",
+      "content": "import json\nfrom pathlib import Path\nimport unittest\nfrom runner import check, request\n\nclass Draft(unittest.TestCase):\n    def test_exact_construction(self):\n        cfg = json.loads(Path(\"config.json\").read_text())\n        self.assertEqual(check(cfg)[\"frames\"], 600)\n        target = -5.0 if cfg[\"case_id\"].endswith(\"probe_2\") else -1.75\n        self.assertEqual(request(200, cfg[\"case_id\"])[\"target_lateral_m\"], target)\n    def test_wrong_identity_rejected(self):\n        cfg = json.loads(Path(\"config.json\").read_text())\n        cfg[\"cell_id\"] = \"C0\"\n        with self.assertRaisesRegex(ValueError, \"frozen identity\"):\n            check(cfg)\n        with self.assertRaisesRegex(ValueError, \"600-frame\"):\n            request(600, cfg[\"case_id\"])\nif __name__ == \"__main__\":\n    unittest.main()\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "vehicle_body_pose",
+        "unit": "structured"
+      },
+      {
+        "name": "vehicle_speed",
+        "unit": "m/s"
+      },
+      {
+        "name": "sidewalk_overlap",
+        "unit": "m2"
+      }
+    ],
+    "limitations": [
+      "Native road, lateral controller, actual sidewalk use and exceptions unverified"
+    ]
+  },
+  "status": "draft_not_selected"
+}

@@ -1,0 +1,35 @@
+{
+  "format": "worker-night-parking-measurement-contract",
+  "assignment_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator",
+  "law_id": "LVMC-11-52-300",
+  "case_ids": [
+    "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_a",
+    "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_b"
+  ],
+  "source_observation_mapping": {
+    "drv.standing_or_parked": "retained parking-activity annotation plus stationary actor velocity; legal parking purpose remains separate",
+    "ru.motor_vehicle": "source-hashed device classification packet; diagnostic fixtures cannot certify classification",
+    "ru.trailer_or_combination": "source-hashed device classification packet must be expanded with actual device and load evidence",
+    "kin.time": "contiguous 20 Hz frame numbers and UTC epoch milliseconds",
+    "env.civil_time": "UTC timestamps converted with source-hashed IANA timezone packet",
+    "drv.condition_in_effect": "per-frame local civil hour in [01:00,06:00)",
+    "st.roadway": "source-hashed street XY bounds and actor center samples; jurisdiction/public access require separate source audit"
+  },
+  "raw_sources": [
+    "classification",
+    "street",
+    "parking",
+    "civil_clock",
+    "frame_map"
+  ],
+  "measurement": "longest contiguous on-street stationary interval inside the local 01:00-06:00 window, strictly greater than 1800000 ms; classification and parking activity are externally supplied source facts",
+  "frame_rate_hz": 20,
+  "minimum_crossing_frames": 36002,
+  "physical_or_legal_acceptance": false,
+  "unresolved": [
+    "vehicle-definition exclusions and motor-vehicle classification need real source evidence",
+    "parking purpose, temporary loading, responsible person, street public access and city limits need independent source review",
+    "nighttime endpoint and cross-boundary episode interpretation need statutory review",
+    "one unselected four-camera Native request has a pinned offline proof; no selected construction, real capture, saved processing or independent acceptance audit exists"
+  ]
+}
