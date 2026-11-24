@@ -31,7 +31,7 @@ class PhysicalProofTests(unittest.TestCase):
             self.assertEqual(row['compatibility_sha256'],hashlib.sha256(original(row['compatibility_receipt'])).hexdigest())
             self.assertFalse((PACKAGE/row['saved_receipt']).exists())
 
-    def test_current_manifest_declares_four_distinct_physical_receipt_gaps(self):
+    def test_current_manifest_tracks_four_returned_physical_receipts(self):
         manifest=json.loads((PACKAGE/'execution-manifest.json').read_text())
         self.assertEqual(len(manifest['cases']),4)
         paths=set()
@@ -40,7 +40,9 @@ class PhysicalProofTests(unittest.TestCase):
                 path=entry['physical_preparation']['receipt']
                 self.assertNotIn(path,paths)
                 paths.add(path)
-                self.assertFalse((PACKAGE/path).exists())
+                self.assertTrue((PACKAGE/path).is_file())
+                self.assertEqual(hashlib.sha256((PACKAGE/path).read_bytes()).hexdigest(),
+                                 entry['physical_preparation']['sha256'])
 
     def test_current_exact_offline_logs_bind_all_constructions(self):
         manifest=json.loads((PACKAGE/'execution-manifest.json').read_text())

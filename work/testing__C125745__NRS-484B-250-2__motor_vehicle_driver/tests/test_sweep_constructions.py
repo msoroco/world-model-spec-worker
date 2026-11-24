@@ -8,14 +8,35 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parents[1]
+HISTORY = HERE.parent / '_shared' / 'cpu-proof-history-20261123.tar.xz'
+NESTED_SHA256 = {
+    'c125745-stale-axis-diagnostics-2026-11-23.json': 'af55976737ce91916ed74698733b4f785e1604ff4fe6d396efff0a3ce3f72772',
+    'c125745-sweep-fallback1-proofs-2026-11-23.json': 'cfd2e8ca423c4627a6dbec3ab9a7f30969082aa653c6247d1c56c3feea5a2c32',
+    'c125745-sweep-fallback2-proofs-2026-11-23.json': 'dd40fda9a721cb3f5766e52857650636b3edc1066800472b5e94d0f0d7b2719d',
+}
+
+
+def source_bytes(path):
+    source = HERE / path
+    if source.is_file():
+        return source.read_bytes()
+    name = source.name
+    if name not in NESTED_SHA256 or source.parent.resolve() != HISTORY.parent:
+        raise FileNotFoundError(source)
+    with tarfile.open(HISTORY, 'r:xz') as packed:
+        member = packed.extractfile(name)
+        assert member is not None
+        data = member.read()
+    assert hashlib.sha256(data).hexdigest() == NESTED_SHA256[name]
+    return data
 
 
 def read(path):
-    return json.loads((HERE / path).read_text())
+    return json.loads(source_bytes(path))
 
 
 def digest(path):
-    return hashlib.sha256((HERE / path).read_bytes()).hexdigest()
+    return hashlib.sha256(source_bytes(path)).hexdigest()
 
 
 def construction_bytes(item):
@@ -56,8 +77,8 @@ def proof_text(item, field):
 
 def indexed_log(proof):
     if 'log_member' not in proof:
-        return (HERE / proof['log']).read_text()
-    archive = json.loads((HERE / proof['log']).read_text())
+        return source_bytes(proof['log']).decode()
+    archive = json.loads(source_bytes(proof['log']))
     member = archive['files'][proof['log_member']]
     data = base64.b64decode(member['base64'], validate=True)
     assert hashlib.sha256(data).hexdigest() == member['sha256']
@@ -820,7 +841,7 @@ class SweepConstructionTests(unittest.TestCase):
         for candidate_id in ('fallback1', 'fallback2', 'fallback3'):
             archive_id = 'fallback2' if candidate_id == 'fallback3' else candidate_id
             archive_path = root / '_shared' / f'c125745-sweep-{archive_id}-proofs-2026-11-23.json'
-            archive = json.loads(archive_path.read_text())
+            archive = json.loads(source_bytes(archive_path))
             if candidate_id == 'fallback3':
                 nested = archive['fallback3_archive']
                 self.assertEqual(nested['source_filename'],

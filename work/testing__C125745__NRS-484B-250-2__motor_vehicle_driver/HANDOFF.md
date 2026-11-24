@@ -605,3 +605,7 @@ Nine byte-identical `proposals/relevance-batch.json` duplicates in ready package
 C125745 remains **partial**: independent delivery/comparison audits and official-device/opposite-turn judgment sweeps remain worker-owned. These CPU proofs do not establish Native motion, original pixels, physical or legal acceptance. The full strict batch gate has not passed.
 
 All nine deduplicated ready packages subsequently passed `.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready`; their individual ignored logs are under `.runtime-work/dedup-frame24/`. Statuses remain truthful: 28 ready and 15 partial.
+
+## 2026-11-23 exact archive relocation check
+
+Three historical sweep archives moved as exact members of `work/_shared/cpu-proof-history-20261123.tar.xz` to recover returned-file capacity. `tests/test_sweep_constructions.py` now reads and SHA-checks the archived bytes where old proof paths are named; it retains all substantive receipt assertions. The 71-test suite passed (ignored `.runtime-work/c125745-archive-tests-v2.log`, SHA256 `c8732d22f54cb8ac24fda72630a5d9a39b7a132a4b95a12c5a7977174359a79d`), and the scoped `worker_check.py --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --complete` passed (ignored log SHA256 `a6449c2b26968fe3bcfa2fdcbf6d3458775b75a498b3d8caa55ed627d7765136`). Status remains partial with the existing worker-owned sweep and proof bindings.

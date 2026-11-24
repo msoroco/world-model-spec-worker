@@ -1,3 +1,7 @@
+## 2026-11-23 C125763 returned physical-preparation receipts
+
+Thirteen superseded C125763 compatibility receipts were archived byte-exactly under `work/_shared/c125763-superseded-compatibility-20261123.json` to preserve the 8,600-file cap. Three current exact cases now have distinct returned synthetic outcome results and physical-preparation receipts that pass the pinned validator. The opposite-left-turn case still lacks its returned receipt; C125763 remains partial. All 40 tests, pinned preflight and scoped nonready check pass. The full strict gate has not passed, and no Native, physical or legal acceptance is claimed.
+
 ## 2026-11-23 C125763 current physical fixture refresh
 
 All four exact selected primaries passed their current three-outcome synthetic physical classifier tests and six-event lifecycle checks, 16 commands total. `case-plan.json` now binds every command and ignored diagnostic result/log hash to the current manifest; 40 tests, pinned preflight and the scoped nonready check pass. C125763 remains partial because validator-bound returned physical receipts, canonical saved receipts and qualitative sweep proof remain unfinished. The batch strict gate has not passed; no Native, physical or legal acceptance is claimed.
@@ -618,3 +622,9 @@ Nine byte-identical `proposals/relevance-batch.json` duplicates in ready package
 C125745 remains **partial**: independent delivery/comparison audits and official-device/opposite-turn judgment sweeps remain worker-owned. These CPU proofs do not establish Native motion, original pixels, physical or legal acceptance. The full strict batch gate has not passed.
 
 All nine deduplicated ready packages subsequently passed `.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready`; their individual ignored logs are under `.runtime-work/dedup-frame24/`. Statuses remain truthful: 28 ready and 15 partial.
+
+## 2026-11-23 C125763 fourth physical receipt and proof-history consolidation
+
+C125763 now returns and validator-binds all four selected-case synthetic physical-preparation receipts, each with distinct complete, incomplete and missing-evidence result files and a passing six-event lifecycle check. Its fourth exact probe outputs reproduced the earlier source hashes. The 40-test suite, pinned CPU preflight, four pinned physical validators and assignment-scoped nonready check passed; manifest SHA256 `669e5ff0f1f4255c8bbe040ce07e9f878033b5c7f31ebd2dbaf9ff5f94568272`. Its scoped strict check still fails because the package is partial: canonical saved/delivery/comparison binding and judgment sweep qualification remain worker-owned. No Native, physical or legal acceptance is claimed.
+
+Five historical shared files were preserved byte-exactly in `work/_shared/cpu-proof-history-20261123.tar.xz` (SHA256 `f0513c51f8f8c5c129a4d312b7b8b4722d2a908fbb5a2c3c1218bc05bf8cd944`) and their standalone copies removed; see shared HANDOFF for member hashes and recovery command. C125745's 71-test suite and scoped nonready check passed after its test reader was updated to hash-check the nested archive members. The return has 8,600 files; batch status remains 28 ready and 15 partial. The full strict delivery gate has not passed.
