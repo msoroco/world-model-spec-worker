@@ -1,3 +1,15 @@
+# C382389 current handoff · 2026-11-24
+
+Status: `ready` for CPU delivery preparation. The exact assignment-scoped strict gate passed exit 0 and reported `static_checks_passed: true` in `scoped-strict.log`. This is a preparation status; original Native capture and legal outcome remain for independent GPU review. Historical partial checkpoints below describe earlier states.
+
+Selected exact cases: reference adjacent straight lane `-1` and contrast proposed right-only lane `-2` on the same authored repaired junction. `execution-manifest.json` binds the current-runtime source-hashed primary, fallback1 route-completion, and fallback3 camera-framing constructions for each case. Fallback2 remains an unselected diagnostic. The six selected bundles have passing exact offline and positive/missing-source public compatibility receipts in `selected-proof/`; both primaries have recorded-only saved-processing positives with final decoded 480-frame output. The two five-stage semantic proposals validate. `physical-proof/` evaluates source-bound synthetic complete, incomplete, and missing captures without claiming physical execution. `delivery-proof/` binds independent positive/negative delivery audits. `selected-comparison-proof.json` holds the controlled pair and three drift negatives. Root unittests pass in `selected-root-tests.log`.
+
+The saved-only missing-source diagnostic rejects the absent `native_samples.jsonl` with a nonzero exit, but that scratch diagnostic did not emit `feedback.json` because its selected config has no `case.recording_description`. The public missing-source compatibility negatives pass for all selected candidates. No actual 480-frame CARLA capture, native lane designation, original pixels, or legal conclusion is claimed.
+
+The lead should independently rerun `.venv-cpu/bin/python worker_check.py --assignment training__C382389__NRS-484B-223-4b__motor_vehicle_driver --complete --require-delivery-ready` and integrate the ordered GPU queue. All scratch is under `.runtime-work/`.
+
+## Historical checkpoints
+
 # C382389 · NRS 484B.223(4)(b)
 
 Status: `partial`. Both cases and all eight candidate bundles are unselected drafts. No physical recording or legal verdict is claimed.

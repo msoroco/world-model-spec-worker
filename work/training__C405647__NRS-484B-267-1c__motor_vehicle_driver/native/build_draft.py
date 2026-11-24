@@ -66,7 +66,7 @@ def main():
     raise ValueError('Requested whole-body passage contrast differs')
    cameras=[dict(c, fov_deg=overview_fov if c['name']=='overview' else c['fov_deg'],
                  pose_strategy='fixed_world_aim_at_approach') for c in CAMERAS]
-   config={'case_id':case,'law_id':'NRS-484B-267-1c','cell_id':'C405647',
+   config={'case_id':case,'selected_case_id':case,'law_id':'NRS-484B-267-1c','cell_id':'C405647',
     'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20,'frames':600,
     'road_sha256':sha(SOURCE/'emergency-road.xodr'),
     'requested_release_frame':release,
@@ -76,7 +76,7 @@ def main():
     'requested_emergency_step_y_m_per_frame':approach_step,
     'supported_case_ids':[PREFIX+'__'+name for name in
       ('probe_a','probe_b','exception_1_1','exception_1_2','official_1','official_2')],
-    'required_atoms':['rel.same_direction','rel.surface_gap','kin.position','rel.occupies'],
+    'required_atoms':['rel.same_direction','rel.surface_gap','kin.position'],
     'source_packets':[],
     'emergency_authorization_source_required':True,
     'qualifying_flashes_source_required':True,

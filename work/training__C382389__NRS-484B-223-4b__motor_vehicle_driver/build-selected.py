@@ -50,7 +50,7 @@ def proof(label, candidate, construction_hash):
     result = {}
     for key, name in paths.items():
         source = original / name
-        target = folder / name
+        target = folder / ("analysis.log" if key == "log" else name)
         result[key] = str(target.relative_to(HERE))
         result["sha256" if key == "receipt" else key + "_sha256"] = copy_text(source, target)
     assert data["log_sha256"] == result["log_sha256"]

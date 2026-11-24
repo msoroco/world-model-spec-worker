@@ -10,6 +10,32 @@ CROSSREFS=('NRS-484B-287-1c','NRS-484B-287-1d','NRS-484B-287-1e',
            'LVMC-11-30-060-A','LVMC-11-30-060-B','LVMC-11-30-140-B','LVMC-11-46-030')
 
 
+def validate_cross_reference_review(crossrefs):
+    if not isinstance(crossrefs,dict) or set(crossrefs)!=set(CROSSREFS):
+        raise ValueError('Exact introductory cross-reference review required')
+    if any(item not in ('applicable','inapplicable') for item in crossrefs.values()):
+        raise ValueError('Unresolved introductory cross-reference applicability')
+    return crossrefs
+
+
+def validate_cross_reference_evidence(evidence, reviewed_frames):
+    if not isinstance(evidence,dict) or set(evidence)!=set(CROSSREFS):
+        raise ValueError('Exact introductory cross-reference evidence required')
+    for law_id, item in evidence.items():
+        if not isinstance(item,dict):
+            raise ValueError('Cross-reference evidence missing: '+law_id)
+        frames=item.get('frames')
+        cameras=item.get('cameras')
+        observation=item.get('observation')
+        if (not isinstance(frames,list) or not frames or
+            any(not isinstance(frame,int) or frame not in reviewed_frames for frame in frames) or
+            not isinstance(cameras,list) or not cameras or
+            any(camera not in CAMERAS for camera in cameras) or
+            not isinstance(observation,str) or not observation.strip()):
+            raise ValueError('Cross-reference source frames or observation missing: '+law_id)
+    return evidence
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -38,14 +64,13 @@ def audit(attempt,review):
             'vehicle_response_reviewed','driver_yield_capability_reviewed')
     if not all(data.get(key) is True for key in checks):
         raise ValueError('Original pixels, vehicle response or driver capability unverified')
-    crossrefs=data.get('cross_reference_applicability')
-    if not isinstance(crossrefs,dict) or set(crossrefs)!=set(CROSSREFS) or any(
-            item not in ('applicable','inapplicable','unresolved') for item in crossrefs.values()):
-        raise ValueError('Exact introductory cross-reference review required')
+    crossrefs=validate_cross_reference_review(data.get('cross_reference_applicability'))
     frames=data.get('reviewed_frames')
     if not isinstance(frames,list) or not frames or any(
             not isinstance(frame,int) or frame<0 or frame>=600 for frame in frames):
         raise ValueError('Original review frame identities missing')
+    crossref_evidence=validate_cross_reference_evidence(
+        data.get('cross_reference_evidence'),frames)
     hashes=data.get('source_video_sha256')
     if not isinstance(hashes,dict) or set(hashes)!=set(CAMERAS):
         raise ValueError('Four original source videos required')
@@ -65,6 +90,7 @@ def audit(attempt,review):
             'native_capture_report_sha256':sha(capture_path),
             'source_video_sha256':hashes,'decoded_frames':decoded,
             'reviewed_frames':frames,'cross_reference_applicability':crossrefs,
+            'cross_reference_evidence':crossref_evidence,
             'physical_completion_reviewed':True,'legal_verdict':None}
 
 

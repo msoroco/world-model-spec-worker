@@ -69,12 +69,12 @@ def main():
         result = {'template_id': TID, 'phrase': judgment['phrase'],
             'note': judgment['note'], 'status': 'draft',
             'observable_requirements': {
-                'observables': [{'name': 'subject_pose_body', 'unit': 'structured',
+                'observables': [{'name': 'subject_body', 'unit': 'structured',
                                  'description': 'Original time-indexed vehicle body and speed relative to road edge.'}],
-                'context_inputs': [{'name': 'approach_pose_body', 'unit': 'structured',
+                'context_inputs': [{'name': 'emergency_body', 'unit': 'structured',
                                     'description': 'Original actor approach and camera join; authority, lamps, officer direction and signage require separate source review.'}],
                 'sweep_dimensions': [], 'landmarks': [],
-                'recording_needs': [{'name': 'camera_frame_join', 'unit': 'structured',
+                'recording_needs': [{'name': 'video_frame_join', 'unit': 'structured',
                                      'description': 'Retain original four camera and actor frame joins.'}],
                 'limitations': [judgment['note'], 'Synthetic diagnostic does not establish a legal verdict.']}}
         observed.append(put(f'judgment_observables_{i}.json', result))

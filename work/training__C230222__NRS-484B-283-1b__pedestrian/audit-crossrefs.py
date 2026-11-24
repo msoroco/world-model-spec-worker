@@ -41,7 +41,29 @@ def audit():
             raise ValueError('Frozen cross-reference content differs: ' + law_id)
         if not row['required_original_observations'] or row['current_curb_pair_proves_applicability'] or row['legal_applicability_conclusion'] is not None:
             raise ValueError('Curb cross-reference overclaims applicability')
-        if law_id == 'LVMC-11-30-060-A':
+        if law_id in ('NRS-484B-287-1c', 'NRS-484B-287-1d', 'NRS-484B-287-1e'):
+            if row['same_cell_construction_status'] != 'selected_road_source_excludes_intersection_device_pending_original_native_review':
+                raise ValueError('287 selected-road source review status differs')
+            if row.get('source_eligibility_review') != 'crossref-287-eligibility-proof.json':
+                raise ValueError('287 eligibility proof path differs')
+            proof = json.loads((HERE / row['source_eligibility_review']).read_text())
+            if (proof['pedestrian_candidate_cell_count'] != 0 or
+                proof['selected_manifest_sha256'] != sha(HERE / 'execution-manifest.json') or
+                not proof['changed_device_negative_control_detected'] or
+                not proof['changed_crosswalk_negative_control_detected'] or
+                not proof['changed_junction_negative_control_detected'] or
+                proof['additional_binding_proposed'] or proof['capability_blocked_claim'] or
+                proof['legal_applicability_conclusion'] is not None):
+                raise ValueError('287 eligibility proof scope differs')
+            fact = next(item for item in proof['crossrefs'] if item['law_id'] == law_id)
+            if (fact['exact_text_sha256'] != row['exact_text_sha256'] or
+                fact['original_assignment_id'] != row['original_assignment_id'] or
+                fact['c230222_selected_road_has_required_intersection_device_context'] or
+                fact['new_pedestrian_binding_eligible_in_frozen_catalog'] or
+                fact['required_original_observations'] != row['required_original_observations'] or
+                fact['same_cell_positive_variant_status'] != 'unbuilt_pending_frozen_cell_compatibility_review'):
+                raise ValueError('287 source or cell fact differs')
+        elif law_id == 'LVMC-11-30-060-A':
             expected_status = 'authored_native_crosswalk_600_frame_offline_public_positive_negative_and_saved_unselected'
             if row['same_cell_construction_status'] != expected_status:
                 raise ValueError('Crosswalk construction status differs')
@@ -105,11 +127,32 @@ def audit():
                     for name, digest in hashes.items():
                         if sha(target / name) != digest:
                             raise ValueError('Cane prop current-runtime proof differs')
+        elif law_id == 'LVMC-11-46-030':
+            if row['same_cell_construction_status'] != 'school_lane_warning_survey_600_frame_offline_public_positive_negative_saved_unselected':
+                raise ValueError('School warning survey status differs')
+            if row.get('cpu_construction_summary') != 'crossref-46-native/proof.json':
+                raise ValueError('School warning proof path differs')
+            proof = json.loads((HERE / row['cpu_construction_summary']).read_text())
+            if (len(proof['records']) != 2 or proof['original_school_warning_pixels_verified'] or
+                proof['child_context_verified'] or proof['fifty_foot_stop_and_release_verified'] or
+                proof['legal_applicability_conclusion'] is not None):
+                raise ValueError('School warning proof scope differs')
+            for record in proof['records']:
+                label = record['case_id'].split('__crossref_lvmc_11_46_030_', 1)[1]
+                folder = HERE / 'crossref-46-native' / label
+                if record['construction_sha256'] != sha(folder / 'construction.json'):
+                    raise ValueError('School warning construction differs')
+                for candidate, hashes in record['current_runtime_proof_hashes'].items():
+                    target = (folder if candidate == 'primary' else HERE / 'crossref-46-fallback1' / label) / 'proofs'
+                    for name, digest in hashes.items():
+                        if sha(target / name) != digest:
+                            raise ValueError('School warning current-runtime proof differs')
         elif row['same_cell_construction_status'] != 'pending_physical_construction_and_review':
             raise ValueError('Curb cross-reference construction status differs')
     if (result['applicability_resolved'] or result['physical_crossref_cases_constructed'] != 2 or
         result.get('authored_overhead_survey_target_cases_constructed') != 2 or
-        result.get('cane_prop_survey_cases_constructed') != 2 or result['selected_crossref_cases']):
+        result.get('cane_prop_survey_cases_constructed') != 2 or
+        result.get('school_warning_survey_cases_constructed') != 2 or result['selected_crossref_cases']):
         raise ValueError('Curb statutory coverage falsely marked complete')
     return {'independent_audit': 'pass', 'exact_frozen_crossrefs': 7,
             'physical_crossref_cases_constructed': 2,

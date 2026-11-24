@@ -67,7 +67,7 @@ def execute(output,survey,host,port):
     from worker_exchange.world_restore import snapshot,restore
     cfg=config();survey_check(survey)
     output=Path(output).resolve()
-    if any((output/name).exists() for name in ('video_frames.jsonl','vehicle_poses.jsonl')):
+    if any((output/name).exists() for name in ('video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl')):
         raise ValueError('Original Native frame sources already exist')
     client=carla.Client(host,port);client.set_timeout(120)
     saved=snapshot(client);world=client.get_world()
@@ -97,7 +97,9 @@ def execute(output,survey,host,port):
                 '-r',str(RATE),'-i','-','-frames:v',str(COUNT),'-c:v','ffv1',
                 str(output/(c['name']+'.mkv'))],stdin=subprocess.PIPE,stderr=subprocess.PIPE)
         first=None
-        with FrameMap(output/'video_frames.jsonl') as fmap,(output/'vehicle_poses.jsonl').open('x') as out:
+        with FrameMap(output/'video_frames.jsonl') as fmap,\
+                (output/'vehicle_poses.jsonl').open('x') as out,\
+                (output/'trace.jsonl').open('x') as trace_out:
             for i in range(COUNT):
                 phase=(i//10)%2==0
                 emergency.set_light_state(carla.VehicleLightState(special if phase else 0))
@@ -125,10 +127,18 @@ def execute(output,survey,host,port):
                 out.write(json.dumps({'video_frame':i,'native_frame':native,
                     'source_kind':'original_native_pose','ego':records[0],
                     'emergency':records[1]})+'\n')
+                ego_pose=ego.get_transform();ego_velocity=ego.get_velocity()
+                trace_out.write(json.dumps({'frame':native,'time_s':t,
+                    'position_m':[ego_pose.location.x,ego_pose.location.y,ego_pose.location.z],
+                    'position':{'x':ego_pose.location.x,'y':ego_pose.location.y,'z':ego_pose.location.z},
+                    'heading_deg':ego_pose.rotation.yaw,
+                    'speed_mps':records[0]['speed_mps'],
+                    'velocity_mps':[ego_velocity.x,ego_velocity.y,ego_velocity.z]})+'\n')
         for name,process in encoders.items():
             process.stdin.close();stderr=process.stderr.read()
             if process.wait(timeout=180):raise RuntimeError('Camera encode failed: '+name+' '+stderr.decode()[-300:])
         (output/'emergency_context.template.json').write_text(json.dumps({'assignment_id':AID,
+            'case_id':cfg['case_id'],
             'review_kind':'original_source_review','ego_actor_id':ego.id,
             'emergency_actor_id':emergency.id,'qualification_review_required':True,
             'camera_sha256':{}},indent=2)+'\n')

@@ -93,7 +93,7 @@ def build(suffix):
         'extraction_confirmed': True, 'frames': 600, 'acquisition': 'synthetic_diagnostic',
         'observation_contract_version': 1,
         'required_observations': ['rel.same_direction', 'rel.surface_gap',
-                                  'kin.position', 'rel.occupies'],
+                                  'kin.position'],
         'sources': {'road.xodr': sha(source / 'road.xodr'),
                     'trace.jsonl': sha(source / 'trace.jsonl')},
         'synthetic_diagnostic': True}, separators=(',', ':')) + '\n')

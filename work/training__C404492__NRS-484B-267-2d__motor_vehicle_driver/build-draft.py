@@ -33,11 +33,12 @@ def main():
             files=[{'path':name,'content':(HERE/'native'/name).read_text()} for name in ('runner.py','tests/test_native.py')]
             files.append({'path':'config.json','content':json.dumps(cfg,indent=2)+'\n'})
             files.append({'path':'measure_emergency.py','content':(HERE/'measure_emergency.py').read_text()})
+            files.append({'path':'finalize.py','content':(HERE/'finalize.py').read_text()})
             construction={'format':'worker-construction','assignment_id':AID,'case_id':case,
             'law_id':'NRS-484B-267-2d','cell_id':'C404492','actor':'motor_vehicle_driver',
             'entrypoint':'runner.py','recording_description':cfg['recording_description'],
             'measurement_plan':{'entrypoint':'measure_emergency.py','sources':[
-                'video_frames.jsonl','vehicle_poses.jsonl','emergency_context.json'],
+                'video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl','emergency_context.json'],
                 'same_direction_cutoff':None,'abreast_cutoff':None,'legal_result':None},
             'files':files}
             path=HERE/'draft-emergency'/suffix/candidate_id/'construction.json';write(path,construction)

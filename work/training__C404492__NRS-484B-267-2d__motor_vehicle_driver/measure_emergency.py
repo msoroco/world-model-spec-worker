@@ -21,11 +21,11 @@ def finite(x):return type(x) in (int,float) and math.isfinite(x)
 
 def measure(root):
     root=Path(root)
-    sources={name:root/name for name in ('video_frames.jsonl','vehicle_poses.jsonl','emergency_context.json')}
+    sources={name:root/name for name in ('video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl','emergency_context.json')}
     if any(not p.is_file() for p in sources.values()):raise ValueError('Original frame, poses and reviewed context required')
-    frames,poses=rows(sources['video_frames.jsonl']),rows(sources['vehicle_poses.jsonl'])
+    frames,poses,traces=(rows(sources[name]) for name in ('video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl'))
     ctx=json.loads(sources['emergency_context.json'].read_text())
-    if len(frames)!=COUNT or len(poses)!=COUNT or ctx.get('assignment_id')!=AID:
+    if len(frames)!=COUNT or len(poses)!=COUNT or len(traces)!=COUNT or ctx.get('assignment_id')!=AID:
         raise ValueError('Exact assignment and 600 source frames required')
     kind=ctx.get('review_kind')
     if kind not in ('synthetic_diagnostic','original_source_review'):
@@ -57,18 +57,28 @@ def measure(root):
     prev_n,prev_t=-1,-1.0
     derived=[]
     light_phases=[]
-    for i,(f,p) in enumerate(zip(frames,poses)):
+    for i,(f,p,trace) in enumerate(zip(frames,poses,traces)):
         n,t=f.get('native_frame'),f.get('time_s')
         if f.get('video_frame')!=i or type(n) is not int or n<=prev_n or not finite(t) or t<=prev_t or (i and abs(t-prev_t-.05)>.005):
             raise ValueError('Original frame/time join failed')
         if p.get('video_frame')!=i or p.get('native_frame')!=n or p.get('source_kind')!=('synthetic_native_sample' if kind=='synthetic_diagnostic' else 'original_native_pose'):
             raise ValueError('Original pose provenance differs')
+        if f.get('camera_native_frames')!={name:n for name in CAMERAS}:
+            raise ValueError('Four original camera frames do not join')
         ego,em=p.get('ego'),p.get('emergency')
         if not isinstance(ego,dict) or not isinstance(em,dict) or ego.get('actor_id')!=ctx['ego_actor_id'] or em.get('actor_id')!=ctx['emergency_actor_id']:
             raise ValueError('Ego and emergency actor identity join failed')
         for v in (ego,em):
             if any(not finite(v.get(k)) for k in ('x_m','y_m','heading_rad','speed_mps','half_length_m','half_width_m')) or v['half_length_m']<=0 or v['half_width_m']<=0 or v['speed_mps']<0:
                 raise ValueError('Original vehicle pose, extent or motion absent')
+        position=trace.get('position_m')
+        if (trace.get('frame')!=n or not finite(trace.get('time_s')) or abs(trace['time_s']-t)>1e-5
+                or not isinstance(position,list) or len(position)!=3 or any(not finite(x) for x in position)
+                or abs(position[0]-ego['x_m'])>1e-4 or abs(position[1]-ego['y_m'])>1e-4
+                or not finite(trace.get('heading_deg'))
+                or abs(trace['heading_deg']*math.pi/180-ego['heading_rad'])>1e-4
+                or not finite(trace.get('speed_mps')) or abs(trace['speed_mps']-ego['speed_mps'])>1e-4):
+            raise ValueError('Original ego trace and pose do not join')
         if type(em.get('flashing_light_phase_on')) is not bool:
             raise ValueError('Original flashing-light phase missing')
         light_phases.append(em['flashing_light_phase_on'])
@@ -76,6 +86,8 @@ def measure(root):
             raise ValueError('Selected moving emergency branch not observed')
         dx,dy=ego['x_m']-em['x_m'],ego['y_m']-em['y_m']
         dot=math.cos(ego['heading_rad']-em['heading_rad'])
+        if dot<=0.5 or abs(dy)<=ego['half_width_m']+em['half_width_m']:
+            raise ValueError('Selected same-direction adjacent-lane geometry absent')
         a0,a1=ego['x_m']-ego['half_length_m'],ego['x_m']+ego['half_length_m']
         b0,b1=em['x_m']-em['half_length_m'],em['x_m']+em['half_length_m']
         derived.append({'video_frame':i,'native_frame':n,'time_s':t,

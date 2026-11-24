@@ -1,4 +1,4 @@
-"""Collect compact current-runtime 140(B) CPU receipts from scratch outputs."""
+"""Collect compact current-runtime 46.030 CPU receipts from scratch outputs."""
 import hashlib
 import json
 from pathlib import Path
@@ -31,12 +31,12 @@ def main():
             stem = 'c230222-crossref-46-' + label
             if candidate == 'fallback1':
                 offline = SCRATCH / (stem + '-fallback-offline1') / 'offline.log'
-                compat = SCRATCH / (stem + '-fallback-compat2')
-                saved = SCRATCH / (stem + '-fallback-saved2') / 'v0001'
+                compat = SCRATCH / (stem + '-fallback-compat1')
+                saved = SCRATCH / (stem + '-fallback-saved1') / 'v0001'
             else:
                 offline = SCRATCH / (stem + '-offline1') / 'offline.log'
-                compat = SCRATCH / (stem + '-compat2')
-                saved = SCRATCH / (stem + '-saved2') / 'v0001'
+                compat = SCRATCH / (stem + '-compat1')
+                saved = SCRATCH / (stem + '-saved1') / 'v0001'
             sources = {
                 'offline.log': offline,
                 'compatibility.json': compat / 'compatibility.json',
@@ -52,13 +52,13 @@ def main():
             variants[candidate] = hashes
         records.append({'case_id': entry['case_id'],
                         'construction_sha256': digest(HERE / entry['construction']),
-                        'school_warning_target_presenceed': entry['school_warning_target_presenceed'],
+                        'authored_school_warning_candidate': entry['authored_school_warning_candidate'],
                         'current_runtime_proof_hashes': variants})
     output = {'format': 'c230222-46-school-warning-survey-cpu-proof-v1',
               'records': records, 'public_positive_count': 4,
               'missing_source_negative_count': 4,
               'recorded_only_saved_count': 4,
-              'native_prop_available_verified': False,
+              'native_school_warning_visibility_verified': False,
               'original_school_warning_pixels_verified': False,
               'child_context_verified': False,
               'fifty_foot_stop_and_release_verified': False,

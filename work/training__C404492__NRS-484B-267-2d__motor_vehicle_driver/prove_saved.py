@@ -24,7 +24,7 @@ def main():
             hashes[path.name]=sha(path)
         ctx['camera_sha256']=hashes;ctx_path.write_text(json.dumps(ctx)+'\n')
         out=measure(root)
-        assert out['samples']==600 and len(out['source_sha256'])==7
+        assert out['samples']==600 and len(out['source_sha256'])==8
         ctx['camera_sha256']['side.mkv']='0'*64;ctx_path.write_text(json.dumps(ctx)+'\n')
         try:measure(root)
         except ValueError:pass
