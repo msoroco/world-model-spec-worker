@@ -48,11 +48,13 @@ test_archived_candidate_receipts_bind_exact_constructions (test_sweep_constructi
 test_exact_commanded_axes_and_distinct_offline_fallbacks (test_sweep_constructions.SweepConstructionTests.test_exact_commanded_axes_and_distinct_offline_fallbacks) ... ok
 test_first_qualified_primary_current_runtime_receipts (test_sweep_constructions.SweepConstructionTests.test_first_qualified_primary_current_runtime_receipts) ... ok
 test_first_timing_point_qualified_fallback_payloads (test_sweep_constructions.SweepConstructionTests.test_first_timing_point_qualified_fallback_payloads) ... ok
-test_frame24_fallback1_source_bound_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_fallback1_source_bound_physical_diagnostics) ... ok
-test_frame24_fallbacks_retained_current_cpu_receipts (test_sweep_constructions.SweepConstructionTests.test_frame24_fallbacks_retained_current_cpu_receipts) ... ok
-test_frame24_other_fallback_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_other_fallback_physical_diagnostics) ... ok
-test_frame32_fallback1_current_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback1_current_physical_diagnostics) ... ok
-test_frame32_fallback2_retained_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback2_retained_physical_diagnostics) ... ok
+test_frame24_fallback1_source_bound_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_fallback1_source_bound_physical_diagnostics) ... FAIL
+test_frame24_fallbacks_retained_current_cpu_receipts (test_sweep_constructions.SweepConstructionTests.test_frame24_fallbacks_retained_current_cpu_receipts) ... FAIL
+test_frame24_other_fallback_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_other_fallback_physical_diagnostics) ...
+  test_frame24_other_fallback_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_other_fallback_physical_diagnostics) (candidate='fallback2') ... FAIL
+  test_frame24_other_fallback_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_other_fallback_physical_diagnostics) (candidate='fallback3') ... FAIL
+test_frame32_fallback1_current_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback1_current_physical_diagnostics) ... FAIL
+test_frame32_fallback2_retained_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback2_retained_physical_diagnostics) ... FAIL
 test_frame32_fallback3_current_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback3_current_physical_diagnostics) ... ok
 test_frame40_fallback1_current_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame40_fallback1_current_physical_diagnostics) ... ok
 test_frame40_fallback23_retained_current_cpu_receipts (test_sweep_constructions.SweepConstructionTests.test_frame40_fallback23_retained_current_cpu_receipts) ... ok
@@ -74,7 +76,73 @@ test_staged_physical_classifier_archive (test_sweep_constructions.SweepConstruct
 test_16_frame_yield_hold_sweep_point_preserves_exact_case (test_third_case.ThirdCaseTests.test_16_frame_yield_hold_sweep_point_preserves_exact_case) ... ok
 test_separated_original_entry_measurement_and_hold_construction (test_third_case.ThirdCaseTests.test_separated_original_entry_measurement_and_hold_construction) ... ok
 
+unittest separator: ======================================================================
+FAIL: test_frame24_fallback1_source_bound_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_fallback1_source_bound_physical_diagnostics)
 ----------------------------------------------------------------------
-Ran 75 tests in 13.799s
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests/test_sweep_constructions.py", line 1177, in test_frame24_fallback1_source_bound_physical_diagnostics
+    self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+AssertionError: 'd53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9' != '8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418'
+- d53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9
++ 8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418
 
-OK
+
+unittest separator: ======================================================================
+FAIL: test_frame24_fallbacks_retained_current_cpu_receipts (test_sweep_constructions.SweepConstructionTests.test_frame24_fallbacks_retained_current_cpu_receipts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests/test_sweep_constructions.py", line 1146, in test_frame24_fallbacks_retained_current_cpu_receipts
+    self.assertEqual(plan['bound_manifest_sha256'], digest('execution-manifest.json'))
+AssertionError: 'd53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9' != '8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418'
+- d53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9
++ 8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418
+
+
+unittest separator: ======================================================================
+FAIL: test_frame24_other_fallback_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_other_fallback_physical_diagnostics) (candidate='fallback2')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests/test_sweep_constructions.py", line 1230, in test_frame24_other_fallback_physical_diagnostics
+    self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+AssertionError: 'd53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9' != '8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418'
+- d53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9
++ 8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418
+
+
+unittest separator: ======================================================================
+FAIL: test_frame24_other_fallback_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame24_other_fallback_physical_diagnostics) (candidate='fallback3')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests/test_sweep_constructions.py", line 1230, in test_frame24_other_fallback_physical_diagnostics
+    self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+AssertionError: 'd53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9' != '8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418'
+- d53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9
++ 8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418
+
+
+unittest separator: ======================================================================
+FAIL: test_frame32_fallback1_current_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback1_current_physical_diagnostics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests/test_sweep_constructions.py", line 911, in test_frame32_fallback1_current_physical_diagnostics
+    self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+AssertionError: 'd53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9' != '8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418'
+- d53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9
++ 8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418
+
+
+unittest separator: ======================================================================
+FAIL: test_frame32_fallback2_retained_physical_diagnostics (test_sweep_constructions.SweepConstructionTests.test_frame32_fallback2_retained_physical_diagnostics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/tests/test_sweep_constructions.py", line 952, in test_frame32_fallback2_retained_physical_diagnostics
+    self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+AssertionError: 'd53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9' != '8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418'
+- d53b095211ed9acb123c74d7308a65d17341d827b5b68af8e43a75cf4504a9b9
++ 8f3d6086faac09a5219ffd203df5dd70223984bfc1f9ceaf083f46e59e817418
+
+
+----------------------------------------------------------------------
+Ran 75 tests in 13.618s
+
+FAILED (failures=6)
