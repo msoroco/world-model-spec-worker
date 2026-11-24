@@ -1,20 +1,20 @@
 ## 2026-11-23 additional partial proof log preservation
 
-The original `negative-analysis.log`, `cases/short-negative-analysis.log`, and `cases/current-offline.log` are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready check passes and its status remains partial.
+The original `negative-analysis.log`, `cases/short-negative-analysis.log`, and `cases/current-offline.log` are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready check passes and its status remains partial.
 
 ## 2026-11-23 short fallback negative log preservation
 
-The `cases/short-fallback1-negative.log`, `cases/short-fallback2-negative.log` and `cases/short-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
+The `cases/short-fallback1-negative.log`, `cases/short-fallback2-negative.log` and `cases/short-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
 
 ## 2026-11-23 fallback negative log preservation
 
-The `cases/over-fallback1-negative.log`, `cases/over-fallback2-negative.log` and `cases/over-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
+The `cases/over-fallback1-negative.log`, `cases/over-fallback2-negative.log` and `cases/over-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
 
 ## 2026-11-23 historical proof log preservation
 
-The byte-verified `physical-fixtures.log` and `semantic-proof.log` are now direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`). Restore them at their original member paths with `tar -xOf ARCHIVE MEMBER > MEMBER` or rerun both proofs before strict readiness. The scoped nonready complete check passed after archival; C215286 remains partial.
+The byte-verified `physical-fixtures.log` and `semantic-proof.log` are now direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`). Restore them at their original member paths with `tar -xOf ARCHIVE MEMBER > MEMBER` or rerun both proofs before strict readiness. The scoped nonready complete check passed after archival; C215286 remains partial.
 
-The archive named in the next section is now nested in `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`); extract it first with the shared HANDOFF command.
+The archive named in the next section is now nested in `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`); extract it first with the shared HANDOFF command.
 
 ## 2026-11-23 C215286 diagnostic physical fixture archive
 

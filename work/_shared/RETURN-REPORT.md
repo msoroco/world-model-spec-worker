@@ -1,44 +1,50 @@
+## 2026-11-23 three source-bound comparison CPU proofs
+
+`comparison_proof.py` (SHA256 `d06bd64dc4df1faf1982a5557a4b8c4929af421803af341e0ab128150700bb5c`) binds the five exact synthetic attempts to their current source audit index and compatibility original hashes, reruns 900-frame exact measurements, and compares all 900 original lane histories. Signal order fixes lane context, frames, bodies and non-lamp trace while contrasting left, off and right at movement. Gap comparison keeps ego history and trace fixed while moving the target body 5.0 m: measured gaps are 8.0 and 3.0 m. Direction comparison checks exchanged lane IDs, reflected lateral body vertices and equal 8.0 m gaps. Three changed-source probes reject altered body/frame geometry. The proof is `comparison-proof.json` (SHA256 `a66823fd33bae039b7a40ddf38fcec51061fd39d11ab22144a86a59eef90122d`).
+
+The late-signal original shows `off` at departure and no appropriate signal before movement. Its current measurement contract expects `left` at movement, so `observed_signal_pattern_matches_plan=false`; the comparison proof preserves that discrepancy. C144550 stays **partial** pending reconciliation of the planned late-signal pattern, source-grounded judgment grids, shared queue binding, and assignment-scoped strict readiness. No Native source, actual pixel review, driver safety judgment, physical or legal acceptance is claimed. CPU preflight and scoped nonready complete check pass.
+
 ## 2026-11-23 C144550 all fallback CPU proofs complete
 
 Right-direction fallback2 and fallback3 passed current source-bound positive/negative compatibility and recorded-only saved processing. All fifteen bound fallback receipt pairs passed manual candidate/case identity and SHA-256 verification; C144550's scoped nonready complete check passed. Five primaries and fifteen fallbacks are proved. Canonical semantic stages and independent delivery audits remain worker-owned, so C144550 stays partial. Batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files; the full strict gate remains open.
 
-Six C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (39 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 669,032 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
+Six C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (39 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 669,032 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
 
 ## 2026-11-23 C144550 right-direction fallback1 checkpoint
 
 Right-direction fallback1 passed current source-bound positive/negative compatibility and recorded-only saved processing. Bound receipt identities and SHA-256 values passed manual verification; C144550's scoped nonready complete check passed. Five primaries and thirteen of fifteen fallbacks are proved. Two right-direction fallback sets, semantic stages and independent delivery audits remain. C144550 stays partial; batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files. The full strict gate remains open.
 
-Three C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (39 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 665,020 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
+Three C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (39 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 665,020 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
 
 ## 2026-11-23 C144550 close-gap fallback completion
 
 Close-gap fallback3 passed current source-bound positive/negative compatibility and recorded-only saved processing. Bound receipt identities and SHA-256 values passed manual verification; C144550's scoped nonready complete check passed. Five primaries and twelve of fifteen fallbacks are proved. Three right-direction fallback sets, semantic stages and independent delivery audits remain. C144550 stays partial; batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files. The full strict gate remains open.
 
-Three C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (33 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 662,996 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
+Three C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (33 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 662,996 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
 
 ## 2026-11-23 C144550 close-gap fallback2 checkpoint
 
 Close-gap fallback2 passed current source-bound positive/negative compatibility and recorded-only saved processing. Bound receipt identities and SHA-256 values passed manual verification; C144550's scoped nonready complete check passed. Five primaries and eleven of fifteen fallbacks are proved. Four fallback sets, semantic stages and independent delivery audits remain. C144550 stays partial; batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files. The full strict gate remains open.
 
-Three C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (30 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 659,868 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
+Three C125745 partial-package saved-processing logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (30 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 659,868 bytes). The C125745 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
 
 ## 2026-11-23 C144550 close-gap fallback1 checkpoint
 
 Close-gap fallback1 passed current source-bound positive/negative compatibility and recorded-only saved processing. Bound receipt identities and SHA-256 values passed manual verification; C144550's scoped nonready complete check passed. Five primaries and ten of fifteen fallbacks are proved. Five fallback sets, semantic stages and independent delivery audits remain. C144550 stays partial; batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files. The full strict gate remains open.
 
-Three C215286 partial-package logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (27 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 653,904 bytes). The C215286 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
+Three C215286 partial-package logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (27 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 653,904 bytes). The C215286 scoped nonready check passed after archival; restore or rerun these logs before strict readiness.
 
 ## 2026-11-23 C144550 third-case fallback completion
 
 All five C144550 primaries and nine of fifteen fallbacks now pass current source-bound compatibility and recorded-only saved processing. Wrong-direction fallback3's returned receipts passed candidate/case identity and SHA-256 verification, and C144550's scoped nonready complete check passed. Six fallback sets, canonical semantic stages and independent delivery audits remain. C144550 stays partial; batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files; the full strict gate remains open.
 
-Three C215286 short-case negative logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (24 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 653,524 bytes). The scoped nonready C215286 check passed after archival. Restore or rerun these logs before its strict readiness check.
+Three C215286 short-case negative logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (24 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 653,524 bytes). The scoped nonready C215286 check passed after archival. Restore or rerun these logs before its strict readiness check.
 
 ## 2026-11-23 C144550 wrong-direction fallback2 and return capacity
 
 Wrong-direction fallback2 passed current source-bound compatibility, missing-source negative analysis and recorded-only saved processing. Its bound receipts passed identity and SHA-256 verification; the C144550 scoped nonready check passed. Five primaries and eight of fifteen fallbacks are proved. Seven fallback sets, semantic stages and independent delivery audits remain worker-owned. C144550 stays partial; batch remains 29 ready and 14 partial. The return tree has 8,599 of 8,600 allowed files. The full strict gate remains open.
 
-Three C215286 negative logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (21 members, SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 653,400 bytes). C215286's scoped nonready check passes after archival. Its logs must be restored or rerun before strict readiness.
+Three C215286 negative logs were byte-verified and preserved as direct members of `small-archives-consolidated-20261123.tar.xz` (21 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 653,400 bytes). C215286's scoped nonready check passes after archival. Its logs must be restored or rerun before strict readiness.
 
 ## 2026-11-23 C144550 wrong-direction fallback1 checkpoint
 
@@ -52,7 +58,7 @@ The late-signal case now has all three fallback constructions proved through cur
 
 ## 2026-11-23 consolidated capacity archive update
 
-`work/_shared/small-archives-consolidated-20261123.tar.xz` now has SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a` and 18 members. It also contains the two partial-package historical test-log archives and the C215286 physical-fixture-results archive described below; their standalone paths were removed. Recover one by `tar -xOf work/_shared/small-archives-consolidated-20261123.tar.xz work/_shared/NAME > /tmp/NAME`, then `tar -xOf /tmp/NAME MEMBER > MEMBER`. Both archive layers were byte-verified. Restore or rerun archived proof outputs before a package moves to ready. The return tree had 8,595 files immediately after consolidation; the current count is 8,599.
+`work/_shared/small-archives-consolidated-20261123.tar.xz` now has SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90` and 18 members. It also contains the two partial-package historical test-log archives and the C215286 physical-fixture-results archive described below; their standalone paths were removed. Recover one by `tar -xOf work/_shared/small-archives-consolidated-20261123.tar.xz work/_shared/NAME > /tmp/NAME`, then `tar -xOf /tmp/NAME MEMBER > MEMBER`. Both archive layers were byte-verified. Restore or rerun archived proof outputs before a package moves to ready. The return tree had 8,595 files immediately after consolidation; the current count is 8,599.
 
 ## 2026-11-23 C215286 diagnostic physical fixture archive
 
@@ -72,7 +78,7 @@ Current return count at that checkpoint was 8,598 of the 8,600-file limit; earli
 
 ## 2026-11-23 C144550 five-primary proof checkpoint
 
-All five exact primaries now pass current source-bound compatibility, missing-source negative checks and recorded-only saved processing on distinct synthetic originals. All five bound receipts pass pinned static verification and the C144550 scoped nonready complete check passes. The right-direction case reflects lateral geometry and swaps lane identities with right-lamp original observations; its departure has the appropriate right signal and an 8.0 m measured target gap. A 900-frame controlled left/right source comparison passed. C144550 remains partial until 15 fallback compatibility/saved proofs, semantic stages and independent delivery audits are done. C129731 passed scoped strict revalidation after historical acceptance archival (log SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`). The shared archive was consolidated at SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`; recovery is indexed in shared HANDOFF.
+All five exact primaries now pass current source-bound compatibility, missing-source negative checks and recorded-only saved processing on distinct synthetic originals. All five bound receipts pass pinned static verification and the C144550 scoped nonready complete check passes. The right-direction case reflects lateral geometry and swaps lane identities with right-lamp original observations; its departure has the appropriate right signal and an 8.0 m measured target gap. A 900-frame controlled left/right source comparison passed. C144550 remains partial until 15 fallback compatibility/saved proofs, semantic stages and independent delivery audits are done. C129731 passed scoped strict revalidation after historical acceptance archival (log SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`). The shared archive was consolidated at SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`; recovery is indexed in shared HANDOFF.
 
 ## 2026-11-23 C144550 close-gap primary
 
@@ -889,4 +895,12 @@ C125745's three exact bound frame-24 fallbacks now each pass complete, incomplet
 
 ## 2026-11-23 C144550 semantic proof checkpoint
 
-C144550 now has a validator-passing seven-stage semantic chain with five unchanged selected recording descriptions. Current 23 CPU tests and scoped nonready checker pass. The package remains partial: judgment sweep grids, independent delivery and comparison audits, and shared queue integration are pending. Nine historical C158196/257-1 logs were moved into `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `c94865f34b2ea9591c50dfac7d7e622fa52fa24616feaf16bb12f4398eece59a`, 48 historical members); restore them before C158196 strict readiness if needed. Current work count and per-file caps should be rechecked after this checkpoint.
+C144550 now has a validator-passing seven-stage semantic chain with five unchanged selected recording descriptions. Current 23 CPU tests and scoped nonready checker pass. The package remains partial: judgment sweep grids, independent delivery and comparison audits, and shared queue integration are pending. Nine historical C158196/257-1 logs were moved into `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`, 48 historical members); restore them before C158196 strict readiness if needed. Current work count and per-file caps should be rechecked after this checkpoint.
+
+## 2026-11-23 C144550 five-case source audit proof
+
+All five exact C144550 primaries now pass independent 900-frame/four-video diagnostic source audits and five changed-original negative checks. See `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/diagnostic-source-audits.json` (SHA256 `c1b2e80c46195fb9b0e50c15e55e08ed1b808bf2b6e24444637efa04199013c4`). C144550 remains partial pending Native acceptance audit software proof, fixed judgment grids, comparisons and shared queue. The C158196/257-1 historical-log archive now includes 62 members: `work/_shared/small-archives-consolidated-20261123.tar.xz` SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`; those logs must be restored or rerun before that assignment can be ready.
+
+## 2026-11-23 C144550 Native preflight negative proof
+
+C144550 gained a read-only Native source preflight and three reproducible rejection proofs. Diagnostic provenance, absent seal and false owner release were each rejected. See `work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/native-preflight-proof.json` SHA256 `bbd089374ad3bd41f688e0308de23a879f65fec96d2bc7bcd562ab968c237e03`. No positive Native capture has been run; status stays partial. The historical C158196/257-1 log archive now has 68 members, SHA256 `5b5172dfb1f4e12e6eba13e7469dca472443d04ae06f186cd00f728ae5625c90`; those logs require restoration or rerun before that package can be ready.

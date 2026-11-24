@@ -52,14 +52,23 @@ def audit(attempt, case_id):
         raise ValueError("Diagnostic provenance or acceptance claim differs")
     inventory = receipt.get("fixture_manifest", {})
     required = {"lane_context.json", "lane_history.jsonl", "video_frames.jsonl", "trace.jsonl",
-                "capture/evidence.jsonl", "config.json", "result.json"} - {"result.json"}
-    required |= {name + ".mkv" for name in CAMERAS}
+                "capture/evidence.jsonl"}
     if not required <= set(inventory):
         raise ValueError("Original source inventory incomplete")
     for name in required:
         source = attempt / name
         if not source.is_file() or sha(source) != inventory[name]:
             raise ValueError("Original source changed: " + name)
+    if sha(attempt / "config.json") != result.get("physical_checks", {}).get("setup", {}).get("sources", {}).get("config.json"):
+        raise ValueError("Original config changed")
+    four_view = read(attempt / "four-view-receipt.json")
+    if (four_view.get("format") != "synchronized-four-view"
+            or four_view.get("frame_map_sha256") != inventory["video_frames.jsonl"]
+            or set(four_view.get("sources", {})) != set(CAMERAS)):
+        raise ValueError("Original four-view binding differs")
+    for name in CAMERAS:
+        if sha(attempt / (name + ".mkv")) != four_view["sources"][name]:
+            raise ValueError("Original camera source changed: " + name)
     evidence = result.get("source_evidence_hashes", {})
     if evidence != report.get("source_hashes") or any(inventory.get(name) != digest for name, digest in evidence.items()):
         raise ValueError("Original measurement source binding differs")
