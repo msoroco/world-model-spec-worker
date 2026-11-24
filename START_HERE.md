@@ -1,3 +1,5 @@
+Read AGENT_PROMPT.md first. Its completion and scheduling policy supersedes conflicting continuation guidance below.
+
 # Start demo-test-delivery
 
 Use a fresh clone of `worker/demo-test-delivery` after the reviewed cutover is merged. Run `scripts/run-worker.sh` from the repository root. The launcher starts the agent and a separate Git checkpoint timer; inspect `.runtime-work/worker-run.*/checkpoint.log` if publication fails.
