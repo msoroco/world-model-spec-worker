@@ -1,3 +1,7 @@
+# Current checkpoint: final Native capture contract reproof in progress
+
+The previously documented `boundary-v2-*` CPU receipts below are superseded by the revised 1920×1080 overview, canonical camera names and Native source description. Six `boundary-final-*` offline commands passed; public compatibility and saved processing are being reproved. Status remains partial.
+
 # training__C131055__NRS-484B-600-1e__motor_vehicle_driver handoff
 
 Status: **partial**. Three exact selected below, at and above 80 mph CPU diagnostic cases and their three shared fallbacks pass current v2 offline, public compatibility, missing-source negative, recorded-only saved processing and independent diagnostic delivery checks. No original Native recording or physical acceptance is claimed.

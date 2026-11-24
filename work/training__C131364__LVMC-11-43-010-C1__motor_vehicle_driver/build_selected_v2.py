@@ -44,7 +44,7 @@ def main():
         case["compatibility"] = {
             "receipt": case["primary_proofs"]["compatibility"]["path"],
             "sha256": case["primary_proofs"]["compatibility"]["sha256"],
-            "log": f"{primary}/compatibility-analysis.log",
+            "log": f"{primary}/analysis.log",
             "negative_log": f"{primary}/negative-analysis.log",
         }
         case["negative"] = {"log": f"{primary}/negative-analysis.log"}
@@ -78,7 +78,7 @@ def main():
         candidate["compatibility"] = {
             "receipt": candidate["proofs"]["compatibility"]["path"],
             "sha256": candidate["proofs"]["compatibility"]["sha256"],
-            "log": f"{fallback}/compatibility-analysis.log",
+            "log": f"{fallback}/analysis.log",
             "negative_log": f"{fallback}/negative-analysis.log",
         }
         case["candidates"] = [candidate]

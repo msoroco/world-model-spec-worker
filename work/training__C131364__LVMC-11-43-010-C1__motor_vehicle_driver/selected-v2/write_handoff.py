@@ -46,6 +46,18 @@ auditor, verifies common fixed conditions, and demands observed distinct
 circulating lanes. No actual mode was run and no physical or legal finding is
 claimed.
 
+The canonical root package is now materialized at
+{show('execution-manifest.json')} with root `construction.json`, `runner.py`,
+`config.json`, and `tests/test_route.py`. Pinned execution-manifest validation
+and primary package compatibility receipt checks pass for both exact cases:
+{show('selected-v2/canonical-validation.json')}. Three synthetic physical
+outcome fixtures per case cover complete, incomplete, and missing evidence;
+their source-bound proof receipts are
+{show('selected-v2/physical/witness1/proof.json')} and
+{show('selected-v2/physical/witness2/proof.json')}. Root four-test suite passes:
+{show('selected-v2/root-unittest.log')}. These remain CPU fixture outcomes,
+not observed original passage outcomes.
+
 Statutory branch review is {show('proposals/statutory-branch-review.json')}.
 This assignment's frozen cell supports the left-turn pair. The exact-law
 `training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver` assignment must
@@ -61,15 +73,18 @@ export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/audit.py
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_semantic.py
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_delivery_contract.py
+.venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_canonical.py
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/comparison_audit.py --cpu-test positive
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/comparison_audit.py --cpu-test negative
 .venv-cpu/bin/python worker_check.py --assignment {ROOT.name} --complete
 ```
 
 The comparison negative must exit nonzero with `Comparison fixed condition
-differs: road_sha256`. Next CPU work: bind canonical `execution-manifest.json`
-and complete any remaining strict-ready package requirements, then run the
-assignment-scoped strict gate. Local physical work requires two actual Native
+differs: road_sha256`. Next CPU work: add the exact camera plan and source
+observation mapping to the case plan, then refresh its source-hashed selected
+constructions and four exact compatibility/saved receipts; complete remaining
+strict-ready package requirements and run the assignment-scoped strict gate.
+Local physical work requires two actual Native
 captures, original pixel/roundabout/left-turn/lane-history review receipts,
 and original comparison audit. Historical notes follow.
 

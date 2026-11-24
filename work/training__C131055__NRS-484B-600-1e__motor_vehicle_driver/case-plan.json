@@ -8,6 +8,33 @@
     "sha256": "d9feee1cf7e57d6beb3c3ec2af66459f6e979234b07e02db9d9ab6cc204df754",
     "status": "selected_at_cpu_diagnostic_source_construction_pending_original_speed_unknown"
   },
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 30 s",
+        "subject": "motor vehicle, roundabout arc and exit",
+        "view": "overview"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "arc entry and subject approach",
+        "view": "approach"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "exit tangent and lane context",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "vehicle body and lane trajectory",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
@@ -134,7 +161,7 @@
         "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
         "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3"
       ],
-      "evidence_or_gap": "Three selected below/at/above source-hashed CPU diagnostic cases are under reproof after an exact boundary meter correction. Accepted membership has no original velocity receipt; reuse is zero. Physical measurement remains unverified.",
+      "evidence_or_gap": "Three selected below/at/above source-hashed CPU diagnostic cases and shared fallbacks passed current runtime construction and saved processing; original Native speed, arc/exit traversal and pixels remain later GPU checks.",
       "requirement": "NRS-484B-600-1e",
       "source": "NRS 484B.600(1)(e)",
       "status": "selected_required"
@@ -164,6 +191,7 @@
       "channels": [
         "original_vehicle_velocity_position"
       ],
+      "evidence": "maximum measured mph from full original post-tick velocity history",
       "measurement": "maximum measured mph from full original post-tick velocity history",
       "source_refs": [
         "roundabout-speed-history.jsonl",
@@ -175,6 +203,7 @@
       "channels": [
         "original_vehicle_velocity_position"
       ],
+      "evidence": "three-axis original Native velocity at each frame",
       "measurement": "three-axis original Native velocity at each frame",
       "source_refs": [
         "roundabout-speed-history.jsonl"
@@ -183,9 +212,9 @@
     },
     "ru.subject": {
       "channels": [
-        "original_vehicle_velocity_position",
-        "four synchronized cameras"
+        "original_vehicle_velocity_position"
       ],
+      "evidence": "single motor vehicle subject identity and operator context",
       "measurement": "single motor vehicle subject identity and operator context",
       "source_refs": [
         "roundabout-speed-history.jsonl",

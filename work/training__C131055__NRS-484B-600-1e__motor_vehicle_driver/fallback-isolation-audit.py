@@ -63,6 +63,6 @@ result = {'format': 'worker-fallback-isolation-audit', 'passed': True,
                                          'comparison speed request'],
           'construction_sha256': hashes,
           'physical_or_legal_acceptance': False}
-path = HERE / 'fallback-isolation-v3-receipt.json'
+path = HERE / 'fallback-isolation-v4-receipt.json'
 require(not path.exists(), 'Retain previous isolation receipt')
 path.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')

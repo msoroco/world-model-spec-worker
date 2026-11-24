@@ -32,15 +32,7 @@
         "training__C188094__LVMC-11-30-070-B__pedestrian__probe_2",
         "training__C188094__LVMC-11-30-070-B__pedestrian__probe_3"
       ],
-      "evidence_or_gap": "Three exact primary CPU construction drafts exist; marked/outside selected pair and shared fallback pass public compatibility/saved. Unmarked intersection offline passes but Native physical map, business-district authority and full source audits remain unverified."
-    },
-    {
-      "requirement": "LVMC-11-30-070-B",
-      "source": "LVMC 11.30.070(B)",
-      "branch": "business-district condition",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "evidence_or_gap": "All three same-map exact constructions and fallback1 pass CPU offline, public positive/source-negative compatibility and recorded-only saved processing. The measured output includes the district context; original Native district authority, motion, body and pixels remain to be reviewed."
     }
   ],
   "neutral_baseline": {
@@ -51,7 +43,7 @@
     {
       "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_1",
       "target_law_id": "LVMC-11-30-070-B",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "below",
       "physical_target": "cross in marked or unmarked crosswalk in business district",
       "comparison_variable": "crosswalk_occupancy_at_crossing",
@@ -64,7 +56,7 @@
     {
       "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_2",
       "target_law_id": "LVMC-11-30-070-B",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cross roadway outside any marked or unmarked crosswalk in same district",
       "comparison_variable": "crosswalk_occupancy_at_crossing",
@@ -77,7 +69,7 @@
     {
       "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_3",
       "target_law_id": "LVMC-11-30-070-B",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cross within an unmarked intersection crosswalk in the same business district",
       "comparison_variable": "marked_vs_unmarked_crosswalk",
@@ -134,35 +126,43 @@
     {
       "term": "ru.subject",
       "purpose": "the pedestrian judged",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_cpu_proven_native_pending"
     },
     {
       "term": "st.crosswalk",
       "purpose": "the marked or unmarked crosswalk",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_cpu_proven_native_pending"
     },
     {
       "term": "st.roadway",
       "purpose": "the roadway crossed",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_cpu_proven_native_pending"
     },
     {
       "term": "rel.occupies",
       "purpose": "where the pedestrian crosses",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_cpu_proven_native_pending"
     },
     {
       "term": "st.intersection",
       "purpose": "the intersection an unmarked crosswalk belongs to",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_cpu_proven_native_pending"
     },
     {
       "term": "kin.position",
       "purpose": "the crossing point",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_cpu_proven_native_pending"
     }
   ],
-  "candidate_plans": [],
+  "candidate_plans": [
+    {
+      "candidate_id": "fallback1",
+      "risk": "Original Native lateral drift may move the body away from the requested crossing at roadway entry",
+      "trigger_source": "actor-poses.jsonl",
+      "trigger_metric": "lateral_error_at_roadway_entry_m",
+      "shared_change": "walker correction clamp 0.2 to 0.4 for all linked cases"
+    }
+  ],
   "existing_evidence": [],
   "sources": [
     {
@@ -176,7 +176,7 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "Original Native business-district evidence, complete crossing inventory, unmarked junction and sidewalk readback, and physical body-footprint/camera review remain unverified."
+    "Original Native intersection, business-district authority, complete crossing inventory, body footprint and four-camera pixels require physical review; no physical or legal outcome is claimed."
   ],
   "selected_branch": null,
   "observations": [
@@ -212,9 +212,102 @@
     }
   ],
   "runtime_uncertainties": [
-    "Native map can realize the fixed cell and legal mechanism",
-    "Actor blueprint and route can realize each requested target",
-    "Cameras can inspect the decisive physical distinction",
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+    "Original Native map/actor may not realize the authored intersection and route.",
+    "Business district classification needs original map or independent source authority.",
+    "Original full body footprint and four-camera pixels need physical review."
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "whole intersection, marked and unmarked crossings, overpass, pedestrian body",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian approach, roadway entry and body footprint",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "marked paint, unmarked junction and sidewalk edge readback",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "roadway and pedestrian crossing from traffic side",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "ru.subject": {
+      "evidence": "Original Native pedestrian actor ID and blueprint joined to poses and source frames",
+      "channels": [
+        "ru.subject"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "native-capture-report.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Marked road feature and unmarked intersection/sidewalk inventory read back from original Native map",
+      "channels": [
+        "st.crosswalk"
+      ],
+      "source_refs": [
+        "crossing-context.json",
+        "native-map-readback.json",
+        "road.xodr",
+        "sidewalk-edges.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Authored road geometry joined to original Native road waypoint and actor pose",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "native-map-readback.json",
+        "actor-poses.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Pedestrian body polygon and center position relative to source-bound roadway/crosswalk polygons",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "capture/evidence.jsonl",
+        "crossing-context.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original Native junction and sidewalk-edge joins for unmarked crosswalk",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "native-map-readback.json",
+        "crossing-context.json",
+        "sidewalk-edges.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original Native pedestrian transform for every 20 Hz source frame",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  }
 }

@@ -1,0 +1,101 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cameras": [
+    {
+      "fov_deg": 85,
+      "fps": 20,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "fixed_roundabout_arc_exit",
+      "width": 1920
+    },
+    {
+      "fov_deg": 85,
+      "fps": 20,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "fixed_entry_arc",
+      "width": 1280
+    },
+    {
+      "fov_deg": 85,
+      "fps": 20,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "fixed_exit_tangent",
+      "width": 1280
+    },
+    {
+      "fov_deg": 85,
+      "fps": 20,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "vehicle_chase",
+      "width": 1280
+    }
+  ],
+  "candidate_id": "primary",
+  "case": {
+    "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1"
+  },
+  "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+  "cell_id": "C131055",
+  "duration_s": 30,
+  "law_id": "NRS-484B-600-1e",
+  "rate_hz": 20,
+  "recording_description": {
+    "channels": [
+      {
+        "method": "Native post-tick actor transform, velocity and lane readback",
+        "name": "original_vehicle_velocity_position",
+        "reference_frame": "surveyed roundabout arc and east exit",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "uncertainty": "50 ms sampling",
+        "unit": "structured"
+      },
+      {
+        "method": "maximum and framewise speed from post-tick Native velocity",
+        "name": "kin.speed",
+        "reference_frame": "surveyed roundabout arc and exit",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; original Native review pending",
+        "unit": "mph"
+      },
+      {
+        "method": "three-axis post-tick Native velocity vector",
+        "name": "kin.velocity",
+        "reference_frame": "surveyed roundabout arc and exit",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; original Native review pending",
+        "unit": "m/s"
+      },
+      {
+        "method": "Native vehicle actor identity across all frames",
+        "name": "ru.subject",
+        "reference_frame": "surveyed roundabout arc and exit",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; original Native review pending",
+        "unit": "identifier"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Controller target speed is not measured speed",
+      "Roundabout-to-exit traversal and original pixels require Native review",
+      "CPU fixture is synthetic; original Native measurement and pixels require later capture"
+    ]
+  },
+  "required_atoms": [],
+  "selected_case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+  "source_packets": [],
+  "status": "cpu_prepared_physical_capture_pending",
+  "supported_case_ids": [
+    "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+    "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
+    "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3"
+  ]
+}

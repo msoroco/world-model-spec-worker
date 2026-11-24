@@ -24,8 +24,8 @@ def require(value, message):
 case_index = int(os.environ.get('OWNER199_SOURCE_SHAPE_CASE', '2'))
 require(case_index in (2, 3), 'Source-shape test case must be above or exact at')
 case = HERE.name + f'__controlled_{case_index}'
-original = ROOT / f'.runtime-work/owner199/boundary-v2-{case_index}-primary-compat'
-saved = ROOT / f'.runtime-work/owner199/boundary-v2-{case_index}-primary-saved/v0001/processing.json'
+original = ROOT / f'.runtime-work/owner199/boundary-final-{case_index}-primary-compat'
+saved = ROOT / f'.runtime-work/owner199/boundary-final-{case_index}-primary-saved/v0001/processing.json'
 require(original.is_dir() and saved.is_file(), 'Selected source-shaped test inputs absent')
 with tempfile.TemporaryDirectory(prefix='owner199-physical-audit-test-',
                                  dir=ROOT / '.runtime-work') as temporary:

@@ -14,14 +14,21 @@
   },
   "canonical_delivery_local_validation": {
     "receipt": "delivery-contract-validation.log",
-    "sha256": "b7ba2bdfef622930512441e98a5336b670eb23fc0fe6ab61529a7bdf8cd3396a"
+    "sha256": "e57ad15e155b0c5e25a1cbec078fff76d195020fe1081a52e2d97ee5c6790545"
   },
   "canonical_semantic_local_validation": {
     "receipt": "semantic-validation.log",
-    "sha256": "f4c7575561634133fd7dbec46eb763a3e695df8cc513ea5c3b33e8e1bf075e75"
+    "sha256": "413c1a64a8cc9912e68f08e157842274032dc70efb7edf55f1a51f83322f77d7"
   },
   "cases": [
     {
+      "acquisition": {
+        "original_vehicle_velocity_position": {
+          "entrypoint": "runner.py",
+          "evidence": "roundabout-speed-history.jsonl; roundabout-survey.json; video_frames.jsonl; four source videos",
+          "method": "Post-tick Native velocity, pose, lane survey and synchronized camera frame capture"
+        }
+      },
       "candidate_risk": {
         "reason": "Native speed can fall short of the requested rate on the roundabout arc or exit; controller gain is selectable only after measured original-source failure.",
         "status": "physical"
@@ -32,24 +39,32 @@
             "throttle_proportional_gain_0.35_to_0.55"
           ],
           "compatibility": {
-            "receipt": "boundary-v2-1-fallback-compatibility-receipt.json",
-            "sha256": "9e477e0fac8ef4210340745b5d6208d7afa5544b69ba0662eda1638ca626fe8a"
+            "log": "boundary-final-1-fallback-analysis.log",
+            "negative_log": "boundary-final-1-fallback-negative-analysis.log",
+            "receipt": "boundary-final-1-fallback-compatibility-receipt.json",
+            "sha256": "e072eec4dc182b6f30ac775f5cc85ed4623b8ec5745bb6fba401441e970c224b"
           },
           "construction": "selected-candidates/below/fallback1/construction.json",
-          "construction_sha256": "ffa366d04589e6b9f9cd449203215ee2e8d3f78ffe300ecffffa8a9da3c24ffd",
+          "construction_sha256": "b54d77b561fd77cf41c6f347b7456ee89c48dcb85960d678813c7587b6ce7386",
           "delivery_diagnostic": {
-            "receipt": "boundary-v2-1-fallback-delivery-diagnostic-receipt.json",
-            "sha256": "012ab4e2ef881574ea70072c6c9244ec3086838e9de6387f7c6292ca4391d478"
+            "receipt": "boundary-final-1-fallback-delivery-diagnostic-receipt.json",
+            "sha256": "97a79802195b18b1448a02fcae028b2d46e050bfb35ea748dc569fd0ef923883"
           },
           "id": "fallback1",
           "negative": {
-            "receipt": "boundary-v2-1-fallback-negative-analysis.log",
-            "sha256": "f339ea91f810dbf382ac580b243d9c059ae54182fdfe11eecb0829f1624553c9"
+            "log": "boundary-final-1-fallback-negative-analysis.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/owner199/boundary-final-1-fallback-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "b54d77b561fd77cf41c6f347b7456ee89c48dcb85960d678813c7587b6ce7386",
+            "exit_code": 0,
+            "log": "boundary-final-1-fallback-offline.log",
+            "log_sha256": "a92718070c0d6fe3e90fb42b25dbd713d49a5b71f0c55265447cf53cf9df99a8"
           },
           "preparation_status": "current_v2_cpu_diagnostic_passed_original_native_pending",
           "saved_processing": {
-            "receipt": "boundary-v2-1-fallback-saved-receipt.json",
-            "sha256": "e43cf742b952e2255a8c9c04c3e0246c176244dd2ea590a28940b73c1832bd39"
+            "receipt": "boundary-final-1-fallback-saved-receipt.json",
+            "sha256": "99e56289090154689d17855a0935041bb56b98f74919c1390906b03e64ed506f"
           },
           "trigger": {
             "failure_condition": "median_requested_minus_measured_mph > 2.0 for at least 50 consecutive arc frames",
@@ -60,11 +75,13 @@
       ],
       "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
       "compatibility": {
-        "receipt": "boundary-v2-1-primary-compatibility-receipt.json",
-        "sha256": "e7d2b04366b68ef1d401e40de8ac62af20b5b39edf4762f93fe88b77bf00e16d"
+        "log": "boundary-final-1-primary-analysis.log",
+        "negative_log": "boundary-final-1-primary-negative-analysis.log",
+        "receipt": "boundary-final-1-primary-compatibility-receipt.json",
+        "sha256": "1fd21b5024133cdeb7c41325a86f249fb6ac54e77449a1fe5172a0a2bf4a6c19"
       },
       "construction": "selected-candidates/below/primary/construction.json",
-      "construction_sha256": "9b6f6d0e558b1a606275bfc13cf07bed32ce68ea5cba7273a224bcd3f05d2785",
+      "construction_sha256": "bb170fd6b43eab09422b0f25289bae6edf4575c7411fa014618d5da038ec4601",
       "delivery_acceptance": {
         "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
         "checks": [
@@ -75,11 +92,11 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --candidate primary --attempt .runtime-work/owner199/boundary-v2-1-primary-compat --processing .runtime-work/owner199/boundary-v2-1-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-v2-1-primary-audit.json --diagnostic",
-        "negative_command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --candidate primary --attempt .runtime-work/owner199/boundary-v2-1-primary-compat --processing .runtime-work/owner199/boundary-v2-1-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-v2-1-primary-negative-audit.json",
+        "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --candidate primary --attempt .runtime-work/owner199/boundary-final-1-primary-compat --processing .runtime-work/owner199/boundary-final-1-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-final-1-primary-audit.json --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --candidate primary --attempt .runtime-work/owner199/boundary-final-1-primary-compat --processing .runtime-work/owner199/boundary-final-1-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-final-1-primary-negative-audit.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Original Native roundabout source required",
-        "negative_log": "boundary-v2-1-primary-delivery-negative.log",
+        "negative_log": "boundary-final-1-primary-delivery-negative.log",
         "negative_log_sha256": "f663eb5430da7052d82a2aecd72dad2dccfc93b32003d748a47a92ab00bb1d79",
         "physical_acceptance": false,
         "script": "delivery_audit.py",
@@ -88,12 +105,12 @@
           "full-train"
         ],
         "test_exit_code": 0,
-        "test_log": "boundary-v2-1-primary-delivery-diagnostic-receipt.json",
-        "test_log_sha256": "1fffdd1dd45a1c3b66d60b7c87e4c424894c77b3d9859071ab7084f5cba38042"
+        "test_log": "boundary-final-1-primary-delivery-diagnostic-receipt.json",
+        "test_log_sha256": "82b9b479b1463560d9012dd760567e39708766e596a48fd84d9c4165f3ae0bbb"
       },
       "delivery_diagnostic": {
-        "receipt": "boundary-v2-1-primary-delivery-diagnostic-receipt.json",
-        "sha256": "1fffdd1dd45a1c3b66d60b7c87e4c424894c77b3d9859071ab7084f5cba38042"
+        "receipt": "boundary-final-1-primary-delivery-diagnostic-receipt.json",
+        "sha256": "82b9b479b1463560d9012dd760567e39708766e596a48fd84d9c4165f3ae0bbb"
       },
       "fixture_recipe": "work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/current-v2-below-fixture-recipe.json",
       "id": "primary",
@@ -102,34 +119,66 @@
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
       "negative": {
-        "receipt": "boundary-v2-1-primary-negative-analysis.log",
-        "sha256": "30d1b3190dafc5d62124d759619f3c75a22580c3f5fbfdf640967a3d0fcb79b1"
+        "log": "boundary-final-1-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --candidate primary --output .runtime-work/owner199/boundary-final-1-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "bb170fd6b43eab09422b0f25289bae6edf4575c7411fa014618d5da038ec4601",
+        "exit_code": 0,
+        "log": "boundary-final-1-primary-offline.log",
+        "log_sha256": "c549b2b7f612234424d1aa3587d48b003cb2b955dcbde3f9b08bc1782f5b2a96"
+      },
+      "physical_preparation": {
+        "receipt": "physical-fixtures/controlled_1/proof.json",
+        "sha256": "3a7b24c8717cb7bc8a477ab688d0e45d04cb920479f2e4c80e71637102ed3685"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "boundary-final-1-primary-saved-receipt.json",
+        "test_log_sha256": "a1d1c97f7baac6652688e03eefbd381924c16b8a3c6732c60b3c1304d854c223"
       },
       "preparation_status": "current_v2_cpu_diagnostic_passed_original_native_pending",
       "recording_description": {
         "channels": [
           {
-            "method": "Retained original-frame synthetic source row",
+            "method": "Native post-tick actor transform, velocity and lane readback",
             "name": "original_vehicle_velocity_position",
-            "reference_frame": "original frame/time and surveyed arc/exit",
+            "reference_frame": "surveyed roundabout arc and east exit",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; Native review pending",
+            "time_window": "600 frames",
+            "uncertainty": "50 ms sampling",
             "unit": "structured"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Synthetic source only; actual Native speed and lane retention unverified"
+          "Controller target speed is not measured speed",
+          "Roundabout-to-exit traversal and original pixels require Native review",
+          "CPU fixture is synthetic; original Native measurement and pixels require later capture"
         ]
       },
       "saved_processing": {
-        "receipt": "boundary-v2-1-primary-saved-receipt.json",
-        "sha256": "0df4d99a113880225402f5c36c40886e2f3d7be079854ae3aeecd3d92f159c6c"
+        "receipt": "boundary-final-1-primary-saved-receipt.json",
+        "sha256": "a1d1c97f7baac6652688e03eefbd381924c16b8a3c6732c60b3c1304d854c223"
       }
     },
     {
+      "acquisition": {
+        "original_vehicle_velocity_position": {
+          "entrypoint": "runner.py",
+          "evidence": "roundabout-speed-history.jsonl; roundabout-survey.json; video_frames.jsonl; four source videos",
+          "method": "Post-tick Native velocity, pose, lane survey and synchronized camera frame capture"
+        }
+      },
       "candidate_risk": {
         "reason": "Native speed can fall short of the requested rate on the roundabout arc or exit; controller gain is selectable only after measured original-source failure.",
         "status": "physical"
@@ -140,24 +189,32 @@
             "throttle_proportional_gain_0.35_to_0.55"
           ],
           "compatibility": {
-            "receipt": "boundary-v2-2-fallback-compatibility-receipt.json",
-            "sha256": "9308b2170d394c14a44de0a3ea748f7632bfc00290a9e1310961833f3ba0b9eb"
+            "log": "boundary-final-2-fallback-analysis.log",
+            "negative_log": "boundary-final-2-fallback-negative-analysis.log",
+            "receipt": "boundary-final-2-fallback-compatibility-receipt.json",
+            "sha256": "98dfeb3e31dce829850523eb11c82702bc02ddecfc2479e2e42a83d0f6e6f76c"
           },
           "construction": "selected-candidates/above/fallback1/construction.json",
-          "construction_sha256": "63ca703e3b400e9b026d167e188b6add2143de0d9946671f6669a209a8855601",
+          "construction_sha256": "3a683fa872ef86d8e9110d7c20f44a825446a7322faf13df7320e960cef4e881",
           "delivery_diagnostic": {
-            "receipt": "boundary-v2-2-fallback-delivery-diagnostic-receipt.json",
-            "sha256": "693e6ffab7fc8be4b31ed2b3905a3ce1d54a27a54e265a2375c9c7a973ff8359"
+            "receipt": "boundary-final-2-fallback-delivery-diagnostic-receipt.json",
+            "sha256": "dd45bf3a5d38f9b5b54700c38b5d89c14143536df2c3195929f39353d3f2d864"
           },
           "id": "fallback1",
           "negative": {
-            "receipt": "boundary-v2-2-fallback-negative-analysis.log",
-            "sha256": "f05e51339fab2044ec051e91d1320f5cd718267191feb1ec1afc51387c14c887"
+            "log": "boundary-final-2-fallback-negative-analysis.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/owner199/boundary-final-2-fallback-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "3a683fa872ef86d8e9110d7c20f44a825446a7322faf13df7320e960cef4e881",
+            "exit_code": 0,
+            "log": "boundary-final-2-fallback-offline.log",
+            "log_sha256": "ad3f9275d3591327c7cb9248c25e34b3bb57d9746edd064c2d2b4c3927f7a0de"
           },
           "preparation_status": "current_v2_cpu_diagnostic_passed_original_native_pending",
           "saved_processing": {
-            "receipt": "boundary-v2-2-fallback-saved-receipt.json",
-            "sha256": "548922fb33b8fc64a695c9a55f8d26ffe2f652041b4c058f547357917c2c33cf"
+            "receipt": "boundary-final-2-fallback-saved-receipt.json",
+            "sha256": "573bcb6424887c92d03a93b14f114c39c6655e012aabca87d06100f6cd6372df"
           },
           "trigger": {
             "failure_condition": "median_requested_minus_measured_mph > 2.0 for at least 50 consecutive arc frames",
@@ -168,11 +225,13 @@
       ],
       "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
       "compatibility": {
-        "receipt": "boundary-v2-2-primary-compatibility-receipt.json",
-        "sha256": "8cfb4865aebeed5e82d2363d5ff401197f3191434e2cec194d0046fc04b632b8"
+        "log": "boundary-final-2-primary-analysis.log",
+        "negative_log": "boundary-final-2-primary-negative-analysis.log",
+        "receipt": "boundary-final-2-primary-compatibility-receipt.json",
+        "sha256": "13ad0157df04553ad852b38b43f968c7ca6b3aea770cb3395c9ea1d5902805c2"
       },
       "construction": "selected-candidates/above/primary/construction.json",
-      "construction_sha256": "ca820b3abec38a2c452a4664ba51030bae12bd682a8a05d2729c604548a2ff8a",
+      "construction_sha256": "880344344e92a4f9abe2fb5cba09d10629808b49e03bd9a63cf4c372c51e1f22",
       "delivery_acceptance": {
         "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
         "checks": [
@@ -183,11 +242,11 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --candidate primary --attempt .runtime-work/owner199/boundary-v2-2-primary-compat --processing .runtime-work/owner199/boundary-v2-2-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-v2-2-primary-audit.json --diagnostic",
-        "negative_command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --candidate primary --attempt .runtime-work/owner199/boundary-v2-2-primary-compat --processing .runtime-work/owner199/boundary-v2-2-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-v2-2-primary-negative-audit.json",
+        "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --candidate primary --attempt .runtime-work/owner199/boundary-final-2-primary-compat --processing .runtime-work/owner199/boundary-final-2-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-final-2-primary-audit.json --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --candidate primary --attempt .runtime-work/owner199/boundary-final-2-primary-compat --processing .runtime-work/owner199/boundary-final-2-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-final-2-primary-negative-audit.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Original Native roundabout source required",
-        "negative_log": "boundary-v2-2-primary-delivery-negative.log",
+        "negative_log": "boundary-final-2-primary-delivery-negative.log",
         "negative_log_sha256": "f663eb5430da7052d82a2aecd72dad2dccfc93b32003d748a47a92ab00bb1d79",
         "physical_acceptance": false,
         "script": "delivery_audit.py",
@@ -196,12 +255,12 @@
           "full-train"
         ],
         "test_exit_code": 0,
-        "test_log": "boundary-v2-2-primary-delivery-diagnostic-receipt.json",
-        "test_log_sha256": "6c599accf3599e4e16efb1ad95d731c4731928a0c548e8e187e78a20a96b2228"
+        "test_log": "boundary-final-2-primary-delivery-diagnostic-receipt.json",
+        "test_log_sha256": "24a09cdcd96ad077292335e96c94441c4e943162ecb360a6e5d08a56463820ec"
       },
       "delivery_diagnostic": {
-        "receipt": "boundary-v2-2-primary-delivery-diagnostic-receipt.json",
-        "sha256": "6c599accf3599e4e16efb1ad95d731c4731928a0c548e8e187e78a20a96b2228"
+        "receipt": "boundary-final-2-primary-delivery-diagnostic-receipt.json",
+        "sha256": "24a09cdcd96ad077292335e96c94441c4e943162ecb360a6e5d08a56463820ec"
       },
       "fixture_recipe": "work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/current-v2-above-fixture-recipe.json",
       "id": "primary",
@@ -210,34 +269,66 @@
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
       "negative": {
-        "receipt": "boundary-v2-2-primary-negative-analysis.log",
-        "sha256": "ae6e27dc47725253286dea0a6dfc794af74f843eaafc8444f4b05ed55c77d229"
+        "log": "boundary-final-2-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --candidate primary --output .runtime-work/owner199/boundary-final-2-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "880344344e92a4f9abe2fb5cba09d10629808b49e03bd9a63cf4c372c51e1f22",
+        "exit_code": 0,
+        "log": "boundary-final-2-primary-offline.log",
+        "log_sha256": "27768ec224a71c18da126e3bea1e46414a76b980b1ca574f28586dc158cbea32"
+      },
+      "physical_preparation": {
+        "receipt": "physical-fixtures/controlled_2/proof.json",
+        "sha256": "053386aebe84a8a7c7b3fd60ced0c24fe30a424bd773ababd2122d0271ec163d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "boundary-final-2-primary-saved-receipt.json",
+        "test_log_sha256": "54660f2f42a7fc10dab6111638b2ed4a06748789f58b96d67f14d57658e094d0"
       },
       "preparation_status": "current_v2_cpu_diagnostic_passed_original_native_pending",
       "recording_description": {
         "channels": [
           {
-            "method": "Retained original-frame synthetic source row",
+            "method": "Native post-tick actor transform, velocity and lane readback",
             "name": "original_vehicle_velocity_position",
-            "reference_frame": "original frame/time and surveyed arc/exit",
+            "reference_frame": "surveyed roundabout arc and east exit",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; Native review pending",
+            "time_window": "600 frames",
+            "uncertainty": "50 ms sampling",
             "unit": "structured"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Synthetic source only; actual Native speed and lane retention unverified"
+          "Controller target speed is not measured speed",
+          "Roundabout-to-exit traversal and original pixels require Native review",
+          "CPU fixture is synthetic; original Native measurement and pixels require later capture"
         ]
       },
       "saved_processing": {
-        "receipt": "boundary-v2-2-primary-saved-receipt.json",
-        "sha256": "20d8bd885690f892a02663d6bda6c9efe66e92e35335e33e1ad2facdd1a0c903"
+        "receipt": "boundary-final-2-primary-saved-receipt.json",
+        "sha256": "54660f2f42a7fc10dab6111638b2ed4a06748789f58b96d67f14d57658e094d0"
       }
     },
     {
+      "acquisition": {
+        "original_vehicle_velocity_position": {
+          "entrypoint": "runner.py",
+          "evidence": "roundabout-speed-history.jsonl; roundabout-survey.json; video_frames.jsonl; four source videos",
+          "method": "Post-tick Native velocity, pose, lane survey and synchronized camera frame capture"
+        }
+      },
       "candidate_risk": {
         "reason": "Native speed can fall short of the requested rate on the roundabout arc or exit; controller gain is selectable only after measured original-source failure.",
         "status": "physical"
@@ -248,24 +339,32 @@
             "throttle_proportional_gain_0.35_to_0.55"
           ],
           "compatibility": {
-            "receipt": "boundary-v2-3-fallback-compatibility-receipt.json",
-            "sha256": "e752e09f4a60e21acac43167a3d6a85c7d8960fb4a6dee5db0d535cce0eeecf0"
+            "log": "boundary-final-3-fallback-analysis.log",
+            "negative_log": "boundary-final-3-fallback-negative-analysis.log",
+            "receipt": "boundary-final-3-fallback-compatibility-receipt.json",
+            "sha256": "d3bda34b61e73c9c6c012fcd0807c7b416ca22891bf3152517173b65d0f322be"
           },
           "construction": "selected-candidates/at/fallback1/construction.json",
-          "construction_sha256": "00c1adcbe04de5ac7a39699c129e535eec2f689771522649f292c132351e8a52",
+          "construction_sha256": "49f551407c2d3d38ca7d79d4b4d616e2a55dc5d2dbf17b30fc438da7b7d864c2",
           "delivery_diagnostic": {
-            "receipt": "boundary-v2-3-fallback-delivery-diagnostic-receipt.json",
-            "sha256": "76894709abd19e464449aca3eacc3af4d9e8bbc6b58ea30a322878b8fbf956fd"
+            "receipt": "boundary-final-3-fallback-delivery-diagnostic-receipt.json",
+            "sha256": "6d5cd36637bd568048c6f953c00616cc0dbf6752c4ed4a80789dfa99163b779f"
           },
           "id": "fallback1",
           "negative": {
-            "receipt": "boundary-v2-3-fallback-negative-analysis.log",
-            "sha256": "3b9e6a6358373d2d576d062b1f30ee3cadaa0137d76d562a00a4268a67a28d5b"
+            "log": "boundary-final-3-fallback-negative-analysis.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --candidate fallback1 --output .runtime-work/owner199/boundary-final-3-fallback-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "49f551407c2d3d38ca7d79d4b4d616e2a55dc5d2dbf17b30fc438da7b7d864c2",
+            "exit_code": 0,
+            "log": "boundary-final-3-fallback-offline.log",
+            "log_sha256": "b4f1e479a7994880e5b0122c1c0af4553498faf35a605bfb2259d7f4ca0a2970"
           },
           "preparation_status": "current_v2_cpu_diagnostic_passed_original_native_pending",
           "saved_processing": {
-            "receipt": "boundary-v2-3-fallback-saved-receipt.json",
-            "sha256": "1ffce2c22f5ca759fe533c2bb34a2dbf2b87d5bb0a2a1279360ccf4f19f9bdae"
+            "receipt": "boundary-final-3-fallback-saved-receipt.json",
+            "sha256": "13ff368620c9d99ae7dacec5691113c09589c5572ae8bd4adf80ae2475715d57"
           },
           "trigger": {
             "failure_condition": "median_requested_minus_measured_mph > 2.0 for at least 50 consecutive arc frames",
@@ -276,11 +375,13 @@
       ],
       "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3",
       "compatibility": {
-        "receipt": "boundary-v2-3-primary-compatibility-receipt.json",
-        "sha256": "340a433845e08c695ec8cd18e5e6a6e4250bf2dc7861a316b3a6d5142111f363"
+        "log": "boundary-final-3-primary-analysis.log",
+        "negative_log": "boundary-final-3-primary-negative-analysis.log",
+        "receipt": "boundary-final-3-primary-compatibility-receipt.json",
+        "sha256": "b8b1e5fff03a1b41db6fc83472d65a8c4fdb2cfc4d5fb981d296312245110154"
       },
       "construction": "selected-candidates/at/primary/construction.json",
-      "construction_sha256": "480ca75a66c400b9e5951c4e4312b280017262a85f66ed4e61ff6ee1b3b4a024",
+      "construction_sha256": "83e8609f1d1f92f8ca8744f85ad69df924ac8aa924d604b477e10f3e79e57693",
       "delivery_acceptance": {
         "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3",
         "checks": [
@@ -291,11 +392,11 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --candidate primary --attempt .runtime-work/owner199/boundary-v2-3-primary-compat --processing .runtime-work/owner199/boundary-v2-3-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-v2-3-primary-audit.json --diagnostic",
-        "negative_command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --candidate primary --attempt .runtime-work/owner199/boundary-v2-3-primary-compat --processing .runtime-work/owner199/boundary-v2-3-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-v2-3-primary-negative-audit.json",
+        "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --candidate primary --attempt .runtime-work/owner199/boundary-final-3-primary-compat --processing .runtime-work/owner199/boundary-final-3-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-final-3-primary-audit.json --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --candidate primary --attempt .runtime-work/owner199/boundary-final-3-primary-compat --processing .runtime-work/owner199/boundary-final-3-primary-saved/v0001/processing.json --output .runtime-work/owner199/boundary-final-3-primary-negative-audit.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Original Native roundabout source required",
-        "negative_log": "boundary-v2-3-primary-delivery-negative.log",
+        "negative_log": "boundary-final-3-primary-delivery-negative.log",
         "negative_log_sha256": "f663eb5430da7052d82a2aecd72dad2dccfc93b32003d748a47a92ab00bb1d79",
         "physical_acceptance": false,
         "script": "delivery_audit.py",
@@ -304,12 +405,12 @@
           "full-train"
         ],
         "test_exit_code": 0,
-        "test_log": "boundary-v2-3-primary-delivery-diagnostic-receipt.json",
-        "test_log_sha256": "05fa68447b2d2786649c58531c89a385d83ba57cfcfc346e6e428885f2dc0d7c"
+        "test_log": "boundary-final-3-primary-delivery-diagnostic-receipt.json",
+        "test_log_sha256": "5b194a7722bcef502cede13935c0b15a6be7b98500819696b519d9ef8a38949c"
       },
       "delivery_diagnostic": {
-        "receipt": "boundary-v2-3-primary-delivery-diagnostic-receipt.json",
-        "sha256": "05fa68447b2d2786649c58531c89a385d83ba57cfcfc346e6e428885f2dc0d7c"
+        "receipt": "boundary-final-3-primary-delivery-diagnostic-receipt.json",
+        "sha256": "5b194a7722bcef502cede13935c0b15a6be7b98500819696b519d9ef8a38949c"
       },
       "fixture_recipe": "work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/current-v2-at-fixture-recipe.json",
       "id": "primary",
@@ -318,37 +419,62 @@
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
       "negative": {
-        "receipt": "boundary-v2-3-primary-negative-analysis.log",
-        "sha256": "8cc12a07e22ea5b325f1cd1d4894c033c239f11a94cdd8262721362a9f0a8d5e"
+        "log": "boundary-final-3-primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --candidate primary --output .runtime-work/owner199/boundary-final-3-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "83e8609f1d1f92f8ca8744f85ad69df924ac8aa924d604b477e10f3e79e57693",
+        "exit_code": 0,
+        "log": "boundary-final-3-primary-offline.log",
+        "log_sha256": "a5542e7532bbc36dfa582224e6276cc434bc7a3cb548230980d83a7f945fffc6"
+      },
+      "physical_preparation": {
+        "receipt": "physical-fixtures/controlled_3/proof.json",
+        "sha256": "f7d4f70fd85ac175e8d7d4aeda91634a032a26f5c61097d8df9085ebee0d1bac"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "boundary-final-3-primary-saved-receipt.json",
+        "test_log_sha256": "5c262f4178f0db4c0b46b7d4a8820993d6bed5c478e66bb55e5c0001df6c4b1d"
       },
       "preparation_status": "current_v2_cpu_diagnostic_passed_original_native_pending",
       "recording_description": {
         "channels": [
           {
-            "method": "Retained original-frame synthetic source row",
+            "method": "Native post-tick actor transform, velocity and lane readback",
             "name": "original_vehicle_velocity_position",
-            "reference_frame": "original frame/time and surveyed arc/exit",
+            "reference_frame": "surveyed roundabout arc and east exit",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; Native review pending",
+            "time_window": "600 frames",
+            "uncertainty": "50 ms sampling",
             "unit": "structured"
           }
         ],
         "context_inputs": [],
         "limitations": [
-          "Synthetic source only; actual Native speed and lane retention unverified"
+          "Controller target speed is not measured speed",
+          "Roundabout-to-exit traversal and original pixels require Native review",
+          "CPU fixture is synthetic; original Native measurement and pixels require later capture"
         ]
       },
       "saved_processing": {
-        "receipt": "boundary-v2-3-primary-saved-receipt.json",
-        "sha256": "5c0295d95371935c7d6953f6267fcb66a29af5ebd0853bc2d4748eb359acd5cc"
+        "receipt": "boundary-final-3-primary-saved-receipt.json",
+        "sha256": "5c262f4178f0db4c0b46b7d4a8820993d6bed5c478e66bb55e5c0001df6c4b1d"
       }
     }
   ],
   "fallback_isolation_diagnostic": {
-    "receipt": "fallback-isolation-v3-receipt.json",
-    "sha256": "2d926cacf518b3717f4b8e5e63459538acba8326024921cf3e85b406f357a8f9"
+    "receipt": "fallback-isolation-v4-receipt.json",
+    "sha256": "61b9d201d3b30adcfcad62abe1ccf3501741f24c04e7c936234f82d2cd11f082"
   },
   "format": "worker-execution-manifest",
   "local_integration_unit": {
@@ -364,18 +490,18 @@
   },
   "physical_audit_source_shape_tests": [
     {
-      "receipt": "boundary-v2-source-shape-2.log",
+      "receipt": "boundary-final-source-shape-2.log",
       "sha256": "0fa65e0e129b84e7cdedf5d19f82bbd345dac5a2b36e359e12b83876a69aefb6"
     },
     {
-      "receipt": "boundary-v2-source-shape-3.log",
+      "receipt": "boundary-final-source-shape-3.log",
       "sha256": "ce951fb111a182fb3e48879875d75007e0618f83d2f39eefbe0e19f73b408efe"
     }
   ],
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "selected_comparison_diagnostic": {
-    "receipt": "boundary-v2-selected-comparison-receipt.json",
-    "sha256": "d57d535c6db41a393a0e414a11f0c65730b0e26a311cdfe653bbecf70dbb9869"
+    "receipt": "boundary-final-selected-comparison-receipt.json",
+    "sha256": "cb0ce1e6c5d9a1f44869b2761b85edc58ec479afc3fc81824316861905bbcc09"
   },
   "semantic_proposal_index": {
     "path": "proposals/semantic-index.json",

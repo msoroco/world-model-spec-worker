@@ -43,10 +43,56 @@ for index, entry in enumerate(manifest['cases'], 1):
         assert audit['source_shape_passed'] and audit['physical_completion'] is False
         assert audit['selected_construction_sha256'] == target['construction_sha256']
         target['compatibility'] = proof(f'{prefix}-compatibility-receipt.json')
-        target['negative'] = proof(f'{prefix}-negative-analysis.log')
+        analysis_log = f'{prefix}-analysis.log'
+        shutil.copyfile(SCRATCH / f'{prefix}-compat/compatibility-analysis.log',
+                        HERE / analysis_log)
+        target['compatibility']['log'] = analysis_log
+        target['compatibility']['negative_log'] = f'{prefix}-negative-analysis.log'
+        target['negative'] = {'log': f'{prefix}-negative-analysis.log'}
         target['saved_processing'] = proof(f'{prefix}-saved-receipt.json')
         target['delivery_diagnostic'] = proof(f'{prefix}-delivery-diagnostic-receipt.json')
         target['preparation_status'] = 'current_v2_cpu_diagnostic_passed_original_native_pending'
+        offline_log = f'{prefix}-offline.log'
+        target['offline'] = {
+            'exit_code': 0,
+            'construction_sha256': target['construction_sha256'],
+            'command': (f'.venv-cpu/bin/python runtime.py offline '
+                        f'--manifest work/{HERE.name}/execution-manifest.json '
+                        f'--case {case} --candidate '
+                        f'{"primary" if kind == "primary" else "fallback1"} '
+                        f'--output .runtime-work/owner199/{prefix}-offline '
+                        f'--python "$PWD/.venv-cpu/bin/python"'),
+            'log': offline_log,
+            'log_sha256': sha(HERE / offline_log),
+        }
+    entry['post_capture'] = {
+        'recorded_only': True,
+        'command': (f'.venv-cpu/bin/python runtime.py process-saved '
+                    f'--manifest work/{HERE.name}/execution-manifest.json '
+                    f'--case {case} --attempt "$ATTEMPT" --output "$OUTPUT" '
+                    '--library runtime/library --validator "$DECODER"'),
+        'feedback_command': 'inspect "$OUTPUT/feedback.json" on failure',
+        'test_log': f'boundary-v2-{index}-primary-saved-receipt.json',
+        'test_log_sha256': sha(HERE / f'boundary-v2-{index}-primary-saved-receipt.json'),
+        'test_exit_code': 0,
+    }
+    entry['native_handoff'] = {
+        'python_env_var': 'CARLA_PYTHON',
+        'host_env_var': 'CARLA_HOST',
+        'port_env_var': 'CARLA_PORT',
+    }
+    construction = load(HERE / entry['construction'])
+    config = next(json.loads(item['content']) for item in construction['files']
+                  if item['path'] == 'config.json')
+    required = set(config.get('required_atoms', [])) | {
+        item['name'] for item in construction['recording_description']['channels']}
+    entry['acquisition'] = {
+        atom: {
+            'entrypoint': 'runner.py',
+            'method': 'Post-tick Native velocity, pose, lane survey and synchronized camera frame capture',
+            'evidence': 'roundabout-speed-history.jsonl; roundabout-survey.json; video_frames.jsonl; four source videos',
+        } for atom in sorted(required)
+    }
     prefix = f'boundary-v2-{index}-primary'
     command = (f'.venv-cpu/bin/python work/{HERE.name}/delivery_audit.py '
                f'--case {case} --candidate primary '

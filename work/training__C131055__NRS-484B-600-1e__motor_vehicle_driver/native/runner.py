@@ -11,10 +11,10 @@ RATE = 20
 FRAMES = 600
 TARGET_MPS = {'controlled_1': 29.0, 'controlled_2': 38.0, 'controlled_3': 35.7632}
 CAMERAS = (
-    ('roundabout_overview', 1280, 720, -30, -530, 28, -45, False),
-    ('arc_entry', 1280, 720, -100, -515, 14, -25, False),
-    ('exit_tangent', 1280, 720, 180, -520, 14, -25, False),
-    ('subject_chase', 1280, 720, -10, 0, 6, -12, True),
+    ('overview', 1920, 1080, -30, -530, 28, -45, False),
+    ('approach', 1280, 720, -100, -515, 14, -25, False),
+    ('reference_corner', 1280, 720, 180, -520, 14, -25, False),
+    ('driver_reference', 1280, 720, -10, 0, 6, -12, True),
 )
 
 def check():

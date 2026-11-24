@@ -4,9 +4,10 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_1",
-      "target_law_id": "LVMC-11-30-070-B",
-      "target_type": "below",
+      "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored intersection context; no selected recording or legal conclusion.",
       "recording_description": {
         "channels": [
           {
@@ -69,13 +70,117 @@
           "Business-district authority and unmarked crossings need independent original source review"
         ]
       },
-      "variable_assignments": {},
-      "sweep_measurements": []
+      "variable_assignments": {
+        "commanded_crossing_location": {
+          "kind": "controller",
+          "value": "marked crossing x=0",
+          "unit": "categorical"
+        },
+        "actual_crosswalk_relation": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_1",
+      "target_law_id": "LVMC-11-30-070-B",
+      "target_type": "compliant_attempt",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian blueprint and actor identity",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed at-grade road and original Native frame",
+            "uncertainty": "50 ms sampling; business district and complete crosswalk inventory unverified"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "authored marked crosswalk and Native source survey",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed at-grade road and original Native frame",
+            "uncertainty": "50 ms sampling; business district and complete crosswalk inventory unverified"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "authored paved road and Native waypoint readback",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed at-grade road and original Native frame",
+            "uncertainty": "50 ms sampling; business district and complete crosswalk inventory unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian position and surveyed roadway",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed at-grade road and original Native frame",
+            "uncertainty": "50 ms sampling; business district and complete crosswalk inventory unverified"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "crosswalk inventory and source geometry review",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed at-grade road and original Native frame",
+            "uncertainty": "50 ms sampling; business district and complete crosswalk inventory unverified"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian transform",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed at-grade road and original Native frame",
+            "uncertainty": "50 ms sampling; business district and complete crosswalk inventory unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Business-district authority and unmarked crossings need independent original source review"
+        ]
+      },
+      "variable_assignments": {
+        "commanded_crossing_location": {
+          "kind": "controller",
+          "value": "marked crossing x=0",
+          "unit": "categorical"
+        },
+        "actual_crosswalk_relation": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "sweep_measurements": [],
+      "rationale": "Measured marked crossing on the common intersection",
+      "unresolved_judgment_calls": [
+        "Whether original location qualifies as business district; legal application requires independent review"
+      ],
+      "paired_probe_id": "training__C188094__LVMC-11-30-070-B__pedestrian__same_intersection_crosswalk_relation",
+      "deliberate_differences": [
+        "commanded_crossing_location"
+      ],
+      "probe": {
+        "primary_variable": "commanded_crossing_location",
+        "comparison_or_standard": "LVMC 11.30.070(B) marked/unmarked crossing alternatives in a business district",
+        "target_value_or_branch": "marked"
+      }
     },
     {
       "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_2",
       "target_law_id": "LVMC-11-30-070-B",
-      "target_type": "controlled_attempt",
+      "target_type": "violating_attempt",
       "recording_description": {
         "channels": [
           {
@@ -138,13 +243,37 @@
           "Business-district authority and unmarked crossings need independent original source review"
         ]
       },
-      "variable_assignments": {},
-      "sweep_measurements": []
+      "variable_assignments": {
+        "commanded_crossing_location": {
+          "kind": "controller",
+          "value": "outside crosswalk x=12",
+          "unit": "categorical"
+        },
+        "actual_crosswalk_relation": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "sweep_measurements": [],
+      "rationale": "Measured roadway crossing outside all inventoried crosswalks on the same intersection",
+      "unresolved_judgment_calls": [
+        "Whether original location qualifies as business district; legal application requires independent review"
+      ],
+      "paired_probe_id": "training__C188094__LVMC-11-30-070-B__pedestrian__same_intersection_crosswalk_relation",
+      "deliberate_differences": [
+        "commanded_crossing_location"
+      ],
+      "probe": {
+        "primary_variable": "commanded_crossing_location",
+        "comparison_or_standard": "LVMC 11.30.070(B) marked/unmarked crossing alternatives in a business district",
+        "target_value_or_branch": "outside all crosswalks"
+      }
     },
     {
       "case_id": "training__C188094__LVMC-11-30-070-B__pedestrian__probe_3",
       "target_law_id": "LVMC-11-30-070-B",
-      "target_type": "controlled_attempt",
+      "target_type": "compliant_attempt",
       "recording_description": {
         "channels": [
           {
@@ -207,8 +336,33 @@
           "Business-district authority and unmarked crossings need independent original source review"
         ]
       },
-      "variable_assignments": {},
-      "sweep_measurements": []
+      "variable_assignments": {
+        "commanded_crossing_location": {
+          "kind": "controller",
+          "value": "unmarked intersection x=21",
+          "unit": "categorical"
+        },
+        "actual_crosswalk_relation": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "sweep_measurements": [],
+      "rationale": "Measured unmarked crossing at the original junction on the same intersection",
+      "unresolved_judgment_calls": [
+        "Whether original location qualifies as business district; legal application requires independent review"
+      ],
+      "paired_probe_id": "training__C188094__LVMC-11-30-070-B__pedestrian__same_intersection_crosswalk_relation",
+      "deliberate_differences": [
+        "commanded_crossing_location"
+      ],
+      "probe": {
+        "primary_variable": "commanded_crossing_location",
+        "comparison_or_standard": "LVMC 11.30.070(B) marked/unmarked crossing alternatives in a business district",
+        "target_value_or_branch": "unmarked"
+      }
     }
-  ]
+  ],
+  "sweep_specs": []
 }
