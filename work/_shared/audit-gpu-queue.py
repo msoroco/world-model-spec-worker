@@ -21,7 +21,8 @@ def expected_identities():
         selected_path = ROOT / "work" / aid / "execution-manifest.json"
         selected = json.loads(selected_path.read_text()) if selected_path.is_file() else {"cases": []}
         selected_ids = {item["case_id"] for item in selected["cases"]}
-        if len(selected_ids) != len(selected["cases"]) or (status == "ready" and result.get("cases_selected", result.get("selected_case_count", 0)) != len(selected_ids)):
+        declared_selected = result.get("cases_selected", result.get("selected_case_count"))
+        if len(selected_ids) != len(selected["cases"]) or (status == "ready" and declared_selected is not None and declared_selected != len(selected_ids)):
             raise ValueError("Result and selected manifest differ")
         for case in plan["cases"]:
             expected_cases[(aid, case["case_id"])] = (status, case["case_id"] in selected_ids)

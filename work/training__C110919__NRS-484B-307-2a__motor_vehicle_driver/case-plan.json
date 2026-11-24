@@ -17,7 +17,7 @@
     "sha256": "6b1c99ca9fdfbe061a32942eb0aa026ea3bb2e7c27979ef34b6de95de9d34d7a",
     "text_sha256": "6b1c99ca9fdfbe061a32942eb0aa026ea3bb2e7c27979ef34b6de95de9d34d7a"
   },
-  "summary_status": "exact_source_reviewed_cpu_draft_unselected",
+  "summary_status": "selected_cpu_preparation",
   "selected_branch": "Right turn under circular green alone",
   "witness_branches": [
     "Right turn under circular green alone"
@@ -76,7 +76,7 @@
     {
       "case_id": "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-307-2a",
-      "kind": "unselected_cpu_draft",
+      "kind": "delivery",
       "source_branch": "Right turn under circular green alone",
       "physical_target": "turn right on circular green after pedestrian and cross traffic clear",
       "comparison_variable": "yielded_to_lawful_users",
@@ -84,12 +84,12 @@
       "selection_targets": [
         "full-train"
       ],
-      "evidence_scope": "synthetic CPU measurement only; physical target not observed"
+      "evidence_scope": "selected synthetic CPU diagnostic; Native physical target pending"
     },
     {
       "case_id": "training__C110919__NRS-484B-307-2a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-307-2a",
-      "kind": "unselected_cpu_draft",
+      "kind": "delivery",
       "source_branch": "Right turn under circular green alone",
       "physical_target": "turn right on circular green while lawful pedestrian and cross traffic remain",
       "comparison_variable": "yielded_to_lawful_users",
@@ -97,7 +97,7 @@
       "selection_targets": [
         "full-train"
       ],
-      "evidence_scope": "synthetic CPU measurement only; physical target not observed"
+      "evidence_scope": "selected synthetic CPU diagnostic; Native physical target pending"
     }
   ],
   "comparisons": [
@@ -121,52 +121,52 @@
     {
       "term": "dev.traffic_signal",
       "purpose": "state circular_green alone",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "dev.governs",
       "purpose": "the head faces the subject's approach",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "dev.regulatory_sign",
       "purpose": "another device prohibiting a right or left turn",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "drv.turning",
       "purpose": "the movement made",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "drv.entering_intersection",
       "purpose": "proceeding into the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "st.crosswalk",
       "purpose": "the adjacent crosswalk",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "ru.pedestrian",
       "purpose": "pedestrians lawfully within it",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "drv.in_intersection",
       "purpose": "other vehicles lawfully within the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "drv.yields_to",
       "purpose": "the yield owed to them",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     },
     {
       "term": "drv.arrival_order",
       "purpose": "who was there when the signal was exhibited",
-      "status": "measurement_mapping_pending"
+      "status": "source_channel_mapped_physical_review_pending"
     }
   ],
   "observations": [
@@ -292,5 +292,144 @@
       ],
       "evidence_or_gap": "Exact source topic selected in same-cell circular-green right-turn CPU pair; original Native, pixel and strict selected proofs remain unverified."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "signal, full vehicle body, other users and right turn",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "approach, stop line and near crosswalk",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "governing circular-green face",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "destination crosswalk and pedestrian clearance",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "drv.entering_intersection"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "st.crosswalk"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "ru.pedestrian"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "drv.in_intersection"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "drv.yields_to"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "Saved Native sample, map survey and synchronized source frame are recorded; physical interpretation awaits originals",
+      "channels": [
+        "drv.arrival_order"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    }
+  }
 }

@@ -1,0 +1,49 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-307-2a",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "requested_turn_entry_frame",
+      "range_or_domain": "synthetic CPU diagnostic frame 145 or 181; original Native outcome unverified"
+    },
+    {
+      "kind": "subject_behavior",
+      "name": "observed_yield_clearance_s",
+      "range_or_domain": "sampled Native conflict occupancy and turn entry history"
+    }
+  ],
+  "quote": "When the signal is circular green alone: Vehicular traffic facing the signal may proceed straight through or turn right or left unless another device at the place prohibits either or both such turns. Such vehicular traffic, including vehicles turning right or left, must yield the right-of-way to other vehicles and to pedestrians lawfully within the intersection or an adjacent crosswalk at the time the signal is exhibited.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "vehicular traffic facing a circular green signal alone",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "turn permission does not apply for that prohibited turn",
+        "replacement_obligation": "obey the prohibiting device",
+        "source_clause": "unless another device at the place prohibits either or both such turns",
+        "trigger": "another device at the place prohibits a turn"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Native actor occupancy and source time are observable; lawful status requires original context and judgment.",
+        "phrase": "pedestrians lawfully within the intersection or an adjacent crosswalk"
+      }
+    ],
+    "law_id": "NRS-484B-307-2a",
+    "obligation": {
+      "description": "turning traffic must yield the right-of-way to other vehicles and pedestrians lawfully within the intersection or adjacent crosswalk",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "user presence at the time the circular-green signal is exhibited",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-307-2a@motor_vehicle_driver"
+}

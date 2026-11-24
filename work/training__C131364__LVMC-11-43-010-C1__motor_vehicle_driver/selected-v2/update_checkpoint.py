@@ -24,7 +24,8 @@ result["reason"] = (
     "physical-delivery and original-comparison audit logic pass. Native runner/finalizer have "
     "bounded fake-CARLA tests, but neither original CARLA attempt nor original pixels/physical "
     "roundabout review exists. Physical and legal outcomes, original comparison completion, "
-    "case-plan camera/source observation mapping, and strict ready acceptance remain unverified."
+    "strict ready acceptance remain unverified. The source-hashed case plan now includes "
+    "four-view camera and frozen-observation mappings; these remain proposed until original review."
 )
 result["source_law_review"] = (
     "Exact LVMC 11.43.010(C)(1) left-turn and U-turn alternatives reviewed. "
@@ -58,7 +59,7 @@ cpu["selected_recorded_only_processing_pass_count"] = 4
 cpu["original_native_attempt_count"] = 0
 cpu["physical_acceptance_claimed"] = False
 cpu["legal_verdict_claimed"] = False
-result["tests"] = [{"command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$REPO/.runtime-work/c131364-selected/tmp PYTHONPATH=$REPO/work/" + ROOT.name + " $REPO/.venv-cpu/bin/python -m unittest discover -s tests -p test*.py (cwd work/" + ROOT.name + ")",
+result["tests"] = [{"command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$REPO/.runtime-work/c131364-selected-refresh/tmp PYTHONPATH=$REPO/work/" + ROOT.name + " $REPO/.venv-cpu/bin/python -m unittest discover -s tests -p test*.py (cwd work/" + ROOT.name + ")",
                     "exit_code": 0, "log": "selected-v2/root-unittest.log",
                     "sha256": digest("selected-v2/root-unittest.log")}]
 path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")

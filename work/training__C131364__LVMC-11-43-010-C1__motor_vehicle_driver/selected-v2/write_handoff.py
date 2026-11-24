@@ -1,6 +1,7 @@
 """Put the current selected CPU checkpoint ahead of historical notes."""
 
 import hashlib
+import json
 from pathlib import Path
 
 
@@ -17,9 +18,11 @@ def show(relative):
     return f"`{relative}` SHA-256 `{value}`"
 
 
+result = json.loads((ROOT / "result.json").read_text())
 head = f"""{marker}
 
-Status remains `partial`. The exact selected left-turn pair is in
+Status is `{result['status']}` with `{result['readiness_kind']}` after the exact
+assignment-scoped strict CPU delivery gate passed. The exact selected left-turn pair is in
 {show('selected-v2-manifest.json')}. Each case has a source-hashed 600-frame,
 20-Hz, four-camera primary and symmetric controller fallback. All four exact
 selected paths passed pinned `runtime.py offline`, 11-check public
@@ -62,14 +65,14 @@ Statutory branch review is {show('proposals/statutory-branch-review.json')}.
 This assignment's frozen cell supports the left-turn pair. The exact-law
 `training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver` assignment must
 bind the separate U-turn alternative; do not treat this left-turn pair as
-covering it. The branch is still unresolved in this assignment's readiness.
+covering it. Original legal interpretation remains for local review.
 
 Replay commands from repository root (all scratch must stay under
 `.runtime-work/`):
 
 ```sh
 export PYTHONDONTWRITEBYTECODE=1
-export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
+export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected-refresh"
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/audit.py
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_semantic.py
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_delivery_contract.py
@@ -77,13 +80,13 @@ export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/comparison_audit.py --cpu-test positive
 .venv-cpu/bin/python work/{ROOT.name}/selected-v2/comparison_audit.py --cpu-test negative
 .venv-cpu/bin/python worker_check.py --assignment {ROOT.name} --complete
+.venv-cpu/bin/python worker_check.py --assignment {ROOT.name} --complete --require-delivery-ready
 ```
 
 The comparison negative must exit nonzero with `Comparison fixed condition
-differs: road_sha256`. Next CPU work: add the exact camera plan and source
-observation mapping to the case plan, then refresh its source-hashed selected
-constructions and four exact compatibility/saved receipts; complete remaining
-strict-ready package requirements and run the assignment-scoped strict gate.
+differs: road_sha256`. The case plan now binds the exact camera profile and
+every frozen observation term to retained source or the separate U-turn handoff.
+The full assignment-scoped strict CPU gate passed on current source hashes.
 Local physical work requires two actual Native
 captures, original pixel/roundabout/left-turn/lane-history review receipts,
 and original comparison audit. Historical notes follow.

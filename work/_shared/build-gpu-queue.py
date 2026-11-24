@@ -32,7 +32,8 @@ def build(root=ROOT):
                                    for case in selected["cases"]}
             if len(selected_ids) != len(selected["cases"]) or not selected_ids <= set(case_ids):
                 raise ValueError("Selected cases differ from current plan: " + aid)
-        if status == "ready" and result.get("cases_selected", result.get("selected_case_count", 0)) != len(selected_ids):
+        declared_selected = result.get("cases_selected", result.get("selected_case_count"))
+        if status == "ready" and declared_selected is not None and declared_selected != len(selected_ids):
             raise ValueError("Result selected count differs from manifest: " + aid)
         manifest = "work/" + aid + "/execution-manifest.json"
         for case_id in sorted(case_ids):

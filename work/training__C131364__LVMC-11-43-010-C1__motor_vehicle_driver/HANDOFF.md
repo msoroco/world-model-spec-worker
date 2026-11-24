@@ -1,18 +1,19 @@
 ## 2026-11-24 selected CPU delivery checkpoint
 
-Status remains `partial`. The exact selected left-turn pair is in
-`selected-v2-manifest.json` SHA-256 `aee7792dd93076d6616b6f3510f63270a7bf2be412df3fb4a1805cece3013940`. Each case has a source-hashed 600-frame,
+Status is `ready` with `delivery_prepared` after the exact
+assignment-scoped strict CPU delivery gate passed. The exact selected left-turn pair is in
+`selected-v2-manifest.json` SHA-256 `7dea33dfccdea1bcf879f096913b6c173c0d75eab9f9fe68fe1819cb88800a1a`. Each case has a source-hashed 600-frame,
 20-Hz, four-camera primary and symmetric controller fallback. All four exact
 selected paths passed pinned `runtime.py offline`, 11-check public
 `runtime.py compatibility` with missing-source rejection, and recorded-only
 `runtime.py process-saved`. Durable receipts reside under `selected-v2/proofs/`.
 
 The independent CPU source and comparison audit passes:
-`selected-v2/audit.json` SHA-256 `9b3a162289a1d5c28333aa53550ba47719dff154c6c4fd595cbbf6ccbfbe11ec`. Canonical semantic stage validation passes:
-`selected-v2/semantic-validation.json` SHA-256 `9add030aaa2ee3f94dcf87c2011018ce8da553f144e2c49df4a35d8ba4359eef`, with source-bound stage index
-`proposals/semantic-index.json` SHA-256 `b4026c8835de9c956b1edb59b8b5e69e5b42fd4101afd920c100c85d63b4ec39`. The exact `full-train` delivery contract
+`selected-v2/audit.json` SHA-256 `35e26806e9b0c441c1fcb1e8a53974bd691f9d982b2e43052ef118d7a998d294`. Canonical semantic stage validation passes:
+`selected-v2/semantic-validation.json` SHA-256 `d33531a72fc753cc3f998a1fbe3b67a8bc836c9ba94057aaa42827fe2f251767`, with source-bound stage index
+`proposals/semantic-index.json` SHA-256 `1a2d0f7583ef50bb20bb7676645dc150f2cc2c63817f274eded5db79150cb910`. The exact `full-train` delivery contract
 validates both selected cases, including positive and negative audit tests:
-`selected-v2/delivery-contract-validation.json` SHA-256 `ffe74473ca100d872b6c123de882e4c9fe5b3f8a484336606c5ebe8260cd339b`.
+`selected-v2/delivery-contract-validation.json` SHA-256 `b1a30647d3e09600b6fc4d3a430d2943e0153db7aba1aff76dbbb663a1253fb9`.
 
 Original-attempt delivery audit implementation is
 `selected-v2/delivery_audit.py` SHA-256 `130a8658fd2472a679d75015ce40d9376cd81b86e197fefc021ac41cdb61a9df`. Its CPU fixtures pass for both cases;
@@ -28,29 +29,29 @@ circulating lanes. No actual mode was run and no physical or legal finding is
 claimed.
 
 The canonical root package is now materialized at
-`execution-manifest.json` SHA-256 `aee7792dd93076d6616b6f3510f63270a7bf2be412df3fb4a1805cece3013940` with root `construction.json`, `runner.py`,
+`execution-manifest.json` SHA-256 `7dea33dfccdea1bcf879f096913b6c173c0d75eab9f9fe68fe1819cb88800a1a` with root `construction.json`, `runner.py`,
 `config.json`, and `tests/test_route.py`. Pinned execution-manifest validation
 and primary package compatibility receipt checks pass for both exact cases:
-`selected-v2/canonical-validation.json` SHA-256 `cb447b25cdfe3b68acf768a640a1b7c70a926836f8c97b84df970cce31a31883`. Three synthetic physical
+`selected-v2/canonical-validation.json` SHA-256 `3e9350666eb95d3f4d8f61496f9bc01e3c7acbd6c2ff193cd8939e78f8ba06d4`. Three synthetic physical
 outcome fixtures per case cover complete, incomplete, and missing evidence;
 their source-bound proof receipts are
-`selected-v2/physical/witness1/proof.json` SHA-256 `2336622b4e6ff7e1022e81afe951f3269fe56ae35c4a36369d752ebad043a737` and
-`selected-v2/physical/witness2/proof.json` SHA-256 `10b5415d6aa3206081f4349dfec0630f9fada0b1b58181c503c00f93004df44a`. Root four-test suite passes:
-`selected-v2/root-unittest.log` SHA-256 `2a6f3ffb7a9826b94e1b6f8ee5ac782247c7188cb6ef2feea78eeb9c187f4c13`. These remain CPU fixture outcomes,
+`selected-v2/physical/witness1/proof.json` SHA-256 `909ad8998fcf66b5ebc93b86402359f17ddffb78819d57b7dff8066c2f98ca83` and
+`selected-v2/physical/witness2/proof.json` SHA-256 `3ec008532783aa405f45d47e977d6248797faba584db730e705845f5b85035ad`. Root four-test suite passes:
+`selected-v2/root-unittest.log` SHA-256 `eb70817cc439ba39a893c76765fa02f746b9b7f9445230e2dd090f210b092df8`. These remain CPU fixture outcomes,
 not observed original passage outcomes.
 
 Statutory branch review is `proposals/statutory-branch-review.json` SHA-256 `f75f92375f832fbe1d0bcaa96919547e94222cc35ace72949ffa95d6f49463ec`.
 This assignment's frozen cell supports the left-turn pair. The exact-law
 `training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver` assignment must
 bind the separate U-turn alternative; do not treat this left-turn pair as
-covering it. The branch is still unresolved in this assignment's readiness.
+covering it. Original legal interpretation remains for local review.
 
 Replay commands from repository root (all scratch must stay under
 `.runtime-work/`):
 
 ```sh
 export PYTHONDONTWRITEBYTECODE=1
-export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
+export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected-refresh"
 .venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/audit.py
 .venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/validate_semantic.py
 .venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/validate_delivery_contract.py
@@ -58,13 +59,13 @@ export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
 .venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/comparison_audit.py --cpu-test positive
 .venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/comparison_audit.py --cpu-test negative
 .venv-cpu/bin/python worker_check.py --assignment training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver --complete
+.venv-cpu/bin/python worker_check.py --assignment training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver --complete --require-delivery-ready
 ```
 
 The comparison negative must exit nonzero with `Comparison fixed condition
-differs: road_sha256`. Next CPU work: add the exact camera plan and source
-observation mapping to the case plan, then refresh its source-hashed selected
-constructions and four exact compatibility/saved receipts; complete remaining
-strict-ready package requirements and run the assignment-scoped strict gate.
+differs: road_sha256`. The case plan now binds the exact camera profile and
+every frozen observation term to retained source or the separate U-turn handoff.
+The full assignment-scoped strict CPU gate passed on current source hashes.
 Local physical work requires two actual Native
 captures, original pixel/roundabout/left-turn/lane-history review receipts,
 and original comparison audit. Historical notes follow.
