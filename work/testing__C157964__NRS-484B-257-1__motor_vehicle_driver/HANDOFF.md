@@ -17,3 +17,7 @@ Resume commands:
 Pinned CPU preflight and repository tests pass. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The complete strict gate next reports missing result `testing__C158196__NRS-484B-257-1__motor_vehicle_driver` in `strict-gate.log`. This is unfinished worker preparation, not an external dependency.
+
+## 2026-11-24 source-bound officer camera construction
+
+`officer_measurements.py` now requires an `officer_review.json` bound by SHA-256 to original officer history, original frame joins and all four camera files. Every frame must join the same Native frame/time and all four camera-frame IDs, while reviewed visible direction must match the retained officer history. The review preserves unresolved authority and legal control judgments. `tests/test_officer.py` now checks changed camera bytes and mismatched reviewed direction are rejected, alongside active/inactive control and performer spawn/cleanup; all four CPU tests passed in `cpu-tests.log`. This is implementation and proof work for the next partial assignment. The package remains `partial` because exact runner/capture bundles, fallbacks and delivery proofs are still being constructed.

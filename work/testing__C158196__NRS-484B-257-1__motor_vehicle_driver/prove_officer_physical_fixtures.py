@@ -29,9 +29,9 @@ def main():
         case = entry["case_id"]
         suffix = case.rsplit("__", 1)[-1]
         name = "officer-controlled" if suffix == "officer_controls_ego" else "officer-not-controlled"
-        source = REPO / ".runtime-work" / (
-            "c158196-" + name + "-compatibility-" +
-            ("second" if name == "officer-controlled" else "first"))
+        source = (REPO / ".runtime-work" / "c158196-officer-controlled-compatibility-second"
+                  if name == "officer-controlled" else
+                  REPO / ".runtime-work" / "c158196-no-control-reproof-primary-compatibility")
         saved = HERE / (name + "-current-process-saved.json")
         folder = HERE / "physical-proofs" / suffix
         folder.mkdir(parents=True, exist_ok=True)

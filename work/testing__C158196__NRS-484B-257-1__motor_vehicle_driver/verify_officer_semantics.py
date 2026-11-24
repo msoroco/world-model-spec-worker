@@ -1,4 +1,4 @@
-"""Validate the six-case canonical proposal against the staged officer pair."""
+"""Validate the six-case canonical proposal against the active manifest."""
 
 import json
 import os
@@ -17,10 +17,8 @@ from worker_exchange.semantic_delivery import validate  # noqa: E402
 def main():
     assignment = json.loads((ROOT.parents[1] / "inputs" / ROOT.name / "assignment.json").read_text())
     active = json.loads((ROOT / "execution-manifest.json").read_text())
-    officer = json.loads((ROOT / "officer-pair-draft-manifest.json").read_text())
-    assert len(active["cases"]) == 4 and len(officer["cases"]) == 2
-    combined = dict(active, cases=[*active["cases"], *officer["cases"]])
-    print(json.dumps(validate(ROOT, assignment, combined), indent=2))
+    assert len(active["cases"]) == 6
+    print(json.dumps(validate(ROOT, assignment, active), indent=2))
 
 
 if __name__ == "__main__":

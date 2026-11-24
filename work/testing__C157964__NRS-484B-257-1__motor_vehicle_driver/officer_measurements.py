@@ -12,7 +12,9 @@ from pathlib import Path
 from shapely.geometry import MultiPoint, Polygon
 
 
-REQUIRED=("officer_context.json","officer_history.jsonl","video_frames.jsonl")
+CAMERAS=("overview","approach","reference_corner","driver_reference")
+REQUIRED=("officer_context.json","officer_history.jsonl","video_frames.jsonl",
+          "officer_review.json")
 
 
 def _number(value,label):
@@ -31,6 +33,18 @@ def analyze(root:Path)->dict:
         path=root/name
         if not path.is_file():raise ValueError("Missing original source: "+name)
         hashes[name]=hashlib.sha256(path.read_bytes()).hexdigest()
+    review=json.loads((root/"officer_review.json").read_text())
+    if (review.get("officer_history_sha256")!=hashes["officer_history.jsonl"] or
+            review.get("video_frames_sha256")!=hashes["video_frames.jsonl"]):
+        raise ValueError("Officer review source hash differs")
+    cameras=review.get("camera_sha256")
+    if not isinstance(cameras,dict) or set(cameras)!=set(CAMERAS):
+        raise ValueError("Four original camera hashes required")
+    for camera in CAMERAS:
+        path=root/(camera+".mkv")
+        if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=cameras[camera]:
+            raise ValueError("Original officer camera bytes differ: "+camera)
+        hashes[camera+".mkv"]=cameras[camera]
     ctx=json.loads((root/"officer_context.json").read_text())
     for key in ("native_map_id","intersection_id","officer_actor_id",
                 "authority_source","uniform_video_source","direction_video_source",
@@ -39,20 +53,30 @@ def analyze(root:Path)->dict:
     polygon=Polygon(ctx.get("intersection_polygon_xy_m",[]))
     if not polygon.is_valid or polygon.area<=0:raise ValueError("Invalid intersection polygon")
     rows,frames=_rows(root/"officer_history.jsonl"),_rows(root/"video_frames.jsonl")
-    if len(rows)<3 or len(rows)!=len(frames):raise ValueError("Incomplete officer/ego history")
+    observations=review.get("frames")
+    if (len(rows)<3 or len(rows)!=len(frames) or
+            not isinstance(observations,list) or len(observations)!=len(rows)):
+        raise ValueError("Incomplete officer/ego camera history")
     previous=(-1,-math.inf);samples=[];first_entry=None
-    for i,(row,frame) in enumerate(zip(rows,frames)):
+    for i,(row,frame,observed) in enumerate(zip(rows,frames,observations)):
         fid,time=row.get("frame"),_number(row.get("time_s"),"time")
         if type(fid) is not int or fid<=previous[0] or time<=previous[1]:
             raise ValueError("Nonmonotone original history")
         previous=fid,time
         if frame.get("video_frame")!=i or frame.get("carla_frame")!=fid or frame.get("time_s")!=time:
             raise ValueError("Original frame join failed")
+        if (set(frame.get("camera_frames",{}))!=set(CAMERAS) or
+                any(frame["camera_frames"][camera]!=fid for camera in CAMERAS)):
+            raise ValueError("Four original camera frame joins required")
         if row.get("officer_actor_id")!=ctx["officer_actor_id"]:
             raise ValueError("Officer actor identity mismatch")
         instruction=row.get("officer_direction_observed")
         if instruction not in ("stop","go","unclear"):
             raise ValueError("Missing original officer direction observation")
+        if (observed.get("frame")!=fid or observed.get("video_frame")!=i or
+                observed.get("observed_direction")!=instruction or
+                type(observed.get("officer_visible")) is not bool):
+            raise ValueError("Officer camera review direction/frame join failed")
         source=row.get("direction_frame_source")
         if not source:raise ValueError("Missing direction video frame source")
         controlled=row.get("traffic_control_observed")
