@@ -130,10 +130,40 @@
       "exit_code": 0,
       "log": "sweep-candidate-replay.log",
       "sha256": "3b094ebaef038ce5d4156a556ec2c48b4627463177537597e55b5cf3b947db5c"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-semantic PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_selected_semantics.py",
+      "exit_code": 0,
+      "log": "selected-semantic-proof.log",
+      "sha256": "67ee5757d79363f3b2d45d79f4d6bcf39805058a8e2e026278693e9862161333"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/bind_selected_sweep_receipts.py",
+      "exit_code": 0,
+      "log": "selected-sweep-binding.log",
+      "sha256": "8bb2b7adfb439a2b38c217ad6fc3aa0cd7e52c708b1ff7de15b24d4debc1485a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "selected-scoped-check.log",
+      "sha256": "730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-original-rebind .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --output .runtime-work/c144550-original-first-compat-rebind --library runtime/library --validator .runtime-work/c144550-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/left_signal_before_clear_gap/current-selected-compatibility.log",
+      "sha256": "a26695393fbf91d87fe6c7b6ff073a7d0195fc43c7e978ada03edb625316f560"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-original-rebind .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --attempt .runtime-work/c144550-original-first-compat-rebind --output .runtime-work/c144550-original-first-saved-rebind --library runtime/library --validator .runtime-work/c144550-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/left_signal_before_clear_gap/current-selected-saved.log",
+      "sha256": "1e7bfca81b868bfac0c2b23783c1851158edd036f69e5ac81141e0be64d9760a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual marked lanes, indicator display, lane-body movement, target traffic/gap and camera visibility."
   ],
-  "reason": "Five selected original exact cases retain their prior proofs. A separate zero-frame case and five source-aligned finite sweep cases now have exact constructions; all five sweep cases pass current-runtime offline, source-bound positive/negative compatibility and recorded-only saved processing. The zero case and sweeps are not yet integrated with the selected semantic and execution manifests, nor are all selected candidate receipts rebound to the final manifest. Physical and legal acceptance remain unproved."
+  "reason": "Eleven exact cases are selected and pass semantic coverage plus primary offline checks. The zero and five sweep primary compatibility receipts are bound. All five selected sweeps pass current-runtime positive/negative compatibility and recorded-only saved processing. The first original primary now also passes and is bound to current-runtime compatibility and saved processing; its static receipt check passes. The other four original cases and fifteen older fallbacks still need current-runtime reproof. Physical outcome/lifecycle proofs, new sweep fallbacks, delivery acceptance, exact queue and comparison audits remain. No Native, physical or legal acceptance is claimed."
 }

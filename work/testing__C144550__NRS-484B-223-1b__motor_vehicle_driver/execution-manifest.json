@@ -139,22 +139,21 @@
         "entrypoint": "lane_change_measurements.py"
       },
       "compatibility": {
-        "receipt": "primary-compatibility.json",
-        "sha256": "4b1a20c73c9d47d9e61f4567b439355c6b96d9929f1792eff434d103633bfcd5",
-        "log": "primary-compatibility-analysis.log",
-        "negative_log": "primary-negative-analysis.log",
-        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --output .runtime-work/c144550-compat-primary-contract-v10-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+        "receipt": "cases/left_signal_before_clear_gap/current-selected-compatibility.json",
+        "sha256": "a26695393fbf91d87fe6c7b6ff073a7d0195fc43c7e978ada03edb625316f560",
+        "log": "cases/left_signal_before_clear_gap/current-selected-analysis.log"
       },
       "negative": {
-        "log": "primary-negative-analysis.log"
+        "log": "cases/left_signal_before_clear_gap/current-selected-negative.log"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --attempt .runtime-work/c144550-compat-primary-contract-v10-20261123 --output .runtime-work/c144550-primary-saved-v2-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-        "feedback_command": "cat .runtime-work/c144550-primary-saved-v2-20261123/v0001/feedback.json",
-        "test_log": "primary-saved-processing.json",
-        "test_log_sha256": "2648bf0963f44d0a8f00c9f7c0c8e842c76ff1c588177f61d2f8d31e8dc64b56",
-        "test_exit_code": 0
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-original-rebind .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --attempt .runtime-work/c144550-original-first-compat-rebind --output .runtime-work/c144550-original-first-saved-rebind",
+        "test_log": "cases/left_signal_before_clear_gap/current-selected-saved.log",
+        "test_log_sha256": "1e7bfca81b868bfac0c2b23783c1851158edd036f69e5ac81141e0be64d9760a",
+        "test_exit_code": 0,
+        "processing_receipt": "cases/left_signal_before_clear_gap/current-selected-processing.json",
+        "processing_sha256": "1e7bfca81b868bfac0c2b23783c1851158edd036f69e5ac81141e0be64d9760a"
       },
       "diagnostic_saved_processing": {
         "receipt": "primary-saved-processing.json",
@@ -1176,6 +1175,14 @@
         "construction_sha256": "edf174494322bbcbcb3fa130989a2a20271a52c2092518485ff03ce2280c6e4a",
         "log": "cases/left_signal_at_departure_clear_gap/selected-offline.log",
         "log_sha256": "c5ff45dbf5f82b4d967ac8e9b171a4b21215a79990b271191d0e06b94b328d90"
+      },
+      "compatibility": {
+        "receipt": "cases/left_signal_at_departure_clear_gap/primary-compatibility.json",
+        "sha256": "759cf1ff09f5da818b07f2091e670995855bdedf53adc5fb3befdc55c3b68d39",
+        "log": "cases/left_signal_at_departure_clear_gap/primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/left_signal_at_departure_clear_gap/primary-negative-analysis.log"
       }
     },
     {
@@ -1249,6 +1256,11 @@
           "entrypoint": "lane_change_measurements.py",
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        },
+        "appropriate_signal_lead_frames": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+          "evidence": "original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl; channels/appropriate_signal_lead_frames.jsonl"
         }
       },
       "offline": {
@@ -1257,6 +1269,23 @@
         "construction_sha256": "2948bb97188fc416e5c78b785da6b753693297c60714dc071d91dcefa177b291",
         "log": "sweep-cases/signal-appropriateness-pending-0000/selected-offline.log",
         "log_sha256": "c5c6d3e902e4149d4484158290b0c704c604eefa31e0e3dfec953a2edd4c1ff0"
+      },
+      "compatibility": {
+        "receipt": "sweep-cases/signal-appropriateness-pending-0000/selected-compatibility.json",
+        "sha256": "12111f583f81fcfa1692f7dbca0a34dd6f8f1d0b4fea12e77a505284830f2de4",
+        "log": "sweep-cases/signal-appropriateness-pending-0000/selected-analysis.log"
+      },
+      "negative": {
+        "log": "sweep-cases/signal-appropriateness-pending-0000/selected-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-replay .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal-appropriateness-pending-0000 --attempt .runtime-work/c144550-selected-compat-current-signal-appropriateness-pending-0000 --output .runtime-work/c144550-selected-saved-current-signal-appropriateness-pending-0000",
+        "test_log": "sweep-cases/signal-appropriateness-pending-0000/selected-saved-current.log",
+        "test_log_sha256": "88aaaf27d83a274c9b52829dd84b3ced5c7de563b2d0de84d2d34baf8073758f",
+        "test_exit_code": 0,
+        "processing_receipt": "sweep-cases/signal-appropriateness-pending-0000/selected-processing.json",
+        "processing_sha256": "88aaaf27d83a274c9b52829dd84b3ced5c7de563b2d0de84d2d34baf8073758f"
       }
     },
     {
@@ -1330,6 +1359,11 @@
           "entrypoint": "lane_change_measurements.py",
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        },
+        "appropriate_signal_lead_frames": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+          "evidence": "original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl; channels/appropriate_signal_lead_frames.jsonl"
         }
       },
       "offline": {
@@ -1338,6 +1372,23 @@
         "construction_sha256": "cef1d30cda6f5ec9e2d9c7347f93b653f8db40655210a17ebc9754404b27e665",
         "log": "sweep-cases/signal-appropriateness-pending-0001/selected-offline.log",
         "log_sha256": "f238350142b4cca5f38622df4124159f5a0797f837afc2db230c5378c2d3fec5"
+      },
+      "compatibility": {
+        "receipt": "sweep-cases/signal-appropriateness-pending-0001/selected-compatibility.json",
+        "sha256": "5da77c9501e436131ebb2c70615849712c804ed8a938326d5dc5d60e7addf17e",
+        "log": "sweep-cases/signal-appropriateness-pending-0001/selected-analysis.log"
+      },
+      "negative": {
+        "log": "sweep-cases/signal-appropriateness-pending-0001/selected-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-replay .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal-appropriateness-pending-0001 --attempt .runtime-work/c144550-selected-compat-current-signal-appropriateness-pending-0001 --output .runtime-work/c144550-selected-saved-current-signal-appropriateness-pending-0001",
+        "test_log": "sweep-cases/signal-appropriateness-pending-0001/selected-saved-current.log",
+        "test_log_sha256": "32a63efd760844b8049f6fd778d482276fe353fe1fbe2a25e8bdc2241c7a25e5",
+        "test_exit_code": 0,
+        "processing_receipt": "sweep-cases/signal-appropriateness-pending-0001/selected-processing.json",
+        "processing_sha256": "32a63efd760844b8049f6fd778d482276fe353fe1fbe2a25e8bdc2241c7a25e5"
       }
     },
     {
@@ -1411,6 +1462,11 @@
           "entrypoint": "lane_change_measurements.py",
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        },
+        "appropriate_signal_lead_frames": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "first complete original-body departure frame minus first appropriate original lamp frame",
+          "evidence": "original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl; channels/appropriate_signal_lead_frames.jsonl"
         }
       },
       "offline": {
@@ -1419,6 +1475,23 @@
         "construction_sha256": "dc1260a7eb67d9cb06c295483628dd29fc37d99b2806018baea43c7cef5e1a8f",
         "log": "sweep-cases/signal-appropriateness-pending-0002/selected-offline.log",
         "log_sha256": "f5d091e5834a3f2e42426413e92196d25abcd2eb4e678a123dabdd27cad9c9e4"
+      },
+      "compatibility": {
+        "receipt": "sweep-cases/signal-appropriateness-pending-0002/selected-compatibility.json",
+        "sha256": "5a21ec531fcb1039708715865e31835b4c3296a07c1a8a17aa06af55f986d7a1",
+        "log": "sweep-cases/signal-appropriateness-pending-0002/selected-analysis.log"
+      },
+      "negative": {
+        "log": "sweep-cases/signal-appropriateness-pending-0002/selected-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-replay .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal-appropriateness-pending-0002 --attempt .runtime-work/c144550-selected-compat-current-signal-appropriateness-pending-0002 --output .runtime-work/c144550-selected-saved-current-signal-appropriateness-pending-0002",
+        "test_log": "sweep-cases/signal-appropriateness-pending-0002/selected-saved-current.log",
+        "test_log_sha256": "fdad084ec4e61586bd21fe1db2170bd83a9015bb89eaec34eb05311613e3d09e",
+        "test_exit_code": 0,
+        "processing_receipt": "sweep-cases/signal-appropriateness-pending-0002/selected-processing.json",
+        "processing_sha256": "fdad084ec4e61586bd21fe1db2170bd83a9015bb89eaec34eb05311613e3d09e"
       }
     },
     {
@@ -1492,6 +1565,11 @@
           "entrypoint": "lane_change_measurements.py",
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        },
+        "nearest_target_body_gap_at_departure_m": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+          "evidence": "original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl; channels/nearest_target_body_gap_at_departure_m.jsonl"
         }
       },
       "offline": {
@@ -1500,6 +1578,23 @@
         "construction_sha256": "9f8ac68c618088b48e3499de544ab7ae785eb70cd3601565d755dd7e0340e316",
         "log": "sweep-cases/safety-ascertainment-pending-0000/selected-offline.log",
         "log_sha256": "70141b49b3b2754121610434b78b135d3853bbc40ab68266acb8e9be5fecaf5c"
+      },
+      "compatibility": {
+        "receipt": "sweep-cases/safety-ascertainment-pending-0000/selected-compatibility.json",
+        "sha256": "c7dc0bb7b397f9f4cfb02bb5f1b4755f88cae9347620935ce5ba6bee42bc09de",
+        "log": "sweep-cases/safety-ascertainment-pending-0000/selected-analysis.log"
+      },
+      "negative": {
+        "log": "sweep-cases/safety-ascertainment-pending-0000/selected-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-replay .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__safety-ascertainment-pending-0000 --attempt .runtime-work/c144550-selected-compat-safety-ascertainment-pending-0000 --output .runtime-work/c144550-selected-saved-safety-ascertainment-pending-0000",
+        "test_log": "sweep-cases/safety-ascertainment-pending-0000/selected-saved.log",
+        "test_log_sha256": "a9ec864e39f8824b5eba8b3ab35ed90aacd6f9ba99591d78fda9d70cf23629b3",
+        "test_exit_code": 0,
+        "processing_receipt": "sweep-cases/safety-ascertainment-pending-0000/selected-processing.json",
+        "processing_sha256": "a9ec864e39f8824b5eba8b3ab35ed90aacd6f9ba99591d78fda9d70cf23629b3"
       }
     },
     {
@@ -1573,6 +1668,11 @@
           "entrypoint": "lane_change_measurements.py",
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
+        },
+        "nearest_target_body_gap_at_departure_m": {
+          "entrypoint": "lane_change_measurements.py",
+          "method": "nearest original target-lane actor body gap along sourced lane heading at first complete-body departure",
+          "evidence": "original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl; channels/nearest_target_body_gap_at_departure_m.jsonl"
         }
       },
       "offline": {
@@ -1581,6 +1681,23 @@
         "construction_sha256": "742cbf3a03795bcb45f88166601cf204f0d493b5fbf9e390969770340e23aa89",
         "log": "sweep-cases/safety-ascertainment-pending-0001/selected-offline.log",
         "log_sha256": "ee8294c4798de2be5c6b1fa3491785a42644e8cc95f0718ddb83406fb334e453"
+      },
+      "compatibility": {
+        "receipt": "sweep-cases/safety-ascertainment-pending-0001/selected-compatibility.json",
+        "sha256": "733320fbf6bff14ea8966e906c2bd7a0ce564b8a1080eff49bccd8b542e4d18c",
+        "log": "sweep-cases/safety-ascertainment-pending-0001/selected-analysis.log"
+      },
+      "negative": {
+        "log": "sweep-cases/safety-ascertainment-pending-0001/selected-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-replay .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__safety-ascertainment-pending-0001 --attempt .runtime-work/c144550-selected-compat-safety-ascertainment-pending-0001 --output .runtime-work/c144550-selected-saved-safety-ascertainment-pending-0001",
+        "test_log": "sweep-cases/safety-ascertainment-pending-0001/selected-saved.log",
+        "test_log_sha256": "899fc8a5c899dc5871d97c797b357964d9292f1bc8294ee245234c56d146555e",
+        "test_exit_code": 0,
+        "processing_receipt": "sweep-cases/safety-ascertainment-pending-0001/selected-processing.json",
+        "processing_sha256": "899fc8a5c899dc5871d97c797b357964d9292f1bc8294ee245234c56d146555e"
       }
     }
   ]
