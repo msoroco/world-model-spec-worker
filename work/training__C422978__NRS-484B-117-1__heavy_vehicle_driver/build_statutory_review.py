@@ -44,7 +44,7 @@ def build():
                        for row in exception['positives']}
     topics = source['topics']
     if (source['original_assignment_id'] != AID or
-            source['law']['text'] != assignment['law_record']['text'] or
+            source['law']['text'] != assignment['law']['text'] or
             set(topics) != set(TOPICS) or
             {d['requirement'] for d in plan['requirement_dispositions']} != set(TOPICS) or
             len(saved['positives']) != 8 or len(exception_index) != 8 or

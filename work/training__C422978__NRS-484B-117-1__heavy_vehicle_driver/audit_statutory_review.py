@@ -56,7 +56,7 @@ def audit():
     topics = json.loads(paths['branch_source_sha256'].read_text())['laws']['NRS-484B-117-1']['topics']
     dispositions = {row['requirement'] for row in json.loads(paths['case_plan_sha256'].read_text())['requirement_dispositions']}
     if (set(topics) != set(TOPICS) or dispositions != set(TOPICS) or
-            assignment['law_record']['text'] != json.loads(paths['branch_source_sha256'].read_text())['laws']['NRS-484B-117-1']['law']['text']):
+            assignment['law']['text'] != json.loads(paths['branch_source_sha256'].read_text())['laws']['NRS-484B-117-1']['law']['text']):
         raise ValueError('Frozen statutory topic set differs')
     expected = {(topic,case,candidate) for topic in TOPICS for case in CASES for candidate in CANDIDATES}
     seen, source_rows = set(), 0
