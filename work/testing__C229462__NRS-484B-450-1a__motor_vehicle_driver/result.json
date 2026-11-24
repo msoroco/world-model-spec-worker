@@ -2,11 +2,36 @@
   "assignment_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver",
   "input_sha256": "0342cbea269cd3a17f4b530bcfbcbcd122d02fea6c3404c8d0b02f767f7fe4a8",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "sidewalk_footprint_geometry_and_cases",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "340386b765210014a4df805cc941eb8d8c5207e7555148ede4a82c87fed67372"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "unittest.log",
+      "sha256": "bd4bb7146638f9774e74e0299354ee3f8fafc51138784f3b4f2ea3b24d0bec48"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229462__NRS-484B-450-1a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "78be2b2e7ac2e83af372bbec6df5df012aae0de3b5f76a28f8192a94faec5363"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229462__NRS-484B-450-1a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Four planned controlled sidewalk cases, three isolated comparisons and a five-test source-bound vehicle-footprint/sidewalk overlap measurement are added. Physical construction, original source, exception review, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
 }

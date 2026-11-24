@@ -46,4 +46,16 @@ class SavedMeasurementTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'Missing required source: walker-body-history.jsonl'):
                 m.read_attempt(root)
 
+    def test_native_source_cannot_use_short_center_only_diagnostic(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary)
+            index=self.fixture(root)
+            marker={'provenance_kind':'native','diagnostic_fixture':False}
+            (root/'acquisition-provenance.json').write_text(json.dumps(marker)+'\n')
+            for binding in index.values():
+                binding['kind']='original_native'
+            (root/'acquisition.json').write_text(json.dumps(index)+'\n')
+            with self.assertRaisesRegex(ValueError,'complete original walker body duration'):
+                m.read_attempt(root)
+
 if __name__=='__main__': unittest.main()

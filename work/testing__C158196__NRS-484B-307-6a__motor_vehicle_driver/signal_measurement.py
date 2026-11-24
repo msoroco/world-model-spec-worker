@@ -30,7 +30,8 @@ def _required_source(value: Any, label: str) -> None:
         raise EvidenceError(f"invalid {label} source hash")
 
 
-def _selected_signal(frame: dict, route_id: str, signal_id: str) -> dict:
+def _selected_signal(frame: dict, route_id: str, signal_id: str,
+                     allow_companion: bool = False) -> dict:
     signals = frame.get("signals")
     if not isinstance(signals, list):
         raise EvidenceError("missing original signal readback")
@@ -42,13 +43,20 @@ def _selected_signal(frame: dict, route_id: str, signal_id: str) -> dict:
         raise EvidenceError("selected official facing vehicular signal unverified")
     if signal.get("state") not in {"green", "yellow", "red"}:
         raise EvidenceError("unknown selected signal indication")
-    if signal.get("state") == "yellow" and (signal.get("flashing") is not False or signal.get("companion_lamps_on") != []):
-        raise EvidenceError("steady yellow alone unverified")
+    if signal.get("state") == "yellow":
+        if signal.get("flashing") is not False:
+            raise EvidenceError("steady yellow alone unverified")
+        companions = signal.get("companion_lamps_on")
+        if not isinstance(companions, list) or (companions and not allow_companion):
+            raise EvidenceError("steady yellow alone unverified")
+        if companions and not all(isinstance(lamp, str) and lamp for lamp in companions):
+            raise EvidenceError("companion indication readback invalid")
     _required_source(signal.get("source"), "selected signal")
     return signal
 
 
-def measure(packet: dict, expected_frames: int = 900) -> dict:
+def measure(packet: dict, expected_frames: int = 900,
+            case_profile: str = "steady_yellow_alone") -> dict:
     """Measure phase sequence and entry bracket from a sealed Native packet."""
     for label in ("intersection_polygon", "route_connectivity", "device_route_binding", "native_result"):
         _required_source(packet.get(label), label)
@@ -60,8 +68,11 @@ def measure(packet: dict, expected_frames: int = 900) -> dict:
     frames = packet.get("frames")
     if not isinstance(frames, list) or len(frames) != expected_frames:
         raise EvidenceError("incomplete original frame history")
+    if case_profile not in ("steady_yellow_alone", "yellow_non_alone"):
+        raise EvidenceError("unknown signal case profile")
     states = []
     distances = []
+    companion_frames = []
     for i, frame in enumerate(frames):
         if frame.get("frame") != i or abs(frame.get("time_s", -999) - i / 20.0) > 0.001:
             raise EvidenceError("broken original 20 Hz frame/time join")
@@ -72,7 +83,13 @@ def measure(packet: dict, expected_frames: int = 900) -> dict:
             raise EvidenceError("missing original front-to-entry geometry")
         _required_source(frame.get("ego_geometry_source"), "ego geometry")
         distances.append(float(distance))
-        states.append(_selected_signal(frame, route_id, signal_id)["state"])
+        selected = _selected_signal(frame, route_id, signal_id,
+                                    allow_companion=case_profile == "yellow_non_alone")
+        states.append(selected["state"])
+        if selected["state"] == "yellow" and selected["companion_lamps_on"]:
+            companion_frames.append(i)
+    if case_profile == "yellow_non_alone" and not companion_frames:
+        raise EvidenceError("companion indication not observed")
     transitions = [(i, states[i - 1], states[i]) for i in range(1, len(states)) if states[i] != states[i - 1]]
     allowed = {("green", "yellow"), ("yellow", "red")}
     if any((a, b) not in allowed for _, a, b in transitions):
@@ -86,6 +103,7 @@ def measure(packet: dict, expected_frames: int = 900) -> dict:
     if len(crossings) > 1:
         raise EvidenceError("multiple intersection entries require separate review")
     crossing = crossings[0].__dict__ if crossings else None
+    initially_inside = distances[0] >= 0
     return {
         "format": "original-signal-entry-measurement",
         "source_native_result": packet["native_result"],
@@ -93,8 +111,13 @@ def measure(packet: dict, expected_frames: int = 900) -> dict:
         "selected_signal_id": signal_id,
         "frame_count": len(frames),
         "phase_transitions": [{"before_frame": i - 1, "after_frame": i, "from": a, "to": b} for i, a, b in transitions],
+        "initially_inside_intersection": initially_inside,
+        "yellow_alone_observed": bool(any(state == "yellow" for state in states) and
+                                      not companion_frames),
+        "companion_indication_frames": companion_frames,
         "entry_bracket": crossing,
-        "entry_observation": "no_entry" if crossing is None else (
+        "entry_observation": ("already_inside_at_capture_start" if initially_inside else "no_entry")
+        if crossing is None else (
             "red_both_samples" if crossing["signal_before"] == crossing["signal_after"] == "red" else
             "yellow_both_samples" if crossing["signal_before"] == crossing["signal_after"] == "yellow" else
             "transition_bracket_unresolved"),

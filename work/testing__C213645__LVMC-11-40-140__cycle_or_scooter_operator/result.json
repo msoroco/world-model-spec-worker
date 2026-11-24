@@ -2,11 +2,36 @@
   "assignment_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator",
   "input_sha256": "e4b1dc1fed9498030180a25f62cb3d92a2864f06da751362faf93c42aebe65bc",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "driveway_sidewalk_entry_measurement_and_cases",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "84dc37c79402c082a4ea6991d42409b7111f3bee25632c156ee0fed1e0314a05"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/tests -v",
+      "exit_code": 0,
+      "log": "unittest.log",
+      "sha256": "ec4a2be1c2b43bf78d0010a1fe487807daedfa85b757ec0fa8af0466082cda31"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator --complete",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "7e3fa4cd2f4e2d012cfd516b68ebfe05a00294c6ea9b9419bef87cbe3d75fd96"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Four planned controlled driveway-sidewalk cases, three isolated comparisons and a five-test source-bound pre-entry stop/pedestrian/yield measurement are added. Physical construction, original source, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
 }

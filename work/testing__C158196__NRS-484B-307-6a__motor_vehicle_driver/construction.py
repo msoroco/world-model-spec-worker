@@ -39,12 +39,24 @@ def construct(adapter, scene: dict, case: str) -> dict:
     if scene.get("duration_frames") != 900 or scene.get("rate_hz") != 20 or tuple(scene.get("cameras", ())) != CAMERAS:
         raise ConstructionError("capture profile changed")
     profile = CASE_PROFILES[case]
+    if case == "yellow_non_alone" and (not scene.get("companion_signal_id") or
+                                       not scene.get("companion_device_sha256") or
+                                       not scene.get("companion_route_binding_sha256")):
+        raise ConstructionError("companion indication source missing")
     adapter.configure_world(scene["map_sha256"], fixed_delta_seconds=0.05)
     ego = adapter.spawn_ego(scene["ego_blueprint"], scene["approach_spawn"])
     signal = adapter.bind_official_signal(scene["selected_signal_id"], scene["selected_route_id"])
     if not signal or signal.get("kind") != "vehicular" or signal.get("facing_route_id") != scene["selected_route_id"]:
         raise ConstructionError("Native official signal readback failed")
     adapter.program_signal(signal, sequence=("green", "yellow", "red"), profile=profile["entry_phase"])
+    if case == "yellow_non_alone":
+        companion = adapter.bind_companion_signal(scene["companion_signal_id"],
+                                                  scene["selected_route_id"])
+        if (not companion or companion.get("official") is not True or
+            companion.get("facing_route_id") != scene["selected_route_id"] or
+            companion.get("source_sha256") != scene["companion_device_sha256"]):
+            raise ConstructionError("companion Native readback failed")
+        adapter.program_companion_signal(companion, active_during="yellow")
     adapter.set_route_controller(ego, scene["route_waypoints"], behavior=profile["behavior"])
     for camera in CAMERAS:
         adapter.attach_camera(ego, camera)

@@ -150,13 +150,14 @@ def measure(site, case_key, map_sha256, frames):
     previous_native_frame = None
     for i, frame in enumerate(frames):
         require(frame.get("frame_index") == i and frame.get("native_frame") is not None, "original frame identity gap")
-        require(isinstance(frame["native_frame"], int) and
-                (previous_native_frame is None or frame["native_frame"] > previous_native_frame),
-                "Native frame nonmonotone")
+        require(type(frame["native_frame"]) is int and
+                (previous_native_frame is None or frame["native_frame"] == previous_native_frame + 1),
+                "Native frame nonconsecutive")
         previous_native_frame = frame["native_frame"]
         require(finite_number(frame.get("time_s")) and abs(frame["time_s"] - i / 20) <= 0.002, "original 20 Hz time join failed")
         require(frame.get("map_sha256") == map_sha256 and frame.get("intersection_id") == site["intersection_id"], "Native source identity mismatch")
-        row = {"frame_index": i, "time_s": frame["time_s"]}
+        row = {"frame_index": i, "native_frame": frame["native_frame"],
+               "time_s": frame["time_s"]}
         for role in ("through", "entering"):
             actor = frame.get(role, {})
             xy = actor.get("center_xy")

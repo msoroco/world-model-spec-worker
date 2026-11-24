@@ -29,14 +29,17 @@ def audit_saved(source, measured):
     frame_map = source.get("frame_map")
     count = measured.get("original_frame_count")
     require(isinstance(count, int) and count >= 400 and isinstance(frame_map, list) and len(frame_map) == count, "complete original frame map missing")
+    first_native = frame_map[0].get("native_frame")
+    require(type(first_native) is int, "original Native frame identity missing")
     for i, row in enumerate(frame_map):
-        require(row.get("frame_index") == i and row.get("native_frame") is not None
+        require(row.get("frame_index") == i and row.get("native_frame") == first_native + i
                 and isinstance(row.get("time_s"), (int, float)) and abs(row["time_s"] - i / 20) <= 0.002,
                 "original frame/time join failed")
     samples = measured.get("original_samples")
     require(isinstance(samples, list) and len(samples) == count, "measured original history missing")
     for i, row in enumerate(samples):
-        require(row.get("frame_index") == i and abs(row.get("time_s", -1) - frame_map[i]["time_s"]) <= 0.002,
+        require(row.get("frame_index") == i and row.get("native_frame") == frame_map[i]["native_frame"]
+                and abs(row.get("time_s", -1) - frame_map[i]["time_s"]) <= 0.002,
                 "measurement frame/time join failed")
         require(all(row.get(role, {}).get("center_xy") is not None for role in ("through", "entering")),
                 "both actor histories missing")

@@ -24,9 +24,112 @@
   "topic_inventory": {
     "exact-text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway is a controlled-access highway, use alternate routes whenever possible."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
+      "target_law_id": "NRS-484B-627-1c",
+      "branch": "controlled-access alternate-route duty with follower behind",
+      "route_choice": "alternate",
+      "alternate_declared": true,
+      "controlled_access": true,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
+      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
+      "target_law_id": "NRS-484B-627-1c",
+      "branch": "controlled-access alternate-route duty with follower behind",
+      "route_choice": "main",
+      "alternate_declared": true,
+      "controlled_access": true,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
+      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted",
+      "target_law_id": "NRS-484B-627-1c",
+      "branch": "controlled-access alternate-route duty with follower behind",
+      "route_choice": "main",
+      "alternate_declared": false,
+      "controlled_access": true,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
+      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast",
+      "target_law_id": "NRS-484B-627-1c",
+      "branch": "controlled-access alternate-route duty with follower behind",
+      "route_choice": "main",
+      "alternate_declared": true,
+      "controlled_access": false,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
+      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "alternate_choice",
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected"
+      ],
+      "fixed_conditions": "same journey destination, shared approach segment, vehicles, 900-frame capture and following context",
+      "deliberate_differences": [
+        "actual alternate versus main route"
+      ]
+    },
+    {
+      "comparison_id": "alternate_restriction",
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted"
+      ],
+      "fixed_conditions": "same journey destination, shared approach segment, vehicles, 900-frame capture and following context",
+      "deliberate_differences": [
+        "documented alternate restriction"
+      ]
+    },
+    {
+      "comparison_id": "controlled_access",
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast"
+      ],
+      "fixed_conditions": "same journey destination, shared approach segment, vehicles, 900-frame capture and following context",
+      "deliberate_differences": [
+        "controlled-access classification"
+      ]
+    }
+  ],
+  "observations": [
+    "legal highway and controlled-access source classification distinct from paved road",
+    "qualifying vehicle and driver control",
+    "ego/follower routes and common immediately-behind segment",
+    "original following gap, both speeds, progression and impediment context",
+    "journey destination, alternate junction and restrictions",
+    "actual route selection from original route observations",
+    "so-slow, immediately-behind and possibility reserved for legal review"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C179789__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
@@ -51,17 +154,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "A paved-road cell does not by itself establish legal highway or controlled-access status.",
+    "Fixture route choices and following motion are synthetic, not original physical evidence.",
+    "Canonical capture/offline/compatibility, semantic and saved delivery/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "original controlled-access route and following-motion evidence",
+        "source": "inputs/testing__C179789__NRS-484B-627-1c__motor_vehicle_driver/evidence.json",
+        "source_sha256": "0d1beafb9baa881471f1b7442705b846a0d2a37b30e0acc0ba1bf2aedd929e9b",
+        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_alternate_route_cpu_probes",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

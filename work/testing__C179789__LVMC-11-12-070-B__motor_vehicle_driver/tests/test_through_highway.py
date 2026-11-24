@@ -79,7 +79,12 @@ class ThroughHighwayTests(unittest.TestCase):
             module.measure(site(), "cross_yield", SEAL, bad)
         bad = frames()
         bad[200]["native_frame"] = bad[199]["native_frame"]
-        with self.assertRaisesRegex(ValueError, "Native frame nonmonotone"):
+        with self.assertRaisesRegex(ValueError, "Native frame nonconsecutive"):
+            module.measure(site(), "cross_yield", SEAL, bad)
+        bad = frames()
+        for i in range(200, len(bad)):
+            bad[i]["native_frame"] += 1
+        with self.assertRaisesRegex(ValueError, "Native frame nonconsecutive"):
             module.measure(site(), "cross_yield", SEAL, bad)
         bad = frames()
         bad[200]["entering"]["actor_id"] = 3
@@ -198,6 +203,14 @@ class ThroughHighwayTests(unittest.TestCase):
             bad["frame_map"][200]["time_s"] += 0.1
             with self.assertRaisesRegex(ValueError, "time join"):
                 audit.audit_saved(bad, measured)
+            bad = copy.deepcopy(source)
+            bad["frame_map"][200]["native_frame"] += 1
+            with self.assertRaisesRegex(ValueError, "frame/time join"):
+                audit.audit_saved(bad, measured)
+            bad_measured = copy.deepcopy(measured)
+            bad_measured["original_samples"][200]["native_frame"] += 1
+            with self.assertRaisesRegex(ValueError, "measurement frame/time join"):
+                audit.audit_saved(source, bad_measured)
             other = module.measure(site(), "cross_continue", SEAL, frames())
             other_source = dict(source, case_id=other["case_id"])
             self.assertEqual(len(audit.audit_comparison(source, measured, other_source, other)["case_ids"]), 2)

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from delivery_audit import audit_saved, CAMERAS
+from physical_geometry_audit import audit_body_history
 
 REQUIRED = ('scene.json', 'walker-body-history.jsonl', 'camera-frame-joins.jsonl',
             *(name + '.mkv' for name in CAMERAS))
@@ -53,11 +54,14 @@ def read_attempt(attempt):
     joins = _rows(root/'camera-frame-joins.jsonl')
     cameras = {name:{**index[name+'.mkv'],'sha256':sources[name+'.mkv']} for name in CAMERAS}
     measurement = audit_saved(scene,rows,joins,cameras,expected_camera_kind=required_kind)
-    return {'format':'worker-pedestrian-crossing-measurement',
+    report = {'format':'worker-pedestrian-crossing-measurement',
             'case_id':scene['case_id'], 'measurement':measurement,
             'sources_sha256':sources, 'legal_verdict_claimed':False,
             'diagnostic_fixture':diagnostic,
             'physical_visibility':'unconfirmed_by_this_measurement'}
+    if not diagnostic:
+        report['native_body_geometry'] = audit_body_history(scene,rows)
+    return report
 
 
 def main():

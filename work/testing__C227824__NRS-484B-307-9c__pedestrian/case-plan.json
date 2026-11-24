@@ -24,9 +24,108 @@
   "topic_inventory": {
     "exact-text": "Where the signal is a steady red with a green turn arrow: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__enter_no_other_device",
+      "target_law_id": "NRS-484B-307-9c",
+      "branch": "pedestrian entry under steady red with green turn arrow and other-device exception",
+      "movement": "enter",
+      "other_device_display": "none",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "ped_entry.construct: sourced official red/arrow signal, separate other device and pedestrian route",
+      "measurement": "ped_entry.measure_original: 900 original frames, afoot/facing/signal join and first physical highway entry",
+      "physical_risk": "actual signal timing/facing, legal highway boundary and pedestrian body entry require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__wait_no_other_device",
+      "target_law_id": "NRS-484B-307-9c",
+      "branch": "pedestrian entry under steady red with green turn arrow and other-device exception",
+      "movement": "wait",
+      "other_device_display": "none",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "ped_entry.construct: sourced official red/arrow signal, separate other device and pedestrian route",
+      "measurement": "ped_entry.measure_original: 900 original frames, afoot/facing/signal join and first physical highway entry",
+      "physical_risk": "actual signal timing/facing, legal highway boundary and pedestrian body entry require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__enter_walk_display",
+      "target_law_id": "NRS-484B-307-9c",
+      "branch": "pedestrian entry under steady red with green turn arrow and other-device exception",
+      "movement": "enter",
+      "other_device_display": "walk",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "ped_entry.construct: sourced official red/arrow signal, separate other device and pedestrian route",
+      "measurement": "ped_entry.measure_original: 900 original frames, afoot/facing/signal join and first physical highway entry",
+      "physical_risk": "actual signal timing/facing, legal highway boundary and pedestrian body entry require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__wait_walk_display",
+      "target_law_id": "NRS-484B-307-9c",
+      "branch": "pedestrian entry under steady red with green turn arrow and other-device exception",
+      "movement": "wait",
+      "other_device_display": "walk",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "ped_entry.construct: sourced official red/arrow signal, separate other device and pedestrian route",
+      "measurement": "ped_entry.measure_original: 900 original frames, afoot/facing/signal join and first physical highway entry",
+      "physical_risk": "actual signal timing/facing, legal highway boundary and pedestrian body entry require CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entry_vs_wait_none",
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-9c__pedestrian__enter_no_other_device",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__wait_no_other_device"
+      ],
+      "fixed_conditions": "same highway boundary, pedestrian, official steady red/green turn arrow, route and camera/duration",
+      "deliberate_differences": [
+        "pedestrian enters versus waits"
+      ]
+    },
+    {
+      "comparison_id": "other_device_display_entry",
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-9c__pedestrian__enter_no_other_device",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__enter_walk_display"
+      ],
+      "fixed_conditions": "same highway boundary, pedestrian, official steady red/green turn arrow, route and camera/duration",
+      "deliberate_differences": [
+        "other device absent versus WALK display"
+      ]
+    },
+    {
+      "comparison_id": "entry_vs_wait_walk",
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-9c__pedestrian__enter_walk_display",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__wait_walk_display"
+      ],
+      "fixed_conditions": "same highway boundary, pedestrian, official steady red/green turn arrow, route and camera/duration",
+      "deliberate_differences": [
+        "entry versus wait with WALK displayed"
+      ]
+    }
+  ],
+  "observations": [
+    "person afoot and original physical control",
+    "highway dedication and public vehicular use",
+    "original signed pedestrian body distance to actual highway boundary",
+    "official steady red concurrent green turn arrow facing pedestrian at entry",
+    "inventory and original display of every potentially permitting other device",
+    "pedestrian initially outside and first original entry frame",
+    "NRS 484B.283 permission unresolved; vehicle arrow alone is not pedestrian permission"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C227824__NRS-484B-307-9c__pedestrian/assignment.json",
@@ -51,17 +150,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Diagnostic pedestrian boundary and signal source fields are synthetic, not original physical proof.",
+    "NRS 484B.283 other-device permission remains a legal/source review question.",
+    "Canonical capture/offline/compatibility, semantic and saved delivery/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "original signal, facing, other-device and highway-entry evidence",
+        "source": "inputs/testing__C227824__NRS-484B-307-9c__pedestrian/evidence.json",
+        "source_sha256": "d006850d84518e995d312d0aef90316ae94a8d7dd15ae3482c1a56034f54c5b3",
+        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_ped_entry_cpu_probes",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

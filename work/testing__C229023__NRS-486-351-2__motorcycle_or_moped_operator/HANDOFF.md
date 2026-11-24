@@ -20,3 +20,23 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 CPU checkpoint
+
+The law prohibits same-lane abreast riding, overtaking or passing by motorcycle/moped/trimobile except subsection 3. A separate allowance permits no more than two motorcycles or mopeds abreast with drivers consent. `case-plan.json` now defines five unselected controlled constructions and three isolated comparisons for same-lane scope, consent and count. No accepted recordings exist in the frozen inventory.
+
+`same_lane_pass.py` binds original source SHA256, validates 20 Hz lane and longitudinal relations, distinguishes a behind-to-ahead same-lane pass from riding abreast, and retains consent and subsection 3 status separately. Five synthetic CPU tests cover same-lane pass, adjacent-lane pass, abreast without pass, missing lane identity and unsubstantiated exception status. A maneuver alone cannot prove consent.
+
+| File | SHA256 |
+| --- | --- |
+| `case-plan.json` | `0d8c8d14843e685103f0be344475cb3e3360066911ce8dceb7c411798da735b6` |
+| `same_lane_pass.py` | `9c6f21addc439522de08eefc58ef9d94e2177ac2672a9ef63adc06b75faa736f` |
+| `tests/test_same_lane_pass.py` | `073ff8bb12fe40958b4796c08a794b5bbb22fb2007a7d2d51a9e6431c8196697` |
+| `preflight.log` | `654e6f941c563de3b4c4b4aee8eb1abf2789227caf5ed99950b61fbb6665ea2b` |
+| `unittest.log` | `e85f44ced0249f61534c15539794cccc56603f3c8f3fafc8e769c9be1e7c3aa4` |
+| `static.log` | `2622e1eb2029b8c45defc94e1342499da5b0f731baf9e16448affd920adc1519` |
+| `strict.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
+
+Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
+
+Next CPU work: construct/read back same-lane motorcycle and other-vehicle trajectories and abreast controls; source driver consent and subsection 3 exception; implement saved finalizer, exact positive/negative compatibility and independent delivery/comparison audits. CARLA motion and camera quality follow CPU readiness.

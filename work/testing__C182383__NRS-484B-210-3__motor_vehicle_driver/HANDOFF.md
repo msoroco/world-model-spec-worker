@@ -20,3 +20,23 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 CPU checkpoint
+
+The operative prohibition concerns a completed overtake and pass on the right when that movement **requires** driving off the paved portion. Actual travel off pavement is a separate fact from physical necessity. `case-plan.json` now defines four unselected constructions and three isolated comparisons for corridor width, actual off-pavement choice, and whether a pass occurs. No accepted recordings exist in the frozen inventory.
+
+`right_pass_envelope.py` binds original source SHA256, validates 20 Hz vehicle/pavement lateral envelopes and longitudinal pass identity, then reports actual off-pavement body extension and a zero-clearance geometric body-fit lower bound during overlap. It does not infer a safe legal alternative from mere width. Five synthetic CPU tests include an off-pavement path with sufficient physical corridor, proving the two concepts remain separate.
+
+| File | SHA256 |
+| --- | --- |
+| `case-plan.json` | `c0afc61e0d0c4f48f62dad749b9c2da55343c61870f1dc1eabe9e2736ede0fb9` |
+| `right_pass_envelope.py` | `c2d226a9976b10c7b62b0e51537eb337c504f9c6a025ffee7d1bad64aa33e5b5` |
+| `tests/test_right_pass_envelope.py` | `d182d89ffa2923b506f8a2685885e55cd64c1933a88ecaba400b8e2a4d212b40` |
+| `preflight.log` | `dc7443eaece283c0211b26636b6d28c21fd74df486ccb90d6ce72aeae0b07f02` |
+| `unittest.log` | `ac8cdb4d61c234ba14d6811a16f68a40012180952ea534d68612ea6037a2a7c1` |
+| `static.log` | `1ef68097d88d2c2629b9863d19c48d52fbb0a2abd1195db2e5ec63349d0fb373` |
+| `strict.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
+
+Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
+
+Next CPU work: construct and read back the paved edge and controlled overtaking geometry; save original body envelopes and road-surface classification; implement case-specific finalizer, exact positive/negative compatibility and independent delivery/comparison audits, including source review of what movement requires. CARLA motion and camera quality follow CPU readiness.

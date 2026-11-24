@@ -20,3 +20,23 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 CPU checkpoint
+
+The exact branch is a qualifying cycle/scooter operator emerging from a driveway in a residence district across a sidewalk area. The law requires stopping immediately before entry and yielding to pedestrians as necessary to avoid collision. `case-plan.json` now has four unselected constructions and three isolated comparisons for stop, pedestrian conflict and yield behavior. No accepted recordings exist in the frozen inventory.
+
+`driveway_sidewalk.py` binds original source SHA256, validates qualifying vehicle and sourced district/access/sidewalk identity, brackets first sidewalk-area entry, reports last sampled pre-entry low-speed observation and pedestrian/yield observations separately. Five synthetic CPU tests cover stop, no stop, no pedestrian, nonqualifying vehicle and absent crossing. The 0.1 m/s sample threshold is an engineering readback and does not set a legal definition of a complete stop or immediate proximity.
+
+| File | SHA256 |
+| --- | --- |
+| `case-plan.json` | `54202ee2aefb05767ea7087c093471c79496928a25c6983a1c2fd416da1082fa` |
+| `driveway_sidewalk.py` | `976357c35797282c0da66d0a539512a9d94e0fcc60ca3aa021b8cb9905b0ecc4` |
+| `tests/test_driveway_sidewalk.py` | `26a81bef89bde6cc4b11e917dec273c5e64edb18a42e8ad42e925d07fb29253d` |
+| `preflight.log` | `84dc37c79402c082a4ea6991d42409b7111f3bee25632c156ee0fed1e0314a05` |
+| `unittest.log` | `ec4a2be1c2b43bf78d0010a1fe487807daedfa85b757ec0fa8af0466082cda31` |
+| `static.log` | `7e3fa4cd2f4e2d012cfd516b68ebfe05a00294c6ea9b9419bef87cbe3d75fd96` |
+| `strict.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
+
+Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
+
+Next CPU work: construct/read back driveway sidewalk continuation, source-bound scooter stop and pedestrian conflict trajectory; implement saved finalizer with collision-necessity review, exact positive/negative compatibility and independent delivery/comparison audits. CARLA motion and camera quality follow CPU readiness.

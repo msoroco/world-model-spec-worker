@@ -2,11 +2,36 @@
   "assignment_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator",
   "input_sha256": "1a54e2605d47af781351dc515e253e51624a8383e51d98ab85a0d9c4491f40d6",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "same_lane_pass_measurement_and_cases",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "654e6f941c563de3b4c4b4aee8eb1abf2789227caf5ed99950b61fbb6665ea2b"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/tests -v",
+      "exit_code": 0,
+      "log": "unittest.log",
+      "sha256": "e85f44ced0249f61534c15539794cccc56603f3c8f3fafc8e769c9be1e7c3aa4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator --complete",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "2622e1eb2029b8c45defc94e1342499da5b0f731baf9e16448affd920adc1519"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Five planned controlled same-lane pass/abreast cases, three isolated comparisons and a five-test source-bound lane/longitudinal relation measurement are added. Actual construction, independent consent and subsection 3 source, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
 }

@@ -45,9 +45,27 @@ class SignalMeasurementTest(unittest.TestCase):
 
     def test_already_inside_and_no_entry(self):
         already = packet(0)
-        self.assertEqual(signal.measure(already, 8)["entry_observation"], "no_entry")
+        self.assertEqual(signal.measure(already, 8)["entry_observation"],
+                         "already_inside_at_capture_start")
+        self.assertTrue(signal.measure(already, 8)["initially_inside_intersection"])
         stopped = packet(99)
         self.assertEqual(signal.measure(stopped, 8)["entry_observation"], "no_entry")
+        self.assertFalse(signal.measure(stopped, 8)["initially_inside_intersection"])
+
+    def test_companion_probe_requires_actual_companion_readback(self):
+        p = packet()
+        p["frames"][2]["signals"][0]["companion_lamps_on"] = ["turn_arrow"]
+        with self.assertRaisesRegex(signal.EvidenceError, "steady yellow alone"):
+            signal.measure(p, 8)
+        observed = signal.measure(p, 8, case_profile="yellow_non_alone")
+        self.assertFalse(observed["yellow_alone_observed"])
+        self.assertEqual(observed["companion_indication_frames"], [2])
+        self.assertEqual(observed["legal_judgment"], "unresolved")
+        with self.assertRaisesRegex(signal.EvidenceError, "companion indication not observed"):
+            signal.measure(packet(), 8, case_profile="yellow_non_alone")
+        p["frames"][2]["signals"][0]["companion_lamps_on"] = [None]
+        with self.assertRaisesRegex(signal.EvidenceError, "readback invalid"):
+            signal.measure(p, 8, case_profile="yellow_non_alone")
 
     def test_transition_bracket_not_assigned_a_color(self):
         p = packet(5)
@@ -131,6 +149,8 @@ def scene():
             "route_connectivity_sha256": "c" * 64, "ego_blueprint": "vehicle.tesla.model3",
             "selected_route_id": "ego_route", "selected_signal_id": "head1",
             "official_device_sha256": "d" * 64, "signal_route_binding_sha256": "e" * 64,
+            "companion_signal_id": "head-companion", "companion_device_sha256": "f" * 64,
+            "companion_route_binding_sha256": "g" * 64,
             "approach_spawn": [0, 0, 0], "route_waypoints": [[0, 0], [10, 0], [20, 0]],
             "layout": "one_way_to_two_way_intersection", "signal_kind": "vehicular",
             "signal_facing_route_id": "ego_route",
@@ -155,6 +175,14 @@ class FakeAdapter:
 
     def program_signal(self, *args, **kwargs):
         self.calls.append(("program_signal", args, kwargs))
+
+    def bind_companion_signal(self, signal_id, route_id):
+        self.calls.append(("bind_companion_signal", (signal_id, route_id), {}))
+        return {"official": True, "facing_route_id": route_id,
+                "source_sha256": "f" * 64}
+
+    def program_companion_signal(self, *args, **kwargs):
+        self.calls.append(("program_companion_signal", args, kwargs))
 
     def set_route_controller(self, *args, **kwargs):
         self.calls.append(("set_route_controller", args, kwargs))
@@ -184,6 +212,17 @@ class ConstructionTest(unittest.TestCase):
         with self.assertRaisesRegex(construction.ConstructionError, "capture profile"):
             construction.construct(adapter, s, "enters_red")
         self.assertEqual(adapter.calls, [])
+
+    def test_non_alone_case_constructs_actual_companion_device(self):
+        adapter = FakeAdapter()
+        construction.construct(adapter, scene(), "yellow_non_alone")
+        names = [x[0] for x in adapter.calls]
+        self.assertIn("bind_companion_signal", names)
+        self.assertIn("program_companion_signal", names)
+        s = scene()
+        s.pop("companion_device_sha256")
+        with self.assertRaisesRegex(construction.ConstructionError, "companion indication source missing"):
+            construction.construct(FakeAdapter(), s, "yellow_non_alone")
 
 class FullLengthMeasurementTest(unittest.TestCase):
     def test_900_frame_capture_contract(self):

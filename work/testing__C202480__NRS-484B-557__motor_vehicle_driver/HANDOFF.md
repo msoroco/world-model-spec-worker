@@ -24,3 +24,9 @@ Focused command: `.venv-cpu/bin/python -m unittest discover -s work/testing__C20
 4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C202480__NRS-484B-557__motor_vehicle_driver --complete --require-delivery-ready`; keep status partial until it passes. After CPU delivery, actual motion, distance and camera visibility remain GPU checks.
 
 No frozen input, runtime, or batch file was changed. No external blocker is asserted for remaining CPU work.
+
+## 2026-11-23 original-frame and rail-contact checkpoint
+
+- `rail_stop_audit.py` now requires an integer original Native source-frame sequence that advances once per sampled 20 Hz frame. It records first/last source IDs, rejecting repeated or skipped source identities even if local frame/time remain correct. Nearest-rail selection uses the full four-corner signed interval, so a body straddling a rail registers contact at zero gap, including when other tracks are present. These are geometric observations, not a legal vehicle-reference convention or due-care verdict. SHA-256 `8a4371216360ae2454bf40852415e7d4f21b830de4ea39d6fa8f52e36cc0dcfe`.
+- Pinned preflight passed. Thirty focused tests passed (`cpu-tests.log` SHA-256 `1d50e18875afb30a8733d03bda7cbb56b0d9ab942f9a6ebe9eb2ce478c493064`), including repeated source frame and rail-straddling negatives. Scoped static complete passed (`cpu-static-check.log` SHA-256 `2cd1d1ae920d609f79a3546c1a32db4eb5121df48e4c29c160598a521fc9ca78`).
+- Exact scoped strict gate exited 1 at truthful partial-package acceptance; `cpu-strict-check.log` SHA-256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`. Next CPU work remains reviewed crossing site packets, nine exact bundles and Native runner, semantic proposals, source-hashed diagnostics, offline and positive/negative compatibility, saved-only process, delivery audit and justified fallback receipts.

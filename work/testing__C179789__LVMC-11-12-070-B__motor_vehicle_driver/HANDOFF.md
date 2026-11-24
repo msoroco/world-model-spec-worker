@@ -22,3 +22,10 @@ Seven tests pass: `.venv-cpu/bin/python -m unittest discover -s work/testing__C1
 2. Add original-stage semantic proposals and `proposals/semantic-index.json`, each selected-requirement measurement contract and diagnostic source recipe.
 3. Run exact offline and positive/negative compatibility checks for each case. Add saved-only process proof and validated execution manifest with physically justified fallbacks only after source-backed triggers are defined.
 4. Rerun the focused tests and exact strict check. Keep physical motion and camera verification for the later local Native run only.
+
+## 2026-11-23 original Native frame join checkpoint
+
+- `through_highway.measure` now requires consecutive original Native frame IDs and carries each ID into `original_samples`; a monotone history with a skipped frame is rejected. SHA-256 `5c31d01c2ed37832f401d0487687db8c96eddee0a90396aeb59d115e1285d46d`.
+- `delivery_audit.audit_saved` requires a consecutive independent `frame_map` and exact Native-frame identity agreement at every measured sample. It rejects a tampered frame map and a tampered measured row even when frame_index/time still agree. SHA-256 `6e510604d774d30cf43b8d5f9020d4e0d006037f8e5f587e4df3ff2ddda032d6`.
+- Pinned preflight passed. Seven focused tests passed, including skipped-frame and independent-map tampering (`cpu-tests.log` SHA-256 `d51391c7c6d64625efe59aefc48a65944a96243982b92f4f793fd65e46e0eebc`). Scoped static complete passed (`cpu-static-check.log` SHA-256 `4731dc838114f0e2337b1fea58d919af18f904c013f6a40bb9dcbc8706da7c54`). This is diagnostic CPU proof only; subsection A satisfaction and physical yield remain unresolved.
+- Exact scoped strict gate exited 1 at partial-package acceptance; `cpu-strict-check.log` SHA-256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`. Status remains partial. Next CPU work: exact runner and four bundles with reviewed Native site, finalizer, semantic proposals, source-hashed diagnostics, offline and positive/negative compatibility, saved-only process and independent delivery receipts.

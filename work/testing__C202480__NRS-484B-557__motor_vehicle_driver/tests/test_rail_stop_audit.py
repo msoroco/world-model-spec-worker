@@ -20,7 +20,7 @@ def packet():
     for frame, speed, y in [(100, 3, 10), (101, 0, 8), (102, 1, 7), (103, 2, 0)]:
         samples.append({"frame": frame, "elapsed_s": frame / 20, "speed_mps": speed,
                         "body_corners_xy_m": [[0, y], [1, y], [1, y + 1], [0, y + 1]],
-                        "source_frame": f"native-{frame}"})
+                        "source_frame": 2000 + frame - 100})
     return {"sources": sources, "context": context, "nearest_track_rails": [{"a": [0, 0], "b": [1, 0]}], "samples": samples}
 
 
@@ -54,6 +54,8 @@ class RailStopAuditTest(unittest.TestCase):
         result = AUDIT.audit_saved_packet(packet())
         self.assertTrue(result["complete_stop_observed"])
         self.assertEqual(result["first_stop_frame"], 101)
+        self.assertEqual(result["first_source_frame"], 2000)
+        self.assertEqual(result["last_source_frame"], 2003)
         self.assertTrue(result["proceeding_observed"])
         self.assertAlmostEqual(result["first_stop_body_to_nearest_rail_min_ft"], 8 * AUDIT.FEET_PER_METRE)
         self.assertIn("independent", result["due_care"])
@@ -110,6 +112,21 @@ class RailStopAuditTest(unittest.TestCase):
         del p["samples"][1]["source_frame"]
         with self.assertRaisesRegex(ValueError, "source frame"):
             AUDIT.audit_saved_packet(p)
+
+    def test_repeated_source_frame_rejected_even_when_sample_frames_advance(self):
+        p = packet()
+        p["samples"][2]["source_frame"] = p["samples"][1]["source_frame"]
+        with self.assertRaisesRegex(ValueError, "source frame history has a gap"):
+            AUDIT.audit_saved_packet(p)
+
+    def test_body_straddling_nearest_rail_is_contact(self):
+        p = packet()
+        p["nearest_track_rails"].append({"a": [0, 20], "b": [1, 20]})
+        p["samples"][3]["body_corners_xy_m"] = [[0, -1], [1, -1], [1, 1], [0, 1]]
+        result = AUDIT.audit_saved_packet(p)
+        self.assertTrue(result["complete_stop_observed"])
+        p["samples"][1]["speed_mps"] = 1
+        self.assertFalse(AUDIT.audit_saved_packet(p)["complete_stop_observed"])
 
 
 if __name__ == "__main__":

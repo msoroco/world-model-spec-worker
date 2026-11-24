@@ -110,6 +110,7 @@ def audit_saved_packet(packet: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("complete sampled approach and departure required")
     rows = []
     prior_frame = None
+    first_source_frame = None
     for sample in samples:
         if not isinstance(sample, dict):
             raise ValueError("sample must be an object")
@@ -129,22 +130,31 @@ def audit_saved_packet(packet: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(corners, list) or len(corners) != 4:
             raise ValueError("four original vehicle body corners required")
         corners = [_point(c, "body corner") for c in corners]
+        source_frame = sample.get("source_frame")
+        if type(source_frame) is not int or source_frame < 0:
+            raise ValueError("sample lacks original source frame identity")
+        if first_source_frame is None:
+            first_source_frame = source_frame
+        if source_frame != first_source_frame + len(rows):
+            raise ValueError("original source frame history has a gap")
         gaps = []
         for origin, tangent in rail_lines:
             signed = [(x - origin[0]) * -tangent[1] + (y - origin[1]) * tangent[0] for x, y in corners]
-            gaps.append((min(abs(v) for v in signed), min(signed), max(signed)))
+            low, high = min(signed), max(signed)
+            gap = 0.0 if low <= 0 <= high else min(abs(low), abs(high))
+            gaps.append((gap, low, high))
         _, low, high = min(gaps, key=lambda item: item[0])
         rows.append({"frame": frame, "elapsed_s": elapsed, "speed_mps": speed,
                      "body_to_nearest_rail_min_ft": min(abs(low), abs(high)) * FEET_PER_METRE if low * high > 0 else 0.0,
                      "body_signed_range_ft": [low * FEET_PER_METRE, high * FEET_PER_METRE],
-                     "source_frame": sample.get("source_frame")})
-        if not sample.get("source_frame"):
-            raise ValueError("sample lacks original source frame identity")
+                     "source_frame": source_frame})
     first_rail_contact = next((r["frame"] for r in rows if r["body_to_nearest_rail_min_ft"] == 0.0), None)
     stopped = [r for r in rows if r["speed_mps"] == 0.0 and
                (first_rail_contact is None or r["frame"] < first_rail_contact)]
     if not stopped:
         return {"status": "measured", "complete_stop_observed": False, "stop_samples": [],
+                "first_source_frame": first_source_frame,
+                "last_source_frame": first_source_frame + len(rows) - 1,
                 "proceeding_observed": False, "due_care": "unresolved", "source_keys": list(REQUIRED_SOURCES)}
     first_stop = stopped[0]
     stop_frame = first_stop["frame"]
@@ -153,6 +163,8 @@ def audit_saved_packet(packet: dict[str, Any]) -> dict[str, Any]:
     proceeding = any(r["speed_mps"] > 0 for r in following)
     # Values near legal boundaries are measurements only; they are not labels.
     return {"status": "measured", "complete_stop_observed": True,
+            "first_source_frame": first_source_frame,
+            "last_source_frame": first_source_frame + len(rows) - 1,
             "first_stop_frame": stop_frame, "first_stop_body_to_nearest_rail_min_ft": first_stop["body_to_nearest_rail_min_ft"],
             "first_stop_body_signed_range_ft": first_stop["body_signed_range_ft"],
             "stop_samples": [r["frame"] for r in stopped], "approach_samples": len(preceding),

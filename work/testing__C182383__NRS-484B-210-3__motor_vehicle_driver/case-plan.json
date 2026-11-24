@@ -24,8 +24,147 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle shall not overtake and pass another vehicle upon the right when such movement requires driving off the paved portion of the highway."
   },
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "branch": "Right-side passing with the operative requires condition.",
+      "kind": "planned_controlled_construction",
+      "new_capture_selected": false,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction_status": "not_implemented",
+      "required_original_packets": [
+        "frame_map",
+        "paved_portion_boundaries",
+        "ego_and_overtaken_body_envelopes",
+        "longitudinal_pass_event",
+        "original_pose",
+        "four_camera_video"
+      ],
+      "physical_risk": "Paved shoulder texture can be confused with the legal paved portion; source geometry and body envelope need readback and camera coverage.",
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+      "requested_zero_clearance_paved_fit": false,
+      "requested_right_pass": true,
+      "requested_off_pavement": true,
+      "measurement": "Original pavement and vehicle envelopes during right-side longitudinal overlap; distinguish actual departure from geometric necessity. No safety-clearance cutoff."
+    },
+    {
+      "branch": "Right-side passing with the operative requires condition.",
+      "kind": "planned_controlled_construction",
+      "new_capture_selected": false,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction_status": "not_implemented",
+      "required_original_packets": [
+        "frame_map",
+        "paved_portion_boundaries",
+        "ego_and_overtaken_body_envelopes",
+        "longitudinal_pass_event",
+        "original_pose",
+        "four_camera_video"
+      ],
+      "physical_risk": "Paved shoulder texture can be confused with the legal paved portion; source geometry and body envelope need readback and camera coverage.",
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement",
+      "requested_zero_clearance_paved_fit": true,
+      "requested_right_pass": true,
+      "requested_off_pavement": false,
+      "measurement": "Original pavement and vehicle envelopes during right-side longitudinal overlap; distinguish actual departure from geometric necessity. No safety-clearance cutoff."
+    },
+    {
+      "branch": "Right-side passing with the operative requires condition.",
+      "kind": "planned_controlled_construction",
+      "new_capture_selected": false,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction_status": "not_implemented",
+      "required_original_packets": [
+        "frame_map",
+        "paved_portion_boundaries",
+        "ego_and_overtaken_body_envelopes",
+        "longitudinal_pass_event",
+        "original_pose",
+        "four_camera_video"
+      ],
+      "physical_risk": "Paved shoulder texture can be confused with the legal paved portion; source geometry and body envelope need readback and camera coverage.",
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement",
+      "requested_zero_clearance_paved_fit": true,
+      "requested_right_pass": true,
+      "requested_off_pavement": true,
+      "measurement": "Original pavement and vehicle envelopes during right-side longitudinal overlap; distinguish actual departure from geometric necessity. No safety-clearance cutoff."
+    },
+    {
+      "branch": "Right-side passing with the operative requires condition.",
+      "kind": "planned_controlled_construction",
+      "new_capture_selected": false,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction_status": "not_implemented",
+      "required_original_packets": [
+        "frame_map",
+        "paved_portion_boundaries",
+        "ego_and_overtaken_body_envelopes",
+        "longitudinal_pass_event",
+        "original_pose",
+        "four_camera_video"
+      ],
+      "physical_risk": "Paved shoulder texture can be confused with the legal paved portion; source geometry and body envelope need readback and camera coverage.",
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass",
+      "requested_zero_clearance_paved_fit": false,
+      "requested_right_pass": false,
+      "requested_off_pavement": false,
+      "measurement": "Original pavement and vehicle envelopes during right-side longitudinal overlap; distinguish actual departure from geometric necessity. No safety-clearance cutoff."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "operative_requires",
+      "case_ids": [
+        "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+        "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement"
+      ],
+      "deliberate_differences": [
+        "paved right-side corridor width relative to ego body"
+      ],
+      "fixed_conditions": [
+        "same paved-shoulder cell, actors, right-side pass route, cameras and duration except named change",
+        "same pavement-surface source classification except named corridor width"
+      ],
+      "status": "planned_unbuilt"
+    },
+    {
+      "comparison_id": "actual_vs_required",
+      "case_ids": [
+        "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement",
+        "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement"
+      ],
+      "deliberate_differences": [
+        "actual ego path leaving pavement despite sufficient physical corridor"
+      ],
+      "fixed_conditions": [
+        "same paved-shoulder cell, actors, right-side pass route, cameras and duration except named change",
+        "same pavement-surface source classification except named corridor width"
+      ],
+      "status": "planned_unbuilt"
+    },
+    {
+      "comparison_id": "pass_occurrence",
+      "case_ids": [
+        "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+        "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass"
+      ],
+      "deliberate_differences": [
+        "right-side overtaking and passing occurs versus does not occur"
+      ],
+      "fixed_conditions": [
+        "same paved-shoulder cell, actors, right-side pass route, cameras and duration except named change",
+        "same pavement-surface source classification except named corridor width"
+      ],
+      "status": "planned_unbuilt"
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -51,8 +190,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No accepted recording in frozen inventory; construction and original pavement/body geometry are needed.",
+    "Geometric body fit is only a lower bound; road safety and legal meaning of requires need source review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +200,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_right_pass_envelope_cases_and_tested_measurement",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

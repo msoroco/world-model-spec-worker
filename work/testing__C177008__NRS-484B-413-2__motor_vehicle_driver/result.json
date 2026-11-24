@@ -2,11 +2,36 @@
   "assignment_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "ce80788c30ed20a5fcbd9d4a7c5c34430f4141c15efe51bec62d93f9231746f5",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "continuous_signal_measurement_and_case_decomposition",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "90e6d9115a70db608fb92c566190ebb7ef858256d42b329258976e74eee4734d"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "unittest.log",
+      "sha256": "a3f077636758e429f18703c17bbe40a2573bc178d75aa6e6a52d21db95ca0e70"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "f8c181254d86e6c1ce23cb72cb518b6dcbd394fe00c463d27bf232e0f63fdb54"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Two accepted-source review candidates, five planned controlled signal cases, four isolated comparisons and a five-test source-bound continuous-signal distance measurement are added. Actual right-turn/district construction, original trace, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
 }
