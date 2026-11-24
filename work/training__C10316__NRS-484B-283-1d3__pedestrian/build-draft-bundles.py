@@ -7,7 +7,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 NATIVE = HERE / 'native'
 IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
-SOURCES = {'runner.py': 'runner.py', 'geometry.py': 'geometry.py',
+SOURCES = {'runner.py': 'runner.py', 'signal_head.py': 'signal_head.py',
+           'geometry.py': 'geometry.py',
            'engineering.py': 'engineering.py', 'no_countdown.py': 'no_countdown.py',
            'finalize.py': 'finalize.py',
            'road.xodr': 'road.xodr', 'tests/test_offline.py': 'test_offline.py'}
@@ -23,7 +24,7 @@ def recording_description():
         ('kin.position', 'm', 'Original Native pedestrian pose and footprint'),
         ('kin.heading', 'unit vector', 'Original Native pedestrian transform'),
         ('rel.occupies', 'structured', 'Full original body versus authored highway edges'),
-        ('native_display_program', 'structured', 'Requested frame-synchronized Walk, flashing and steady indication without countdown'),
+        ('native_display_program', 'structured', 'Native OpenDRIVE pedestrian head state readback joined to requested Walk, flashing and steady phases'),
         ('display_camera_frame_join', 'structured', 'Original RGB frame hash joined to Native frame and no-countdown source'),
     ):
         channels.append({'name': name, 'unit': unit, 'sampling_rate_hz': 20,
@@ -33,7 +34,7 @@ def recording_description():
     return {'channels': channels,
             'context_inputs': [{'name': 'introductory_exceptions', 'unit': 'structured',
                                 'method': 'Independent statutory and original context review'}],
-            'limitations': ['Requested debug display is not a verified physical pedestrian signal',
+            'limitations': ['Authored OpenDRIVE head and Native state readback do not prove a Walk or Dont Walk icon or the absence of a countdown',
                             'Original display pixels and signal governance require independent saved audit',
                             'Walk entry, no-countdown flashing and steady timing alone do not assign a legal verdict']}
 
@@ -58,9 +59,9 @@ def build():
         current_contract['requirements'][0]['inputs'] = ['no-countdown-samples.jsonl', 'no-countdown-context.json']
         contract.write_text(json.dumps(current_contract, indent=2) + '\n')
         entry = {'case_id': case_id, 'kind': 'draft_not_selected',
-                 'fixture_recipe': str((HERE / ('diagnostic-' + suffix + '-recipe.json')).relative_to(ROOT)),
+                 'fixture_recipe': str((HERE / ('diagnostic30-' + suffix + '-recipe.json')).relative_to(ROOT)),
                  'candidate_risk': {'status': 'physical',
-                                    'reason': 'Native no-countdown device, display pixels, governance, walker crossing and highway status remain unverified'},
+                                    'reason': 'Native physical head readback is constructed; original display pixels, governance, walker crossing and highway status remain unverified'},
                  'measurement_contract': str(contract.relative_to(HERE)),
                  'measurement_procedure': {'entrypoint': 'finalize.py',
                                            'output_schema': 'worker-analysis-report-v1'},
@@ -95,7 +96,7 @@ def build():
                             'termination_rules': ['600 original frames',
                                                   'retain failure, encoder and world restoration evidence'],
                             'mechanisms': ['same-cell alley crossing', 'moving Native pedestrian',
-                                           'frame-synchronized diagnostic no-countdown rendering',
+                                           'source-identifiable Native pedestrian head with phase state readback',
                                            'original-pixel source hashes with independent audit required'],
                             'status': 'unselected_cpu_draft_physical_display_unverified'}
             path = HERE / 'draft-bundles' / suffix / ident / 'construction.json'

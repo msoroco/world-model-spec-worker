@@ -1,0 +1,99 @@
+{
+  "format": "c10316-cited-exception-planning-review-v1",
+  "assignment_id": "training__C10316__NRS-484B-283-1d3__pedestrian",
+  "source_laws": [
+    {
+      "law_id": "NRS-484B-287-1c",
+      "source": "inputs/training__C109166__NRS-484B-287-1c__pedestrian/assignment.json",
+      "source_sha256": "2254705a424b298452a063dfb5d4f1f6d67754ab8b055d5cac789935e7252d07",
+      "text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: Between adjacent intersections at which official traffic-control devices are in operation pedestrians shall not cross at any place except in a marked crosswalk."
+    },
+    {
+      "law_id": "NRS-484B-287-1d",
+      "source": "inputs/training__C109166__NRS-484B-287-1d__pedestrian/assignment.json",
+      "source_sha256": "1bf3a277ebcd9fbfe69783ad15e11adf6f7df94b715d564dda75163c9157d0cd",
+      "text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: A pedestrian shall not cross an intersection diagonally unless authorized by official traffic-control devices."
+    },
+    {
+      "law_id": "NRS-484B-287-1e",
+      "source": "inputs/training__C109166__NRS-484B-287-1e__pedestrian/assignment.json",
+      "source_sha256": "5d6aa09482402424db50970a44fefff27520cf12aaf461c481318ccc77bac348",
+      "text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: When authorized to cross diagonally, pedestrians shall cross only in accordance with the official traffic-control devices pertaining to such crossing movements."
+    },
+    {
+      "law_id": "NRS-484B-283-1d1",
+      "source": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+      "source_sha256": "69d7a0af1623c7412bbd47317f16aef8806545b0e46200aa5dc408602d9387bb",
+      "text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Walk” indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles."
+    },
+    {
+      "law_id": "LVMC-11-30-140-B",
+      "source": "inputs/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/assignment.json",
+      "source_sha256": "7bafe3c96ad651e0ce04fae1e79002346cc0a9b83e9a769195f3e874c5b98c11",
+      "text": "Any pedestrian who is not wholly or partially blind, or any driver of any vehicle who approaches or comes in contact with a person wholly or partially blind, carrying a cane or walking stick white in color, or white tipped in red, or being assisted by a person with wisdom, shall immediately come to a full stop and take such precautions before proceeding as may be necessary to avoid an accident or injury to the person wholly or partially blind."
+    },
+    {
+      "law_id": "LVMC-11-46-030",
+      "source": "inputs/training__C394563__LVMC-11-46-030__motor_vehicle_driver/assignment.json",
+      "source_sha256": "549b28354ae9df3daf94c936b51318c7534010f2bb740ff3a2c00f8b311deac8",
+      "text": "It shall be unlawful for any person driving or operating, propelling or causing to be propelled, any vehicle, to fail to stop not less than fifty feet from the nearest side of a school pedestrian lane where any signal device, flagman or other person is stationed, giving warning that children are about to cross or are crossing the street; and it is further declared unlawful to proceed until such signal has stopped, raised, or been removed, or the flagman or person stationed at such pedestrian lane has given a signal to go, or has left the locality."
+    }
+  ],
+  "case_ids": [
+    "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_1",
+    "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_2"
+  ],
+  "questions": [
+    {
+      "source_law": "NRS-484B-287-1c",
+      "construction_question": "Are there adjacent device-controlled intersections and is this a marked crosswalk?",
+      "required_original_evidence": [
+        "Native map geometry",
+        "original crosswalk pixels"
+      ]
+    },
+    {
+      "source_law": "NRS-484B-287-1d",
+      "construction_question": "Is this an intersection diagonal crossing?",
+      "required_original_evidence": [
+        "Native pedestrian path",
+        "Native map geometry"
+      ]
+    },
+    {
+      "source_law": "NRS-484B-287-1e",
+      "construction_question": "If diagonal movement is authorized, which original device governs it?",
+      "required_original_evidence": [
+        "Native path",
+        "governing head review"
+      ]
+    },
+    {
+      "source_law": "LVMC-11-30-140-B",
+      "construction_question": "Does the white-cane or assisted blind-person condition arise?",
+      "required_original_evidence": [
+        "original pedestrian pixels",
+        "independent context review"
+      ]
+    },
+    {
+      "source_law": "LVMC-11-46-030",
+      "construction_question": "Is a school pedestrian lane with a warning device or person involved?",
+      "required_original_evidence": [
+        "Native map",
+        "original lane/device pixels"
+      ]
+    },
+    {
+      "source_law": "NRS-484B-283-1d1",
+      "construction_question": "Did the pedestrian enter while a governing Walk indication was illuminated?",
+      "required_original_evidence": [
+        "pre-entry Native frame history",
+        "original governing-head pixels"
+      ]
+    }
+  ],
+  "disposition": "measure original applicability per case",
+  "new_exception_case_claimed": false,
+  "physical_or_legal_conclusion_claimed": false
+}

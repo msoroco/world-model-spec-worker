@@ -6,7 +6,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-sys.path.insert(0, str(ROOT / 'runtime/pipeline'))
+sys.path.insert(0, str(ROOT / 'runtime'))
 from scenario_pipeline.worker_exchange.candidate_constructions import validate
 
 
@@ -22,7 +22,7 @@ def main():
     summary = json.loads((HERE / 'draft-offline-summary.json').read_text())
     assert summary['runtime_manifest_sha256'] == manifest['runtime_manifest_sha256']
     assert len(summary['results']) == 8
-    sources = ('runner.py', 'geometry.py', 'engineering.py', 'no_countdown.py',
+    sources = ('runner.py', 'signal_head.py', 'geometry.py', 'engineering.py', 'no_countdown.py',
                'finalize.py', 'road.xodr')
     configs = {}
     seen = set()

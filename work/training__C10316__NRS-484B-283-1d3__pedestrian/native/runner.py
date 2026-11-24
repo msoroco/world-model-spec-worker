@@ -11,6 +11,7 @@ import traceback
 from engineering import candidate
 from geometry import CROSSWALK_ID, check as geometry_check
 from no_countdown import signal_state
+from signal_head import resolve as resolve_signal_head, command_and_sample, sample as sample_signal_head
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
@@ -55,6 +56,8 @@ def check(config):
     expected = 'walk' if config['case_suffix'] == 'controlled_1' else 'dont_walk_flashing'
     if states[entry_index][0] != expected:
         raise ValueError('Requested no-countdown entry phase differs')
+    if not (HERE / 'signal_head.py').is_file():
+        raise ValueError('Native pedestrian head source resolver missing')
     return {'candidate': config['candidate_id'], 'geometry': geometry,
             'frames': FRAMES, 'cameras': [x['name'] for x in camera_specs(plan)],
             'native_imported': False, 'physical_display_verified': False,
@@ -113,6 +116,7 @@ def execute(config, output, host, port):
         world.apply_settings(settings)
         world.set_weather(carla.WeatherParameters.ClearNoon)
         native_map_hash = hashlib.sha256(world.get_map().to_opendrive().encode()).hexdigest()
+        signal_head = resolve_signal_head(world.get_actors())
         library = world.get_blueprint_library()
         walkers = sorted(library.filter('walker.pedestrian.*'), key=lambda bp: bp.id)
         if not walkers:
@@ -153,19 +157,14 @@ def execute(config, output, host, port):
         with (output / 'no-countdown-samples.jsonl').open('x') as samples, \
              (output / 'video_frames.jsonl').open('x') as frame_map:
             for index in range(FRAMES):
-                # Native debug text is a construction probe, not an accepted physical
-                # pedestrian signal. Saved pixel and governance audits must reject it
-                # if it is absent or does not qualify as the governing indication.
                 source_index = (index if e['clock_mode'] == 'frame_index_20hz' else
                     round((world.get_snapshot().timestamp.elapsed_seconds-start)*RATE_HZ))
                 if abs(source_index-index) > 1:
                     raise RuntimeError('Observed Native display clock diverges from captured frame')
                 proposed, illuminated = signal_state(source_index, e['flash_start_s'], e['steady_start_s'])
-                if illuminated:
-                    world.debug.draw_string(carla.Location(x=-3.7, y=-2, z=2.4),
-                        'WALK' if proposed == 'walk' else "DON'T WALK",
-                        draw_shadow=True, color=carla.Color(255, 0, 0), life_time=.06)
+                command_and_sample(signal_head, carla, proposed, illuminated)
                 frame = world.tick()
+                head_readback = sample_signal_head(signal_head, proposed, illuminated)
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 pose = walker.get_transform()
                 direction = pose.get_forward_vector()
@@ -174,10 +173,11 @@ def execute(config, output, host, port):
                             'crosswalk_id': CROSSWALK_ID, 'device_id': DEVICE_ID,
                             'indication': proposed, 'countdown_visible': False,
                             'display_illuminated': illuminated,
+                            'native_signal_head': head_readback,
                             'pedestrian_xy_m': [pose.location.x, pose.location.y],
                             'pedestrian_footprint_xy_m': footprint(walker),
                             'observed_walker_speed_mps': math.hypot(speed.x, speed.y),
-                            'source_scope': 'Native pose plus requested debug display program; original pixel audit pending'}
+                            'source_scope': 'Native pose and physical head state readback; original symbol, countdown and governance pixel audit pending'}
                 capture.capture(frame, time_s, extra={'no_countdown_proposal': observed})
                 pixels = {}
                 for spec in camera_specs(plan):

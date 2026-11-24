@@ -31,6 +31,10 @@ def main():
                            'source_rgb_sha256': {'driver_reference': pixel_hash}})
             samples.append({'native_frame': 500 + index, 'indication': indication,
                             'display_illuminated': illuminated,
+                            'native_signal_head': {'device_id': 'physical-crosswalk-head',
+                                'opendrive_id': '203', 'source': 'native_actor_readback',
+                                'native_state': 'Green' if indication == 'walk' else
+                                    'Red' if illuminated else 'Off'},
                             'original_display_frame_sha256': pixel_hash})
         map_path = folder / 'video_frames.jsonl'
         map_path.write_text(''.join(json.dumps(row) + '\n' for row in frames))

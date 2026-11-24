@@ -71,6 +71,14 @@ def no_countdown_entry(folder):
     return measure(folder / 'no-countdown-samples.jsonl', folder / 'no-countdown-context.json')
 
 
+def exception_context(folder):
+    """Retain source context without deciding legal exception applicability."""
+    context = json.loads(required(folder, 'no-countdown-context.json').read_text())
+    return {key: context[key] for key in (
+        'source_kind', 'exception_context', 'introductory_exceptions',
+        'lawful_prior_entry_review') if key in context}
+
+
 def derive_channels(folder, count):
     """Build measured channels from retained acquisition after joins are checked."""
     trace = rows(folder, 'trace.jsonl')
@@ -107,9 +115,13 @@ def report(folder, case_id):
     folder = Path(folder)
     value = no_countdown_entry(folder)
     sources = {name: sha(folder / name) for name in ('no-countdown-samples.jsonl', 'no-countdown-context.json')}
+    context_path = folder / 'no-countdown-context.json'
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'no_countdown_entry_and_clearance': {
-                'method': 'no_countdown_entry', 'value': value, 'sources': sources}},
+                'method': 'no_countdown_entry', 'value': value, 'sources': sources},
+                'cited_exception_context': {
+                    'method': 'exception_context', 'value': exception_context(folder),
+                    'sources': {'no-countdown-context.json': sha(context_path)}}},
             'scope': 'source timing without lawful prior entry, exceptions or legal verdict'}
 
 

@@ -75,6 +75,13 @@ def validate_original_signal_review(folder, context, samples):
             row.get('indication'), row.get('display_illuminated'), False
         ):
             raise ValueError('Native signal review disagrees with capture program')
+        head = row.get('native_signal_head')
+        expected_state = ('Green' if row.get('indication') == 'walk' else
+                          'Red' if row.get('display_illuminated') else 'Off')
+        if not isinstance(head, dict) or head.get('device_id') != context.get('device_id') or \
+                head.get('opendrive_id') != '203' or head.get('source') != 'native_actor_readback' or \
+                head.get('native_state') != expected_state:
+            raise ValueError('Original Native pedestrian head readback missing or different')
     if context.get('display_pixel_audit_sha256') != sha(review_path):
         raise ValueError('Native signal review receipt hash differs')
     return review
