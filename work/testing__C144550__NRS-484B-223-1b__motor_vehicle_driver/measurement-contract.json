@@ -1,0 +1,25 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Observe marked same-direction source and target lanes, complete body departure, appropriate signal timing, and target-lane traffic context while leaving driver safety ascertainment unresolved",
+      "source": "NRS 484B.223(1)(b); inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+      "output_key": "signal_and_gap_at_movement",
+      "method": "measure_exact_case",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "lane_context.json",
+        "lane_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane_history.jsonl"
+    ],
+    "error_contains": "Missing required source: lane_history.jsonl"
+  }
+}

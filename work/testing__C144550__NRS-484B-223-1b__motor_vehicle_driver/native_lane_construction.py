@@ -21,7 +21,7 @@ CAMERA_SIZES={"overview":(1920,1080),"approach":(1280,720),
               "reference_corner":(1280,720),"driver_reference":(1280,720)}
 
 
-def camera_transforms_for_site(carla, site):
+def camera_transforms_for_site(carla, site, overview_along_m=65):
     """Construct candidate camera poses from the selected Native lane spawn.
 
     These are acquisition poses; original pixels must still establish that the
@@ -35,6 +35,9 @@ def camera_transforms_for_site(carla, site):
     values=(float(loc.x),float(loc.y),float(loc.z),yaw)
     if not all(math.isfinite(value) for value in values):
         raise ValueError("Finite selected Native site pose required")
+    if (type(overview_along_m) not in (int,float) or not math.isfinite(overview_along_m)
+            or not 30<=overview_along_m<=100):
+        raise ValueError("Bounded Native overview position required")
     rad=math.radians(yaw)
     fx,fy=math.cos(rad),math.sin(rad)
     lx,ly=-fy,fx
@@ -44,7 +47,7 @@ def camera_transforms_for_site(carla, site):
                            y=loc.y+along*fy+side*ly,z=loc.z+height),
             carla.Rotation(yaw=yaw+yaw_delta,pitch=pitch))
     return {
-        "overview":static(65,0,48,0,-82),
+        "overview":static(overview_along_m,0,48,0,-82),
         "approach":static(-24,12,9,-15,-12),
         "reference_corner":static(50,-18,14,145,-25),
         "driver_reference":carla.Transform(
@@ -202,7 +205,7 @@ def sample_source_lane_polygon(source,forward_m=260,backward_m=10,step_m=2):
     return polygon
 
 
-def find_native_lane_site(world,direction,lane_type_driving):
+def find_native_lane_site(world,direction,lane_type_driving,target_lane_id=None):
     """Choose a deterministic marked same-direction corridor from Native map spawns."""
     mapping=world.get_map()
     candidates=[]
@@ -211,6 +214,8 @@ def find_native_lane_site(world,direction,lane_type_driving):
         if waypoint is None:continue
         try:
             selected=select_adjacent_marked_lane(waypoint,direction,lane_type_driving)
+            if target_lane_id is not None and selected["target_lane_id"]!=target_lane_id:
+                continue
             polygon=sample_source_lane_polygon(waypoint)
         except ValueError:
             continue
@@ -227,7 +232,8 @@ def find_native_lane_site(world,direction,lane_type_driving):
 
 
 @contextmanager
-def stage_native_lane_case(world,site,case_id,vehicle_blueprint):
+def stage_native_lane_case(world,site,case_id,vehicle_blueprint,
+                           requested_distance_m=None):
     """Spawn source-lane ego and a measurable target-lane actor; release both."""
     if not isinstance(site,dict) or not all(key in site for key in ("spawn","selected")):
         raise ValueError("Verified Native lane site required")
@@ -238,7 +244,10 @@ def stage_native_lane_case(world,site,case_id,vehicle_blueprint):
     target=selected.get("target")
     if target is None:raise ValueError("Selected Native target lane required")
     # Distances are scenario construction knobs, never statutory gap thresholds.
-    requested_distance=25 if suffix.endswith("close_gap") else 245
+    requested_distance=(25 if suffix.endswith("close_gap") else 245) if requested_distance_m is None else requested_distance_m
+    if (type(requested_distance) not in (int,float) or not math.isfinite(requested_distance)
+            or not 10<=requested_distance<=250):
+        raise ValueError("Bounded target-lane staging distance required")
     candidates=[waypoint for waypoint in target.next(requested_distance)
                 if waypoint.road_id==target.road_id and waypoint.lane_id==target.lane_id]
     if len(candidates)!=1:raise ValueError("Target-lane staging corridor interrupted or branches")
@@ -409,7 +418,7 @@ def step_toward_marked_lane(ego, selected, case_id, body_left_source_lane,
 def capture_native_case(world, ego, selected, case_id, light_states, control_factory,
                         observe_original, camera_sources, camera_writers,
                         frame_map, lane_history_stream, capture_pipeline_frame,
-                        frames=900):
+                        frames=900, target_speed_mps=5.0):
     """Tick one exact Native case with joined source rows and four raw cameras.
 
     The caller supplies a native_output.FrameMap and an exclusive lane-history
@@ -438,7 +447,7 @@ def capture_native_case(world, ego, selected, case_id, light_states, control_fac
             target_waypoint=route_target_for_tick(world,ego,selected)
             command=step_toward_marked_lane(
                 ego,selected,case_id,left_source,light_states,control_factory,
-                target_waypoint=target_waypoint)
+                target_speed_mps=target_speed_mps,target_waypoint=target_waypoint)
             frame=world.tick()
             snapshot=world.get_snapshot()
             time=float(snapshot.timestamp.elapsed_seconds)

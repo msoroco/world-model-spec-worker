@@ -6,6 +6,7 @@ Native execution requires a fresh runtime.py materialized attempt.
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -34,6 +35,13 @@ def validate_config(config):
         raise ValueError("Original camera profile differs")
     if not isinstance(config.get("required_atoms"),list) or not isinstance(config.get("source_packets"),list):
         raise ValueError("Source observation contract required")
+    for name,minimum,maximum in (("target_initial_route_distance_m",10,250),
+                                  ("target_speed_mps",2,10),
+                                  ("overview_along_m",30,100)):
+        value=config.get(name)
+        if value is not None and (type(value) not in (int,float) or not math.isfinite(value)
+                                  or not minimum<=value<=maximum):
+            raise ValueError("Invalid construction knob: "+name)
     return config
 
 
@@ -61,10 +69,12 @@ def capture(args,config):
         case_id=config["selected_case_id"]
         suffix=case_id[len(CASE_PREFIX):]
         direction=SIGNAL_CASES[suffix][0]
-        site=find_native_lane_site(world,direction,carla.LaneType.Driving)
+        site=find_native_lane_site(world,direction,carla.LaneType.Driving,
+                                   config["physical_completion"]["destination_lane"])
         blueprints=sorted(world.get_blueprint_library().filter("vehicle.*"),key=lambda item:item.id)
         if not blueprints:raise ValueError("No Native motor-vehicle blueprint")
-        with stage_native_lane_case(world,site,case_id,blueprints[0]) as actors:
+        with stage_native_lane_case(world,site,case_id,blueprints[0],
+                                    config.get("target_initial_route_distance_m")) as actors:
             ego=actors["ego"]
             target_initial_distance=actors["target_initial_route_distance_m"]
             with (output/"lane_context.json").open("x") as stream:
@@ -73,7 +83,8 @@ def capture(args,config):
                     indent=2,allow_nan=False)+"\n")
             observer=make_original_observer(world,ego,site["selected"],
                                             carla.VehicleLightState,site["source_polygon"])
-            transforms=camera_transforms_for_site(carla,site)
+            transforms=camera_transforms_for_site(carla,site,
+                                                  config.get("overview_along_m",65))
             with source_cameras(world,ego,transforms) as cameras:
                 frame_map=None;history=None;helper=None
                 try:
@@ -86,7 +97,8 @@ def capture(args,config):
                     rows=capture_native_case(
                         world,ego,site["selected"],case_id,carla.VehicleLightState,
                         carla.VehicleControl,observer,cameras,writers,frame_map,history,
-                        lambda frame,time_s:helper.capture(frame,time_s))
+                        lambda frame,time_s:helper.capture(frame,time_s),
+                        target_speed_mps=config.get("target_speed_mps",5.0))
                     frames=len(rows)
                     succeeded=True
                 finally:

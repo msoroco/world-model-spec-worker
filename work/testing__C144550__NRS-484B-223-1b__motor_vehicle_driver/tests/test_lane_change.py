@@ -31,10 +31,9 @@ class LaneChangeTests(unittest.TestCase):
     def test_canonical_construction_materializes_current_runner_and_sources(self):
         construction_doc=json.loads((ROOT/"construction.json").read_text())
         self.assertEqual(construction_doc["entrypoint"],"runner.py")
-        self.assertEqual(construction_doc["case_id"],
-                         construction.CASE_PREFIX+"left_signal_before_clear_gap")
-        self.assertEqual(construction_doc["recording_description"],
-                         json.loads((ROOT/"config.json").read_text())["recording_description"])
+        config=json.loads((ROOT/"config.json").read_text())
+        self.assertEqual(construction_doc["case_id"],config["selected_case_id"])
+        self.assertEqual(construction_doc["recording_description"],config["recording_description"])
         for entry in construction_doc["files"]:
             self.assertEqual(entry["content"],(ROOT/entry["path"]).read_text())
 
@@ -50,6 +49,14 @@ class LaneChangeTests(unittest.TestCase):
             runner.validate_config(cfg)
             cfg["cell_id"]="wrong"
             with self.assertRaisesRegex(ValueError,"assignment identity"):
+                runner.validate_config(cfg)
+            cfg["cell_id"]="C144550"
+            cfg["target_speed_mps"]=4.5
+            cfg["overview_along_m"]=75
+            cfg["target_initial_route_distance_m"]=240
+            runner.validate_config(cfg)
+            cfg["target_speed_mps"]=float("nan")
+            with self.assertRaisesRegex(ValueError,"construction knob"):
                 runner.validate_config(cfg)
         finally:
             sys.path.remove(str(ROOT))
@@ -79,10 +86,13 @@ class LaneChangeTests(unittest.TestCase):
             self.assertEqual(actors["target_initial_route_distance_m"],25)
             self.assertEqual(staged[3].transform.distance,25)
         self.assertTrue(staged[2].destroyed and staged[3].destroyed)
+        with construction.stage_native_lane_case(
+                world,site,prefix+"left_signal_before_clear_gap",object(),240) as actors:
+            self.assertEqual(actors["target_initial_route_distance_m"],240)
         with self.assertRaisesRegex(ValueError,"direction differ"):
             with construction.stage_native_lane_case(
                     world,site,prefix+"right_signal_before_clear_gap",object()):pass
-        self.assertEqual(len(staged),4)
+        self.assertEqual(len(staged),6)
         failures=[]
         def fail_second(blueprint,transform):
             if transform.distance: return None
@@ -108,6 +118,8 @@ class LaneChangeTests(unittest.TestCase):
         self.assertEqual(poses["overview"].location.z,49)
         self.assertEqual(poses["approach"].rotation.yaw,75)
         self.assertEqual(poses["driver_reference"].location.x,.8)
+        shifted=construction.camera_transforms_for_site(fake_carla,site,75)
+        self.assertAlmostEqual(shifted["overview"].location.y,95)
         with self.assertRaisesRegex(ValueError,"Finite selected Native site pose"):
             construction.camera_transforms_for_site(fake_carla,{"spawn":NS(
                 location=NS(x=0,y=0,z=0),rotation=NS(yaw=float("nan")))})

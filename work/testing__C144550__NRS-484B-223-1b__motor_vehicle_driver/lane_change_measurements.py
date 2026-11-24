@@ -49,7 +49,7 @@ def analyze(root:Path)->dict:
     root=Path(root);hashes={}
     for name in REQUIRED:
         path=root/name
-        if not path.is_file():raise ValueError("Missing original source: "+name)
+        if not path.is_file():raise ValueError("Missing required source: "+name)
         hashes[name]=hashlib.sha256(path.read_bytes()).hexdigest()
     ctx=json.loads((root/"lane_context.json").read_text())
     for key in ("native_map_id","road_id","source_lane_id","target_lane_id",
@@ -282,6 +282,9 @@ def finalize(attempt:Path,output:Path)->dict:
         "indicator_state":("categorical",lambda sample:sample["indicator"]),
         "body_fully_in_source_lane":("boolean",lambda sample:sample["ego_body_fully_in_source_lane"]),
         "nearest_target_body_longitudinal_gap_m":("m",lambda sample:sample["nearest_target_body_longitudinal_gap_m"]),
+        "source_lane_body_departure":("boolean",lambda sample:not sample["ego_body_fully_in_source_lane"]),
+        "indicator_before_departure":("boolean",lambda sample:sample["indicator"]==json.loads((attempt/"lane_context.json").read_text())["change_direction"]),
+        "target_lane_gap":("m",lambda sample:sample["nearest_target_body_longitudinal_gap_m"]),
     }
     evidence=[]
     for name,(unit,extract) in channels.items():
@@ -292,6 +295,11 @@ def finalize(attempt:Path,output:Path)->dict:
                                          "time_s":sample["time_s"],
                                          "value":extract(sample)},allow_nan=False)+"\n")
         evidence.append({"name":name,"unit":unit,"reference":"channels/"+path.name})
+    lane_inventory={"marked_same_direction_lane_inventory":json.loads((attempt/"lane_context.json").read_text())["same_direction_lanes"]}
+    inventory_path=channel_dir/"marked_same_direction_lane_inventory.json"
+    inventory_path.write_text(json.dumps(lane_inventory,sort_keys=True)+"\n")
+    evidence.append({"name":"marked_same_direction_lane_inventory","unit":"structured record",
+                     "reference":"channels/"+inventory_path.name})
     check={"target":"planned appropriate indicator pattern at first body departure",
            "requested":True,"measured":report["observed_signal_pattern_matches_plan"],
            "method":"original indicator state and complete body departure from marked source-lane polygon",

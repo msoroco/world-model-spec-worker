@@ -13,26 +13,95 @@
   "rate_hz": 20,
   "duration_s": 45,
   "cameras": [
-    {"name": "overview", "width": 1920, "height": 1080, "fov_deg": 90, "pose_strategy": "selected Native lane overview"},
-    {"name": "approach", "width": 1280, "height": 720, "fov_deg": 90, "pose_strategy": "selected Native source lane approach"},
-    {"name": "reference_corner", "width": 1280, "height": 720, "fov_deg": 90, "pose_strategy": "selected Native target lane detail"},
-    {"name": "driver_reference", "width": 1280, "height": 720, "fov_deg": 90, "pose_strategy": "ego attached driver reference"}
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "selected Native lane overview"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "selected Native source lane approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "selected Native target lane detail"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached driver reference"
+    }
   ],
-  "required_atoms": ["ru.subject", "ru.motor_vehicle", "kin.position", "kin.velocity", "kin.speed", "st.lane", "sig.turn_indicator", "rel.surface_gap"],
+  "required_atoms": [
+    "ru.subject",
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.lane",
+    "sig.turn_indicator",
+    "rel.surface_gap"
+  ],
   "source_packets": [],
   "recording_description": {
     "channels": [
-      {"name": "source_lane_body_departure", "unit": "boolean", "method": "complete original Native ego body compared with sampled source-lane polygon", "time_window": "all 900 original frames", "reference_frame": "Native frame", "sampling_rate_hz": 20, "uncertainty": "sampled crossing onset; between-frame state unknown"},
-      {"name": "indicator_before_departure", "unit": "boolean", "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed", "time_window": "before and at departure", "reference_frame": "Native frame", "sampling_rate_hz": 20, "uncertainty": "Native state is not proof of camera-visible indicator"},
-      {"name": "target_lane_gap", "unit": "m", "method": "nearest original target-lane actor body to ego body along sourced lane heading", "time_window": "all 900 original frames", "reference_frame": "Native lane heading", "sampling_rate_hz": 20, "uncertainty": "measured proximity does not prove driver ascertainment of safety"}
+      {
+        "name": "source_lane_body_departure",
+        "unit": "boolean",
+        "method": "complete original Native ego body compared with sampled source-lane polygon",
+        "time_window": "all 900 original frames",
+        "reference_frame": "Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled crossing onset; between-frame state unknown"
+      },
+      {
+        "name": "indicator_before_departure",
+        "unit": "boolean",
+        "method": "original turn-lamp readback joined to first complete-body departure; camera display separately reviewed",
+        "time_window": "before and at departure",
+        "reference_frame": "Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Native state is not proof of camera-visible indicator"
+      },
+      {
+        "name": "target_lane_gap",
+        "unit": "m",
+        "method": "nearest original target-lane actor body to ego body along sourced lane heading",
+        "time_window": "all 900 original frames",
+        "reference_frame": "Native lane heading",
+        "sampling_rate_hz": 20,
+        "uncertainty": "measured proximity does not prove driver ascertainment of safety"
+      }
     ],
     "context_inputs": [
-      {"name": "marked_same_direction_lane_inventory", "unit": "structured record", "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"}
+      {
+        "name": "marked_same_direction_lane_inventory",
+        "unit": "structured record",
+        "method": "Native adjacent-lane identities, lane marking and sampled source polygon; original pixels pending review"
+      }
     ],
     "limitations": [
       "No statutory numeric signal lead time or safe gap is supplied.",
       "Original pixels must establish clearly marked lane appearance and signal display.",
       "Driver safety ascertainment remains a legal judgment."
+    ]
+  },
+  "physical_completion": {
+    "body_key": "ego_body_vertices_xy_m",
+    "lane_key": "ego_lane_id",
+    "destination_lane": -2,
+    "context_sources": [
+      "lane_context.json"
     ]
   }
 }

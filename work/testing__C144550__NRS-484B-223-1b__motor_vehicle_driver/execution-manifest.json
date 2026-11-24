@@ -7,13 +7,421 @@
       "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "cf42044eccb61ebb1b7cac46e689c3d4ce6eda0f23f609a208debb03a354172d",
-      "status": "draft_offline_probe",
+      "construction_sha256": "556d398a922537b769dfc386429d35933d7775324ef5d3ecf414af1ffb438c90",
+      "status": "draft_exact_primary_and_fallback_offline_passed",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native marked-lane site, camera coverage and close-gap traffic may fail physical capture"
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_signal_before_clear_gap/fallback1-construction.json",
+          "construction_sha256": "d755af09b92a80bb00e893a2a7c2e5634b72f6e8451ad56e38001e2ab68a5022",
+          "trigger": {
+            "source": "original target-lane actor body history and ego body",
+            "metric": "measured longitudinal body gap at first source-lane departure",
+            "failure_condition": "target body gap does not establish the planned clear/close comparison or causes premature physical interruption"
+          },
+          "changed_knobs": [
+            "target-lane actor initial route distance to 250 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_clear_gap-fallback1-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d755af09b92a80bb00e893a2a7c2e5634b72f6e8451ad56e38001e2ab68a5022",
+            "log": "cases/left_signal_before_clear_gap/fallback1-offline.log",
+            "log_sha256": "1a4b8c3e983edcff3a12fe587205be14269a87e1fde005e5cf7e2584e3a3913a"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_signal_before_clear_gap/fallback2-construction.json",
+          "construction_sha256": "6fea10a8065c488ed28629465c657de1966eee7ea3b80040c332db52fc77015f",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed produces off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_clear_gap-fallback2-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6fea10a8065c488ed28629465c657de1966eee7ea3b80040c332db52fc77015f",
+            "log": "cases/left_signal_before_clear_gap/fallback2-offline.log",
+            "log_sha256": "7a862f1a522bd0de09513805a8dfeaa838ca1709a5c718d1d665b5cd3c6e4230"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_signal_before_clear_gap/fallback3-construction.json",
+          "construction_sha256": "75b1c544d4776ed8460bfac2c92cf1a009415f66d61b5a14cafd32e777e562be",
+          "trigger": {
+            "source": "decoded original overview pixels and lane/camera frame map",
+            "metric": "complete ego and target bodies plus marked crossing visible during source-lane departure",
+            "failure_condition": "primary overview crops a required complete body or marked lane crossing"
+          },
+          "changed_knobs": [
+            "overview camera along-lane pose from 65 to 75 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_clear_gap-fallback3-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "75b1c544d4776ed8460bfac2c92cf1a009415f66d61b5a14cafd32e777e562be",
+            "log": "cases/left_signal_before_clear_gap/fallback3-offline.log",
+            "log_sha256": "7a61c7083e9f9b51364f3580b387662dbe6b014a34c8869d81498592abd98bef"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_clear_gap-primary-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "556d398a922537b769dfc386429d35933d7775324ef5d3ecf414af1ffb438c90",
+        "log": "primary-offline.log",
+        "log_sha256": "d39c4abbc6c7972096cfb213fdd8d47ecb980afae0f4f6421e865420ca4bb53a"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/diagnostic-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
+      "kind": "delivery",
+      "construction": "cases/left_signal_late_clear_gap/construction.json",
+      "construction_sha256": "38f20ff77f7a9bf6cd219acfe6edf6480c84d458b736ed1e2017f8e5050b9ea6",
+      "status": "draft_exact_primary_and_fallback_offline_passed",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_signal_late_clear_gap/fallback1-construction.json",
+          "construction_sha256": "3973011c389e38e6b11083b1e07648e70e0dea92430b002f342e4e4070aafae8",
+          "trigger": {
+            "source": "original target-lane actor body history and ego body",
+            "metric": "measured longitudinal body gap at first source-lane departure",
+            "failure_condition": "target body gap does not establish the planned clear/close comparison or causes premature physical interruption"
+          },
+          "changed_knobs": [
+            "target-lane actor initial route distance to 250 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_late_clear_gap-fallback1-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3973011c389e38e6b11083b1e07648e70e0dea92430b002f342e4e4070aafae8",
+            "log": "cases/left_signal_late_clear_gap/fallback1-offline.log",
+            "log_sha256": "353d8d5a177aa69bca694b71b97ea12c2659bed44b9826ac45b4226342f8a878"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_signal_late_clear_gap/fallback2-construction.json",
+          "construction_sha256": "012ba0327cf3224b9510305b2eae9eb976047d8bf93fbd8032eedc0d5966b90b",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed produces off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_late_clear_gap-fallback2-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "012ba0327cf3224b9510305b2eae9eb976047d8bf93fbd8032eedc0d5966b90b",
+            "log": "cases/left_signal_late_clear_gap/fallback2-offline.log",
+            "log_sha256": "3dd1908c608fcc0d38b8aec7162a7ba4deb535e8863f6d1e4df600b3e67cc8c8"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_signal_late_clear_gap/fallback3-construction.json",
+          "construction_sha256": "f10d7f1aa87625181ef56e973f90cda7499b296669e98f6ddcd28be8c7ae8df0",
+          "trigger": {
+            "source": "decoded original overview pixels and lane/camera frame map",
+            "metric": "complete ego and target bodies plus marked crossing visible during source-lane departure",
+            "failure_condition": "primary overview crops a required complete body or marked lane crossing"
+          },
+          "changed_knobs": [
+            "overview camera along-lane pose from 65 to 75 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_late_clear_gap-fallback3-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "f10d7f1aa87625181ef56e973f90cda7499b296669e98f6ddcd28be8c7ae8df0",
+            "log": "cases/left_signal_late_clear_gap/fallback3-offline.log",
+            "log_sha256": "c2c931a399c89a53472921263b52846aeb6c15fb5ba421ade3f05de4c0ce8dd5"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_late_clear_gap-primary-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "38f20ff77f7a9bf6cd219acfe6edf6480c84d458b736ed1e2017f8e5050b9ea6",
+        "log": "cases/left_signal_late_clear_gap/primary-offline.log",
+        "log_sha256": "f7d0a711ff5f45b695da536a51805ba208a2737c818641246f8cba9680078bbf"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap",
+      "kind": "delivery",
+      "construction": "cases/left_wrong_signal_clear_gap/construction.json",
+      "construction_sha256": "f64099b2ecc4e2189cad93f9a9fea3c1bac9086a4e6968fb44b02ce2fd74c0cc",
+      "status": "draft_exact_primary_and_fallback_offline_passed",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_wrong_signal_clear_gap/fallback1-construction.json",
+          "construction_sha256": "dbecaa636d3228198acfe10c94afbe47ef044ba79d999ca709dc522586beb04b",
+          "trigger": {
+            "source": "original target-lane actor body history and ego body",
+            "metric": "measured longitudinal body gap at first source-lane departure",
+            "failure_condition": "target body gap does not establish the planned clear/close comparison or causes premature physical interruption"
+          },
+          "changed_knobs": [
+            "target-lane actor initial route distance to 250 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_wrong_signal_clear_gap-fallback1-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "dbecaa636d3228198acfe10c94afbe47ef044ba79d999ca709dc522586beb04b",
+            "log": "cases/left_wrong_signal_clear_gap/fallback1-offline.log",
+            "log_sha256": "0f2ae5cb2fd59c994cb2f0e2097d96f82a28e9093053936966a28a5b68e89007"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_wrong_signal_clear_gap/fallback2-construction.json",
+          "construction_sha256": "81b1d0bcdf920ad346241c4ccf7e34f167a207593ceea7d5c6e308bf5df06984",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed produces off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_wrong_signal_clear_gap-fallback2-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "81b1d0bcdf920ad346241c4ccf7e34f167a207593ceea7d5c6e308bf5df06984",
+            "log": "cases/left_wrong_signal_clear_gap/fallback2-offline.log",
+            "log_sha256": "2a0ef7d33558689daaa4fc56510bf1c3ac06e0691b2aaddd3fab608e35c02656"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_wrong_signal_clear_gap/fallback3-construction.json",
+          "construction_sha256": "9e5f11cdb08b087752ede8ee844cecf042b3b0cc73a10b403e975d3de4fe3f1a",
+          "trigger": {
+            "source": "decoded original overview pixels and lane/camera frame map",
+            "metric": "complete ego and target bodies plus marked crossing visible during source-lane departure",
+            "failure_condition": "primary overview crops a required complete body or marked lane crossing"
+          },
+          "changed_knobs": [
+            "overview camera along-lane pose from 65 to 75 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_wrong_signal_clear_gap-fallback3-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9e5f11cdb08b087752ede8ee844cecf042b3b0cc73a10b403e975d3de4fe3f1a",
+            "log": "cases/left_wrong_signal_clear_gap/fallback3-offline.log",
+            "log_sha256": "8b97b67e3ff87f3624ed21d2dfde697325d369e1355f774987c66d1c0799139d"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_wrong_signal_clear_gap-primary-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "f64099b2ecc4e2189cad93f9a9fea3c1bac9086a4e6968fb44b02ce2fd74c0cc",
+        "log": "cases/left_wrong_signal_clear_gap/primary-offline.log",
+        "log_sha256": "b4a463a86c473fcc17a6f271c2ce1af7da044a6006300bd07535a039e1a692f5"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap",
+      "kind": "delivery",
+      "construction": "cases/left_signal_before_close_gap/construction.json",
+      "construction_sha256": "0969c8adbb3b0e327cb6fdfe8b295d6b889ea6e419b3f95da23e322d8bb6850b",
+      "status": "draft_exact_primary_and_fallback_offline_passed",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_signal_before_close_gap/fallback1-construction.json",
+          "construction_sha256": "cbfa09b4ba64d7c403243a81430f683c5c961021952048c114026200f4fef550",
+          "trigger": {
+            "source": "original target-lane actor body history and ego body",
+            "metric": "measured longitudinal body gap at first source-lane departure",
+            "failure_condition": "target body gap does not establish the planned clear/close comparison or causes premature physical interruption"
+          },
+          "changed_knobs": [
+            "target-lane actor initial route distance to 30 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_close_gap-fallback1-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "cbfa09b4ba64d7c403243a81430f683c5c961021952048c114026200f4fef550",
+            "log": "cases/left_signal_before_close_gap/fallback1-offline.log",
+            "log_sha256": "0b4bf043990df73e90d70374e4013db0ae319117998d473f87ff1ba52bd193ff"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_signal_before_close_gap/fallback2-construction.json",
+          "construction_sha256": "06acdf7928467c7dd43e3ca46c75a62815168eca68a877edbd633593d820a277",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed produces off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_close_gap-fallback2-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "06acdf7928467c7dd43e3ca46c75a62815168eca68a877edbd633593d820a277",
+            "log": "cases/left_signal_before_close_gap/fallback2-offline.log",
+            "log_sha256": "d3c4013bdb4f6bf9db6418751cf52234f0c7fe78fb8027828e90d8658f7cf107"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_signal_before_close_gap/fallback3-construction.json",
+          "construction_sha256": "63824ef7a7e045cd561a0257ce0aae58329a1dcdcfff8f9ad0ac1fe91b63a4cc",
+          "trigger": {
+            "source": "decoded original overview pixels and lane/camera frame map",
+            "metric": "complete ego and target bodies plus marked crossing visible during source-lane departure",
+            "failure_condition": "primary overview crops a required complete body or marked lane crossing"
+          },
+          "changed_knobs": [
+            "overview camera along-lane pose from 65 to 75 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_close_gap-fallback3-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "63824ef7a7e045cd561a0257ce0aae58329a1dcdcfff8f9ad0ac1fe91b63a4cc",
+            "log": "cases/left_signal_before_close_gap/fallback3-offline.log",
+            "log_sha256": "ae9a2fb7b6a6cd457a2c85baadb9576147bf7ef9456dc28dc05b9380903bf268"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-left_signal_before_close_gap-primary-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "0969c8adbb3b0e327cb6fdfe8b295d6b889ea6e419b3f95da23e322d8bb6850b",
+        "log": "cases/left_signal_before_close_gap/primary-offline.log",
+        "log_sha256": "008fbe980be6eef12b15d2600175f2dce3e3777d7fed6a2bee9266c41984cdcf"
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap",
+      "kind": "delivery",
+      "construction": "cases/right_signal_before_clear_gap/construction.json",
+      "construction_sha256": "f3e743ae27f8e24a7b34dd7336a3ca4f1667b22bcaf1eee826aa564f4c2483db",
+      "status": "draft_exact_primary_and_fallback_offline_passed",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/right_signal_before_clear_gap/fallback1-construction.json",
+          "construction_sha256": "d3e9ec344f7ef966e854379719a574a291c0cdcbb503fd79687a3ba3d72f131a",
+          "trigger": {
+            "source": "original target-lane actor body history and ego body",
+            "metric": "measured longitudinal body gap at first source-lane departure",
+            "failure_condition": "target body gap does not establish the planned clear/close comparison or causes premature physical interruption"
+          },
+          "changed_knobs": [
+            "target-lane actor initial route distance to 250 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-right_signal_before_clear_gap-fallback1-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d3e9ec344f7ef966e854379719a574a291c0cdcbb503fd79687a3ba3d72f131a",
+            "log": "cases/right_signal_before_clear_gap/fallback1-offline.log",
+            "log_sha256": "fea9b15cdd9186d553879f2c9de42c53b1a1cb550698d9e0860383f2b8d922a7"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/right_signal_before_clear_gap/fallback2-construction.json",
+          "construction_sha256": "04d5681982a6a52e93f7c32ce48076bf74b4fe6c84f62f714c705956b874d4aa",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed produces off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-right_signal_before_clear_gap-fallback2-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "04d5681982a6a52e93f7c32ce48076bf74b4fe6c84f62f714c705956b874d4aa",
+            "log": "cases/right_signal_before_clear_gap/fallback2-offline.log",
+            "log_sha256": "cc8ea6b3689c6ecb1fa445264fbeee4610946855877c620f9fe055eb1a8bf22f"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/right_signal_before_clear_gap/fallback3-construction.json",
+          "construction_sha256": "e15e55a90b375df429870967c316d30451897f3bb97ee0b9f671af79ff2e56bc",
+          "trigger": {
+            "source": "decoded original overview pixels and lane/camera frame map",
+            "metric": "complete ego and target bodies plus marked crossing visible during source-lane departure",
+            "failure_condition": "primary overview crops a required complete body or marked lane crossing"
+          },
+          "changed_knobs": [
+            "overview camera along-lane pose from 65 to 75 m"
+          ],
+          "status": "draft_exact_offline_passed",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-right_signal_before_clear_gap-fallback3-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e15e55a90b375df429870967c316d30451897f3bb97ee0b9f671af79ff2e56bc",
+            "log": "cases/right_signal_before_clear_gap/fallback3-offline.log",
+            "log_sha256": "682ea8677dc02d07e2ff2b8b3d006305982594b0c1c48f449f90846678010935"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-offline-contract-v3-right_signal_before_clear_gap-primary-20261123 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "f3e743ae27f8e24a7b34dd7336a3ca4f1667b22bcaf1eee826aa564f4c2483db",
+        "log": "cases/right_signal_before_clear_gap/primary-offline.log",
+        "log_sha256": "d66c8c25a35792967de930323e0dd1deb53e99ab138b4bd434f0e68380201523"
+      }
     }
   ]
 }

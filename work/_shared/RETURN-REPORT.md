@@ -1,3 +1,11 @@
+## 2026-11-23 C144550 fifteen fallback offline bundles
+
+C144550 now has three distinct, bounded fallback constructions for each of five exact cases: target actor placement, ego speed and overview camera position. All 20 primary/fallback bundles pass materialized `runtime.py offline`; candidate structure, 23 package tests, runtime preflight and scoped nonready check pass. Manifest SHA256 `3900b081c12c9970acfa6ca8edda79f41e569ba7ea3e6467f73e9b0f86ba2a75`; test log SHA256 `fc0cbff102c582350f093c2a1ffa1f8bf74a4b218bdf9eebb5f9468f98048e19`. Compatibility, manifest-bound saved processing, proposals and audits remain worker-owned; Native effectiveness is unobserved. C144550 remains partial. Batch remains 29 ready, 14 partial; the full strict gate has not passed.
+
+## 2026-11-23 C144550 five exact offline bundles
+
+All five selected C144550 constructions now pass materialized `runtime.py offline` checks with retained case-specific logs. The draft execution manifest SHA256 is `cf99f89489511e0172f94dd12e24fc15ef1717044bc1a88c7347fa3e0d75b519`; package CPU test log SHA256 `67607bc5e6fc786f60dbdecc7e3d16936aead931e2ac203371560b1524ed1b02` (23 tests). Pinned runtime and Core atom preflights plus scoped nonready complete check pass. The package remains partial pending fallbacks, compatibility, saved processing, proposals and audits; no Native or legal acceptance is claimed. Batch remains 29 ready, 14 partial, so the full strict gate has not passed.
+
 ## 2026-11-23 C144550 canonical runner draft
 
 C144550 now has a CPU-checkable `runner.py`, `config.json` and inline `construction.json` wiring Native actor staging, original four-camera and graph/trace capture, frame-map/lane-history persistence, resource cleanup, restoration and capture sealing. Twenty-three package tests, pinned Core atom preflight, runtime preflight and scoped nonready check pass. Runner SHA256 `6bcd9c8a22f20d60846b0f8be8d24271e1e2206397eb4cfcd4520dd491369f4b`; construction SHA256 `beb7d2ba9cffb87cf6a570000746c93db510ef37b5a86bb29ed5d06c2ccdb555`; test log SHA256 `07eff5589b1a934e514e117624e11412c54c9758dd24b706f114fc97ef611ef1`. This is a draft pending exact offline/manifest/saved and fallback/audit proofs, and no CARLA execution or acceptance is claimed. C144550 remains partial; batch remains 29 ready, 14 partial. The full strict gate has not passed.
