@@ -43,6 +43,26 @@ class NativeRunnerTests(unittest.TestCase):
             self.assertEqual((output / "lamp-101.json").read_bytes(),
                              (source / "lamp-101.json").read_bytes())
 
+    def test_live_lamp_uses_hash_bound_capture_image(self):
+        scratch = ROOT.parents[1] / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            base = Path(temporary)
+            source = base / "observer"
+            output = base / "attempt"
+            source.mkdir()
+            output.mkdir()
+            image = output / "frames" / "lamp-102.png"
+            image.parent.mkdir()
+            image.write_bytes(b"captured frame pixels")
+            observed = {"path": "frames/lamp-102.png",
+                        "sha256": hashlib.sha256(image.read_bytes()).hexdigest()}
+            packet = {"frame": 102, "observer_method": "independent_camera_frame_review",
+                      "original_observation": observed}
+            (source / "lamp-102.json").write_text(json.dumps(packet), encoding="utf-8")
+            _live_packet(source, output, "lamp-102.json", 102)
+            self.assertEqual(image.read_bytes(), b"captured frame pixels")
+
 
 if __name__ == "__main__":
     unittest.main()

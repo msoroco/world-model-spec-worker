@@ -52,7 +52,11 @@ def _live_packet(source, output, name, frame, user=None):
     else:
         observed = packet.get("original_observation")
         require(isinstance(observed, dict), "independent original lamp image missing")
-        _copy_ref(source, output, observed)
+        observed_path = (output / observed["path"]).resolve()
+        require(observed_path.is_relative_to(output.resolve()),
+                "original lamp image escapes attempt")
+        if not observed_path.is_file():
+            _copy_ref(source, output, observed)
         read_source(output, observed)
         require(packet.get("observer_method") in
                 ("independent_camera_frame_review", "independent_physical_lamp_sensor"),

@@ -91,6 +91,10 @@ class NativeBundleTests(unittest.TestCase):
     def test_original_bundle_feeds_saved_audit(self):
         receipt = capture_bundle(World(), self.ego, self.root / "attempt", **self.args)
         self.assertEqual(receipt["frame_count"], 900)
+        self.assertEqual((self.root / "attempt/road.xodr").read_bytes(), b"diagnostic OpenDRIVE")
+        attempt = json.loads(pathlib.Path(receipt["attempt_path"]).read_text())
+        self.assertEqual(attempt["road_source"]["sha256"],
+                         hashlib.sha256(b"diagnostic OpenDRIVE").hexdigest())
         self.assertEqual(self.ego.controls[-1].brake, 1)
         result = audit(receipt["attempt_path"], allow_diagnostic=True)
         self.assertTrue(result["time_join"])
@@ -105,6 +109,12 @@ class NativeBundleTests(unittest.TestCase):
             capture_bundle(World(), self.ego, self.root / "attempt", **self.args)
         self.assertEqual(self.ego.controls[-1].brake, 1)
         self.assertFalse((self.root / "attempt" / "attempt.json").exists())
+
+    def test_live_bundle_requires_same_tick_graph_capture(self):
+        self.args["acquisition_kind"] = "original_native"
+        with self.assertRaisesRegex(ValueError, "same-tick PipelineCapture"):
+            capture_bundle(World(), self.ego, self.root / "attempt", **self.args)
+        self.assertFalse((self.root / "attempt/attempt.json").exists())
 
     def test_selected_analysis_joins_five_statutory_observations(self):
         from pathlib import Path
@@ -124,6 +134,18 @@ class NativeBundleTests(unittest.TestCase):
                             "recording_evidence": evidence}, description,
                            lambda relative: stage / relative)
         self.assertEqual(len(evidence), 8)
+        construction = json.loads((BASE / "cases/stop_14ft/construction.json").read_text())
+        config = next(json.loads(item["content"]) for item in construction["files"]
+                      if item["path"] == "config.json")
+        (stage / "config.json").write_text(json.dumps(config) + "\n")
+        from unittest.mock import patch
+        from analysis import main as analysis_main
+        with patch.object(sys, "argv", ["analysis.py", "--attempt", str(stage),
+                                        "--output", str(stage / "analysis-report.json")]):
+            analysis_main()
+        native_result = json.loads((stage / "result.json").read_text())
+        self.assertEqual(native_result["case_id"], self.args["case_id"])
+        self.assertEqual(len(native_result["recording_evidence"]), 8)
         contract = json.loads((BASE / "cases/stop_14ft/measurement-contract.json").read_text())
         values = verify_report(contract, report, stage)
         self.assertEqual(len(values), 5)

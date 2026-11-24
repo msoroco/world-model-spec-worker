@@ -120,8 +120,8 @@ def _actor_source(actor):
 
 
 class Session:
-    def __init__(self, world, ego, sensors, previous_settings, packet, case_id, carla):
-        self.world, self.ego, self.sensors = world, ego, sensors
+    def __init__(self, client, world, ego, sensors, previous_settings, packet, case_id, carla):
+        self.client, self.world, self.ego, self.sensors = client, world, ego, sensors
         self.previous_settings = previous_settings
         self.packet, self.case_id, self.carla = packet, case_id, carla
         self.restored = False
@@ -235,7 +235,7 @@ def open_session(case_id, packet_path, host, port):
             if sensor is None:
                 raise ValueError("Native camera spawn failed: " + camera["name"])
             sensors.append((camera["name"], sensor, camera["width"], camera["height"]))
-        session = Session(world, ego, sensors, previous, packet, case_id, carla)
+        session = Session(client, world, ego, sensors, previous, packet, case_id, carla)
         try:
             yield session
         finally:

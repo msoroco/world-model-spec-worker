@@ -41,7 +41,8 @@ def _write_rows(path, rows):
 
 def capture_bundle(world, ego, output_dir, *, map_packet_path, case_id,
                    attempt_id, recording_id, world_to_local, read_camera,
-                   read_context, acquisition_kind="diagnostic_fixture"):
+                   read_context, acquisition_kind="diagnostic_fixture",
+                   native_capture=None):
     """Capture exact 45 s at 20 Hz; read_camera(name, world_frame) yields PNG.
 
     read_context(world_frame) must report original participant/direction sources.
@@ -61,6 +62,12 @@ def capture_bundle(world, ego, output_dir, *, map_packet_path, case_id,
     output_dir.mkdir(parents=True)
     source_copy = output_dir / "map-source.json"
     source_copy.write_bytes(Path(map_packet_path).read_bytes())
+    # Retain the exact loaded OpenDRIVE bytes used by the map binding.  A later
+    # converter must never reconstruct road geometry from a packet hash alone.
+    road_path = output_dir / "road.xodr"
+    road_path.write_bytes(world.get_map().to_opendrive().encode("utf-8"))
+    if _sha(road_path) != bound["opendrive_sha256"]:
+        raise ValueError("Loaded OpenDRIVE changed after reviewed map binding")
     map_geometry = output_dir / "map-geometry.json"
     _write_json(map_geometry, {"map_id": packet["map_name"],
                                "geometry_provenance": packet["geometry_provenance"],
@@ -74,6 +81,12 @@ def capture_bundle(world, ego, output_dir, *, map_packet_path, case_id,
         (output_dir / "cameras" / name).mkdir(parents=True)
 
     def observe(frame, world_frame, sample):
+        if acquisition_kind == "original_native":
+            if native_capture is None:
+                raise ValueError("Original Native attempt requires same-tick PipelineCapture")
+            captured = native_capture.capture(world_frame, sample["time_s"])
+            if captured["frame"] != world_frame or abs(captured["time_s"] - sample["time_s"]) > 1e-9:
+                raise ValueError("Native graph and original pose frame join differs")
         frame_rows.append({"frame": frame, "world_frame": world_frame,
                            "time_s": sample["time_s"]})
         context = read_context(world_frame)
@@ -122,6 +135,7 @@ def capture_bundle(world, ego, output_dir, *, map_packet_path, case_id,
         "recording_id": recording_id, "acquisition_kind": acquisition_kind,
         "requested_front_body_gap_ft": bound["requested_gap_ft"],
         "map_packet": _binding(source_copy, output_dir),
+        "road_source": _binding(road_path, output_dir),
         "measurement_packet": _binding(measurement_path, output_dir),
         "frame_map": _binding(frame_map, output_dir),
         "context": _binding(context_path, output_dir),

@@ -30,12 +30,28 @@ def build() -> None:
             raise ValueError("Selected construction changes canonical recording plan")
         if digest(construction) != entry["construction_sha256"]:
             raise ValueError("Selected construction SHA mismatch")
+        compatibility = HERE / ("cpu-compat-" + ("steady" if kind == "steady_travel" else "variation") + ".json")
+        positive_log = HERE / ("cpu-compat-" + ("steady" if kind == "steady_travel" else "variation") + "-analysis.log")
+        negative_log = HERE / ("cpu-compat-" + ("steady" if kind == "steady_travel" else "variation") + "-negative.log")
+        physical = HERE / ("physical-preparation-" + kind + ".json")
+        acceptance = HERE / ("delivery-acceptance-" + kind + ".json")
+        channels = content["recording_description"]["channels"]
         cases.append({"case_id": case, "kind": "delivery",
                       "construction": entry["construction"],
                       "construction_sha256": digest(construction),
                       "measurement_contract": "measurement-contract-" + kind + ".json",
                       "measurement_procedure": {"entrypoint": "saved_finalizer.py"},
                       "fixture_recipe": "work/" + AID + "/fixture-recipe-" + kind + ".json",
+                      "compatibility": {"receipt": compatibility.name, "sha256": digest(compatibility),
+                                        "log": positive_log.name},
+                      "negative": {"log": negative_log.name},
+                      "physical_preparation": {"receipt": physical.name, "sha256": digest(physical)},
+                      "delivery_acceptance": json.loads(acceptance.read_text()),
+                      "acquisition": {channel["name"]: {"entrypoint": "runtime_publication.py",
+                          "method": "publish_original", "evidence": "operation.jsonl and original Native context"}
+                          for channel in channels},
+                      "native_handoff": {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",
+                                         "port_env_var": "CARLA_PORT"},
                       "candidate_risk": {"status": "none",
                           "reason": "No case-specific Native failure has been measured; same reviewed alley route and controller variation preserve the comparison."},
                       "candidates": [],
@@ -47,8 +63,7 @@ def build() -> None:
                           "exit_code": 0,
                           "log": "cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log",
                           "log_sha256": digest(HERE / ("cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log"))},
-                      "missing_proofs": ["case-specific positive and negative runtime compatibility",
-                                         "recorded-only process-saved proof on current analyzer revision",
+                      "missing_proofs": ["recorded-only process-saved proof on current analyzer revision",
                                          "independent delivery audit positive and negative",
                                          "source-bound comparison audit",
                                          "reviewed original site source binding"]})

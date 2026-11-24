@@ -44,11 +44,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", action="append", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--negative-fixed-condition", action="store_true")
     args = parser.parse_args()
     attempts = {Path(path).name.split("__")[-1]: load(path) for path in args.attempt}
     by_suffix = {record["case_suffix"]: record for record in attempts.values()}
     if len(by_suffix) != 4:
         raise ValueError("four exact diagnostic cases required")
+    if args.negative_fixed_condition:
+        altered = dict(by_suffix["dual_vehicle_present"])
+        altered["signal_survey_sha256"] = "0" * 64
+        audit_pair("vehicle_at_exhibition", by_suffix["dual_clear"], altered)
+        raise ValueError("fixed-condition negative test was accepted")
     results = []
     for comparison, (left, right, _, _) in PAIRS.items():
         checked = audit_pair(comparison, by_suffix[left], by_suffix[right])

@@ -75,6 +75,7 @@ def main():
             raise ValueError("Fallback requires a separately reviewed alternate approach packet")
     from native_bundle import capture_bundle
     from finalize_capture import publish
+    from pipeline_capture import PipelineCapture
     adapter = importlib.import_module(adapter_name)
     if not hasattr(adapter, "open_session"):
         raise ValueError("Native adapter lacks owned open_session")
@@ -88,15 +89,18 @@ def main():
         raise SystemExit("Original Native capture interrupted")
     signal.signal(signal.SIGTERM, terminate)
     with adapter.open_session(case, packet_path, args.host, args.port) as session:
-        capture_bundle(
-            session.world, session.ego, attempt_dir,
-            map_packet_path=packet_path, case_id=case,
-            attempt_id=session.attempt_id, recording_id=session.recording_id,
-            world_to_local=session.world_to_local, read_camera=session.read_camera,
-            read_context=session.read_context, acquisition_kind="original_native")
+        with PipelineCapture(session.client, session.ego, output_dir, case) as native_capture:
+            capture_bundle(
+                session.world, session.ego, attempt_dir,
+                map_packet_path=packet_path, case_id=case,
+                attempt_id=session.attempt_id, recording_id=session.recording_id,
+                world_to_local=session.world_to_local, read_camera=session.read_camera,
+                read_context=session.read_context, acquisition_kind="original_native",
+                native_capture=native_capture)
     publish(output_dir, case_id=case,
             restoration={"restored": session.restored,
-                         "method": "owned actor and sensor teardown plus settings readback"})
+                         "method": "owned actor and sensor teardown plus settings readback"},
+            require_pipeline=True)
 
 
 if __name__ == "__main__":
@@ -141,12 +145,22 @@ class BundleTests(unittest.TestCase):
     def test_executor_handoff_uses_precreated_directory_and_reviewed_env(self):
         class Session:
             def __enter__(self):
-                return types.SimpleNamespace(world=object(), ego=object(),
+                return types.SimpleNamespace(client=object(), world=object(), ego=object(),
                     attempt_id="test-attempt", recording_id="test-recording",
                     restored=True,
                     world_to_local=lambda value: value,
                     read_camera=lambda name, frame: None,
                     read_context=lambda frame: None)
+
+            def __exit__(self, *_):
+                return False
+
+        class Capture:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def __enter__(self):
+                return self
 
             def __exit__(self, *_):
                 return False
@@ -159,6 +173,7 @@ class BundleTests(unittest.TestCase):
             env = {"SCENARIO_INTERSECTION_MAP_PACKET": str(packet),
                    "SCENARIO_INTERSECTION_ADAPTER": "reviewed_adapter"}
             with patch.dict(os.environ, env), \\
+                    patch.dict(sys.modules, {"pipeline_capture": types.SimpleNamespace(PipelineCapture=Capture)}), \\
                     patch.object(sys, "argv", ["runner.py", "--output-dir", temp,
                                                "--host", "native-host", "--port", "2001"]), \\
                     patch.object(runner.importlib, "import_module", return_value=adapter), \\
@@ -168,7 +183,9 @@ class BundleTests(unittest.TestCase):
             self.assertEqual(capture.call_args.args[2], Path(temp) / "original-attempt")
             self.assertEqual(capture.call_args.kwargs["map_packet_path"], str(packet))
             self.assertEqual(capture.call_args.kwargs["acquisition_kind"], "original_native")
+            self.assertIsInstance(capture.call_args.kwargs["native_capture"], Capture)
             self.assertEqual(publish.call_args.kwargs["restoration"]["restored"], True)
+            self.assertTrue(publish.call_args.kwargs["require_pipeline"])
 
 
 if __name__ == "__main__":
