@@ -81,12 +81,11 @@ def build(seal_offline: bool = False) -> dict:
                 "reviewed original road intersection, stopped-purpose and Native camera source packets",
             ],
         }
-        if suffix == "unmarked_pass":
-            recipe = HERE / "fixture-recipe-unmarked_pass.json"
-            if not recipe.is_file():
-                raise ValueError("unmarked-pass diagnostic fixture recipe missing")
-            selected["fixture_recipe"] = str(recipe.relative_to(REPO))
-            selected["fixture_recipe_sha256"] = _sha(recipe)
+        recipe = HERE / ("fixture-recipe-" + suffix + ".json")
+        if not recipe.is_file():
+            raise ValueError("exact diagnostic fixture recipe missing: " + suffix)
+        selected["fixture_recipe"] = str(recipe.relative_to(REPO))
+        selected["fixture_recipe_sha256"] = _sha(recipe)
         rows.append(selected)
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT_ID,
                 "runtime_manifest_sha256": _sha(REPO / "runtime" / "SOURCE-MANIFEST.json"),
