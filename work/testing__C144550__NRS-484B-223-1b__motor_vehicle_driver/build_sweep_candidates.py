@@ -94,9 +94,12 @@ def build():
                     '        reference="channels/"+path.name\n'
                     '        evidence.append({"name":name,"unit":axis["unit"],"reference":reference})\n'
                     '        sweep_realized[name]={"value":value,"unit":axis["unit"],\n'
-                    '            **axis["measurement"],"reference":reference}\n' + anchor2, 1)
+                    '            **axis["measurement"],"reference":reference,\n'
+                    '            "sample_window_s":[movement["time_s"],movement["time_s"]]}\n' + anchor2, 1)
                 content = content.replace('"source_evidence_hashes":report["sources"],"realized_observables":{}}',
                                           '"source_evidence_hashes":report["sources"],"realized_observables":sweep_realized}')
+                content = content.replace('    result=physical_result(attempt,result)\n',
+                                          '    result=physical_result(attempt,result)\n    result["realized_observables"].update(sweep_realized)\n', 1)
             if name == "native_lane_construction.py":
                 content = content.replace('if not case_id.startswith(CASE_PREFIX) or case_id[len(CASE_PREFIX):] not in SIGNAL_CASES:',
                                           'if not (case_id.startswith(CASE_PREFIX) and case_id[len(CASE_PREFIX):] in SIGNAL_CASES or case_id in SIGNAL_CASES):')
