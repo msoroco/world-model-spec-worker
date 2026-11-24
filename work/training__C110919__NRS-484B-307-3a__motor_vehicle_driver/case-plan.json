@@ -93,7 +93,7 @@
     {
       "case_id": "training__C110919__NRS-484B-307-3a__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-307-3a",
-      "kind": "unselected_cpu_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "right-turning driver holds before the occupied adjacent crosswalk",
       "comparison_variable": "yielded_to_pedestrian",
@@ -129,7 +129,7 @@
     {
       "case_id": "training__C110919__NRS-484B-307-3a__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-307-3a",
-      "kind": "unselected_cpu_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "right-turning driver enters the pedestrian conflict area without waiting",
       "comparison_variable": "yielded_to_pedestrian",
@@ -229,49 +229,54 @@
   ],
   "observations": [
     {
+      "name": "camera_frame_join",
+      "mandatory": true,
+      "purpose": "Original Native source and reconstructed law observation"
+    },
+    {
       "name": "dev.traffic_signal",
       "mandatory": true,
-      "reason": "state circular_green together with green_arrow(dir)"
+      "purpose": "Original Native source and reconstructed law observation"
     },
     {
-      "name": "dev.governs",
+      "name": "drv.extreme_lane",
       "mandatory": true,
-      "reason": "the head faces the subject"
+      "purpose": "Original Native source and reconstructed law observation"
     },
     {
-      "name": "drv.turning",
+      "name": "drv.stopped",
       "mandatory": true,
-      "reason": "the movement indicated by the arrow"
-    },
-    {
-      "name": "drv.entering_intersection",
-      "mandatory": true,
-      "reason": "entry into the intersection"
-    },
-    {
-      "name": "st.crosswalk",
-      "mandatory": true,
-      "reason": "the adjacent crosswalk"
-    },
-    {
-      "name": "ru.pedestrian",
-      "mandatory": true,
-      "reason": "pedestrians lawfully within it"
-    },
-    {
-      "name": "drv.in_intersection",
-      "mandatory": true,
-      "reason": "other traffic lawfully using the intersection"
+      "purpose": "Original Native source and reconstructed law observation"
     },
     {
       "name": "drv.yields_to",
       "mandatory": true,
-      "reason": "the yield owed"
+      "purpose": "Original Native source and reconstructed law observation"
     },
     {
-      "name": "rel.oncoming",
+      "name": "kin.velocity",
       "mandatory": true,
-      "reason": "opposing traffic, which faces red while the arrow shows"
+      "purpose": "Original Native source and reconstructed law observation"
+    },
+    {
+      "name": "native_body_pose_control",
+      "mandatory": true,
+      "purpose": "Original Native source and reconstructed law observation"
+    },
+    {
+      "name": "st.crosswalk",
+      "mandatory": true,
+      "purpose": "Original Native source and reconstructed law observation"
+    },
+    {
+      "name": "st.one_way_roadway",
+      "mandatory": true,
+      "purpose": "Original Native source and reconstructed law observation"
+    },
+    {
+      "name": "st.stop_line",
+      "mandatory": true,
+      "purpose": "Original Native source and reconstructed law observation"
     }
   ],
   "candidate_plans": [],
@@ -341,5 +346,98 @@
       ],
       "evidence_or_gap": "Exact source topic selected in same-cell circular-green plus right-arrow CPU pair; Native arrow glyph, original pixels and strict selected proof remain unverified."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "circular green, right arrow, opposing red, body and turn",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "stop line and adjacent pedestrian conflict",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "governing arrow head and opposing signal",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver sight line and crossing users",
+        "interval": "0-30 s"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "dev.governs": {
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "drv.turning": {
+      "channels": [
+        "native_body_pose_control"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "drv.entering_intersection": {
+      "channels": [
+        "native_body_pose_control"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "st.crosswalk": {
+      "channels": [
+        "st.crosswalk"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "ru.pedestrian": {
+      "channels": [
+        "drv.yields_to"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "drv.in_intersection": {
+      "channels": [
+        "native_body_pose_control"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "drv.yields_to": {
+      "channels": [
+        "drv.yields_to"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    },
+    "rel.oncoming": {
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [],
+      "evidence": "Selected original Native and four-view source plan with current 600-frame CPU fixture; physical truth, lawful-user status and arrow pixels require local review."
+    }
+  },
+  "readiness": "selected_cpu_preparation_original_native_pending"
 }

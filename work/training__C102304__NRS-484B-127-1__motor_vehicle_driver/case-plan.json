@@ -31,27 +31,19 @@
       "source": "NRS 484B.127(1)",
       "source_text": "The driver of a vehicle shall not follow another vehicle more closely than is reasonable and prudent, having due regard for the speed of such vehicles and the traffic upon and the condition of the highway.",
       "status": "selected_required",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
+      "evidence_or_gap": "Exact source-grounded measurements and comparison selected for CPU-prepared capture; original Native and legal review remain open.",
       "case_ids": [
         "training__C102304__NRS-484B-127-1__motor_vehicle_driver__selected_ccee258c__condition_a",
         "training__C102304__NRS-484B-127-1__motor_vehicle_driver__selected_ccee258c__condition_b"
       ]
-    },
-    {
-      "requirement": "reviewed-scope-0",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_text": "Vehicle following",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
     }
   ],
   "cases": [
     {
       "case_id": "training__C102304__NRS-484B-127-1__motor_vehicle_driver__selected_ccee258c__condition_a",
       "target_law_id": "NRS-484B-127-1",
-      "target_type": "planned_delivery_comparison",
-      "planning_status": "unverified",
+      "target_type": "delivery",
+      "planning_status": "cpu_prepared_physical_unverified",
       "source_branch": "Vehicle following",
       "comparison_variable": "realized_following_gap",
       "condition_index": 0,
@@ -73,8 +65,8 @@
     {
       "case_id": "training__C102304__NRS-484B-127-1__motor_vehicle_driver__selected_ccee258c__condition_b",
       "target_law_id": "NRS-484B-127-1",
-      "target_type": "planned_delivery_comparison",
-      "planning_status": "unverified",
+      "target_type": "delivery",
+      "planning_status": "cpu_prepared_physical_unverified",
       "source_branch": "Vehicle following",
       "comparison_variable": "realized_following_gap",
       "condition_index": 1,
@@ -116,11 +108,42 @@
           "full-train"
         ]
       },
-      "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "status": "cpu_prepared_physical_unverified",
+      "audit_gap": "Actual Native paired motion and legal judgment require independent local review."
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "source": "NRS 484B.127(1) and selected exact-case source contract"
+    },
+    {
+      "name": "st.lane",
+      "mandatory": true,
+      "source": "NRS 484B.127(1) and selected exact-case source contract"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": true,
+      "source": "NRS 484B.127(1) and selected exact-case source contract"
+    },
+    {
+      "name": "rel.ahead_behind_in_lane",
+      "mandatory": true,
+      "source": "NRS 484B.127(1) and selected exact-case source contract"
+    },
+    {
+      "name": "native_body_pose_control",
+      "mandatory": true,
+      "source": "NRS 484B.127(1) and selected exact-case source contract"
+    },
+    {
+      "name": "camera_frame_join",
+      "mandatory": true,
+      "source": "NRS 484B.127(1) and selected exact-case source contract"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/training__C102304__NRS-484B-127-1__motor_vehicle_driver/assignment.json",
@@ -409,8 +432,35 @@
     "No measured saved evidence or independent acceptance audit."
   ],
   "source_observation_mapping": {},
-  "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
-  "readiness": "planning_only",
+  "legal_analysis_note": "The reviewed Vehicle following witness restates the selected statutory following branch; text-0 carries the measured obligation. Numeric gaps/headways remain descriptive, not a legal threshold.",
+  "readiness": "selected_cpu_preparation_pending_exact_gate",
   "physical_prerequisites": "Follow a genuinely moving lead vehicle; record both speeds, bumper separation, traffic, highway and visibility over the entire following interval.",
-  "legal_interpretation_limit": "Reasonable and prudent remains unresolved; accepted demo membership does not prove this exact branch without source-hashed equivalence."
+  "legal_interpretation_limit": "Reasonable and prudent remains unresolved; accepted demo membership does not prove this exact branch without source-hashed equivalence.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego driver, moving lead vehicle, following gap and highway context",
+        "interval": "entire 45-second following interval"
+      },
+      {
+        "view": "approach",
+        "subject": "ego driver, moving lead vehicle, following gap and highway context",
+        "interval": "entire 45-second following interval"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego driver, moving lead vehicle, following gap and highway context",
+        "interval": "entire 45-second following interval"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego driver, moving lead vehicle, following gap and highway context",
+        "interval": "entire 45-second following interval"
+      }
+    ]
+  }
 }

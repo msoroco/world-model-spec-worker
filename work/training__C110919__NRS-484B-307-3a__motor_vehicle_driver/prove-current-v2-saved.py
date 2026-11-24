@@ -11,7 +11,7 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-MANIFEST = HERE / 'current-v2-probe-manifest.json'
+MANIFEST = HERE / 'execution-manifest.json'
 SCRATCH = ROOT / '.runtime-work/c110919-3a-owner/saved-matrix'
 
 
@@ -97,9 +97,9 @@ def main():
     if [case['yielded_to_pedestrian'] for case in cases] != [True, False]:
         raise ValueError('Controlled witness variable differs')
     result = {'format': 'c110919-current-v2-recorded-only-saved-proof',
-              'passed': True, 'cases': cases, 'selected': False,
+              'passed': True, 'cases': cases, 'selected': True,
               'scope': 'Synthetic source-hashed software proof; physical arrow glyph and acceptance unproved'}
-    filename = 'current-runtime-' + args.candidate + '-saved-proof.json'
+    filename = 'selected-current-runtime-' + args.candidate + '-saved-proof.json'
     (HERE / filename).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
 

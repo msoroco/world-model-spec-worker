@@ -1,3 +1,11 @@
+## Ready CPU delivery handoff (2026-11-24)
+
+The exact assignment gate `.venv-cpu/bin/python worker_check.py --assignment training__C422978__NRS-484B-117-1__heavy_vehicle_driver --complete --require-delivery-ready` passed with `static_checks_passed: true`; the retained output is `strict-assignment-check.json` (SHA-256 `e3c60ddf4562b6f94a643647ca72a82b4e7754544e736b90afe0403ffa465d27`). `result.json` is now `ready` with `readiness_kind: delivery_prepared`. This is CPU delivery preparation, not an original recording or a physical or legal acceptance.
+
+The seven source topics in `case-plan.json` are assigned to both selected cases, with four subsection 2 topics measured as source-qualified context. Their synthetic measurement values explicitly retain unknown electric propulsion, three-wheel design, emergency status, law-enforcement duty, and security duty. The original source review in `native/audit_delivery.py` fails closed until those facts, City sidewalk and entrance authority, Native time/participant/pixel joins, and physical completion have independent source-hashed review. The synthetic positive and five negative delivery audit controls passed; they are software contract checks only.
+
+The selected reference primary and contrast primary plus contrast fallbacks 1 and 2 each passed current-runtime exact offline and diagnostic compatibility checks after the branch rebuild. Current manifest SHA-256: `b8c6775aae100bd9783531ac73b61a174b34b43a07eb58f71e65eef20ff50227`; root construction SHA-256: `2f807637e4a516d057436d13e8d87b8a1641e97a870abbbac0ac352ccf2facd6`; plan SHA-256: `3887a6ac515513ff1296c3d0f1cf708d8357abfb3e582862ae9bbbc7f030921a`. Both selected cases have canonical semantic, physical unit-fixture, and delivery contract receipts. The first GPU command in `result.json` dispatches the exact reference case; the lead integrates the shared queue. Original City authority, operator duty and exception applicability, physical outcome, and legal classification remain unresolved and require local source review. The older `selected-saved-proof.json` is a retained diagnostic from an earlier manifest hash and must not be interpreted as final-hash original evidence.
+
 # training__C422978__NRS-484B-117-1__heavy_vehicle_driver
 
 Status: partial. No original Native or City legal finding is claimed.

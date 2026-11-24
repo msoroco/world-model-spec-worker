@@ -10,8 +10,8 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-MANIFEST = HERE / 'current-v2-probe-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c110919-3a-owner/matrix'
+MANIFEST = HERE / 'execution-manifest.json'
+SCRATCH = ROOT / '.runtime-work/c110919-3a-owner/selected-matrix'
 VALIDATOR = ROOT / '.runtime-work/c110919-owner104/decoder/.lake/build/bin/adapterCheck'
 CASES = [('witness_1', 'primary'), ('witness_2', 'primary'),
          ('witness_1', 'fallback1'), ('witness_2', 'fallback1'),
@@ -51,7 +51,7 @@ def run_one(case, candidate):
     receipt = json.loads((compat / 'compatibility.json').read_text())
     if not receipt['passed'] or receipt['runtime_manifest_sha256'] != sha(ROOT / 'runtime/SOURCE-MANIFEST.json'):
         raise ValueError(name + ' receipt does not bind current runtime')
-    destination = HERE / 'current-runtime-proofs' / case / candidate
+    destination = HERE / 'selected-runtime-proofs' / case / candidate
     destination.mkdir(parents=True, exist_ok=True)
     (destination / 'offline.log').write_text(first.stdout.rstrip() + '\n')
     for source, name_out in [('compatibility.json', 'compatibility.json'),
@@ -78,7 +78,7 @@ if __name__ == '__main__':
             value = future.result()
             print(value['case_id'].split('__')[-1], value['candidate'], 'passed', flush=True)
             results.append(value)
-    write(HERE / 'current-runtime-candidate-matrix.json',
+    write(HERE / 'selected-runtime-candidate-matrix.json',
           {'format': 'c110919-3a-current-runtime-candidate-matrix', 'passed': True,
            'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),
            'cases': sorted(results, key=lambda row: (row['case_id'], row['candidate']))})

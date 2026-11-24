@@ -43,29 +43,35 @@
     {
       "case_id": "training__C110454__NRS-484B-450-1c__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-450-1c",
-      "kind": "native_draft_unselected",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
       "physical_target": "park wholly outside intersection",
       "comparison_variable": "intersection_parking_footprint",
       "candidate_ids": [
         "primary",
         "fallback1",
-        "fallback2",
-        "fallback3"
+        "fallback2"
+      ],
+      "gap_ids": [
+        "gap_intersection_body",
+        "gap_exception_context"
       ]
     },
     {
       "case_id": "training__C110454__NRS-484B-450-1c__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-450-1c",
-      "kind": "native_draft_unselected",
+      "kind": "delivery",
       "target_type": "violating_attempt",
       "physical_target": "park with footprint within intersection",
       "comparison_variable": "intersection_parking_footprint",
       "candidate_ids": [
         "primary",
         "fallback1",
-        "fallback2",
-        "fallback3"
+        "fallback2"
+      ],
+      "gap_ids": [
+        "gap_intersection_body",
+        "gap_exception_context"
       ]
     }
   ],
@@ -142,8 +148,7 @@
     }
   ],
   "runtime_uncertainties": [
-    "Pinned strict v2 fixture recipe accepts only runtime/pipeline/fixtures/retained-speed as a base; it has 3 trace/evidence/video-map frames and forbids shadowing these files, whereas these exact 24 s bundles require 480 joined frames. See v2-recipe-diagnostic.json.",
-    "Original CARLA route tracking, parking duration, Native map boundary, exception absence, pixels, and accepted recordings remain unobserved."
+    "Original CARLA route tracking, continuous parked duration, Native map boundary, every exception circumstance, actual pixels and accepted recording equivalence remain unobserved; CPU diagnostics establish only processing compatibility."
   ],
   "statutory_text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within an intersection.",
   "activation_conditions_from_unreviewed_summary": [
@@ -162,5 +167,137 @@
     "dev.human_direction",
     "dev.traffic_signal",
     "kin.velocity"
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.standing_or_parked": {
+      "evidence": "Sampled original speed, controller halt intent, parking duration and full-body rest interval; no legal cutoff inferred",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Native OpenDRIVE road geometry and surveyed intersection polygon with original map readback; highway and roadway-definition questions remain review conditions",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original full-body vertices joined to the surveyed polygon each rest frame; sampled overlap is not intersample certainty",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    },
+    "drv.forced_halt": {
+      "evidence": "Original traffic actor inventory and conflict trajectory; absent conflict requires independently verified world and source completeness",
+      "channels": [
+        "drv.forced_halt"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Original officer actor and direction provenance; a zero authored count alone cannot establish absence of every direction",
+      "channels": [
+        "dev.human_direction"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Original official device inventory, phase and applicability; current synthetic fixture records no signals",
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original Native actor velocity vector and frame/time join, separate from commanded speed",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0"
+        }
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full intersection, parking body and approach",
+        "interval": "0\u201330 s original synchronized frames"
+      },
+      {
+        "view": "approach",
+        "subject": "incoming lane and traffic-conflict context",
+        "interval": "0\u201330 s original synchronized frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "intersection boundary and body footprint",
+        "interval": "0\u201330 s original synchronized frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "parking body and official-device or human-direction context",
+        "interval": "0\u201330 s original synchronized frames"
+      }
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Read frozen assignment membership and review-context/review.json; all three accepted IDs have membership/description but no source-hashed original evidence inventory in this export, so equivalence or exception coverage cannot be established. Retain them without replay.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "gap_intersection_body",
+        "requirement": "Original source-hashed body/rest relation to surveyed intersection boundary",
+        "source": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/review-context/review.json",
+        "why_existing_insufficient": "Membership descriptions and judgments lack original Native, map and pixel sources."
+      },
+      {
+        "id": "gap_exception_context",
+        "requirement": "Original conflict, law, officer and official-device direction context for a sustained parking stop",
+        "source": "inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No source-hashed accepted evidence inventory establishes each exception or absence."
+      }
+    ]
+  }
 }

@@ -67,6 +67,7 @@ def main():
         trace.append({'frame': frame, 'time_s': time_s,
                       'position': {'x': center[0], 'y': center[1], 'z': 0.5},
                       'position_m': [*center, 0.5], 'heading_deg': 0.0,
+                      'velocity_mps': [row['speed_m_s'], 0.0, 0.0],
                       'speed_mps': row['speed_m_s'], 'speed_mph': row['speed_m_s'] * 2.2369362921,
                       'control': {'throttle': 0, 'brake': int(row['speed_m_s'] == 0),
                                   'hand_brake': row['speed_m_s'] == 0}})
@@ -145,6 +146,7 @@ def main():
     contract_path = HERE / f'current-v2-{suffix}-measurement-contract.json'
     write(contract_path, contract)
     manifest = json.loads((HERE / 'draft-execution-manifest-600.json').read_text())
+    manifest['runtime_manifest_sha256'] = sha(ROOT / 'runtime/SOURCE-MANIFEST.json')
     manifest['cases'] = [next(case for case in manifest['cases'] if case['case_id'] == case_id)]
     manifest['cases'][0]['candidates'] = []
     manifest['cases'][0]['fixture_recipe'] = recipe_path.relative_to(ROOT).as_posix()

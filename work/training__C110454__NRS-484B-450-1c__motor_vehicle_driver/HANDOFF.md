@@ -1,3 +1,11 @@
+# Current v2 six-chain CPU proof — 2026-11-24
+
+`build-current-v2-fallbacks.py` updates the existing 600-frame route-lookahead and final-braking-margin alternatives to the current overview/approach/reference_corner/driver_reference cameras. Both exact primaries and their two alternatives pass current pinned offline construction (six of six). The current renderer requires an original velocity vector; `build-current-v2-primary.py` now includes source-shaped `velocity_mps` in the retained synthetic trace, without replacing the speed or Native sample sources. Both refreshed primary recipes and all four alternatives pass current public compatibility, including Core/Lean, four-camera decode, selected measurement outputs and a removed-`native_samples.jsonl` negative. All six pass actual recorded-only `process-saved`, with original source hashes preserved and 600 decoded frames. `bind-current-v2-matrix.py` independently checks the exact construction/recipe/contract/receipt joins, records six durable positive/negative/saved chains in `current-v2-matrix/`, and confirms the controlled 0.0 versus 11.44 m² sampled parked-body overlap. Proof SHA-256: `b9e837df6acfd8e951deb25f622c5db3f99ac57daf32e3f40276055e9847ecfa`.
+
+This is synthetic source-shaped CPU evidence only. These cases remain unselected and **partial**. The prior two-primary receipt hashes below are historical because their trace recipe lacked `velocity_mps` on the current renderer. Next worker-owned CPU steps: bind selected exact-case manifest and root/case constructions; add source-qualified exception controls, canonical semantic stages, independent physical/delivery/comparison audits, and run the exact scoped strict gate. Original CARLA motion, visible pixels, all claimed exception circumstances, and statutory or canonical acceptance remain unobserved.
+
+---
+
 # Current v2 two-primary CPU proof — 2026-11-23
 
 The package remains **partial and unselected**. `build-current-v2-primary.py` builds two 30-second/600-frame source-hashed JSON-graph recipes and exact primary bundles. Both use the current four named cameras: overview, approach, reference_corner and driver_reference. Synthetic retained Native rows, body history, frame map, map survey, evidence and adapter graphs are separately source inventoried. The earlier three-frame pinned-fixture blocker no longer applies to this runtime.
