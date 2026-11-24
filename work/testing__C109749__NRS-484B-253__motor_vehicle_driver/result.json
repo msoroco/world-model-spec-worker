@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3",
-  "status": "partial",
-  "readiness_kind": "partial_local_dispatch_map_packet_fix",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -246,15 +246,45 @@
       "sha256": "4a08548c7f261595bede3963265366f3f4e67f3a80d8002861bff38c3a32ea0b"
     },
     {
+      "command": "99 focused CPU tests including local map-packet dispatch",
+      "exit_code": 0,
+      "log": "cpu-dispatch-tests.log",
+      "sha256": "395789268518a32ee65a38d64062a15b409a44483e5c7c381d621bedebaed9c1"
+    },
+    {
+      "command": "regenerate eight source-bound primary bundles",
+      "exit_code": 0,
+      "log": "cpu-dispatch-build.log",
+      "sha256": "05bebac1bae1d06ae69314f90bc977d2021a1356663538c019f370c3d11aa186"
+    },
+    {
+      "command": "regenerate two source-bound reciprocal fallbacks",
+      "exit_code": 0,
+      "log": "cpu-dispatch-fallback-build.log",
+      "sha256": "0bfd67302545cb18b912b18d4ba6184b86f8a560fc703503eec4ec4369df0e28"
+    },
+    {
+      "command": "refresh eight exact physical preparation receipts",
+      "exit_code": 0,
+      "log": "cpu-dispatch-physical.log",
+      "sha256": "4a08548c7f261595bede3963265366f3f4e67f3a80d8002861bff38c3a32ea0b"
+    },
+    {
+      "command": "scoped complete static check after local dispatch fix",
+      "exit_code": 0,
+      "log": "cpu-dispatch-static.log",
+      "sha256": "5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93"
+    },
+    {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 0,
-      "log": "strict-final.log",
+      "log": "strict-dispatch-final.log",
       "sha256": "5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Local execute-delivery runtime passes only --output-dir --host --port; selected runner currently requires --map-packet. Worker repairing source-gated environment fallback and reproving exact candidates.",
-  "first_gpu_delivery_command": "PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch full-test-delivery --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --case testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
+  "reason": "Current-runtime CPU preparation and exact local dispatch source gate tested; reviewed Native map packet remains mandatory at execution. Physical evidence awaits local original capture.",
+  "first_gpu_delivery_command": "C109749_MAP_PACKET=\"$REVIEWED_C109749_MAP_PACKET\" PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch full-test-delivery --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --case testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

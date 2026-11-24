@@ -188,3 +188,14 @@ All eight selected cases now have current-runtime source-bound inline candidate 
 - `strict-final.log` exit 0, SHA256 `5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93`.
 - Exact command: `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready`.
 - Full source-backed physical judgment sweeps remain incomplete: the frozen judgment ranges omit reviewed Native junction geometry and feasible below/inside/above witness points, including two ranges with no valid interior/below witness. `expand_sweeps` was run on three truthful incomplete specs and added no unsupported cases. Actual CARLA motion, pixels and legal judgment await local source review.
+
+## 2026-11-24 local dispatch source-gate repair
+
+The pinned local execute-delivery dispatcher invokes each materialized runner with `--output-dir --host --port` and no map-packet option. Both standard and reciprocal inline runners now resolve `C109749_MAP_PACKET` when the explicit option is absent. The path must name an independently reviewed original Native map packet; an absent path or diagnostic packet fails before CARLA import or client creation. The local operator must set `REVIEWED_C109749_MAP_PACKET` to that reviewed packet before running the first GPU command in `result.json`. The option, if supplied directly, overrides the environment and remains source-gated.
+
+All eight primaries and two reciprocal fallbacks were rebuilt and revalidated against the current pinned runtime. Ten exact offline and positive/negative compatibility proofs passed; eight refreshed saved-only processing receipts passed. The 99-test assignment suite passed, including missing-packet, diagnostic-packet and reviewed-env-path tests for both runner forms. Physical preparation receipts were refreshed.
+
+- `execution-manifest.json` SHA256 `a6acb0c766c8dcf2455660ae6a1ac7f1d2fd6508a429760b40c37d1d57f74e01`.
+- `strict-dispatch-final.log` exit 0, SHA256 `5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93`.
+- Exact command: `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready`.
+Actual Native route, map review, camera visibility and physical/legal conclusions remain local source-review and capture work.

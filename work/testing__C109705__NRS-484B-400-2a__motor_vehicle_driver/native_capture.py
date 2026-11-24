@@ -127,6 +127,8 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                 raise ValueError('Native ego frame/case readback differs')
             row = {**ego, 'frame': frame, 'time_s': time_s}
             history.append(row)
+            participants = None
+            controls = None
             read_body = getattr(adapter, 'read_body', None)
             if callable(read_body):
                 physical = read_body(frame)
@@ -214,7 +216,11 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                     graph_raw = collect(adapter.world, ego_actor,
                                         adapter.world.get_snapshot(),
                                         expected_frame=frame,
-                                        expected_time_s=time_s)
+                                        expected_time_s=time_s,
+                                        observed_evidence=(
+                                            {**controls, 'participants': participants}
+                                            if controls is not None and participants is not None
+                                            else None))
                 else:
                     graph_raw = None
             else:

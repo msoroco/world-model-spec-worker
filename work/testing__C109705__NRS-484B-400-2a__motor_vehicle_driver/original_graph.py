@@ -21,9 +21,19 @@ def _actor_node(actor, *, ego):
     transform = actor.get_transform()
     box = actor.bounding_box
     velocity = actor.get_velocity()
+    forward = transform.get_forward_vector()
+    vertices = box.get_world_vertices(transform)
+    if len(vertices) != 8:
+        raise ValueError('CARLA graph original full body vertices missing')
     attributes = {
         'source_actor_id': actor.id,
         'type_id': actor.type_id,
+        'carla_id': actor.id,
+        'sem_class': actor.type_id,
+        'vertex': _vector(transform.location),
+        'forward': _vector(forward),
+        'threedbbox': [_vector(vertex) for vertex in vertices],
+        'original_observation': {'velocity_mps': _vector(velocity)},
         'location_m': _vector(transform.location),
         'rotation_deg': [transform.rotation.pitch, transform.rotation.yaw,
                          transform.rotation.roll],
@@ -42,7 +52,7 @@ def _actor_node(actor, *, ego):
 
 
 def collect(world, ego_actor, snapshot, *, expected_frame: int,
-            expected_time_s: float) -> bytes:
+            expected_time_s: float, observed_evidence=None) -> bytes:
     """Read live actors only after an exact-frame world snapshot is available."""
     if (type(expected_frame) is not int or expected_frame < 0 or
             type(expected_time_s) not in (int, float) or
@@ -65,14 +75,37 @@ def collect(world, ego_actor, snapshot, *, expected_frame: int,
     ids = [actor.id for actor in others]
     if len(ids) != len(set(ids)):
         raise ValueError('CARLA graph actor IDs duplicated')
+    metadata = {'frame': expected_frame,
+                'simulation_time_s': expected_time_s,
+                'source': 'live_carla_world_snapshot'}
+    signal_nodes = []
+    if observed_evidence is not None:
+        if (not isinstance(observed_evidence, dict) or
+                observed_evidence.get('frame') != expected_frame or
+                observed_evidence.get('time_s') != expected_time_s):
+            raise ValueError('CARLA graph original observation frame differs')
+        metadata['observed_evidence'] = observed_evidence
+        source_devices = {device['actor_id']: device for device in
+                          observed_evidence.get('devices', [])}
+        for actor in actors:
+            if actor.id not in source_devices or actor.type_id != 'traffic.traffic_light':
+                continue
+            device = source_devices[actor.id]
+            for group in device['light_boxes']:
+                index = group['light_box_index']
+                signal_nodes.append({'id': f'signal:{actor.id}:{index}',
+                    'attributes': {'sem_class': actor.type_id,
+                                   'carla_id': actor.id,
+                                   'carla_light_box_index': index,
+                                   'signal_group_source': 'TrafficLight.get_light_boxes',
+                                   'original_device_observation': device,
+                                   'light_state': device['state']}})
     graph = {
         'format': 'native-adapter-graph-v1',
         'multigraph': False,
-        'metadata': {'frame': expected_frame,
-                     'simulation_time_s': expected_time_s,
-                     'source': 'live_carla_world_snapshot'},
+        'metadata': metadata,
         'nodes': [_actor_node(matches[0], ego=True)] +
-                 [_actor_node(actor, ego=False) for actor in others],
+                 [_actor_node(actor, ego=False) for actor in others] + signal_nodes,
         'edges': [],
     }
     return (json.dumps(graph, sort_keys=True, allow_nan=False,

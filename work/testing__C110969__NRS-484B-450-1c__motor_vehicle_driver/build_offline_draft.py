@@ -10,7 +10,8 @@ AID = HERE.name
 SOURCES = (
     "intersection_observables.py", "finalize_observables.py",
     "native_acquisition.py", "native_scene.py", "native_media.py",
-    "native_camera_adapter.py",
+    "native_camera_adapter.py", "native_scene_factory.py",
+    "native_capture_entrypoint.py",
     "finalize_delivery.py", "audit_finalized.py", "comparison_audit.py",
 )
 
@@ -50,12 +51,18 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print("diagnostic intersection construction passed: " + case)
         return
-    raise ValueError("reviewed Native intersection boundary and original activity sources required")
+    if not args.output_dir:
+        raise ValueError("Native attempt output directory required")
+    from native_capture_entrypoint import run_from_environment
+    result = run_from_environment(case, args.output_dir, args.host, args.port)
+    print(json.dumps(result, default=str))
 
 
 if __name__ == "__main__":
@@ -76,7 +83,7 @@ class BundleTests(unittest.TestCase):
 
     def test_unsourced_native_refused(self):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
-            with self.assertRaisesRegex(ValueError, "reviewed Native intersection"):
+            with self.assertRaisesRegex(ValueError, "reviewed Native route"):
                 runner.main()
 
 
