@@ -1152,6 +1152,198 @@
         "ego_hold_after_clear_frames": 8.0
       },
       "selection_rank": 2
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_straight",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Opposite-direction other vehicle commands a straight exit at the same crossing; actual motion and exception judgment remain unresolved.",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 40,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "stop sign commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "opposite_approach",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "opposite_straight_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": 17,
+          "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
+        },
+        "other_first_body_entry_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "ego_first_body_entry_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "paired_probe_id": "qualitative_turn_intent",
+      "deliberate_differences": [
+        "other vehicle straight rather than left-turn exit intent"
+      ],
+      "probe": {
+        "primary_variable": "other_release_frame",
+        "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
+        "target_value_or_branch": "stop_opposite_left_turn"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time_no_device",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Ego entrance has no Native device in the synthetic construction; actual absence and official status remain unresolved.",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 40,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "no Native entrance device commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
+        },
+        "other_first_body_entry_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "ego_first_body_entry_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "paired_probe_id": "qualitative_device_presence",
+      "deliberate_differences": [
+        "ego entrance device presence absent rather than stop sign present"
+      ],
+      "probe": {
+        "primary_variable": "other_release_frame",
+        "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
+        "target_value_or_branch": "stop_ego_left_near_time"
+      }
     }
   ],
   "sweep_specs": [

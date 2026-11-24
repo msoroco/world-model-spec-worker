@@ -18,6 +18,12 @@ EXPECTED = {
 
 OPPOSITE_CASES = ('stop_ego_left_near_time', 'stop_opposite_left_turn')
 OPPOSITE_COMPARISON = 'stop_sign_opposite_approach_context'
+QUALITATIVE_COMPARISONS = {
+    'stop_sign_opposite_turn_intent':
+        ('stop_opposite_left_turn', 'stop_opposite_straight'),
+    'stop_sign_entrance_device_presence':
+        ('stop_ego_left_near_time', 'stop_ego_left_near_time_no_device'),
+}
 DEVICE_CASES = ('stop_ego_left_near_time', 'stop_ego_right_near_time',
                 'stop_ego_left_separated', 'stop_opposite_left_turn')
 SWEEP_AXES = {
@@ -32,9 +38,13 @@ SWEEP_COMPARISONS = {
 
 def require_sweep_declarations(plan):
     declared = {row['comparison_id']: row for row in plan['comparisons']}
+    selected = {row['case_id'] for row in plan['cases']}
+    required_qualitative = {
+        name for name, suffixes in QUALITATIVE_COMPARISONS.items()
+        if all(HERE.name + '__' + suffix in selected for suffix in suffixes)}
     require(len(declared) == len(plan['comparisons']) and
             set(declared) == set(EXPECTED) | set(SWEEP_COMPARISONS) |
-            {OPPOSITE_COMPARISON},
+            {OPPOSITE_COMPARISON} | required_qualitative,
             'Exact declared comparison set required')
     opposite = declared[OPPOSITE_COMPARISON]
     require(opposite['case_ids'] == [HERE.name + '__' + suffix
@@ -48,6 +58,12 @@ def require_sweep_declarations(plan):
                                    for suffix in SWEEP_AXES[axis]] and
                 row.get('fixed_conditions') and row.get('deliberate_differences'),
                 'Incomplete exact sweep comparison declaration')
+    for name in required_qualitative:
+        row = declared[name]
+        require(row['case_ids'] == [HERE.name + '__' + suffix
+                                   for suffix in QUALITATIVE_COMPARISONS[name]] and
+                row.get('fixed_conditions') and row.get('deliberate_differences'),
+                'Incomplete qualitative comparison declaration')
     return declared
 
 
