@@ -66,7 +66,9 @@ def check(bundle):
             cfg["right_other_highway_road_ids"] != [253, 254, 255] or
             cfg["requested_speed_mps"] != speed or cfg["camera_policy"] != camera or
             cfg["stop_before_entry"] != stop or cfg["requested_yield_action"] != (suffix == "controlled_1") or
-            cfg["status"] != "unselected_native_request" or cfg["original_native_observed"] is not False or
+            cfg["status"] not in ("unselected_native_request",
+                                  "selected_cpu_prepared_original_unverified") or
+            cfg["original_native_observed"] is not False or
             cfg["legal_verdict"] is not None):
         raise ValueError("Source-bound configuration mismatch")
     track = bundle / "requested-tracks.jsonl"

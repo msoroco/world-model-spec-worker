@@ -39,7 +39,7 @@ def main():
             raise ValueError('Frozen sweep target differs')
         if config['duration_s'] != 30 or config['rate_hz'] != 20 or len(config['cameras']) != 4:
             raise ValueError('Original capture contract differs')
-        scratch = ROOT / '.runtime-work/c229597-sweep-offline-v3' / case_id
+        scratch = ROOT / '.runtime-work/c229597-sweep-offline-v4' / case_id
         log_source = scratch / 'offline.log'
         if not log_source.exists() or 'OK' not in log_source.read_text():
             raise ValueError('Pinned exact offline test missing: ' + case_id)

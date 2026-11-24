@@ -44,6 +44,9 @@ def main():
     ids = [case['case_id'] for case in plan['cases']]
     if len(ids) != 8 or len(set(ids)) != 8:
         raise ValueError('Exact eight-case plan differs')
+    for disposition in plan['requirement_dispositions']:
+        if disposition['status'] == 'selected_required':
+            disposition['case_ids'] = ids
     write(plan_path, plan)
     config_path = HERE / 'config.json'
     config = json.loads(config_path.read_text())

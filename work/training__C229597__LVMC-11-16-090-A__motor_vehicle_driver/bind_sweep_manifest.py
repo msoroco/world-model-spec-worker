@@ -32,7 +32,7 @@ def main():
                             str(ROOT / 'runtime.py'), 'offline', '--manifest',
                             str(HERE / 'sweep-cases/manifest.json'), '--case',
                             case_id, '--output',
-                            str(ROOT / '.runtime-work/c229597-sweep-offline-v3' / case_id),
+                            str(ROOT / '.runtime-work/c229597-sweep-offline-v4' / case_id),
                             '--python', str(ROOT / '.venv-cpu/bin/python'))))
         manifest['cases'].append({
             'case_id': case_id, 'kind': 'delivery',

@@ -1,0 +1,80 @@
+{
+  "template_id": "LVMC-11-52-130-A11@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A11",
+  "actor": "motor_vehicle_driver",
+  "quote": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: Within fifteen feet of an intersection.",
+  "status": "draft",
+  "structure": {
+    "law_id": "LVMC-11-52-130-A11",
+    "activation": {
+      "condition": "The subject stops, stands or parks near an intersection.",
+      "numeric_conditions": [
+        {
+          "variable": "observed_parked_body_distance_m",
+          "operator": "<=",
+          "value": 4.572,
+          "unit": "m"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Avoid stopping, standing or parking in the specified place unless an exception applies.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "when necessary to avoid conflict with other traffic",
+        "description": "Causal necessity of stopping to avoid other traffic remains unresolved."
+      },
+      {
+        "source_clause": "in compliance with law",
+        "description": "Applicable law and compliance remain unresolved."
+      },
+      {
+        "source_clause": "the directions of a police officer or a traffic control device",
+        "description": "Applicable officer or device direction remains unresolved."
+      }
+    ],
+    "timing": {
+      "description": "Evaluate original full-body footprint throughout the measured rest interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "when necessary to avoid conflict with other traffic",
+        "note": "Original traffic trajectories and causal necessity need source review."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "Applicable law and reason for the stop need independent source review."
+      },
+      {
+        "phrase": "the directions of a police officer or a traffic control device",
+        "note": "Original authority, display, communication and applicability need independent source review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_parking_clearance_target_m",
+      "kind": "controller",
+      "range_or_domain": "authored nearest parked-body clearance target in metres"
+    },
+    {
+      "name": "observed_parked_body_distance_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured full-body nearest distance from surveyed intersection boundary in metres"
+    },
+    {
+      "name": "observed_parked_duration_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured continuous rest interval in seconds"
+    },
+    {
+      "name": "original_exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-qualified conflict, applicable law, officer and device context"
+    }
+  ]
+}

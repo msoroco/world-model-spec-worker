@@ -10,6 +10,7 @@ import traceback
 
 from build import FRAMES, RATE
 from check import check
+from assemble_original import assemble
 
 
 def sha(path):
@@ -44,6 +45,7 @@ def control(actor, request, carla):
 def capture(bundle, output, host, port):
     import carla
     import numpy as np
+    from scenario_pipeline.worker_exchange.native_output import FrameMap
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
 
     bundle, output = Path(bundle).resolve(), Path(output).resolve()
@@ -70,6 +72,7 @@ def capture(bundle, output, host, port):
         world.apply_settings(settings)
         world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping = world.get_map()
+        (output/"road.xodr").write_text(mapping.to_opendrive())
         lane_readback = {}
         for name, road_id, station in (("ego_approach",250,30),("ego_connector",251,20),
                                        ("ego_departure",252,10),("other_approach",253,30),
@@ -93,9 +96,10 @@ def capture(bundle, output, host, port):
             raise RuntimeError("Both physical vehicles must spawn")
         owned.extend((ego,other))
         overview_height = 50 if cfg["camera_policy"] == "elevated_overview" else 35
-        specs = (("ego_view",1280,720,(-45,-8,3),0,-5),
-                 ("other_view",1280,720,(8,-45,3),90,-5),
-                 ("overview",1280,720,(0,0,overview_height),-45,-90))
+        specs = (("overview",1920,1080,(0,0,overview_height),-45,-90),
+                 ("approach",1280,720,(-45,-8,3),0,-5),
+                 ("reference_corner",1280,720,(8,-45,3),90,-5),
+                 ("driver_reference",1280,720,(-29,-1.75,3),0,-8))
         for name,width,height,location,yaw,pitch in specs:
             bp = library.find("sensor.camera.rgb")
             for key,value in (("image_size_x",width),("image_size_y",height),("fov",80),("sensor_tick",0)):
@@ -113,10 +117,17 @@ def capture(bundle, output, host, port):
             "native_map_sha256":hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
             "lane_readback":lane_readback,"junction_id":1,"authored_signal_count":0,
             "ego_actor_id":ego.id,"other_actor_id":other.id,"legal_verdict":None},indent=2)+"\n")
+        (output/"camera-plan.json").write_text(json.dumps({
+            "profile":"overview1080-capability","fps":RATE,"frames":FRAMES,
+            "composition":"synchronized_four_view_primary",
+            "views":[{"name":name,"width":width,"height":height,
+                      "pose_xyz_m":location,"yaw_deg":yaw,"pitch_deg":pitch}
+                     for name,width,height,location,yaw,pitch in specs],
+            "physical_visibility_reviewed":False,"accepted":False},indent=2)+"\n")
         for _ in range(20): world.tick()
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output/"native-raw-actors.jsonl").open("x") as actor_file, \
-             (output/"video_frames.jsonl").open("x") as video_file:
+             FrameMap(output/"video_frames.jsonl") as frame_map:
             for i,request in enumerate(requests):
                 ego.apply_control(control(ego,requests[min(i+5,FRAMES-1)],carla))
                 other.set_target_velocity(carla.Vector3D(x=0,y=request["requested_other_speed_mps"],z=0))
@@ -138,7 +149,7 @@ def capture(bundle, output, host, port):
                     if image.frame!=native_frame: raise RuntimeError("Camera/native frame join failed")
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(height,width,4)[:,:,:3][:,:,::-1]
                     encoders[name].stdin.write(rgb.tobytes())
-                video_file.write(json.dumps({"video_frame":i,"native_frame":native_frame,"time_s":t})+"\n")
+                frame_map.append(native_frame,t)
                 frames+=1
     except BaseException as exc:
         error={"type":type(exc).__name__,"message":str(exc),"traceback":traceback.format_exc()}
@@ -163,6 +174,24 @@ def capture(bundle, output, host, port):
             "observed_frames":frames,"restoration":restoration,"error":error,
             "accepted":False,"delivery_ready":False,"legal_verdict":None},indent=2)+"\n")
     if error: raise RuntimeError("C111294 original Native attempt failed; inspect capture report")
+    composed = subprocess.run(["ffmpeg","-nostdin","-hide_banner","-loglevel","error","-n",
+        "-i",str(output/"overview.mkv"),"-i",str(output/"approach.mkv"),
+        "-i",str(output/"reference_corner.mkv"),"-i",str(output/"driver_reference.mkv"),
+        "-filter_complex","xstack=inputs=4:layout=960_0|0_1080|1280_1080|2560_1080:fill=black",
+        "-frames:v",str(FRAMES),"-c:v","ffv1",str(output/"raw.mkv")],
+        capture_output=True,text=True,timeout=1800)
+    if composed.returncode:
+        report_path=output/"native-capture-report.json"
+        report=json.loads(report_path.read_text())
+        report["error"]={"composition_error":composed.stderr[-1000:]}
+        report_path.write_text(json.dumps(report,indent=2)+"\n")
+        raise RuntimeError("Four-view primary composition failed: " + composed.stderr[-1000:])
+    report_path=output/"native-capture-report.json"
+    report=json.loads(report_path.read_text())
+    report["composition"]={"primary":"raw.mkv","views":4,"frames":FRAMES,
+                           "sha256":sha(output/"raw.mkv")}
+    report_path.write_text(json.dumps(report,indent=2)+"\n")
+    assemble(output)
 
 
 if __name__ == "__main__":

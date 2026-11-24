@@ -15,6 +15,8 @@ import unittest
 from pathlib import Path
 
 root = Path.cwd()
+scratch = root / ".runtime-work"
+scratch.mkdir(exist_ok=True)
 native = root / "work" / "''' + CASE.name + '''" / "native"
 sys.path.insert(0, str(native))
 from check import check
@@ -32,7 +34,7 @@ class ExactCrossroads(unittest.TestCase):
         self.assertFalse(result["delivery_ready"])
 
     def test_synthetic_saved_join(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
             raw = Path(tmp) / "raw.json"
             raw.write_text(json.dumps(make_raw(self.bundle)))
             saved = process(self.bundle, raw)
@@ -40,7 +42,7 @@ class ExactCrossroads(unittest.TestCase):
             self.assertFalse(saved["original_native_observed"])
 
     def test_rehashed_track_mutation_rejected(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
             bundle = Path(tmp)
             for original in self.bundle.iterdir():
                 (bundle / original.name).write_bytes(original.read_bytes())
@@ -56,7 +58,7 @@ class ExactCrossroads(unittest.TestCase):
                 check(bundle)
 
     def test_original_shape_fixture_rejected_as_original(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
             directory = Path(tmp)
             review = fixture(self.bundle, directory)
             result = process_capture(self.bundle, directory, review, synthetic_fixture=True)
@@ -83,7 +85,7 @@ def build():
                 content = (bundle / name).read_text()
                 files.append({"path": f"{PREFIX}/drafts/{suffix}/{candidate}/{name}", "content": content})
                 files.append({"path": name, "content": content})
-            for name in ("build.py", "check.py", "saved.py", "capture.py", "process_original.py",
+            for name in ("build.py", "check.py", "saved.py", "capture.py", "assemble_original.py", "process_original.py",
                          "prove_original_processing.py", "measurement-contract.json"):
                 files.append({"path": f"{PREFIX}/{name}", "content": (HERE / name).read_text()})
             files.extend((

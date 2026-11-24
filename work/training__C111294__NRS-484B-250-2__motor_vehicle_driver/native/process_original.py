@@ -8,7 +8,7 @@ import subprocess
 from build import FRAMES, RATE
 from check import check
 
-CAMERAS = ("ego_view", "other_view", "overview")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference", "raw")
 LANES = {"ego_approach": 250, "ego_connector": 251, "ego_departure": 252,
          "other_approach": 253, "other_connector": 254, "other_departure": 255}
 
@@ -91,7 +91,11 @@ def process(bundle, directory, review_path, *, synthetic_fixture=False):
             report.get("requested_frames") != FRAMES or report.get("observed_frames") != FRAMES or
             report.get("error") is not None or report.get("restoration", {}).get("restored") is not True or
             report.get("accepted") is not False or report.get("delivery_ready") is not False or
-            report.get("legal_verdict") is not None):
+            report.get("legal_verdict") is not None or
+            report.get("composition", {}).get("primary") != "raw.mkv" or
+            report.get("composition", {}).get("views") != 4 or
+            report.get("composition", {}).get("frames") != FRAMES or
+            report.get("composition", {}).get("sha256") != sha(directory / "raw.mkv")):
         raise ValueError("Capture or restoration receipt mismatch")
     media = {name + ".mkv": media_hash(directory / (name + ".mkv"), synthetic_fixture)
              for name in CAMERAS}
@@ -120,6 +124,7 @@ def process(bundle, directory, review_path, *, synthetic_fixture=False):
                 observed.get("request_frame") != i or image.get("video_frame") != i or
                 observed.get("native_frame") != first_native+i or
                 image.get("native_frame") != first_native+i or
+                image.get("carla_frame") != first_native+i or
                 observed.get("source_kind") != kind or
                 not finite(observed.get("time_s")) or not finite(image.get("time_s")) or
                 abs(observed["time_s"]-t) > .005 or

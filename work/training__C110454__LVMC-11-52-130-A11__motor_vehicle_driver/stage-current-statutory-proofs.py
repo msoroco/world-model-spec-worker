@@ -19,8 +19,10 @@ def copy(source,target):
 
 
 def compatibility_path(suffix,candidate):
+    if suffix in ('exception_2_2','exception_3_2'):
+        return SCRATCH/'c110454-statutory-current-compat'/suffix/(candidate+'-v3')
     if suffix=='numeric_1_0':
-        return SCRATCH/'c110454-numeric-current'/suffix/(candidate+'-compat-v2')
+        return SCRATCH/'c110454-numeric-current'/suffix/(candidate+'-compat-v3')
     if suffix in ('numeric_1_1','numeric_1_2') and candidate=='primary':
         return SCRATCH/'c110454-numeric-current'/suffix/'primary-compat-v1'
     if suffix in ('exception_1_1','exception_1_2') and candidate=='primary':

@@ -1,0 +1,1603 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft_physical_and_delivery_proof_pending",
+  "cases": [
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-witness_1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-fallbacks/witness_1/fallback1/construction.json",
+          "construction_sha256": "cc970756cd2a4b51aa083756ba7b5b24de4aaa4a5a989c832a7ac8d4616d9802",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness-fallback-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_1 --candidate fallback1 --output .runtime-work/c110454-selected-offline/witness_1/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "cc970756cd2a4b51aa083756ba7b5b24de4aaa4a5a989c832a7ac8d4616d9802",
+            "log": "current-v3-witness-proofs/witness_1/fallback1/offline.log",
+            "log_sha256": "cc45b2b3327942c5b5ba7b6bb5b86c7765b1cb1aa6b79309faa9508f4cd26f15"
+          },
+          "compatibility": {
+            "receipt": "current-v3-witness-proofs/witness_1/fallback1/compatibility.json",
+            "sha256": "cbb990b64aadfafc0d563d7a0e6657e8ddb01f885359ff314711f95524665865",
+            "log": "current-v3-witness-proofs/witness_1/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-witness-proofs/witness_1/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-fallbacks/witness_1/fallback2/construction.json",
+          "construction_sha256": "0307e075b0fac7530d6eafa6313e0971bf064c7e4247503497e6d0cfa2d7c394",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness-fallback-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_1 --candidate fallback2 --output .runtime-work/c110454-selected-offline/witness_1/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "0307e075b0fac7530d6eafa6313e0971bf064c7e4247503497e6d0cfa2d7c394",
+            "log": "current-v3-witness-proofs/witness_1/fallback2/offline.log",
+            "log_sha256": "a05eef4cef3de8f1711abaad3e83c59d0e75363862926ea8c029d182242c7f88"
+          },
+          "compatibility": {
+            "receipt": "current-v3-witness-proofs/witness_1/fallback2/compatibility.json",
+            "sha256": "29e2566a16724dfb57aad7a65db321cc91f7058e24a7771e09fe44ee2dbff939",
+            "log": "current-v3-witness-proofs/witness_1/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-witness-proofs/witness_1/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-primaries/witness_1/construction.json",
+      "construction_sha256": "69666906aaed031241a12bd142115347c88c35ac0b12184ce217419eaf6ce44a",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness-fallback-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_1 --candidate primary --output .runtime-work/c110454-selected-offline/witness_1/primary",
+        "exit_code": 0,
+        "construction_sha256": "69666906aaed031241a12bd142115347c88c35ac0b12184ce217419eaf6ce44a",
+        "log": "current-v3-witness-proofs/witness_1/primary/offline.log",
+        "log_sha256": "4453ebc25642d3f36be99482fa3dd7947636db6fc6083e98a8c49ccfa4809238"
+      },
+      "compatibility": {
+        "receipt": "current-v3-witness-proofs/witness_1/primary/compatibility.json",
+        "sha256": "d4e48ee12a68f2613b2cbd3c84b76177d536171c1e106830b28194406d9414ea",
+        "log": "current-v3-witness-proofs/witness_1/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-witness-proofs/witness_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-witness-proofs/witness_1/primary/negative-analysis.log",
+        "log_sha256": "e5e5fb74e4f794fae524995a59068722362ac3b72e771f8b20dc12217d46c275"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/witness_1/processing.json",
+        "processing_sha256": "4cadd8c32721bcf47a7656d9d650e1dcb24295f1ce3119c8fc71656ae2831af9",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "69666906aaed031241a12bd142115347c88c35ac0b12184ce217419eaf6ce44a"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/witness_1/proof.json",
+        "sha256": "2411a31ccd37b4519ceff3824f1afcd335ac04d43f4d9a5fc9ddf8a986c5112e"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-witness_2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-fallbacks/witness_2/fallback1/construction.json",
+          "construction_sha256": "bbd51e012a71547274793916c7ff414b681d9eb4f96001d3d3c329a835478ac7",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness-fallback-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_2 --candidate fallback1 --output .runtime-work/c110454-selected-offline/witness_2/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "bbd51e012a71547274793916c7ff414b681d9eb4f96001d3d3c329a835478ac7",
+            "log": "current-v3-witness-proofs/witness_2/fallback1/offline.log",
+            "log_sha256": "811b0c5b5127765e84152c6b73057250917804d575c05b17ad79bde35fe094a1"
+          },
+          "compatibility": {
+            "receipt": "current-v3-witness-proofs/witness_2/fallback1/compatibility.json",
+            "sha256": "b5fadc9c88c8897d99cec44b12e10c0898e53f1096d7b9d8b1db527d9197e15d",
+            "log": "current-v3-witness-proofs/witness_2/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-witness-proofs/witness_2/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-fallbacks/witness_2/fallback2/construction.json",
+          "construction_sha256": "a6ea2363963d565b345832512fba48daea90ed94c2ee6a01a2b52ab666fd8127",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness-fallback-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_2 --candidate fallback2 --output .runtime-work/c110454-selected-offline/witness_2/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "a6ea2363963d565b345832512fba48daea90ed94c2ee6a01a2b52ab666fd8127",
+            "log": "current-v3-witness-proofs/witness_2/fallback2/offline.log",
+            "log_sha256": "172e6a62b77806bfa98661b850d8513034fd5f08199f4ed781019830fc9b4242"
+          },
+          "compatibility": {
+            "receipt": "current-v3-witness-proofs/witness_2/fallback2/compatibility.json",
+            "sha256": "606dff2ab8c0c1c0743da91cfef78cee6957e94e3a0a03a54953bb031f12d920",
+            "log": "current-v3-witness-proofs/witness_2/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-witness-proofs/witness_2/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-primaries/witness_2/construction.json",
+      "construction_sha256": "d156bd87e7565b2f76868fd90214e0e4687b4af9a7178a1043270f17dacadbc1",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness-fallback-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__witness_2 --candidate primary --output .runtime-work/c110454-selected-offline/witness_2/primary",
+        "exit_code": 0,
+        "construction_sha256": "d156bd87e7565b2f76868fd90214e0e4687b4af9a7178a1043270f17dacadbc1",
+        "log": "current-v3-witness-proofs/witness_2/primary/offline.log",
+        "log_sha256": "520162ee333ad54f5c20eb20bc2a8043ad1d35758af546c99def3365b9534d5d"
+      },
+      "compatibility": {
+        "receipt": "current-v3-witness-proofs/witness_2/primary/compatibility.json",
+        "sha256": "f4bca6ddff5ae0c8fe75bb26ab9f5746e06e14f2f441254fed64a7a4815c0f6d",
+        "log": "current-v3-witness-proofs/witness_2/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-witness-proofs/witness_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-witness-proofs/witness_2/primary/negative-analysis.log",
+        "log_sha256": "c83c9277cc71961bfc9cd8a2ac210d9235444ab384bd9aecd2fed855cb183928"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/witness_2/processing.json",
+        "processing_sha256": "10796655c552f8592d635ed676ee21c69bf768e7255d443fbd4a9cd97bf9b13d",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "d156bd87e7565b2f76868fd90214e0e4687b4af9a7178a1043270f17dacadbc1"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/witness_2/proof.json",
+        "sha256": "510f84e4c7a3f71afb6f8ea805186a4c4908b225d3bcdd6ba8385e45ceb45590"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_0",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-numeric_1_0-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/numeric_1_0/fallback1/construction.json",
+          "construction_sha256": "08a101a08f574870f5957c031199bc17c9f58ca86d09daf3c4e6a48e99c98834",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_0 --candidate fallback1 --output .runtime-work/c110454-selected-offline/numeric_1_0/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "08a101a08f574870f5957c031199bc17c9f58ca86d09daf3c4e6a48e99c98834",
+            "log": "current-v3-statutory-proofs/numeric_1_0/fallback1/offline.log",
+            "log_sha256": "472f530a10da7ba45daa77f2f4c284d84489bf3d8538bd0aca146b2568e43eb9"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/numeric_1_0/fallback1/compatibility.json",
+            "sha256": "145ea9cc985a203951d5873b545a0919ad84109c3aa09af51917556833c88050",
+            "log": "current-v3-statutory-proofs/numeric_1_0/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/numeric_1_0/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/numeric_1_0/fallback2/construction.json",
+          "construction_sha256": "17e8c6d4967904eba4ee11725ad171f611a5b716f6ec8acfa9c04d9a28c21056",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_0 --candidate fallback2 --output .runtime-work/c110454-selected-offline/numeric_1_0/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "17e8c6d4967904eba4ee11725ad171f611a5b716f6ec8acfa9c04d9a28c21056",
+            "log": "current-v3-statutory-proofs/numeric_1_0/fallback2/offline.log",
+            "log_sha256": "b988f8a4bcc92271a3b8a18ad821fb41f7ec5be5032623fb6ab5130600aa4dc5"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/numeric_1_0/fallback2/compatibility.json",
+            "sha256": "11421b7cae8250248877235eb10c45554ba16bb99a9c1d499347b7c01c180424",
+            "log": "current-v3-statutory-proofs/numeric_1_0/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/numeric_1_0/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/numeric_1_0/primary/construction.json",
+      "construction_sha256": "43248dbcef178d8ff58e782a8747753342b755bf0186ef98355e438d70e27e0a",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-witness_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_0 --candidate primary --output .runtime-work/c110454-selected-offline/numeric_1_0/primary",
+        "exit_code": 0,
+        "construction_sha256": "43248dbcef178d8ff58e782a8747753342b755bf0186ef98355e438d70e27e0a",
+        "log": "current-v3-statutory-proofs/numeric_1_0/primary/offline.log",
+        "log_sha256": "527836d55685935db03e5712b7de5bd967542e5efa67055d1029ab53ac5504bf"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/numeric_1_0/primary/compatibility.json",
+        "sha256": "eb0838dc4b8864c624f0b5f670a233f50e1c3ac0b9086542d03397554eead592",
+        "log": "current-v3-statutory-proofs/numeric_1_0/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/numeric_1_0/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/numeric_1_0/primary/negative-analysis.log",
+        "log_sha256": "ad8b8b9551dcf9bced55b31e5a2b9b16822717fdff971b9a6f2546d9afee982a"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/numeric_1_0/processing.json",
+        "processing_sha256": "238954b544adff02aae5f1e067f2e02e645461ff75c3d32cb7fa76072598151c",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "43248dbcef178d8ff58e782a8747753342b755bf0186ef98355e438d70e27e0a"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/numeric_1_0/proof.json",
+        "sha256": "d08204a3eb7fb8627aa0b801ac79a41af2b4e1700aa3ed0caa1a10b0dbee31e3"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-numeric_1_1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/numeric_1_1/fallback1/construction.json",
+          "construction_sha256": "642a7dfd6c527cb4ca35e8aa4d4dc20e70737da175bffff14b2a636d7599d4e0",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_1 --candidate fallback1 --output .runtime-work/c110454-selected-offline/numeric_1_1/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "642a7dfd6c527cb4ca35e8aa4d4dc20e70737da175bffff14b2a636d7599d4e0",
+            "log": "current-v3-statutory-proofs/numeric_1_1/fallback1/offline.log",
+            "log_sha256": "f55ee2df722926a2722a63f56bd244555bcbdd946664141d7f08e14090b329fc"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/numeric_1_1/fallback1/compatibility.json",
+            "sha256": "16bb1dff95c9f4a36a47ea6fd8705e6087460dc23645f5af404947d5d68c644c",
+            "log": "current-v3-statutory-proofs/numeric_1_1/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/numeric_1_1/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/numeric_1_1/fallback2/construction.json",
+          "construction_sha256": "0863d759535af4b7ad3c57095cefe597c1817ffe99780cec2f730056f2cb2b43",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_1 --candidate fallback2 --output .runtime-work/c110454-selected-offline/numeric_1_1/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "0863d759535af4b7ad3c57095cefe597c1817ffe99780cec2f730056f2cb2b43",
+            "log": "current-v3-statutory-proofs/numeric_1_1/fallback2/offline.log",
+            "log_sha256": "b604e67daa629f5533fc5a8a3750dfadecaf31c0cc6031d92f3a1e092dde837e"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/numeric_1_1/fallback2/compatibility.json",
+            "sha256": "c70cc6e5f7d6eb18b33489b05022d707b2f37be501deb0760cb6f77d6c0bb648",
+            "log": "current-v3-statutory-proofs/numeric_1_1/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/numeric_1_1/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/numeric_1_1/primary/construction.json",
+      "construction_sha256": "833582b5449cf32e52cb85e36679c335d06484a4602906c6e4fc2146977e33ec",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-numeric_1_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_1 --candidate primary --output .runtime-work/c110454-selected-offline/numeric_1_1/primary",
+        "exit_code": 0,
+        "construction_sha256": "833582b5449cf32e52cb85e36679c335d06484a4602906c6e4fc2146977e33ec",
+        "log": "current-v3-statutory-proofs/numeric_1_1/primary/offline.log",
+        "log_sha256": "520162ee333ad54f5c20eb20bc2a8043ad1d35758af546c99def3365b9534d5d"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/numeric_1_1/primary/compatibility.json",
+        "sha256": "b21b64974055cea1e75012d01cf388c90831179cfb14c577ae1f68d951738341",
+        "log": "current-v3-statutory-proofs/numeric_1_1/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/numeric_1_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/numeric_1_1/primary/negative-analysis.log",
+        "log_sha256": "7dd2868e453eabda47766c3612b9170daa7a6c712c9a6f0ce785db57f0a65f62"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/numeric_1_1/processing.json",
+        "processing_sha256": "dc7fc674a538da41f51f235cf2c1e6d6b48804b0758e3ec5d89f87563c4d9a02",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "833582b5449cf32e52cb85e36679c335d06484a4602906c6e4fc2146977e33ec"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/numeric_1_1/proof.json",
+        "sha256": "657236324c96f38c51176bd80c1db5495fe695a3b1397b7a6cd29d05b88e8e09"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-numeric_1_2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/numeric_1_2/fallback1/construction.json",
+          "construction_sha256": "2dded0afc1bd8d0c2f9e8e7efe7ca36e634591837955ab4bd40b1684a134673e",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_2 --candidate fallback1 --output .runtime-work/c110454-selected-offline/numeric_1_2/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "2dded0afc1bd8d0c2f9e8e7efe7ca36e634591837955ab4bd40b1684a134673e",
+            "log": "current-v3-statutory-proofs/numeric_1_2/fallback1/offline.log",
+            "log_sha256": "3f29ef1e6ac2789e9a28e0a37575460a827d25c245d2ed9a94e69800a64d4b81"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/numeric_1_2/fallback1/compatibility.json",
+            "sha256": "76b93e24ad45ee79487f0799bcaa2c21b4067b75224b2e0da793b46cd9ab690b",
+            "log": "current-v3-statutory-proofs/numeric_1_2/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/numeric_1_2/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/numeric_1_2/fallback2/construction.json",
+          "construction_sha256": "e126cfa9b178121b54f34c742c17a23fa62708623fb331f2d3f92169d345ab89",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_2 --candidate fallback2 --output .runtime-work/c110454-selected-offline/numeric_1_2/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "e126cfa9b178121b54f34c742c17a23fa62708623fb331f2d3f92169d345ab89",
+            "log": "current-v3-statutory-proofs/numeric_1_2/fallback2/offline.log",
+            "log_sha256": "a6292e936f6951490c75fc8410d32f85376ae94d46e9a9cf5d8756327cb15967"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/numeric_1_2/fallback2/compatibility.json",
+            "sha256": "a33fadd25e185ecd83afa8d3adea46a2c65d48416605cff54af82377a6bb27e2",
+            "log": "current-v3-statutory-proofs/numeric_1_2/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/numeric_1_2/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/numeric_1_2/primary/construction.json",
+      "construction_sha256": "94b70b2ee56f60bde429f0137b043a1dd1c57edd9a365150e84d9137ee4b53b6",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-numeric_1_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__numeric_1_2 --candidate primary --output .runtime-work/c110454-selected-offline/numeric_1_2/primary",
+        "exit_code": 0,
+        "construction_sha256": "94b70b2ee56f60bde429f0137b043a1dd1c57edd9a365150e84d9137ee4b53b6",
+        "log": "current-v3-statutory-proofs/numeric_1_2/primary/offline.log",
+        "log_sha256": "11d0607c1403a4cf73d4930102d217fcec5433cff8826fcc8f49345a4a9c197f"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/numeric_1_2/primary/compatibility.json",
+        "sha256": "339fe3133803100492e40d1de40a2abde57e5d1312e4037b3d441d4bc6c435a5",
+        "log": "current-v3-statutory-proofs/numeric_1_2/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/numeric_1_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/numeric_1_2/primary/negative-analysis.log",
+        "log_sha256": "b38e37b83077edbb626a63a77edf0d31110f25c278230b1476e1ff01ea771242"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/numeric_1_2/processing.json",
+        "processing_sha256": "8f7e32ef64db5874a069e46a69f5934b326ac5edb45d54d8444074eaa6b0a78e",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "94b70b2ee56f60bde429f0137b043a1dd1c57edd9a365150e84d9137ee4b53b6"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/numeric_1_2/proof.json",
+        "sha256": "2ed799594638ee82d721d66b5d5286236ede82aae4133caa5d8a701039fd7307"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-exception_1_1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/exception_1_1/fallback1/construction.json",
+          "construction_sha256": "030b53c06081c15b62433248c255b63d49bb6af0880e916e4b40012e1cb5f961",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_1 --candidate fallback1 --output .runtime-work/c110454-selected-offline/exception_1_1/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "030b53c06081c15b62433248c255b63d49bb6af0880e916e4b40012e1cb5f961",
+            "log": "current-v3-statutory-proofs/exception_1_1/fallback1/offline.log",
+            "log_sha256": "396c6ff6c360bf8246f95f1d1dd487b0dfa3f3604efb2571913893b1bd7bd1ae"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_1_1/fallback1/compatibility.json",
+            "sha256": "b7d55fdf16666b6e77db61e2d7bcf1fc027c80cd2ea9d9fcc9b0bbe3a86376a7",
+            "log": "current-v3-statutory-proofs/exception_1_1/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_1_1/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/exception_1_1/fallback2/construction.json",
+          "construction_sha256": "15b642bb2d60b6e2720b0a6cf31a96b8bead44e30b29f869c0fc9f278bcaeb14",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_1 --candidate fallback2 --output .runtime-work/c110454-selected-offline/exception_1_1/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "15b642bb2d60b6e2720b0a6cf31a96b8bead44e30b29f869c0fc9f278bcaeb14",
+            "log": "current-v3-statutory-proofs/exception_1_1/fallback2/offline.log",
+            "log_sha256": "11453b4602757abe98066dcaec065894e3b0a4608b1dcaa60a52b6b998fb95a6"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_1_1/fallback2/compatibility.json",
+            "sha256": "b4ccedbdb1dddd42d1776aa1b0f00c9000b4ec7b54224aa3ae186fd42dad4d95",
+            "log": "current-v3-statutory-proofs/exception_1_1/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_1_1/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/exception_1_1/primary/construction.json",
+      "construction_sha256": "49abcf64664b426f9e1fa18c0a63f2214187bb51d78326de937a5df2d1e272a3",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-exception_1_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_1 --candidate primary --output .runtime-work/c110454-selected-offline/exception_1_1/primary",
+        "exit_code": 0,
+        "construction_sha256": "49abcf64664b426f9e1fa18c0a63f2214187bb51d78326de937a5df2d1e272a3",
+        "log": "current-v3-statutory-proofs/exception_1_1/primary/offline.log",
+        "log_sha256": "c397c4f81238d7d4d877a07c1297bdc4c208e755a49f28c73070f434c41501ac"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/exception_1_1/primary/compatibility.json",
+        "sha256": "4dca5aaeeafa928dde97e98e7a72d66253c4f560007de6943f72d3a00443c651",
+        "log": "current-v3-statutory-proofs/exception_1_1/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/exception_1_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/exception_1_1/primary/negative-analysis.log",
+        "log_sha256": "9a7a5e27f869e80fdc5e436b2cd2f1cf3e6269eb39d656ae07bda4a85d6f0f7b"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/exception_1_1/processing.json",
+        "processing_sha256": "5fa27987489850ea16b5fbe2088e38f649cfd49392280c4a0984d20173cc3d3d",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "49abcf64664b426f9e1fa18c0a63f2214187bb51d78326de937a5df2d1e272a3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/exception_1_1/proof.json",
+        "sha256": "88b86f56d041ffb33ba5307a7a18ce41703140963297a0b213d5512accb60702"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-exception_1_2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/exception_1_2/fallback1/construction.json",
+          "construction_sha256": "3e04999411a191218fef4f219f6ba0260e9eaec32a3b806a42ceecc151280929",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_2 --candidate fallback1 --output .runtime-work/c110454-selected-offline/exception_1_2/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "3e04999411a191218fef4f219f6ba0260e9eaec32a3b806a42ceecc151280929",
+            "log": "current-v3-statutory-proofs/exception_1_2/fallback1/offline.log",
+            "log_sha256": "13b6416a33b2870c79a8217458ab103e88995c56e30c06b3f78a49bc49b6aa0d"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_1_2/fallback1/compatibility.json",
+            "sha256": "32a780efb6c133d33bcf38cd992817d5da34d440211a54d8cf2991dd577e27cd",
+            "log": "current-v3-statutory-proofs/exception_1_2/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_1_2/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/exception_1_2/fallback2/construction.json",
+          "construction_sha256": "00977961c87600f0a9237247050e35a87a032fe5474e6c4bed5bd632f2851688",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_2 --candidate fallback2 --output .runtime-work/c110454-selected-offline/exception_1_2/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "00977961c87600f0a9237247050e35a87a032fe5474e6c4bed5bd632f2851688",
+            "log": "current-v3-statutory-proofs/exception_1_2/fallback2/offline.log",
+            "log_sha256": "f97b4724df4cc582c08d3d293fdc2186b201d409347e864b38cdc6b3568bc360"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_1_2/fallback2/compatibility.json",
+            "sha256": "4de38b529fb16758343526812bf5a7c738d2291cfea45fcaf5d655cea9900e52",
+            "log": "current-v3-statutory-proofs/exception_1_2/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_1_2/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/exception_1_2/primary/construction.json",
+      "construction_sha256": "90c4838ee56f713508a0ab77cb0e61e6463839c2fe4556416f23d865940488af",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-exception_1_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_1_2 --candidate primary --output .runtime-work/c110454-selected-offline/exception_1_2/primary",
+        "exit_code": 0,
+        "construction_sha256": "90c4838ee56f713508a0ab77cb0e61e6463839c2fe4556416f23d865940488af",
+        "log": "current-v3-statutory-proofs/exception_1_2/primary/offline.log",
+        "log_sha256": "61a5728c174a4672e54df7a186931d66339797ea7bd84befaf243c11b13b568d"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/exception_1_2/primary/compatibility.json",
+        "sha256": "dc79d3875380d542b2bae6d5e198237668dc1787ee20a066ff2745c3a12042f0",
+        "log": "current-v3-statutory-proofs/exception_1_2/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/exception_1_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/exception_1_2/primary/negative-analysis.log",
+        "log_sha256": "5b49f789c57dded6f042088ad324e8cbcb16e4172e5da7fdafcb0eb1c36357ce"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/exception_1_2/processing.json",
+        "processing_sha256": "285ca5dc2ea979a08612011323e29b4cda36672d984de6092575dcf8ebb573fe",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "90c4838ee56f713508a0ab77cb0e61e6463839c2fe4556416f23d865940488af"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/exception_1_2/proof.json",
+        "sha256": "0496949f9a2b4f9a0cac5c0e389e9880fb25f232e89f9117ec0b298101a38814"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-exception_2_1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/exception_2_1/fallback1/construction.json",
+          "construction_sha256": "c04408a9192233e9847f02cb36c389eb4e10f2aecc2e70afacb3df1e9027a7d4",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_1 --candidate fallback1 --output .runtime-work/c110454-selected-offline/exception_2_1/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "c04408a9192233e9847f02cb36c389eb4e10f2aecc2e70afacb3df1e9027a7d4",
+            "log": "current-v3-statutory-proofs/exception_2_1/fallback1/offline.log",
+            "log_sha256": "84a4ef551819b93f3ea3ea98a40d98ce99e1991f1861826d736ba36ec2d92ed6"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_2_1/fallback1/compatibility.json",
+            "sha256": "04d6322e5b8054e043f13859b4d6f89eec0e2948cd2302bacb6818369272f82b",
+            "log": "current-v3-statutory-proofs/exception_2_1/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_2_1/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/exception_2_1/fallback2/construction.json",
+          "construction_sha256": "62219ccc8ad51719bf60a359552eee431740484efe5872339dbc56e62a500255",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_1 --candidate fallback2 --output .runtime-work/c110454-selected-offline/exception_2_1/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "62219ccc8ad51719bf60a359552eee431740484efe5872339dbc56e62a500255",
+            "log": "current-v3-statutory-proofs/exception_2_1/fallback2/offline.log",
+            "log_sha256": "7ae657421165d6d1b40ab6650a72dbbcaedbf379febd13c5324213a086b98c4a"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_2_1/fallback2/compatibility.json",
+            "sha256": "e2cd51974b8804e2488e8b7ef72382a8c1098cc94f89ce7d1e9c9a7ad26b3ed7",
+            "log": "current-v3-statutory-proofs/exception_2_1/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_2_1/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/exception_2_1/primary/construction.json",
+      "construction_sha256": "7e50c5a3f22531e448706164e9c1d39ad51ccf15a08866161725c5a7eb631393",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-exception_2_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_1 --candidate primary --output .runtime-work/c110454-selected-offline/exception_2_1/primary",
+        "exit_code": 0,
+        "construction_sha256": "7e50c5a3f22531e448706164e9c1d39ad51ccf15a08866161725c5a7eb631393",
+        "log": "current-v3-statutory-proofs/exception_2_1/primary/offline.log",
+        "log_sha256": "a8257e18928b4210b37dc2eb337ba6718acbe5c965499ea8ea3ef4d0ce9a2504"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/exception_2_1/primary/compatibility.json",
+        "sha256": "8ce16e7649c1314f5047e6eba1080922305dc4263f73b25fe6faea642ef721d2",
+        "log": "current-v3-statutory-proofs/exception_2_1/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/exception_2_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/exception_2_1/primary/negative-analysis.log",
+        "log_sha256": "fe8ea0e234dceedf3c4b1267c6915827137bc678d0d1a92f3bb40d5f2b754b53"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/exception_2_1/processing.json",
+        "processing_sha256": "29c04b1197dd086d0b3a016cb1ddbb38ebb5baed87dad9363c159f6b740c208c",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "7e50c5a3f22531e448706164e9c1d39ad51ccf15a08866161725c5a7eb631393"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/exception_2_1/proof.json",
+        "sha256": "2e61e07fe8be22554b3833e6b85313db755c354c0b3e6a07bc1d62cfec59a07c"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-exception_2_2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/exception_2_2/fallback1/construction.json",
+          "construction_sha256": "c5e59087020a643ed72c8bdc09da3f6908c8573bef8f8d631a96c75900729371",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_2 --candidate fallback1 --output .runtime-work/c110454-selected-offline/exception_2_2/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "c5e59087020a643ed72c8bdc09da3f6908c8573bef8f8d631a96c75900729371",
+            "log": "current-v3-statutory-proofs/exception_2_2/fallback1/offline.log",
+            "log_sha256": "ff0b36813fde929a27d54cbef94844d3fe28a8f3825e3a86e7e1520fb3827ea1"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_2_2/fallback1/compatibility.json",
+            "sha256": "f6ec77feed44670e1867578f2aa3e9809141db913157349633637fbe3eb6b8ba",
+            "log": "current-v3-statutory-proofs/exception_2_2/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_2_2/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/exception_2_2/fallback2/construction.json",
+          "construction_sha256": "ec08d650834393dc76a5735c1f7c61be0c0111e7f3e233d2b57a40325debc505",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_2 --candidate fallback2 --output .runtime-work/c110454-selected-offline/exception_2_2/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "ec08d650834393dc76a5735c1f7c61be0c0111e7f3e233d2b57a40325debc505",
+            "log": "current-v3-statutory-proofs/exception_2_2/fallback2/offline.log",
+            "log_sha256": "838c193c16b45d4e72814fa4eb784026229c69f5c528085a07fd4458dfb5da1f"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_2_2/fallback2/compatibility.json",
+            "sha256": "0b9d41c7e79abad2ca8e1691b6083f79dd17ea079a06d4650abc901b3277f39e",
+            "log": "current-v3-statutory-proofs/exception_2_2/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_2_2/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/exception_2_2/primary/construction.json",
+      "construction_sha256": "5ca16d3eb6fdc02bc5e67ffa98ab3b2555e64ff0e4b82deaa6748d5f9de4bbf5",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-exception_2_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_2_2 --candidate primary --output .runtime-work/c110454-selected-offline/exception_2_2/primary",
+        "exit_code": 0,
+        "construction_sha256": "5ca16d3eb6fdc02bc5e67ffa98ab3b2555e64ff0e4b82deaa6748d5f9de4bbf5",
+        "log": "current-v3-statutory-proofs/exception_2_2/primary/offline.log",
+        "log_sha256": "c825aa3b59730006df25369c385f2ce28c1c5c9c2eed93d6c02ac6b91cc0f377"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/exception_2_2/primary/compatibility.json",
+        "sha256": "3eb391fdd14f6f8dc5971cc475146647e399df5da09b6369e19afbcdc008e1ae",
+        "log": "current-v3-statutory-proofs/exception_2_2/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/exception_2_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/exception_2_2/primary/negative-analysis.log",
+        "log_sha256": "d4e1bb19cca90190116174adac98439c14c1ce3d9d2916d2eb2bde751a8b603b"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/exception_2_2/processing.json",
+        "processing_sha256": "6a517fca560f043a1c2a99fd2a389d8196994df5e6e57a622ee954bd90294efb",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "5ca16d3eb6fdc02bc5e67ffa98ab3b2555e64ff0e4b82deaa6748d5f9de4bbf5"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/exception_2_2/proof.json",
+        "sha256": "d90d95eca48227c164a8bf7292b56ead72889b14dee7ea37f16ed155fbda5817"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-exception_3_1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/exception_3_1/fallback1/construction.json",
+          "construction_sha256": "036792029000afd57c7fed801a54cc38a90d396c188548383d74efe2e5b9b35c",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_1 --candidate fallback1 --output .runtime-work/c110454-selected-offline/exception_3_1/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "036792029000afd57c7fed801a54cc38a90d396c188548383d74efe2e5b9b35c",
+            "log": "current-v3-statutory-proofs/exception_3_1/fallback1/offline.log",
+            "log_sha256": "76b713757b845a781dc361a05aba2da79e7c0254bc5b7d3b5f8ecc8eab2a944d"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_3_1/fallback1/compatibility.json",
+            "sha256": "e424d74a158b721b8923acba6543b08b371dcc4cc20d7eb5ed7171f0014aea61",
+            "log": "current-v3-statutory-proofs/exception_3_1/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_3_1/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/exception_3_1/fallback2/construction.json",
+          "construction_sha256": "8899c781477c423b7fc051de4e56a211e848dfc178275935a4b6a2ac2df0139c",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_1 --candidate fallback2 --output .runtime-work/c110454-selected-offline/exception_3_1/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "8899c781477c423b7fc051de4e56a211e848dfc178275935a4b6a2ac2df0139c",
+            "log": "current-v3-statutory-proofs/exception_3_1/fallback2/offline.log",
+            "log_sha256": "dc86866da8493d57bca4b2a3bf08faf8c6113f6d04856b62e3bf10bd3b0ae516"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_3_1/fallback2/compatibility.json",
+            "sha256": "fb528d2f2cd1ab9db2eb791a11e8df59f27addbab88f477329c97917d0497302",
+            "log": "current-v3-statutory-proofs/exception_3_1/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_3_1/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/exception_3_1/primary/construction.json",
+      "construction_sha256": "b4fe3de585b33f86d5b0fdf1b54f72364e7fdba087a7037cfc5aa80d7caebc6c",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-exception_3_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_1 --candidate primary --output .runtime-work/c110454-selected-offline/exception_3_1/primary",
+        "exit_code": 0,
+        "construction_sha256": "b4fe3de585b33f86d5b0fdf1b54f72364e7fdba087a7037cfc5aa80d7caebc6c",
+        "log": "current-v3-statutory-proofs/exception_3_1/primary/offline.log",
+        "log_sha256": "67c552b02a9da03035b839f46718664a55e4e18051fb9253b2af1b00e1f3e4de"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/exception_3_1/primary/compatibility.json",
+        "sha256": "b2c69a335f33d2dbc2a40285737ca185c899a5889c2fdf71091d7a7d86a4a01d",
+        "log": "current-v3-statutory-proofs/exception_3_1/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/exception_3_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/exception_3_1/primary/negative-analysis.log",
+        "log_sha256": "e4b97edf1ed4c93ff518af57a4898d825ee853bc5ca5931cdd2e14bb827c06af"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/exception_3_1/processing.json",
+        "processing_sha256": "21d07000a01ea7f33f9e81ef10cfdf2cc75a6f5cb5431196771b17c9a1e6a64d",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "b4fe3de585b33f86d5b0fdf1b54f72364e7fdba087a7037cfc5aa80d7caebc6c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/exception_3_1/proof.json",
+        "sha256": "217207fa893b1a0341bb52c62db4f1efd5b711fa5c505afb89229f013bef0598"
+      }
+    },
+    {
+      "case_id": "training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route tracking, parking stop and original camera framing require physical source checks"
+      },
+      "measurement_contract": "current-v2-exception_3_2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-lvmc-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-current-statutory/exception_3_2/fallback1/construction.json",
+          "construction_sha256": "591b6734c062d0bc7c151153cc44fe4fa2bb0d4f0c8c0a0a95641905e9e76d73",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "max_park_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "failure_condition": "max_park_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_lookahead_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_2 --candidate fallback1 --output .runtime-work/c110454-selected-offline/exception_3_2/fallback1",
+            "exit_code": 0,
+            "construction_sha256": "591b6734c062d0bc7c151153cc44fe4fa2bb0d4f0c8c0a0a95641905e9e76d73",
+            "log": "current-v3-statutory-proofs/exception_3_2/fallback1/offline.log",
+            "log_sha256": "9a219a94c9854b0a0b33af2eb3dac43ebf4410288dc79451f03b2fa0d83732db"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_3_2/fallback1/compatibility.json",
+            "sha256": "85142ad452cd8bde95e96c202aafb1bc20965a363fae9372794155b1356e84ac",
+            "log": "current-v3-statutory-proofs/exception_3_2/fallback1/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_3_2/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-current-statutory/exception_3_2/fallback2/construction.json",
+          "construction_sha256": "cbc7e3251fd27f5c6e89b7a5bc1a9a438b566f4a30bdd9e37735ea0f13716f95",
+          "trigger": {
+            "source": "original Native pose and decoded source video",
+            "metric": "parked_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "failure_condition": "parked_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_2 --candidate fallback2 --output .runtime-work/c110454-selected-offline/exception_3_2/fallback2",
+            "exit_code": 0,
+            "construction_sha256": "cbc7e3251fd27f5c6e89b7a5bc1a9a438b566f4a30bdd9e37735ea0f13716f95",
+            "log": "current-v3-statutory-proofs/exception_3_2/fallback2/offline.log",
+            "log_sha256": "23b7fdd078e51cd3a254e8c50b92fcc3c652c649ee961611bf1ff0f6365a99d8"
+          },
+          "compatibility": {
+            "receipt": "current-v3-statutory-proofs/exception_3_2/fallback2/compatibility.json",
+            "sha256": "a3d02bb21f3e457f2f81298e1f834ce0869cd82ea32a7e04220fb095dae10a7e",
+            "log": "current-v3-statutory-proofs/exception_3_2/fallback2/compatibility-analysis.log",
+            "negative_log": "current-v3-statutory-proofs/exception_3_2/fallback2/negative-analysis.log"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-current-statutory/exception_3_2/primary/construction.json",
+      "construction_sha256": "36db620dc2d7b2f00e521a1e9176f4651d4558210a6c259d255e713711bd8189",
+      "fixture_recipe": "work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-v2-exception_3_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "method": "Source-hashed Native acquisition and time-joined saved processing",
+          "evidence": "Synthetic CPU fixture checks processing; original Native motion and pixels require local capture"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver/current-profile-statutory-manifest.json --case training__C110454__LVMC-11-52-130-A11__motor_vehicle_driver__exception_3_2 --candidate primary --output .runtime-work/c110454-selected-offline/exception_3_2/primary",
+        "exit_code": 0,
+        "construction_sha256": "36db620dc2d7b2f00e521a1e9176f4651d4558210a6c259d255e713711bd8189",
+        "log": "current-v3-statutory-proofs/exception_3_2/primary/offline.log",
+        "log_sha256": "30e0a1f75ffb44fb83b338d027fdd302e1d4e0480f82d2e61faaa44a5f4ddc40"
+      },
+      "compatibility": {
+        "receipt": "current-v3-statutory-proofs/exception_3_2/primary/compatibility.json",
+        "sha256": "39cf028403ad768590b6e99d99c88a5a3a4fa43aa11e104dd9b83bea0ba1969f",
+        "log": "current-v3-statutory-proofs/exception_3_2/primary/compatibility-analysis.log",
+        "negative_log": "current-v3-statutory-proofs/exception_3_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v3-statutory-proofs/exception_3_2/primary/negative-analysis.log",
+        "log_sha256": "44563afb2e8d52ba9a531f8d3f13721acf4be8f43a41ed63a763b1fb3da7a4cb"
+      },
+      "saved_cpu_proof": {
+        "processing": "current-v3-saved-primaries/exception_3_2/processing.json",
+        "processing_sha256": "e1494c0fb63f1d3b84daae4d2c186a0428316aaa2d4e2adf1e05c09525753182",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "selected_construction_sha256": "36db620dc2d7b2f00e521a1e9176f4651d4558210a6c259d255e713711bd8189"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/exception_3_2/proof.json",
+        "sha256": "1e66afa98e1a2c3ef59369c7594093b1743134f14f7f9e28c82c5667a698097b"
+      }
+    }
+  ]
+}

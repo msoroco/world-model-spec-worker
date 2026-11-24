@@ -1,10 +1,12 @@
 """Synthetic source-shape proof for original capture processing; no CARLA claim."""
+import hashlib
 import json
 import math
 from pathlib import Path
 import tempfile
 
 from build import HERE, FRAMES, RATE, put
+from assemble_original import assemble
 from process_original import CAMERAS, LANES, process, sha
 from saved import body, other_body
 
@@ -39,9 +41,11 @@ def fixture(bundle, directory):
                     "other_road_id": 253 if actors["other"]["center_native_xyz_m"][1] < -20 else 254 if actors["other"]["center_native_xyz_m"][1] < 20 else 255,
                     "requested_ego_phase": row["requested_ego_phase"],
                     "authored_official_device_count": 0, "legal_verdict": None})
-        video.append({"video_frame": i, "native_frame": 100+i, "time_s": (i+1)/RATE})
+        video.append({"video_frame": i, "native_frame": 100+i,
+                      "carla_frame": 100+i, "time_s": (i+1)/RATE})
     write_lines(directory / "native-raw-actors.jsonl", raw)
     write_lines(directory / "video_frames.jsonl", video)
+    (directory / "road.xodr").write_bytes((bundle / "crossroads.xodr").read_bytes())
     put(directory / "native-map-readback.json", {
         "source_kind": "synthetic_fixture", "road_sha256": sha(bundle / "crossroads.xodr"),
         "native_map_sha256": "0"*64, "junction_id": 1, "authored_signal_count": 0,
@@ -53,7 +57,9 @@ def fixture(bundle, directory):
         "case_id": cfg["case_id"], "candidate_id": cfg["candidate_id"],
         "config_sha256": sha(bundle / "config.json"), "requested_frames": FRAMES,
         "observed_frames": FRAMES, "restoration": {"restored": True}, "error": None,
-        "accepted": False, "delivery_ready": False, "legal_verdict": None})
+        "accepted": False, "delivery_ready": False, "legal_verdict": None,
+        "composition": {"primary": "raw.mkv", "views": 4, "frames": FRAMES,
+                        "sha256": hashlib.sha256(b"C111294 SYNTHETIC FIXTURE; NOT VIDEO\n").hexdigest()}})
     for name in CAMERAS:
         (directory / (name + ".mkv")).write_bytes(b"C111294 SYNTHETIC FIXTURE; NOT VIDEO\n")
     review_path = directory / "fixture-review.json"
@@ -79,7 +85,9 @@ def refresh_review(bundle, directory, review_path):
 def prove():
     bundle = HERE / "drafts" / "controlled_1" / "primary"
     negatives = []
-    with tempfile.TemporaryDirectory() as tmp:
+    scratch = Path(__file__).resolve().parents[3] / ".runtime-work"
+    scratch.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch) as tmp:
         directory = Path(tmp)
         review = fixture(bundle, directory)
         saved = process(bundle, directory, review, synthetic_fixture=True)
@@ -116,6 +124,12 @@ def prove():
         try: process(bundle, directory, review)
         except ValueError: negatives.append("fixture_rejected_as_original")
         else: raise AssertionError("Fixture accepted as original")
+        try: assemble(directory)
+        except ValueError: negatives.append("fixture_assembly_rejected_as_original")
+        else: raise AssertionError("Fixture assembled as original")
+        derived = assemble(directory, diagnostic=True)
+        if derived["original_native_observed"] or derived["frames"] != FRAMES:
+            raise AssertionError("Diagnostic assembly provenance differs")
     proof = {"format": "c111294-2502-original-shape-proof-v1", "positive_count": 1,
              "negative_count": len(negatives), "negatives": negatives,
              "synthetic_fixture_only": True, "original_native_observed": False,

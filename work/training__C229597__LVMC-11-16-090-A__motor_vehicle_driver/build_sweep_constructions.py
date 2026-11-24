@@ -147,6 +147,28 @@ def build_finalizer(source):
                           "                               {'name': 'route_position_m', 'unit': 'm',\n"
                           "                                'reference': 'channels/route_position_m.jsonl'},\n"
                           "                               {'name': 'ego_pose', 'unit': 'structured',")
+    source = replace_once(source,
+                          "    report = {'format': 'c229597-source-motion-analysis-v1',",
+                          "    if config['sweep_kind'] == 'acceleration':\n"
+                          "        sweep_summary = {'ego_acceleration': {\n"
+                          "            'value': max(measurement['acceleration_series_mps2'][160:440]),\n"
+                          "            'unit': 'm/s2',\n"
+                          "            'method': 'original Native longitudinal acceleration vector',\n"
+                          "            'time_window': 'frames 160 through 439, excluding startup',\n"
+                          "            'statistic': 'max', 'sample_window_s': [8.0, 21.95],\n"
+                          "            'reference': 'channels/acceleration_mps2.jsonl'}}\n"
+                          "    else:\n"
+                          "        sweep_summary = {'route_position_m': {\n"
+                          "            'value': measurement['route_position_series_m'][0],\n"
+                          "            'unit': 'm',\n"
+                          "            'method': 'original vehicle pose joined to source-hashed road geometry',\n"
+                          "            'time_window': 'all 600 original frames',\n"
+                          "            'statistic': 'first', 'sample_window_s': [0.0, 29.95],\n"
+                          "            'reference': 'channels/route_position_m.jsonl'}}\n"
+                          "    report = {'format': 'c229597-source-motion-analysis-v1',")
+    source = replace_once(source,
+                          "        'realized_observables': {},",
+                          "        'realized_observables': sweep_summary,")
     return source
 
 
