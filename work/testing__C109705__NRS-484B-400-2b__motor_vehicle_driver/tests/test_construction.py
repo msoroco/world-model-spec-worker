@@ -87,6 +87,11 @@ class ConstructionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'map differs'):
                 module.build(case, s, map_source_path=source)
 
+    def test_nested_case_suffix_is_not_an_exact_case(self):
+        case = 'testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__extra__near_centerline'
+        with self.assertRaisesRegex(ValueError, 'exact assignment'):
+            module.build(case, survey())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -39,9 +39,14 @@ def packet(variant="freight_loading"):
             "native_map_sha256": "m", "curb_observation_sha256": "c", "sign_observation_sha256": "s",
             "commercial_dossier_sha256": "d", "freight_activity_source_sha256": "a",
             "curb_color_observed": "yellow", "one_way_native_readback": True,
+            "native_map_readback": {"native_road_id": 2, "native_lane_id": -1, "one_way_native_readback": True},
+            "curb_observation": {"start_station_m": 20, "end_station_m": 40, "independent_pixel_review": True},
+            "sign_observation": {"independent_pixel_review": True},
             "sign_text_readback": "Freight 8-18", "posted_conditions": {"verbatim_text": "Freight 8-18"},
             "vehicle_id": "truck-1", "commercial_dossier": {"vehicle_id": "truck-1", "enterprise_use_reviewed": True, "qualifies_commercial": True},
-            "frames": [{"original_frame": i, "time_s": i / 20, "ego_station_m": 30, "ego_speed_mps": 0.0} for i in range(900)],
+            "frames": [{"original_frame": i, "time_s": i / 20, "ego_station_m": 30,
+                        "ego_body_station_min_m": 28, "ego_body_station_max_m": 32,
+                        "ego_speed_mps": 0.0} for i in range(900)],
             "zone": {"start_station_m": 20, "end_station_m": 40},
             "freight_activity": {"vehicle_id": "truck-1", "observed_action": "loading", "cargo_actor_id": "cargo-1", "observed_transfer_frames": [50, 51]},
             "civil_time": {"source_sha256": "clock", "timezone": "America/Los_Angeles", "local_datetime": "2026-11-23T12:00:00"},
@@ -84,7 +89,9 @@ class FreightContractTests(unittest.TestCase):
             (lambda p: p["frames"][400].update(original_frame=401), "noncontiguous"),
             (lambda p: p["freight_activity"].update(cargo_actor_id=None), "freight transfer"),
             (lambda p: p.update(sign_text_readback="Different"), "sign text mismatch"),
-            (lambda p: p["frames"][500].update(ego_station_m=50), "stop spans zone"),
+            (lambda p: p["frames"][500].update(ego_station_m=50, ego_body_station_min_m=48, ego_body_station_max_m=52), "stop spans zone"),
+            (lambda p: p["frames"][500].update(ego_body_station_max_m=42), "stop spans zone"),
+            (lambda p: p["frames"][500].update(time_s=26.0), "original 20 Hz timeline gap"),
             (lambda p: p["posted_window_check"].update(derived_from_sign_sha256="wrong"), "posted window source"),
         ):
             p = packet()
@@ -107,20 +114,20 @@ class FreightContractTests(unittest.TestCase):
     def test_original_source_bundle_seals_files_and_joins_subject(self):
         with tempfile.TemporaryDirectory() as temporary:
             base = Path(temporary)
+            p = packet()
             sources = {
                 "frame_map": {"case_id": "case", "frames": list(range(900))},
-                "native_map": {"map_name": "reviewed-map"},
-                "curb_observation": {"color": "yellow"},
-                "sign_observation": {"verbatim_text": "Freight 8-18"},
-                "commercial_dossier": {"vehicle_id": "truck-1"},
-                "freight_activity": {"vehicle_id": "truck-1"},
+                "native_map": {"map_name": "reviewed-map", **p["native_map_readback"]},
+                "curb_observation": {"color": "yellow", **p["curb_observation"]},
+                "sign_observation": {"verbatim_text": "Freight 8-18", **p["sign_observation"]},
+                "commercial_dossier": dict(p["commercial_dossier"]),
+                "freight_activity": dict(p["freight_activity"]),
             }
             entries = {}
             for name, value in sources.items():
                 path = base / (name + ".json")
                 path.write_text(json.dumps(value), encoding="utf-8")
                 entries[name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-            p = packet()
             p["map_name"] = "reviewed-map"
             for name, field in module.SOURCE_FIELDS.items():
                 if name != "native_result":

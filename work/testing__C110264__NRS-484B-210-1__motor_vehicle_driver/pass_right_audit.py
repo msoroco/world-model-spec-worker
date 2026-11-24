@@ -49,12 +49,35 @@ def audit_case(root: Path, manifest: dict) -> dict:
     requested = json.loads(request_path.read_text())
     if requested != build_case(packet, variant):
         raise ValueError('route request differs from source map construction')
+    binding_path, binding_sha = _source(root, manifest.get('live_map_binding'), 'live map binding')
+    binding = json.loads(binding_path.read_text())
+    if (binding.get('case_variant') != variant or
+            binding.get('map_name') != packet.get('map_name') or
+            binding.get('map_packet_sha256') != map_sha or
+            binding.get('loaded_opendrive_sha256') != packet.get('source_opendrive_sha256') or
+            binding.get('route_request') != requested or
+            binding.get('requires_live_actor_and_camera_checks') is not True or
+            binding.get('physical_acceptance_claimed') is not False):
+        raise ValueError('saved live map binding differs from source map or route')
     trace = load_sealed_trace(trace_path, trace_sha)
     road = trace.get('road', {})
     if road.get('intersection_s_m') != packet['intersection_s_m']:
         raise ValueError('trace and map intersection bounds differ')
-    if trace.get('fps') != 20 or len(trace.get('frames', [])) != manifest.get('frame_count'):
+    if road.get('actor_half_width_m') != packet['actor_half_width_m']:
+        raise ValueError('trace and map actor footprint differs')
+    if (trace.get('fps') != 20 or len(trace.get('frames', [])) != 900 or
+            manifest.get('frame_count') != 900):
         raise ValueError('original trace frame count or rate mismatch')
+    first_native = trace['frames'][0].get('native_frame_id')
+    if not isinstance(first_native, int):
+        raise ValueError('original Native frame map missing')
+    for index, frame in enumerate(trace['frames']):
+        if frame.get('native_frame_id') != first_native + index:
+            raise ValueError('original Native frame map gap')
+        cameras_at_frame = frame.get('camera_frame_ids')
+        if (not isinstance(cameras_at_frame, dict) or set(cameras_at_frame) != CAMERAS or
+                any(cameras_at_frame[name] != first_native + index for name in CAMERAS)):
+            raise ValueError('original four-camera frame join mismatch')
     cameras = manifest.get('cameras')
     if not isinstance(cameras, dict) or set(cameras) != CAMERAS:
         raise ValueError('all four camera sources required')
@@ -70,7 +93,8 @@ def audit_case(root: Path, manifest: dict) -> dict:
         'format': 'worker-right-pass-source-audit', 'case_id': case_id,
         'assignment_id': ASSIGNMENT, 'variant': variant,
         'map_sha256': map_sha, 'trace_sha256': trace_sha,
-        'route_request_sha256': request_sha,
+        'route_request_sha256': request_sha, 'live_map_binding_sha256': binding_sha,
+        'loaded_opendrive_sha256': binding['loaded_opendrive_sha256'],
         'camera_sha256': {name: cameras[name]['sha256'] for name in sorted(CAMERAS)},
         'frame_count': len(trace['frames']), 'fps': 20,
         'initial_ego_s_m': first['ego_s_m'],
@@ -78,6 +102,7 @@ def audit_case(root: Path, manifest: dict) -> dict:
         'initial_target_lateral_m': first['target_lateral_m'],
         'initial_ego_speed_mps': first['ego_speed_mps'],
         'initial_target_speed_mps': first['target_speed_mps'],
+        'actor_half_width_m': packet['actor_half_width_m'],
         'ego_path_s_lateral_m': requested['ego_path_s_lateral_m'],
         'intersection_s_m': packet['intersection_s_m'],
         'measurement': measured, 'legal_outcome': 'unresolved',
@@ -97,10 +122,10 @@ def audit_comparison(a: dict, b: dict, comparison_id: str) -> dict:
             raise ValueError('comparison needs source-audited cases')
         if record.get('physical_acceptance_claimed') is not False:
             raise ValueError('unsupported physical acceptance claim')
-    for field in ('map_sha256', 'intersection_s_m', 'fps', 'frame_count',
+    for field in ('map_sha256', 'loaded_opendrive_sha256', 'intersection_s_m', 'fps', 'frame_count',
                   'ego_path_s_lateral_m', 'initial_ego_s_m', 'initial_target_s_m',
                   'initial_target_lateral_m', 'initial_ego_speed_mps',
-                  'initial_target_speed_mps'):
+                  'initial_target_speed_mps', 'actor_half_width_m'):
         if a[field] != b[field]:
             raise ValueError('fixed comparison condition differs: ' + field)
     for record in (a, b):

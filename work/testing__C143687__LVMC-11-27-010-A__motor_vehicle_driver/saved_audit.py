@@ -12,10 +12,30 @@ FIXED = ('cell_id', 'map_sha256', 'corridor_source_sha256', 'route_sha256',
          'duration_frames')
 CONDITIONS = ('official_plan_designation', 'city_trail_dedication',
               'prohibits_motor_vehicles', 'emergency_use', 'maintenance_use')
+CASE_CONDITIONS = {
+    'all_prerequisites': (True, True, True, False, False),
+    'not_designated': (False, True, True, False, False),
+    'not_dedicated': (True, False, True, False, False),
+    'no_prohibition_sign': (True, True, False, False, False),
+    'emergency_vehicle': (True, True, True, True, False),
+    'maintenance_vehicle': (True, True, True, False, True),
+}
+ASSIGNMENT_ID = 'testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver'
+
+
+def _case_suffix(case_id: str) -> str:
+    prefix = ASSIGNMENT_ID + '__'
+    if not isinstance(case_id, str) or not case_id.startswith(prefix):
+        raise ValueError('foreign exact case')
+    suffix = case_id[len(prefix):]
+    if suffix not in CASE_CONDITIONS:
+        raise ValueError('unknown exact case')
+    return suffix
 
 
 def audit_history(path: Path, expected_sha256: str, case_id: str,
                   expected_frames: int = 900) -> dict:
+    suffix = _case_suffix(case_id)
     raw = path.read_bytes()
     digest = hashlib.sha256(raw).hexdigest()
     if digest != expected_sha256:
@@ -37,6 +57,9 @@ def audit_history(path: Path, expected_sha256: str, case_id: str,
         raise ValueError('fixed or administrative source missing')
     if baseline['cell_id'] != 'C143687' or baseline['duration_frames'] != expected_frames:
         raise ValueError('wrong cell or capture duration')
+    observed = tuple(baseline[key] for key in CONDITIONS)
+    if any(type(value) is not bool for value in observed) or observed != CASE_CONDITIONS[suffix]:
+        raise ValueError('recorded conditions differ from exact case')
     entered = False
     sign_readback = False
     for index, row in enumerate(rows):
@@ -68,6 +91,9 @@ def audit_pair(left: Mapping, right: Mapping, deliberate_difference: str) -> dic
     for side in (left, right):
         if side.get('frame_count') != 900 or not side.get('original_history_sha256') or not side.get('entered_corridor'):
             raise ValueError('comparison original evidence incomplete')
+        suffix = _case_suffix(side.get('case_id'))
+        if tuple(side.get(key) for key in CONDITIONS) != CASE_CONDITIONS[suffix]:
+            raise ValueError('comparison conditions differ from exact case')
     source_fields = ('governed_access_sha256', 'sign_face_sha256',
                      'official_plan_source_sha256', 'dedication_source_sha256',
                      'exception_status_source_sha256')
@@ -84,6 +110,8 @@ def audit_pair(left: Mapping, right: Mapping, deliberate_difference: str) -> dic
             raise ValueError(f'fixed condition changed: {key}')
     if deliberate_difference not in left or deliberate_difference not in right or left[deliberate_difference] == right[deliberate_difference]:
         raise ValueError('deliberate difference absent')
+    if left[variable_source] == right[variable_source]:
+        raise ValueError('difference has no distinct source')
     if left.get('case_id') == right.get('case_id'):
         raise ValueError('same exact case twice')
     return {'case_ids': [left['case_id'], right['case_id']],

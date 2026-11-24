@@ -15,7 +15,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from approach import measure
+from approach import compare_original_attempts, measure
 
 
 PREFIX = "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__"
@@ -137,3 +137,31 @@ def audit_original_pixels(attempt: Path, case_id: str, *, allow_diagnostic: bool
             'source_integrity_passed': True,
             'full_video_decode': True, 'actual_pixels': True,
             'physical_completion': False, 'legal_judgment': 'unresolved'}
+
+
+def audit_comparison(near_attempt: Path, far_attempt: Path, *,
+                     allow_diagnostic: bool = False) -> dict:
+    """Reopen both exact attempts, all pixels, and their fixed source context."""
+    paths = [Path(near_attempt), Path(far_attempt)]
+    if paths[0].resolve() == paths[1].resolve():
+        raise ValueError('comparison requires distinct original attempts')
+    case_ids = [json.loads((path / 'acquisition.json').read_text()).get('case_id')
+                for path in paths]
+    decoded = [audit_original_pixels(path, case_id,
+                                     allow_diagnostic=allow_diagnostic)
+               for path, case_id in zip(paths, case_ids)]
+    comparison = compare_original_attempts(*paths)
+    if comparison['case_ids'] != case_ids:
+        raise ValueError('original comparison case identity differs')
+    return {'format': 'worker-400-2a-decoded-comparison-v1',
+            'case_ids': case_ids,
+            'source_sha256': comparison['source_sha256'],
+            'media_sha256': [item['media_sha256'] for item in decoded],
+            'decoded_frames': sum(item['decoded_frames'] for item in decoded),
+            'near_min_m': comparison['near_min_m'],
+            'far_min_m': comparison['far_min_m'],
+            'signed_difference_m': comparison['signed_difference_m'],
+            'source_integrity_passed': True,
+            'full_video_decode': True,
+            'physical_completion': False,
+            'legal_judgment': 'unresolved'}

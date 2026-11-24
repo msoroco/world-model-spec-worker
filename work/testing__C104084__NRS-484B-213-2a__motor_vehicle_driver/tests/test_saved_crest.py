@@ -31,7 +31,8 @@ def fixture(directory):
             'lane_allocation': 'two_way', 'opposing_lane_source_ref': 'Native lane -1',
             'highway_source_ref': 'original road authority',
             'center_reference_source_ref': 'Native road center'}),
-        'frame-map.json': json.dumps({'frames': [0, 1, 2]}),
+        'frame-map.json': json.dumps({'frames': [0, 1, 2],
+            'camera_frames': {name: [0, 1, 2] for name in ('forward', 'left', 'right', 'rear')}}),
         'camera-forward.mp4': 'forward-camera-source',
         'camera-left.mp4': 'left-camera-source',
         'camera-right.mp4': 'right-camera-source',
@@ -44,11 +45,27 @@ def fixture(directory):
 
 
 class SavedCrestTests(unittest.TestCase):
+    def test_default_requires_full_duration_and_all_camera_frames(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt = Path(temp)
+            hashes = fixture(attempt)
+            with self.assertRaisesRegex(ValueError, 'required duration'):
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+            path = attempt / 'frame-map.json'
+            frame_map = json.loads(path.read_text())
+            frame_map['camera_frames']['left'] = [0, 2]
+            path.write_text(json.dumps(frame_map), encoding='utf-8')
+            hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'camera frame map'):
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT,
+                              expected_frames=3)
+
     def test_source_bound_body_and_ray_measurement(self):
         with tempfile.TemporaryDirectory() as temp:
             attempt = Path(temp)
             hashes = fixture(attempt)
-            result = saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+            result = saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT,
+                                   expected_frames=3)
             self.assertEqual(result['ego_body_left_side_frames'], [0, 1, 2])
             self.assertEqual(result['all_corner_rays_blocked_frames'], [0, 1, 2])
             self.assertTrue(result['construction_target_observed'])
@@ -60,11 +77,11 @@ class SavedCrestTests(unittest.TestCase):
             hashes = fixture(attempt)
             (attempt / 'crest-rays.jsonl').write_text('{}\n', encoding='utf-8')
             with self.assertRaisesRegex(ValueError, 'original source changed'):
-                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
             hashes = fixture(attempt)
             (attempt / 'camera-left.mp4').unlink()
             with self.assertRaisesRegex(ValueError, 'source path is missing'):
-                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
 
     def test_rejects_dropped_frame_and_missing_ray(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -74,14 +91,14 @@ class SavedCrestTests(unittest.TestCase):
             path.write_text(json.dumps({'frames': [0, 2]}), encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, 'does not join'):
-                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
             hashes = fixture(attempt)
             path = attempt / 'crest-rays.jsonl'
             rows = path.read_text().splitlines()
             path.write_text('\n'.join(rows[:2]) + '\n', encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, 'does not join'):
-                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
 
     def test_one_way_needs_original_authority(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -94,12 +111,13 @@ class SavedCrestTests(unittest.TestCase):
             path.write_text(json.dumps(context), encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, 'authority'):
-                saved.measure(attempt, hashes, case_id=context['case_id'], assignment_id=ASSIGNMENT)
+                saved.measure(attempt, hashes, case_id=context['case_id'], assignment_id=ASSIGNMENT,
+                              expected_frames=3)
             context['one_way_authority'] = {'source_ref': 'original traffic order', 'sha256': 'a' * 64}
             path.write_text(json.dumps(context), encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             self.assertEqual(saved.measure(attempt, hashes, case_id=context['case_id'],
-                                           assignment_id=ASSIGNMENT)['lane_allocation'], 'one_way')
+                                           assignment_id=ASSIGNMENT, expected_frames=3)['lane_allocation'], 'one_way')
 
     def test_rejects_timestamp_drift_and_observes_target_miss(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -111,7 +129,7 @@ class SavedCrestTests(unittest.TestCase):
             path.write_text('\n'.join(json.dumps(row) for row in frames) + '\n', encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, '20 Hz'):
-                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
+                saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
             frames[1]['timestamp_s'] = 0.05
             frames[0]['ego_body_corners_signed_m'] = [-1, -0.5, -0.1, -0.2]
             frames[1]['ego_body_corners_signed_m'] = [-1, -0.5, -0.1, -0.2]
@@ -119,7 +137,7 @@ class SavedCrestTests(unittest.TestCase):
             path.write_text('\n'.join(json.dumps(row) for row in frames) + '\n', encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             self.assertFalse(saved.measure(attempt, hashes, case_id=CASE,
-                                           assignment_id=ASSIGNMENT)['construction_target_observed'])
+                                           assignment_id=ASSIGNMENT, expected_frames=3)['construction_target_observed'])
 
 
 if __name__ == '__main__':

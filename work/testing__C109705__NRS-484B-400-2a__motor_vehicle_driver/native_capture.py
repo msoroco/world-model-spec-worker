@@ -87,7 +87,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
               'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
     acquisition = {'case_id': case_id,
                    'diagnostic_fixture': not (getattr(adapter, 'native_attested', False)
-                                              and context.get('public_highway_source_reviewed') is True),
+                                              and binding['public_highway_reviewed'] is True),
                    'map_binding': binding,
                    'media': {name: {'kind': 'original_native', 'path': name + '.zip',
                                     'sha256': hashlib.sha256((root / (name + '.zip')).read_bytes()).hexdigest()}

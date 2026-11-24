@@ -60,8 +60,19 @@ def build_case(packet: dict, variant: str) -> dict:
     # The target turn is a distinct route request; no turn is inferred from signal.
     if not isinstance(packet.get('turn_lateral_displacement_m'), (int, float)) or packet['turn_lateral_displacement_m'] <= 0:
         raise ValueError('source-compatible target turn displacement required')
-    target_path = [[s['station_m'], target_y - packet['turn_lateral_displacement_m'] if variant == 'left_turn' and s['station_m'] >= interval[1] else target_y]
-                   for s in samples]
+    # Begin the leftward request within the source intersection interval. A
+    # displacement only after the interval would not exercise the pass-time
+    # motion observation and would falsely advertise a turn construction.
+    target_path = []
+    for s in samples:
+        station = s['station_m']
+        fraction = max(0.0, min(1.0, (station - interval[0]) / (interval[1] - interval[0])))
+        lateral = target_y - (packet['turn_lateral_displacement_m'] * fraction
+                              if variant == 'left_turn' else 0.0)
+        left, right = s['paved_lateral_bounds_m']
+        if not left + half_width <= lateral <= right - half_width:
+            raise ValueError('target turn request leaves source paved corridor')
+        target_path.append([station, lateral])
     return {
         'variant': variant, 'coordinate_frame': 'source_station_right_positive',
         'ego_path_s_lateral_m': [[s['station_m'], ego_y] for s in samples],

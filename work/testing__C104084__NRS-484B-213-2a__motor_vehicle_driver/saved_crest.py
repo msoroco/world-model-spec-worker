@@ -45,7 +45,7 @@ def _finite(value):
     return type(value) in (int, float) and math.isfinite(value)
 
 
-def measure(attempt_dir, source_hashes, *, case_id, assignment_id):
+def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_frames=900):
     """Join Native source packets and return observations with unresolved judgment."""
     if case_id not in {f'{assignment_id}__{suffix}' for suffix in CASE_SUFFIXES}:
         raise ValueError('wrong exact crest case')
@@ -74,6 +74,13 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id):
         raise ValueError('original frame history is missing, duplicated or unordered')
     if ray_ids != frame_ids or frame_map.get('frames') != frame_ids:
         raise ValueError('ray or camera frame map does not join original frames')
+    if type(expected_frames) is not int or expected_frames <= 0 or len(frame_ids) != expected_frames:
+        raise ValueError('original frame history violates required duration')
+    camera_frames = frame_map.get('camera_frames')
+    if not isinstance(camera_frames, dict) or set(camera_frames) != {'forward', 'left', 'right', 'rear'}:
+        raise ValueError('four-camera frame map missing')
+    if any(camera_frames[name] != frame_ids for name in camera_frames):
+        raise ValueError('camera frame map has missing or duplicated frames')
     times = [row.get('timestamp_s') for row in frames]
     if any(not _finite(value) for value in times) or any(b <= a for a, b in zip(times, times[1:])):
         raise ValueError('original timestamps are missing or nonmonotonic')

@@ -1,15 +1,19 @@
 import hashlib
+import io
 import json
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
+
+from PIL import Image
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from saved_delivery import audit, CAMERAS, PREFIX
+from saved_delivery import audit, audit_comparison, CAMERAS, PREFIX
 from test_approach import body, context
 
 
@@ -47,6 +51,45 @@ def original_attempt(path):
 
 
 class SavedDeliveryTests(unittest.TestCase):
+    def test_decoded_comparison_of_exact_saved_attempts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            near, far = Path(temp) / 'near', Path(temp) / 'far'
+            for path, suffix, y in ((near, 'near_centerline', -.6),
+                                    (far, 'farther_from_centerline', -2.0)):
+                acquisition, rows, _ = original_attempt(path)
+                acquisition['case_id'] = PREFIX + suffix
+                for row in rows:
+                    row['ego_body_vertices_xy_m'] = body(y)
+                history = path / 'approach-history.jsonl'
+                history.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+                acquisition['approach-history.jsonl']['sha256'] = hashlib.sha256(
+                    history.read_bytes()).hexdigest()
+                image_bytes = io.BytesIO()
+                Image.new('RGB', (2, 2), color=(12, 34, 56)).save(image_bytes, 'PNG')
+                for camera in CAMERAS:
+                    archive_path = path / (camera + '.zip')
+                    with zipfile.ZipFile(archive_path, 'w') as archive:
+                        for index, row in enumerate(rows):
+                            archive.writestr(f'{index:04d}-{row["frame"]}.png',
+                                             image_bytes.getvalue())
+                    acquisition['media'][camera]['path'] = archive_path.name
+                    acquisition['media'][camera]['sha256'] = hashlib.sha256(
+                        archive_path.read_bytes()).hexdigest()
+                (path / 'acquisition.json').write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'diagnostic'):
+                audit_comparison(near, far)
+            result = audit_comparison(near, far, allow_diagnostic=True)
+            self.assertEqual(result['decoded_frames'], 7200)
+            self.assertGreater(result['signed_difference_m'], 0)
+            self.assertEqual(result['legal_judgment'], 'unresolved')
+            with self.assertRaisesRegex(ValueError, 'distinct'):
+                audit_comparison(near, near, allow_diagnostic=True)
+            acquired = json.loads((far / 'acquisition.json').read_text())
+            acquired['case_id'] = PREFIX + 'imaginary_farther_from_centerline'
+            (far / 'acquisition.json').write_text(json.dumps(acquired))
+            with self.assertRaisesRegex(ValueError, 'centerline kind'):
+                audit_comparison(near, far, allow_diagnostic=True)
+
     def test_complete_sealed_attempt_and_diagnostic_rejection(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp)

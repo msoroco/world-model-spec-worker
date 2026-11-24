@@ -88,6 +88,19 @@ class SavedDeliveryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source hash differs'):
                 saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
 
+    def test_cross_channel_camera_alias_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            def alias(value):
+                left = value['channels']['left'][0]
+                for row in value['channels']['right']:
+                    row['source_path'] = left['source_path']
+                    row['source_sha256'] = left['source_sha256']
+            replace_json(root, manifest, 'camera_index', alias)
+            with self.assertRaisesRegex(ValueError, 'alias across channels'):
+                saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
+
     def test_context_frame_case_and_path_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

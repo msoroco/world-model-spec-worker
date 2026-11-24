@@ -12,8 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from pass_right_audit import audit_case, audit_comparison
 from pass_right_route import build_case
+from pass_right_live import bind_live_route
 from test_pass_right_route import map_packet
-from test_pass_right_measure import trace
+from test_pass_right_live import FakeWorld
+from test_pass_right_capture import FakeFrameMap, road, rows
+from pass_right_capture import collect_native_trace
 
 
 def sealed(root, name, data):
@@ -24,14 +27,19 @@ def sealed(root, name, data):
 
 def attempt(root, variant):
     packet = map_packet()
+    map_source = sealed(root, 'map.json', packet)
+    live_binding = bind_live_route(FakeWorld(), root / 'map.json', map_source['sha256'], variant)
+    mode = {'left_signal': 'signal', 'left_turn': 'turn', 'neither': 'none'}[variant]
+    native_trace = collect_native_trace(rows(mode), road(), 10, 11, FakeFrameMap())
     manifest = {
         'assignment_id': 'testing__C110264__NRS-484B-210-1__motor_vehicle_driver',
         'case_id': 'testing__C110264__NRS-484B-210-1__motor_vehicle_driver__' + variant,
         'variant': variant, 'diagnostic_fixture': False,
-        'map': sealed(root, 'map.json', packet),
-        'trace': sealed(root, 'trace.json', trace({'left_signal': 'signal', 'left_turn': 'turn', 'neither': 'none'}[variant])),
+        'map': map_source,
+        'live_map_binding': sealed(root, 'live-map-binding.json', live_binding),
+        'trace': sealed(root, 'trace.json', native_trace),
         'route_request': sealed(root, 'route.json', build_case(packet, variant)),
-        'frame_count': 12,
+        'frame_count': 900,
         'cameras': {name: sealed(root, name + '.json', {'camera': name})
                     for name in ('front', 'rear', 'left', 'right')},
     }
@@ -94,6 +102,30 @@ class TestSavedSourceAudit(unittest.TestCase):
                 audit_comparison(a, b, 'left_signal_presence')
             with self.assertRaisesRegex(ValueError, 'exact comparison case pair'):
                 audit_comparison(a, a, 'left_signal_presence')
+
+    def test_rejects_stale_live_map_binding(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); manifest = attempt(root, 'left_turn')
+            binding = json.loads((root / 'live-map-binding.json').read_text())
+            binding['loaded_opendrive_sha256'] = 'f' * 64
+            manifest['live_map_binding'] = sealed(root, 'live-map-binding.json', binding)
+            with self.assertRaisesRegex(ValueError, 'saved live map binding differs'):
+                audit_case(root, manifest)
+
+    def test_rejects_short_or_unjoined_original_capture(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); manifest = attempt(root, 'neither')
+            source = json.loads((root / 'trace.json').read_text())
+            source['frames'].pop()
+            manifest['trace'] = sealed(root, 'trace.json', source)
+            with self.assertRaisesRegex(ValueError, 'original trace frame count'):
+                audit_case(root, manifest)
+            manifest = attempt(root, 'neither')
+            source = json.loads((root / 'trace.json').read_text())
+            source['frames'][400]['camera_frame_ids']['rear'] += 1
+            manifest['trace'] = sealed(root, 'trace.json', source)
+            with self.assertRaisesRegex(ValueError, 'four-camera frame join'):
+                audit_case(root, manifest)
 
 
 if __name__ == '__main__':

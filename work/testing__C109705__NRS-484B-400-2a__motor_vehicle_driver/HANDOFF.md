@@ -105,3 +105,11 @@ Draft `proposals/semantic-index.json` hashes relevance, template, bindings, all 
 ## 2026-11-23 full original pixel decode checkpoint
 
 `audit_original_pixels` reopens all four hash-bound PNG archives, requires exact 900-frame indexes per view, and decodes all 3,600 images with Pillow. A rebound malformed PNG fails decode. The diagnostic fixture passes all 20 focused tests while preserving physical and legal uncertainty. Scoped static passes; scoped strict rejects partial.
+
+## 2026-11-23 source attestation guard
+
+Native capture remains diagnostic unless both the adapter attests Native origin and the verified map binding reports a reviewed public-highway source. The current map verifier truthfully reports public-highway review false, so no diagnostic capture can be promoted by a packet boolean alone. Twenty focused tests and scoped static pass; scoped strict remains partial.
+
+## 2026-11-23 decoded paired comparison checkpoint
+
+`audit_comparison` reopens the exact near/far original attempts, source-bound geometry, fixed context and all 7,200 camera PNGs before reporting their signed measured lateral difference. It rejects duplicate attempts, diagnostic sources by default and changed case/centerline identity. The 21 focused tests and scoped static check pass; exact strict still rejects truthful partial status. Physical completion and legal nearest-portion judgment remain unresolved.

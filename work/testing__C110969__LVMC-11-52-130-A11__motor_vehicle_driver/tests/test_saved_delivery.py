@@ -21,12 +21,19 @@ class SavedDeliveryTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = pathlib.Path(self.temp.name)
         self.map_path = self.root / "map.json"
+        self.source_map_path = self.root / "source-map.json"
         self.pose_path = self.root / "pose.jsonl"
         self.measurement_path = self.root / "measurement.json"
         self.frame_map_path = self.root / "frames.jsonl"
+        self.context_path = self.root / "context.jsonl"
         self.attempt_path = self.root / "attempt.json"
+        self.source_map_path.write_text(json.dumps({
+            "map_name": "diagnostic-map", "opendrive_sha256": "a" * 64,
+            "case_ids": [PREFIX + "stop_14ft", PREFIX + "stop_16ft"]}))
         self.map_path.write_text(json.dumps({
             "map_id": "diagnostic-map", "geometry_provenance": "CPU fixture only",
+            "opendrive_sha256": "a" * 64,
+            "map_source_sha256": sha(self.source_map_path),
             "intersection_boundary_local_m": {
                 "west": -8, "south": -8, "east": 8, "north": 8}}))
         with self.pose_path.open("w") as out:
@@ -45,6 +52,10 @@ class SavedDeliveryTests(unittest.TestCase):
             for frame in range(900):
                 out.write(json.dumps({"frame": frame, "world_frame": 1200 + frame,
                                       "time_s": frame / 20}) + "\n")
+        with self.context_path.open("w") as out:
+            for frame in range(900):
+                out.write(json.dumps({"frame": frame, "world_frame": 1200 + frame,
+                                      "participants": [], "directions": {}}) + "\n")
         cameras = {}
         for camera in CAMERAS:
             frame_path = self.root / (camera + ".png")
@@ -62,7 +73,9 @@ class SavedDeliveryTests(unittest.TestCase):
             "recording_id": "diagnostic-recording", "acquisition_kind": "diagnostic_fixture",
             "requested_front_body_gap_ft": 14,
             "measurement_packet": {"path": "measurement.json", "sha256": sha(self.measurement_path)},
+            "map_packet": {"path": "source-map.json", "sha256": sha(self.source_map_path)},
             "frame_map": {"path": "frames.jsonl", "sha256": sha(self.frame_map_path)},
+            "context": {"path": "context.jsonl", "sha256": sha(self.context_path)},
             "cameras": cameras}
         self.save()
 

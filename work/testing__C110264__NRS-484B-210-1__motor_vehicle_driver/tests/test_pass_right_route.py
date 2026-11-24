@@ -14,11 +14,13 @@ spec.loader.exec_module(route)
 
 def map_packet():
     return {'source_kind': 'original_native_map_geometry', 'direction': 'two_way',
+            'map_name': 'TownSource',
+            'source_opendrive_sha256': hashlib.sha256(b'original-opendrive-text').hexdigest(),
             'same_direction_marked_lanes': 1, 'intersection_s_m': [55.0, 70.0],
             'actor_half_width_m': 0.9, 'right_pass_center_m': 3.0,
             'target_lane_center_m': 0.0, 'turn_lateral_displacement_m': 1.2,
             'cross_sections': [{'station_m': s, 'source': 'native_map',
-                                'right_positive': True, 'paved_lateral_bounds_m': [-2.0, 4.5]}
+                                'right_positive': True, 'paved_lateral_bounds_m': [-2.5, 4.5]}
                                for s in range(45, 81, 5)]}
 
 
@@ -29,6 +31,8 @@ class TestRoute(unittest.TestCase):
         self.assertEqual([x['target_left_signal_request'] for x in built], [True, False, False])
         self.assertEqual([x['target_turn_request'] for x in built], [False, True, False])
         self.assertNotEqual(built[1]['target_path_s_lateral_m'], built[0]['target_path_s_lateral_m'])
+        self.assertLess(built[1]['target_path_s_lateral_m'][3][1], 0.0)
+        self.assertEqual(built[1]['target_path_s_lateral_m'][2][1], 0.0)
 
     def test_rejects_narrow_or_wrong_direction(self):
         x = map_packet(); x['cross_sections'][3]['paved_lateral_bounds_m'][1] = 3.5
@@ -37,6 +41,9 @@ class TestRoute(unittest.TestCase):
         x = map_packet(); x['direction'] = 'one_way'
         with self.assertRaisesRegex(ValueError, 'road direction'):
             route.build_case(x, 'left_signal')
+        x = map_packet(); x['turn_lateral_displacement_m'] = 3.0
+        with self.assertRaisesRegex(ValueError, 'target turn request leaves'):
+            route.build_case(x, 'left_turn')
 
     def test_rejects_missing_map_stations_and_source(self):
         x = map_packet(); x['cross_sections'].pop()

@@ -1625,3 +1625,35 @@ C109705 now decodes all 3,600 camera PNGs after source integrity checks and reje
 ## 2026-11-23 C104084 owner closeout
 
 C104084 added source-bound saved crest and cross-case comparison audits with six new positive/negative tests; 27 focused tests and scoped static validation pass. I verified the declared proof-log hash and reran its exact scoped strict gate, which rejects truthful partial status. Full capture/finalizer, case-specific compatibility and saved-only proofs, semantic proposals and delivery acceptance remain CPU work. A new partition 06 owner began C109705 2b.
+
+## 2026-11-23 batch static recheck
+
+The full batch static `worker_check.py` passed after the current assignment changes. The full strict delivery-ready run still rejects partial/missing packages; current result status count is 9 ready and 233 partial. C110969 owner reports 29 focused CPU tests and scoped static passing after saved source audit and exact Native map binding; its strict check remains partial while Native runner, semantic, compatibility, process-saved and delivery proof work continues.
+
+## 2026-11-23 C110454 closeout
+
+C110454 added saved delivery and three-case comparison audits, strengthened Native map and camera frame checks, and aligned capture to 900 ticks. Sixteen focused tests and scoped static validation pass. I checked all declared proof-log hashes and reran exact scoped strict; it rejects truthful partial status. Reviewed site, integrated CARLA capture/decode, physical aim construction, exact bundles/finalizer, semantic proposals, compatibility/process-saved and manifest remain. C111748 began as the next partition 05 owner.
+
+## 2026-11-23 C109705 2b closeout
+
+C109705 2b added a source-bound four-case saved audit, loaded OpenDRIVE/map verification and saved-only departure finalizer. Its 28 focused tests and scoped static check pass. I checked the declared proof-log hashes and reran exact scoped strict; it rejects truthful partial status. CARLA adapter, reviewed source packets, canonical proposals and exact offline/compatibility/process-saved/delivery receipts remain worker-owned CPU work. C110264 began in partition 02.
+
+## 2026-11-23 C110969 closeout
+
+C110969 integrated a 900-frame Native source writer with four per-frame camera files and a saved pose/context/map/media audit. Thirty-one focused CPU tests and scoped static validation pass. I verified the declared proof-log hash and reran exact scoped strict; it rejects truthful partial status. Semantic proposals, exact offline/compatibility/process-saved bundles, finalizer, independent delivery audit/manifest, reviewed physical map and parking binding remain. C149555 began as the next partition 07 owner.
+
+## 2026-11-23 C111748 closeout
+
+C111748 now has source-bound live map checks, independent 900-frame four-camera saved audit, control policy and a Native runner with brake/cleanup/world restoration. All 38 focused tests and scoped static validation pass. I verified its declared proof-log hashes and reran exact scoped strict; it rejects truthful partial status. Reviewed official-device source, exact bundles/manifest, semantic proposals, compatibility/process-saved/full-decode/delivery receipts and fallbacks remain CPU work. C158208 began as the next partition 01 owner.
+
+## 2026-11-23 C110264 closeout
+
+C110264 added live map/OpenDRIVE binding, corrected left-turn route and paved-footprint checks, and a 900-frame Native actor/four-camera join with independent saved-source audit. Twenty-one focused tests and scoped static validation pass. I verified all declared proof-log hashes and reran exact scoped strict; it rejects truthful partial status. Actual CARLA runner/map acquisition, canonical finalizer/proposals and exact offline/compatibility/saved/delivery receipts remain. C143687 began as the next partition 08 owner.
+
+## 2026-11-23 C149555 closeout and current owners
+
+C149555 added source-bound five-case comparisons, four-camera ffprobe and full-decode delivery audits, footprint and 20 Hz checks. Fifteen focused tests and preflight pass. I independently checked both declared proof-log hashes and reran exact scoped strict; it rejects truthful partial status. Reviewed site, Native capture and exact offline/compatibility/process-saved/delivery receipts remain. C104081, C143687 and C158208 are now active in separate assignment directories; C158208 has added source-bound nearest-view pair comparison and 31 passing tests, and is continuing CPU construction. Global status remains 9 ready and 233 partial; the full strict gate remains unpassed.
+
+## 2026-11-23 decoded root comparison and owner rotation
+
+C109705 2a now recomputes a paired saved-source comparison after decoding 7,200 original camera PNG frames across the two exact attempts, while retaining diagnostic, physical and legal uncertainty. All 21 focused tests and scoped static pass; scoped strict rejects partial. Its nine proof hashes match. C158208 added source-bound capture identity and paired nearest-view comparison, rebuilt both pinned offline bundles and six physical fixture outcomes, and passed 33 focused tests and static. I verified all nine proof hashes and reran exact scoped strict; partial remains. C143687 added seven source joins, fixed case-condition comparison and four-camera saved integrity audit, with 17 focused tests and static passing. I verified both proof hashes and reran exact scoped strict; partial remains. New owners began C10301 LVMC-11-22-010 in partition 03 and C104084 NRS-484B-213-2a in partition 07. C104081 pedestrian owner continues in partition 06.

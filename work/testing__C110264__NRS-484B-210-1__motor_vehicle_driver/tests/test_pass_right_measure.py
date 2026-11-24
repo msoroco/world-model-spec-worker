@@ -26,7 +26,7 @@ def trace(mode='signal'):
     return {'source_kind': 'original_native_actor_trace', 'fps': 20,
             'ego_id': 1, 'target_id': 2,
             'road': {'public_highway_observed': True, 'two_way_observed': True,
-                     'intersection_s_m': [55, 70]}, 'frames': frames}
+                     'intersection_s_m': [55, 70], 'actor_half_width_m': 0.9}, 'frames': frames}
 
 
 class TestPassRight(unittest.TestCase):
@@ -49,6 +49,10 @@ class TestPassRight(unittest.TestCase):
         x['frames'][7]['ego_lateral_m'] = -3
         with self.assertRaisesRegex(ValueError, 'not to target right'):
             measure.observe(x)
+        x = trace()
+        x['frames'][7]['ego_lateral_m'] = 1.5
+        with self.assertRaisesRegex(ValueError, 'not to target right'):
+            measure.observe(x)
 
     def test_rejects_missing_native_and_false_intersection(self):
         x = trace()
@@ -58,6 +62,9 @@ class TestPassRight(unittest.TestCase):
         x = trace()
         x['road']['intersection_s_m'] = [100, 120]
         with self.assertRaisesRegex(ValueError, 'not at source-bound intersection'):
+            measure.observe(x)
+        x = trace(); del x['road']['actor_half_width_m']
+        with self.assertRaisesRegex(ValueError, 'source actor footprint'):
             measure.observe(x)
 
     def test_seal_and_original_source_required(self):

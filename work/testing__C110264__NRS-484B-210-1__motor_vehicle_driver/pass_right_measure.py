@@ -35,6 +35,9 @@ def observe(data: dict) -> dict:
     interval = road.get('intersection_s_m')
     if not isinstance(interval, list) or len(interval) != 2 or interval[0] >= interval[1]:
         raise ValueError('missing original intersection bounds')
+    half_width = road.get('actor_half_width_m')
+    if not isinstance(half_width, (int, float)) or not math.isfinite(half_width) or half_width <= 0:
+        raise ValueError('source actor footprint required')
     prev = None
     events = []
     for i, frame in enumerate(frames):
@@ -62,7 +65,10 @@ def observe(data: dict) -> dict:
         raise ValueError('no completed right-pass order in original trace')
     start, end = trailing[-1]['frame'], ahead[0]['frame']
     crossing = frames[start:end + 1]
-    if any(f['ego_lateral_m'] <= f['target_lateral_m'] + 1.0 for f in crossing):
+    # Compare body extents, not only vehicle centers. The additional half metre
+    # is a detection margin and does not define a statutory safe distance.
+    if any(f['ego_lateral_m'] <= f['target_lateral_m'] + 2 * half_width + 0.5
+           for f in crossing):
         raise ValueError('ego was not to target right throughout pass')
     signal = any(f['target_left_signal'] is True for f in crossing)
     # Leftward target motion is a measured heading/lateral change, not a signal

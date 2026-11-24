@@ -70,3 +70,17 @@ Both exact diagnostic constructions were rebuilt with the updated source adapter
 Next worker-owned CPU work is a genuinely source-bound site packet, CARLA-lazy original scene/camera runner and positive/negative compatibility, saved processing, delivery and controlled comparison proofs. Original physical motion, pixels and legal applicability remain unverified. No Git command was run.
 
 Both exact and full strict delivery-ready gates exit 1 at `Preparation acceptance failed: partial/missing packages remain` (`.runtime-work/c158208-raybind-strict.log`, `.runtime-work/full-strict-c158208-raybind.log`). Non-Git scan of 10,374 returned UTF-8 files found zero size, trailing-whitespace, conflict-marker or C158208 proof-hash issues; largest file is 1,846,854 bytes.
+
+## 2026-11-23 paired original-source comparison audit
+
+Added `pair_comparison.py` for the exact `nearest_view_response` and `nearest_view_uninterrupted` cases. Each attempt must carry a case-bound capture identity tied to its sealed original ticks, construction hash, reviewed site packet hash, map OpenDRIVE hash and provenance kind. The audit rederives samples from original ticks, checks full-body intersection traversal and saved nearest-view measurements, then enforces fixed site/map/geometry/context, through-vehicle history and view/entry timing while requiring a realized lower approach speed for the response. It reports motion-only provenance; video and legal status remain unresolved. Diagnostic fixtures require an explicit flag and cannot pass the default 900-frame original-capture branch.
+
+Thirty focused tests pass in `cpu-tests.log`; positive/negative pair tests cover provenance, case swap, seal tamper, site hash, geometry, context, through history and speed separation. Exact static check passes in `cpu-assignment-static.log`. Exact strict readiness check exits 1 in `cpu-assignment-strict.log` because this remains partial. Next CPU work: implement source-bound Native scene/camera acquisition and actual capture identity, review a genuine site packet, then positive/negative compatibility, saved processing and delivery audits. No physical or legal acceptance is claimed.
+
+The paired audit now requires exact independently reviewed construction/site/OpenDRIVE expected hashes and 900 original frames in default mode; a diagnostic flag is needed for the five-frame test fixtures. An additional negative test checks reviewed-hash and full-capture rejection. Thirty-one focused tests pass.
+
+## 2026-11-23 capture identity construction and regenerated proofs
+
+`source_tick_capture.write_capture_identity` now writes a single-use exact-case identity from verified sealed ticks, a construction file, a reviewed site packet and loaded OpenDRIVE bytes. It rejects an unreviewed or wrong-map packet and requires 900 original frames outside explicit diagnostic mode. Two focused positive/negative tests bring the suite to 33. The reviewed site packet is not present yet; the current tests use clearly synthetic local packets and do not claim source review.
+
+Regenerated both `construction-*.json` diagnostic bundles to embed the current source adapter, reran both pinned `runtime.py offline` checks, rebuilt six synthetic physical outcome fixtures and lifecycle proofs, then passed pinned `physical_preparation.validate` for both cases. Proof logs and hashes are current in `result.json`. Next CPU actions remain real site-source review, CARLA-lazy scene/camera acquisition and exact compatibility/process-saved/delivery audits.

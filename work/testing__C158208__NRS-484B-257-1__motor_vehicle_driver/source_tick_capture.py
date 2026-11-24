@@ -177,3 +177,39 @@ def verify_seal(attempt: Path) -> dict:
         if later["frame"] != earlier["frame"] + 1 or not 0.049 <= later["time_s"] - earlier["time_s"] <= 0.051:
             raise ValueError("sealed frame/time continuity differs")
     return packet
+
+
+def write_capture_identity(attempt: Path, case_id: str, construction: Path,
+                           reviewed_site_packet: Path, opendrive: bytes,
+                           *, diagnostic_fixture: bool = False) -> dict:
+    """Bind a sealed attempt to its exact construction and reviewed map sources."""
+    prefix = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
+    if case_id not in (prefix + "__nearest_view_response",
+                       prefix + "__nearest_view_uninterrupted"):
+        raise ValueError("capture identity case is outside exact pair")
+    attempt = Path(attempt)
+    output = attempt / "capture-identity.json"
+    if output.exists():
+        raise ValueError("capture identity already exists")
+    packet = verify_seal(attempt)
+    if not diagnostic_fixture and len(packet["samples"]) != 900:
+        raise ValueError("original capture requires 900 contiguous 20 Hz frames")
+    if not isinstance(opendrive, bytes) or not opendrive:
+        raise ValueError("actual loaded map OpenDRIVE bytes required")
+    site_bytes = Path(reviewed_site_packet).read_bytes()
+    site = json.loads(site_bytes)
+    map_hash = hashlib.sha256(opendrive).hexdigest()
+    if site.get("map_opendrive_sha256") != map_hash or site.get("review_status") != "reviewed":
+        raise ValueError("reviewed site packet differs from actual loaded map")
+    construction_bytes = Path(construction).read_bytes()
+    if not construction_bytes:
+        raise ValueError("construction source is empty")
+    identity = {"format": "c158208-original-capture-identity-v1",
+                "assignment_id": prefix, "case_id": case_id,
+                "construction_sha256": hashlib.sha256(construction_bytes).hexdigest(),
+                "site_packet_sha256": hashlib.sha256(site_bytes).hexdigest(),
+                "map_opendrive_sha256": map_hash,
+                "original_tick_seal_sha256": hashlib.sha256((attempt / "nearest-view-tick-seal.json").read_bytes()).hexdigest(),
+                "provenance_kind": "synthetic_fixture" if diagnostic_fixture else "original_capture"}
+    output.write_text(json.dumps(identity, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return identity

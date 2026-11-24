@@ -82,6 +82,25 @@ def audit_source_bundle(manifest: dict, *, case_id: str, variant: str) -> dict:
     _require(sources["sign_observation"].get("verbatim_text") == packet.get("sign_text_readback"), "sign source/readback mismatch")
     _require(sources["commercial_dossier"].get("vehicle_id") == packet.get("vehicle_id"), "commercial dossier vehicle mismatch")
     _require(sources["freight_activity"].get("vehicle_id") == packet.get("vehicle_id"), "activity source vehicle mismatch")
+    for name, fields in {
+        "native_map": ("native_road_id", "native_lane_id", "one_way_native_readback"),
+        "curb_observation": ("start_station_m", "end_station_m", "independent_pixel_review"),
+        "sign_observation": ("independent_pixel_review",),
+        "commercial_dossier": ("enterprise_use_reviewed", "qualifies_commercial"),
+        "freight_activity": ("observed_action", "cargo_actor_id", "observed_transfer_frames"),
+    }.items():
+        source = sources[name]
+        target = packet.get({"native_map": "native_map_readback", "curb_observation": "curb_observation",
+                             "sign_observation": "sign_observation", "commercial_dossier": "commercial_dossier",
+                             "freight_activity": "freight_activity"}[name], {})
+        _require(isinstance(target, dict), f"missing original {name} values")
+        for field in fields:
+            _require(field in source and field in target and source[field] == target[field],
+                     f"original {name} field mismatch: {field}")
+    _require(sources["curb_observation"]["independent_pixel_review"] is True,
+             "original curb pixel review missing")
+    _require(sources["sign_observation"]["independent_pixel_review"] is True,
+             "original sign pixel review missing")
     return audit_saved_original(packet, case_id=case_id, variant=variant)
 
 
@@ -155,16 +174,23 @@ def audit_saved_original(packet: dict, *, case_id: str, variant: str) -> dict:
         time_s = frame.get("time_s")
         station = frame.get("ego_station_m")
         speed = frame.get("ego_speed_mps")
-        _require(all(isinstance(v, (int, float)) and math.isfinite(v) for v in (time_s, station, speed)), "invalid original motion sample")
+        body_min = frame.get("ego_body_station_min_m")
+        body_max = frame.get("ego_body_station_max_m")
+        _require(all(isinstance(v, (int, float)) and math.isfinite(v) for v in
+                     (time_s, station, speed, body_min, body_max)), "invalid original motion/body sample")
+        _require(body_min <= station <= body_max, "body footprint excludes ego station")
         _require(speed >= 0 and (previous_time is None or time_s > previous_time), "invalid original time/speed")
+        if previous_time is not None:
+            _require(abs(time_s - previous_time - 0.05) <= 0.001, "original 20 Hz timeline gap")
         previous_time = time_s
     zone = packet.get("zone", {})
     _require(zone.get("start_station_m", 0) < zone.get("end_station_m", 0), "invalid original zone")
     stopped = [f for f in frames if f["ego_speed_mps"] <= 0.1]
     _require(stopped, "no original stop samples")
-    stations = [f["ego_station_m"] for f in stopped]
-    inside = all(zone["start_station_m"] <= s <= zone["end_station_m"] for s in stations)
-    outside = all(s < zone["start_station_m"] or s > zone["end_station_m"] for s in stations)
+    inside = all(zone["start_station_m"] <= f["ego_body_station_min_m"] and
+                 f["ego_body_station_max_m"] <= zone["end_station_m"] for f in stopped)
+    outside = all(f["ego_body_station_max_m"] < zone["start_station_m"] or
+                  f["ego_body_station_min_m"] > zone["end_station_m"] for f in stopped)
     _require(inside or outside, "stop spans zone boundary")
     activity = packet.get("freight_activity", {})
     _require(activity.get("vehicle_id") == packet["vehicle_id"], "activity/vehicle identity mismatch")

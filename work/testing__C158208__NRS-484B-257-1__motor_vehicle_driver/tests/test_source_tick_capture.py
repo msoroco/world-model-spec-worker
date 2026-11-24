@@ -1,4 +1,6 @@
 import importlib.util
+import hashlib
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -46,6 +48,55 @@ def raw(index):
 
 
 class SourceTickCaptureTests(unittest.TestCase):
+    def test_identity_writer_binds_actual_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            attempt = root / "attempt"
+            writer = capture.TickCapture(attempt, GEOMETRY, CONTEXT)
+            for index in range(3):
+                writer.append(raw(index))
+            writer.close()
+            construction = root / "construction.json"
+            construction.write_text('{"case":"exact"}\n')
+            opendrive = b"<OpenDRIVE>test map</OpenDRIVE>"
+            site = root / "site.json"
+            site.write_text(json.dumps({"review_status": "reviewed",
+                "map_opendrive_sha256": hashlib.sha256(opendrive).hexdigest()}) + "\n")
+            case = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response"
+            result = capture.write_capture_identity(attempt, case, construction, site,
+                                                    opendrive, diagnostic_fixture=True)
+            self.assertEqual(result["case_id"], case)
+            self.assertEqual(result["construction_sha256"], hashlib.sha256(construction.read_bytes()).hexdigest())
+            self.assertEqual(result, json.loads((attempt / "capture-identity.json").read_text()))
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                capture.write_capture_identity(attempt, case, construction, site,
+                                               opendrive, diagnostic_fixture=True)
+
+    def test_identity_writer_rejects_unreviewed_or_wrong_map(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            attempt = root / "attempt"
+            writer = capture.TickCapture(attempt, GEOMETRY, CONTEXT)
+            for index in range(3):
+                writer.append(raw(index))
+            writer.close()
+            construction = root / "construction.json"
+            construction.write_text("{}\n")
+            site = root / "site.json"
+            site.write_text(json.dumps({"review_status": "pending",
+                "map_opendrive_sha256": hashlib.sha256(b"map-a").hexdigest()}) + "\n")
+            case = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response"
+            with self.assertRaisesRegex(ValueError, "reviewed site packet differs"):
+                capture.write_capture_identity(attempt, case, construction, site, b"map-a",
+                                               diagnostic_fixture=True)
+            site.write_text(json.dumps({"review_status": "reviewed",
+                "map_opendrive_sha256": hashlib.sha256(b"map-a").hexdigest()}) + "\n")
+            with self.assertRaisesRegex(ValueError, "reviewed site packet differs"):
+                capture.write_capture_identity(attempt, case, construction, site, b"map-b",
+                                               diagnostic_fixture=True)
+            with self.assertRaisesRegex(ValueError, "900 contiguous"):
+                capture.write_capture_identity(attempt, case, construction, site, b"map-a")
+
     def test_sealed_originals_rederive_measured_branch(self):
         with tempfile.TemporaryDirectory() as directory:
             writer = capture.TickCapture(Path(directory), GEOMETRY, CONTEXT)

@@ -31,7 +31,7 @@ against a reviewed Native parking polygon and reports intersection corner
 overlap witnesses. `comparison_audit.py` rejects absent exact measurements,
 missing source seals, altered fixed setup hashes, incomplete parked intervals
 and wrong light-state readback. It does not check pixels or legal compliance.
-The eleven focused tests include positive measurements and negative source,
+The sixteen focused tests include positive measurements and negative source,
 camera, geometry and comparison cases. Run:
 
 `.venv-cpu/bin/python -m unittest discover -s work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/tests -v`
@@ -53,8 +53,8 @@ reviewed Native site packet confirms that risk.
 
 ## Proven checks and dependency boundary
 
-`.venv-cpu/bin/python runtime.py preflight` passed in this turn. The focused
-assignment tests passed 11 tests. The assignment `--complete` static check
+`.venv-cpu/bin/python runtime.py preflight` passed in the preceding owner turn. The focused
+assignment tests now pass 16 tests. The assignment `--complete` static check
 passed, while the exact `--complete --require-delivery-ready` command failed
 with `Preparation acceptance failed: partial/missing packages remain` because
 `result.json` truthfully remains partial. See `cpu-static-check.log` and
@@ -63,3 +63,33 @@ needed only after the CPU package is ready, for actual motion and video review.
 No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 saved delivery and comparison checkpoint
+
+`native_capture.py` now compares the loaded Native map name and raw OpenDRIVE
+hash against the sealed reviewed site before setting lights or advancing the
+world; its planned interval defaults to 900 ticks (45 seconds at 20 Hz).
+`lamp_probe.py` rejects a stale source-frame join even if the camera map file
+is rehashed. The new `delivery_audit.py` recomputes the exact source-bound
+observation from a sealed Native receipt and checks all 900 parked samples,
+the requested light-state readback, and four distinct attempt-confined media
+files with content hashes. It rejects diagnostic acquisition for delivery and
+returns explicit false values for full video decoding, emission/aim review and
+physical acceptance. `comparison_audit.audit_saved` processes all three exact
+attempts and verifies the reviewed map, parking polygon, blueprint, weather,
+camera and controller fixed-condition hashes against actual attempt files.
+This is a CPU fixture proof of integrity checks, not a Native recording.
+
+The current exact proof command is
+`.venv-cpu/bin/python -m unittest discover -s work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/tests -v`.
+It passed 16 tests; `cpu-lamp-tests.log` is retained. The scoped `--complete`
+check passed and scoped `--complete --require-delivery-ready` check failed as
+expected for truthful partial status. Logs and hashes are in `result.json`.
+
+Next CPU work: author the exact CARLA owner runner and four original-camera
+capture/encoding path, reviewed site packet and physical depressed-aim
+construction if supported; complete per-case bundles, finalization, semantic
+proposals, offline/compatibility/process-saved proofs, and execution manifest.
+Do not infer that low-beam state bits establish emitted intensity or physical
+beam aim. `delivery_audit.py` requires later full video decoding and source
+inspection before any physical acceptance claim.

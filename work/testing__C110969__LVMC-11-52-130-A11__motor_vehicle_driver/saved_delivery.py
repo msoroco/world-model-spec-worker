@@ -61,7 +61,15 @@ def audit(attempt_path, *, allow_diagnostic=False):
     measurement_path = _source(root, packet["measurement_packet"])
     measurement_packet = json.loads(measurement_path.read_text(encoding="utf-8"))
     pose_path = _source(measurement_path.parent, measurement_packet["pose_source"])
-    _source(measurement_path.parent, measurement_packet["map_source"])
+    map_path = _source(measurement_path.parent, measurement_packet["map_source"])
+    source_map_path = _source(root, packet["map_packet"])
+    map_geometry = json.loads(map_path.read_text(encoding="utf-8"))
+    source_map = json.loads(source_map_path.read_text(encoding="utf-8"))
+    if map_geometry.get("map_source_sha256") != packet["map_packet"]["sha256"] or \
+            map_geometry.get("opendrive_sha256") != source_map.get("opendrive_sha256") or \
+            map_geometry.get("map_id") != source_map.get("map_name") or \
+            case_id not in source_map.get("case_ids", []):
+        raise ValueError("Map source and measurement geometry binding mismatch")
     measurement = measure(measurement_path)
     pose_rows = _rows(pose_path)
     world_frames = [row.get("world_frame") for row in pose_rows]
@@ -74,6 +82,12 @@ def audit(attempt_path, *, allow_diagnostic=False):
     if any(abs(row.get("time_s", -1) - row["frame"] / 20) > 1e-6
            for row in frame_rows):
         raise ValueError("Frame map timing mismatch")
+    context_path = _source(root, packet["context"])
+    context_rows = _rows(context_path)
+    _frame_ids(context_rows, "Original context", world_frames)
+    if any(not isinstance(row.get("participants"), list) or
+           not isinstance(row.get("directions"), dict) for row in context_rows):
+        raise ValueError("Original context observation fields missing")
     camera_bindings = packet.get("cameras", {})
     if set(camera_bindings) != set(CAMERAS):
         raise ValueError("Four named camera sources required")
@@ -107,6 +121,7 @@ def audit(attempt_path, *, allow_diagnostic=False):
         "original_frame_count": 900,
         "measurement": measurement,
         "frame_map_sha256": packet["frame_map"]["sha256"],
+        "context_sha256": packet["context"]["sha256"],
         "camera_receipt_sha256": camera_hashes,
         "full_video_decode": False,
         "actual_pixels": False,
