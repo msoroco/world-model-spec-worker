@@ -23,6 +23,16 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def analyze_original_reverse_region(report):
+    """Return the saved observation without making a legal or site finding."""
+    return {
+        "reverse_body_enters_region": report["reverse_body_enters_region"],
+        "backward_motion_observed": report["backward_motion_observed"],
+        "heading_change_while_in_corner_deg": report.get("heading_change_while_in_corner_deg"),
+        "continuous_reverse_turn_in_corner": report.get("continuous_reverse_turn_in_corner"),
+    }
+
+
 def finalize(attempt, output):
     from worker_exchange.native_output import physical_result, write_result
 
@@ -39,7 +49,7 @@ def finalize(attempt, output):
                  "reverse_history.jsonl", "video_frames.jsonl", "trace.jsonl",
                  "capture/evidence.jsonl", *CAMERAS):
         if not (attempt / name).is_file():
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     site = json.loads((attempt / site_name).read_text())
     context = json.loads((attempt / "reverse_site_context.json").read_text())
     site_source = context.get("site_packet_source")
@@ -102,9 +112,7 @@ def finalize(attempt, output):
     }
     result = {
         "case_id": case_id,
-        "measured_values": {"reverse_body_enters_region": report["reverse_body_enters_region"],
-                            "backward_motion_observed": report["backward_motion_observed"],
-                            "heading_change_while_in_corner_deg": report.get("heading_change_while_in_corner_deg")},
+        "measured_values": analyze_original_reverse_region(report),
         "target_checks": [check],
         "setup_confirmed": False, "behavior_attempted": False,
         "maneuver_completed": False,

@@ -1,0 +1,29 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Shall not back around a street corner",
+      "source": "NRS 484B.113(2)",
+      "output_key": "reverse_street_corner",
+      "method": "analyze_original_reverse_region",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "reverse_site_context.json",
+        "reverse_history.jsonl",
+        "video_frames.jsonl",
+        "street_corner_stop_site.json",
+        "street_corner-geometry.txt",
+        "street_corner-camera.txt",
+        "street_corner-topology.txt"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "street_corner_stop_site.json"
+    ],
+    "error_contains": "Missing required source: street_corner_stop_site.json"
+  }
+}

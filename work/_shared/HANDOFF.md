@@ -815,3 +815,6 @@ C215286 remains partial. Four exact intersection/corner entry and stop-before di
 Final return-tree check this turn: 10,452 files under work/, zero non-UTF-8 files, zero files over size limits, zero trailing-whitespace lines and zero conflict markers. No Git command was run.
 
 C215286 2026-11-24: corner continuity and full-duration finalizer guard added; 28 tests and four refreshed alternative offline proofs pass. Status partial. See assignment HANDOFF.md.
+C215286 no-flags whole-batch quick check after UTF-8 cleanup: exits 1 on retained execution manifest runtime mismatch, not Unicode decoding; log `.runtime-work/worker-check-quick-20261124-latest.log`. Scoped C215286 check passes; partial status retained.
+
+C215286 2026-11-24: four staged exact measurement contracts validate against pinned runtime, and staged six-case/three-comparison plan plus proposals generated. Four refreshed offline proofs and scoped nonready check pass. Status partial; see assignment HANDOFF.md.

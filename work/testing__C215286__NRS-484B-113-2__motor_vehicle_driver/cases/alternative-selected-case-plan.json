@@ -1,0 +1,414 @@
+{
+  "assignment_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C215286",
+  "law_id": "NRS-484B-113-2",
+  "selected_branch": "Backing into an intersection, on or over a crosswalk, or around a street corner",
+  "cases": [
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Source-bound reverse motion with complete body on and over marked crosswalk",
+      "gap_ids": [
+        "crosswalk_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "reverse path may strike crossing pedestrian or roadside object"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Same approach and reverse state, complete body stops short of crosswalk",
+      "gap_ids": [
+        "crosswalk_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "rear body may still overlap crosswalk despite center stopping short"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing inside the sourced intersection region",
+      "gap_ids": [
+        "intersection_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored intersection region"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing before the sourced intersection region",
+      "gap_ids": [
+        "intersection_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored intersection region"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing inside the sourced street corner region",
+      "gap_ids": [
+        "street_corner_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored street corner region"
+    },
+    {
+      "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner",
+      "target_law_id": "NRS-484B-113-2",
+      "purpose": "Observe backing before the sourced street corner region",
+      "gap_ids": [
+        "street_corner_geometry",
+        "reverse_motion"
+      ],
+      "physical_risk": "Reverse body or camera view may miss the authored street corner region"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "reverse_crosswalk_boundary",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk"
+      ],
+      "fixed_conditions": [
+        "same residence-district highway, crosswalk, vehicle, cameras and reverse approach"
+      ],
+      "deliberate_differences": [
+        "measured complete-body crosswalk intersection during reverse"
+      ]
+    },
+    {
+      "comparison_id": "reverse_intersection_entry_vs_stop",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection"
+      ],
+      "fixed_conditions": [
+        "same Native map, road, region, vehicle, start body, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "reverse route enters region or stops before it"
+      ]
+    },
+    {
+      "comparison_id": "reverse_street_corner_entry_vs_stop",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner"
+      ],
+      "fixed_conditions": [
+        "same Native map, road, region, vehicle, start body, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "reverse route enters region or stops before it"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen evidence inventory has zero accepted recordings; no reuse is proposed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "crosswalk_geometry",
+        "requirement": "Crosswalk boundary, road and residence-district setting sourced.",
+        "source": {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; original reverse and crosswalk geometry must be constructed."
+      },
+      {
+        "id": "reverse_motion",
+        "requirement": "Original-frame Native reverse state and complete body on or over crosswalk.",
+        "source": {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        },
+        "why_existing_insufficient": "No accepted recording is listed; original reverse and crosswalk geometry must be constructed."
+      }
+    ],
+    "supported_reuses": []
+  },
+  "observations": [
+    "sourced crosswalk polygon and visible markings",
+    "original-frame Native reverse state and body vertices",
+    "body-croswalk overlap area and complete body crossing",
+    "same road/crosswalk identity across frames"
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+      "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+    },
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "9910fd76af9a9c6345bcd3f6906ce8745bad5d55a12636956f4732a101ebc312"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native reverse readback is setup evidence; actual backing requires original motion.",
+    "Cell covers crosswalk alternative, not intersection or around-corner alternatives.",
+    "Both selected cases pass exact diagnostic CPU paths, but real reviewed site sources, physical-risk fallbacks, semantic and full-duration delivery audits remain worker-owned CPU work.",
+    "Intersection and corner sources are synthetic CPU diagnostics; original Native map/camera review pending."
+  ],
+  "planning_status": "staged full-branch selection; delivery proofs and real-site review pending",
+  "requirement_dispositions": [
+    {
+      "requirement": "Shall not back on or over a crosswalk",
+      "source": "NRS 484B.113(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk"
+      ],
+      "evidence_or_gap": "Fixed cell selects the crosswalk alternative; original reverse-body overlap needs measurement."
+    },
+    {
+      "requirement": "Shall not back into an intersection",
+      "source": "NRS 484B.113(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_into_intersection",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_intersection"
+      ],
+      "evidence_or_gap": "Original Native site review and reverse complete-body/heading observation required; synthetic site is diagnostic only."
+    },
+    {
+      "requirement": "Shall not back around a street corner",
+      "source": "NRS 484B.113(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_around_street_corner",
+        "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_street_corner"
+      ],
+      "evidence_or_gap": "Original Native site review and reverse complete-body/heading observation required; synthetic site is diagnostic only."
+    }
+  ],
+  "decoded_frame_cpu_audit": {
+    "scope": "900-frame synthetic diagnostic only; no actual-pixel or Native acceptance",
+    "auditor_sha256": "df4ba56f345f9ca91c4b9485e20784780f904aa4c987fc137e0254a908d2d5c2",
+    "source_auditor_sha256": "5f65a258c7ed457a5bed3cae0b86835622b343583b464a322855919657a9e79f",
+    "cases": {
+      "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk": {
+        "actual_pixels_reviewed": false,
+        "analysis_sha256": "8051fe1f653a775436c6c907bb8f13dd688f388d1a8042fb1d14a13c7317e702",
+        "camera_decodes": {
+          "approach": {
+            "decoded_frames_sha256": "73fc20e15dc490ca66e88d6af1156b6d2d86598413a8b11b3e94b5d962930143",
+            "frames": 900,
+            "height": 720,
+            "sha256": "f639acd83968cc138c9c869fbad45309162797934c289d06f88361ed46b2da71",
+            "width": 1280
+          },
+          "driver_reference": {
+            "decoded_frames_sha256": "73fc20e15dc490ca66e88d6af1156b6d2d86598413a8b11b3e94b5d962930143",
+            "frames": 900,
+            "height": 720,
+            "sha256": "f639acd83968cc138c9c869fbad45309162797934c289d06f88361ed46b2da71",
+            "width": 1280
+          },
+          "overview": {
+            "decoded_frames_sha256": "325c6161fa94c8c5782e86b418e2a17ce8e6e302a704046e4a0ff8837592d2dc",
+            "frames": 900,
+            "height": 1080,
+            "sha256": "6235666c2152f5bf2aa3b636f1d3d450d63b0462259a9c20bd257f895858fb6f",
+            "width": 1920
+          },
+          "reference_corner": {
+            "decoded_frames_sha256": "73fc20e15dc490ca66e88d6af1156b6d2d86598413a8b11b3e94b5d962930143",
+            "frames": 900,
+            "height": 720,
+            "sha256": "f639acd83968cc138c9c869fbad45309162797934c289d06f88361ed46b2da71",
+            "width": 1280
+          }
+        },
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_over_crosswalk",
+        "format": "worker-c215286-delivery-cpu-boundary",
+        "frames": 900,
+        "legal_conclusion": "unresolved",
+        "measurement_keys": [
+          "reverse_crosswalk"
+        ],
+        "native_source_accepted": false,
+        "physical_acceptance_claimed": false,
+        "result_sha256": "f6b9f5a5b826d8fd8ddaca18b57cd3daa221edfd432603cb5f84fcf66ef9727c",
+        "software_audit_passed": true,
+        "source_audit_sha256": "5f65a258c7ed457a5bed3cae0b86835622b343583b464a322855919657a9e79f"
+      },
+      "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk": {
+        "actual_pixels_reviewed": false,
+        "analysis_sha256": "7209e703587ab7194d04903c4aff75292440f91b1ee90b356eddc70732dde047",
+        "camera_decodes": {
+          "approach": {
+            "decoded_frames_sha256": "73fc20e15dc490ca66e88d6af1156b6d2d86598413a8b11b3e94b5d962930143",
+            "frames": 900,
+            "height": 720,
+            "sha256": "f639acd83968cc138c9c869fbad45309162797934c289d06f88361ed46b2da71",
+            "width": 1280
+          },
+          "driver_reference": {
+            "decoded_frames_sha256": "73fc20e15dc490ca66e88d6af1156b6d2d86598413a8b11b3e94b5d962930143",
+            "frames": 900,
+            "height": 720,
+            "sha256": "f639acd83968cc138c9c869fbad45309162797934c289d06f88361ed46b2da71",
+            "width": 1280
+          },
+          "overview": {
+            "decoded_frames_sha256": "325c6161fa94c8c5782e86b418e2a17ce8e6e302a704046e4a0ff8837592d2dc",
+            "frames": 900,
+            "height": 1080,
+            "sha256": "6235666c2152f5bf2aa3b636f1d3d450d63b0462259a9c20bd257f895858fb6f",
+            "width": 1920
+          },
+          "reference_corner": {
+            "decoded_frames_sha256": "73fc20e15dc490ca66e88d6af1156b6d2d86598413a8b11b3e94b5d962930143",
+            "frames": 900,
+            "height": 720,
+            "sha256": "f639acd83968cc138c9c869fbad45309162797934c289d06f88361ed46b2da71",
+            "width": 1280
+          }
+        },
+        "case_id": "testing__C215286__NRS-484B-113-2__motor_vehicle_driver__reverse_stops_before_crosswalk",
+        "format": "worker-c215286-delivery-cpu-boundary",
+        "frames": 900,
+        "legal_conclusion": "unresolved",
+        "measurement_keys": [
+          "reverse_crosswalk"
+        ],
+        "native_source_accepted": false,
+        "physical_acceptance_claimed": false,
+        "result_sha256": "09f6035556627ec8cb8350cd60e518fa1c5149768f8146dea684b16d65d1d0f1",
+        "software_audit_passed": true,
+        "source_audit_sha256": "5f65a258c7ed457a5bed3cae0b86835622b343583b464a322855919657a9e79f"
+      }
+    }
+  },
+  "native_closure_cpu_preflight": {
+    "scope": "Native preflight command is constructed; synthetic attempts are rejected; no Native capture was run",
+    "script_sha256": "df4ba56f345f9ca91c4b9485e20784780f904aa4c987fc137e0254a908d2d5c2",
+    "owner_release_required": true,
+    "expected_frames": 900,
+    "source_modes_rejected": [
+      "synthetic_fixture",
+      "native diagnostic_fixture=true"
+    ],
+    "actual_pixels_reviewed": false,
+    "physical_acceptance_claimed": false,
+    "required_capture_seal_sources": 14,
+    "candidate_selection_checked": true
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete ego body, crosswalk footprint and marked boundary",
+        "interval": "entire 45-second reverse maneuver"
+      },
+      {
+        "view": "approach",
+        "subject": "rear body motion and approach corridor",
+        "interval": "entire 45-second reverse maneuver"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crosswalk width, complete ego body and boundary contact",
+        "interval": "entire 45-second reverse maneuver"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego-mounted rearward reference image and nearby traffic",
+        "interval": "entire 45-second reverse maneuver"
+      }
+    ],
+    "source_review_boundary": "Native camera poses require local original-pixel review; synthetic CPU decodes only prove software handling."
+  },
+  "source_observation_mapping": {
+    "drv.backing": {
+      "evidence": "Native reverse control and original complete-body displacement projected against the measured heading; selected crosswalk cases",
+      "channels": [
+        "native_reverse",
+        "backward_motion"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "implemented_for_crosswalk_cases"
+    },
+    "st.intersection": {
+      "evidence": "The frozen assignment names the intersection alternative; selected crosswalk site packets do not yet provide independently sourced intersection geometry",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "pending_intersection_case"
+    },
+    "st.crosswalk": {
+      "evidence": "Sourced crosswalk polygon, site packet, marking review and original camera context in selected crosswalk cases",
+      "channels": [
+        "crosswalk_overlap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "implemented_for_crosswalk_cases"
+    },
+    "rel.occupies": {
+      "evidence": "Original complete-body intersection with sourced crosswalk polygon is measured; intersection occupation remains pending",
+      "channels": [
+        "crosswalk_overlap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "partial_intersection_pending"
+    },
+    "drv.turning": {
+      "evidence": "The frozen assignment includes backing around a street corner; no selected exact case yet measures a corner-following reverse route",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "pending_corner_case"
+    },
+    "kin.heading": {
+      "evidence": "Original reverse history includes heading and forward vector with equality validation, but heading change around a corner remains unmeasured",
+      "channels": [
+        "backward_motion"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "partial_corner_change_pending"
+    }
+  }
+}

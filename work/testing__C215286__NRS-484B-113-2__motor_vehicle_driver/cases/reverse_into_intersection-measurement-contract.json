@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "Shall not back into an intersection",
+      "source": "NRS 484B.113(2)",
+      "output_key": "reverse_intersection",
+      "method": "analyze_original_reverse_region",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "reverse_site_context.json",
+        "reverse_history.jsonl",
+        "video_frames.jsonl",
+        "intersection_site.json",
+        "intersection-geometry.txt",
+        "intersection-camera.txt"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "intersection_site.json"
+    ],
+    "error_contains": "Missing required source: intersection_site.json"
+  }
+}

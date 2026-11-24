@@ -144,6 +144,10 @@ class AlternativeTests(unittest.TestCase):
                 (root / camera).write_bytes(b"fixture placeholder")
             with self.assertRaisesRegex(ValueError, "900 joined original frames"):
                 finalize(root, root / "analysis.json")
+            (root / "intersection_site.json").unlink()
+            with self.assertRaisesRegex(ValueError,
+                                        "Missing required source: intersection_site.json"):
+                finalize(root, root / "analysis.json")
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             write_case(root, "intersection", body_centers=[(4, 0), (2, 0), (0, 0)],
@@ -151,7 +155,7 @@ class AlternativeTests(unittest.TestCase):
             (root / "config.json").write_text(json.dumps({
                 "selected_case_id": ASSIGNMENT + "__reverse_into_intersection"}) + "\n")
             (root / "intersection_site.json").write_text("{}\n")
-            with self.assertRaisesRegex(ValueError, "Missing required original source"):
+            with self.assertRaisesRegex(ValueError, "Missing required source"):
                 finalize(root, root / "analysis.json")
 
 
