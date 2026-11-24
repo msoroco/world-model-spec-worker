@@ -139,6 +139,42 @@ def audit(attempt, case_id, *, diagnostic_selftest=False, pixel_review=None,
             raise ValueError("Independent Native pixel review required")
         if {item.get("camera") for item in review_pixels["observations"]} != set(CAMERAS):
             raise ValueError("Pixel review omits original camera")
+        from worker_exchange.capture import PROFILE
+        dimensions = {"overview": PROFILE["overview"],
+                      **dict(zip(CAMERAS[1:], PROFILE["detail_views"]))}
+        for name, path in cameras.items():
+            width, height = dimensions[name]
+            requested = [item for item in review_pixels["observations"] if item["camera"] == name]
+            pending = {}
+            for item in requested:
+                box = item.get("bbox_xyxy")
+                if (type(item.get("video_frame")) is not int
+                        or not 0 <= item["video_frame"] < len(frames)
+                        or not isinstance(box, list) or len(box) != 4
+                        or not all(type(value) is int for value in box)
+                        or not (0 <= box[0] < box[2] <= width and 0 <= box[1] < box[3] <= height)
+                        or (box[2] - box[0]) * (box[3] - box[1]) < 16):
+                    raise ValueError("Invalid independent pixel-review box")
+                pending[item["video_frame"]] = box
+            seen = set()
+
+            def inspect_pixels(frame):
+                if (frame.width, frame.height) != (width, height):
+                    raise ValueError("Reviewed camera dimensions differ")
+                box = pending.get(frame.index)
+                if box is None:
+                    return
+                x0, y0, x1, y1 = box
+                pixels = {frame.pixels[3 * (y * width + x):3 * (y * width + x) + 3]
+                          for y in range(y0, y1) for x in range(x0, x1)}
+                if len(pixels) < 2:
+                    raise ValueError("Reviewed officer/sign ROI lacks original pixel detail")
+                seen.add(frame.index)
+
+            media.audit(path, len(frames), checkers={"reviewed_pixels": (sha(__file__), inspect_pixels)},
+                        mapping_sha256=sha(attempt / "video_frames.jsonl"))
+            if seen != set(pending):
+                raise ValueError("Independent pixel-review frame was not decoded")
         if decode_receipt is None:
             raise ValueError("Independent primary-video decode receipt required")
         video, trace = attempt / "raw.mkv", attempt / "converted/trace.json"

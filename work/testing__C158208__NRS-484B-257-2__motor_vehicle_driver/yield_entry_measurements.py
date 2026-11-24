@@ -9,9 +9,12 @@ import math
 from pathlib import Path
 
 from shapely.geometry import MultiPoint, Polygon
+from yield_reference import inspect as inspect_reference
 
 
-REQUIRED=("intersection_context.json","entry_history.jsonl","video_frames.jsonl")
+REQUIRED=("intersection_context.json","entry_history.jsonl","video_frames.jsonl",
+          "site_review.json","overview.mkv","approach.mkv",
+          "reference_corner.mkv","driver_reference.mkv")
 
 
 def _number(value,label):
@@ -46,6 +49,7 @@ def analyze(root:Path)->dict:
     if ctx.get("police_control") is not False or ctx.get("traffic_signal_control") is not False:
         raise ValueError("Officer/signal exception unresolved")
     if ctx.get("ego_entrance_device")!="yield":raise ValueError("Ego yield-sign governance missing")
+    reference=inspect_reference(root,ctx)
     entrances=ctx.get("entrances")
     if not isinstance(entrances,list) or len(entrances)<2 or any("road_id" not in e or "device" not in e for e in entrances):
         raise ValueError("Incomplete entrance device inventory")
@@ -88,5 +92,6 @@ def analyze(root:Path)->dict:
             "other_entrance_device":other[0]["device"],
             "other_not_obligated_by_stop_or_yield":other[0]["device"] not in ("stop","yield"),
             "other_inside_at_ego_entry":next(s["other_body_in_intersection"] for s in samples if s["frame"]==first_entry["frame"]),
+            "subsection_one_reference":reference,
             "samples":samples,"immediate_hazard_judgment":"unresolved",
             "caution_and_yield_judgment":"unresolved","legal_conclusion":"unresolved"}
