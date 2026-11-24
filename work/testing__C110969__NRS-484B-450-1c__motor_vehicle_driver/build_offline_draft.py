@@ -12,7 +12,7 @@ SOURCES = (
     "native_acquisition.py", "native_scene.py", "native_media.py",
     "native_camera_adapter.py", "native_scene_factory.py",
     "native_capture_entrypoint.py",
-    "finalize_delivery.py", "audit_finalized.py", "comparison_audit.py",
+    "finalize_delivery.py", "analysis.py", "audit_finalized.py", "comparison_audit.py",
 )
 
 RUNNER = '''"""Exact case identity and source-profile preflight."""
@@ -95,6 +95,9 @@ if __name__ == "__main__":
 def build():
     source = (HERE / "case-plan.json").read_bytes()
     plan = json.loads(source)
+    semantic = json.loads((HERE / "proposals/cases.json").read_text())
+    descriptions = {item["case_id"]: item["recording_description"]
+                    for item in semantic["cases"] if item["target_type"] != "baseline"}
     rows = []
     if len(plan["cases"]) != 9:
         raise ValueError("nine exact intersection cases required")
@@ -120,13 +123,13 @@ def build():
         files = {name: (HERE / name).read_text() for name in SOURCES}
         files.update({"runner.py": RUNNER, "case-plan.json": source.decode(),
                       "config.json": json.dumps(config, indent=2) + "\n",
+                      "measurement-contract.json": (HERE / "cases" / suffix / "measurement-contract.json").read_text(),
                       "tests/test_bundle.py": TEST})
         construction = {
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_original_boundary_and_activity_pending",
-                                      "channels": list(config["camera_dimensions"])},
+            "recording_description": descriptions[case],
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         output = HERE / ("construction-" + suffix + ".json")

@@ -1,12 +1,14 @@
 """CPU owner and exact callback tests for the lazy Native CARLA bridge."""
 import copy
 import json
+import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
 from unittest.mock import patch
+from unittest.mock import MagicMock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -251,6 +253,83 @@ class CarlaAdapterTests(unittest.TestCase):
                     runner.run_native_source(self.config, packet, output,
                                              'localhost', 2000,
                                              carla_module=carla)
+
+    def test_publication_rejects_diagnostic_source_before_core_or_seal(self):
+        with tempfile.TemporaryDirectory(dir='.runtime-work') as temp:
+            root = Path(temp)
+            output = root / 'materialized'
+            output.mkdir()
+            (output / 'construction.json').write_text('{}')
+            packet_path = root / 'packet.json'
+            packet_path.write_text('{}')
+
+            def source(config, packet, path, host, port, **kwargs):
+                path.mkdir()
+                (path / 'acquisition.json').write_text(json.dumps({
+                    'diagnostic_fixture': True, 'map_binding': {}}))
+                return {'frame_count': 900, 'restoration_verified': True}
+
+            fake_seal = MagicMock()
+            fake_worker = NS(native_output=NS(seal_capture=fake_seal))
+            with patch.dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(root)), \
+                 patch.dict(sys.modules, {'worker_exchange': fake_worker,
+                                         'worker_exchange.native_output':
+                                         fake_worker.native_output}), \
+                 patch.object(runner, 'run_native_source', side_effect=source), \
+                 patch('native_core.project') as project:
+                with self.assertRaisesRegex(ValueError, 'diagnostic source'):
+                    runner.run_native_publication(self.config, packet_path,
+                                                  output, 'localhost', 2000)
+                project.assert_not_called()
+                fake_seal.assert_not_called()
+                self.assertTrue(json.loads((output / 'native-run-status.json')
+                                           .read_text())['errors'])
+
+    def test_publication_order_copies_sources_before_closure(self):
+        with tempfile.TemporaryDirectory(dir='.runtime-work') as temp:
+            root = Path(temp)
+            output = root / 'materialized'
+            output.mkdir()
+            (output / 'construction.json').write_text('{}')
+            packet_path = root / 'packet.json'
+            packet_path.write_text('{}')
+
+            def source(config, packet, path, host, port, **kwargs):
+                path.mkdir()
+                (path / 'acquisition.json').write_text(json.dumps({
+                    'diagnostic_fixture': False,
+                    'map_binding': {'map_name': 'TownTest'}}))
+                return {'frame_count': 900, 'restoration_verified': True}
+
+            def core(source_path, target):
+                target.mkdir()
+                (target / 'receipt.json').write_text('{}')
+                (target / 'trace.jsonl').write_text('{}\n')
+                return {'media': {'encoded_camera_sha256': {
+                    name: 'hash' for name in ('overview', 'approach',
+                                              'reference_corner', 'driver_reference')}}}
+
+            def seal(path, **kwargs):
+                self.assertTrue((path / 'acquisition.json').is_file())
+                self.assertTrue((path / 'trace.jsonl').is_file())
+                self.assertTrue((path / 'acquisition-provenance.json').is_file())
+                self.assertEqual(kwargs['encoder_exit_codes'], {
+                    name: 0 for name in ('overview', 'approach',
+                                         'reference_corner', 'driver_reference')})
+                self.assertTrue(kwargs['restoration']['restored'])
+                return {'format': 'worker-sealed-capture'}
+
+            fake_worker = NS(native_output=NS(seal_capture=seal))
+            with patch.dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(root)), \
+                 patch.dict(sys.modules, {'worker_exchange': fake_worker,
+                                         'worker_exchange.native_output':
+                                         fake_worker.native_output}), \
+                 patch.object(runner, 'run_native_source', side_effect=source), \
+                 patch('native_core.project', side_effect=core):
+                value = runner.run_native_publication(self.config, packet_path,
+                                                      output, 'localhost', 2000)
+            self.assertEqual(value['capture_seal_format'], 'worker-sealed-capture')
+            self.assertFalse(value['physical_acceptance_claimed'])
 
 
 if __name__ == '__main__':

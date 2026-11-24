@@ -330,6 +330,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
         os.replace(root, destination)
         return {'case_id': case_id, 'frame_count': FRAMES, 'source_sha256': hashes,
                 'approach_measurement': measured, 'decoded_frames': pixels['decoded_frames'],
+                'restoration_verified': True,
                 'physical_completion': False, 'legal_judgment': 'unresolved'}
     except BaseException:
         shutil.rmtree(root, ignore_errors=True)

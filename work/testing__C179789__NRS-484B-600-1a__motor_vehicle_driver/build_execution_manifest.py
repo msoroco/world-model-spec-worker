@@ -102,13 +102,17 @@ def build() -> dict:
                 "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
                 "cases": entries, "status": "partial_cpu_construction_only"}
     reference = json.loads((HERE / "constructions/reference.json").read_text(encoding="utf-8"))
-    (HERE / "construction.json").write_text(json.dumps(reference, indent=2) + "\n",
-                                             encoding="utf-8")
     config = json.loads(next(file["content"] for file in reference["files"]
                              if file["path"] == "config.json"))
     config["supported_case_ids"] = [entry["case_id"] for entry in entries]
-    (HERE / "config.json").write_text(json.dumps(config, indent=2) + "\n",
-                                       encoding="utf-8")
+    config_content = json.dumps(config, indent=2) + "\n"
+    (HERE / "config.json").write_text(config_content, encoding="utf-8")
+    for file in reference["files"]:
+        if file["path"] == "config.json":
+            file["content"] = config_content
+            break
+    (HERE / "construction.json").write_text(json.dumps(reference, indent=2) + "\n",
+                                             encoding="utf-8")
     (HERE / "execution-manifest.json").write_text(
         json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return manifest

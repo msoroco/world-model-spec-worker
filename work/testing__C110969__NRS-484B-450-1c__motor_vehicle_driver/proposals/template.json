@@ -1,0 +1,97 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1c",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "destination",
+      "range_or_domain": "outside or inside reviewed intersection boundary"
+    },
+    {
+      "kind": "controller",
+      "name": "activity_request",
+      "range_or_domain": "intentional stop, stand, park or through movement"
+    },
+    {
+      "kind": "world_setup",
+      "name": "exception_setup",
+      "range_or_domain": "none, traffic conflict, law, officer or device source"
+    },
+    {
+      "kind": "world_setup",
+      "name": "approach_route",
+      "range_or_domain": "reviewed connected incoming lane and destination"
+    },
+    {
+      "kind": "world_setup",
+      "name": "capture_profile",
+      "range_or_domain": "four original RGB views, 20 Hz, 900 frames"
+    }
+  ],
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within an intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Person stops, stands or parks a vehicle within a source-reviewed intersection.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Traffic necessity is independently observed.",
+        "effect": "Prohibition exception may apply",
+        "source_clause": "necessary to avoid conflict with other traffic",
+        "trigger": "Necessary traffic conflict"
+      },
+      {
+        "description": "A specific applicable law is independently sourced.",
+        "effect": "Prohibition exception may apply",
+        "source_clause": "in compliance with law",
+        "trigger": "Compliance with law"
+      },
+      {
+        "description": "Police direction and compliance are independently observed.",
+        "effect": "Prohibition exception may apply",
+        "source_clause": "directions of a police officer",
+        "trigger": "Compliant police direction"
+      },
+      {
+        "description": "Official device direction and compliance are independently observed.",
+        "effect": "Prohibition exception may apply",
+        "source_clause": "official traffic-control device",
+        "trigger": "Compliant official device direction"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Original motion does not alone establish the legal activity class.",
+        "phrase": "stop, stand or park"
+      },
+      {
+        "note": "Original body footprint needs a reviewed highway intersection boundary.",
+        "phrase": "Within an intersection"
+      },
+      {
+        "note": "Necessity needs independent traffic observations.",
+        "phrase": "necessary to avoid conflict with other traffic"
+      },
+      {
+        "note": "A specific applicable law and compliance need independent source.",
+        "phrase": "in compliance with law"
+      },
+      {
+        "note": "The original direction and compliance need independent observation.",
+        "phrase": "directions of a police officer or official traffic-control device"
+      }
+    ],
+    "law_id": "NRS-484B-450-1c",
+    "obligation": {
+      "description": "Do not stop, stand or park within an intersection absent a statutory exception.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Observe original body, motion, activity and context for the full 900-frame interval.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-450-1c@motor_vehicle_driver"
+}

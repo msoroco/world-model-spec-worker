@@ -311,6 +311,10 @@ class NativeCarlaAdapter:
         if self.original_settings is not None:
             try:
                 self.world.apply_settings(self.original_settings)
+                restored = self.world.get_settings()
+                if (restored.synchronous_mode != self.original_settings.synchronous_mode or
+                        restored.fixed_delta_seconds != self.original_settings.fixed_delta_seconds):
+                    raise ValueError('Native CARLA world settings restoration differs')
             except BaseException as error:
                 errors.append(error)
             self.original_settings = None

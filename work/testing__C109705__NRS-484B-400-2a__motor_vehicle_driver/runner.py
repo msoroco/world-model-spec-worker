@@ -2,6 +2,8 @@
 import argparse
 import json
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
 PREFIX = "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__"
@@ -62,6 +64,69 @@ def run_native_source(config, map_packet, output, host, port, *, carla_module=No
     adapter = NativeCarlaAdapter(world, carla_module, packet, config, client=client)
     return run_capture(adapter, config, map_packet, output)
 
+
+def run_native_publication(config, map_packet, output, host, port,
+                           *, carla_module=None):
+    """Capture originals, publish Core/media, and seal after verified cleanup."""
+    from native_core import project
+    from worker_exchange.native_output import seal_capture
+
+    output = Path(output).resolve()
+    if not output.is_dir() or not (output / 'construction.json').is_file():
+        raise ValueError('existing materialized Native output required')
+    scratch = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']).resolve()
+    if '.runtime-work' not in scratch.parts:
+        raise ValueError('Native publication scratch must be under .runtime-work')
+    scratch.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix='c109705-native-', dir=scratch))
+    try:
+        original = stage / 'original'
+        run = run_native_source(config, map_packet, original, host, port,
+                                carla_module=carla_module)
+        if run.get('restoration_verified') is not True:
+            raise ValueError('Native world restoration not verified')
+        acquisition = json.loads((original / 'acquisition.json').read_text())
+        if acquisition.get('diagnostic_fixture') is not False:
+            raise ValueError('diagnostic source cannot publish Native closure')
+        core = stage / 'core'
+        receipt = project(original, core)
+        for source_root in (original, core):
+            for source in source_root.iterdir():
+                target = output / source.name
+                if target.exists():
+                    if (source.is_file() and target.is_file() and
+                            source.read_bytes() == target.read_bytes()):
+                        continue
+                    raise ValueError('Native publication target already exists: '
+                                     + source.name)
+                if source.is_dir():
+                    shutil.copytree(source, target)
+                else:
+                    shutil.copy2(source, target)
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'original_acquisition_sha256': __import__('hashlib').sha256(
+                (output / 'acquisition.json').read_bytes()).hexdigest(),
+            'core_receipt_sha256': __import__('hashlib').sha256(
+                (output / 'receipt.json').read_bytes()).hexdigest()}, indent=2) + '\n')
+        seal = seal_capture(output, frames=run['frame_count'],
+                            restoration={'restored': True,
+                                         'method': 'NativeCarlaAdapter.cleanup settings and actor release'},
+                            errors=[], encoder_exit_codes={name: 0 for name in
+                                receipt['media']['encoded_camera_sha256']},
+                            context=acquisition['map_binding'])
+        return {'case_id': config['selected_case_id'],
+                'source_frames': run['frame_count'],
+                'capture_seal_format': seal['format'],
+                'physical_acceptance_claimed': False}
+    except BaseException as error:
+        (output / 'native-run-status.json').write_text(json.dumps({
+            'errors': [type(error).__name__ + ': ' + str(error)],
+            'physical_acceptance_claimed': False}, indent=2) + '\n')
+        raise
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--check",action="store_true")
@@ -82,8 +147,14 @@ def main():
         print(json.dumps(run_native_source(config, packet, args.native_source_output,
                                            args.host or '127.0.0.1', args.port or 2000)))
     else:
-        raise RuntimeError('Native Core publication and closure seal unfinished for '
-                           + result['case_id'])
+        packet = args.map_packet or os.environ.get('CARLA_MAP_PACKET')
+        if not packet:
+            raise ValueError('source-hashed CARLA_MAP_PACKET required')
+        if not args.output_dir:
+            raise ValueError('materialized Native output required')
+        print(json.dumps(run_native_publication(config, packet, args.output_dir,
+                                               args.host or '127.0.0.1',
+                                               args.port or 2000)))
 
 if __name__=="__main__":
     main()
