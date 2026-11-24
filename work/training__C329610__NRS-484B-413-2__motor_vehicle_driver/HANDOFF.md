@@ -1,6 +1,13 @@
 # training__C329610__NRS-484B-413-2__motor_vehicle_driver
 
-Status: blocked. No delivery recording is selected or claimed.
+## 2026-11-23 current pinned offline refresh
+
+Pinned `runtime.py preflight` passed with the installed CPU dependencies, ffmpeg/ffprobe and Lean/Lake 4.28.0. `prove-current-offline.py` re-ran the current pinned `runtime.py offline` route for all six exact unselected cases and primary plus three fallbacks (24 bundles, four unit tests each, 96 total). Every source-hashed construction matched `draft-execution-manifest.json`; every pinned offline command exited 0 without simulation. Receipt `current-pinned-offline-proof.json` SHA-256 `e7964332b6dad35ecefffa435a993689020ee4b0cba2b32c76c95cdf88b73a99`; prover SHA-256 `ce45af0dbc45137eb850261a58a41ad50c265e0b4cedef768f466bc2f1484c1e`; manifest SHA-256 `0cc503e58f0feb6d468531deaff99ce8dfbdf0328284214fdbec399b6365e3e5`. All generated attempts and temporary files stayed in `.runtime-work/c329610-current-offline/`. The recorded earlier v1 package and saved proofs remain diagnostic and do not establish current v2 delivery readiness.
+
+The six accepted recording memberships are preserved; frozen review context describes commanded signal onset and labels, while actual continuous signal distance, area classification and visual facts still need source-bound equivalence review. The drafts are not selected, and current diagnostic recipe compatibility, canonical saved processing, independent delivery/comparison audits and queue entries remain CPU work. Status is `partial`.
+
+
+Historical status: blocked. No delivery recording was selected or claimed at that time.
 
 ## Source review
 

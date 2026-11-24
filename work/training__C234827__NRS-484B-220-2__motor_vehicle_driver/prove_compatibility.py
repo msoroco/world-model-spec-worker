@@ -8,6 +8,8 @@ import sys
 import tempfile
 
 CASE=Path(__file__).resolve().parent
+SCRATCH=CASE.parents[1]/'.runtime-work'
+SCRATCH.mkdir(parents=True,exist_ok=True)
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -62,7 +64,7 @@ def prove():
         for mutation,name in (('track_bytes','requested-tracks.jsonl'),
                               ('assignment_bytes','assignment-source.json'),
                               ('road_bytes','road.xodr')):
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')
                 if run(altered).returncode==0:
@@ -73,7 +75,7 @@ def prove():
         if entry['candidate_id']=='primary':
             case=entry['case_id'].removeprefix(CASE.name+'__')
             fixture=CASE/'native'/'preparation-fixtures'/case
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 prepared=Path(temporary)/'saved'
                 result=run_preparation(folder,fixture/'raw',fixture/'review.json',prepared)
                 if result.returncode!=0:raise AssertionError(result.stderr)
@@ -82,7 +84,7 @@ def prove():
                     raise AssertionError('Copied rotary preparer overclaims readiness')
                 preparation_positives.append({'case_id':entry['case_id'],
                     'saved_hashes':receipt['saved_hashes'],'passed':True})
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 altered=Path(temporary)/'raw';shutil.copytree(fixture/'raw',altered)
                 path=altered/'video_frames.jsonl'
                 path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
@@ -106,7 +108,7 @@ def prove():
                 'source_hashes':measured['source_hashes'],'passed':True})
             trigger_positives.append({'case_id':entry['case_id'],
                 'source_hashes':routed['source_hashes'],'passed':True})
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 altered=Path(temporary)/'saved';shutil.copytree(saved,altered)
                 path=altered/'island-frames.jsonl'
                 path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
@@ -118,6 +120,17 @@ def prove():
                     'mutation':'missing_camera_frame','rejected':True})
                 trigger_negatives.append({'case_id':entry['case_id'],
                     'mutation':'missing_camera_frame','rejected':True})
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
+                altered=Path(temporary)/'saved';shutil.copytree(saved,altered)
+                path=altered/'native-observed.jsonl'
+                actor_rows=[json.loads(line) for line in path.read_text().splitlines()]
+                actor_rows[-1]['ego_body_xy_m'][0][0]+=.1
+                path.write_text(''.join(json.dumps(row,sort_keys=True)+'\n' for row in actor_rows))
+                changed=run_saved(folder,altered)
+                if changed.returncode==0 or 'Rotary body corner differs at 239/0' not in changed.stderr:
+                    raise AssertionError('Copied rotary saved processor accepted altered final body corner')
+                saved_negatives.append({'case_id':entry['case_id'],
+                    'mutation':'final_body_corner','rejected':True})
             if case=='reference':
                 contrast=CASE/'native'/'saved-fixtures'/'contrast'
                 paired=run_comparison(folder,saved,contrast)
@@ -127,7 +140,7 @@ def prove():
                     raise AssertionError('Copied rotary comparison differs')
                 comparison_positives.append({'bundle':entry['bundle'],
                     'source_hashes':result['source_hashes'],'passed':True})
-                with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                     altered=Path(temporary)/'contrast';shutil.copytree(contrast,altered)
                     path=altered/'island-readback.json'
                     path.write_bytes(path.read_bytes()+b' ')

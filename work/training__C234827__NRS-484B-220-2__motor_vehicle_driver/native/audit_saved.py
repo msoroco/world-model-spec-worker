@@ -8,6 +8,8 @@ import tempfile
 from measure_saved import FILES,measure,sha
 
 HERE=Path(__file__).resolve().parent
+SCRATCH=HERE.parents[2]/'.runtime-work'
+SCRATCH.mkdir(parents=True,exist_ok=True)
 
 
 def load(path):return [json.loads(line) for line in path.read_text().splitlines()]
@@ -90,7 +92,7 @@ def audit():
             raise ValueError('Rotary saved processor replay differs')
     source=HERE/'saved-fixtures'/'reference';replayed=[]
     for mutation in mutations:
-        with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
             folder=Path(temporary)/'saved';shutil.copytree(source,folder)
             if mutation in ('missing_actor_frame','wrong_motion','body_inside_island'):
                 path=folder/'native-observed.jsonl';data=load(path)

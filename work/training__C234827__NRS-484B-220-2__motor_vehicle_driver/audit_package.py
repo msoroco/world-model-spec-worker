@@ -10,6 +10,8 @@ import tempfile
 CASE=Path(__file__).resolve().parent
 ROOT=CASE.parents[1]
 NATIVE=CASE/'native'
+SCRATCH=ROOT/'.runtime-work'
+SCRATCH.mkdir(parents=True,exist_ok=True)
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -56,7 +58,7 @@ def audit():
             proof['manifest_sha256']!=sha(manifest_path) or
             len(proof['positives'])!=8 or len(proof['negatives'])!=24 or
             len(proof.get('copied_saved_positives',[]))!=2 or
-            len(proof.get('copied_saved_negatives',[]))!=2 or
+            len(proof.get('copied_saved_negatives',[]))!=4 or
             len(proof.get('copied_trigger_positives',[]))!=2 or
             len(proof.get('copied_trigger_negatives',[]))!=2 or
             len(proof.get('copied_comparison_positives',[]))!=1 or
@@ -91,6 +93,7 @@ def audit():
             'measurement-contract.json':NATIVE/'measurement-contract.json',
             'runner.py':NATIVE/'runner.py',
             'measure_saved.py':NATIVE/'measure_saved.py',
+            'validate_body_pose.py':NATIVE/'validate_body_pose.py',
             'prepare_rotary.py':NATIVE/'prepare_rotary.py',
             'triggers.py':NATIVE/'triggers.py',
             'compare_saved.py':NATIVE/'compare_saved.py',
@@ -105,7 +108,7 @@ def audit():
             raise ValueError('Rotary copied CPU check differs')
         checks+=1
         for name in ('requested-tracks.jsonl','assignment-source.json','road.xodr'):
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 altered=Path(temporary)/'bundle';shutil.copytree(folder,altered)
                 path=altered/name;path.write_bytes(path.read_bytes()+b' ')
                 if run(altered).returncode==0:
@@ -113,7 +116,7 @@ def audit():
                 rejections+=1
         if candidate=='primary':
             fixture=NATIVE/'preparation-fixtures'/case
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 prepared=Path(temporary)/'saved'
                 result=run_preparation(folder,fixture/'raw',fixture/'review.json',prepared)
                 if result.returncode!=0:
@@ -125,7 +128,7 @@ def audit():
                         receipt['delivery_ready'] or receipt['source_kind']!='synthetic_cpu'):
                     raise ValueError('Copied rotary preparation receipt differs')
                 preparation_checks+=1
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 altered=Path(temporary)/'raw';shutil.copytree(fixture/'raw',altered)
                 path=altered/'video_frames.jsonl'
                 path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
@@ -150,7 +153,7 @@ def audit():
                     not measurement['half_circle_passage_observed']):
                 raise ValueError('Copied rotary saved receipt differs')
             saved_checks+=1;trigger_checks+=1
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                 altered=Path(temporary)/'saved';shutil.copytree(saved,altered)
                 path=altered/'island-frames.jsonl'
                 path.write_text('\n'.join(path.read_text().splitlines()[:-1])+'\n')
@@ -159,6 +162,16 @@ def audit():
                 if run_triggers(folder,altered).returncode==0:
                     raise ValueError('Copied rotary trigger accepted missing frame')
                 saved_rejections+=1;trigger_rejections+=1
+            with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
+                altered=Path(temporary)/'saved';shutil.copytree(saved,altered)
+                path=altered/'native-observed.jsonl'
+                actor_rows=[json.loads(line) for line in path.read_text().splitlines()]
+                actor_rows[-1]['ego_body_xy_m'][0][0]+=.1
+                path.write_text(''.join(json.dumps(row,sort_keys=True)+'\n' for row in actor_rows))
+                rejected=run_saved(folder,altered)
+                if rejected.returncode==0 or 'Rotary body corner differs at 239/0' not in rejected.stderr:
+                    raise ValueError('Copied rotary saved body-corner negative differs')
+                saved_rejections+=1
             if case=='reference':
                 contrast=NATIVE/'saved-fixtures'/'contrast'
                 paired=run_comparison(folder,saved,contrast)
@@ -171,7 +184,7 @@ def audit():
                         result['paired_frames']!=240 or result['accepted_comparison']):
                     raise ValueError('Copied rotary comparison receipt differs')
                 comparison_checks+=1
-                with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+                with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                     altered=Path(temporary)/'contrast';shutil.copytree(contrast,altered)
                     path=altered/'island-readback.json'
                     path.write_bytes(path.read_bytes()+b' ')

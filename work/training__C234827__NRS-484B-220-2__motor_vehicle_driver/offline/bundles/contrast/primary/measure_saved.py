@@ -5,6 +5,8 @@ import json
 import math
 from pathlib import Path
 
+from validate_body_pose import validate as validate_body_pose
+
 FILES=('native-observed.jsonl','island-readback.json','island-frames.jsonl')
 
 
@@ -41,6 +43,14 @@ def measure(folder,expected_hashes=None):
     if kind=='original_native' and (not island.get('native_map_sha256') or
                                    island.get('review_provenance')!='human_frame_review'):
         raise ValueError('Original rotary map or frame-review source absent')
+    if kind=='synthetic_cpu':
+        half_length_m,half_width_m=2.0,.9
+    else:
+        dimensions=island.get('ego_half_extents_m')
+        if not isinstance(dimensions,list) or len(dimensions)!=2 or not island.get('ego_extent_source_sha256'):
+            raise ValueError('Original rotary body extents and source absent')
+        half_length_m,half_width_m=dimensions
+    validate_body_pose(observed,half_length_m,half_width_m)
     direction=1 if case=='reference' else -1
     first_native=observed[0].get('native_frame')
     if type(first_native) is not int:
