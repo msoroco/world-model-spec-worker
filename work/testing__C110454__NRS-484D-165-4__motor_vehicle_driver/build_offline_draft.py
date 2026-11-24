@@ -10,7 +10,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "lamp_probe.py", "parking_geometry.py", "native_capture.py",
     "camera_recorder.py", "saved_lamps.py", "delivery_audit.py",
-    "comparison_audit.py",
+    "comparison_audit.py", "owned_capture.py",
 )
 
 RUNNER = '''"""Exact parked-headlamp bundle preflight."""
@@ -52,12 +52,36 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--site-packet")
+    parser.add_argument("--host", default="localhost")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print("diagnostic parked-headlamp bundle passed: " + case)
         return
-    raise ValueError("Reviewed Native intersection site, parked actor and original emission/aim capture required")
+    if not args.output_dir or not args.site_packet:
+        raise ValueError("Reviewed Native intersection site and parked actor packet required")
+    packet = json.loads(Path(args.site_packet).read_text(encoding="utf-8"))
+    if (packet.get("case_id") != case or packet.get("diagnostic_fixture") is not False or
+            not packet.get("parking_source_ref") or not packet.get("intersection_source_ref")):
+        raise ValueError("Reviewed Native site case or provenance differs")
+    import carla
+    from owned_capture import capture_owned
+
+    def transform(spec):
+        return carla.Transform(
+            carla.Location(x=spec["x_m"], y=spec["y_m"], z=spec["z_m"]),
+            carla.Rotation(pitch=spec.get("pitch_deg", 0.0),
+                           yaw=spec.get("yaw_deg", 0.0),
+                           roll=spec.get("roll_deg", 0.0)))
+
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30.0)
+    capture_owned(client, args.site_packet, args.output_dir, case_id=case,
+                  mode=case.rsplit("__", 1)[-1], transform_factory=transform,
+                  control_factory=carla.VehicleControl,
+                  light_enum=carla.VehicleLightState)
 
 
 if __name__ == "__main__":
@@ -66,8 +90,11 @@ if __name__ == "__main__":
 
 TEST = '''import json
 from pathlib import Path
+import sys
+import tempfile
+import types
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 import runner
 
 
@@ -80,6 +107,35 @@ class BundleTests(unittest.TestCase):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
             with self.assertRaisesRegex(ValueError, "Reviewed Native intersection"):
                 runner.main()
+
+    def test_live_entrypoint_binds_owned_capture(self):
+        case = runner.check()
+        fake_carla = types.SimpleNamespace(
+            Client=MagicMock(), Location=MagicMock(), Rotation=MagicMock(),
+            Transform=MagicMock(), VehicleControl=MagicMock(),
+            VehicleLightState=object())
+        with tempfile.TemporaryDirectory() as directory:
+            packet = Path(directory) / "site.json"
+            packet.write_text(json.dumps({
+                "case_id": case, "diagnostic_fixture": False,
+                "parking_source_ref": "reviewed-parking-source",
+                "intersection_source_ref": "reviewed-intersection-source"}) + "\\n")
+            args = ["runner.py", "--site-packet", str(packet),
+                    "--output-dir", str(Path(directory) / "attempt")]
+            with patch.dict(sys.modules, {"carla": fake_carla}), \\
+                    patch("owned_capture.capture_owned") as capture, \\
+                    patch("sys.argv", args):
+                runner.main()
+            capture.assert_called_once()
+            self.assertEqual(capture.call_args.kwargs["case_id"], case)
+            self.assertEqual(capture.call_args.kwargs["mode"], case.rsplit("__", 1)[-1])
+            packet.write_text(json.dumps({"case_id": "wrong", "diagnostic_fixture": False}) + "\\n")
+            with patch.dict(sys.modules, {"carla": fake_carla}), \\
+                    patch("owned_capture.capture_owned") as capture, \\
+                    patch("sys.argv", args):
+                with self.assertRaisesRegex(ValueError, "provenance differs"):
+                    runner.main()
+            capture.assert_not_called()
 
 
 if __name__ == "__main__":

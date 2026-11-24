@@ -475,3 +475,9 @@ Current SHA-256 log receipts:
 - `cpu-cross-view-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
 Remaining CPU work is genuine independently reviewed source packets for the seven exact scenes, source-bound nondiagnostic constructions, the canonical manifest, and local integration. Original Native motion and decoded pixels remain unverified. All scratch stayed under `.runtime-work/`; no Git, frozen input, runtime, batch, or shared file was edited.
+
+## 2026-11-24 reviewed candidate promotion gate
+
+`promote_reviewed_manifest.py` now assembles a canonical-format seven-case manifest only when a reviewed candidate index has all exact IDs, nondiagnostic constructions with matching hashes, passing source preflight, and case/construction-bound offline, physical, compatibility, negative, saved-processing and delivery-acceptance stage receipts. It writes only a fresh `execution-manifest.json` in this assignment, and the pinned strict gate remains independent. `tests/test_promote_reviewed_manifest.py` proves synthetic complete promotion and rejects a changed construction, omitted compatibility receipt and diagnostic construction; it does not supply real reviewed findings or stage evidence.
+
+The full focused suite passes 87 tests with one expected diagnostic-root skip (`cpu-promotion-suite.log`), pinned preflight and scoped static pass, and exact scoped strict exits 1 on truthful partial (`cpu-promotion-strict.log`). SHA-bound commands/logs are in `result.json`. Genuine independently reviewed seven-case public-highway/crossing, official-device, human-driver and subsection-4 source bytes, returnable nondiagnostic case proof receipts, active semantic binding and local integration remain CPU work; original Native motion and pixels remain unverified.

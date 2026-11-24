@@ -143,7 +143,32 @@ def capture_reviewed(adapter, case_id: str, output: Path, *, source_packet: Path
     root = source_packet.parent
     att = root / packet["blindness_attestation"]["path"]
     cue = root / packet["carried_cue"]["path"]
+    output = Path(output)
     manifest = capture(adapter, case_id, output, attestation=att, carried_cue=cue)
+    if reviewed.prepare(source_packet)["reviewed_source_bindings"] != plan["reviewed_source_bindings"]:
+        raise ValueError("reviewed original sources changed during Native capture")
+    source_dir = output / "reviewed-source"
+    if source_dir.exists():
+        raise ValueError("reviewed source custody directory already exists")
+    source_dir.mkdir()
+    paths = [source_packet]
+    for name in ("reviewed_map_route", "blindness_attestation", "carried_cue"):
+        source = root / packet[name]["path"]
+        paths.append(source)
+        record = json.loads(source.read_text(encoding="utf-8"))
+        if name != "reviewed_map_route":
+            paths.append(root / record["original_source"]["path"])
+    for source in paths:
+        relative = source.relative_to(root)
+        destination = source_dir / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, destination)
+    retained = source_dir / source_packet.name
+    copied = reviewed.prepare(retained)
+    if copied["reviewed_source_bindings"] != plan["reviewed_source_bindings"]:
+        raise ValueError("reviewed source custody copy differs")
+    manifest["reviewed_source_packet"] = {
+        "path": str(retained.relative_to(output)), "sha256": _sha(retained)}
     manifest["reviewed_source_bindings"] = plan["reviewed_source_bindings"]
     manifest["reviewed_map_id"] = plan["map_id"]
     (output / "saved-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")

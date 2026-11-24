@@ -90,7 +90,9 @@ class DeliveryAuditTests(unittest.TestCase):
             m,t,e,o,_ = self.packets()
             for name, values in [('video_frames.jsonl',m),('trace.jsonl',t),
                                  ('ego-body-history.jsonl',e),
-                                 ('other-body-history.jsonl',o)]:
+                                 ('other-body-history.jsonl',o),
+                                 ('controller-history.jsonl',
+                                  [dict(row, ego_brake=1.0) for row in t])]:
                 (root/name).write_text(''.join(json.dumps(v)+'\n' for v in values))
             for name in ORIGINALS:
                 if not (root/name).exists():
@@ -114,6 +116,34 @@ class DeliveryAuditTests(unittest.TestCase):
                       'legal_verdict_claimed':False}
             write('result.json',result)
             self.assertEqual(audit_sources(root,case)['frames'],3)
+            control = root/'controller-history.jsonl'
+            saved_control = control.read_text()
+            changed_control = [json.loads(line) for line in saved_control.splitlines()]
+            changed_control[1]['ego_brake'] = 1.5
+            control.write_text(''.join(json.dumps(row)+'\n' for row in changed_control))
+            acquisition = json.loads((root/'acquisition.json').read_text())
+            acquisition['controller-history.jsonl']['sha256'] = sha(control)
+            write('acquisition.json', acquisition)
+            seal = json.loads((root/'capture-seal.json').read_text())
+            seal['sources']['controller-history.jsonl'] = sha(control)
+            write('capture-seal.json', seal)
+            exit_receipt = json.loads((root/'native-exit.json').read_text())
+            exit_receipt['capture_seal_sha256'] = sha(root/'capture-seal.json')
+            write('native-exit.json', exit_receipt)
+            owner = json.loads((root/'owner-release.json').read_text())
+            owner['native_exit_sha256'] = sha(root/'native-exit.json')
+            write('owner-release.json', owner)
+            with self.assertRaisesRegex(ValueError, 'controller frame or brake join'):
+                audit_sources(root,case)
+            control.write_text(saved_control)
+            acquisition['controller-history.jsonl']['sha256'] = sha(control)
+            write('acquisition.json', acquisition)
+            seal['sources']['controller-history.jsonl'] = sha(control)
+            write('capture-seal.json', seal)
+            exit_receipt['capture_seal_sha256'] = sha(root/'capture-seal.json')
+            write('native-exit.json', exit_receipt)
+            owner['native_exit_sha256'] = sha(root/'native-exit.json')
+            write('owner-release.json', owner)
             reviewed = json.loads((root/'reviewed-context.json').read_text())
             reviewed['other_left_turn_intent'] = True
             write('reviewed-context.json', reviewed)

@@ -46,12 +46,44 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--site-packet")
+    parser.add_argument("--native-run-id")
+    parser.add_argument("--uncertainty-mps", type=float)
+    parser.add_argument("--host", default="localhost")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     config = check()
     if args.check:
         print("exact diagnostic speed bundle passed: " + config["selected_case_id"])
         return
-    raise ValueError("Reviewed C10301 route, access-aisle authority and Native site packet required")
+    if not all((args.output_dir, args.site_packet, args.native_run_id)) or args.uncertainty_mps is None:
+        raise ValueError("Reviewed C10301 route, access-aisle authority and Native site packet required")
+    packet_path = Path(args.site_packet)
+    packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    if packet.get("diagnostic_fixture") is not False or packet.get("case_id") != config["selected_case_id"]:
+        raise ValueError("Reviewed C10301 Native site packet provenance or case differs")
+    if not packet.get("route_source_ref") or not packet.get("access_aisle_source_ref"):
+        raise ValueError("Reviewed C10301 route and access-aisle sources required")
+    attempt = Path(args.output_dir)
+    if attempt.exists() and any(attempt.iterdir()):
+        raise ValueError("Native attempt output already exists")
+    import carla
+    from owned_capture import capture_owned
+
+    def transform(spec):
+        return carla.Transform(
+            carla.Location(x=spec["x_m"], y=spec["y_m"], z=spec["z_m"]),
+            carla.Rotation(pitch=spec.get("pitch_deg", 0.0),
+                           yaw=spec.get("yaw_deg", 0.0),
+                           roll=spec.get("roll_deg", 0.0)))
+
+    def control(*, throttle, brake):
+        return carla.VehicleControl(throttle=throttle, brake=brake)
+
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30.0)
+    capture_owned(client, packet_path, attempt, config["selected_case_id"],
+                  args.native_run_id, args.uncertainty_mps, transform, control)
 
 
 if __name__ == "__main__":
@@ -60,8 +92,11 @@ if __name__ == "__main__":
 
 TEST = '''import json
 from pathlib import Path
+import sys
+import tempfile
+import types
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import runner
 
 
@@ -75,6 +110,40 @@ class BundleTests(unittest.TestCase):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
             with self.assertRaisesRegex(ValueError, "Reviewed C10301 route"):
                 runner.main()
+
+    def test_source_gated_live_capture_binding(self):
+        config = runner.check()
+        carla = types.SimpleNamespace(
+            Client=MagicMock(), Location=MagicMock(), Rotation=MagicMock(),
+            Transform=MagicMock(), VehicleControl=MagicMock())
+        with tempfile.TemporaryDirectory() as directory:
+            packet = Path(directory) / "reviewed-site.json"
+            packet.write_text(json.dumps({
+                "case_id": config["selected_case_id"],
+                "diagnostic_fixture": False,
+                "route_source_ref": "reviewed-route-source",
+                "access_aisle_source_ref": "reviewed-aisle-source"}) + "\\n")
+            args = ["runner.py", "--output-dir", str(Path(directory) / "attempt"),
+                    "--site-packet", str(packet), "--native-run-id", "original-1",
+                    "--uncertainty-mps", "0.1"]
+            with patch.dict(sys.modules, {"carla": carla}), \\
+                    patch("owned_capture.capture_owned") as capture, \\
+                    patch("sys.argv", args):
+                runner.main()
+            capture.assert_called_once()
+            self.assertEqual(capture.call_args.args[3], config["selected_case_id"])
+            self.assertEqual(capture.call_args.args[4], "original-1")
+            self.assertFalse(capture.call_args.kwargs)
+            packet.write_text(json.dumps({
+                "case_id": "wrong", "diagnostic_fixture": False,
+                "route_source_ref": "reviewed-route-source",
+                "access_aisle_source_ref": "reviewed-aisle-source"}) + "\\n")
+            with patch.dict(sys.modules, {"carla": carla}), \\
+                    patch("owned_capture.capture_owned") as capture, \\
+                    patch("sys.argv", args):
+                with self.assertRaisesRegex(ValueError, "provenance or case differs"):
+                    runner.main()
+            capture.assert_not_called()
 
 
 if __name__ == "__main__":

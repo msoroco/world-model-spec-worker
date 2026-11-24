@@ -15,6 +15,7 @@ import tempfile
 from pathlib import Path
 
 from approach import _verified, measure
+from native_capture import _checked_graph
 from saved_delivery import FRAMES, audit_original_pixels
 
 
@@ -47,6 +48,28 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
     history, mapping = _rows(history_path), _rows(mapping_path)
     if len(history) != FRAMES or len(mapping) != FRAMES:
         raise ValueError('diagnostic Core packet requires complete original capture')
+    graph_sources = []
+    graph_manifest_sha = None
+    if 'graph-frames.jsonl' in acquisition:
+        graph_manifest_path, graph_manifest_sha = _verified(attempt, 'graph-frames.jsonl', acquisition)
+        graph_rows = _rows(graph_manifest_path)
+        if len(graph_rows) != FRAMES:
+            raise ValueError('original adapter graph capture is incomplete')
+        for index, (body, graph_row) in enumerate(zip(history, graph_rows)):
+            frame, time_s = body['frame'], body['time_s']
+            expected = f'graphs/abstract/{frame:08d}.adapter.json'
+            if (graph_row.get('frame') != frame or
+                    graph_row.get('adapter_graph') != expected or
+                    graph_row.get('simulation_time') != time_s):
+                raise ValueError('original adapter graph frame join differs')
+            source = attempt / expected
+            if source.is_symlink() or not source.is_file() or not source.resolve().is_relative_to(attempt.resolve()):
+                raise ValueError('original adapter graph source missing or escaped')
+            raw = source.read_bytes()
+            if hashlib.sha256(raw).hexdigest() != graph_row.get('sha256'):
+                raise ValueError('original adapter graph source hash differs')
+            _checked_graph(raw, frame, time_s)
+            graph_sources.append((index, raw))
     pixels = audit_original_pixels(attempt, acquisition['case_id'],
                                    allow_diagnostic=True)
     trace, evidence, frames = [], [], []
@@ -86,13 +109,19 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
                                  'body_vertices_m': [[x, y, z] for x, y in vertices for z in (0.0, 1.5)]},
                          'original_observations': observed, 'world': {'weather': {}}})
         frames.append({'frame': frame, 'simulation_time': time_s,
-                       'adapter_graph': f'graphs/base/{index:08d}.adapter.json'})
+                       'adapter_graph': (f'graphs/abstract/{frame:08d}.adapter.json'
+                                         if graph_sources else f'graphs/base/{index:08d}.adapter.json')})
     output.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=output.name + '.incomplete-', dir=output.parent))
     try:
         hashes = {'trace.jsonl': _save(stage / 'trace.jsonl', trace),
                   'capture/evidence.jsonl': _save(stage / 'capture/evidence.jsonl', evidence),
                   'capture/native/frames.jsonl': _save(stage / 'capture/native/frames.jsonl', frames)}
+        if graph_sources:
+            for index, raw in graph_sources:
+                target = stage / frames[index]['adapter_graph']
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(raw)
         receipt = {'kind': 'diagnostic_core_join_packet', 'case_id': acquisition['case_id'],
                    'source_sha256': {'road.xodr': road_sha,
                                      'intersection-context.json': context_sha,
@@ -104,7 +133,9 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
                    'original_media_sha256': pixels['media_sha256'],
                    'selected_measurement': measured['nearest_body_edge_range_m'],
                    'physical_completion': False, 'legal_judgment': 'unresolved',
-                   'graph_capture_required': True}
+                   'graph_capture_required': not bool(graph_sources)}
+        if graph_manifest_sha:
+            receipt['source_sha256']['graph-frames.jsonl'] = graph_manifest_sha
         (stage / 'receipt.json').write_text(json.dumps(receipt, indent=2, allow_nan=False) + '\n')
         if output.exists() or output.is_symlink():
             raise ValueError('refusing to overwrite diagnostic Core packet')

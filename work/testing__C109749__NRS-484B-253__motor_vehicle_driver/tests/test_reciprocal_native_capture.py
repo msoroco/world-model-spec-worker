@@ -8,6 +8,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from reciprocal_native_capture import capture_reciprocal
+from reciprocal_saved import audit_saved
 from test_native_acquisition import Adapter, NativeAcquisition, body
 from saved_left_turn import ASSIGNMENT_ID
 
@@ -28,6 +29,17 @@ class ThreeActor(Adapter):
                  "later_opponent_driver_control_source": "original get_control"}
         if self.omit:
             del later["later_opponent_vertices"]
+        return frame, time_s, primary, cameras, later
+
+
+class OrderedThreeActor(ThreeActor):
+    def tick(self):
+        frame, time_s, primary, cameras, later = super().tick()
+        index = frame - 100
+        primary["opponent_vertices"] = body(0 if index == 0 else 10, 0)
+        primary["ego_turn_committed"] = index >= 2
+        later["later_opponent_vertices"] = body(10 if index < 3 else 0, 0)
+        later["later_opponent_braking"] = index == 2
         return frame, time_s, primary, cameras, later
 
 
@@ -66,6 +78,17 @@ class ReciprocalNativeCaptureTests(unittest.TestCase):
                                        output=self.fixture.root / fault,
                                        frame_count=3)
                 self.assertFalse((self.fixture.root / fault / "acquisition-receipt.json").exists())
+
+    def test_900_frame_native_source_feeds_saved_reciprocal_join(self):
+        case = ASSIGNMENT_ID + "__reciprocal_yield"
+        out = self.fixture.root / "complete"
+        capture_reciprocal(adapter=OrderedThreeActor(), case_id=case,
+                           map_path=self.fixture.map_path, output=out,
+                           frame_count=900)
+        observed = audit_saved(out, case_id=case)
+        self.assertEqual(observed["joined_original_frames"], 900)
+        self.assertTrue(observed["observations"]["later_braking_during_conflict"])
+        self.assertEqual(observed["physical_acceptance"], "unverified")
 
 
 if __name__ == "__main__":

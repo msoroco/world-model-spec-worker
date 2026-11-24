@@ -186,3 +186,9 @@ Forty-three focused CPU tests, pinned preflight and scoped static pass. Exact sc
 - `cpu-semantic-preflight.log` SHA256 `53b2dc44115dca8de01b83baa4fc603d1e3637323751f2f477905f827df42191`; exit 0.
 - `cpu-semantic-static.log` SHA256 `f7103607cf441b4b4422aedc645f5c195966afff4737211c9e74cf1887c18534`; exit 0.
 - `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+
+### Reviewed-source Native adapter checkpoint (2026-11-24)
+
+`native_source_adapter.ReviewedAdapter` gates the existing Native capture on exact case/law identity, a live OpenDRIVE hash and retained SHA-bound reviewer-cited highway, center-reference, and opposing-lane or one-way-authority documents. It checks the delegate’s original lane context against those source hashes. In the one-way case it copies the verified authority bytes into the attempt before `native_capture` seals them. The operator still supplies the actual CARLA actor, ray, camera and world-restoration delegate; synthetic source documents in tests do not establish the road designation.
+
+Six focused adapter tests include an end-to-end three-frame diagnostic capture and negatives for source tampering, map drift and Native lane-context drift. The full 49-test assignment suite, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial status. Proof log hashes are in `result.json`. Remaining CPU work includes real delegate/controller wiring, canonical per-case bundles, offline/compatibility, saved-only process and independent delivery receipts. Physical crest behavior and authority review remain unverified.

@@ -42,6 +42,18 @@ class PermissionSemanticTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "undeclared variable"):
             validate(self.template, cases, self.plan, self.assignment)
 
+    def test_duplicate_proposed_case_rejected(self):
+        cases = copy.deepcopy(self.cases)
+        cases["cases"].append(copy.deepcopy(cases["cases"][1]))
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            validate(self.template, cases, self.plan, self.assignment)
+
+    def test_omitted_planned_case_rejected(self):
+        plan = copy.deepcopy(self.plan)
+        plan["cases"].pop()
+        with self.assertRaisesRegex(ValueError, "plan case identity"):
+            validate(self.template, self.cases, plan, self.assignment)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from parking_pose import REQUESTS
@@ -18,6 +19,8 @@ from source_review import validate
 
 def bind(park_packet: Path, stand_packet: Path, *, edge_offset_m=2.5,
          approach_distance_m=8.0) -> dict:
+    if edge_offset_m != 2.5:
+        raise ValueError('reviewed placement requires constructed 2.5 m edge offset')
     packets = {'park': Path(park_packet), 'stand': Path(stand_packet)}
     contexts = {kind: validate(path, source_root=path.parent)
                 for kind, path in packets.items()}
@@ -73,11 +76,26 @@ def bind(park_packet: Path, stand_packet: Path, *, edge_offset_m=2.5,
                 park['target_pose']['target_forward_xy'] !=
                 stand['target_pose']['target_forward_xy']):
             raise ValueError('stand/park placement differs')
+    for scene in scenes.values():
+        if scene['target_pose']['edge_offset_request_m'] != edge_offset_m:
+            raise ValueError('reviewed placement offset differs from scene')
     grid = reviewed_placement_grid(packets['park'], packets['park'].parent,
                                    edge_offsets_m=(edge_offset_m,))
     angles = grid['offsets'][0]['feasible_angles_deg']
     if 0 not in angles or 30 not in angles:
         raise ValueError('reviewed roadway cannot contain required full-body poses')
+    grid_samples = {row['angle_deg']: row for row in grid['offsets'][0]['samples']}
+    for suffix, scene in scenes.items():
+        pose = scene['target_pose']
+        sample_angle = 30 if 'angled' in suffix else 0
+        sample = grid_samples[sample_angle]
+        expected_forward = ([-component for component in sample['forward_xy']]
+                            if suffix.endswith('reverse') else sample['forward_xy'])
+        if (not all(math.isclose(a, b, abs_tol=1e-9)
+                    for a, b in zip(pose['target_center_xy_m'], sample['center_xy_m'])) or
+                not all(math.isclose(a, b, abs_tol=1e-9)
+                        for a, b in zip(pose['target_forward_xy'], expected_forward))):
+            raise ValueError('reviewed placement grid differs from constructed pose')
     return {'format': 'parking-reviewed-six-case-binding-v1',
             'native_map': surveys['park']['native_map'],
             'packet_sha256': {kind: contexts[kind]['reviewed_packet_sha256']

@@ -56,6 +56,19 @@ class ReviewedSourcesTest(unittest.TestCase):
         self.assertEqual(len(plan["reviewed_source_bindings"]), 6)
         self.assertFalse(plan["physical_acceptance_claimed"])
 
+    def test_materialized_bundle_folder_preserves_source_identity(self):
+        self.packet()
+        bundle = self.root / "offline-materialization"
+        bundle.mkdir()
+        for name in ("blind_encounter.py", "reviewed_sources.py"):
+            (bundle / name).write_bytes((ROOT / name).read_bytes())
+        spec = importlib.util.spec_from_file_location("materialized_reviewed_sources", bundle / "reviewed_sources.py")
+        materialized = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = materialized
+        spec.loader.exec_module(materialized)
+        self.assertEqual(materialized.ASSIGNMENT_ID, ROOT.name)
+        self.assertEqual(materialized.prepare(self.root / "packet.json")["pedestrian_actor_id"], 5)
+
     def test_rejects_changed_map_and_wrong_cue(self):
         packet = self.packet()
         (self.root / "map.json").write_text("{}\n", encoding="utf-8")
@@ -85,6 +98,10 @@ class ReviewedSourcesTest(unittest.TestCase):
                                              source_packet=self.root / "packet.json")
         self.assertEqual(result["reviewed_map_id"], "TownFixture")
         self.assertEqual(len(result["reviewed_source_bindings"]), 6)
+        self.assertEqual(module.prepare(self.root / "attempt/reviewed-source/packet.json")["reviewed_source_bindings"],
+                         result["reviewed_source_bindings"])
+        self.assertEqual(result["reviewed_source_packet"]["sha256"],
+                         hashlib.sha256((self.root / "packet.json").read_bytes()).hexdigest())
         self.assertEqual(run.call_args.kwargs["attestation"], self.root / "att.json")
         with self.assertRaisesRegex(ValueError, "exact case mismatch"):
             native.capture_reviewed(object(), "white_roll_through", self.root / "other",

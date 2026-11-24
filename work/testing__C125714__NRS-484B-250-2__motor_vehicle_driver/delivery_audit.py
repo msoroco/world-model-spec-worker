@@ -19,7 +19,7 @@ CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 ORIGINALS = ('road.xodr', 'site-context.json', 'trace.jsonl',
              'video_frames.jsonl', 'ego-body-history.jsonl',
-             'other-body-history.jsonl', *CAMERAS)
+             'other-body-history.jsonl', 'controller-history.jsonl', *CAMERAS)
 CHECKS = ('native_source', 'all_participants', 'time_join',
           'full_video_decode', 'actual_pixels', 'physical_completion')
 
@@ -37,11 +37,12 @@ def rows(path):
             if line.strip()]
 
 
-def verify_frame_join(mapping, trace, ego, other, site, expected_frames):
+def verify_frame_join(mapping, trace, ego, other, site, expected_frames, controller=None):
     """Check both actor identities, all original ticks, and 20 Hz timing."""
     if (not mapping or len(mapping) != expected_frames or
             len(trace) != len(mapping) or len(ego) != len(mapping) or
-            len(other) != len(mapping)):
+            len(other) != len(mapping) or
+            (controller is not None and len(controller) != len(mapping))):
         raise ValueError('complete original participant/trace/frame count missing')
     if (type(site.get('ego_actor_id')) is not int or
             type(site.get('other_actor_id')) is not int or
@@ -62,6 +63,14 @@ def verify_frame_join(mapping, trace, ego, other, site, expected_frames):
                          abs(time_s-previous[1]-.05) > 1e-4):
             raise ValueError('original frame clock is not contiguous at 20 Hz')
         previous = (frame,time_s)
+    if controller is not None:
+        for control, original in zip(controller, mapping):
+            if (control.get('frame') != original['carla_frame'] or
+                    control.get('time_s') != original['time_s'] or
+                    type(control.get('ego_brake')) not in (int, float) or
+                    not math.isfinite(control['ego_brake']) or
+                    not 0 <= control['ego_brake'] <= 1):
+                raise ValueError('original controller frame or brake join changed')
     return len(mapping)
 
 
@@ -123,7 +132,8 @@ def audit_sources(attempt, case_id):
     expected = round(config['duration_s']*config['rate_hz'])
     count = verify_frame_join(*(rows(attempt/name) for name in
           ('video_frames.jsonl','trace.jsonl','ego-body-history.jsonl',
-           'other-body-history.jsonl')), site, expected)
+           'other-body-history.jsonl')), site, expected,
+           controller=rows(attempt/'controller-history.jsonl'))
     result = read(attempt/'result.json')
     if (result.get('case_id') != case_id or
             any(result.get(key) is not True for key in

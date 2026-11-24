@@ -13,7 +13,7 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from native_capture import capture
+from native_capture import capture, _checked_graph
 from core_packet import project as project_core_packet
 from runner import run_capture
 from approach import measure
@@ -88,6 +88,58 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_graph_envelope_rejects_duplicate_and_invalid_edges(self):
+        graph = {'format': 'native-adapter-graph-v1', 'multigraph': False,
+                 'metadata': {'frame': 100, 'simulation_time_s': 0.0},
+                 'nodes': [{'id': 'ego', 'attributes': {}},
+                           {'id': 'other', 'attributes': {}}],
+                 'edges': [{'source': 0, 'target': 1, 'attributes': {}}]}
+        _checked_graph(json.dumps(graph).encode(), 100, 0.0)
+        graph['nodes'][1]['id'] = 'ego'
+        with self.assertRaisesRegex(ValueError, 'duplicated'):
+            _checked_graph(json.dumps(graph).encode(), 100, 0.0)
+        graph['nodes'][1]['id'] = 'other'
+        graph['edges'][0]['target'] = True
+        with self.assertRaisesRegex(ValueError, 'edge malformed'):
+            _checked_graph(json.dumps(graph).encode(), 100, 0.0)
+
+    def test_original_adapter_graphs_join_core_packet_and_reject_tamper(self):
+        class GraphAdapter(FakeAdapter):
+            def read_graph(self, frame):
+                graph = {'format': 'native-adapter-graph-v1', 'multigraph': False,
+                         'metadata': {'frame': frame,
+                                      'simulation_time_s': (frame - 100) * .05},
+                         'nodes': [{'id': 'ego', 'attributes': {'actor_id': 7}}],
+                         'edges': []}
+                return json.dumps(graph, separators=(',', ':')).encode()
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(GraphAdapter(), CASE, survey, attempt)
+            receipt = project_core_packet(attempt, root / 'core-packet')
+            self.assertFalse(receipt['graph_capture_required'])
+            self.assertEqual(len(list((root / 'core-packet/graphs/abstract').glob('*.adapter.json'))), 900)
+            self.assertEqual(json.loads((root / 'core-packet/graphs/abstract/00000100.adapter.json').read_text())['metadata']['frame'], 100)
+            original = attempt / 'graphs/abstract/00000100.adapter.json'
+            original.write_bytes(original.read_bytes() + b' ')
+            with self.assertRaisesRegex(ValueError, 'graph source hash differs'):
+                project_core_packet(attempt, root / 'tampered-core-packet')
+            self.assertFalse((root / 'tampered-core-packet').exists())
+
+    def test_attested_adapter_requires_original_graph_callback(self):
+        adapter = FakeAdapter()
+        adapter.native_attested = True
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            with self.assertRaisesRegex(ValueError, 'requires original adapter graph'):
+                capture(adapter, CASE, survey, root / 'attempt')
+            self.assertFalse((root / 'attempt').exists())
+
     def test_diagnostic_core_packet_publish_is_atomic(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

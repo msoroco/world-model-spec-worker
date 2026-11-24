@@ -28,8 +28,14 @@ def validate(template, proposal, plan, assignment):
     if template["structure"].get("judgment_calls_needed") or template["structure"].get("numeric_conditions"):
         raise ValueError("permission-only plain-rule scope required")
     prefix = assignment["assignment_id"] + "__"
+    proposed_ids = [case.get("case_id") for case in proposal["cases"]]
+    if len(set(proposed_ids)) != len(proposed_ids) or proposed_ids.count(prefix + "baseline") != 1:
+        raise ValueError("duplicate or missing permission baseline/case identity")
     cases = {case["case_id"]: case for case in proposal["cases"] if case["target_type"] != "baseline"}
     expected = {prefix + kind for pair, _ in PAIRS.values() for kind in pair}
+    planned_ids = [case.get("case_id") for case in plan["cases"]]
+    if len(planned_ids) != len(set(planned_ids)) or set(planned_ids) != expected:
+        raise ValueError("permission plan case identity mismatch")
     if set(cases) != expected or any(c["target_law_id"] != assignment["law_id"] or
                                      c["target_type"] != "boundary_probe" for c in cases.values()):
         raise ValueError("permission boundary case identity/type mismatch")

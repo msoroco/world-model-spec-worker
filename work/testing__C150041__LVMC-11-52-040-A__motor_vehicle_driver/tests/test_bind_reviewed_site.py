@@ -50,6 +50,16 @@ class ReviewedSiteBindingTests(unittest.TestCase):
         self.assertTrue(all(not scene['physical_realization_claimed']
                             for scene in result['scenes'].values()))
 
+    def test_reviewed_grid_offset_cannot_differ_from_constructed_scene(self):
+        paths = pair(self.root)
+        result = bind(paths['park'], paths['stand'])
+        self.assertEqual(result['placement_grid']['offsets'][0]['edge_offset_m'], 2.5)
+        for scene in result['scenes'].values():
+            self.assertEqual(scene['target_pose']['edge_offset_request_m'], 2.5)
+            self.assertEqual(scene['target_pose']['target_center_xy_m'], (0.0, 2.5))
+        with self.assertRaisesRegex(ValueError, 'requires constructed 2.5 m'):
+            bind(paths['park'], paths['stand'], edge_offset_m=0.25)
+
     def test_changed_roadway_or_lawful_direction_rejected(self):
         for mutation, expected in (
             (lambda item: item['context'].update(roadway_polygon_xy_m=[[-25, 0], [25, 0], [25, 9], [-25, 9]]), 'fixed reviewed site differs'),

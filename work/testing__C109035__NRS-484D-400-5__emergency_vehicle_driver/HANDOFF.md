@@ -137,3 +137,9 @@ The 46-test focused suite (including four new semantic negatives), pinned prefli
 - `cpu-semantic-offline.log` SHA256 `edaec005a6f174c6b87ced3e0d4ce12fecaa1f2fddf3ae892559f7278ebbf3ca`; exit 0.
 - `cpu-semantic-static.log` SHA256 `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d`; exit 0.
 - `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+
+## 2026-11-24 exact comparison membership checkpoint
+
+`comparison_audit.compare_exact` binds saved comparison records to all exact case IDs in the frozen case plan. It rejects substituted or omitted cases, wrong event/device controls for the exact case, and changes to fixed source hashes. The returned receipt includes the case-plan SHA-256 and claims only a source join. This tightens the three comparison paths; synthetic fixtures do not establish a physical comparison.
+
+Fifty focused tests, pinned preflight and scoped static check passed. Exact scoped strict exits 1 on truthful partial status. Canonical execution manifest, real reviewed site, independent dispatch/equipment and device readback, exact saved-only/delivery receipts, and physical 500-foot audibility evidence remain. Proof logs and SHA-256 values are in `result.json`.

@@ -83,3 +83,9 @@ Thirty-four focused tests, pinned preflight and scoped static pass. Exact scoped
 - `cpu-review-join-preflight.log` SHA256 `df1fda3108bd44391df25cc3b2367b5803e891823afe2c88ac31ffa1deedfa67`; exit 0.
 - `cpu-review-join-static.log` SHA256 `cc5926eaa4badf150cb317b2f4af80f7a581d99334be67c65f61d736bbe79873`; exit 0.
 - `cpu-review-join-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+
+## 2026-11-24 independent controller-history delivery join
+
+`delivery_audit.py` now treats original `controller-history.jsonl` as a required sealed Native source. It checks each controller frame/time against the same original four-camera and participant frame map and requires finite bounded ego braking. The focused test changes a brake value to 1.5, rehashes acquisition, capture seal, Native exit and owner release, and confirms the independent audit still rejects the invalid source. This closes a saved-delivery gap for the two controlled-yield cases without claiming a legal threshold.
+
+Seven focused audit tests and the full 34-test suite pass (`cpu-controller-audit-tests.log`, `cpu-controller-suite.log`). Pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial (`cpu-controller-strict.log`). All current command/log SHA receipts are in `result.json`. Reviewed original median-opening site and accepted-evidence review, exact statutory exception construction, canonical saved-only delivery command proofs and physical source evidence remain CPU work.

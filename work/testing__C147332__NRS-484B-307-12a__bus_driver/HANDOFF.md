@@ -155,3 +155,9 @@ Current SHA-256 proof logs:
 - `cpu-footprint-readiness-components.log` exit 0: `c921fc22b7f407d596d4b8ca525f215e6eb56ec3b2a24919b3c8bd746d983e36`
 - `cpu-footprint-static.log` exit 0: `630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16`
 - `cpu-footprint-strict.log` exit 1: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+
+## 2026-11-24 permission case inventory hardening checkpoint
+
+The worker-owned `permission_semantic_validation.py` proposal now rejects a duplicated proposed case, missing baseline, duplicated planned case, or an omitted planned exact case. These are source-preserving controls for the permission-only route: the dark lane and stationary green-arrow probes remain boundary observations, not asserted violations. `proposals/semantic-validator-repair.json` was rebound to the current validator code, proof and focused-test hashes. The pinned runtime validator was not modified or bypassed.
+
+Six focused tests and the complete 31-test assignment suite pass; pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial status. New log hashes are recorded in `result.json`. Pinned semantic integration still requires a permission-specific local resolution, and reviewed highway/official-device sources plus original Native motion/pixels remain absent.

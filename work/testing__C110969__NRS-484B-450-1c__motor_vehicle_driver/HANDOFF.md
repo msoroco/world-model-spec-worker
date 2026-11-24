@@ -86,3 +86,9 @@ Current SHA-256 log receipts:
 - `cpu-box-rotation-offline-through_motion.log`: `0cf3f71557bad2fb8b36d356fe957fee57700ede800e9cbdabbfddc68de560e0`
 
 Next CPU work: review and retain original map/exception source packets, implement the production camera sensor adapter, then prepare source-bound canonical proposals/manifest, positive/negative compatibility, saved-only processing and independent delivery receipts. Keep physical contact and legal outcome unresolved until original capture and review. No Git or frozen/runtime/batch/shared edit was made.
+
+## 2026-11-24 Native RGB camera callback adapter
+
+`native_camera_adapter.py` now consumes four existing Native RGB camera sensors at the exact just-ticked frame. It validates sensor type and configured dimensions, rejects missing callbacks and invalid BGRA length, converts callback bytes losslessly to PNG, and closes sensors on cleanup. Sensor placement and physical visibility still require original review. The adapter is embedded in all nine rebuilt exact diagnostic bundles.
+
+The pinned preflight, 28 focused tests, nine exact offline checks, and scoped static check pass. Exact scoped strict exits 1 because result status remains truthful partial. New log receipts are SHA256-bound in `result.json.tests`. Next CPU construction remains reviewed map/exception context, production scene integration and original capture, canonical proposals/manifest, positive/negative compatibility, saved processing and independent delivery audit.

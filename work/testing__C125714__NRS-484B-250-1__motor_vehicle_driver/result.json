@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C125714__NRS-484B-250-1__motor_vehicle_driver",
   "input_sha256": "ec0cbeac3e519b18f347080dce2f9887e8903172b707e499b4444659fe8c0900",
-  "status": "partial",
   "readiness_kind": "seven_exact_diagnostic_cases_compatibility_and_saved_processing_cpu_proven",
-  "applied_update": 0,
+  "reason": "Seven-case reviewed candidate promotion helper now refuses diagnostic constructions, missing/changed source preflight and missing/stale CPU stage receipts before assembling a canonical-format manifest. Two focused positive/negative tests and the 87-test suite pass (one expected diagnostic-root skip), as do pinned preflight and scoped static. Exact strict remains exit 1 on truthful partial. Genuine reviewed source root, returnable seven-case stage receipts, canonical semantic binding and local integration still require worker CPU construction; Native motion/pixels unverified.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125714-measurement-runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_saved.py",
@@ -456,21 +460,21 @@
       "sha256": "2c15129145c6ec8db49e6c8b1c8716ab9d1618ecde70ff77870b4499284d4363"
     },
     {
-      "log": "source-custody-seven-proof.log",
       "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c125714-source-custody-runtime\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_threecase_diagnostics.py --output-root .runtime-work/c125714-source-custody-seven-v1",
       "exit_code": 0,
+      "log": "source-custody-seven-proof.log",
       "sha256": "ea3f2c4a2feee4d6de43a20ebfff01b611f49a1c9f9bd19f7da02d8c312811c5"
     },
     {
-      "log": "source-custody-fallback-proof.log",
       "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c125714-source-custody-runtime\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/prove_fallback_diagnostics.py --output-root .runtime-work/c125714-source-custody-fallback-v1 --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
       "exit_code": 0,
+      "log": "source-custody-fallback-proof.log",
       "sha256": "5c693168af4d8a6b2f4e394a1dc695669cdfc691f39851a5324cb188400987c6"
     },
     {
-      "log": "source-custody-offline.log",
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C125714__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125714-source-custody-offline-2 --python \"$PWD/.venv-cpu/bin/python\" --candidate primary",
       "exit_code": 0,
+      "log": "source-custody-offline.log",
       "sha256": "8ea84f2ea37d6a9b433e5c3dd90c0335481093521e1b73d1c97e6d9057265b48"
     },
     {
@@ -946,10 +950,36 @@
       "exit_code": 1,
       "log": "cpu-cross-view-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/tests -p test_promote_reviewed_manifest.py -v",
+      "exit_code": 0,
+      "log": "cpu-promotion-tests.log",
+      "sha256": "78b160bd69f28c5033e9e50cd1b96feb6e14f1d7aa1d199a06a9e789c8f3d715"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-promotion-suite.log",
+      "sha256": "fb25aa533fd0c7d4f70627de6ae508eb64ae677c801da92dd06497d975078fe6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-promotion-preflight.log",
+      "sha256": "cb7e4da406577009265743ca376db189337c279e41f4e84cb07ee8b1a874c4e0"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-promotion-static.log",
+      "sha256": "a3fafeb8ac368f9bc591b2c08b831a41fbd3b27e29ac7889b56b4d17963cd22d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-promotion-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Cross-camera original presentation-start mismatch now fails closed; seven diagnostic cases pass offline, fallback and primary compatibility, and saved-only positive/negative CPU proofs. Genuine reviewed highway/crossing, official-device, human-driver and subsection-4 source packets, nondiagnostic canonical manifest and local integration remain to be constructed; Native motion and original pixel evidence are absent."
+  ]
 }

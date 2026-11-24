@@ -96,6 +96,49 @@ class SavedEncounterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing or escaping"):
             self.process()
 
+    def test_reviewed_source_custody_positive_and_changed_map_rejection(self):
+        original_att = {"reviewed_fact": "diagnostic blindness basis"}
+        original_cue = {"reviewed_fact": "diagnostic carried cane"}
+        self.write("original-att.json", json.dumps(original_att) + "\n")
+        self.write("original-cue.json", json.dumps(original_cue) + "\n")
+        att_source, cue_source = self.entry("original-att.json"), self.entry("original-cue.json")
+        self.write("attestation.json", json.dumps({
+            "person_actor_id": 5, "source_sha256": att_source["sha256"],
+            "basis": "partially_blind", "issuer": "diagnostic fixture",
+            "original_source": att_source}) + "\n")
+        self.write("cue.json", json.dumps({
+            "person_actor_id": 5, "source_sha256": cue_source["sha256"],
+            "cue": "white_cane", "observation": "actually_carried",
+            "observer_source": "diagnostic fixture", "original_source": cue_source}) + "\n")
+        self.manifest["blindness_attestation"] = self.entry("attestation.json")
+        self.manifest["carried_cue"] = self.entry("cue.json")
+        route = [{"map_id": "FixtureTown", "x": x, "y": 0, "road_id": 1, "lane_id": 1}
+                 for x in (0, 10)]
+        self.write("map.json", json.dumps({
+            "reviewed_from": "original_native_map", "reviewer": "diagnostic fixture",
+            "map_id": "FixtureTown", "route_waypoints": route,
+            "pedestrian_pose": {"map_id": "FixtureTown", "x": 10, "y": 2, "ground_z": 0},
+            "driver_actor_id": 4, "pedestrian_actor_id": 5}) + "\n")
+        self.write("packet.json", json.dumps({
+            "assignment_id": saved.ASSIGNMENT_ID, "case_id": "white_full_stop_wait",
+            "reviewed_map_route": self.entry("map.json"),
+            "blindness_attestation": self.manifest["blindness_attestation"],
+            "carried_cue": self.manifest["carried_cue"]}) + "\n")
+        plan = saved.reviewed_sources.prepare(self.root / "packet.json")
+        self.manifest["reviewed_source_packet"] = self.entry("packet.json")
+        self.manifest["reviewed_source_bindings"] = plan["reviewed_source_bindings"]
+        self.manifest["reviewed_map_id"] = plan["map_id"]
+        self.write("manifest.json", json.dumps(self.manifest) + "\n")
+        result = saved.process(self.root / "manifest.json", self.root / "measurement.json",
+                               require_reviewed=True)
+        self.assertEqual(result["reviewed_map_id"], "FixtureTown")
+        (self.root / "measurement.json").unlink()
+        self.write("map.json", '{"changed": true}\n')
+        with self.assertRaisesRegex(ValueError, "SHA256 mismatch"):
+            saved.process(self.root / "manifest.json", self.root / "measurement.json",
+                          require_reviewed=True)
+        self.assertFalse((self.root / "measurement.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

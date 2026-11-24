@@ -132,3 +132,9 @@ All three exact offline materializations, 32 focused tests, pinned preflight and
 - `cpu-bundles-offline-below.log` SHA256 `c22474dacce594da6f90c80819093ffcc3e3a0e80e3d5122742aa025c0994dfd`; exit 0.
 - `cpu-bundles-offline-equal.log` SHA256 `d03d79234caa356477ff206a3c61d4bff94ef02caaad1c7814eedce56b538aed`; exit 0.
 - `cpu-bundles-offline-above.log` SHA256 `08214817da8a5b19ea71b0613d824a7a02c2b7c79b5b72c0c36de6fb3effa0c7`; exit 0.
+
+## 2026-11-24 source-gated Native bundle entrypoint
+
+`build_offline_draft.py` SHA256 `ea49b2ee8ba8130c6185f2b2b59e4b8d1243e8f9cf27a9600663b8685a7c160f` now embeds an executable CARLA entrypoint in each exact below/equal/above bundle. It validates the source plan, exact case and 20 Hz/900-frame profile; a live invocation requires a case-matched nondiagnostic site packet with route and access-aisle source references, fresh output, run ID and speed uncertainty. CARLA is imported lazily after those guards. The entrypoint delegates capture, four-camera synchronization, cleanup and operator-owned world restoration to `owned_capture.capture_owned`. The CPU positive uses a mocked client and capture call; it does not certify source references or launch CARLA.
+
+The focused suite passes 32 tests (`cpu-live-tests.log` SHA256 `63441f5db101d12aa4130347184ecb87b67b135a297cda443534d0da9e52da8f`). All three rebuilt exact bundles pass pinned offline, and pinned preflight plus scoped static pass; exact scoped strict exits 1 on truthful partial. Log hashes and commands are recorded in `result.json`. Next CPU work: independently review frozen accepted originals and a real route/access-aisle site source, then produce source-hashed positive/negative compatibility, canonical manifest and saved-delivery receipts. Physical speed, actual camera pixels and territorial applicability are unverified.

@@ -20,6 +20,39 @@ from native_map import verify_live_map
 from saved_delivery import CAMERAS, FRAMES, PREFIX, SUFFIXES, audit_original_pixels
 
 
+def _checked_graph(raw: bytes, frame: int, time_s: float) -> dict:
+    """Validate the original adapter graph envelope before retaining its bytes."""
+    if not isinstance(raw, bytes):
+        raise ValueError('Native adapter graph bytes missing')
+    try:
+        graph = json.loads(raw, parse_constant=lambda value: (_ for _ in ()).throw(
+            ValueError('Nonfinite Native graph value: ' + value)))
+    except (UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError('Native adapter graph is not JSON') from exc
+    graph_time = graph.get('metadata', {}).get('simulation_time_s') if isinstance(graph, dict) and isinstance(graph.get('metadata'), dict) else None
+    if (not isinstance(graph, dict) or graph.get('format') != 'native-adapter-graph-v1'
+            or not isinstance(graph.get('metadata'), dict)
+            or graph['metadata'].get('frame') != frame
+            or type(graph_time) not in (int, float) or not math.isfinite(graph_time)
+            or abs(graph_time - time_s) > .001
+            or not isinstance(graph.get('nodes'), list) or not graph['nodes']
+            or not isinstance(graph.get('edges'), list)):
+        raise ValueError('Native adapter graph frame, time or structure differs')
+    if any(not isinstance(node, dict) or type(node.get('id')) not in (str, int) or
+           not isinstance(node.get('attributes'), dict) for node in graph['nodes']):
+        raise ValueError('Native adapter graph node malformed')
+    if len({node['id'] for node in graph['nodes']}) != len(graph['nodes']):
+        raise ValueError('Native adapter graph node identity duplicated')
+    if any(not isinstance(edge, dict) or type(edge.get('source')) is not int
+           or type(edge.get('target')) is not int
+           or not 0 <= edge['source'] < len(graph['nodes'])
+           or not 0 <= edge['target'] < len(graph['nodes'])
+           or not isinstance(edge.get('attributes'), dict)
+           for edge in graph['edges']):
+        raise ValueError('Native adapter graph edge malformed')
+    return graph
+
+
 def _write_jsonl(path: Path, rows: list[dict]) -> str:
     raw = ''.join(json.dumps(row, sort_keys=True, separators=(',', ':')) + '\n'
                   for row in rows).encode()
@@ -48,6 +81,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     opendrive = None
     history: list[dict] = []
     frame_map: list[dict] = []
+    graph_map: list[dict] = []
     archives = {}
     try:
         adapter.start(binding['planned_construction'])
@@ -90,7 +124,22 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                               'time_s': time_s,
                               'camera_frames': {name: frame for name in sorted(CAMERAS)},
                               'camera_times_s': camera_times})
+            read_graph = getattr(adapter, 'read_graph', None)
+            if read_graph is None:
+                if getattr(adapter, 'native_attested', False):
+                    raise ValueError('Attested Native capture requires original adapter graph')
+            else:
+                graph_raw = read_graph(frame)
+                _checked_graph(graph_raw, frame, time_s)
+                graph_path = root / 'graphs/abstract' / f'{frame:08d}.adapter.json'
+                graph_path.parent.mkdir(parents=True, exist_ok=True)
+                graph_path.write_bytes(graph_raw)
+                graph_map.append({'frame': frame, 'simulation_time': time_s,
+                                  'adapter_graph': graph_path.relative_to(root).as_posix(),
+                                  'sha256': hashlib.sha256(graph_raw).hexdigest()})
         opendrive = adapter.world.get_map().to_opendrive()
+        if graph_map and len(graph_map) != FRAMES:
+            raise ValueError('Native adapter graph capture is incomplete')
         if (not isinstance(opendrive, str) or
                 hashlib.sha256(opendrive.encode()).hexdigest() != binding['opendrive_sha256']):
             raise ValueError('Native OpenDRIVE changed during capture')
@@ -119,6 +168,8 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                   'intersection-context.json': hashlib.sha256(context_bytes).hexdigest(),
                   'approach-history.jsonl': _write_jsonl(root / 'approach-history.jsonl', history),
                   'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
+        if graph_map:
+            hashes['graph-frames.jsonl'] = _write_jsonl(root / 'graph-frames.jsonl', graph_map)
         acquisition = {'case_id': case_id,
                        'diagnostic_fixture': not (getattr(adapter, 'native_attested', False)
                                                   and binding['public_highway_reviewed'] is True),

@@ -142,3 +142,9 @@ Twenty-five focused tests, pinned preflight, all three exact offline diagnostics
 - `cpu-semantic-offline-unlit.log` SHA256 `ddf31674966111b00ff71780f0921fc32d9ce96a273eb8a3556efb80f05b0bc2`; exit 0.
 - `cpu-semantic-offline-low_beam.log` SHA256 `f7a5b54cfdf4613f92c9001e1cfff3247ffa9f6d7993149caef4ed39a7d5ba30`; exit 0.
 - `cpu-semantic-offline-high_beam.log` SHA256 `17ebcf13c266e3efd850945a1a98cfa3537c0ac5816b5554364c7133983de5d2`; exit 0.
+
+## 2026-11-24 operator-owned parked-headlamp Native entrypoint
+
+`owned_capture.py` SHA256 `1e4203c032de0c9c850d8c5faf0ace5b77340bf03e71b2894c653b5e12d0c533` now source-gates an exact parked-headlamp site packet against the loaded OpenDRIVE, spawns a parked vehicle and the four pinned RGB camera views, invokes the original `capture_interval`, writes its Native receipt, destroys owned actors and restores the operator world after both success and failure. The packet must name separate parking and intersection source references; those references still require independent source review. The three inline bundles now contain this wrapper and a lazy CARLA runner that validates packet case/provenance before opening a client.
+
+The focused suite passes 27 tests (`cpu-owned-tests.log` SHA256 `54d19c95d624ecc47238243487fcc545764693651f22a224df6955a0a7086d61`), including fake-world success/failure lifecycle and mocked bundle entrypoint checks. All three rebuilt exact bundles pass pinned offline. Pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial. Commands and hash-bound logs are in `result.json`. Original emitted light, beam depression/dimming, public-site authority and actual pixels remain unverified. Next CPU work: review original site and beam sources, then produce positive/negative compatibility, saved processing, canonical manifest and independent delivery receipts.

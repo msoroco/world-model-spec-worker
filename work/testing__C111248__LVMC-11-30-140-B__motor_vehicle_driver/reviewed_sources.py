@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+ASSIGNMENT_ID = "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver"
 spec = importlib.util.spec_from_file_location("blind_encounter_reviewed", HERE / "blind_encounter.py")
 encounter = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = encounter
@@ -41,7 +42,7 @@ def prepare(packet_path: Path) -> dict:
     packet_path = packet_path.resolve(strict=True)
     root = packet_path.parent
     packet = json.loads(packet_path.read_text(encoding="utf-8"))
-    if packet.get("assignment_id") != HERE.name:
+    if packet.get("assignment_id") != ASSIGNMENT_ID:
         raise ValueError("assignment identity mismatch")
     case_id = packet.get("case_id")
     if case_id not in encounter.CASE_BY_ID:

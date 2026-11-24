@@ -10,6 +10,7 @@ AID = HERE.name
 SOURCES = (
     "intersection_observables.py", "finalize_observables.py",
     "native_acquisition.py", "native_scene.py", "native_media.py",
+    "native_camera_adapter.py",
     "finalize_delivery.py", "audit_finalized.py", "comparison_audit.py",
 )
 

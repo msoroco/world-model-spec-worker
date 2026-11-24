@@ -80,6 +80,8 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 import runner
+import reviewed_sources
+import saved_encounter
 
 
 class BundleTests(unittest.TestCase):
@@ -91,6 +93,11 @@ class BundleTests(unittest.TestCase):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
             with self.assertRaisesRegex(ValueError, "Reviewed Native map"):
                 runner.main()
+
+    def test_materialized_source_processors_keep_assignment_identity(self):
+        config = json.loads((Path(__file__).resolve().parents[1] / "config.json").read_text())
+        self.assertEqual(reviewed_sources.ASSIGNMENT_ID, config["assignment_id"])
+        self.assertEqual(saved_encounter.ASSIGNMENT_ID, config["assignment_id"])
 
 
 if __name__ == "__main__":

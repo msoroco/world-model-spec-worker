@@ -79,3 +79,9 @@ All 28 focused assignment tests passed, including the complete 3,600-original-im
 - `cpu-semantic-preflight.log` SHA256 `150546123c921440b331d0b888173bc28999c62e5e9eabf4f34297cde36304df`; exit 0.
 - `cpu-semantic-static.log` SHA256 `72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca`; exit 0.
 - `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+
+## 2026-11-24 reviewed-source Native runner checkpoint
+
+`native_case_runner.py` now gates each exact case on a reviewer-identified site packet, actual world OpenDRIVE hash, and six cited source documents for jurisdiction, road kind, entering arms, through designation, traffic control and intersection boundary. It verifies each document hash and its source claim before starting sensors or spawning the occluder. The runner invokes original 900-frame sight/camera capture and stops camera listeners and destroys its occluder on exit, including a partial sensor-start failure. Test sources are synthetic and do not establish municipal authority, a viable physical occluder or actual visibility.
+
+Five new runner tests and the complete 33-test assignment suite pass; pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial status. Logs and SHA-256 values are in `result.json`. Next CPU work: reviewed municipal source packet with real route/ray readers, six canonical bundles, compatibility and saved-only/delivery receipts. Actual Native sight and pixels still require physical review.
