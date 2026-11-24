@@ -1,0 +1,112 @@
+{
+  "cell_id": "C158208",
+  "actor": "motor_vehicle_driver",
+  "status": "draft_compatibility_probe",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Signed non-through-highway entrance, other body already inside; immediate hazard and caution remain judgments.",
+      "variable_assignments": {
+        "other_presence": {
+          "kind": "world_setup",
+          "value": "inside",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native ego velocity at each four-camera-joined tick",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "original ego bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "original other bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_distance_to_intersection_center_m",
+            "unit": "m",
+            "method": "other body center distance to reviewed polygon centroid",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_mps",
+            "unit": "m/s",
+            "method": "finite difference of original other body-center distance",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_before_yield_reference",
+            "unit": "count",
+            "method": "complete original ego body before reviewed ordered reference",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_intersection_status_and_all_entrances",
+            "unit": "structured record",
+            "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+          },
+          {
+            "name": "site_and_officer_review",
+            "unit": "structured record",
+            "method": "original four-camera review bound to context and frame IDs"
+          }
+        ],
+        "limitations": [
+          "authored road status and sign geometry require original-source physical confirmation",
+          "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+          "CPU fixture colors do not prove original-pixel visibility"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper yield sign",
+        "proceed cautiously",
+        "immediate hazard",
+        "officer authority"
+      ],
+      "paired_probe_id": "other_presence",
+      "deliberate_differences": [
+        "other inside versus approaching"
+      ],
+      "probe": {
+        "primary_variable": "other_presence",
+        "comparison_or_standard": "original-source observed traffic relation",
+        "target_value_or_branch": "inside"
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

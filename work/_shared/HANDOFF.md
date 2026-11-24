@@ -715,3 +715,15 @@ C158208 continuation: the prospective Native runner, four FFV1 camera source pat
 C158208 now has five draft exact primary inline constructions, each current-runtime offline checked from a fresh materialized bundle. See `cases/<kind>/primary-offline.log` and `draft-execution-manifest.json`. This is partial packaging proof, not Native officer construction, saved processing, delivery acceptance or a passed scoped strict gate. The owner remains C158208 until the remaining CPU chain is built and proven.
 
 C158208 current handoff: five refreshed draft primary constructions now include the saved `finalizer.py`; all five current-runtime offline materializations pass and 23 focused tests plus active Native result schema check pass. `finalizer-schema.log` is schema only. Compatibility, recorded-only saved processing, officer Native actor, fallbacks, semantic proposals and independent audits are still worker-owned. Keep C158208 partial until exact scoped strict delivery gate passes.
+
+## 2026-11-24 C158208-2 selected measurement checkpoint
+
+The partial C158208 subsection-2 package now binds six selected exact-law requirements to concrete saved finalizer methods and original-source hashes. All five current-runtime offline construction probes and the active runtime measurement-contract validator pass; see its package `HANDOFF.md`. Continue this owner through actual officer construction, fallback selection, canonical saved-processing/compatibility, semantic proposals and independent delivery/comparison audits before any ready claim. No prior-ready assignment was changed.
+
+The same C158208-2 plan now has six explicit accepted-evidence gaps mapped to all five exact cases; zero frozen accepted recordings are claimed, so there is no reuse. The package stays partial.
+
+C158208-2 now has a separate officer-specific measurement contract that hashes `officer_review.json`; the active runtime check verifies the officer source and rejects a changed review. The latest five offline bundles are `-v5` and pass. See package HANDOFF and keep status partial.
+
+Quick whole-workspace check after archive cleanup reached retained prior-ready runtime manifest validation, then failed with `Execution manifest binds another runtime`; see `.runtime-work/c158208-quick-check.log`. It did not fail on binary archives. Preserve retained prior-ready packages per `RUNTIME_REFRESH.md`; continue current-runtime work on unfinished assignments. C158208 scoped partial check passes.
+
+C158208-2 now owns a small text-only `diagnostic-recipe.json` and generator specification. Runtime materialization generated and decoded four FFV1 cameras; its real saved finalizer passed six source-hash measurements and the exact missing `entry_history.jsonl` negative test. See package `diagnostic-check.log`. Continue with semantic proposals, selected manifest, Core compatibility/render, officer construction, fallbacks and independent audits; status is still partial.

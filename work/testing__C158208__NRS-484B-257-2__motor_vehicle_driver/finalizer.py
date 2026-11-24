@@ -62,9 +62,13 @@ def bound_measurements(report):
         "other_crossing_relation": measure_other_crossing_relation,
         "control_exception": measure_control_exception,
     }
-    return {key: {"value": method(report), "method": method.__name__,
-                  "sources": {name: report["sources"][name] for name in MEASUREMENT_INPUTS[key]}}
-            for key, method in methods.items()}
+    values = {key: {"value": method(report), "method": method.__name__,
+                    "sources": {name: report["sources"][name] for name in MEASUREMENT_INPUTS[key]}}
+              for key, method in methods.items()}
+    if report["officer_control_observed"]:
+        name = "officer_review.json"
+        values["control_exception"]["sources"][name] = report["sources"][name]
+    return values
 
 
 def _sha(path):
@@ -145,7 +149,9 @@ def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
         raise ValueError("Retain previous saved finalization; use a fresh attempt")
-    for name in ("config.json", "trace.jsonl", "capture/evidence.jsonl", *CAMERAS):
+    for name in ("config.json", "trace.jsonl", "capture/evidence.jsonl",
+                 "intersection_context.json", "entry_history.jsonl",
+                 "video_frames.jsonl", "site_review.json", *CAMERAS):
         if not (attempt / name).is_file():
             raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())

@@ -9,31 +9,71 @@
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Non-through-highway yield-sign ego entrance, other not obligated to stop/yield already in intersection",
-      "physical_risk": "other occupancy or yield timing may drift"
+      "physical_risk": "other occupancy or yield timing may drift",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6"
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Same junction, other not obligated approaches during ego crossing; hazard context retained without legal cutoff",
-      "physical_risk": "conflict timing may miss observed crossing"
+      "physical_risk": "conflict timing may miss observed crossing",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6"
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Same junction, other entrance also has stop/yield obligation",
-      "physical_risk": "all-entrance device governance may be ambiguous"
+      "physical_risk": "all-entrance device governance may be ambiguous",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6"
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Same ego route and yield sign, no observed slowing before reference",
-      "physical_risk": "controller may slow for traffic or geometry"
+      "physical_risk": "controller may slow for traffic or geometry",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6"
+      ]
     },
     {
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Same junction with actual officer traffic control at ego entry",
-      "physical_risk": "visible direction may not establish authority"
+      "physical_risk": "visible direction may not establish authority",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6"
+      ]
     }
   ],
   "comparisons": [
@@ -78,9 +118,50 @@
     }
   ],
   "evidence_review": {
+    "method": "frozen accepted-recording inventory and exact assignment/law review",
+    "reviewer": "CPU preparation worker",
+    "facts": [],
     "recordings_reviewed": [],
     "accepted_recording_count": 0,
     "supported_reuses": [],
+    "gaps": [
+      {
+        "id": "G1",
+        "requirement": "Establish non-through-highway status and ego yield-sign governance from complete signed-entrance source",
+        "source": "NRS 484B.257(2) and incorporated subsection (1); inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json contains zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G2",
+        "requirement": "Select the ordered subsection-1 stop-line, near-crosswalk, then nearest-view entry reference from original camera review",
+        "source": "NRS 484B.257(2) and incorporated subsection (1); inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json contains zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G3",
+        "requirement": "Measure pre-entry slow or stop response at the sourced entry reference",
+        "source": "NRS 484B.257(2) and incorporated subsection (1); inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json contains zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G4",
+        "requirement": "Establish the other entrance stop/yield obligation with complete entrance-device inventory",
+        "source": "NRS 484B.257(2) and incorporated subsection (1); inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json contains zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G5",
+        "requirement": "Measure other body occupancy and approaching motion throughout ego crossing without a numeric legal hazard cutoff",
+        "source": "NRS 484B.257(2) and incorporated subsection (1); inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json contains zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G6",
+        "requirement": "Source the actual officer or signal control state and preserve unresolved officer authority",
+        "source": "NRS 484B.257(2) and incorporated subsection (1); inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json contains zero accepted recordings for this exact assignment."
+      }
+    ],
     "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
   },
   "observations": [
@@ -192,5 +273,180 @@
       ],
       "evidence_or_gap": "Zero accepted recordings; exact selected cases and original-source measurements required."
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "measurement": "other_entrance_obligation",
+      "evidence": "Complete entrance-device inventory; other-stop comparison has an authored Native stop sign.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.yield_sign": {
+      "measurement": "signed_entrance",
+      "evidence": "Ego lane Native yield trigger and original sign-face review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.governs": {
+      "measurement": "signed_entrance",
+      "evidence": "Native trigger/ego lane identity and original sign-face review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane_enters": {
+      "measurement": "other_entrance_obligation",
+      "evidence": "Three-entrance Native road/lane inventory and original site context.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.stopped": {
+      "measurement": "initial_yield_response",
+      "evidence": "Source-sampled pre-entry ego speed and reference-boundary position.",
+      "channels": [
+        "ego_speed_mps",
+        "ego_before_yield_reference"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.stop_line": {
+      "measurement": "entry_reference",
+      "evidence": "Ordered original-camera stop-line finding and reference.",
+      "channels": [
+        "ego_before_yield_reference"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.crosswalk": {
+      "measurement": "entry_reference",
+      "evidence": "Ordered original-camera near-crosswalk finding and reference.",
+      "channels": [
+        "ego_before_yield_reference"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.entering_intersection": {
+      "measurement": "initial_yield_response",
+      "evidence": "First body-polygon intersection after original frame join.",
+      "channels": [
+        "ego_body_in_intersection"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.in_intersection": {
+      "measurement": "other_crossing_relation",
+      "evidence": "Other full-body polygon occupancy on every original joined frame.",
+      "channels": [
+        "other_body_in_intersection"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.time_to_conflict": {
+      "measurement": "other_crossing_relation",
+      "evidence": "Other body-center distance and closing-rate series; no numeric legal hazard cutoff.",
+      "channels": [
+        "other_distance_to_intersection_center_m",
+        "other_center_closing_mps"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.yields_to": {
+      "measurement": "other_crossing_relation",
+      "evidence": "Body occupancy and ego response throughout crossing; legal yield judgment unresolved.",
+      "channels": [
+        "ego_speed_mps",
+        "other_body_in_intersection"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.human_direction": {
+      "measurement": "control_exception",
+      "evidence": "Officer-review original-camera source required in exact officer case; authority judgment unresolved.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.traffic_signal": {
+      "measurement": "control_exception",
+      "evidence": "Original-camera and Native site source excludes active signal control in selected non-officer cases.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "3c315e0d1a80a3acad9dd1c1f16531924b95f21d134d89d606acdf7744a3dc98"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  }
 }
