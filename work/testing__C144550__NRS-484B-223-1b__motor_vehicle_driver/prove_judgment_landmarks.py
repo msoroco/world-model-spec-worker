@@ -72,7 +72,8 @@ def prove():
             raise ValueError('Synthetic zero-frame source changed')
     return {'format':'worker-c144550-judgment-grid-landmarks',
             'signal_lead_frames':[-1,0,1],
-            'signal_boundary_zero_frame_constructed':True,
+            'signal_boundary_zero_frame_constructed':False,
+            'zero_frame_source_probe_constructed':True,
             'zero_boundary_probe_sha256':sha(HERE / 'zero-signal-boundary-proof.json'),
             'gap_at_movement_m':[3.0,8.0],
             'points':points,
@@ -86,4 +87,5 @@ if __name__ == '__main__':
     (HERE / 'judgment-grid-landmarks.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps({'signal_lead_frames':report['signal_lead_frames'],
                       'gap_at_movement_m':report['gap_at_movement_m'],
-                      'zero_signal_boundary_constructed':True},sort_keys=True))
+                      'zero_signal_boundary_exact_case_constructed':False,
+                      'zero_frame_source_probe_constructed':True},sort_keys=True))

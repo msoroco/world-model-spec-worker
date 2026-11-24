@@ -21,17 +21,41 @@
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_judgment_landmarks.py",
       "exit_code": 0,
       "log": "judgment-grid-landmarks.log",
-      "sha256": "93c2b7cb7d2e50b3ec7cdecb1e424a9d8890eaa2e69e58d48141b936c640031b"
+      "sha256": "8e152b5213f96532313150d2c1452e257c0fc71267ba760a616ac09491232b36"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero-tests PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-zero-boundary.log",
-      "sha256": "fc30b630d8b31cf79d33655219d2812c2552c91b3a47437222daf11aea4784f1"
+      "sha256": "5f5dd4fc6a408e53ec051721e06700f263fd1431d53d41fcdbb172d8ead74781"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --output .runtime-work/c144550-zero-exact-offline-20261124",
+      "exit_code": 0,
+      "log": "zero-exact-offline.log",
+      "sha256": "b1aa0350100e83981475998479beb82fb81b0841bcb4aff6cf1e5806e495f060"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c144550-zero-stage/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --output .runtime-work/c144550-zero-exact-compat-current-20261124 --library runtime/library --validator .runtime-work/c144550-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "zero-exact-compatibility-current.log",
+      "sha256": "cc812de0a62a7b9549e65ddbe58e375d27e034eee8b480263fe1493bb323830b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c144550-zero-stage/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --attempt .runtime-work/c144550-zero-exact-compat-current-20261124 --output .runtime-work/c144550-zero-exact-saved-20261124 --library runtime/library --validator .runtime-work/c144550-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "zero-exact-saved-processing.log",
+      "sha256": "a562441cb48ac4fc076f1145bc1ca1639372d5e0a06f346bf0e0201fa7ae1ccb"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_zero_exact_comparison.py",
+      "exit_code": 0,
+      "log": "zero-exact-comparison-proof.log",
+      "sha256": "9da7ba28dd4ccd2db7afcee4b1ae11e66e836a1dfb52598fcbd5fb968e6cc275"
     }
   ],
   "remaining_gpu_checks": [
     "Actual marked lanes, indicator display, lane-body movement, target traffic/gap and camera visibility."
   ],
-  "reason": "Five exact primaries and fifteen fallbacks retain prior CPU proofs. A separate source-bound synthetic zero-frame lamp probe now passes with 900 frames, fixed body motion and 8.0 m target gap; it is not yet an exact selected delivery case. Complete frozen judgment sweep declarations, exact zero-case offline/compatibility/saved proof and queue integration remain worker-owned. Physical and legal acceptance remain unproved."
+  "reason": "Five selected exact primaries and fifteen fallbacks retain prior CPU proofs. A separate zero-frame exact candidate now passes offline, source-bound positive/negative compatibility, recorded-only saved processing and controlled synthetic comparison, but is not yet selected or integrated into complete physical judgment sweeps. Physical and legal acceptance remain unproved."
 }
