@@ -20,3 +20,18 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## CPU construction checkpoint
+
+Added `rear_signal.py` with five exact probes: stop and sudden-decrease alternatives, signal before/after order, and a rear-driver-absence contrast. The lazy constructor requests the one-way route, stop footprint, rear participant and signal policy and cleans owned actors on failure. Original measurement joins 900 frames, participants, displayed signal/visibility, event onset, speed history and rear gap/offset. Signal appropriateness, immediately-to-rear and legal outcomes remain unresolved.
+
+Four focused CPU tests pass, including all five cases and negative source, driver, identity, signal and cleanup paths. Pinned preflight and scoped static pass. Exact scoped strict exits 1 because this package remains partial. Frozen accepted recording inventory is empty; diagnostic values are synthetic only. Canonical capture/offline/compatibility, semantic proposals, independent saved delivery/comparison audits and physical source-backed scene are still worker-owned CPU work.
+
+Proof SHA256:
+
+- `rear_signal.py`: `10918dba0168aaa614144f083a85826f9a9daf81eb6b5db8195dddd83510a8e7`
+- `tests/test_rear_signal.py`: `9400d928c2faf757c77eb78e1028158a7eaf9c3d200f35087ceeb6666054aede`
+- `cpu-tests.log`: `cb4b6282868dbd033115f1afd8d2d6f19d9f762a13f38b9b1365852711dcf47e`
+- `cpu-preflight.log`: `f84245a584a94eeb0a92a10ef649d0517bc7fb846f1c8bfa7f7209dd89518459`
+- `cpu-static-check.log`: `aa925a6ca30c94a70b5610b5fe10cef1352bd5d8f9dad27988ef9325c8e73e82`
+- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`

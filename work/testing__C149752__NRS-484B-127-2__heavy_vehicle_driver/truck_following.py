@@ -108,18 +108,31 @@ def execute_case(adapter, case: Case, lane_source: dict, blueprint_source: dict)
     function. No CARLA import or simulation happens in CPU tests.
     """
     plan = planned_construction(case, lane_source, blueprint_source)
-    subject = adapter.spawn_vehicle(plan["subject"], blueprint_source["subject_blueprint_id"])
-    lead = adapter.spawn_vehicle(plan["lead"], blueprint_source["lead_blueprint_id"])
-    adapter.configure_following(subject, lead, plan["controller"])
-    if case.passing:
-        adapter.configure_pass_phase(subject, lead, plan["controller"]["pass_after_s"])
-    if case.entering_vehicle:
-        entrant_id = blueprint_source.get("entrant_blueprint_id")
-        require(isinstance(entrant_id, str) and entrant_id, "entering vehicle blueprint source required")
-        entrant = adapter.spawn_entrant(entrant_id, plan["controller"]["entry_after_s"])
-    else:
-        entrant = None
-    return {"subject": subject, "lead": lead, "entrant": entrant, "capture_frames": plan["recording"]["frames"]}
+    owned = []
+    try:
+        subject = adapter.spawn_vehicle(plan["subject"], blueprint_source["subject_blueprint_id"])
+        require(subject is not None, "subject spawn failed")
+        owned.append(subject)
+        lead = adapter.spawn_vehicle(plan["lead"], blueprint_source["lead_blueprint_id"])
+        require(lead is not None, "lead spawn failed")
+        owned.append(lead)
+        adapter.configure_following(subject, lead, plan["controller"])
+        if case.passing:
+            adapter.configure_pass_phase(subject, lead, plan["controller"]["pass_after_s"])
+        if case.entering_vehicle:
+            entrant_id = blueprint_source.get("entrant_blueprint_id")
+            require(isinstance(entrant_id, str) and entrant_id, "entering vehicle blueprint source required")
+            entrant = adapter.spawn_entrant(entrant_id, plan["controller"]["entry_after_s"])
+            require(entrant is not None, "entrant spawn failed")
+            owned.append(entrant)
+        else:
+            entrant = None
+        return {"subject": subject, "lead": lead, "entrant": entrant,
+                "owned": tuple(owned), "capture_frames": plan["recording"]["frames"]}
+    except BaseException:
+        for actor in reversed(owned):
+            adapter.destroy(actor)
+        raise
 
 
 def _body_interval(body: dict, identity: str) -> tuple[float, float]:
@@ -146,11 +159,17 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
     entries: set[str] = set()
     pass_phases = []
     previous_t = None
+    first_frame = frames[0].get("frame")
+    first_time_s = frames[0].get("time_s")
+    require(type(first_frame) is int and first_frame >= 0, "original first frame identity required")
+    first_time_s = finite_number(first_time_s, "original first time")
     for index, frame in enumerate(frames):
-        require(frame.get("frame") == index, "original frame index discontinuity")
+        require(type(frame.get("frame")) is int and frame["frame"] == first_frame + index,
+                "original frame index discontinuity")
         time_s = finite_number(frame.get("time_s"), "original time")
         require(previous_t is None or time_s > previous_t, "original time discontinuity")
-        require(abs(time_s - index / 20) < 0.002, "original 20 Hz time mapping required")
+        require(abs((time_s - first_time_s) - index / 20) < 0.002,
+                "original 20 Hz time mapping required")
         previous_t = time_s
         bodies = frame.get("bodies")
         require(isinstance(bodies, list), "complete Native body inventory required")
@@ -159,7 +178,8 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         subject_min, subject_max = _body_interval(by_id["subject"], "subject")
         lead_min, lead_max = _body_interval(by_id["lead"], "lead")
         require(lead_min >= subject_max or frame.get("pass_phase") in ("opposing", "ahead", "returned"), "lead must be ahead while following")
-        if 14 <= time_s < 20:
+        elapsed_s = time_s - first_time_s
+        if 14 <= elapsed_s < 20:
             require(lead_min >= subject_max, "steady following gap unavailable")
             gaps.append(lead_min - subject_max)
         width_pair = []
@@ -201,7 +221,9 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         if "ahead" in later:
             second = first + 1 + later.index("ahead")
             completed_pass = "returned" in pass_phases[second + 1:]
-    return {"case_id": case_id, "original_frame_count": len(frames), "steady_gap_min_m": min(gaps),
+    return {"case_id": case_id, "original_frame_count": len(frames),
+            "first_original_frame": first_frame, "first_original_time_s": first_time_s,
+            "steady_gap_min_m": min(gaps),
             "steady_gap_min_ft": min(gaps) * FEET_PER_METRE,
             "subject_width_min_m": min(pair[0] for pair in widths),
             "lead_width_min_m": min(pair[1] for pair in widths),

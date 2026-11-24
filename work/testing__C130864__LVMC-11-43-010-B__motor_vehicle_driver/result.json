@@ -2,24 +2,36 @@
   "assignment_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver",
   "input_sha256": "0960bcb5068e7f6b76b95da76e06e7acf5a85c342fe29862f2d9ba0f334de2c9",
   "status": "partial",
-  "readiness_kind": "exact_case_measurement_checkpoint",
+  "readiness_kind": "exact_case_measurement_and_lazy_native_construction_checkpoint",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-roundabout-tests.log",
-      "sha256": "70831ef08b1074447557547c084f142fecccc11d657f13f1fa057259faa1abc6"
+      "sha256": "73f2a2170625c27e84db9752426f44554050dbd20dd37ecadcb6d3e2ed475e45"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver --complete",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "ea685bfbcdb1b0bde932b595d92311cbe7ba9a1af052b2de1292092fe00a86f1"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "assignment-check.log",
       "sha256": "050c89d4e0371aba3770d30ebfc24be48749844dfadf62f72ade89c13d41ff0f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-gate.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six exact connected/adjacent-lane and requested gap/entry cases plus five comparisons planned. Source-bound saved map/trace audit now checks original multilane roundabout, connected entry, circulating opponent route/conflict source, eight-vertex bodies and 20 Hz entry/separation history with eight focused CPU tests. The actual Native map/route, six executable bundles/controllers, four-camera capture, finalizers, semantic proposals, offline/compatibility receipts and independent delivery/comparison audits remain worker-owned CPU work. No accepted recordings are listed; physical acceptance unverified."
+  "reason": "Six exact connected/adjacent-lane and requested-gap entry cases plus five comparisons are planned. Source-bound saved map/trace measurements and a lazy exact-case constructor now validate multilane connectivity, route samples, distinct actor spawning and timed entry requests with 12 focused CPU tests. Pinned preflight and scoped static pass. Actual Native map/route sources, complete six-case runner/capture bundles, four-camera synchronization, finalizers, semantic proposals, offline/compatibility receipts and independent delivery/comparison audits remain worker-owned CPU work. No numeric gap is a legal threshold; physical acceptance remains unverified."
 }

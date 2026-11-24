@@ -24,9 +24,117 @@
   "topic_inventory": {
     "exact-text": "No person shall park a vehicle in an access aisle."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+      "target_law_id": "LVMC-11-52-136",
+      "branch": "parking in access aisle",
+      "target_footprint": "aisle_full",
+      "requested_activity": "park",
+      "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
+      "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
+      "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park",
+      "target_law_id": "LVMC-11-52-136",
+      "branch": "parking in access aisle",
+      "target_footprint": "aisle_partial",
+      "requested_activity": "park",
+      "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
+      "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
+      "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+      "target_law_id": "LVMC-11-52-136",
+      "branch": "parking in access aisle",
+      "target_footprint": "adjacent_space",
+      "requested_activity": "park",
+      "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
+      "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
+      "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop",
+      "target_law_id": "LVMC-11-52-136",
+      "branch": "parking in access aisle",
+      "target_footprint": "aisle_full",
+      "requested_activity": "loading_stop",
+      "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
+      "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
+      "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel",
+      "target_law_id": "LVMC-11-52-136",
+      "branch": "parking in access aisle",
+      "target_footprint": "aisle_full",
+      "requested_activity": "travel",
+      "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
+      "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
+      "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "legal_judgment": "unresolved",
+      "case_ids": [
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park"
+      ],
+      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "deliberate_differences": [
+        "vehicle body overlap amount"
+      ]
+    },
+    {
+      "legal_judgment": "unresolved",
+      "case_ids": [
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park"
+      ],
+      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "deliberate_differences": [
+        "vehicle body footprint inside adjacent space"
+      ]
+    },
+    {
+      "legal_judgment": "unresolved",
+      "case_ids": [
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop"
+      ],
+      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "deliberate_differences": [
+        "actual loading activity versus parking"
+      ]
+    },
+    {
+      "legal_judgment": "unresolved",
+      "case_ids": [
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel"
+      ],
+      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "deliberate_differences": [
+        "travel versus parking"
+      ]
+    }
+  ],
+  "observations": [
+    "original jurisdiction and one-way approach sources",
+    "qualifying access aisle markings and adjacent designated handicapped space",
+    "original ingress, egress and accessible-route design",
+    "11.52.135(A) sign requirements if designation relies on it",
+    "900 original vehicle-body polygons, identity and speed",
+    "actual activity/purpose evidence; time alone does not decide parking"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
@@ -51,17 +159,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Sourced physical site/map, qualifying aisle geometry and original activity cannot be supplied by the diagnostic fixture.",
+    "CARLA motion and four-camera capture require later original review.",
+    "Canonical runner/config/capture bundle, compatibility, saved-only delivery, semantic proposals and independent audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "original qualifying access aisle, vehicle placement and activity",
+        "source": "inputs/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/evidence.json",
+        "source_sha256": "8cacdb40ec11b3a91832dbafc01f26aad36b1db364ee7b2cc3023e678dff424f",
+        "reason": "Frozen inventory has zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_access_aisle_cpu_geometry",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

@@ -24,9 +24,113 @@
   "topic_inventory": {
     "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_response",
+      "target_law_id": "NRS-484B-257-2",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
+      "through_phase": "within",
+      "approach_policy": "slow",
+      "requested_other_station_m": 0,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
+      "target_law_id": "NRS-484B-257-2",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
+      "through_phase": "approaching",
+      "approach_policy": "slow",
+      "requested_other_station_m": 8,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_far_response",
+      "target_law_id": "NRS-484B-257-2",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
+      "through_phase": "approaching",
+      "approach_policy": "slow",
+      "requested_other_station_m": 35,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_uninterrupted",
+      "target_law_id": "NRS-484B-257-2",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
+      "through_phase": "approaching",
+      "approach_policy": "uninterrupted",
+      "requested_other_station_m": 8,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "occupied_vs_approaching",
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_response",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response"
+      ],
+      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route",
+      "deliberate_differences": [
+        "other within intersection versus approaching"
+      ]
+    },
+    {
+      "comparison_id": "approach_station_sweep",
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_far_response"
+      ],
+      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route",
+      "deliberate_differences": [
+        "requested other center station"
+      ]
+    },
+    {
+      "comparison_id": "response_vs_uninterrupted",
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_uninterrupted"
+      ],
+      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route",
+      "deliberate_differences": [
+        "ego initial yield response policy"
+      ]
+    }
+  ],
+  "observations": [
+    "original non-through-highway classification and all entrance controls",
+    "proper ego yield sign and subsection 1 stop-reference hierarchy",
+    "other vehicle not obligated to stop/yield",
+    "original ego speed and first leading-body physical entry",
+    "other center/min-vertex stations and occupied/approaching phase",
+    "continuous ego across-or-within and sightline histories",
+    "no actual officer or traffic-signal control",
+    "hazard, cautious proceeding and right-of-way reserved for review"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
@@ -120,8 +224,9 @@
     "bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Twelve frozen accepted recordings have metadata and authored settings, but no original trace/video in this export.",
+    "Diagnostic fixture measurements do not establish actual hazard or fill judgment ranges.",
+    "Canonical capture/offline/compatibility, semantic and independent saved delivery/comparison proofs remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -381,7 +486,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_nonthrough_yield_cpu_probes",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

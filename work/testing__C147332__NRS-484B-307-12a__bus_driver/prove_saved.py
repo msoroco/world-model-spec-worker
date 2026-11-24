@@ -31,6 +31,7 @@ def run(*args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", required=True)
+    parser.add_argument("--candidate", choices=("primary", "fallback1"), default="primary")
     args = parser.parse_args()
     output_root = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).resolve()
     if not output_root.is_relative_to(RUNTIME.resolve()):
@@ -44,7 +45,8 @@ def main():
         base = Path(temporary)
         fixture, attempt, output = base / "fixture", base / "attempt", base / "processed"
         run("fixture", "--recipe", REPO / entry["fixture_recipe"], "--output", fixture)
-        run("materialize", "--manifest", manifest_path, "--case", args.case, "--output", attempt)
+        run("materialize", "--manifest", manifest_path, "--case", args.case,
+            "--candidate", args.candidate, "--output", attempt)
         for source in fixture.iterdir():
             target = attempt / source.name
             if target.exists():
@@ -63,7 +65,7 @@ def main():
             raise AssertionError("saved processing modified originals or failed")
         if receipt.get("missing_evidence") is not False or receipt.get("physical_acceptance_claimed") is not False:
             raise AssertionError("saved processing result exceeded diagnostic scope")
-        if receipt.get("candidate_id") != "primary" or receipt.get("case_id") != args.case:
+        if receipt.get("candidate_id") != args.candidate or receipt.get("case_id") != args.case:
             raise AssertionError("saved processing selected another case or candidate")
         negative_attempt = base / "missing-signal-attempt"
         shutil.copytree(attempt, negative_attempt)
@@ -81,7 +83,8 @@ def main():
         feedback = json.loads((base / "missing-signal-output/v0001/feedback.json").read_text())
         if feedback.get("native_replay_requested") is not False or feedback.get("recorded_only") is not True:
             raise AssertionError("missing signal requested Native replay")
-        print(args.case, "pinned saved-only positive and missing-signal negative passed; originals preserved; synthetic source only")
+        print(args.case, args.candidate,
+              "pinned saved-only positive and missing-signal negative passed; originals preserved; synthetic source only")
 
 
 if __name__ == "__main__":

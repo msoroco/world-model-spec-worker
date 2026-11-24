@@ -24,9 +24,166 @@
   "topic_inventory": {
     "exact-text": "Every motorcycle or moped when being driven on the highway is entitled to full use of the traffic lane it is occupying, and a person shall not drive another motor vehicle in a manner which would deprive any such motorcycle or moped of such use."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear",
+      "target_law_id": "NRS-486-341",
+      "protected_kind": "motorcycle",
+      "ego_path": "adjacent",
+      "protected_driven": true,
+      "gap_ids": [
+        "no-accepted-evidence"
+      ],
+      "construction": "lane_use.py construct with sourced one-way lane geometry and vehicle classifications",
+      "measurement": "lane_use.py measure_original from synchronized original actor positions and motion; full-use judgment unresolved",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Ego lane intrusion may cause a collision or hide the protected road user from four original cameras; actual lane footprints and pixels require review."
+      }
+    },
+    {
+      "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+      "target_law_id": "NRS-486-341",
+      "protected_kind": "motorcycle",
+      "ego_path": "edge",
+      "protected_driven": true,
+      "gap_ids": [
+        "no-accepted-evidence"
+      ],
+      "construction": "lane_use.py construct with sourced one-way lane geometry and vehicle classifications",
+      "measurement": "lane_use.py measure_original from synchronized original actor positions and motion; full-use judgment unresolved",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Ego lane intrusion may cause a collision or hide the protected road user from four original cameras; actual lane footprints and pixels require review."
+      }
+    },
+    {
+      "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach",
+      "target_law_id": "NRS-486-341",
+      "protected_kind": "motorcycle",
+      "ego_path": "deep",
+      "protected_driven": true,
+      "gap_ids": [
+        "no-accepted-evidence"
+      ],
+      "construction": "lane_use.py construct with sourced one-way lane geometry and vehicle classifications",
+      "measurement": "lane_use.py measure_original from synchronized original actor positions and motion; full-use judgment unresolved",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Ego lane intrusion may cause a collision or hide the protected road user from four original cameras; actual lane footprints and pixels require review."
+      }
+    },
+    {
+      "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach",
+      "target_law_id": "NRS-486-341",
+      "protected_kind": "moped",
+      "ego_path": "edge",
+      "protected_driven": true,
+      "gap_ids": [
+        "no-accepted-evidence"
+      ],
+      "construction": "lane_use.py construct with sourced one-way lane geometry and vehicle classifications",
+      "measurement": "lane_use.py measure_original from synchronized original actor positions and motion; full-use judgment unresolved",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Ego lane intrusion may cause a collision or hide the protected road user from four original cameras; actual lane footprints and pixels require review."
+      }
+    },
+    {
+      "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge",
+      "target_law_id": "NRS-486-341",
+      "protected_kind": "motorcycle",
+      "ego_path": "edge",
+      "protected_driven": false,
+      "gap_ids": [
+        "no-accepted-evidence"
+      ],
+      "construction": "lane_use.py construct with sourced one-way lane geometry and vehicle classifications",
+      "measurement": "lane_use.py measure_original from synchronized original actor positions and motion; full-use judgment unresolved",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Ego lane intrusion may cause a collision or hide the protected road user from four original cameras; actual lane footprints and pixels require review."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "lane_edge_intrusion",
+      "case_ids": [
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear",
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed public highway and one-way multilane geometry",
+        "same protected occupied lane and lane/vehicle dimensions",
+        "same ego motor-vehicle blueprint, weather, four-camera plan and 20 Hz duration",
+        "same routes and speeds except declared lateral path or protected class/motion"
+      ],
+      "deliberate_differences": [
+        "original ego body begins overlapping protected occupied lane"
+      ],
+      "legal_limit": "Measured intrusion and motion are physical context; they do not define legal deprivation of full lane use."
+    },
+    {
+      "comparison_id": "lane_intrusion_depth",
+      "case_ids": [
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed public highway and one-way multilane geometry",
+        "same protected occupied lane and lane/vehicle dimensions",
+        "same ego motor-vehicle blueprint, weather, four-camera plan and 20 Hz duration",
+        "same routes and speeds except declared lateral path or protected class/motion"
+      ],
+      "deliberate_differences": [
+        "measured depth of ego body intrusion"
+      ],
+      "legal_limit": "Measured intrusion and motion are physical context; they do not define legal deprivation of full lane use."
+    },
+    {
+      "comparison_id": "protected_vehicle_class",
+      "case_ids": [
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed public highway and one-way multilane geometry",
+        "same protected occupied lane and lane/vehicle dimensions",
+        "same ego motor-vehicle blueprint, weather, four-camera plan and 20 Hz duration",
+        "same routes and speeds except declared lateral path or protected class/motion"
+      ],
+      "deliberate_differences": [
+        "sourced protected motorcycle versus moped classification"
+      ],
+      "legal_limit": "Measured intrusion and motion are physical context; they do not define legal deprivation of full lane use."
+    },
+    {
+      "comparison_id": "driven_activation",
+      "case_ids": [
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+        "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed public highway and one-way multilane geometry",
+        "same protected occupied lane and lane/vehicle dimensions",
+        "same ego motor-vehicle blueprint, weather, four-camera plan and 20 Hz duration",
+        "same routes and speeds except declared lateral path or protected class/motion"
+      ],
+      "deliberate_differences": [
+        "original protected vehicle driven versus stationary"
+      ],
+      "legal_limit": "Measured intrusion and motion are physical context; they do not define legal deprivation of full lane use."
+    }
+  ],
+  "observations": [
+    "publicly maintained and accessible highway status under NRS 486.031",
+    "sourced one-way distinct lane boundaries and protected vehicle occupied lane",
+    "motorcycle or moped classification and chapter-specific exclusions",
+    "original protected vehicle motion while on highway",
+    "ego motor-vehicle body footprint, lateral intrusion and relative spacing",
+    "protected road-user response and four-camera original pixels"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C147339__NRS-486-341__motor_vehicle_driver/assignment.json",
@@ -58,10 +215,20 @@
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-evidence",
+        "requirement": "Original highway/lane and driven motorcycle or moped encounter",
+        "source": {
+          "path": "inputs/testing__C147339__NRS-486-341__motor_vehicle_driver/evidence.json",
+          "sha256": "deb8b5f45ef241c3e2b71a3b23dee19a5fb2dff3d49706a7931896ad1341d44c"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_lane_use_cases_and_original_measurement",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

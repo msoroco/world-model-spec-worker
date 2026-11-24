@@ -20,9 +20,113 @@
   "topic_inventory": {
     "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_slow_approaching",
+      "target_law_id": "NRS-484B-257-1",
+      "branch": "yield sign; no line or crosswalk; nearest-view location",
+      "approach_policy": "slow",
+      "through_state": "approaching",
+      "officer_controls": false,
+      "construction": "yield_view.construct: one-way approach, nearest-view reference, through participant and explicit governing control",
+      "measurement": "yield_view.measure_original: 900 original frames, body crossing, approach speed, through station and across-or-within history",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "physical_risk": "nearest-view sight line, through phase, police-control activity and crossing require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_stop_approaching",
+      "target_law_id": "NRS-484B-257-1",
+      "branch": "yield sign; no line or crosswalk; nearest-view location",
+      "approach_policy": "stop",
+      "through_state": "approaching",
+      "officer_controls": false,
+      "construction": "yield_view.construct: one-way approach, nearest-view reference, through participant and explicit governing control",
+      "measurement": "yield_view.measure_original: 900 original frames, body crossing, approach speed, through station and across-or-within history",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "physical_risk": "nearest-view sight line, through phase, police-control activity and crossing require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_slow_occupied",
+      "target_law_id": "NRS-484B-257-1",
+      "branch": "yield sign; no line or crosswalk; nearest-view location",
+      "approach_policy": "slow",
+      "through_state": "occupied",
+      "officer_controls": false,
+      "construction": "yield_view.construct: one-way approach, nearest-view reference, through participant and explicit governing control",
+      "measurement": "yield_view.measure_original: 900 original frames, body crossing, approach speed, through station and across-or-within history",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "physical_risk": "nearest-view sight line, through phase, police-control activity and crossing require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_controlling",
+      "target_law_id": "NRS-484B-257-1",
+      "branch": "yield sign; no line or crosswalk; nearest-view location",
+      "approach_policy": "slow",
+      "through_state": "approaching",
+      "officer_controls": true,
+      "construction": "yield_view.construct: one-way approach, nearest-view reference, through participant and explicit governing control",
+      "measurement": "yield_view.measure_original: 900 original frames, body crossing, approach speed, through station and across-or-within history",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "physical_risk": "nearest-view sight line, through phase, police-control activity and crossing require CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "slow_vs_stop",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_slow_approaching",
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_stop_approaching"
+      ],
+      "fixed_conditions": "same route, yield sign, no stop line or near crosswalk, reference, camera/duration and ego vehicle",
+      "deliberate_differences": [
+        "approach stop versus slowing"
+      ]
+    },
+    {
+      "comparison_id": "through_phase",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_slow_approaching",
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_slow_occupied"
+      ],
+      "fixed_conditions": "same route, yield sign, no stop line or near crosswalk, reference, camera/duration and ego vehicle",
+      "deliberate_differences": [
+        "approaching versus already occupied through vehicle"
+      ]
+    },
+    {
+      "comparison_id": "officer_exception",
+      "case_ids": [
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__yield_slow_approaching",
+        "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_controlling"
+      ],
+      "fixed_conditions": "same route, yield sign, no stop line or near crosswalk, reference, camera/duration and ego vehicle",
+      "deliberate_differences": [
+        "officer actually controls traffic"
+      ]
+    }
+  ],
+  "observations": [
+    "proper yield sign and original source",
+    "stop-line and near-crosswalk absence",
+    "nearest-view location and original sight observation",
+    "ego original approach speed including exact-zero samples and first leading-body reference crossing",
+    "through vehicle center and min-vertex station, occupied/approaching phase",
+    "across-or-within history and conflict state",
+    "police officer and traffic-signal governing-control activity",
+    "immediate hazard/right-of-way remain legal review"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
@@ -47,14 +151,23 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Fixture speed and through station are diagnostic, not measured original coverage of the judgment ranges.",
+    "Physical nearest-view sight line, sign and officer controlling state require original CARLA review.",
+    "Canonical capture/offline/compatibility, semantic and saved delivery/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "original nearest-view yield approach and governing-control context",
+        "source": "inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/evidence.json",
+        "source_sha256": "bdea303bdf7cff69cb687bf153b681074e6d0f865effbabde5838a192c199ec0",
+        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [
     {
@@ -102,7 +215,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_yield_nearest_view_cpu_probes",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/assignment.json",

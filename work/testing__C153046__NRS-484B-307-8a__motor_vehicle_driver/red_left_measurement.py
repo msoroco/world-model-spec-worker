@@ -74,9 +74,12 @@ def validate_site(packet_path):
     if stop.get("kind") not in {"marked_crosswalk", "signed_or_marked_stop", "intersection_entry"} or stop.get("hierarchy_reviewed") is not True:
         raise ValueError("applicable stop hierarchy unreviewed")
     stop_point = _xy(stop.get("point_xy"), "stop reference")
+    inner = sorted(lateral, key=lateral.get, reverse=True)[1]
     return {"source_packet_sha256": _sha(packet_path), "direction": direction,
             "reference": reference, "stop_progress_m": _dot(tuple(stop_point[i] - reference[i] for i in (0, 1)), direction),
-            "left_lane_id": extreme, "signal_actor_id": str(signal["native_actor_id"]),
+            "left_lane_id": extreme, "inner_lane_id": inner,
+            "receiving_direction": "one_way_left",
+            "signal_actor_id": str(signal["native_actor_id"]),
             "stop_kind": stop["kind"]}
 
 

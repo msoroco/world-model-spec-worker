@@ -74,6 +74,32 @@ class TruckFollowingTest(unittest.TestCase):
         self.assertEqual(result["entrant"], "entrant")
         self.assertEqual([c[0] for c in adapter.calls], ["spawn", "spawn", "follow", "entrant"])
 
+    def test_owned_trucks_are_destroyed_when_pass_controller_fails(self):
+        class Adapter:
+            def __init__(self):
+                self.destroyed = []
+            def spawn_vehicle(self, spec, blueprint):
+                return spec['identity']
+            def configure_following(self, subject, lead, control):
+                pass
+            def configure_pass_phase(self, subject, lead, time_s):
+                raise RuntimeError('controller failed')
+            def destroy(self, actor):
+                self.destroyed.append(actor)
+        lane = {"source_kind": "native_map_readback", "highway_public": True,
+                "available_same_direction_lanes": 1, "straight_connected_route": True,
+                "opposing_pass_lane": True,
+                "driving_lanes": [{"lane_id": "one", "available": True,
+                                   "connected": True, "direction_dot": 1.0}]}
+        blue = {"source_kind": "native_blueprint_readback", "subject_overall_width_m": 2.1,
+                "lead_overall_width_m": 2.1, "subject_vehicle_class": "truck",
+                "lead_vehicle_class": "truck", "subject_blueprint_id": "subject-truck",
+                "lead_blueprint_id": "lead-truck"}
+        adapter = Adapter()
+        with self.assertRaisesRegex(RuntimeError, 'controller failed'):
+            module.execute_case(adapter, module.CASES[3], lane, blue)
+        self.assertEqual(adapter.destroyed, ['lead', 'subject'])
+
     def test_case_construction_requires_map_and_measured_blueprints(self):
         case = module.CASES[0]
         lane = {"source_kind": "native_map_readback", "highway_public": True,
@@ -108,6 +134,20 @@ class TruckFollowingTest(unittest.TestCase):
         self.assertTrue(module.audit_original_frames(packet, case_id="case-a")["subject_pass_completed"])
         packet["frames"][600]["pass_phase"] = "following"
         self.assertFalse(module.audit_original_frames(packet, case_id="case-a")["subject_pass_completed"])
+
+    def test_original_capture_can_start_at_live_world_frame_and_time(self):
+        packet = {"source_kind": "sealed_native_original_frames", "case_id": "case-a",
+                  "frames": [frame(i) for i in range(900)]}
+        for row in packet["frames"]:
+            row["frame"] += 1000
+            row["time_s"] += 65.25
+        result = module.audit_original_frames(packet, case_id="case-a")
+        self.assertEqual(result["first_original_frame"], 1000)
+        self.assertAlmostEqual(result["first_original_time_s"], 65.25)
+        self.assertAlmostEqual(result["steady_gap_min_ft"], 500, places=5)
+        packet["frames"][200]["time_s"] += .02
+        with self.assertRaisesRegex(module.EvidenceError, "20 Hz time mapping"):
+            module.audit_original_frames(packet, case_id="case-a")
 
     def test_missing_original_frame_or_mesh_rejected(self):
         packet = {"source_kind": "sealed_native_original_frames", "case_id": "case-a",

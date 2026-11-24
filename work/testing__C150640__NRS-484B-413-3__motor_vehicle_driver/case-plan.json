@@ -24,9 +24,138 @@
   "topic_inventory": {
     "exact-text": "A driver shall not stop or suddenly decrease the speed of a vehicle without first giving an appropriate signal to the driver of any vehicle immediately to the rear."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
+      "target_law_id": "NRS-484B-413-3",
+      "branch": "stop or sudden decrease with signal timing and rear-driver recipient",
+      "maneuver": "stop",
+      "signal_policy": "before",
+      "rear_driver_present": true,
+      "construction": "rear_signal.construct: one-way route, stop footprint, rear participant, requested signal order",
+      "measurement": "rear_signal.measure_original: original 900-frame participant/time join, displayed signal and visibility, event and motion history",
+      "physical_risk": "actual rear position, visibility, signal display and controlled motion require CARLA/original review",
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
+    },
+    {
+      "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after",
+      "target_law_id": "NRS-484B-413-3",
+      "branch": "stop or sudden decrease with signal timing and rear-driver recipient",
+      "maneuver": "stop",
+      "signal_policy": "after",
+      "rear_driver_present": true,
+      "construction": "rear_signal.construct: one-way route, stop footprint, rear participant, requested signal order",
+      "measurement": "rear_signal.measure_original: original 900-frame participant/time join, displayed signal and visibility, event and motion history",
+      "physical_risk": "actual rear position, visibility, signal display and controlled motion require CARLA/original review",
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
+    },
+    {
+      "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before",
+      "target_law_id": "NRS-484B-413-3",
+      "branch": "stop or sudden decrease with signal timing and rear-driver recipient",
+      "maneuver": "sudden_decrease",
+      "signal_policy": "before",
+      "rear_driver_present": true,
+      "construction": "rear_signal.construct: one-way route, stop footprint, rear participant, requested signal order",
+      "measurement": "rear_signal.measure_original: original 900-frame participant/time join, displayed signal and visibility, event and motion history",
+      "physical_risk": "actual rear position, visibility, signal display and controlled motion require CARLA/original review",
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
+    },
+    {
+      "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after",
+      "target_law_id": "NRS-484B-413-3",
+      "branch": "stop or sudden decrease with signal timing and rear-driver recipient",
+      "maneuver": "sudden_decrease",
+      "signal_policy": "after",
+      "rear_driver_present": true,
+      "construction": "rear_signal.construct: one-way route, stop footprint, rear participant, requested signal order",
+      "measurement": "rear_signal.measure_original: original 900-frame participant/time join, displayed signal and visibility, event and motion history",
+      "physical_risk": "actual rear position, visibility, signal display and controlled motion require CARLA/original review",
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
+    },
+    {
+      "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver",
+      "target_law_id": "NRS-484B-413-3",
+      "branch": "stop or sudden decrease with signal timing and rear-driver recipient",
+      "maneuver": "stop",
+      "signal_policy": "before",
+      "rear_driver_present": false,
+      "construction": "rear_signal.construct: one-way route, stop footprint, rear participant, requested signal order",
+      "measurement": "rear_signal.measure_original: original 900-frame participant/time join, displayed signal and visibility, event and motion history",
+      "physical_risk": "actual rear position, visibility, signal display and controlled motion require CARLA/original review",
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stop_signal_order",
+      "case_ids": [
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after"
+      ],
+      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "deliberate_differences": [
+        "displayed signal onset order"
+      ]
+    },
+    {
+      "comparison_id": "decrease_signal_order",
+      "case_ids": [
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after"
+      ],
+      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "deliberate_differences": [
+        "displayed signal onset order"
+      ]
+    },
+    {
+      "comparison_id": "stop_vs_decrease",
+      "case_ids": [
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before"
+      ],
+      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "deliberate_differences": [
+        "stop versus sudden speed decrease"
+      ]
+    },
+    {
+      "comparison_id": "rear_driver_presence",
+      "case_ids": [
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver"
+      ],
+      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "deliberate_differences": [
+        "actual rear driver presence"
+      ]
+    }
+  ],
+  "observations": [
+    "jurisdiction, one-way route and stop footprint",
+    "ordinary vehicle classification and ego driver physical control",
+    "rear vehicle identity, driver presence, longitudinal/lateral gap and motion",
+    "original signal display and visibility from rear driver position",
+    "original stop or speed-decrease event and signal onset order",
+    "conflict avoidance and official direction context",
+    "appropriateness, immediacy and prohibited-stop application reserved for review"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/assignment.json",
@@ -51,17 +180,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Diagnostic fixture provides synthetic rear relation and signal timing, not original physical evidence.",
+    "Canonical capture/offline/compatibility, semantic proposals and saved delivery/comparison audits remain CPU work.",
+    "Actual rearward visibility and physical motion await CARLA/original review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "source-backed stop/decrease, signal timing and rear-driver relationship",
+        "source": "inputs/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/evidence.json",
+        "source_sha256": "7d3c9c8baa71b0e39a4bf695a612eea8cc3168312bb3d0216b72b20c84ceda7e",
+        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_rear_signal_cpu_probes",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
