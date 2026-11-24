@@ -50,6 +50,8 @@ def read_observations(original, telemetry, lane_ids, regions, required):
     topology = original/'native_incoming_lane_topology.json'
     if not selected or not stream.exists() or not topology.exists():
         return {}  # No retrospective completeness claim for old captures.
+    if json.loads(topology.read_text()).get('schema')!='native-incoming-lane-topology-v1':
+        return {}  # A different retained protocol supplies no facts through this reader.
     result = json.loads((original/'result.json').read_text())
     binding = result.get('completion', {}).get('binding')
     if not binding:

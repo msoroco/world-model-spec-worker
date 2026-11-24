@@ -17,6 +17,22 @@ Missing capture/evidence, incomplete realization, unmet targets, and unintended 
 
 `--max-repairs` defaults to two diagnosed repairs per case. Failed attempts and their measurements remain available; the case identity and run stay the same. Exhausted or out-of-scope repairs remain unresolved, while other cases continue. The agent investigates remaining causes and asks only when a necessary repair exceeds existing authorization. An unchanged construction is not replayed for a favorable label. Fixed sweep endpoints, spacing, and approved target values remain unchanged. `pipeline.py simulate --max-repairs 2` performs physical/capture repairs; end-to-end adaptation and expected-label checks use `run_selected.py`.
 
+## Keep assessment evidence independent of preparation utilities
+
+An accepted label is supported by recorded facts, declared scenario context and
+the written assessment of the applicable rule. Keep that information and its
+method identifier. One-time generator paths and implementation checksums are
+not legal evidence and are not required acceptance dependencies. New assessment
+records omit them. Historical mentions in saved records do not require keeping
+or executing the old utilities.
+
+Keep reusable evaluation and publication logic in `scenario_pipeline`. Keep
+temporary repair utilities outside the repository and remove them when their
+remaining callers are no longer needed. Retain original captures, definitions,
+measurement receipts and assessment data. Data checksums detect changed files;
+they do not establish a legal outcome. Runtime checkpoints coordinate safe code
+changes and are separate from legal-assessment evidence.
+
 ## Coordinate changes to shared code
 
 A run records hashes of pipeline, adapter, capture-helper, and graph-generator dependencies. Configure extra file paths in `simulator_context.runtime_dependency_paths`; a non-default capture helper can use `capture_requirements.helper_path`. Construction and execution use a shared runtime lock and verify hashes before and after their work. Uncoordinated changes are rejected and their diagnostics retained.
@@ -36,7 +52,7 @@ The exclusive lock waits for active work before the edit. Changed hashes and rea
 
 `review_recordings.py --output <run-directory>` renders a primary review covering every delivered trace frame. Optional `--previews` creates separate focused clips. Primary coverage is enforced even when an engineering target-attainment window is much later than the turn or sign approach. No violation is removed to repair a compliant case.
 
-Expected labels describe measured scenarios under declared assumptions wherever the selected rule applies throughout the delivered trace. They do not evaluate a law formalization. A target-attainment window measures controller performance and is highlighted separately. Actual judgment sweeps have no expected label. Speeds are stored in m/s and reported with explicit units. The default speed triple uses ±5 mph outer margins and a middle command 0.5 mph inside the compliant side; justified overrides are recorded.
+Expected labels describe measured scenarios under declared assumptions wherever the selected rule applies throughout the delivered trace. They do not evaluate a law formalization. A target-attainment window measures controller performance and is highlighted separately. Sweep membership is independent of outcome. Only source-bound unresolved legal wording establishes a `judgment call`; missing observations, uncertain applicability and unavailable evaluation remain separate processing reasons with a nullable unavailable outcome. Speeds are stored in m/s and reported with explicit units. The default speed triple uses ±5 mph outer margins and a middle command 0.5 mph inside the compliant side; justified overrides are recorded.
 
 Posted-speed acceptance verifies the selected native sign, posted value/unit, lane identity, measured approach/passage, subsequent governed-portion coverage, and clearance from unrelated signal controls. Authored governance is explicit and is not inferred from graph presence. Existing signal and stop-label checks verify actual indications and the selected signed footprint/reference geometry.
 

@@ -8,7 +8,7 @@ class HandoffTests(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=pathlib.Path(self.tmp.name);self.aid='testing__C1__L1__driver';self.folder=self.root/'work'/self.aid;self.folder.mkdir(parents=True)
   runtime=self.root/'runtime';runtime.mkdir();(runtime/'source.py').write_text('pass\n');write(runtime/'SOURCE-MANIFEST.json',{'files':{'source.py':sha(runtime/'source.py')}})
-  write(self.root/'batch.json',{'runtime':{'root':'runtime'}})
+  write(self.root/'batch.json',{'runtime':{'root':'runtime','source_manifest_sha256':sha(runtime/'SOURCE-MANIFEST.json')}})
   self.case=self.aid+'__probe';desc={'channels':[],'context_inputs':[],'limitations':[]}
   write(self.folder/'proposals/cases.json',{'cases':[{'case_id':self.case,'target_type':'boundary_probe','recording_description':desc}],'sweep_specs':[],'sweeps_expanded':True})
   script='import argparse\np=argparse.ArgumentParser();p.add_argument("--check",action="store_true");a=p.parse_args();assert a.check\n'
@@ -22,8 +22,9 @@ class HandoffTests(unittest.TestCase):
   local_library=pathlib.Path(__file__).resolve().parents[1]/'library'
   if not local_library.is_dir():
    local_library=pathlib.Path(__file__).resolve().parents[2]/'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/library'
-  shutil.copytree(full_core(local_library),runtime/'library/TrafficSpec/Core')
+  shutil.copytree(full_core(local_library),runtime/'library/splits/full/TrafficSpec/Core')
   write(runtime/'SOURCE-MANIFEST.json',{'files':{k:v for k,v in tree(runtime).items() if k!='SOURCE-MANIFEST.json'}})
+  write(self.root/'batch.json',{'runtime':{'root':'runtime','source_manifest_sha256':sha(runtime/'SOURCE-MANIFEST.json')}})
   self.manifest['runtime_manifest_sha256']=sha(runtime/'SOURCE-MANIFEST.json')
   self.bundle.update(cell_id='C1',actor='driver')
   self.bundle['files'].append({'path':'analyze.py','content':'def measure(): return 1\n'})

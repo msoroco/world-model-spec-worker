@@ -47,7 +47,8 @@ def canonicalScene (cm : List (TrackId × TrackId)) (s : Scene) : Scene :=
     occupancyObserved := s.occupancyObserved.map c
     occupies := s.occupies.map fun (t, r) => (c t, r)
     relations := s.relations.map fun m => { m with a := c m.a, b := c m.b }
-    intents := s.intents.map fun d => { d with vehicle := c d.vehicle } }
+    intents := s.intents.map fun d => { d with vehicle := c d.vehicle }
+    facts := s.facts.map fun f => { f with users := f.users.map c } }
 
 -- ---------------------------------------------------------------------------------------------
 -- Setup: the canonical, indexed trace and the rule set
@@ -57,6 +58,8 @@ structure Setup where
   d : Primitives.Ctx
   gap : Q
   cm : List (TrackId × TrackId) := []
+  setRules : Option (List Rule) := none     -- what the rule-set operators range over, where not the rules
+  incomplete : List String := []            -- the rule-set ids the run declares incomplete
 
 def Setup.mk' (rules : List Rule) (τ : Trace) (ρ : Reading) (gap : Q) : Setup :=
   let arr := τ.toArray
@@ -72,7 +75,7 @@ def Setup.admit (rules : List Rule) (τ : Trace) (ρ : Reading) (gap : Q) : Exce
 
 def Setup.n (S : Setup) : Nat := S.d.n
 def Setup.scenes (S : Setup) : Array Scene := S.d.scenes
-def Setup.ctx (S : Setup) (β : Binding) : SemCtx := Rule.context S.rules S.d β
+def Setup.ctx (S : Setup) (β : Binding) : SemCtx := Rule.context S.rules S.d β S.setRules S.incomplete
 def Setup.tracks (S : Setup) : List TrackId := (S.scenes.toList.flatMap (·.tracks)).eraseDups
 /-- First and last instant at which a canonical identity is present. -/
 def Setup.span (S : Setup) (t : TrackId) : Option (Nat × Nat) :=

@@ -5,8 +5,8 @@
   scene, never a mapping of a law's words.
 
   `Case.check` admits a case only when:
-  - it uses the constructors of observable facts and of facts the trace declares (an assumption or
-    a declared intention, each named in `case_declarations` with its kind): no reading parameter,
+  - it uses the constructors of observable facts and of facts the trace declares (an assumption, a
+    declared intention or a declared fact, each named in `case_declarations` with its kind): no reading parameter,
     no other rule, no concept (a derived concept or quantity whose name is not a primitive's), no
     division except by a non-zero literal, and no `ru_aggregate` (a case names a road user's
     concrete classes, never a legal aggregate);
@@ -43,17 +43,18 @@ import TrafficSpec.Core.Vocab.Ontology.Dimensions
 namespace TrafficSpec
 
 namespace Dim
-def one : Dim := ⟨0, 0, 0⟩
-def length : Dim := ⟨1, 0, 0⟩
-def time : Dim := ⟨0, 1, 0⟩
-def mul (a b : Dim) : Dim := ⟨a.m + b.m, a.s + b.s, a.deg + b.deg⟩
-def div (a b : Dim) : Dim := ⟨a.m - b.m, a.s - b.s, a.deg - b.deg⟩
+def one : Dim := ⟨0, 0, 0, 0⟩
+def length : Dim := ⟨1, 0, 0, 0⟩
+def time : Dim := ⟨0, 1, 0, 0⟩
+def mul (a b : Dim) : Dim := ⟨a.m + b.m, a.s + b.s, a.deg + b.deg, a.kg + b.kg⟩
+def div (a b : Dim) : Dim := ⟨a.m - b.m, a.s - b.s, a.deg - b.deg, a.kg - b.kg⟩
 def ofUnit : PUnit' → Dim
-  | .metre => ⟨1, 0, 0⟩ | .second => ⟨0, 1, 0⟩ | .metrePerSecond => ⟨1, -1, 0⟩
-  | .metrePerSecondSq => ⟨1, -2, 0⟩ | .degree => ⟨0, 0, 1⟩ | .degreePerSecond => ⟨0, -1, 1⟩ | .perMetre => ⟨-1, 0, 0⟩
+  | .metre => ⟨1, 0, 0, 0⟩ | .second => ⟨0, 1, 0, 0⟩ | .metrePerSecond => ⟨1, -1, 0, 0⟩
+  | .metrePerSecondSq => ⟨1, -2, 0, 0⟩ | .degree => ⟨0, 0, 1, 0⟩ | .degreePerSecond => ⟨0, -1, 1, 0⟩ | .perMetre => ⟨-1, 0, 0, 0⟩
+  | .kilogram => ⟨0, 0, 0, 1⟩
   | .ratio => one | .count => one
 def render (d : Dim) : String :=
-  let parts := ([("m", d.m), ("s", d.s), ("deg", d.deg)].filter (·.2 != 0)).map fun (u, e) =>
+  let parts := ([("m", d.m), ("s", d.s), ("deg", d.deg), ("kg", d.kg)].filter (·.2 != 0)).map fun (u, e) =>
     if e == 1 then u else s!"{u}^{e}"
   if parts.isEmpty then "1 (no unit)" else String.intercalate "·" parts
 end Dim
@@ -149,9 +150,9 @@ end
 
 /-- Every unit defect of a formula: comparisons, windows, arithmetic, selections, the parameters of
     atoms (which carry no unit), primitives and concepts, and the formulas terms carry. Assumptions,
-    declared intentions, composed rules and aggregates have no unit and are not defects here. -/
+    declared intentions and facts, composed rules and aggregates have no unit and are not defects here. -/
 partial def errors (env : DimEnv) : Formula → List DimError
-  | .tt | .ff | .same _ _ | .asm _ | .intent .. | .rule _ _ | .ruleApplies _ _ => []
+  | .tt | .ff | .same _ _ | .asm _ | .intent .. | .fact .. | .rule _ _ | .ruleApplies _ _ | .requiredBy _ _ | .lawful _ _ | .ruleCase _ _ _ => []
   | .atom n _ ps =>
     ps.flatMap (fun p => match termDim env p with
       | .ok d => if d == Dim.one then [] else [.mismatch s!"atom `{n}`: a parameter in {d.render}; its parameters carry no unit"]
@@ -177,6 +178,11 @@ partial def errors (env : DimEnv) : Formula → List DimError
   | .holdsFor m d _ φ | .within m d _ φ => window m d ++ errors env φ
   | .untilWithin m d _ φ ψ | .atLast m d _ φ ψ => window m d ++ errors env φ ++ errors env ψ
   | .count e s _ _ => errors env e ++ errors env s
+  | .durationWithin w g φ _ b =>
+    window .time w ++ [("step bound", g), ("bound", b)].flatMap (fun (what, t) =>
+      (match termDim env t with
+       | .ok x => if x == Dim.time then [] else [.mismatch s!"a sampled duration's {what} is {x.render}, not a time"]
+       | .error e => [e]) ++ terms t) ++ errors env φ
   | .existsUser _ φ | .forallUser _ φ | .existsRegion _ _ φ | .forallRegion _ _ φ
   | .existsDevice _ _ φ | .forallDevice _ _ φ => errors env φ
 where
@@ -240,11 +246,13 @@ def env : DimEnv :=
 
 /-- A case's own prohibitions, apart from its units: no other rule, no legal aggregate, no division
     except by a non-zero literal, and no quantifier variable that reuses a binder's or an entity's
-    name. An assumption and a declared intention are facts the trace declares, which a case may
-    state wherever it nests them. -/
+    name. An assumption, a declared intention and a declared fact are facts the trace declares,
+    which a case may state wherever it nests them. -/
 partial def policyErrors (reserved : List String) : Formula → List String
-  | .tt | .ff | .same _ _ | .asm _ | .intent .. => []
+  | .tt | .ff | .same _ _ | .asm _ | .intent .. | .fact .. => []
   | .rule id _ | .ruleApplies id _ => [s!"rule `{id}`: a case names no other rule"]
+  | .requiredBy .. | .lawful .. => ["a case names no rule-set operator"]
+  | .ruleCase id _ _ => [s!"rule `{id}`: a case names no other rule's case"]
   | .atom n _ ps =>
     (if n == "ru_aggregate" then ["`ru_aggregate`: a case names the road user's concrete classes, never a legal aggregate"] else [])
     ++ ps.flatMap terms
@@ -256,6 +264,7 @@ partial def policyErrors (reserved : List String) : Formula → List String
   | .holdsFor _ d _ φ | .within _ d _ φ => terms d ++ policyErrors reserved φ
   | .untilWithin _ d _ φ ψ | .atLast _ d _ φ ψ => terms d ++ policyErrors reserved φ ++ policyErrors reserved ψ
   | .count e s _ _ => policyErrors reserved e ++ policyErrors reserved s
+  | .durationWithin w g φ _ b => terms w ++ terms g ++ terms b ++ policyErrors reserved φ
   | .existsUser v φ | .forallUser v φ | .existsRegion _ v φ | .forallRegion _ v φ
   | .existsDevice _ v φ | .forallDevice _ v φ => binds v ++ policyErrors reserved φ
 where
@@ -314,11 +323,12 @@ private def strs (xs : List String) : Json := Json.arr (xs.map Json.str).toArray
 private def triTag : Tri → String
   | .t => "true" | .f => "false" | .u => "unknown"
 private def reasons (rs : List UnknownReason) : Json := strs (rs.map UnknownReason.tag)
-/-- The declared-fact ids a case states, each once with its kind: `{"id", "kind": "asm" | "int"}`. -/
+/-- The declared-fact ids a case states, each once with its kind: `{"id", "kind": "asm" | "int" | "fact"}`. -/
 def declarations (φ : Formula) : Json :=
   Json.arr ((Formula.declared φ).eraseDups.map fun
-    | .inl a => Json.mkObj [("id", Json.str a), ("kind", "asm")]
-    | .inr i => Json.mkObj [("id", Json.str i), ("kind", "int")]).toArray
+    | .asm a => Json.mkObj [("id", Json.str a), ("kind", "asm")]
+    | .int i => Json.mkObj [("id", Json.str i), ("kind", "int")]
+    | .fact f => Json.mkObj [("id", Json.str f), ("kind", "fact")]).toArray
 
 /-- The case of a divergence from its JSON, `{"case": formula, "entities": {...}, "at": ms}`:
     every decoding error, or the case. -/

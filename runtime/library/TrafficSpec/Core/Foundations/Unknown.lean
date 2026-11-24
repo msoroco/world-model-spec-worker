@@ -19,6 +19,7 @@ inductive UnknownReason
   | identityGap (track : TrackId)         -- a bound track is not present and no link continues it
   | assumptionMissing (id : AsmId)        -- an `asm.*` the scene did not supply
   | intentionMissing (id : IntId)         -- an `int.*` the scene did not declare for the road user at the region
+  | factMissing (id : FactId)             -- a `fact.*` the scene did not declare for its subjects
   | parameterMissing (name : String)      -- a reading parameter the rule names but the reading lacks
   | unboundVariable (name : String)       -- a formula variable with no binding
   | compositionUnknown (rule : String)    -- a composed rule reported unknown or does not exist
@@ -38,6 +39,7 @@ def tag : UnknownReason → String
   | .identityGap t => s!"identity_gap:{t}"
   | .assumptionMissing id => s!"assumption_missing:{id}"
   | .intentionMissing id => s!"intention_missing:{id}"
+  | .factMissing id => s!"fact_missing:{id}"
   | .parameterMissing n => s!"parameter_missing:{n}"
   | .unboundVariable n => s!"unbound_variable:{n}"
   | .compositionUnknown r => s!"composition_unknown:{r}"

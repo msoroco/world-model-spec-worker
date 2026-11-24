@@ -207,7 +207,8 @@ class AdapterTests(unittest.TestCase):
             regions,polys,keys=static_map(p)
         self.assertEqual(len(keys),1)
         self.assertNotIn('direction',regions[0]['lane'])
-        self.assertEqual([r['curvature'] for r in regions if r['kind']=='roadway'],[0,.01])
+        self.assertEqual(len([r for r in regions if r['kind']=='roadway']),1)
+        self.assertTrue(all('grade'not in r and'curvature'not in r for r in regions))
         self.assertTrue(all(p.is_valid for p in polys.values()))
 
     def test_complete_generated_map_distinguishes_no_marking_and_terminal_lane(self):
@@ -617,7 +618,7 @@ class AdapterTests(unittest.TestCase):
 
     def test_atom_inventory_does_not_include_primitives(self):
         with tempfile.TemporaryDirectory() as d:
-            p=Path(d)/'TrafficSpec/Core'
+            p=Path(d)/'splits/full/TrafficSpec/Core'
             (p/'Vocab/Ontology').mkdir(parents=True)
             (p/'Runtime').mkdir()
             (p/'Runtime/Decode.lean').write_text('-- fixture')
@@ -714,14 +715,14 @@ class ManifestAvailabilityTests(unittest.TestCase):
         from unittest.mock import patch
         from traffic_spec_adapter import adapter
         library=core_fixture_library()
-        atoms=adapter.manifest(library)['atoms']
+        atoms=adapter.manifest(library,acquisition_path='fresh')['atoms']
         self.assertNotIn('sig.hand_signal',atoms)
         self.assertEqual(set(atoms),set(adapter.atom_ids(library))-{'sig.hand_signal'})
         self.assertEqual(atoms['st.sight_distance'],'estimate:vehicle_reference_geometry')
         self.assertEqual(atoms['st.entrance_of'],'estimate:recorded_control_and_map_topology_join')
         with patch.object(adapter,'atom_ids',return_value=adapter.atom_ids(library)+['st.future_atom']):
             with self.assertRaisesRegex(ValueError,'lacks an explicit acquisition decision'):
-                adapter.manifest(library)
+                adapter.manifest(library,acquisition_path='fresh')
 
 
 # Regression checks shared by production export and retained-trace reconstruction.
@@ -871,6 +872,26 @@ class ReconstructionTests(unittest.TestCase):
                  patch('traffic_spec_adapter.adapter.source_packets',return_value={}):
                 report=reconstruct(trace,root/'evidence',library,output)
             self.assertFalse(report['changed']);self.assertFalse(output.exists())
+
+
+    def test_profile_only_reconstruction_writes_current_user_fields(self):
+        from traffic_spec_adapter.adapter import reconstruct
+        from unittest.mock import patch
+        library=core_fixture_library()
+        scene={'t':0,'subject':1,'users':[{'track':1,'kin':{'speed':0,'path_length':0,'yaw_rate':0,'heading':[1,0]}}],
+               'structures':[],'devices':[]}
+        def measured_profile(scene,source):
+            scene['users'][0]['road_grade']=.08;scene['users'][0]['road_curvature']=0
+            return [{'track':1,'grade':.08,'curvature':0,'reason':None}]
+        with tempfile.TemporaryDirectory()as temp:
+            root=Path(temp);trace=root/'input.json';output=root/'output.json';trace.write_text(json.dumps({'scenes':[scene]}))
+            with patch('traffic_spec_adapter.geometry.retained_map',return_value=({}, {}, [], {}, [])), \
+                 patch('traffic_spec_adapter.entrance_associations.retained_associations',return_value=({},[])), \
+                 patch('traffic_spec_adapter.adapter.source_packets',return_value={}), \
+                 patch('traffic_spec_adapter.user_road_profile.project_source_profiles',side_effect=measured_profile):
+                report=reconstruct(trace,root/'evidence',library,output)
+            self.assertTrue(report['changed']);self.assertEqual(report['changes']['local_user_road_profiles'],1)
+            self.assertEqual(json.loads(output.read_text())['scenes'][0]['users'][0]['road_grade'],.08)
 
 
 class EvidenceReceiptTests(unittest.TestCase):

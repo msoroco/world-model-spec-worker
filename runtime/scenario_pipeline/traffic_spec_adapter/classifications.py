@@ -17,6 +17,8 @@ def classify(blueprint, attributes, known, physical_classification=None):
         if base in ('car','bus','truck','motorcycle','bicycle'):
             decided.update(basic-({'moped'} if base == 'motorcycle' else set()))
             positives.add('motor_vehicle' if base in ('car','bus','truck') else base)
+            # ATOMS: a trailer lacks motive power; this source role is powered.
+            if base in ('car','bus','truck'):decided.add('trailer')
             if base in ('bus','truck'):positives.add(base)
     elif physical_classification and physical_classification.get('physical_class') == 'animal':
         if 'animal' not in known:

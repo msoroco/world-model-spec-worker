@@ -62,3 +62,19 @@ For the active `demo-overlap-v3` split, resolve law partition and scenario eligi
 ## Authored intention contract
 
 Keep scene facts, scenario assumptions, and vehicle intentions separate. Read [the shared intention contract](../../docs/intention_contract.md) when a case contains intention. The selected Core `Intentions.lean` owns its meaning; IDs come from the authored plan, not a fixed skill vocabulary. Require a recorded vehicle/target binding, source, explicit values and temporal scope. Omitted declarations remain unknown; do not infer intentions from signals, outcomes or case names, or put road geometry and legal premises inside `intents`. Visibility in video does not decide whether a fact belongs in the scene. Missing bindings are unsupported input, never invented targets. Keep the existing world_setup/controller/subject_behavior variable classification.
+
+## Training/test judgment ranges
+
+For demo-test compare demo-train; full-test compares full-train. Other testing
+sets must declare scope.training_set. Run `python scenario_pipeline/judgment_coverage.py
+--root runs/scenario_pipeline --set demo-test` to inspect source-hashed bounds.
+For every law/actor/judgment/observable and compatible measurement definition,
+aggregate across cells and cover strictly below, strictly inside and strictly
+above the training range. Include accepted training measurements and selected
+frozen targets, excluding unselected/superseded plans. Interior values may be new
+and need not reproduce the training grid. Preserve exact judgment_refs and
+sweep_measurements including variable mapping. Nonaccepted selected training
+members need case_source referencing their immutable case JSON under the output
+root. Missing historical definitions require evidence-backed metadata recovery,
+never guesses from names. Impossible endpoints remain coverage gaps. Local
+finalization writes judgment_coverage.json and refuses incomplete ranges.

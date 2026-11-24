@@ -28,7 +28,9 @@ dev.temporary_traffic_control dev.zone_sign env.civil_time kin.engine_running ki
 ru.commercial_motor_vehicle ru.electric_bicycle ru.electric_scooter ru.emergency_vehicle
 ru.fire_apparatus ru.moped ru.occupant_count ru.official_vehicle
 ru.pedestrian_with_white_cane_or_guide_animal ru.rail_vehicle ru.rider_posture ru.school_bus
-ru.taxicab ru.tour_bus_or_limousine ru.trailer_or_combination ru.transit_bus
+ru.taxicab ru.tour_or_shuttle_bus ru.limousine ru.trailer ru.vehicle_combination ru.transit_bus
+ru.trimobile ru.tow_car ru.disabled ru.unladen_mass
+dev.governs_sidewalk dev.governs_parking_space st.railway_track st.impassable_section
 sig.compression_brake sig.door_open sig.hand_signal sig.horn sig.siren sig.warning_lamp
 st.alley st.centre_turn_lane st.controlled_access st.curb_zone
 st.driveway_or_alley_entrance st.elevated_structure st.fire_hydrant st.fire_station_entrance
@@ -109,6 +111,8 @@ def serialized_scene(scene, original_precision=False):
         # equality. Validate all types/finiteness first; retain numeric telemetry.
         for user,source in zip(value['users'],scene['users']):
             user['kin']=dict(source.get('kin',{}))
+            for field in('road_grade','road_curvature'):
+                if field in source:user[field]=source[field]
     return value
 
 
@@ -117,11 +121,7 @@ def rows(path):
 
 
 def full_core(library):
-    library=Path(library)
-    active=library/'splits/ACTIVE'
-    if active.exists() and active.read_text().strip()!='full':
-        core=library/'splits/full/TrafficSpec/Core'
-    else:core=library/'TrafficSpec/Core'
+    core=Path(library)/'splits/full/TrafficSpec/Core'
     if not (core/'Runtime/Decode.lean').exists():raise ValueError('Full TrafficSpec Core unavailable')
     return core
 
@@ -133,7 +133,7 @@ def atom_ids(library):
     return re.findall(r'"([a-z]+\.[a-z_]+)"',block.group(1))
 
 
-def manifest(library):
+def manifest(library, *, acquisition_path):
     """Capability of this recorded-capture adapter, not presence in one scene.
 
     Unsupported atoms are enumerated explicitly. Per-frame omissions remain
@@ -141,13 +141,14 @@ def manifest(library):
     direction. A source capability does not assert that every physical mark in
     a scene has a resolved association.
     """
+    if acquisition_path not in {'fresh','retained'}:raise ValueError('Unknown acquisition path')
     observed={'ru.subject':'exact','ru.aggregate':'exact','ru.motor_vehicle':'exact',
               'ru.pedestrian':'exact','ru.bicycle':'estimate:blueprint_classification',
               'ru.motorcycle':'estimate:blueprint_classification',
               'kin.time':'exact','kin.position':'exact','kin.heading':'exact','kin.extent':'exact',
               'kin.speed':'exact',
               'kin.velocity':'exact',
-              'kin.yaw_rate':'estimate:timestamped_unwrapped_heading_difference','kin.path_length':'subject',
+              'kin.yaw_rate':'estimate:original_world_angular_velocity_horizontal_heading_derivative_v1_or_timestamped_unwrapped_heading_difference','kin.path_length':'subject',
               'kin.throttle':'exact','kin.service_brake':'exact','kin.parking_brake':'exact',
               'st.lane':'exact','st.roadway':'exact','st.lane_direction':'estimate:local_native_heading_or_sampled_chord',
               'st.lane_adjacency':'exact','st.lane_width':'exact',
@@ -194,13 +195,20 @@ def manifest(library):
         'env.ice_or_snow':'estimate:verified_native_surface',
         'st.crest':'estimate:surveyed_native_elevation',
         'st.sight_distance':'estimate:vehicle_reference_geometry',
+        'st.grade':'estimate:source_local_road_gradient_along_observed_heading',
+        'st.curvature':'estimate:source_local_horizontal_road_geometry',
     })
+    unsupported=set(UNSUPPORTED_ATOMS)
+    if acquisition_path=='retained':
+        observed['st.road_edge']='estimate:source_bound_outward_road_edge_strip_1cm';unsupported.discard('st.road_edge')
+        for atom in ('ru.trailer','ru.vehicle_combination'):
+            observed[atom]='estimate:verified_single_chassis_configuration_v2';unsupported.discard(atom)
     ids=atom_ids(library)
     if not ids:raise ValueError('No ontology atom IDs found')
-    if set(observed)&UNSUPPORTED_ATOMS:raise ValueError('Acquisition atom declared both observed and unsupported')
-    if (set(observed)|UNSUPPORTED_ATOMS)-set(ids):raise ValueError('Acquisition table contains a retired atom')
-    if set(ids)-(set(observed)|UNSUPPORTED_ATOMS):
-        raise ValueError('Ontology atom lacks an explicit acquisition decision: '+str(sorted(set(ids)-(set(observed)|UNSUPPORTED_ATOMS))))
+    if set(observed)&unsupported:raise ValueError('Acquisition atom declared both observed and unsupported')
+    if (set(observed)|unsupported)-set(ids):raise ValueError('Acquisition table contains a retired atom')
+    if set(ids)-(set(observed)|unsupported):
+        raise ValueError('Ontology atom lacks an explicit acquisition decision: '+str(sorted(set(ids)-(set(observed)|unsupported))))
     return {'source':VERSION,'reid_gap':0,'atoms':{k:observed[k] if k in observed else 'absent' for k in ids if k != 'sig.hand_signal'}}
 
 def rates(times, headings):
@@ -268,6 +276,9 @@ def measured_kinematics(observation):
         elif type(value) not in (int,float) or not math.isfinite(value):
             raise ValueError('Invalid measured vehicle control: '+source)
         result[target] = value
+    from .yaw_rate import horizontal_heading_rate
+    yaw, _ = horizontal_heading_rate(observation)
+    if yaw is not None:result['yaw_rate'] = yaw
     steering = representative_steering(observation)
     if steering is not None:result['steer_angle'] = steering
     return result
@@ -761,6 +772,18 @@ def validate_scene(scene, library=None, *, check_numbers=True):
     if check_numbers:check_json(scene)
 
 
+def _visibility_lane_inventory(path, source_sha256):
+    """Complete source Driving keys, independent of exported region bindings."""
+    if path is None:return frozenset()
+    if sha(path)!=source_sha256:raise ValueError('Visibility lane inventory map source differs')
+    from .geometry import ET
+    return frozenset((int(road.get('id')),section_index,int(lane.get('id')))
+        for road in ET.parse(path).getroot().findall('road')
+        for section_index,section in enumerate(road.findall('lanes/laneSection'))
+        for side in ('left','right') for lane in section.findall(side+'/lane')
+        if lane.get('type')=='driving')
+
+
 def convert(capture, original, library, output, *, diagnostic_fixture=False):
     """Convert once into a new directory; preserve all source evidence unchanged."""
     capture,original,library,output=map(lambda p:Path(p).resolve(),(capture,original,library,output))
@@ -814,10 +837,11 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
     from .inventory_observations import Evidence
     original_source=Evidence(original.parent)
     static_inventory=retained_static_inventory(original_source)
-    static_inventory_atoms=set(manifest(library)['atoms']) if static_inventory else set()
+    static_inventory_atoms=set(manifest(library,acquisition_path='fresh')['atoms']) if static_inventory else set()
     from .occupancy import native_single_plane, native_driving_surface
     occupancy_single_plane=native_single_plane(original/'road.xodr')
-    occupancy_driving_surface=None if occupancy_single_plane else native_driving_surface(original/'road.xodr')
+    occupancy_contact_bands=[]
+    occupancy_driving_surface=None if occupancy_single_plane else native_driving_surface(original/'road.xodr',contact_bands=occupancy_contact_bands)
     configuration=json.loads((original/'config.json').read_text()) if (original/'config.json').exists() else {}
     from context_catalogue import public_road_ids
     road_declaration=(static_inventory or {}).get('authored_road_access')
@@ -835,6 +859,10 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
                                       source_regions=map_region_sources,
                                       cache=OUTPUT_ROOT/'state/cache/maps',
                                       complete_map=complete_generated_lanes(source_manifest,native_facts,sha(original/'road.xodr')))
+    from .user_road_profile import prepare_profile_source,project_source_profiles,source_user_profile_scope
+    profile_source=prepare_profile_source(original/'road.xodr',{r['id']:map_sources[r['id']]for r in regions
+        if r['kind']in('roadway','one_way_roadway')and r['id']in map_sources},static_inventory=static_inventory)
+    visibility_lane_ids=_visibility_lane_inventory(original/'road.xodr',source_manifest['sources']['road.xodr'])
     from .roadways import merge_highways
     highway_source_surfaces=[value for value in map_region_sources.values()if 'highway_geometry_method'in value]
     highway_geometry_methods={}
@@ -883,6 +911,15 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
         if region['kind']=='crosswalk' or observation['source'].get('geometry_method')=='estimated_verified_stop_line_strip_35cm':
             verified_native_kinds[region['id']]=[region['kind']]
         if 'boundary' in region:polygons[region['id']]=observation['shape']
+    from shapely.geometry import Polygon
+    from .geometry import retained_reference_crosswalk_additions
+    measured_crosswalk_fields={}
+    way_surfaces={r['id']:polygons[r['id']]for r in regions
+                  if r['kind']=='highway'and r['id']in polygons and map_sources.get(r['id'])}
+    for region,fields in retained_reference_crosswalk_additions(original_source,regions,way_surfaces,lane_ids):
+        regions.append(region);polygons[region['id']]=Polygon(region['boundary'])
+        verified_native_kinds[region['id']]=fields['_verified_structure_kinds']
+        measured_crosswalk_fields[region['id']]=fields
     from .geometry import normalized_polygon
     for region in regions:
         if region['kind']=='crosswalk' and region.get('boundary'):
@@ -1002,7 +1039,7 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
                        'position':'body centre from recorded bounding-box vertices; CARLA y reflected',
                        'speed':'original live telemetry; mph multiplied by 0.44704',
                        'participant_motion':'original same-frame actor.get_velocity and body telemetry, including measured actors outside the graph crop; no visibility inferred' if participant_records else ('original live graph actor.get_velocity only' if acquisition=='original_live_run' else 'replay motion omitted; unknown'),
-                       'yaw_rate':'unwrapped reflected heading; central/one-sided finite difference; degrees/s; subject-only estimate',
+                       'yaw_rate':'degrees/s; qualified original world-angular-vector horizontal-heading derivative, otherwise supported timestamped unwrapped reflected-heading finite difference; methods distinct',
                        'path_length':'trapezoidal integration of original speed; gaps leave unknown',
                        'occupancy':'recorded convex body footprint intersects 2 m sampled OpenDRIVE lane/roadway polygons',
                        'sight_distance':'subject-relative minimum sampled clear-side bound over inventoried incoming lanes; declared virtual eye height to nine actual body samples; censored bounds and rays retained',
@@ -1035,12 +1072,16 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
         for r in regions if 'samples' in map_region_sources.get(r['id'],{})}
     source_fields.update(entrance_geometry_fields(original/'road.xodr',regions,
         (static_inventory or {}).get('painted_stop_line_bindings',[])))
+    source_fields.update(measured_crosswalk_fields)
+    report['measured_reference_crosswalk_sources']={ident:value['_crosswalk_geometry_source']for ident,value in measured_crosswalk_fields.items()}
+    fresh_profile_certificate=None;fresh_profile_certificate_built=False
     partition,partition_issues=lane_segments({'structures':regions},source_fields)
     partition_shapes=compile_lane_segments(partition,source_fields) if partition else None
     report['lane_partition']={'lanes':len(partition),'pieces':sum(len(p)for p in partition.values()),'issues':partition_issues}
     report['methods']['lane_direction']='Native constant heading, or local sampled chord estimates on source-supported curved lane partitions'
     report['limitations']=[('Curved lane direction is a local sampled chord estimate; unresolved source geometry retains unknown direction.'
         if note=='Curved lanes have no single direction vector; lane direction omitted there.' else note) for note in report['limitations']]
+    geometry_source_scopes=[]
     with (output/'trace.json').open('w') as out,(output/'supplementary_evidence.jsonl').open('w') as extra:
         out.write('{"scenes":[')
         for i,e in enumerate(evidence):
@@ -1165,10 +1206,12 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
             from .occupancy import recompute as recompute_occupancy
             final_ids={r['id'] for r in scene['structures']}
             final_surfaces={rid:shape for rid,shape in polygons.items() if rid in final_ids}
+            report.setdefault('user_road_profile_sources',[]).append({'frame':e['original_frame'],
+                'users':project_source_profiles(scene,profile_source)})
             scene=serialized_scene(scene,bool(source_manifest.get('observation_contract_version')))
             _, visibility_mapping = project_final_visibility(scene,
                 {'subject':e['actor_id'],'body_vertices_m':e['ego']['body_vertices_m'],'visibility':e.get('visibility')},
-                lane_ids,source_polygons=polygons)
+                visibility_lane_ids,source_polygons=polygons)
             if visibility_mapping['value_m'] is None:
                 report['visibility_frames_without_scalar'] += 1
                 reason = visibility_mapping['reason']
@@ -1178,16 +1221,44 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
             final_surfaces={rid:shape for rid,shape in final_surfaces.items() if not next(r for r in scene['structures'] if r['id']==rid).get('boundary')}
             height_ids={ident for ident,roads in map_sources.items() if roads}
             height_ids.update(ident for ident,src in map_region_sources.items() if src.get('road_id') is not None)
+            height_ids.update(measured_crosswalk_fields)
             for ident,pieces in partition.items():
                 if ident in height_ids:height_ids.update(piece['id'] for piece,_ in pieces)
             from .occupancy import unresolved_surface_heights
             scoped=occupancy_driving_surface is not None
-            coverage=recompute_occupancy(scene,footprints,source_ids=final_ids,surfaces=final_surfaces,
-                unresolved_vertical=unresolved_surface_heights(scene,footprints,height_ids,occupancy_driving_surface,surfaces=final_surfaces)if scoped else (),
+            vertical=unresolved_surface_heights(scene,footprints,height_ids,occupancy_driving_surface,surfaces=final_surfaces,contact_bands=occupancy_contact_bands)if scoped else set()
+            occupancy_footprints=footprints;occupancy_ids=final_ids
+            if not fresh_profile_certificate_built:
+                from .native_road_profile import source_surface_certificate
+                fresh_fields={ident:{'_verified_structure_kinds':facts}for ident,facts in verified_kinds.items()}
+                fresh_profile_certificate=source_surface_certificate(original_source,scene['structures'],fresh_fields)
+                fresh_profile_certificate_built=True
+            if fresh_profile_certificate is not None:
+                for ident,value in fresh_profile_certificate['fields'].items():
+                    verified_kinds.setdefault(ident,[]).extend(value['_verified_structure_kinds'])
+                kind_coverage=normalize_structure_kinds(scene,verified_kinds,kind_refinements)
+                report['structure_kind_coverage'][-1]=dict(frame=e['original_frame'],**kind_coverage)
+                from .occupancy import certified_surface_scope
+                certified,profile_vertical,occupancy_footprints=certified_surface_scope(scene,packet,fresh_profile_certificate)
+                height_ids=certified;vertical|=profile_vertical;scoped=True
+            coverage=recompute_occupancy(scene,occupancy_footprints,source_ids=occupancy_ids,surfaces=final_surfaces,
+                unresolved_vertical=vertical,
                 unresolved_grade=final_ids-height_ids if occupancy_single_plane or scoped else final_ids)
             report.setdefault('occupancy_coverage',[]).append(dict(frame=e['original_frame'],**coverage))
+            geometry_source_scopes.append(set(occupancy_ids))
+            from .atom_contract import _road_measurement_assessment
+            profile_scope=source_user_profile_scope(scene,profile_source,occupancy_ids)
+            for atom in ('st.grade','st.curvature','st.sight_distance'):
+                assessment=_road_measurement_assessment(scene,atom,'exact',profile_source,occupancy_ids)
+                for track in assessment['not_applicable_tracks']:
+                    decision=dict(profile_scope[track],track=track,atom=atom,frame=e['original_frame'])
+                    if atom=='st.sight_distance':
+                        decision.update(method='complete_source_roadway_lane_domain_and_observed_subject_footprint_occupancy',
+                            reason='Source-verified complete physical lane/Roadway domain and observed subject footprint occupancy establish zero applicable attachments; point position alone is insufficient.')
+                    report.setdefault('evidence_decisions',[]).append(decision)
             report['occupancy_native_single_plane_verified']=occupancy_single_plane
             report['occupancy_native_driving_surface_verified']=occupancy_driving_surface is not None
+            report['occupancy_native_contact_sources']=[band['source']for band in occupancy_contact_bands]
             validate_scene(scene, library)
             if i:out.write(',')
             json.dump(serialized_scene(scene,bool(source_manifest.get('observation_contract_version'))),out,separators=(',',':'),allow_nan=False)
@@ -1198,7 +1269,7 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
     required = set(source_manifest.get('required_observations', []))
     from .atom_contract import validate_required_atoms
     validate_required_atoms(required, library, str(capture/'manifest.json'))
-    capability = manifest(library)
+    capability = manifest(library,acquisition_path='fresh')
     report['capability_absence_reasons']={atom:('derived by Core from concrete kinds; not independently acquired'
         if atom=='st.travel_region' else 'no validated source-wide acquisition path')
         for atom,value in capability['atoms'].items() if value=='absent'}
@@ -1214,11 +1285,11 @@ def convert(capture, original, library, output, *, diagnostic_fixture=False):
         # Conversion already retains all original frames. A separate atom audit
         # validates required values, not only presence in a capability manifest.
         scenes=json.loads((output/'trace.json').read_text())['scenes']
-        original_coverage=required_coverage(required,capability,scenes,inventory_projection,entrance_refs)
+        original_coverage=required_coverage(required,capability,scenes,inventory_projection,entrance_refs,structure_source_ids=geometry_source_scopes,user_profile_source=profile_source)
         # Approved handoff 4.7 keeps human direction unsupported; never infer
         # no officer or make this deferred capability a common acquisition gate.
         deferred={'dev.human_direction'} & required if capability['atoms'].get('dev.human_direction')=='absent' else set()
-        coverage=required_coverage(required-deferred,capability,scenes,inventory_projection,entrance_refs)
+        coverage=required_coverage(required-deferred,capability,scenes,inventory_projection,entrance_refs,structure_source_ids=geometry_source_scopes,user_profile_source=profile_source)
         report['original_atom_coverage']=original_coverage
         report['original_explicit_requests_satisfied']=original_coverage['passed']
         report['deferred_required_observations']=sorted(deferred)
@@ -1289,6 +1360,28 @@ def project_measured_steering(scene, packet):
         elif kin.get('steer_angle') != value:
             kin['steer_angle'] = value; changes['measured_representative_steering'] += 1
     return changes
+
+
+def index_source_body(packet, actor):
+    # Preserve the existing world-vertices XY footprint method; no extent proxy.
+    aid=actor.get('actor_id');vertices=actor.get('body_vertices_m');heading=actor.get('heading_deg')
+    if 'frame'in actor and (type(actor['frame'])is not int or actor['frame']!=packet.get('native_frame')):return False
+    if 'time_s'in actor and (type(actor['time_s'])not in(int,float) or not math.isfinite(actor['time_s'])
+            or abs(actor['time_s']-packet.get('native_time',float('inf')))>1e-6):return False
+    if (type(aid)is not int or not isinstance(vertices,list) or len(vertices)<3
+            or type(heading)not in (int,float) or not math.isfinite(heading)
+            or any(not isinstance(p,list) or len(p)!=3 or any(type(x)not in(int,float)
+                   or not math.isfinite(x)for x in p)for p in vertices)):
+        return False
+    footprint=body(vertices,heading)[2]
+    if footprint.geom_type!='Polygon' or not footprint.is_valid or footprint.is_empty or footprint.area<=0:return False
+    previous=packet.get('source_body_vertices',{}).get(aid)
+    if previous is not None and sorted(map(tuple,previous))!=sorted(map(tuple,vertices)):
+        raise ValueError('Conflicting same-frame source body for actor '+str(aid))
+    import copy
+    packet.setdefault('source_footprints',{})[aid]=footprint
+    packet.setdefault('source_body_vertices',{})[aid]=copy.deepcopy(vertices)
+    return True
 
 
 def index_motion(packet,actor,source):
@@ -1370,6 +1463,10 @@ def audit_motion(scene,packet):
             diagnostics['missing_original_horizontal_acceleration'] += 1
         for key, value in joined.items():
             if key == 'steer_angle':continue  # Complete raw wheel references are checked separately.
+            # A supported retained heading-difference estimate is a distinct
+            # method. Original angular readbacks fill its gaps, not replace it.
+            if key == 'yaw_rate' and kin.get(key) is not None:
+                continue
             if key == 'velocity' and key in kin and (len(kin[key]) != 2 or any(
                     abs(a-b)>1e-5 for a,b in zip(kin[key],value))):
                 raise ValueError('Retained velocity disagrees with original actor/frame telemetry')
@@ -1430,6 +1527,7 @@ def source_packets(evidence, required=(), *, read_graphs=True):
             # Steering and acceleration are independent native observations.
             # Subject identity is still joined through the exact original capture frame.
             packet['subject_motion']={k:row[k] for k in ('frame','time_s','velocity_mps','speed_mps',
+                'angular_velocity_deg_s','angular_velocity_frame','angular_velocity_source',
                 'acceleration_mps2','forward_vector','heading_xy','heading_deg','accel_longitudinal_mps2',
                 'acceleration_method','acceleration_rounded','acceleration_quantization_bound_mps2','acquisition',
                 'wheel_angle_method','wheel_angle_references','wheel_steer_angles_deg','wheel_angle_errors') if k in row}
@@ -1442,6 +1540,7 @@ def source_packets(evidence, required=(), *, read_graphs=True):
                 raise ValueError('Embedded original observations do not join trace frame/time')
             for actor in measured.get('participants', []):
                 index_motion(packet,actor,'trace.jsonl:original_observations')
+                index_source_body(packet,actor)
                 attrs = actor.get('light_attributes', {})
                 if attrs:
                     packet['actors'][actor['actor_id']] = signals(attrs)
@@ -1455,6 +1554,7 @@ def source_packets(evidence, required=(), *, read_graphs=True):
         for actor in value.get('participants', []):
             if same_frame(row, packet):
                 index_motion(packet,actor,'weather_and_participants.jsonl')
+                if type(row.get('frame'))is int:index_source_body(packet,actor)
             aid = actor.get('actor_id', actor.get('id'))
             if aid is None:
                 continue
@@ -1525,7 +1625,9 @@ def source_packets(evidence, required=(), *, read_graphs=True):
                 if not current_sidecar_scope(actor_row,observation_row,packet):continue
                 # Timestamp/actor-bound native lamp masks remain usable in old
                 # channels without telemetry frames. They do not establish motion.
-                if joined_motion:index_motion(packet,actor,name)
+                if joined_motion:
+                    index_motion(packet,actor,name)
+                    if type(actor_row.get('frame'))is int:index_source_body(packet,actor)
                 lamps=signals(actor.get('light_attributes',{}))
                 if type(actor.get('lamp_bits')) is int:lamps.update(lamp_state(actor['lamp_bits']))
                 if lamps:packet.setdefault('lamp_sources',[]).append({'track':aid,'lamps':lamps})
@@ -1556,8 +1658,8 @@ def source_packets(evidence, required=(), *, read_graphs=True):
             vertices=event.get('ego',{}).get('body_vertices_m')
             heading=event.get('ego',{}).get('heading_deg')
             if vertices and heading is not None:
-                motion_packet.setdefault('source_footprints',{})[event['actor_id']]=body(vertices,heading)[2]
-                motion_packet.setdefault('source_body_vertices',{})[event['actor_id']]=vertices
+                index_source_body(motion_packet,{'actor_id':event['actor_id'],
+                    'body_vertices_m':vertices,'heading_deg':heading})
         if event.get('visibility') is not None:
             packet = at(event)
             if packet is None or not same_frame({'frame':event.get('original_frame'),
@@ -1568,12 +1670,10 @@ def source_packets(evidence, required=(), *, read_graphs=True):
                 packet['subject_visibility'] = {'subject':event['actor_id'],
                     'body_vertices_m':vertices, 'visibility':event['visibility']}
         measured=event.get('original_observations',{})
-        if motion_packet is not None and measured.get('frame')==event.get('original_frame'):
-            for actor in measured.get('participants',[]):
-                if actor.get('body_vertices_m') and actor.get('heading_deg') is not None:
-                    motion_packet.setdefault('source_footprints',{})[actor['actor_id']]=body(actor['body_vertices_m'],actor['heading_deg'])[2]
-                    if same_frame({'frame':event.get('original_frame'),'time_s':event.get('recording_time_s')},motion_packet):
-                        motion_packet.setdefault('source_body_vertices',{})[actor['actor_id']]=actor['body_vertices_m']
+        if (motion_packet is not None and measured.get('frame')==event.get('original_frame')
+                and same_frame({'frame':event.get('original_frame'),
+                                'time_s':event.get('recording_time_s')},motion_packet)):
+            for actor in measured.get('participants',[]):index_source_body(motion_packet,actor)
         if not measured.get('participants') and not measured.get('devices'):continue
         if measured.get('frame')!=event.get('original_frame'):
             raise ValueError('Original observation frame mismatch')
@@ -1603,6 +1703,22 @@ def source_packets(evidence, required=(), *, read_graphs=True):
             for key,value in measured.items():
                 if isinstance(value,dict):packet.setdefault(key,{}).update(value)
                 else:packet[key]=value
+
+    if hasattr(evidence, 'path'):
+        from .visibility import retained_analytic_visibility, sight_distance
+        for stamp, observed in retained_analytic_visibility(evidence).items():
+            packet = packets.get(stamp)
+            if (packet is None or packet.get('native_frame') != observed['original_frame']
+                    or abs(packet.get('native_time', float('inf'))-observed['recording_time_s']) > 1e-6):
+                raise ValueError('Derived sight differs from original native frame/time')
+            previous = packet.get('subject_visibility')
+            if previous is not None and sight_distance(previous.get('visibility'))[0] is not None:
+                if previous['subject'] != observed['subject']:
+                    raise ValueError('Derived sight differs from original subject identity')
+                # Retain already complete original measurements; a different
+                # search ceiling alone is not a same-method contradiction.
+                continue
+            packet['subject_visibility'] = observed
 
     return packets
 
@@ -1651,10 +1767,10 @@ def project_final_visibility(scene, measured_sight, native_lanes=None, *, source
         from shapely.geometry import Polygon
         _, _, footprint = body(measured_sight['body_vertices_m'], 0)
         polygons = {r['id']: Polygon(r['boundary']) for r in scene.get('structures', [])
-                    if r.get('kind') in ('lane','roadway') and r.get('boundary')}
+                    if r.get('kind') in ('lane','roadway','one_way_roadway') and r.get('boundary')}
         if source_polygons:
             for region in scene.get('structures', []):
-                if region.get('kind') in ('lane','roadway') and not region.get('boundary') and region['id'] in source_polygons:
+                if region.get('kind') in ('lane','roadway','one_way_roadway') and not region.get('boundary') and region['id'] in source_polygons:
                     polygons[region['id']] = source_polygons[region['id']]
         scene['structures'], mapping = attach_visibility(scene.get('structures', []), polygons,
                                                          footprint, measured_sight['visibility'], native_lanes or {})
@@ -1666,7 +1782,7 @@ def project_final_visibility(scene, measured_sight, native_lanes=None, *, source
 
     return changes, mapping
 
-def repair_scene(scene, required, packet, fields, yaw, native_lanes=None, *, finalize_occupancy=True):
+def repair_scene(scene, required, packet, fields, yaw, native_lanes=None, *, finalize_occupancy=True, visibility_native_lanes=None):
     import collections
     changes = collections.Counter()
     native_lanes=native_lanes or {}
@@ -1765,14 +1881,15 @@ def repair_scene(scene, required, packet, fields, yaw, native_lanes=None, *, fin
                 device['indications'] = value; changes['A6_indication'] += 1
     changes.update(project_operability(scene.get('devices',[])))
     if finalize_occupancy:
-        sight_changes, _ = project_final_visibility(scene,packet.get('subject_visibility'),native_lanes)
+        sight_changes, _ = project_final_visibility(scene,packet.get('subject_visibility'),
+            native_lanes if visibility_native_lanes is None else visibility_native_lanes)
         changes.update(sight_changes)
         from .occupancy import recompute as recompute_occupancy, unresolved_obstruction_heights, unresolved_surface_heights
         vertical=unresolved_obstruction_heights(scene,packet.get('source_body_vertices',{}),fields)
         if packet.get('occupancy_driving_surface')is not None:
             vertical|=unresolved_surface_heights(scene,packet.get('source_footprints',{}),
                 set(packet.get('occupancy_source_ids',()))&set(packet.get('occupancy_height_source_ids',())),
-                packet['occupancy_driving_surface'],surfaces=packet.get('occupancy_surfaces',{}))
+                packet['occupancy_driving_surface'],surfaces=packet.get('occupancy_surfaces',{}),contact_bands=packet.get('occupancy_native_contact_bands',()))
         coverage=recompute_occupancy(scene,packet.get('source_footprints',{}),
             source_ids=set(packet.get('occupancy_source_ids',())),
             surfaces=packet.get('occupancy_surfaces',{}),
@@ -1847,6 +1964,8 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
     kind_refinements=structure_refinements(library)
     frame_index=[(round(e['recording_time_s']*1000),e['actor_id']) for e in evidence.rows('capture/evidence.jsonl')]
     fields,lane_ids,additions,map_replacements,issues=retained_map(evidence,first,cache,static_inventory)
+    visibility_map=evidence.path('road.xodr')
+    visibility_lane_ids=_visibility_lane_inventory(visibility_map,evidence.used.get('road.xodr'))
     from .geometry import normalized_polygon
     for region in first.get('structures',[]):
         if region['kind']=='crosswalk' and region.get('boundary'):
@@ -1854,6 +1973,15 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             if normalized!=region['boundary']:
                 fields.setdefault(region['id'],{})['boundary']=normalized
     identities={ident:value['_roadway_source'] for ident,value in fields.items() if '_roadway_source' in value}
+    from .native_road_profile import source_surface_certificate
+    initial_profile_certificate=source_surface_certificate(evidence,first['structures']+additions,fields)
+    if initial_profile_certificate:
+        additions.extend(initial_profile_certificate.get('additions',()))
+        for ident,values in initial_profile_certificate['fields'].items():
+            target=fields.setdefault(ident,{})
+            for key,value in values.items():
+                if key in target and target[key]!=value:raise ValueError('Conflicting native profile source identity')
+                target[key]=value
     _,consolidation=consolidate(first,identities=identities)
     consolidation['property_merges'].extend(retired for value in fields.values() for retired in value.get('_junction_property_merges',[]))
     replacements=dict(consolidation['replacements']);replacements.update(map_replacements);issues.extend(consolidation['issues'])
@@ -1888,7 +2016,11 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
     diagnostics=collections.Counter()
     period=(following['t']-current['t']) if following else 0
     previous=None;count=0;changes=collections.Counter();missing=collections.Counter()
-    processing_limits=collections.Counter();capabilities=manifest(library)
+    processing_limits=collections.Counter();capabilities=manifest(library,acquisition_path='retained')
+    from .vehicle_configuration import load_single_chassis,project_single_chassis
+    single_chassis=load_single_chassis(evidence)
+    field_applicability=collections.Counter()
+    report_decisions=[]
     output.parent.mkdir(parents=True,exist_ok=True)
     lane_fields={ident:value['lane'] for ident,value in fields.items() if value.get('lane')}
     lane_entry_applicability={}
@@ -1899,16 +2031,24 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
     for ident,pieces in segments.items():
         for piece,_ in pieces:
             if ident in lane_entry_applicability:lane_entry_applicability[piece['id']]=lane_entry_applicability[ident]
+    from .user_road_profile import prepare_profile_source,project_source_profiles,source_user_profile_scope
+    profile_source=prepare_profile_source(evidence.path('road.xodr'),
+        {ident:value['_source_road_ids']for ident,value in fields.items()
+         if value.get('_source_road_ids')and value.get('_roadway_source')and'roadway'in value.get('_verified_structure_kinds',())},static_inventory=static_inventory)
     static_entrance=entrance.get('static',{})
     from shapely import prepare
     prepare([v['_way_geometry']for v in fields.values()if '_way_geometry'in v])
     original_regions={r['id']:(r['kind'],r.get('boundary')) for r in first.get('structures',[])}
     from .occupancy import native_single_plane, native_driving_surface
     occupancy_single_plane=native_single_plane(evidence.path('road.xodr'))
-    occupancy_driving_surface=None if occupancy_single_plane else native_driving_surface(evidence.path('road.xodr'))
+    occupancy_contact_bands=[]
+    occupancy_driving_surface=None if occupancy_single_plane else native_driving_surface(evidence.path('road.xodr'),contact_bands=occupancy_contact_bands)
     length=0.;path_known=True
     occupancy_coverage=[]
     structure_kind_coverage=[]
+    profile_certificate=None;profile_certificate_built=False
+    from .geometry import authored_role_certificate
+    role_certificate=authored_role_certificate(fields)
     from .inventory_observations import kind_inventory_coverage
     write_started=time.monotonic()
     from contextlib import ExitStack
@@ -1922,6 +2062,8 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             if any(original_regions.get(r['id'])!=(r['kind'],r.get('boundary')) for r in current.get('structures',[])):
                 raise ValueError('Region geometry changed across frames; static native identity cannot be assumed')
             scene=apply_replacements(current,replacements,consolidation.get('property_merges',())) if replacements else current
+            for region in scene.get('structures',[]):
+                region.pop('grade',None);region.pop('curvature',None)
             delta=collections.Counter()
             if replacements:
                 junction_count=sum(original_regions.get(ident,(None,))[0]=='intersection' for ident in replacements)
@@ -1930,8 +2072,6 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             scene['structures'].extend(copy.deepcopy(additions))
             if additions:delta['recovered_surface_regions']+=len(additions)
             for r in scene['structures']:
-                if isinstance(r.get('curvature'),(int,float)) and r['curvature']<0:
-                    r['curvature']=abs(r['curvature']);delta['curvature_magnitude']+=1
                 value=fields.get(r['id'],{})
                 if value.get('_unobserved_paint_boundary') and 'boundary' in r:
                     r.pop('boundary');scene['occupancy_observed']=[]
@@ -1949,7 +2089,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
                 if 'yaw_rate' not in u.get('kin',{}):
                     rate=heading_rate(previous,current,following,u['track'],period)
                     if rate is not None:yaw[u['track']]=rate
-            delta.update(repair_scene(scene,wanted,packet,lane_fields,yaw,lane_ids,finalize_occupancy=False))
+            delta.update(repair_scene(scene,wanted,packet,lane_fields,yaw,lane_ids,finalize_occupancy=False,visibility_native_lanes=visibility_lane_ids))
             if read_graphs:
                 missing_lamps=any(u.get('classes') and 'motor_vehicle' in u['classes'] and
                     (any(k not in u.get('sig',{}) for k in ('brake_lamp','headlamp')) or
@@ -1967,7 +2107,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
                             measured['signal_states_by_device']=packet['signal_states_by_device']
                             measured['signal_governance_by_device']=packet.get('signal_governance_by_device',{})
                         measured.setdefault('device_positions',{}).update(packet.get('device_positions',{}))
-                        delta.update(repair_scene(scene,wanted,measured,lane_fields,{},lane_ids,finalize_occupancy=False))
+                        delta.update(repair_scene(scene,wanted,measured,lane_fields,{},lane_ids,finalize_occupancy=False,visibility_native_lanes=visibility_lane_ids))
 
             motion_changes,motion_diagnostics=audit_motion(scene,packet)
             delta.update(motion_changes);diagnostics.update(motion_diagnostics)
@@ -1991,12 +2131,24 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
                 if projected!=user:
                     scene['users'][index]=projected
                     delta['canonical_user_classifications']+=1
+            single_chassis_changes=project_single_chassis(scene,single_chassis,packet)
+            if single_chassis_changes:delta['verified_single_chassis_classifications']+=single_chassis_changes
             verified_kinds={ident:value['_verified_structure_kinds'] for ident,value in fields.items() if value.get('_verified_structure_kinds')}
             if static_inventory:
                 classified=project_static_inventory(scene,static_inventory,refinements=kind_refinements,verified=verified_kinds)
                 if classified:delta['verified_static_kind_classifications']+=classified
             if segments:
                 delta['segmented_lane_regions']+=project_lane_segments(scene,segments,segment_shapes)
+            if not profile_certificate_built:
+                from .native_road_profile import source_surface_certificate
+                profile_certificate=source_surface_certificate(evidence,scene['structures'],fields)
+                if profile_certificate:
+                    for ident,values in profile_certificate['fields'].items():
+                        target=fields.setdefault(ident,{})
+                        for key,value in values.items():
+                            if key in target and target[key]!=value:raise ValueError('Conflicting native profile source identity')
+                            target[key]=value
+                profile_certificate_built=True
             verified_kinds={ident:value['_verified_structure_kinds'] for ident,value in fields.items() if value.get('_verified_structure_kinds')}
             for ident,pieces in segments.items():
                 if ident in verified_kinds:
@@ -2007,7 +2159,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             structure_kind_coverage.append(dict(t=scene['t'],**kind_coverage))
             if kind_coverage['contradictory_masks_removed']:delta['verified_positive_kind_masks_removed']+=kind_coverage['contradictory_masks_removed']
             if kind_coverage['unverified_subtype_masks_added']:delta['unverified_kind_subtype_masks_added']+=kind_coverage['unverified_subtype_masks_added']
-            sight_changes, _ = project_final_visibility(scene,packet.get('subject_visibility'),lane_ids)
+            sight_changes, _ = project_final_visibility(scene,packet.get('subject_visibility'),visibility_lane_ids)
             delta.update(sight_changes)
             # Occupancy is earned only after ALL final identity/geometry edits.
             from .occupancy import recompute as recompute_occupancy
@@ -2029,12 +2181,27 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
                 if ident in height_ids:height_ids.update(piece['id'] for piece,_ in pieces)
             from .occupancy import unresolved_obstruction_heights, unresolved_surface_heights
             scoped=occupancy_driving_surface is not None
-            vertical=unresolved_obstruction_heights(scene,packet.get('source_body_vertices',{}),fields)
-            if scoped:vertical|=unresolved_surface_heights(scene,packet.get('source_footprints',{}),source_ids&height_ids,occupancy_driving_surface,surfaces=surfaces)
-            coverage=recompute_occupancy(scene,packet.get('source_footprints',{}),
+            obstruction_vertical=unresolved_obstruction_heights(scene,packet.get('source_body_vertices',{}),fields)
+            vertical=set(obstruction_vertical)
+            if scoped:vertical|=unresolved_surface_heights(scene,packet.get('source_footprints',{}),source_ids&height_ids,occupancy_driving_surface,surfaces=surfaces,contact_bands=occupancy_contact_bands)
+            occupancy_footprints=packet.get('source_footprints',{})
+            if profile_certificate is not None:
+                from .occupancy import certified_surface_scope
+                certified,profile_vertical,occupancy_footprints=certified_surface_scope(scene,packet,profile_certificate)
+                source_ids|=certified;height_ids=certified;vertical|=profile_vertical;scoped=True
+            role_ids=set()
+            if role_certificate is not None:
+                from .occupancy import certified_surface_scope
+                role_ids,role_vertical,_=certified_surface_scope(scene,packet,role_certificate)
+                # Preserve independent obstruction scope; replace only current
+                # kind/boundary-validated authored surface scope.
+                vertical={pair for pair in vertical if pair[1]not in role_ids}|obstruction_vertical|role_vertical
+                source_ids|=role_ids
+
+            coverage=recompute_occupancy(scene,occupancy_footprints,
                                          source_ids=source_ids,surfaces=surfaces,
                                          unresolved_vertical=vertical,
-                                         unresolved_grade=final_ids-height_ids if occupancy_single_plane or scoped else final_ids)
+                                         unresolved_grade=(final_ids-height_ids if occupancy_single_plane or scoped else final_ids)-role_ids)
             occupancy_coverage.append(dict(t=scene['t'],**coverage))
             if coverage['changed']:
                 delta['recomputed_complete_occupancy']+=1
@@ -2046,9 +2213,28 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
                 except ValueError as exc:
                     if 'Duplicate roadway geometry' not in str(exc):raise
                     issues.append('Saved coincident roadway footprints have different properties or unknown source identities; Core has no height/identity-uncertainty field. Preserved rather than merging from 2D overlap alone.')
+            prior_profiles=[(u.get('road_grade'),u.get('road_curvature'))for u in scene['users']]
+            profile_rows=project_source_profiles(scene,profile_source)
+            profile_changes=sum(prior!=(u.get('road_grade'),u.get('road_curvature'))
+                for prior,u in zip(prior_profiles,scene['users']))
+            if profile_changes:delta['local_user_road_profiles']+=profile_changes
+            diagnostics.update({'user_road_profile_unknown':sum(row['reason']is not None for row in profile_rows)})
             missing.update(gaps(scene,set(required)-{'sig.hand_signal'},capability=capabilities,
                                 static_inventory=static_inventory,limitations=processing_limits,
-                                lane_entry_applicability=lane_entry_applicability))
+                                lane_entry_applicability=lane_entry_applicability,
+                                applicability=field_applicability,structure_source_ids=source_ids,
+                                user_profile_source=profile_source))
+            from .atom_contract import _road_measurement_assessment
+            profile_scope=source_user_profile_scope(scene,profile_source,source_ids)
+            for atom in ('st.grade','st.curvature','st.sight_distance'):
+                assessment=_road_measurement_assessment(scene,atom,'exact',profile_source,source_ids)
+                for track in assessment['not_applicable_tracks']:
+                    field_applicability[atom+':verified_not_applicable']+=1
+                    decision=dict(profile_scope[track],track=track,atom=atom)
+                    if atom=='st.sight_distance':
+                        decision.update(method='complete_source_roadway_lane_domain_and_observed_subject_footprint_occupancy',
+                            reason='Source-verified complete physical lane/Roadway domain and observed subject footprint occupancy establish zero applicable attachments; point position alone is insufficient.')
+                    report_decisions.append(decision)
             if delta and stream is None:
                 stream=stack.enter_context(output.open('w'))
                 stream.write('{"scenes":[')
@@ -2080,14 +2266,20 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
         'evidence_used':evidence.used,'evidence_issues':list(dict.fromkeys(evidence.problems)),
         'source_geometry_review':geometry_review,
         'b_context':context.report(),'context_recovery_receipt':context_recovery,
+        'single_chassis_source':({'method':single_chassis['method'],'source_sha256':single_chassis['source_sha256'],'complete_original_frames':single_chassis['complete_frames']}if single_chassis else None),
+        'user_road_profile_source':{'status':'unknown'if profile_source.get('missing_source')else'observed_source_map',
+                                    'reason':profile_source.get('missing_source')},
         'static_inventory_receipt':static_inventory,'b_motion':dict(diagnostics),
         'occupancy_coverage':occupancy_coverage,
         'structure_kind_coverage':structure_kind_coverage,
         'kind_inventory_coverage':kind_inventory_coverage({},static_inventory),
         'occupancy_native_single_plane_verified':occupancy_single_plane,
         'occupancy_native_driving_surface_verified':occupancy_driving_surface is not None,
+        'occupancy_native_contact_sources':[band['source']for band in occupancy_contact_bands],
+        'occupancy_native_profile_surface_verified':profile_certificate is not None,
+        'native_profile_surface_source':({key:profile_certificate[key] for key in ('source','sha256','road_id','coordinate_precision_decimals')} if profile_certificate else None),
         'region_replacements':replacements,
-        'region_geometry_sources':{ident:value.get('_centre_line_source',value.get('_stop_line_geometry_source',value.get('_crosswalk_geometry_source',value.get('_highway_geometry_source',value.get('_obstruction_geometry_source')))))for ident,value in fields.items()if any(key in value for key in ('_centre_line_source','_stop_line_geometry_source','_crosswalk_geometry_source','_highway_geometry_source','_obstruction_geometry_source'))},
+        'region_geometry_sources':{ident:value.get('_road_edge_geometry_source',value.get('_centre_line_source',value.get('_stop_line_geometry_source',value.get('_crosswalk_geometry_source',value.get('_highway_geometry_source',value.get('_obstruction_geometry_source',value.get('_authored_surface_role_source',value.get('_authored_native_ground_source',value.get('_shared_flat_lane_surface_source')))))))))for ident,value in fields.items()if any(key in value for key in ('_road_edge_geometry_source','_centre_line_source','_stop_line_geometry_source','_crosswalk_geometry_source','_highway_geometry_source','_obstruction_geometry_source','_authored_surface_role_source','_authored_native_ground_source','_shared_flat_lane_surface_source'))},
         'structural_identity':{
             'identity_replacements_per_frame_by_kind':dict(collections.Counter(
                 r['kind']for r in first.get('structures',[])if r['id']in replacements)),
@@ -2095,6 +2287,7 @@ def reconstruct(trace, original, library, output, *, cache=None, required=(), re
             'source_verified_region_identities':len(identities)},
         'handoff':list(dict.fromkeys(issues)), 'required_field_gaps':dict(missing),
         'processing_limits':dict(processing_limits),
+        'field_applicability':dict(field_applicability),'evidence_decisions':report_decisions,
         'coverage_units':{'required_field_gaps':'frames with at least one missing applicable supported value',
                           'processing_limits':'frames with the named capability, inventory, or applicability limitation'},
         'required_measurements_complete':not missing and not diagnostics.get('acceleration_comparison_unresolved') and not evidence.problems and not context.report().get('issues')

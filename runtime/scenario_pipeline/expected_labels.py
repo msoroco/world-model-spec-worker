@@ -166,8 +166,7 @@ def expectation(case, attempt, review, context, *, definition_path=None):
     if measured.get('expected_label') is not None:
         measured['expected_label']=normalize(measured['expected_label'])
         measured['reference_check']={'id':'recorded-rule-reference-v2',
-            'law_id':case['target_law_id'],'source_sha256':sha(Path(__file__)),
-            'source_hashes':{name:sha(Path(__file__).with_name(name))for name in ('expected_labels.py','demo_rule_evidence.py')},
+            'law_id':case['target_law_id'],
             'scope':'Full recording under the retained measured event/geometry and declared assumptions'}
     elif case['target_law_id'] not in REFERENCE_LAWS and not case.get('unresolved_judgment_calls'):
         measured['processing_reasons'].append('unsupported_evaluation')

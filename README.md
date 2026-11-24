@@ -1,11 +1,13 @@
-# demo-test-delivery worker
+# Scenario worker: demo-test
 
-After the reviewed cutover is applied on `worker/demo-test-delivery`, start from a fresh clone and run:
+## Start or resume
 
 ```sh
+git clone --branch worker/demo-test-delivery --single-branch https://github.com/msoroco/world-model-spec-worker.git scenario-worker-demo-test
+cd scenario-worker-demo-test
 scripts/run-worker.sh
 ```
 
-The agent resumes the exact assignments and existing work in this branch. It prepares CPU delivery packages and publishes checkpoints through the separate timer. It does not run CARLA or accept recordings. Read `AGENT_PROMPT.md` for the current proof contract.
+For an existing checkout, stop the agent and checkpoint timer, preserve local work, pull the branch update, then run the same script. The timer pushes work; it does not pull runtime changes. Read AGENT_PROMPT.md for priorities and RUNTIME_REFRESH.md for this update.
 
-The pinned pre-cutover head and merge identity are recorded in `CUTOVER-BASE.json`.
+The worker chooses serial execution or subagents according to completed-package throughput. Finished packages are published as they pass their assignment gate.

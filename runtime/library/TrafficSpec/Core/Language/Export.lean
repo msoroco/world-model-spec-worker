@@ -3,6 +3,8 @@
   The specification language as JSON, for the tooling that renders a formula in prose, compares
   bodies structurally, or checks a rule outside Lean. One encoder per constructor;
   `Decode.formula` reads this JSON back strictly, so a decoded formula exported again is canonical.
+  A rule's `sampled_duration` says whether its formulas as given read `durationWithin`; the
+  monitor's mark of a verdict adds the concept bodies and the rules it reads.
 -/
 import Lean.Data.Json
 import TrafficSpec.Core.Language.Concept
@@ -24,12 +26,19 @@ def Measure.toJson : Measure → Json
 def PUnit'.toJson : PUnit' → Json
   | .metre => "metre" | .second => "second" | .metrePerSecond => "metre_per_second"
   | .metrePerSecondSq => "metre_per_second_sq" | .degree => "degree" | .degreePerSecond => "degree_per_second"
-  | .perMetre => "per_metre"
+  | .perMetre => "per_metre" | .kilogram => "kilogram"
   | .ratio => "ratio" | .count => "count"
 
 def Q.toJson (q : Q) : Json := Json.mkObj [("num", q.num), ("den", q.den)]
 
 private def args (as : List Arg) : Json := Json.arr (as.map Arg.toJson).toArray
+
+def RuleScope.toJson : RuleScope → Json
+  | .every => "every"
+  | .subjectClass a => Json.mkObj [("subject_class", a)]
+  | .asClass a => Json.mkObj [("as_class", a)]
+  | .purpose p => Json.mkObj [("purpose", p.toString)]
+  | .asClassPurpose a p => Json.mkObj [("as_class", a), ("purpose", p.toString)]
 
 mutual
   partial def Term.toJson : Term → Json
@@ -55,6 +64,7 @@ mutual
     | .cmp l op r => Json.mkObj [("cmp", op.toJson), ("lhs", l.toJson), ("rhs", r.toJson)]
     | .asm id => Json.mkObj [("asm", id)]
     | .intent id who target => Json.mkObj [("int", id), ("args", Json.arr #[who.toJson, target.toJson])]
+    | .fact id xs => Json.mkObj [("fact", id), ("args", args xs)]
     | .same a b => Json.mkObj [("same", Json.arr #[a.toJson, b.toJson])]
     | .not φ => Json.mkObj [("not", φ.toJson)]
     | .and φ ψ => Json.mkObj [("and", Json.arr #[φ.toJson, ψ.toJson])]
@@ -71,11 +81,16 @@ mutual
     | .atLast m d s ψ φ =>
       Json.mkObj [("at_last", m.toJson), ("length", d.toJson), ("subject", s), ("when", ψ.toJson), ("body", φ.toJson)]
     | .count e s op n => Json.mkObj [("count", e.toJson), ("since", s.toJson), ("op", op.toJson), ("n", n)]
+    | .durationWithin w g φ op b =>
+      Json.mkObj [("duration_within", φ.toJson), ("length", w.toJson), ("step", g.toJson), ("op", op.toJson), ("bound", b.toJson)]
     | .rises φ => Json.mkObj [("rises", φ.toJson)]
     | .definedWhen p φ => Json.mkObj [("defined_when", p.toJson), ("body", φ.toJson)]
     | .derived c as ps => Json.mkObj [("derived", c), ("args", args as), ("params", Json.arr (ps.map Term.toJson).toArray)]
     | .rule id map => Json.mkObj [("rule", id), ("map", Json.mkObj (map.map fun (i, o) => (i, Json.str o)))]
     | .ruleApplies id map => Json.mkObj [("rule_applies", id), ("map", Json.mkObj (map.map fun (i, o) => (i, Json.str o)))]
+    | .requiredBy k who => Json.mkObj [("required_by", k.toString), ("who", who)]
+    | .lawful sc who => Json.mkObj [("lawful", RuleScope.toJson sc), ("who", who)]
+    | .ruleCase id n map => Json.mkObj [("rule_case", id), ("case", n), ("map", Json.mkObj (map.map fun (i, o) => (i, Json.str o)))]
     | .existsUser v φ => Json.mkObj [("exists_user", v), ("body", φ.toJson)]
     | .forallUser v φ => Json.mkObj [("forall_user", v), ("body", φ.toJson)]
     | .existsRegion k v φ => Json.mkObj [("exists_region", k.toJson), ("var", v), ("body", φ.toJson)]
@@ -104,14 +119,26 @@ def Concept.toJson (c : Concept) : Json :=
     , ("narrowings", Json.arr (c.narrowings.map Narrowing.toJson).toArray)
     , ("supersedes", match c.supersedes with | some s => Json.str s | none => Json.null) ]
 
+def CaseKind.toJson : CaseKind → Json
+  | .requires k => Json.mkObj [("requires", k.toString)]
+  | .permits => "permits"
+
+def RuleCase.toJson (c : RuleCase) : Json :=
+  Json.mkObj [("name", c.name), ("kind", c.kind.toJson), ("shown", c.shown.toJson), ("when", c.when.toJson)]
+
 def Rule.toJson (r : Rule) : Json :=
   Json.mkObj
     [ ("id", r.id), ("laws", Json.arr (r.laws.map Json.str).toArray)
     , ("binders", Json.arr (r.binders.map fun b => Json.mkObj [("name", b.name), ("cls", b.cls.toJson)]).toArray)
     , ("applicability", r.applicability.toJson), ("obligation", r.obligation.toJson)
+    , ("cases", Json.arr (r.cases.map RuleCase.toJson).toArray), ("permission", r.permission)
+    , ("purposes", Json.arr (r.purposes.map fun p => Json.str p.toString).toArray)
     , ("assumptions", Json.arr (r.assumptions.map Json.str).toArray)
     , ("intentions", Json.arr (r.intentions.map Json.str).toArray)
+    , ("facts", Json.arr (r.facts.map Json.str).toArray)
     , ("residues", Json.arr (r.residues.map Json.str).toArray)
-    , ("narrowings", Json.arr (r.narrowings.map Narrowing.toJson).toArray), ("surrogate", r.surrogate) ]
+    , ("narrowings", Json.arr (r.narrowings.map Narrowing.toJson).toArray), ("surrogate", r.surrogate)
+    , ("abstractions", Json.arr (r.abstractions.map Json.str).toArray)
+    , ("sampled_duration", r.formulas.any Formula.readsDuration) ]
 
 end TrafficSpec

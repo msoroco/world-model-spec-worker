@@ -49,6 +49,10 @@ def unit (a : Vec) : Option Vec :=
     let b := (Q.div a.1 m, Q.div a.2 m)
     let n := norm b
     some (Q.div b.1 n, Q.div b.2 n)
+/-- The one direction that stands for the undirected axis of `v` and `-v`: `v` where its y component
+    is positive, or zero with a positive x component; `-v` otherwise. The zero vector stays zero. -/
+def undirected (v : Vec) : Vec :=
+  if Q.lt Q.zero v.2 || (Q.isZero v.2 && Q.lt Q.zero v.1) then v else (Q.neg v.1, Q.neg v.2)
 /-- Components of `v` in the frame of heading `h` (longitudinal, lateral); lateral positive = left.
     `h` is read as a direction (`unit`), whatever its length; `v` keeps its own. -/
 def inFrame (h v : Vec) : Option (Q × Q) := do
@@ -204,15 +208,18 @@ private def hasClass (s : Scene) (x : TrackId) (c : RoadUserClass) : Option Bool
 
 def ru_motor_vehicle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .motorVehicle
 def ru_motorcycle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .motorcycle
+def ru_trimobile (s : Scene) (x : TrackId) : Option Bool := hasClass s x .trimobile
 def ru_moped (s : Scene) (x : TrackId) : Option Bool := hasClass s x .moped
 def ru_bus (s : Scene) (x : TrackId) : Option Bool := hasClass s x .bus
 def ru_transit_bus (s : Scene) (x : TrackId) : Option Bool := hasClass s x .transitBus
 def ru_school_bus (s : Scene) (x : TrackId) : Option Bool := hasClass s x .schoolBus
 def ru_taxicab (s : Scene) (x : TrackId) : Option Bool := hasClass s x .taxicab
-def ru_tour_bus_or_limousine (s : Scene) (x : TrackId) : Option Bool := hasClass s x .tourBusOrLimousine
+def ru_tour_or_shuttle_bus (s : Scene) (x : TrackId) : Option Bool := hasClass s x .tourOrShuttleBus
+def ru_limousine (s : Scene) (x : TrackId) : Option Bool := hasClass s x .limousine
 def ru_truck (s : Scene) (x : TrackId) : Option Bool := hasClass s x .truck
 def ru_commercial_motor_vehicle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .commercialMotorVehicle
-def ru_trailer_or_combination (s : Scene) (x : TrackId) : Option Bool := hasClass s x .trailerOrCombination
+def ru_trailer (s : Scene) (x : TrackId) : Option Bool := hasClass s x .trailer
+def ru_vehicle_combination (s : Scene) (x : TrackId) : Option Bool := hasClass s x .vehicleCombination
 def ru_bicycle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .bicycle
 def ru_electric_bicycle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .electricBicycle
 def ru_electric_scooter (s : Scene) (x : TrackId) : Option Bool := hasClass s x .electricScooter
@@ -222,6 +229,7 @@ def ru_child (s : Scene) (x : TrackId) : Option Bool := hasClass s x .child
 def ru_emergency_vehicle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .emergencyVehicle
 def ru_fire_apparatus (s : Scene) (x : TrackId) : Option Bool := hasClass s x .fireApparatus
 def ru_official_vehicle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .officialVehicle
+def ru_tow_car (s : Scene) (x : TrackId) : Option Bool := hasClass s x .towCar
 def ru_rail_vehicle (s : Scene) (x : TrackId) : Option Bool := hasClass s x .railVehicle
 
 def ru_subject (s : Scene) (x : TrackId) : Option Bool := s.subject.map (· == x)
@@ -237,6 +245,8 @@ def ru_aggregate (s : Scene) (x : TrackId) (members : List RoadUserClass) : Opti
     else if has.any (·.isNone) then none
     else some false
 def ru_occupant_count (s : Scene) (x : TrackId) : Option Nat := (s.user x).bind (·.occupants)
+def ru_unladen_mass (s : Scene) (x : TrackId) : Option Q := (s.user x).bind (·.unladenMass)
+def ru_disabled (s : Scene) (x : TrackId) : Option Bool := (s.user x).bind (·.disabled)
 def ru_rider_posture (s : Scene) (x : TrackId) : Option Posture := (s.user x).map (·.posture)
 def ru_rider_posture_on_seat (s : Scene) (x : TrackId) : Option Bool := (s.user x).bind (·.posture.onSeat)
 def ru_rider_posture_hands_on_controls (s : Scene) (x : TrackId) : Option Nat := (s.user x).bind (·.posture.handsOnControls)
@@ -358,15 +368,23 @@ def st_crosswalk (s : Scene) (r : RegionId) : Option Bool := isKind s r .crosswa
 def st_crosswalk_marked (s : Scene) (r : RegionId) : Option Bool := (s.structure? r).bind (·.marked)
 def st_stop_line (s : Scene) (r : RegionId) : Option Bool := isKind s r .stopLine
 def st_driveway_or_alley_entrance (s : Scene) (r : RegionId) : Option Bool := isKind s r .drivewayOrAlleyEntrance
+def st_driveway_or_alley_entrance_kind (s : Scene) (r : RegionId) : Option EntranceKind := (s.structure? r).bind (·.entranceKind)
+def st_driveway_or_alley_entrance_private (s : Scene) (r : RegionId) : Option Bool := (s.structure? r).bind (·.privateWay)
 def st_alley (s : Scene) (r : RegionId) : Option Bool := isKind s r .alley
-/-- Horizontal curvature as a magnitude (1/m, never negative): a bend to either hand has the same value. -/
-def st_curvature (s : Scene) (r : RegionId) : Option Q := (s.structure? r).bind (·.curvature) |>.map Q.abs
-def st_grade (s : Scene) (r : RegionId) : Option Q := (s.structure? r).bind (·.grade)
+/-- The roadway's horizontal curvature at road user `x`'s position, as a magnitude (1/m, never
+    negative): a bend to either hand has the same value. -/
+def st_curvature (s : Scene) (x : TrackId) : Option Q := (s.user x).bind (·.roadCurvature) |>.map Q.abs
+/-- The roadway's longitudinal slope at road user `x`'s position along its heading (ratio, positive
+    where the road rises ahead of it); unknown where its heading is not observed. -/
+def st_grade (s : Scene) (x : TrackId) : Option Q :=
+  (s.user x).bind fun u => u.kin.heading.bind fun _ => u.roadGrade
 def st_crest (s : Scene) (r : RegionId) : Option Bool := isKind s r .crest
 def st_sight_distance (s : Scene) (r : RegionId) : Option Q := (s.structure? r).bind (·.sightDistance)
 def st_sight_along_way (s : Scene) (x : TrackId) (w : RegionId) : Option Q :=
   (s.user x).bind fun u => u.sightAlongWay.bind fun ws => (ws.find? (·.1 == w)).map (·.2)
 def st_railway_crossing (s : Scene) (r : RegionId) : Option Bool := isKind s r .railwayCrossing
+def st_railway_track (s : Scene) (r : RegionId) : Option Bool := isKind s r .railwayTrack
+def st_railway_track_kind (s : Scene) (r : RegionId) : Option RailwayKind := (s.structure? r).bind (·.railwayKind)
 def st_controlled_access (s : Scene) (r : RegionId) : Option Bool := isKind s r .controlledAccess
 def st_elevated_structure (s : Scene) (r : RegionId) : Option Bool := isKind s r .elevatedStructure
 def st_bicycle_lane_or_path (s : Scene) (r : RegionId) : Option Bool := isKind s r .bicycleLaneOrPath
@@ -378,6 +396,10 @@ def st_turn_lane_side (s : Scene) (r : RegionId) : Option TurnSide := (s.structu
 def st_parking_space (s : Scene) (r : RegionId) : Option Bool := isKind s r .parkingSpace
 def st_parking_space_angle (s : Scene) (r : RegionId) : Option Q := (s.structure? r).bind (·.parkingAngle)
 def st_parking_space_designation (s : Scene) (r : RegionId) : Option ParkingDesignation := (s.structure? r).bind (·.designation)
+def st_parking_space_angle_marking (s : Scene) (r : RegionId) : Option Bool := (s.structure? r).bind (·.angleMarking)
+/-- The space's long axis as marked, at the length written, read undirected: of the written vector and
+    its opposite, the one `Geom.undirected` keeps (y positive, or y zero and x positive). -/
+def st_parking_space_axis (s : Scene) (r : RegionId) : Option Vec := ((s.structure? r).bind (·.parkingAxis)).map Geom.undirected
 def st_curb_zone (s : Scene) (r : RegionId) : Option Bool := isKind s r .curbZone
 def st_curb_zone_kind (s : Scene) (r : RegionId) : Option CurbZoneKind := (s.structure? r).bind (·.curbKind)
 def st_curb_zone_colour (s : Scene) (r : RegionId) : Option CurbColour := (s.structure? r).bind (·.curbColour)
@@ -389,6 +411,8 @@ def st_fire_station_entrance (s : Scene) (r : RegionId) : Option Bool := isKind 
 def st_roundabout (s : Scene) (r : RegionId) : Option Bool := isKind s r .roundabout
 def st_obstruction (s : Scene) (r : RegionId) : Option Bool := isKind s r .obstruction
 def st_obstruction_kind (s : Scene) (r : RegionId) : Option ObstructionKind := (s.structure? r).bind (·.obstructionKind)
+def st_obstruction_protected (s : Scene) (r : RegionId) : Option Bool := (s.structure? r).bind (·.isProtected)
+def st_impassable_section (s : Scene) (r : RegionId) : Option Bool := isKind s r .impassableSection
 /-- Geometry accessors every structure atom shares: the reference point and the boundary polygon. -/
 def st_region_geometry (s : Scene) (r : RegionId) : Option (Option Vec × Option (List Vec)) :=
   (s.structure? r).map fun st => (st.position, st.boundary)
@@ -466,10 +490,17 @@ def dev_speed_limit_sign_kind (s : Scene) (d : DeviceId) : Option SpeedSignKind 
 def dev_regulatory_sign (s : Scene) (d : DeviceId) : Option Bool := devKind s d .regulatorySign
 def dev_regulatory_sign_code (s : Scene) (d : DeviceId) : Option SignCode := (s.device d).bind (·.code)
 def dev_regulatory_sign_conditions (s : Scene) (d : DeviceId) : Option Conditions := (s.device d).bind (·.conditions)
+/-- The angle of parking a sign's legend states (deg); none where the legend states none or it is not recorded. -/
+def dev_regulatory_sign_legend_angle (s : Scene) (d : DeviceId) : Option Q := ((s.device d).bind (·.legendAngle)).bind id
+/-- Whether a sign's legend states an angle of parking: false where the source confirms it states none. -/
+def dev_regulatory_sign_legend_angle_stated (s : Scene) (d : DeviceId) : Option Bool := ((s.device d).bind (·.legendAngle)).map (·.isSome)
 def dev_zone_sign (s : Scene) (d : DeviceId) : Option Bool := devKind s d .zoneSign
 def dev_zone_sign_kind (s : Scene) (d : DeviceId) : Option ZoneKind := (s.device d).bind (·.zoneKind)
 def dev_zone_sign_end (s : Scene) (d : DeviceId) : Option Bool := (s.device d).bind (·.isEnd)
 def dev_zone_sign_conditions (s : Scene) (d : DeviceId) : Option Conditions := (s.device d).bind (·.conditions)
+/-- The duration limit (s) a device's legend conditions state; none where the legend is not read or
+    states no duration. -/
+def dev_zone_sign_duration_limit (s : Scene) (d : DeviceId) : Option Q := (dev_zone_sign_conditions s d).bind (·.durationLimit)
 def dev_railway_signal_or_gate (s : Scene) (d : DeviceId) : Option Bool := devKind s d .railwaySignalOrGate
 def dev_railway_signal_or_gate_lights (s : Scene) (d : DeviceId) : Option RailLights := (s.device d).bind (·.railLights)
 def dev_railway_signal_or_gate_gate (s : Scene) (d : DeviceId) : Option GateState := (s.device d).bind (·.gate)
@@ -487,6 +518,10 @@ def dev_governs (s : Scene) (d : DeviceId) (r : RegionId) : Option Bool :=
   (s.device d).bind fun dv => if dv.governsObserved then some (dv.governs.contains r) else none
 def dev_governs_regions (s : Scene) (d : DeviceId) : Option (List RegionId) :=
   (s.device d).bind fun dv => if dv.governsObserved then some dv.governs else none
+def dev_governs_sidewalk (s : Scene) (d : DeviceId) (r : RegionId) : Option Bool :=
+  (s.device d).bind fun dv => dv.governsSidewalk.map (·.contains r)
+def dev_governs_parking_space (s : Scene) (d : DeviceId) (r : RegionId) : Option Bool :=
+  (s.device d).bind fun dv => dv.governsParkingSpace.map (·.contains r)
 def dev_position (s : Scene) (d : DeviceId) : Option Vec := (s.device d).bind (·.position)
 def dev_inoperative (s : Scene) (d : DeviceId) : Option Bool := (s.device d).bind (·.inoperative)
 /-- The devices of a kind present in the scene. -/
@@ -512,6 +547,9 @@ def sig_warning_lamp_colour (s : Scene) (x : TrackId) (c : LampColour) : Option 
   (sig_warning_lamp s x).map (·.any (·.colour == c))
 def sig_warning_lamp_shows (s : Scene) (x : TrackId) (c : LampColour) (m : LampMode) : Option Bool :=
   (sig_warning_lamp s x).map (·.any fun l => l.colour == c && l.mode == m)
+/-- One warning lamp lit with the given colour, mode and facing: all three on the same lamp. -/
+def sig_warning_lamp_facing (s : Scene) (x : TrackId) (c : LampColour) (m : LampMode) (f : Facing) : Option Bool :=
+  (sig_warning_lamp s x).map (·.any fun l => l.colour == c && l.mode == m && l.facing == f)
 def sig_siren (s : Scene) (x : TrackId) : Option Bool := (s.user x).bind (·.sig.siren)
 def sig_horn (s : Scene) (x : TrackId) : Option Bool := (s.user x).bind (·.sig.horn)
 def sig_hand_signal (s : Scene) (x : TrackId) : Option HandSignal := (s.user x).bind (·.sig.handSignal)
@@ -647,6 +685,18 @@ def rel_contact (s : Scene) (a b : TrackId) : Option Bool :=
   match (s.relation a b).bind (·.contact) with
   | some v => some v
   | none => (rel_surface_gap s a b).map fun g => Q.le g.1 Q.zero && Q.le g.2 Q.zero
+
+/-- The structure kinds whose outline is an object a road user can strike. -/
+def contactStructureKinds : List StructureKind := [.obstruction, .fireHydrant]
+/-- Road user `x`'s body touches or overlaps the outline of structure region `r`, a region of a kind
+    in `contactStructureKinds` (closed sets: touching counts). Unknown where `r` is not decidedly of
+    such a kind, where `x` has no footprint (position, heading or extent unobserved) or `r` no outline
+    (absent, or empty); never read from the reference point. -/
+def rel_contact_structure (s : Scene) (x : TrackId) (r : RegionId) : Option Bool := do
+  if !contactStructureKinds.any (isKind s r · == some true) then none
+  let fp ← footprint s x
+  let poly ← st_region_geometry_boundary s r
+  if poly.isEmpty then none else pure (Geom.polygonsOverlap fp poly)
 
 /-- `b` is in `a`'s line of sight, as the source tested it; never computed. -/
 def rel_visible (s : Scene) (a b : TrackId) : Option Bool := (s.relation a b).bind (·.visible)

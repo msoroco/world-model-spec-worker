@@ -19,6 +19,66 @@ STATIC_KINDS = frozenset({'highway','crosswalk','stop_line','shoulder','sidewalk
     'intersection','median_or_divider','crest','bicycle_lane_or_path','roadway','centre_line','obstruction'}) | STATIC_DEVICE_KINDS
 
 
+def _physical_role_roadway_scope(evidence,receipt,contract,instances):
+    """Original traffic roles partition all Native Driving construction surfaces."""
+    import math
+    import xml.etree.ElementTree as ET
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+    from .geometry import static_map,_authored_native_surface_rows,_bind_authored_roles,xy
+    required=('road.xodr','scenario_geometry.json','actual_scene_identity.json','runner.py','construction.json')
+    proof=contract['evidence']
+    if any(name not in proof for name in required):raise ValueError('Physical roadway roles lack original source binding')
+    paths={name:evidence.path(name)for name in required}
+    if not all(paths.values()):raise ValueError('Missing original physical roadway source')
+    if any(hashlib.sha256(paths[name].read_bytes()).hexdigest()!=proof[name]for name in required):raise ValueError('Physical roadway original source hash differs')
+    if 'obstruction'not in receipt['kinds']:raise ValueError('Physical roadway roles need closed original object inventory')
+    validate_kind_inventory(evidence,receipt,'obstruction',receipt['kinds']['obstruction'])
+    actual=json.loads(paths['actual_scene_identity.json'].read_text());document=json.loads(paths['scenario_geometry.json'].read_text())
+    categories=[actual.get(k)for k in('traffic_road_ids','renderer_only_median_road_ids','renderer_only_opening_road_ids')]
+    if any(not isinstance(ids,list)or any(type(i)is not int for i in ids)or len(ids)!=len(set(ids))for ids in categories):raise ValueError('Unresolved physical roadway partition')
+    traffic,median,opening=map(set,categories)
+    if traffic&median or traffic&opening or median&opening:raise ValueError('Conflicting physical roadway roles')
+    sources={};native,_,_=static_map(paths['road.xodr'],include_non_driving=True,source_regions=sources)
+    root=ET.parse(paths['road.xodr']).getroot();rows=_authored_native_surface_rows(native,sources,root)
+    driving={r['identity']for r in rows if r['lane_type']=='driving'};all_roads={key[0]for key in driving}
+    if traffic|median|opening!=all_roads:raise ValueError('Incomplete physical roadway partition')
+    bindings=contract.get('renderer_role_bindings')
+    if not isinstance(bindings,list)or not bindings:raise ValueError('Missing exact renderer role bindings')
+    excluded=set();regions=[]
+    for binding in bindings:
+        key=tuple(binding.get('native_surface',[]));field=binding.get('declaration_field');index=binding.get('declaration_index')
+        expected='prohibited_median_polygons'if key and key[0]in median else'median_opening_polygons'if key and key[0]in opening else None
+        if expected is None or field!=expected or key not in driving or key in excluded:raise ValueError('Mixed or duplicated renderer role')
+        if type(index)is not int or not 0<=index<len(document.get(field,[])):raise ValueError('Missing original renderer declaration')
+        excluded.add(key);regions.append({'id':binding['region'],'kind':'median_or_divider','boundary':[xy(p)for p in document[field][index]]})
+    if excluded!={key for key in driving if key[0]not in traffic}:raise ValueError('Unenumerated renderer surface or mixed roadway')
+    normalized=copy.deepcopy(document)
+    for field in('prohibited_median_polygons','median_opening_polygons'):normalized[field]=[[xy(p)for p in shape]for shape in document.get(field,[])]
+    probes=[]
+    for ray in actual.get('surface_rays',[]):
+        hits=ray.get('hits',[]);top=ray.get('topmost_z_m');expected=ray.get('expected_role_height_m')
+        if not hits or type(top)not in(int,float)or not math.isfinite(top)or top!=max(h['position_native_m'][2]for h in hits):raise ValueError('Incomplete original upper-ground probe')
+        hit=next(h['position_native_m']for h in hits if h['position_native_m'][2]==top)
+        probes.append({'xy_m':[ray['x'],ray['y']],'surface_location_m':hit,'expected_height_m':expected,'tolerance_m':1e-6,'method':'Original world.cast_ray against rendered/colliding native level geometry before recorded driving'})
+    normalized.setdefault('physical_verification',{})['native_median_surface_probes']=probes
+    markers,certificate,ground=_bind_authored_roles(regions,rows,root,normalized,bindings,closed_ground_verified=True)
+    if not ground.get('qualified')or certificate is None or set(certificate['bindings'])!=set(markers):raise ValueError('Unverified physical renderer role/ground family')
+    declared=contract.get('native_road_ids')
+    if not isinstance(declared,list)or any(type(i)is not int for i in declared)or set(declared)!=traffic or len(declared)!=len(traffic):raise ValueError('Incomplete physical traffic-roadway scope')
+    covered=set();declarations=document.get('directed_roadways',[])
+    for instance in instances:
+        ids=instance.get('native_road_ids',[]);index=instance.get('declaration_index')
+        if instance.get('kind')!='roadway'or not ids or any(type(i)is not int for i in ids)or len(ids)!=len(set(ids))or not set(ids)<=traffic or covered&set(ids):raise ValueError('Conflicting physical roadway instance identity')
+        if type(index)is not int or not 0<=index<len(declarations):raise ValueError('Missing original traffic-roadway declaration')
+        pieces=[r['shape']for r in rows if r['identity'][0]in ids and r['lane_type']=='driving']
+        shape=unary_union(pieces);declared_shape=Polygon([xy(p)for p in declarations[index]['polygon']])
+        if not declared_shape.is_valid or declared_shape.is_empty or not shape.equals(declared_shape):raise ValueError('Physical roadway declaration/native boundary conflict')
+        covered.update(ids)
+    if covered!=traffic or len({i['declaration_index']for i in instances})!=len(declarations):raise ValueError('Unenumerated physical traffic roadway')
+    return traffic
+
+
 def validate_kind_inventory(evidence, receipt, kind, claim):
     """Strict additional physical contracts; never an empty-query fallback."""
     import math
@@ -46,6 +106,9 @@ def validate_kind_inventory(evidence, receipt, kind, claim):
         if 'road.xodr' not in proof:raise ValueError('Native kind inventory needs bound full map')
         roads=ET.parse(evidence.path('road.xodr')).getroot().findall('road')
         if kind=='roadway':
+            if contract.get('method')=='complete_physical_role_roadway_surfaces_v1':
+                _physical_role_roadway_scope(evidence,receipt,contract,instances)
+                return
             if contract.get('method')!='complete_native_roadway_surfaces_v1':raise ValueError('Unknown roadway inventory method')
             expected={int(r.get('id')) for r in roads if r.findall("./lanes/laneSection/left/lane[@type='driving']") or r.findall("./lanes/laneSection/right/lane[@type='driving']")}
             declared=contract.get('native_road_ids',[])
@@ -208,10 +271,16 @@ def project_static_inventory(scene, receipt, *, refinements=None, verified=None)
         else:present=[e for e in entities if e.get('kind')==kind]
         if len(present)!=claim['count']:
             raise ValueError('Static '+kind+' inventory contradicts projected instances: '+str((claim['count'],len(present))))
+        present_ids={e['id'] for e in present}
         for entity in entities:
             unknown=entity.get('unobserved_kinds',[])
-            if kind in unknown:
-                entity['unobserved_kinds']=[k for k in unknown if k!=kind];changes+=1
+            disproved={kind}
+            if refinements is not None and entity['id'] not in present_ids:
+                # Complete absence of a parent also disproves its subtypes.
+                # A positive parent instance does not prove a subtype answer.
+                disproved.update(k for k,ancestors in refinements.items() if kind in ancestors)
+            if disproved.intersection(unknown):
+                entity['unobserved_kinds']=[k for k in unknown if k not in disproved];changes+=1
             if 'unobserved_kinds' in entity and not entity['unobserved_kinds']:
                 entity.pop('unobserved_kinds');changes+=1
     return changes

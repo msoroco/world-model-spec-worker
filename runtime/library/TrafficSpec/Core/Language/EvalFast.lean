@@ -45,10 +45,11 @@ def endTok : Tok := .n 0
 
 def PUnit'.code : PUnit' → Nat
   | .metre => 0 | .second => 1 | .metrePerSecond => 2 | .metrePerSecondSq => 3 | .degree => 4
-  | .degreePerSecond => 5 | .perMetre => 6 | .ratio => 7 | .count => 8
+  | .degreePerSecond => 5 | .perMetre => 6 | .ratio => 7 | .count => 8 | .kilogram => 9
 def CmpOp.code : CmpOp → Nat | .lt => 0 | .le => 1 | .eq => 2 | .ge => 3 | .gt => 4
 def AggOp.code : AggOp → Nat | .min => 0 | .max => 1 | .median => 2 | .count => 3
 def Measure.code : Measure → Nat | .time => 0 | .path => 1
+def Conduct.code : Conduct → Nat | .halt => 0
 
 theorem PUnit'.code_inj {a b : PUnit'} (h : a.code = b.code) : a = b := by
   cases a <;> cases b <;> first | rfl | (simp [PUnit'.code] at h)
@@ -58,6 +59,8 @@ theorem AggOp.code_inj {a b : AggOp} (h : a.code = b.code) : a = b := by
   cases a <;> cases b <;> first | rfl | (simp [AggOp.code] at h)
 theorem Measure.code_inj {a b : Measure} (h : a.code = b.code) : a = b := by
   cases a <;> cases b <;> first | rfl | (simp [Measure.code] at h)
+theorem Conduct.code_inj {a b : Conduct} (h : a.code = b.code) : a = b := by
+  cases a <;> cases b <;> first | rfl | (simp [Conduct.code] at h)
 
 def Arg.enc : Arg → List Tok
   | .var v => [.n 1, .s v]
@@ -66,6 +69,12 @@ def Arg.enc : Arg → List Tok
 def Arg.encL : List Arg → List Tok
   | [] => [endTok]
   | a :: as => a.enc ++ Arg.encL as
+def RuleScope.enc : RuleScope → List Tok
+  | .every => [.n 1]
+  | .subjectClass a => [.n 2, .s a]
+  | .asClass a => [.n 3, .s a]
+  | .purpose p => [.n 4, .s p.toString]
+  | .asClassPurpose a p => [.n 5, .s a, .s p.toString]
 def encMap : List (String × String) → List Tok
   | [] => [endTok]
   | (a, b) :: m => .n 1 :: .s a :: .s b :: encMap m
@@ -91,7 +100,7 @@ mutual
   def Term.encL : List Term → List Tok
     | [] => [endTok]
     | t :: ts => Term.enc t ++ Term.encL ts
-  /-- A formula as tokens: its constructor's tag (1–31), then its fields in order. -/
+  /-- A formula as tokens: its constructor's tag (1–36), then its fields in order. -/
   def Formula.enc : Formula → List Tok
     | .tt => [.n 1]
     | .ff => [.n 2]
@@ -124,6 +133,11 @@ mutual
     | .forallRegion k v φ => .n 29 :: .s v :: (k.enc ++ Formula.enc φ)
     | .existsDevice k v φ => .n 30 :: .s v :: (k.enc ++ Formula.enc φ)
     | .forallDevice k v φ => .n 31 :: .s v :: (k.enc ++ Formula.enc φ)
+    | .requiredBy k who => [.n 32, .n k.code, .s who]
+    | .lawful sc who => .n 33 :: (sc.enc ++ [.s who])
+    | .ruleCase id n map => .n 34 :: .s id :: .s n :: encMap map
+    | .fact id xs => .n 35 :: .s id :: Arg.encL xs
+    | .durationWithin w g φ op b => .n 36 :: .n op.code :: (Term.enc w ++ (Term.enc g ++ (Formula.enc φ ++ Term.enc b)))
 end
 
 theorem Arg.enc_inj : ∀ (a b : Arg) (r₁ r₂ : List Tok), a.enc ++ r₁ = b.enc ++ r₂ → a = b ∧ r₁ = r₂ := by
@@ -140,6 +154,12 @@ theorem Arg.encL_inj : ∀ (as bs : List Arg) (r₁ r₂ : List Tok), Arg.encL a
     obtain ⟨rfl, rfl⟩ := Arg.encL_inj as bs r₁ r₂ h'
     exact ⟨rfl, rfl⟩
 
+theorem Purpose.toString_inj {a b : Purpose} : a.toString = b.toString ↔ a = b := by
+  cases a <;> cases b <;> simp [Purpose.toString]
+
+theorem RuleScope.enc_inj : ∀ (a b : RuleScope) (r₁ r₂ : List Tok), a.enc ++ r₁ = b.enc ++ r₂ → a = b ∧ r₁ = r₂ := by
+  intro a b r₁ r₂ h; cases a <;> cases b <;> simp_all [RuleScope.enc, Purpose.toString_inj]
+
 theorem encMap_inj : ∀ (m m' : List (String × String)) (r₁ r₂ : List Tok), encMap m ++ r₁ = encMap m' ++ r₂ →
     m = m' ∧ r₁ = r₂
   | [], [], _, _, h => by simpa [encMap] using h
@@ -154,6 +174,7 @@ theorem encMap_inj : ∀ (m m' : List (String × String)) (r₁ r₂ : List Tok)
 private theorem Q.eq_of {a b : Q} (h₁ : a.num = b.num) (h₂ : a.den = b.den) : a = b := by
   cases a; cases b; simp_all
 
+set_option maxHeartbeats 400000 in
 mutual
   theorem Term.enc_inj : ∀ (a b : Term) (r₁ r₂ : List Tok), a.enc ++ r₁ = b.enc ++ r₂ → a = b ∧ r₁ = r₂
     | .lit q u, b, r₁, r₂, h => by
@@ -284,6 +305,12 @@ mutual
         obtain ⟨rfl, hb⟩ := Arg.enc_inj x x' _ _ ha
         obtain ⟨rfl, rfl⟩ := Arg.enc_inj y y' r₁ r₂ hb
         exact ⟨rfl, rfl⟩
+    | .fact id xs, b, r₁, r₂, h => by
+      cases b <;> simp [Formula.enc] at h
+      case fact id' xs' =>
+        obtain ⟨rfl, ha⟩ := h
+        obtain ⟨rfl, rfl⟩ := Arg.encL_inj xs xs' r₁ r₂ ha
+        exact ⟨rfl, rfl⟩
     | .same x y, b, r₁, r₂, h => by
       cases b <;> simp [Formula.enc] at h
       case same x' y' =>
@@ -394,6 +421,22 @@ mutual
         obtain ⟨rfl, ha⟩ := h
         obtain ⟨rfl, rfl⟩ := encMap_inj m m' r₁ r₂ ha
         exact ⟨rfl, rfl⟩
+    | .requiredBy k w, b, r₁, r₂, h => by
+      cases b <;> simp [Formula.enc] at h
+      case requiredBy k' w' => cases k <;> cases k' <;> simp_all [Conduct.code]
+    | .ruleCase id n m, b, r₁, r₂, h => by
+      cases b <;> simp [Formula.enc] at h
+      case ruleCase id' n' m' =>
+        obtain ⟨rfl, rfl, ha⟩ := h
+        obtain ⟨rfl, rfl⟩ := encMap_inj m m' r₁ r₂ ha
+        exact ⟨rfl, rfl⟩
+    | .lawful sc w, b, r₁, r₂, h => by
+      cases b <;> simp [Formula.enc] at h
+      case lawful sc' w' =>
+        obtain ⟨rfl, h'⟩ := RuleScope.enc_inj sc sc' _ _ (by simpa using h)
+        simp at h'
+        obtain ⟨rfl, rfl⟩ := h'
+        exact ⟨rfl, rfl⟩
     | .existsUser v φ, b, r₁, r₂, h => by
       cases b <;> simp [Formula.enc] at h
       case existsUser v' φ' =>
@@ -434,6 +477,15 @@ mutual
         obtain ⟨rfl, hb⟩ := Arg.enc_inj k k' _ _ ha
         obtain ⟨rfl, rfl⟩ := Formula.enc_inj φ φ' r₁ r₂ hb
         exact ⟨rfl, rfl⟩
+    | .durationWithin w g φ op bd, b, r₁, r₂, h => by
+      cases b <;> simp [Formula.enc] at h
+      case durationWithin w' g' φ' op' bd' =>
+        obtain ⟨hop, ha⟩ := h
+        obtain ⟨rfl, hb⟩ := Term.enc_inj w w' _ _ ha
+        obtain ⟨rfl, hc⟩ := Term.enc_inj g g' _ _ hb
+        obtain ⟨rfl, hd⟩ := Formula.enc_inj φ φ' _ _ hc
+        obtain ⟨rfl, rfl⟩ := Term.enc_inj bd bd' r₁ r₂ hd
+        exact ⟨by rw [CmpOp.code_inj hop], rfl⟩
   termination_by a => sizeOf a
 end
 
@@ -473,10 +525,12 @@ mutual
     | t :: ts => Term.names t ++ Term.namesL ts
   /-- The variable names a formula reads, less those its own quantifiers bind. -/
   def Formula.names : Formula → List String
-    | .tt | .ff | .asm _ | .rule _ _ | .ruleApplies _ _ => []
+    | .tt | .ff | .asm _ | .rule _ _ | .ruleApplies _ _ | .ruleCase _ _ _ => []
+    | .requiredBy _ w | .lawful _ w => [w]
     | .atom _ args ps | .derived _ args ps => Arg.names args ++ Term.namesL ps
     | .cmp l _ r => Term.names l ++ Term.names r
     | .intent _ a b | .same a b => Arg.names [a, b]
+    | .fact _ xs => Arg.names xs
     | .not φ | .always φ | .eventually φ | .rises φ => Formula.names φ
     | .and φ ψ | .or φ ψ | .implies φ ψ | .until φ ψ | .since φ ψ | .definedWhen φ ψ
     | .count φ ψ _ _ => Formula.names φ ++ Formula.names ψ
@@ -484,6 +538,7 @@ mutual
     | .untilWithin _ d s φ ψ | .atLast _ d s φ ψ => s :: (Term.names d ++ (Formula.names φ ++ Formula.names ψ))
     | .existsUser v φ | .forallUser v φ | .existsRegion _ v φ | .forallRegion _ v φ
     | .existsDevice _ v φ | .forallDevice _ v φ => (Formula.names φ).filter (· != v)
+    | .durationWithin w g φ _ b => Term.names w ++ (Term.names g ++ (Formula.names φ ++ Term.names b))
 end
 
 mutual
@@ -502,8 +557,8 @@ mutual
     | t :: ts => Term.composes t || Term.composesL ts
   /-- Whether a formula composes another rule anywhere. -/
   def Formula.composes : Formula → Bool
-    | .rule _ _ | .ruleApplies _ _ => true
-    | .tt | .ff | .asm _ | .intent _ _ _ | .same _ _ => false
+    | .rule _ _ | .ruleApplies _ _ | .requiredBy _ _ | .lawful _ _ | .ruleCase _ _ _ => true
+    | .tt | .ff | .asm _ | .intent _ _ _ | .fact _ _ | .same _ _ => false
     | .atom _ _ ps | .derived _ _ ps => Term.composesL ps
     | .cmp l _ r => Term.composes l || Term.composes r
     | .not φ | .always φ | .eventually φ | .rises φ => Formula.composes φ
@@ -513,6 +568,7 @@ mutual
     | .untilWithin _ d _ φ ψ | .atLast _ d _ φ ψ => Term.composes d || (Formula.composes φ || Formula.composes ψ)
     | .existsUser _ φ | .forallUser _ φ | .existsRegion _ _ φ | .forallRegion _ _ φ
     | .existsDevice _ _ φ | .forallDevice _ _ φ => Formula.composes φ
+    | .durationWithin w g φ _ b => Term.composes w || (Term.composes g || (Formula.composes φ || Term.composes b))
 end
 
 namespace Binding
@@ -591,6 +647,15 @@ theorem resolveAll_congr {β₁ β₂ : Binding} : ∀ (args : List Arg), Agree 
     have ih := resolveAll_congr as hs
     simp only [resolveAll, List.mapM_cons] at ih ⊢
     rw [resolve_congr a ha, ih]
+
+theorem factSubjects_congr {β₁ β₂ : Binding} : ∀ (xs : List Arg), Agree β₁ β₂ (Arg.names xs) →
+    factSubjects β₁ xs = factSubjects β₂ xs
+  | [], _ => rfl
+  | .var a :: as, h => by
+    simp only [Arg.names] at h
+    simp only [factSubjects, Agree.head h, factSubjects_congr as h.tail]
+  | .lit _ :: _, _ => rfl
+  | .nat _ :: _, _ => rfl
 
 theorem track_congr {β₁ β₂ : Binding} {s : String} (h : β₁.lookup s = β₂.lookup s) : β₁.track s = β₂.track s := by
   unfold Binding.track; rw [h]
@@ -699,6 +764,10 @@ mutual
         | nat _ => rw [evalAll, evalAll] <;> first | rfl | simp
       | lit _ => cases target <;> (rw [evalAll, evalAll] <;> first | rfl | simp)
       | nat _ => cases target <;> (rw [evalAll, evalAll] <;> first | rfl | simp)
+    | .fact _ xs, β₁, β₂, _, ha => by
+      simp only [Formula.names] at ha
+      have h : factSubjects (ctxWith d k β₁).β xs = factSubjects (ctxWith d k β₂).β xs := factSubjects_congr xs ha
+      rw [evalAll, evalAll, h] <;> rfl
     | .same a b, _, _, _, ha => by
       simp only [Formula.names] at ha; rw [Arg.names_cons] at ha
       rw [evalAll, evalAll, resolve_congr a ha.left, resolve_congr b ha.right] <;> rfl
@@ -745,6 +814,10 @@ mutual
     | .count e s _ _, β₁, β₂, hc, ha => by
       simp only [Formula.names] at ha; simp only [Formula.composes, Bool.or_eq_false_iff] at hc
       rw [evalAll, evalAll, evalAll_congr d k e β₁ β₂ hc.1 ha.left, evalAll_congr d k s β₁ β₂ hc.2 ha.right] <;> rfl
+    | .durationWithin w g φ _ b, β₁, β₂, hc, ha => by
+      simp only [Formula.names] at ha; simp only [Formula.composes, Bool.or_eq_false_iff] at hc
+      rw [evalAll, evalAll, evalTAll_congr d k w β₁ β₂ hc.1 ha.left, evalTAll_congr d k g β₁ β₂ hc.2.1 ha.right.left,
+        evalAll_congr d k φ β₁ β₂ hc.2.2.1 ha.right.right.left, evalTAll_congr d k b β₁ β₂ hc.2.2.2 ha.right.right.right] <;> rfl
     | .rises φ, β₁, β₂, hc, ha => by
       simp only [Formula.names] at ha; simp only [Formula.composes] at hc
       rw [evalAll, evalAll, evalAll_congr d k φ β₁ β₂ hc ha] <;> rfl
@@ -756,6 +829,9 @@ mutual
       rw [evalAll, evalAll, constParams_congr d k ps β₁ β₂ hc ha.right, resolveAll_congr args ha.left] <;> rfl
     | .rule _ _, _, _, hc, _ => by simp [Formula.composes] at hc
     | .ruleApplies _ _, _, _, hc, _ => by simp [Formula.composes] at hc
+    | .requiredBy _ _, _, _, hc, _ => by simp [Formula.composes] at hc
+    | .lawful _ _, _, _, hc, _ => by simp [Formula.composes] at hc
+    | .ruleCase _ _ _, _, _, hc, _ => by simp [Formula.composes] at hc
     | .existsUser v φ, β₁, β₂, hc, ha => by
       simp only [Formula.names] at ha; simp only [Formula.composes] at hc
       have h1 : ∀ u, evalAll ((ctxWith d k β₁).bindVar v (.track u)) φ = evalAll ((ctxWith d k β₂).bindVar v (.track u)) φ :=
@@ -1122,6 +1198,16 @@ mutual
       return (countEdgesAll "count" e s).map fun e => match e with
         | .error w => R.u w
         | .ok m => R.ofBool (op.apply (Q.ofInt (Int.ofNat m)) (Q.ofInt (Int.ofNat k)))
+    | .durationWithin w g φ op bd =>
+      let ps : Except UnknownReason (Q × Q × Q) := do
+        let wv ← constOf w (evalTAll c w)
+        let gv ← stepOf g (evalTAll c g) "duration_within"
+        let bv ← constOf bd (evalTAll c bd)
+        if Q.lt Q.zero wv && Q.lt Q.zero gv then pure (wv, gv, bv)
+        else throw (.malformed "duration_within window or step bound is not positive")
+      match ps with
+      | .error e => pure (constU c.n e)
+      | .ok (wv, gv, bv) => return (SampledDuration.boundsAll c.d.times wv gv "duration_within" (← fastF c φ)).map (durationAt op bv)
     | .rises φ => return risesAll (← fastF c φ)
     | .definedWhen pre φ => do
       let a ← fastF c pre

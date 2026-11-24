@@ -89,7 +89,8 @@ def occupancyFromGeometry (users : List RoadUser) (structures : List Structure) 
 /-- A scene; occupancy is derived from geometry unless given. -/
 def scene (t : Timestamp) (subject : Option TrackId) (users : List RoadUser) (structures : List Structure)
     (devices : List Device) (occupies : Option (List (TrackId × RegionId)) := none)
-    (env : Env := {}) (assumptions : List (AsmId × Bool) := []) (intents : List DeclaredIntent := []) : Scene :=
+    (env : Env := {}) (assumptions : List (AsmId × Bool) := []) (intents : List DeclaredIntent := [])
+    (facts : List DeclaredFact := []) : Scene :=
   { t := t
     subject := subject
     users := users
@@ -99,7 +100,15 @@ def scene (t : Timestamp) (subject : Option TrackId) (users : List RoadUser) (st
     occupies := occupies.getD (occupancyFromGeometry users structures)
     env := env
     assumptions := assumptions
-    intents := intents }
+    intents := intents
+    facts := facts }
+
+/-- A declared fact: `id` holds (`value`) of the road users `users`, in the order its meaning names
+    them, and of the regions `regions`. -/
+def fact (id : FactId) (users : List TrackId) (value : Bool) (regions : List RegionId := []) : DeclaredFact :=
+  { id := id, users := users, regions := regions, value := value }
+/-- The scene with these facts declared in it, besides those it has. -/
+def withFacts (s : Scene) (fs : List DeclaredFact) : Scene := { s with facts := s.facts ++ fs }
 
 /-- A trace from a scene generator over instants `t0, t0 + dt, …` (`dt` in seconds). -/
 def trace (n : Nat) (t0 : Timestamp) (dt : Q) (f : Nat → Timestamp → Scene) : Trace :=
@@ -123,10 +132,12 @@ def pad (τ : Trace) (before after dt : Q) : Trace :=
 
 def masked (m : Manifest) (τ : Trace) : Trace := maskTrace m τ
 
-/-- A manifest that observes every atom except the listed ids (for a `blind` witness). -/
-def manifest (absent : List String := []) (gap : Q := Q.zero) : Manifest :=
+/-- A manifest that observes every atom except the listed ids (for a `blind` witness), and supplies
+    the declared facts `facts` lists (every one where it is `none`). -/
+def manifest (absent : List String := []) (gap : Q := Q.zero) (facts : Option (List FactId) := none) : Manifest :=
   let full := Manifest.full "witness" gap
-  { full with entries := full.entries.map fun (id, c) => if absent.contains id then (id, .absent) else (id, c) }
+  { full with entries := full.entries.map (fun (id, c) => if absent.contains id then (id, .absent) else (id, c))
+              facts := facts }
 
 end Build
 
@@ -149,6 +160,7 @@ structure Scenario where
   expected : Verdict
   window : Option (Timestamp × Timestamp) := none
   boundary : String := ""
+  setMembers : List Rule := []                -- the rules the rule-set operators range over here
   deriving Repr, Inhabited
 
 namespace Scenario
@@ -156,17 +168,20 @@ namespace Scenario
     start of a trace carries: only these leave a history-boundary witness unknown. -/
 def pastOps : List String :=
   ["since", "since_rise", "rises", "once", "holdsFor", "atLast", "count", "distance_while", "prim_heading_change",
-   "heading_since"]
+   "heading_since", "duration_within"]
 
 /-- The witness holds when the rule's episode verdict on its grounding has the expected tag, and
     the verdict is reached for the reason the witness is about: a `notApplicable` witness needs an
     instant at which every bound track is present (a track that never appears leaves any rule not
-    engaged); an `unknown` witness must be unknown only for atoms its manifest masks (an unbound
+    engaged); an `unknown` witness must be unknown only for atoms its manifest masks, or declared
+    facts it does not supply (an unbound
     variable, a truncated window or a missing parameter is a defect, not a masked observation),
     except that a history-boundary witness is unknown for a window truncated at the start of its
     trace, at least once, and otherwise only for masked atoms; a boundary is declared on an
     `unknown` witness only.
-    The rules are evaluated with their concept calls expanded over `concepts`. A trace the
+    The rules are evaluated with their concept calls expanded over `concepts`. The rule-set
+    operators (`requiredBy`, `lawful`) range over the witness's own `setMembers`, never over the
+    library, so a witness's verdict does not change as the library grows. A trace the
     admission rejects, or a region formal given a region no scene of the trace holds, fails. -/
 def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Except String Verdict := do
   let rules := rules.map (Concept.expandRule concepts)
@@ -174,7 +189,7 @@ def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Ex
     | some r => pure r
     | none => throw s!"{sc.name}: rule {sc.rule} is not registered"
   let S ← match Grounding.Setup.admit rules (maskTrace sc.manifest sc.trace) sc.reading sc.manifest.reidGap with
-    | .ok S => pure S
+    | .ok S => pure { S with setRules := some (sc.setMembers.map (Concept.expandRule concepts)) }
     | .error ds => throw s!"{sc.name}: the trace is not admitted: {"; ".intercalate ds}"
   for (n, reg) in sc.regions do
     if !(sc.trace.any fun s => (s.structure? reg).isSome) then
@@ -199,6 +214,7 @@ def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Ex
     let truncated := fun (w : UnknownReason) => match w with | .windowTruncated op => pastOps.contains op | _ => false
     let stray := got.reasons.filter fun w => match w with
       | .absentAtom n => !(atomIdOf n).any absent.contains
+      | .factMissing id => sc.manifest.suppliesFact id
       | w => sc.boundary.isEmpty || !truncated w
     if !stray.isEmpty then
       throw s!"{sc.name}: unknown for {(stray.map UnknownReason.tag)}, not for an atom the manifest masks{if sc.boundary.isEmpty then "" else " or a window truncated at the trace start"}"
@@ -206,6 +222,167 @@ def run (rules : List Rule) (sc : Scenario) (concepts : List Concept := []) : Ex
       throw s!"{sc.name}: a history-boundary witness, but no window is truncated at the trace start"
     else pure got
   | _ => pure got
+
+/-- What a witness shows of case `k` of its rule, observation by observation within its window,
+    on its grounding: the invariants it breaks and the controls it exercises. With whether the
+    binders' classes hold, whether the rule is engaged, whether the case holds,
+    whether the subject shows the case's conduct or act (`shown`), and the rule's verdict:
+    - a defect where the case holds and the rule is not engaged; for a `requires` case, where it
+      holds, the conduct is not shown and the rule is not violated (the case reaches beyond the
+      duty: an exception, or a part of the obligation, that the case does not follow); for a
+      `permits` case, where it holds, the act is shown and the rule is violated;
+    - the control `positive` where the case holds and, for `requires`, the conduct is not shown and
+      the rule is violated, for `permits`, the act is shown and the rule is compliant; `met` where
+      a `requires` case holds, the conduct is shown and the rule is compliant; `outside` where the
+      classes hold and the applicability does not (the case does not hold there); `exception`
+      where the rule is engaged, the conduct is not shown, the rule is compliant and the case does
+      not hold (an exception of the duty removes it, and the case follows).
+    Observations at which any of these is unknown show nothing. These are control checks on the
+    witnesses written, never a proof that the case equals the duty left after its exceptions on
+    every trace. -/
+def caseControls (rules : List Rule) (sc : Scenario) (concepts : List Concept) (k : Nat) : List String × List String :=
+  let rules := rules.map (Concept.expandRule concepts)
+  match rules.find? (·.id == sc.rule) with
+  | none => ([], [])
+  | some r =>
+    match r.cases[k]?, Grounding.Setup.admit rules (maskTrace sc.manifest sc.trace) sc.reading sc.manifest.reidGap with
+    | some c, .ok S0 =>
+      let S := { S0 with setRules := some (sc.setMembers.map (Concept.expandRule concepts)) }
+      let g : Grounding.Grounding := ⟨sc.grounding.map (fun (n, t) => (n, Grounding.canon S.cm t)), sc.regions⟩
+      let ctx := S.ctx g.binding
+      let sit := Rule.engagedAll { r with applicability := .tt } ctx
+      let eng := r.engagedAll ctx
+      let cv := (RuleSet.caseRule r c).engagedAll ctx
+      let sh := Rule.evalRuleFormula ctx c.shown
+      let vs := (Grounding.evaluate S r g).verdicts
+      let rows := (List.range vs.size).filterMap fun i =>
+        match vs[i]?, sit[i]?, eng[i]?, cv[i]?, sh[i]? with
+        | some (t, v), some a, some e, some x, some y =>
+          let inWin := match sc.window with | some (lo, hi) => lo ≤ t && t ≤ hi | none => true
+          if inWin && a.v != .u && e.v != .u && x.v != .u && y.v != .u && v.tag != "unknown" then
+            some (t, a.v == .t, e.v == .t, x.v == .t, y.v == .t, v.tag)
+          else none
+        | _, _, _, _, _ => none
+      let req := match c.kind with | .requires _ => true | .permits => false
+      let defects := rows.flatMap fun (t, _, e, x, y, v) =>
+        (if x && !e then [s!"{sc.name} at {t}: case `{c.name}` holds where the rule is not engaged"] else []) ++
+        (if req && x && !y && v != "violated" then
+          [s!"{sc.name} at {t}: case `{c.name}` holds and the conduct is not shown, but the rule is {v}: the case reaches beyond the duty"] else []) ++
+        (if !req && x && y && v == "violated" then
+          [s!"{sc.name} at {t}: case `{c.name}` holds and the permitted act is shown, but the rule is violated"] else [])
+      let controls := rows.flatMap fun (_, a, e, x, y, v) =>
+        (if x && (if req then !y && v == "violated" else y && v == "compliant") then ["positive"] else []) ++
+        (if req && x && y && v == "compliant" then ["met"] else []) ++
+        (if a && !e then ["outside"] else []) ++
+        (if e && !y && v == "compliant" && !x then ["exception"] else [])
+      (defects, controls.eraseDups)
+    | _, _ => ([], [])
+
+/-- The external situation of a scene for road user `who`: the scene with `who`'s motion
+    forgotten (its kinematics but its extent, the occupancy and the measured relations it is party
+    to). Two witnesses with equal external situations at equal instants differ only in how `who`
+    moves. -/
+def externalOf (who : TrackId) (s : Scene) : String :=
+  reprStr { s with users := s.users.map (fun (u : RoadUser) => if u.track == who then ({ u with kin := ({ extent := u.kin.extent } : Kin) } : RoadUser) else u),
+                   occupies := s.occupies.filter (fun (p : TrackId × RegionId) => p.1 != who),
+                   relations := s.relations.filter fun (m : MeasuredRelation) => m.a != who && m.b != who }
+
+/-- Whether two traces have the same instants and, at each, the same external situation for `who`. -/
+def sameExternal (who : TrackId) (a b : Trace) : Bool :=
+  a.length == b.length && (a.zip b).all fun (x, y) => x.t == y.t && externalOf who x == externalOf who y
+
+/-- Whether two traces have the same instants and, at each, the same scene but its devices. -/
+def sameButDevices (a b : Trace) : Bool :=
+  a.length == b.length && (a.zip b).all fun (x, y) => x.t == y.t && reprStr { x with devices := [] } == reprStr { y with devices := [] }
+
+/-- The track the witness binds to its rule's subject binder. -/
+def subjectTrack (rules : List Rule) (sc : Scenario) : Option TrackId :=
+  (rules.find? (·.id == sc.rule)).bind fun r => r.binders.head?.bind fun b => sc.grounding.lookup b.name
+
+/-- The speeds the trace observes of `who`, at every instant. -/
+def speeds (who : TrackId) (τ : Trace) : List (Option Q) :=
+  τ.map fun s => (s.users.find? (·.track == who)).bind (·.kin.speed)
+
+/-- The witness's episode verdict on its grounding, with its members, as `run` computes it, and
+    whether the case `k` holds at each observation (none where unknown). -/
+def observe (rules : List Rule) (sc : Scenario) (concepts : List Concept) (k : Option Nat := none) :
+    Option (Verdict × List (Option Bool)) :=
+  let rules := rules.map (Concept.expandRule concepts)
+  match rules.find? (·.id == sc.rule), Grounding.Setup.admit rules (maskTrace sc.manifest sc.trace) sc.reading sc.manifest.reidGap with
+  | some r, .ok S0 =>
+    let S := { S0 with setRules := some (sc.setMembers.map (Concept.expandRule concepts)) }
+    let g : Grounding.Grounding := ⟨sc.grounding.map (fun (n, t) => (n, Grounding.canon S.cm t)), sc.regions⟩
+    let ep := Grounding.episode ((Grounding.evaluate S r g).verdicts.toList.map (·.2))
+    let cs : List (Option Bool) := match k.bind (r.cases[·]?) with
+      | some c => ((RuleSet.caseRule r c).engagedAll (S.ctx g.binding)).toList.map fun x =>
+          if x.v == .u then none else some (x.v == .t)
+      | none => []
+    some (ep, cs)
+  | _, _ => none
+
+/-- The paired controls of a case requiring a halt: three witnesses in the same external situation
+    (`sameExternal` for the subject), the subject at rest throughout (`halt`), moving (`drive`), and
+    moving more slowly than in `drive` (`creep`). The defects: the situations differ; `halt` has
+    the subject moving, `drive` or `creep` never moving, `creep` not slower than `drive`; the case
+    holds differently in the three (it would depend on the subject's own motion) or nowhere; the
+    rule is violated in `halt`, or not violated in `drive` or in `creep` (a duty that slowing or
+    yielding meets requires no stop). These are controls on three witnesses, not a proof over all
+    traces. -/
+def stopControls (rules : List Rule) (halt drive creep : Scenario) (concepts : List Concept) (k : Nat) : List String :=
+  match subjectTrack rules halt with
+  | none => ["the halt witness binds no subject"]
+  | some who =>
+    let moving := fun (sc : Scenario) => (speeds who sc.trace).any fun v => v.any (Q.lt Q.zero ·)
+    let top := fun (sc : Scenario) => (speeds who sc.trace).foldl (fun a v => match v with | some q => if Q.lt a q then q else a | none => a) Q.zero
+    let situation := (if sameExternal who halt.trace drive.trace && sameExternal who halt.trace creep.trace then []
+      else ["the halt, drive and creep witnesses differ in more than the subject's motion"]) ++
+      (if (speeds who halt.trace).all (· == some Q.zero) then [] else ["the subject is not at rest throughout the halt witness"]) ++
+      (if moving drive && moving creep then [] else ["the subject does not move in the drive or the creep witness"]) ++
+      (if Q.lt (top creep) (top drive) then [] else ["the creep witness is not slower than the drive witness"])
+    match observe rules halt concepts (some k), observe rules drive concepts (some k), observe rules creep concepts (some k) with
+    | some (vh, ch), some (vd, cd), some (vc, cc) =>
+      situation ++
+      (if ch == cd && ch == cc then [] else ["the case holds differently as the subject halts, drives or creeps: it depends on the subject's own motion"]) ++
+      (if ch.any (· == some true) then [] else ["the case holds nowhere in the halt witness"]) ++
+      (if vh.tag == "violated" then ["the rule is violated though the subject is at rest"] else []) ++
+      (if vd.tag == "violated" then [] else [s!"driving in the same situation is {vd.tag}, not violated"]) ++
+      (if vc.tag == "violated" then [] else [s!"creeping in the same situation is {vc.tag}, not violated: the duty is met short of a stop"])
+    | _, _, _ => situation ++ ["a witness of the pair is not evaluated (its rule or its trace)"]
+
+/-- The witness names of the paired controls of case `c`: halt, drive, creep. -/
+def stopNames (c : RuleCase) : String × String × String :=
+  (s!"stop_{c.name}_halt", s!"stop_{c.name}_drive", s!"stop_{c.name}_creep")
+
+/-- The paired controls of a declared purpose, two witnesses: for `standingOrParking`, the same
+    external situation with the subject at rest throughout (`a`, the rule violated) and moving
+    (`b`, not violated); for `deviceInstruction`, the same scenes with the devices (`a`, the rule
+    violated) and without any device (`b`, not violated). A rule whose verdict does not turn on
+    standing, or on a device, fails them: a speed limit is not violated by standing, and is
+    violated with no device present. Controls on two witnesses, not a proof. -/
+def purposeControls (rules : List Rule) (a b : Scenario) (concepts : List Concept) (p : Purpose) : List String :=
+  match subjectTrack rules a with
+  | none => ["the first witness binds no subject"]
+  | some who =>
+    let situation := match p with
+      | .standingOrParking =>
+        (if sameExternal who a.trace b.trace then [] else ["the two witnesses differ in more than the subject's motion"]) ++
+        (if (speeds who a.trace).all (· == some Q.zero) then [] else ["the subject is not at rest throughout the first witness"]) ++
+        (if (speeds who b.trace).any (fun v => v.any (Q.lt Q.zero ·)) then [] else ["the subject does not move in the second witness"])
+      | .deviceInstruction =>
+        (if sameButDevices a.trace b.trace then [] else ["the two witnesses differ in more than their devices"]) ++
+        (if a.trace.any (!·.devices.isEmpty) then [] else ["the first witness holds no device"]) ++
+        (if b.trace.all (·.devices.isEmpty) then [] else ["the second witness holds a device"])
+    match observe rules a concepts, observe rules b concepts with
+    | some (va, _), some (vb, _) =>
+      situation ++
+      (if va.tag == "violated" then [] else [s!"the first witness is {va.tag}, not violated: the duty does not turn on {p}"]) ++
+      (if vb.tag == "violated" then [s!"the second witness is violated: the duty is broken without {p}"] else [])
+    | _, _ => situation ++ ["a witness of the pair is not evaluated (its rule or its trace)"]
+
+/-- The witness names of the paired controls of purpose `p`. -/
+def purposeNames : Purpose → String × String
+  | .standingOrParking => ("purpose_standing_or_parking_halt", "purpose_standing_or_parking_move")
+  | .deviceInstruction => ("purpose_device_instruction_on", "purpose_device_instruction_off")
 end Scenario
 
 end TrafficSpec
