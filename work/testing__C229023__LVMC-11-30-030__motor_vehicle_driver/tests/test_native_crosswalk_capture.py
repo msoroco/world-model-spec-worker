@@ -13,6 +13,7 @@ sys.path.insert(0, str(PACKAGE))
 
 from crosswalk_measurements import ASSIGNMENT_ID, measure
 from native_crosswalk_capture import CAMERAS, FRAME_COUNT, NativeCrosswalkRecorder
+from saved_capture_audit import audit
 
 
 CASE = ASSIGNMENT_ID + "__unmarked_pass"
@@ -97,6 +98,33 @@ class NativeCrosswalkCaptureTests(unittest.TestCase):
             self.assertTrue(result["rear_approach_frames"])
             self.assertTrue(result["ego_ahead_frames"])
             self.assertEqual(result["physical_acceptance"], "unverified")
+            saved = audit(directory=directory, case_id=CASE)
+            self.assertEqual(saved["frame_count"], FRAME_COUNT)
+            self.assertEqual(saved["last_native_frame"], 999)
+            self.assertEqual(saved["camera_status"], "same_tick_identity_only_saved_media_decode_required")
+            maps = (root / "frame-map.jsonl").read_text().splitlines()
+            changed = json.loads(maps[5])
+            changed["carla_frame"] += 1
+            maps[5] = json.dumps(changed)
+            raw = ("\n".join(maps) + "\n").encode()
+            (root / "frame-map.jsonl").write_bytes(raw)
+            with self.assertRaisesRegex(ValueError, "changed original"):
+                audit(directory=directory, case_id=CASE)
+            receipt["frame_map_sha256"] = hashlib.sha256(raw).hexdigest()
+            (root / "receipt.json").write_text(json.dumps(receipt) + "\n")
+            with self.assertRaisesRegex(ValueError, "frame join differs"):
+                audit(directory=directory, case_id=CASE)
+            changed["carla_frame"] = 105
+            maps[5] = json.dumps(changed)
+            first_index = json.loads(maps[1])
+            first_index["video_frame"] = True
+            maps[1] = json.dumps(first_index)
+            raw = ("\n".join(maps) + "\n").encode()
+            (root / "frame-map.jsonl").write_bytes(raw)
+            receipt["frame_map_sha256"] = hashlib.sha256(raw).hexdigest()
+            (root / "receipt.json").write_text(json.dumps(receipt) + "\n")
+            with self.assertRaisesRegex(ValueError, "frame join differs"):
+                audit(directory=directory, case_id=CASE)
             with self.assertRaisesRegex(ValueError, "fresh"):
                 self.recorder.write(directory)
 

@@ -29,6 +29,7 @@ class CameraCapture:
     def __init__(self, world, bus, scene, output, carla):
         self.sensors, self.encoders, self.queues = [], {}, {}
         self.closed = False
+        self.overflow = False
         try:
             self._start(world, bus, scene, output, carla)
         except BaseException:
@@ -55,7 +56,12 @@ class CameraCapture:
             self.sensors.append(sensor)
             frames = queue.Queue(maxsize=8)
             self.queues[name] = frames
-            sensor.listen(lambda image, q=frames: q.put_nowait(image))
+            def receive(image, q=frames):
+                try:
+                    q.put_nowait(image)
+                except queue.Full:
+                    self.overflow = True
+            sensor.listen(receive)
             process = subprocess.Popen(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
                 "-f", "rawvideo", "-pixel_format", "bgra", "-video_size", f"{width}x{height}",
                 "-framerate", str(RATE_HZ), "-i", "pipe:0", "-an", "-c:v", "ffv1",
@@ -64,10 +70,18 @@ class CameraCapture:
             self.encoders[name] = process
 
     def append(self, frame):
+        if self.overflow:
+            raise RuntimeError("original camera queue overflow")
         for name in CAMERAS:
-            image = self.queues[name].get(timeout=15)
-            if image.frame != frame:
-                raise RuntimeError("camera/world frame mismatch: " + name)
+            while True:
+                image = self.queues[name].get(timeout=15)
+                if image.frame < frame:
+                    continue
+                if image.frame != frame:
+                    raise RuntimeError("camera/world frame mismatch: " + name)
+                break
+            if self.overflow:
+                raise RuntimeError("original camera queue overflow")
             self.encoders[name].stdin.write(image.raw_data)
 
     def close(self):

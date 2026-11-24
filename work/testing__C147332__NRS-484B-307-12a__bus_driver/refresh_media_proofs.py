@@ -22,9 +22,10 @@ def sha(path):
 def run(command, log):
     env = os.environ.copy()
     env["PYTHONDONTWRITEBYTECODE"] = "1"
-    env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(SCRATCH / "c147332-12a-media-proof-runtime")
+    env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(SCRATCH / "c147332-12a-custody-proof-runtime")
     completed = subprocess.run(command, cwd=REPO, env=env, capture_output=True, text=True)
-    log.write_text(completed.stdout + completed.stderr)
+    output = completed.stdout + completed.stderr
+    log.write_text("\n".join(line.rstrip() for line in output.splitlines()).rstrip() + "\n")
     if completed.returncode:
         raise RuntimeError(f"CPU proof failed: {log}; exit {completed.returncode}")
 
@@ -36,25 +37,27 @@ def main():
     python = str(REPO / ".venv-cpu/bin/python")
     for entry in manifest["cases"]:
         kind = entry["case_id"].rsplit("__", 1)[-1]
+        entry.setdefault("fixture_recipe", str((ROOT / "cases" / kind / "fixture-recipe.json").relative_to(REPO)))
+        MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
         for candidate in ("primary", "fallback1"):
             row = entry if candidate == "primary" else entry["candidates"][0]
             construction_hash = sha(ROOT / row["construction"])
             if construction_hash != row["construction_sha256"]:
                 raise ValueError("construction hash mismatch")
-            offline_output = SCRATCH / f"c147332-12a-media-offline-{kind}-{candidate}"
+            offline_output = SCRATCH / f"c147332-12a-camera-offline-{kind}-{candidate}"
             offline_log = ROOT / "cases" / kind / ("cpu-offline.log" if candidate == "primary" else "cpu-offline-fallback1.log")
             offline_command = [python, str(REPO / "runtime.py"), "offline", "--manifest", str(MANIFEST),
                                "--case", entry["case_id"], "--candidate", candidate,
                                "--output", str(offline_output)]
             run(offline_command, offline_log)
-            row["offline"].update(command=" ".join(offline_command), exit_code=0,
+            row.setdefault("offline", {}).update(command=" ".join(offline_command), exit_code=0,
                                   construction_sha256=construction_hash,
                                   log=str(offline_log.relative_to(ROOT)), log_sha256=sha(offline_log))
             tests[str(offline_log.relative_to(ROOT))] = {
                 "command": " ".join(offline_command), "exit_code": 0,
                 "log": str(offline_log.relative_to(ROOT)), "sha256": sha(offline_log)}
 
-            compat_output = SCRATCH / "c147332-12a-media-compat" / kind / candidate
+            compat_output = SCRATCH / "c147332-12a-camera-compat" / kind / candidate
             compat_log = ROOT / f"cpu-compat-{kind}-{candidate}.log"
             compat_command = [python, str(REPO / "runtime.py"), "compatibility", "--manifest", str(MANIFEST),
                               "--case", entry["case_id"], "--candidate", candidate,

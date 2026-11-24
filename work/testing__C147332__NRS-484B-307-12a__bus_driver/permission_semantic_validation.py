@@ -73,15 +73,67 @@ def validate(template, proposal, plan, assignment):
             "scope": "Worker-only permission boundary proof; pinned semantic validator unchanged"}
 
 
+def validate_package(root, assignment, *, index=None, manifest=None):
+    """Bind the permission proof to sealed stages and current exact constructions."""
+    root = Path(root).resolve()
+    index = index or json.loads((root / "proposals/semantic-index.json").read_text())
+    manifest = manifest or json.loads((root / "execution-manifest.json").read_text())
+    if index.get("assignment_id") != assignment["assignment_id"] or manifest.get("assignment_id") != assignment["assignment_id"]:
+        raise ValueError("permission package assignment differs")
+    stages = {}
+    for name, ref in index.get("stages", {}).items():
+        if name == "judgment_observables":
+            if ref != []:
+                raise ValueError("permission package invents judgment observables")
+            continue
+        relative = Path(ref.get("path", "")) if isinstance(ref, dict) else Path("")
+        if (not relative.parts or relative.is_absolute() or ".." in relative.parts or
+                (root / relative).is_symlink() or not (root / relative).is_file()):
+            raise ValueError("permission stage source missing or escapes")
+        digest = hashlib.sha256((root / relative).read_bytes()).hexdigest()
+        if digest != ref.get("sha256"):
+            raise ValueError("permission stage source hash differs")
+        stages[name] = json.loads((root / relative).read_text())
+    if not {"template", "cases"} <= set(stages):
+        raise ValueError("permission template/cases stage missing")
+    plan = json.loads((root / "case-plan.json").read_text())
+    report = validate(stages["template"], stages["cases"], plan, assignment)
+    expected = set(report["case_ids"])
+    entries = manifest.get("cases", [])
+    if len(entries) != len(expected) or {entry.get("case_id") for entry in entries} != expected:
+        raise ValueError("permission manifest case set differs")
+    proposals = {case["case_id"]: case for case in stages["cases"]["cases"]
+                 if case["target_type"] != "baseline"}
+    constructions = {}
+    for entry in entries:
+        relative = Path(entry.get("construction", ""))
+        if relative.is_absolute() or ".." in relative.parts or not (root / relative).is_file():
+            raise ValueError("permission construction missing or escapes")
+        raw = (root / relative).read_bytes()
+        digest = hashlib.sha256(raw).hexdigest()
+        construction = json.loads(raw)
+        if (digest != entry.get("construction_sha256") or
+                construction.get("case_id") != entry["case_id"] or
+                construction.get("recording_description") != proposals[entry["case_id"]].get("recording_description")):
+            raise ValueError("permission construction/proposal binding differs")
+        constructions[entry["case_id"]] = digest
+    return {**report, "semantic_index_sha256": hashlib.sha256(
+                (root / "proposals/semantic-index.json").read_bytes()).hexdigest(),
+            "construction_sha256": constructions,
+            "pinned_semantic_validator_passed": False}
+
+
 def main():
-    template = json.loads((ROOT / "proposals/template.json").read_text())
-    cases = json.loads((ROOT / "proposals/cases.json").read_text())
-    plan = json.loads((ROOT / "case-plan.json").read_text())
     assignment = json.loads((REPO / "inputs" / ROOT.name / "assignment.json").read_text())
-    report = validate(template, cases, plan, assignment)
+    report = validate_package(ROOT, assignment)
+    from permission_attempt_pair import prove
+    attempt_report = prove(ROOT, assignment)
+    report["source_bound_attempt_pair_sha256"] = hashlib.sha256(
+        json.dumps(attempt_report, sort_keys=True).encode()).hexdigest()
+    report["pinned_compliant_violating_pair_claimed"] = attempt_report["pinned_compliant_violating_pair_claimed"]
     report["source_sha256"] = hashlib.sha256((REPO / "inputs" / ROOT.name / "assignment.json").read_bytes()).hexdigest()
     (ROOT / "proposals/permission-semantic-proposal-proof.json").write_text(json.dumps(report, indent=2) + "\n")
-    print("worker-only permission semantic proposal passed; pinned runtime remains unchanged")
+    print("worker-only permission semantic package and construction binding passed; pinned runtime remains unchanged")
 
 
 if __name__ == "__main__":

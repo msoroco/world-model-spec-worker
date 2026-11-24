@@ -1,0 +1,65 @@
+{
+  "template_id": "NRS-484B-250-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+  "structure": {
+    "law_id": "NRS-484B-250-2",
+    "activation": {
+      "condition": "Two vehicles enter the same intersection from different highways at approximately the same time; ego is on the left.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Driver on left yields right-of-way to driver on right.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4]",
+        "trigger": "Subsection 4 qualification",
+        "effect": "requires separate source review",
+        "replacement_obligation": "unresolved"
+      },
+      {
+        "source_clause": "intersections controlled by official traffic-control devices",
+        "trigger": "Official device controls intersection",
+        "effect": "subsection 5 exclusion",
+        "replacement_obligation": "unresolved"
+      },
+      {
+        "source_clause": "vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn",
+        "trigger": "Opposite-direction approach with intended or actual left turn",
+        "effect": "subsection 5 exclusion",
+        "replacement_obligation": "unresolved"
+      }
+    ],
+    "timing": {
+      "description": "Actual original crossing entry times; no legal numerical cutoff.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "approximately the same time",
+        "note": "The law supplies no numerical simultaneity interval."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_entry_difference_s",
+      "kind": "controller",
+      "range_or_domain": "finite engineering target in seconds, measured separately"
+    },
+    {
+      "name": "requested_ego_response",
+      "kind": "controller",
+      "range_or_domain": "yield-before-entry or advance-before-other-exit request"
+    },
+    {
+      "name": "official_device_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed control device identity and operating state"
+    }
+  ]
+}

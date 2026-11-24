@@ -10,6 +10,7 @@ import subprocess
 from pathlib import Path
 
 from sight_measurement import measure
+from comparison_audit import audit as audit_comparison
 
 
 def _digest(path: Path) -> str:
@@ -28,7 +29,8 @@ def audit_selected(plan: dict, repository: Path, attempt: Path,
     if len(matches) != 1:
         raise ValueError("selected case/recording identity absent from plan")
     source = [row for row in plan.get("sources", [])
-              if row.get("path", "").endswith(f"/accepted/{recording_id}/metadata.json")]
+              if Path(row.get("path", "")).parts[-3:] ==
+              ("accepted", recording_id, "metadata.json")]
     if len(source) != 1:
         raise ValueError("selected frozen metadata source absent")
     rel = Path(source[0]["path"])
@@ -64,3 +66,43 @@ def audit_selected(plan: dict, repository: Path, attempt: Path,
             "decoded_video_frames": 900, "sight_measurement": measured,
             "legal_visibility_judgment": "unresolved",
             "canonical_acceptance": "unresolved"}
+
+
+def audit_selected_pair(plan: dict, repository: Path, comparison_id: str,
+                        left: tuple[Path, Path, Path],
+                        right: tuple[Path, Path, Path]) -> dict:
+    """Require independently bound media and measured sight difference on both sides."""
+    left_result = audit_selected(plan, repository, *left)
+    right_result = audit_selected(plan, repository, *right)
+    if (left_result["video_sha256"] == right_result["video_sha256"] or
+            left_result["trace_sha256"] == right_result["trace_sha256"]):
+        raise ValueError("comparison reused video or trace bytes")
+    left_inventory = json.loads((Path(left[0]) / "inventory.json").read_text())
+    right_inventory = json.loads((Path(right[0]) / "inventory.json").read_text())
+    comparison = audit_comparison(plan, comparison_id, left[0], left_inventory,
+                                  right[0], right_inventory)
+    return {"format": "c129731-selected-reuse-pair-v1",
+            "comparison": comparison, "selected_media": [left_result, right_result],
+            "canonical_acceptance": "unresolved"}
+
+
+def audit_acquired(plan: dict, repository: Path, attempt: Path,
+                   acquired: Path) -> dict:
+    """Reread the acquisition receipt and copied bytes before media/sight audit."""
+    acquired = Path(acquired)
+    receipt = json.loads((acquired / "acquisition.json").read_text())
+    if receipt.get("format") != "c129731-original-source-acquisition-v1":
+        raise ValueError("original acquisition receipt format mismatch")
+    inventory = json.loads((Path(attempt) / "inventory.json").read_text())
+    if (receipt.get("case_id") != inventory.get("case_id") or
+            receipt.get("recording_id") != inventory.get("recording_id")):
+        raise ValueError("original acquisition identity mismatch")
+    for kind, name in (("video", "raw.mkv"), ("trace", "trace.json")):
+        entry = receipt.get("sources", {}).get(kind, {})
+        if entry.get("path") != name or _digest(acquired / name) != entry.get("sha256"):
+            raise ValueError("acquired original source hash mismatch")
+    result = audit_selected(plan, repository, attempt,
+                            acquired / "raw.mkv", acquired / "trace.json")
+    if receipt.get("metadata_sha256") != result["metadata_sha256"]:
+        raise ValueError("acquired original metadata hash mismatch")
+    return result

@@ -9,7 +9,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
-from permission_semantic_validation import validate
+from permission_semantic_validation import validate, validate_package
 
 
 class PermissionSemanticTests(unittest.TestCase):
@@ -69,6 +69,19 @@ class PermissionSemanticTests(unittest.TestCase):
         plan['comparisons'][0]['deliberate_differences'] = ['another change']
         with self.assertRaisesRegex(ValueError, 'description differs'):
             validate(self.template, self.cases, plan, self.assignment)
+
+    def test_permission_package_binds_stages_and_constructions(self):
+        report = validate_package(ROOT, self.assignment)
+        self.assertEqual(len(report['construction_sha256']), 4)
+        self.assertFalse(report['pinned_semantic_validator_passed'])
+        index = json.loads((ROOT / 'proposals/semantic-index.json').read_text())
+        index['stages']['cases']['sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'stage source hash differs'):
+            validate_package(ROOT, self.assignment, index=index)
+        manifest = json.loads((ROOT / 'execution-manifest.json').read_text())
+        manifest['cases'][0]['construction_sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'construction/proposal binding differs'):
+            validate_package(ROOT, self.assignment, manifest=manifest)
 
 
 if __name__ == "__main__":

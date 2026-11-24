@@ -58,34 +58,37 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
     first_frame = first_time = None
     output.mkdir(parents=True, exist_ok=True)
     try:
+        from scenario_pipeline.worker_exchange.native_output import FrameMap
         handles = adapter.spawn_actors(survey, case_id)
         if not isinstance(handles, dict) or set(handles) != {'ego', 'other'}:
             raise ValueError('two original crossing actors required')
         adapter.configure_cameras(handles['ego'], CAMERAS, fps=20, output=output)
         camera_bound = True
-        for index in range(900):
-            adapter.request_controls(handles, case_id, index)
-            frame, elapsed = adapter.tick()
-            if type(frame) is not int or type(elapsed) not in (int, float) or not math.isfinite(elapsed):
-                raise ValueError('original Native frame/clock missing')
-            if first_frame is None:
-                first_frame, first_time = frame, elapsed
-            if frame != first_frame+index or not math.isclose(elapsed-first_time,index/20,abs_tol=.002):
-                raise ValueError('original Native frame/clock discontinuity')
-            actors = {name: adapter.actor_snapshot(handle, frame) for name,handle in handles.items()}
-            row = {'frame': index, 'time_s': index/20,
-                   'native_frame_id': frame, 'native_elapsed_seconds': elapsed,
-                   'governing_device_readback': adapter.signal_readback(survey, frame),
-                   **actors}
-            rows.append(row)
-            for name in CAMERAS:
-                ref = adapter.camera_frame(name, frame)
-                if not isinstance(ref, dict) or ref.get('frame') != frame or ref.get('channel') != name:
-                    raise ValueError('original camera frame join differs')
-                path = _source_path(output, ref.get('source_path'))
-                if hashlib.sha256(path.read_bytes()).hexdigest() != ref.get('source_sha256'):
-                    raise ValueError('original camera source hash differs')
-                media[name].append(ref)
+        with FrameMap(output/'video_frames.jsonl') as frame_map:
+            for index in range(900):
+                adapter.request_controls(handles, case_id, index)
+                frame, elapsed = adapter.tick()
+                if type(frame) is not int or type(elapsed) not in (int, float) or not math.isfinite(elapsed):
+                    raise ValueError('original Native frame/clock missing')
+                if first_frame is None:
+                    first_frame, first_time = frame, elapsed
+                if frame != first_frame+index or not math.isclose(elapsed-first_time,index/20,abs_tol=.002):
+                    raise ValueError('original Native frame/clock discontinuity')
+                actors = {name: adapter.actor_snapshot(handle, frame) for name,handle in handles.items()}
+                row = {'frame': index, 'time_s': index/20,
+                       'native_frame_id': frame, 'native_elapsed_seconds': elapsed,
+                       'governing_device_readback': adapter.signal_readback(survey, frame),
+                       **actors}
+                rows.append(row)
+                for name in CAMERAS:
+                    ref = adapter.camera_frame(name, frame)
+                    if not isinstance(ref, dict) or ref.get('frame') != frame or ref.get('channel') != name:
+                        raise ValueError('original camera frame join differs')
+                    path = _source_path(output, ref.get('source_path'))
+                    if hashlib.sha256(path.read_bytes()).hexdigest() != ref.get('source_sha256'):
+                        raise ValueError('original camera source hash differs')
+                    media[name].append(ref)
+                frame_map.append(frame,elapsed)
         actor_ids = {name: handles[name].id for name in handles}
         trace = {'case_id': case_id, 'map_sha256': survey['opendrive_sha256'],
                  'actor_ids': actor_ids, 'frames': rows}
@@ -94,10 +97,15 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
         trace_path.write_text(json.dumps(trace,indent=2)+'\n')
         index_path = output/'original-camera-index.json'
         index_path.write_text(json.dumps({'case_id':case_id,'channels':media},indent=2)+'\n')
+        (output/'crossing-survey.json').write_bytes(raw_survey)
+        (output/'original-map.xodr').write_bytes(raw_map)
         manifest = {'case_id':case_id,'source_kind':'original_native_acquisition',
                     'survey_sha256':survey_sha256,
+                    'survey':{'path':'crossing-survey.json','sha256':survey_sha256},
+                    'opendrive':{'path':'original-map.xodr','sha256':survey['opendrive_sha256']},
                     'trace':{'path':trace_path.name,'sha256':hashlib.sha256(trace_path.read_bytes()).hexdigest()},
-                    'camera_index':{'path':index_path.name,'sha256':hashlib.sha256(index_path.read_bytes()).hexdigest()}}
+                    'camera_index':{'path':index_path.name,'sha256':hashlib.sha256(index_path.read_bytes()).hexdigest()},
+                    'frame_map':{'path':'video_frames.jsonl','sha256':hashlib.sha256((output/'video_frames.jsonl').read_bytes()).hexdigest()}}
         (output/'source-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
         return {'source_manifest':manifest,'observation':observation,
                 'physical_acceptance_claimed':False}

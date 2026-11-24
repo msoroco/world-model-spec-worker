@@ -1,10 +1,12 @@
 import hashlib
+import io
 import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -23,6 +25,9 @@ class Adapter:
         self.closed = False
         self.stopped = []
         self.destroyed = []
+        stream = io.BytesIO()
+        Image.new('RGB',(4,4),(20,40,60)).save(stream,format='PNG')
+        self.png = stream.getvalue()
 
     def verify_map(self, surveyed, raw):
         if raw != b'original map':
@@ -59,7 +64,7 @@ class Adapter:
         relative = Path('media')/channel/f'{frame}.png'
         path = self.output/relative
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(b'original callback '+channel.encode()+str(frame).encode())
+        path.write_bytes(self.png)
         return {'channel':channel,'frame':frame,'source_path':str(relative),
                 'source_sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 
@@ -108,6 +113,7 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertEqual(receipt['source_integrity'],'passed')
         self.assertEqual(receipt['native_frames'],900)
         self.assertEqual(receipt['camera_frames'],3600)
+        self.assertTrue(receipt['all_camera_pixels_decoded'])
         media_path = self.root/'attempt'/index['channels']['front'][0]['source_path']
         media_path.write_bytes(b'changed source')
         with self.assertRaisesRegex(ValueError,'media digest differs'):

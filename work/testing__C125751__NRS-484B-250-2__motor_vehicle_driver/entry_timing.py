@@ -57,6 +57,7 @@ def measure(trace, survey):
         raise ValueError('two distinct original actors required')
     first_frame = first_time = None
     entries = {'ego': None, 'other': None}
+    exits = {'ego': None, 'other': None}
     prior_inside = {'ego': False, 'other': False}
     device_states = set()
     for i, row in enumerate(frames):
@@ -89,11 +90,20 @@ def measure(trace, survey):
                 entries[name] = {'frame': i, 'native_frame_id': native_frame,
                                  'upper_elapsed_seconds': native_time,
                                  'lower_elapsed_seconds': frames[i-1]['native_elapsed_seconds']}
+            if not inside and prior_inside[name] and exits[name] is None:
+                exits[name] = {'frame': i, 'native_frame_id': native_frame,
+                               'upper_elapsed_seconds': native_time,
+                               'lower_elapsed_seconds': frames[i-1]['native_elapsed_seconds']}
             prior_inside[name] = inside
     if any(value is None for value in entries.values()):
         raise ValueError('both original intersection entries required')
     difference = entries['ego']['upper_elapsed_seconds'] - entries['other']['upper_elapsed_seconds']
+    response = 'unresolved_incomplete_exit'
+    if exits['other'] is not None:
+        response = ('yield_before_entry' if entries['ego']['frame'] >= exits['other']['frame']
+                    else 'advance_before_other_exit')
     return {'case_id': case, 'entry_brackets': entries,
+            'exit_brackets': exits, 'observed_ego_response': response,
             'ego_minus_other_upper_entry_s': difference,
             'other_approach_side_of_ego': 'right' if cross < 0 else 'left',
             'governing_device_states': sorted(device_states),

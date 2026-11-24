@@ -21,6 +21,7 @@ class NativeAdapter:
         self.drop_endpoint = False
         self.clock_gap = False
         self.wrong_vehicle = False
+        self.blocked_direction = "ahead_opposing"
 
     def geometry(self):
         return {"source_kind": "original_native_geometry", "highway_source": "Native map waypoint",
@@ -39,7 +40,7 @@ class NativeAdapter:
                 "yaw_deg": 0 if i <= 400 else 179, "turn_active": i in (400, 401)}
 
     def ray(self, frame, direction, station):
-        blocked = direction == "ahead_opposing" and station == 100.0
+        blocked = direction == self.blocked_direction and station == 100.0
         return {"source_kind": "original_native", "frame": frame["frame"],
                 "time_s": frame["time_s"], "direction": direction,
                 "station_distance_m": 150.0 if self.drop_endpoint and station == 152.4 else station,

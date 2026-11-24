@@ -84,6 +84,10 @@ def build():
     plan = json.loads(raw)
     if {row['case_id'] for row in plan['cases']} != {AID+'__'+s for s in SUFFIXES}:
         raise ValueError('five exact timing cases required')
+    semantic = json.loads((HERE/'proposals/cases.json').read_text())
+    descriptions = {row['case_id']:row['recording_description'] for row in semantic['cases']}
+    if set(descriptions) != {AID+'__baseline'} | {row['case_id'] for row in plan['cases']}:
+        raise ValueError('canonical semantic cases differ from exact timing cases')
     rows = []
     for item in plan['cases']:
         case = item['case_id']
@@ -100,13 +104,16 @@ def build():
         files = {'runner.py': RUNNER, 'entry_timing.py': (HERE/'entry_timing.py').read_text(),
                  'native_capture.py': (HERE/'native_capture.py').read_text(),
                  'saved_delivery.py': (HERE/'saved_delivery.py').read_text(),
+                 'saved_finalizer.py': (HERE/'saved_finalizer.py').read_text(),
+                 'delivery_audit.py': (HERE/'delivery_audit.py').read_text(),
+                 'comparison_audit.py': (HERE/'comparison_audit.py').read_text(),
+                 'carla_native_adapter.py': (HERE/'carla_native_adapter.py').read_text(),
                  'case-plan.json': raw.decode(), 'config.json': json.dumps(config,indent=2)+'\n',
                  'tests/test_bundle.py': TEST}
         construction = {'law_id': config['law_id'], 'cell_id': config['cell_id'],
                         'actor': config['actor'], 'case_id': case,
                         'entrypoint': 'runner.py', 'diagnostic_only': True,
-                        'recording_description': {'status': 'diagnostic_only_original_sources_pending',
-                                                  'channels': list(CAMERAS)},
+                        'recording_description': descriptions[case],
                         'files': [{'path': name, 'content': body} for name,body in files.items()]}
         suffix = case.removeprefix(AID+'__')
         path = HERE/('construction-'+suffix+'.json')
