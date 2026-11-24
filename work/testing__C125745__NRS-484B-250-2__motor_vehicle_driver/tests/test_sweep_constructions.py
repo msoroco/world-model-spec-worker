@@ -916,19 +916,23 @@ class SweepConstructionTests(unittest.TestCase):
                 proof = plan[f'frame40_{candidate_id}_current_cpu_proof']
                 case = next(item for item in manifest['cases']
                             if item['case_id'] == proof['case_id'])
+                expected_attempt = {
+                    'fallback2': '730d0153a4eabc6fa89afd21393ee1f1ffd8dd2653763503a2b72b914c91c573',
+                    'fallback3': 'b4643eefe440c28408bbd2cf5f0841f0615eb7fbd5006ff73ee6aa3cc7bf4977',
+                }
                 self.assertEqual(proof['execution_manifest_file_sha256_at_attempt'],
-                                 '730d0153a4eabc6fa89afd21393ee1f1ffd8dd2653763503a2b72b914c91c573')
+                                 expected_attempt[candidate_id])
                 candidate = next(item for item in case['candidates']
                                  if item['id'] == candidate_id)
                 self.assertEqual(proof['construction_sha256'],
                                  candidate['construction_sha256'])
-                if candidate_id == 'fallback2':
-                    self.assertEqual(proof['bound_execution_manifest_file_sha256'],
-                                     digest('execution-manifest.json'))
-                    self.assertEqual(candidate['compatibility']['sha256'],
-                                     proof['artifacts']['compatibility.json']['sha256'])
-                    self.assertEqual(digest(candidate['post_capture']['test_log']),
-                                     proof['artifacts']['processing.json']['sha256'])
+                self.assertEqual(proof['bound_execution_manifest_file_sha256'],
+                                 {'fallback2': expected_attempt['fallback3'],
+                                  'fallback3': digest('execution-manifest.json')}[candidate_id])
+                self.assertEqual(candidate['compatibility']['sha256'],
+                                 proof['artifacts']['compatibility.json']['sha256'])
+                self.assertEqual(digest(candidate['post_capture']['test_log']),
+                                 proof['artifacts']['processing.json']['sha256'])
                 decoded = {}
                 for name, item in proof['artifacts'].items():
                     data = zlib.decompress(base64.b64decode(
@@ -949,3 +953,68 @@ class SweepConstructionTests(unittest.TestCase):
                 self.assertTrue(saved['recorded_only'])
                 self.assertTrue(saved['originals_preserved'])
                 self.assertEqual(saved['timestamp_joins']['frames'], 135)
+
+    def test_frame40_fallback2_current_physical_diagnostics(self):
+        plan = read('case-plan.json')['frame40_fallback2_physical_cpu_diagnostics']
+        manifest = read('execution-manifest.json')
+        case = next(item for item in manifest['cases']
+                    if item['case_id'] == plan['case_id'])
+        candidate = next(item for item in case['candidates']
+                         if item['id'] == 'fallback2')
+        self.assertEqual(plan['manifest_sha256'],
+                         'b4643eefe440c28408bbd2cf5f0841f0615eb7fbd5006ff73ee6aa3cc7bf4977')
+        self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
+        self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
+        self.assertEqual(plan['saved_receipt_sha256'],
+                         digest(candidate['post_capture']['test_log']))
+        for kind, status in (('complete_motion', 'met'),
+                             ('incomplete_motion', 'not_met'),
+                             ('missing_evidence', 'unverified')):
+            proof = plan['proofs'][kind]
+            self.assertEqual(hashlib.sha256(proof['receipt_json'].encode()).hexdigest(),
+                             proof['receipt_sha256'])
+            receipt = json.loads(proof['receipt_json'])
+            self.assertEqual(receipt['physical_checks']['maneuver']['status'], status)
+            self.assertFalse(receipt['physical_acceptance_claimed'])
+        life = json.loads(plan['proofs']['lifecycle']['receipt_json'])
+        self.assertEqual(life['saved_processing_receipt_sha256'],
+                         plan['saved_receipt_sha256'])
+        self.assertTrue(life['failed_encoder_rejected'])
+        self.assertTrue(life['premature_release_rejected'])
+        negative = plan['negative_binding_check']
+        self.assertNotEqual(negative['exit_code'], 0)
+        self.assertIn(negative['error_contains'], negative['log_text'])
+
+    def test_frame40_fallback3_current_physical_diagnostics(self):
+        plan = read('case-plan.json')['frame40_fallback3_physical_cpu_diagnostics']
+        manifest = read('execution-manifest.json')
+        case = next(item for item in manifest['cases']
+                    if item['case_id'] == plan['case_id'])
+        candidate = next(item for item in case['candidates']
+                         if item['id'] == 'fallback3')
+        self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+        self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
+        self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
+        self.assertEqual(plan['compatibility_receipt_sha256'],
+                         digest(candidate['compatibility']['receipt']))
+        self.assertEqual(plan['saved_receipt_sha256'],
+                         digest(candidate['post_capture']['test_log']))
+        for kind, status in (('complete_motion', 'met'),
+                             ('incomplete_motion', 'not_met'),
+                             ('missing_evidence', 'unverified')):
+            proof = plan['proofs'][kind]
+            self.assertEqual(hashlib.sha256(proof['receipt_json'].encode()).hexdigest(),
+                             proof['receipt_sha256'])
+            receipt = json.loads(proof['receipt_json'])
+            self.assertEqual(receipt['physical_checks']['maneuver']['status'], status)
+            self.assertFalse(receipt['physical_acceptance_claimed'])
+        life = json.loads(plan['proofs']['lifecycle']['receipt_json'])
+        self.assertEqual(life['saved_processing_receipt_sha256'],
+                         plan['saved_receipt_sha256'])
+        self.assertTrue(life['failed_encoder_rejected'])
+        self.assertTrue(life['premature_release_rejected'])
+        negative = plan['negative_binding_check']
+        self.assertNotEqual(negative['exit_code'], 0)
+        self.assertEqual(hashlib.sha256(negative['log_text'].encode()).hexdigest(),
+                         negative['log_sha256'])
+        self.assertIn(negative['error_contains'], negative['log_text'])
