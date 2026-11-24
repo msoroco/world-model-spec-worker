@@ -22,8 +22,9 @@ def main():
         suffix = entry["case_id"].split("__")[-1]
         if "pending-" not in suffix:
             continue
+        corrected = suffix in ("signal-appropriateness-pending-0001", "safety-ascertainment-pending-0001")
         replayed = suffix.startswith("signal-")
-        source = ROOT / ".runtime-work" / f"c144550-selected-compat-{'current-' if replayed else ''}{suffix}"
+        source = ROOT / ".runtime-work" / (f"c144550-source-fix-compat-{suffix}" if corrected else f"c144550-selected-compat-{'current-' if replayed else ''}{suffix}")
         if not (source / "compatibility.json").is_file():
             continue
         destination = HERE / "sweep-cases" / suffix
@@ -45,13 +46,13 @@ def main():
             "log": prefix + "selected-analysis.log",
         }
         entry["negative"] = {"log": prefix + "selected-negative.log"}
-        saved = ROOT / ".runtime-work" / f"c144550-selected-saved-{'current-' if replayed else ''}{suffix}" / "v0001/processing.json"
+        saved = ROOT / ".runtime-work" / (f"c144550-source-fix-saved-{suffix}" if corrected else f"c144550-selected-saved-{'current-' if replayed else ''}{suffix}") / "v0001/processing.json"
         if saved.is_file():
             shutil.copyfile(saved, destination / "selected-processing.json")
-            saved_log = destination / ("selected-saved-current.log" if replayed else "selected-saved.log")
+            saved_log = destination / ("source-fix-saved.log" if corrected else "selected-saved-current.log" if replayed else "selected-saved.log")
             entry["post_capture"] = {
                 "recorded_only": True,
-                "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-selected-replay .venv-cpu/bin/python runtime.py process-saved --manifest work/" + HERE.name + "/execution-manifest.json --case " + entry["case_id"] + " --attempt .runtime-work/c144550-selected-compat-" + ("current-" if replayed else "") + suffix + " --output .runtime-work/c144550-selected-saved-" + ("current-" if replayed else "") + suffix,
+                "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-source-fix .venv-cpu/bin/python runtime.py process-saved --manifest work/" + HERE.name + "/execution-manifest.json --case " + entry["case_id"] + " --attempt " + (f".runtime-work/c144550-source-fix-compat-{suffix}" if corrected else ".runtime-work/c144550-selected-compat-" + ("current-" if replayed else "") + suffix) + " --output " + (f".runtime-work/c144550-source-fix-saved-{suffix}" if corrected else ".runtime-work/c144550-selected-saved-" + ("current-" if replayed else "") + suffix),
                 "test_log": prefix + saved_log.name,
                 "test_log_sha256": sha(saved_log),
                 "test_exit_code": 0,

@@ -57,6 +57,7 @@ def build():
         donor_id = HERE.name + "__" + donor
         config["supported_case_ids"].insert(config["supported_case_ids"].index(donor_id) + 1, constructed_id)
         files["config.json"]["content"] = json.dumps(config, indent=2) + "\n"
+        files["config.json"]["source"] = None
         for name in ("native_lane_construction.py", "lane_change_measurements.py"):
             content = files[name]["content"]
             old_line = next((line for line in content.splitlines()
