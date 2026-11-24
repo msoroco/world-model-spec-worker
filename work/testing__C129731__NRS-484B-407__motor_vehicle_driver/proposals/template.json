@@ -1,0 +1,63 @@
+{
+  "template_id": "NRS-484B-407@motor_vehicle_driver",
+  "law_id": "NRS-484B-407",
+  "actor": "motor_vehicle_driver",
+  "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+  "structure": {
+    "law_id": "NRS-484B-407",
+    "activation": {
+      "condition": "Vehicle is turned to proceed in the opposite direction upon a curve or upon approach to or near a grade crest, with the statutory visibility circumstance.",
+      "numeric_conditions": [
+        {
+          "variable": "approaching_vehicle_distance",
+          "operator": "<=",
+          "value": 500,
+          "unit": "feet"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "A vehicle must not be turned to proceed in the opposite direction where it cannot be seen by a driver of another vehicle approaching from either direction within 500 feet.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Original reversal and approach-direction sight evidence must be joined at the actual turn interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+        "note": "Source-bound geometric rays do not establish what a real other driver could see; retain the legal judgment unresolved."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "turn_location_class",
+      "kind": "world_setup",
+      "range_or_domain": "curve, approach to crest, or near crest on the original road"
+    },
+    {
+      "name": "approach_direction",
+      "kind": "world_setup",
+      "range_or_domain": "either direction of original approaching traffic"
+    },
+    {
+      "name": "road_sight_geometry",
+      "kind": "world_setup",
+      "range_or_domain": "original geometry and terrain occluders, source measured at stations through 500 feet"
+    },
+    {
+      "name": "reversal_controller",
+      "kind": "controller",
+      "range_or_domain": "actual original-heading reversal on the fixed road"
+    },
+    {
+      "name": "approaching_vehicle_distance",
+      "kind": "world_setup",
+      "range_or_domain": "planned below, at and above 500 feet from the turning vehicle at the original turn interval"
+    }
+  ]
+}

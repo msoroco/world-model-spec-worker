@@ -1,5 +1,6 @@
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -10,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from entry_timing import ASSIGNMENT
 from native_capture import capture
-from saved_finalizer import finalize
+from analysis import run as run_analysis
 from delivery_audit import audit
 from test_entry_timing import survey
 from test_native_capture import Adapter
@@ -36,7 +37,22 @@ class SavedFinalizerTests(unittest.TestCase):
             subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-f','lavfi',
                             '-i','color=c=red:s=4x4:r=20:d=45','-frames:v','900',
                             '-c:v','ffv1',str(video)],check=True)
-            result_path = finalize(attempt,survey_path,'primary.mkv')
+            (attempt/'raw.mkv').write_bytes(video.read_bytes())
+            negative = root/'negative'
+            shutil.copytree(attempt, negative)
+            (negative/'crossing-survey.json').unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source: crossing-survey.json'):
+                run_analysis(negative,negative/'analysis-report.json')
+            shutil.copy2(attempt/'crossing-survey.json',negative/'crossing-survey.json')
+            (negative/'original-trace.json').write_text(
+                (negative/'original-trace.json').read_text().replace('inoperative','green',1))
+            with self.assertRaisesRegex(ValueError, 'original trace digest differs'):
+                run_analysis(negative,negative/'analysis-report.json')
+            report = run_analysis(attempt,attempt/'analysis-report.json')
+            self.assertEqual(report['measurements']['entry_time_difference_s']['method'],
+                             'measure_entry_timing')
+            self.assertFalse(report['physical_acceptance_claimed'])
+            result_path = attempt/'result.json'
             result = json.loads(result_path.read_text())
             self.assertEqual(result['case_id'],case)
             self.assertFalse(result['setup_confirmed'])

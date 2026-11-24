@@ -14,6 +14,7 @@ from selected_media_audit import audit_acquired
 from original_source_acquisition import acquire
 from saved_media_decode import decode_selected, pixel_presence
 from delivery_audit import review as review_delivery
+from selected_pair_review import run as review_pair
 from test_native_sight_capture import CASE, NativeAdapter
 
 
@@ -234,6 +235,56 @@ class SelectedMediaAuditTests(unittest.TestCase):
         self.assertNotEqual(rejected.returncode, 0)
         self.assertIn("selected sight attempt identity mismatch", rejected.stderr)
         self.assertFalse((self.root / "wrong-original").exists())
+
+    def test_selected_pair_command_joins_two_original_sources(self):
+        plan = json.loads(json.dumps(self.plan))
+        clear_meta = self.root / plan["sources"][1]["path"]
+        original = clear_meta.read_bytes()
+        clear_video = clear_meta.parent / "raw.mkv"
+        clear_trace = clear_meta.parent / "trace.json"
+        shutil.copyfile(self.clear_video, clear_video)
+        shutil.copyfile(self.clear_trace, clear_trace)
+        try:
+            meta = json.loads(original)
+            meta["acceptance"] = {"case_id": CLEAR_CASE,
+                                  "video_source": str(clear_video),
+                                  "video_sha256": meta["video_sha256"],
+                                  "trace_source": str(clear_trace),
+                                  "trace_sha256": meta["trace_sha256"]}
+            clear_meta.write_text(json.dumps(meta) + "\n")
+            plan["sources"][1]["sha256"] = hashlib.sha256(clear_meta.read_bytes()).hexdigest()
+            left_bundle = self.root / "pair-left"
+            right_bundle = self.root / "pair-right"
+            output = self.root / "pair-review.json"
+            result = review_pair(plan, self.root, "curve_ahead_opposing",
+                                 (self.clear_attempt, self.attempt),
+                                 (left_bundle, right_bundle), output)
+            self.assertEqual(result["comparison_id"], "curve_ahead_opposing")
+            self.assertEqual(result["canonical_acceptance"], "not_performed_here")
+            self.assertEqual(result["source_reviews"][0]["decoded_video_frames"], 900)
+            self.assertTrue(output.is_file())
+            plan_file = self.root / "pair-plan.json"
+            plan_file.write_text(json.dumps(plan) + "\n")
+            script = Path(__file__).resolve().parents[1] / "selected_pair_review.py"
+            cli_output = self.root / "pair-cli-review.json"
+            command = [sys.executable, str(script), "--plan", str(plan_file),
+                       "--repository", str(self.root), "--comparison", "curve_ahead_opposing",
+                       "--left-attempt", str(self.clear_attempt),
+                       "--right-attempt", str(self.attempt),
+                       "--left-bundle", str(self.root / "pair-cli-left"),
+                       "--right-bundle", str(self.root / "pair-cli-right"),
+                       "--output", str(cli_output)]
+            subprocess.run(command, check=True, capture_output=True)
+            self.assertEqual(json.loads(cli_output.read_text())["canonical_acceptance"],
+                             "not_performed_here")
+            with self.assertRaisesRegex(ValueError, "sight-attempt identity"):
+                review_pair(plan, self.root, "curve_ahead_opposing",
+                            (self.attempt, self.clear_attempt),
+                            (self.root / "bad-left", self.root / "bad-right"),
+                            self.root / "bad-review.json")
+            self.assertFalse((self.root / "bad-left").exists())
+        finally:
+            clear_meta.write_bytes(original)
 
 
 if __name__ == "__main__":

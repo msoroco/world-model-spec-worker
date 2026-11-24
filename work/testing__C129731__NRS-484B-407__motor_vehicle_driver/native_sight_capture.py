@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import tempfile
 from pathlib import Path
 
@@ -42,7 +43,13 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
         raise ValueError("loaded map differs from reviewed source")
     if not geometry.get("ego_vehicle_id") or not geometry.get("highway_source"):
         raise ValueError("road and subject vehicle source required")
-    frames, motion, rays = [], [], []
+    probe_targets_ft = {"distance_below_500ft": 499,
+                        "distance_at_500ft": 500,
+                        "distance_above_500ft": 501}
+    probe_target = probe_targets_ft.get(case_id.removeprefix(ASSIGNMENT + "__"))
+    if probe_target is not None and not geometry.get("approach_vehicle_id"):
+        raise ValueError("distance probe needs original approaching vehicle identity")
+    frames, motion, rays, approach = [], [], [], []
     for _ in range(frame_count):
         frame = _require_native(adapter.tick(), "frame")
         frame_row = {"frame": frame.get("frame"), "time_s": frame.get("time_s")}
@@ -53,6 +60,24 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
         motion.append({"frame": frame_row["frame"], "time_s": frame_row["time_s"],
                        "yaw_deg": ego.get("yaw_deg"), "turn_active": ego.get("turn_active")})
         if ego.get("turn_active") is True:
+            if probe_target is not None:
+                observed = _require_native(adapter.approach(frame), "approaching vehicle")
+                if (observed.get("frame") != frame_row["frame"] or
+                        observed.get("time_s") != frame_row["time_s"] or
+                        observed.get("vehicle_id") != geometry["approach_vehicle_id"]):
+                    raise ValueError("approaching vehicle frame or identity mismatch")
+                ego_xyz, other_xyz = observed.get("ego_position"), observed.get("approach_position")
+                if (not isinstance(ego_xyz, dict) or not isinstance(other_xyz, dict) or
+                        any(not isinstance(pos.get(axis), (int, float)) or
+                            not math.isfinite(pos[axis])
+                            for pos in (ego_xyz, other_xyz) for axis in ("x", "y", "z"))):
+                    raise ValueError("original approaching vehicle positions required")
+                distance_m = math.dist([ego_xyz[a] for a in ("x", "y", "z")],
+                                       [other_xyz[a] for a in ("x", "y", "z")])
+                approach.append({"frame": frame_row["frame"], "time_s": frame_row["time_s"],
+                                 "vehicle_id": observed["vehicle_id"],
+                                 "ego_position": ego_xyz, "approach_position": other_xyz,
+                                 "measured_distance_m": distance_m})
             for direction in DIRECTIONS:
                 for station in STATIONS_M:
                     ray = _require_native(adapter.ray(frame, direction, station), "sight ray")
@@ -71,6 +96,19 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
         "sight_rays": {"case_id": case_id, "source_kind": "original_native", "samples": rays},
         "road_geometry": geometry,
     }
+    if probe_target is not None:
+        if not approach:
+            raise ValueError("distance probe lacks original turn approach samples")
+        target_m = probe_target * 0.3048
+        first_m = approach[0]["measured_distance_m"]
+        if abs(first_m - target_m) > 0.1:
+            raise ValueError("original approach distance misses probe target")
+        approach_packet = {"case_id": case_id,
+                           "source_kind": "original_native", "samples": approach,
+                           "probe_target_ft": probe_target,
+                           "first_turn_distance_m": first_m,
+                           "engineering_tolerance_m": 0.1,
+                           "legal_visibility_judgment": "unresolved"}
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="native-sight-", dir=destination.parent) as tmp:
         root = Path(tmp)
@@ -86,6 +124,17 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
             inventory["sources"][name] = {"path": path.name,
                                           "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
         measured = measure(root, inventory, case_id)
+        if probe_target is not None:
+            approach_path = root / "approach_motion.json"
+            approach_path.write_text(json.dumps(approach_packet, sort_keys=True,
+                                                separators=(",", ":")) + "\n")
+            inventory["approach_probe"] = {"path": approach_path.name,
+                                           "sha256": hashlib.sha256(approach_path.read_bytes()).hexdigest()}
         (root / "inventory.json").write_text(json.dumps(inventory, indent=2) + "\n")
         root.rename(destination)
+    if probe_target is not None:
+        measured["approach_distance_probe"] = {
+            "target_ft": probe_target, "first_turn_distance_m": first_m,
+            "engineering_tolerance_m": 0.1,
+            "legal_visibility_judgment": "unresolved"}
     return measured

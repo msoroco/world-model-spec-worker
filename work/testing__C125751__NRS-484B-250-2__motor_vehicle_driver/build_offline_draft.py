@@ -102,12 +102,14 @@ def build():
                   'cameras': list(CAMERAS), 'required_atoms': [],
                   'diagnostic_only': True}
         files = {'runner.py': RUNNER, 'entry_timing.py': (HERE/'entry_timing.py').read_text(),
+                 'analysis.py': (HERE/'analysis.py').read_text(),
                  'native_capture.py': (HERE/'native_capture.py').read_text(),
                  'saved_delivery.py': (HERE/'saved_delivery.py').read_text(),
                  'saved_finalizer.py': (HERE/'saved_finalizer.py').read_text(),
                  'delivery_audit.py': (HERE/'delivery_audit.py').read_text(),
                  'comparison_audit.py': (HERE/'comparison_audit.py').read_text(),
                  'carla_native_adapter.py': (HERE/'carla_native_adapter.py').read_text(),
+                 'runtime_source_bridge.py': (HERE/'runtime_source_bridge.py').read_text(),
                  'case-plan.json': raw.decode(), 'config.json': json.dumps(config,indent=2)+'\n',
                  'tests/test_bundle.py': TEST}
         construction = {'law_id': config['law_id'], 'cell_id': config['cell_id'],

@@ -189,3 +189,23 @@ Nine focused tests and the complete 35-test assignment suite pass. Pinned prefli
 The focused pair tests and complete 39-test suite pass; pinned preflight passes. The unchanged pinned semantic validator still reports `Missing plain-rule attempt pair: NRS-484B-307-12a@bus_driver`. A green-arrow permission does not make the dark-lane or stationary attempt a violation of this exact clause, so the worker has not relabelled either case to force the pinned pair. Original highway and official-device source review, actual Native bus motion and pixels, and pinned semantic integration remain outstanding. All new receipts and their SHA values are recorded in `result.json`.
 
 Scoped static passes; the exact scoped strict gate exits 1 on truthful partial.
+
+## 2026-11-24 Native camera frame custody and full CPU reproof
+
+`native_capture.py` now records camera callback queue overflow as a fatal capture error and aligns stale callbacks to the requested world frame. A future frame still fails before encoding. Four focused CPU tests exercise actual sensor callback overflow, frame alignment and mismatch. The change is embedded in the representative construction and all eight primary/fallback inline bundles.
+
+All eight rebuilt candidates pass pinned offline and positive/negative compatibility. Four cases have refreshed synthetic physical and independent positive/missing-source delivery audits. All eight primary/fallback candidates pass pinned saved-only positive/missing-signal processing with original fixture files preserved. The pinned readiness-component proof, 43-test full suite, pinned preflight and exact scoped static pass. The exact scoped strict check exits 1 on truthful partial. Current semantic pair proof is rebound to new construction SHA values.
+
+The pinned semantic validator still requires a compliant/violating pair that the exact green-arrow permission clause does not provide. Original public-highway and official-device source review, actual Native CARLA bus capture and visible pixel review remain outstanding. CPU synthetic diagnostics do not establish these physical facts.
+
+## 2026-11-24 recorded-only post-capture handoffs
+
+`bind_post_capture.py` now binds each of four selected cases to an explicit `runtime.py process-saved` command, feedback path and SHA-bound positive/missing-signal saved-only fixture result. It also binds the matching fallback fixture result. The commands target future original attempts under `.runtime-work`; the fixture logs only establish CPU software behavior and preserved source bytes. Two focused tests verify all four handoffs and rejection when a fallback negative result disappears.
+
+The 45-test assignment suite, pinned preflight, readiness-component proof and scoped static pass. Exact scoped strict exits 1 on truthful partial. Pinned semantic permission/plain-rule integration, original highway/device source review and actual Native bus/pixel evidence remain to be completed. Seven SHA-bound logs are in `result.json`.
+
+## 2026-11-24 original pixel-byte custody index
+
+`pixel_frame_index.py` now verifies the sealed attempt through the independent delivery audit, decodes every frame of all four FFV1 original camera streams, hashes each RGB frame and joins the index to the original CARLA frame/time map. It rejects truncated or extra frames and refuses synthetic fixtures in Native mode. Each selected manifest delivery receipt binds the script SHA and an exact future original-attempt command. This prepares a concrete pixel review artifact but deliberately reports `pixel_visibility_reviewed=false`; no synthetic image establishes that the bus and signal are visible.
+
+Four focused tests cover full synthetic decode/frame join, Native guard, truncation and manifest source binding. The 49-test assignment suite, pinned preflight, readiness components and scoped static pass; exact scoped strict exits 1 on truthful partial. Six SHA-bound logs are in `result.json`. Remaining CPU work includes pinned semantic permission/plain-rule integration and final source/Native delivery review.

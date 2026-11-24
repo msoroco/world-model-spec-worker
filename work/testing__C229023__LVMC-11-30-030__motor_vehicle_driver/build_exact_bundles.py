@@ -17,7 +17,8 @@ HERE = Path(__file__).resolve().parent
 SOURCES = (
     "case_construction.py", "crosswalk_construction.py", "crosswalk_measurements.py",
     "native_crosswalk_capture.py", "native_crosswalk_world.py", "saved_capture_audit.py",
-    "saved_video_audit.py",
+    "native_crosswalk_media.py", "saved_video_audit.py", "saved_crosswalk_finalizer.py",
+    "saved_comparison_audit.py",
 )
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 

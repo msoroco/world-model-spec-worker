@@ -1,0 +1,484 @@
+{
+  "cell_id": "C129731",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared curve, reversal and approach-direction reference; no legal outcome assigned.",
+      "variable_assignments": {
+        "turn_location_class": {
+          "kind": "world_setup",
+          "value": "curve",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "ahead_opposing",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "road_sight_geometry": {
+          "kind": "world_setup",
+          "value": "original-mountain-road-geometry-pending",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "reversal_controller": {
+          "kind": "controller",
+          "value": "source-gated-original-heading-reversal",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approaching_vehicle_distance": {
+          "kind": "world_setup",
+          "value": 500,
+          "note": "planned physical setup, pending Native source confirmation"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original timestamped position, heading and turn interval.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "road_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original curve or crest classification and terrain geometry.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "approaching_vehicle_routes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lane directions, participant identity and approach motion.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-frame body-point rays and terrain hits from both directions.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized CARLA and video frame identities.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "qualified_road_and_vehicle",
+            "unit": "structured record",
+            "method": "Original highway, vehicle and driver context."
+          },
+          {
+            "name": "actual_driver_view_context",
+            "unit": "structured record",
+            "method": "Original other-driver position and perceptual context, if present."
+          }
+        ],
+        "limitations": [
+          "Planned capture does not establish another driver\u2019s legal visibility.",
+          "Original map and participant routes must be source verified before any recording is selected."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
+      ]
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "Planned physical distance probe for the statute\u2019s 500-foot wording; original measured distance and visibility remain unresolved.",
+      "paired_probe_id": "distance_500ft",
+      "deliberate_differences": [
+        "approaching_vehicle_distance"
+      ],
+      "variable_assignments": {
+        "turn_location_class": {
+          "kind": "world_setup",
+          "value": "curve",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "ahead_opposing",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "road_sight_geometry": {
+          "kind": "world_setup",
+          "value": "original-mountain-road-geometry-pending",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "reversal_controller": {
+          "kind": "controller",
+          "value": "source-gated-original-heading-reversal",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approaching_vehicle_distance": {
+          "kind": "world_setup",
+          "value": 499,
+          "note": "planned physical setup, pending Native source confirmation"
+        }
+      },
+      "probe": {
+        "primary_variable": "approaching_vehicle_distance",
+        "comparison_or_standard": "statutory 500-foot distance wording, without a driver-visibility verdict",
+        "target_value_or_branch": "below",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "feet",
+        "test_value": 499
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "feet",
+        "reason": "engineering spacing for three planned source measurements, not a legal tolerance"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original timestamped position, heading and turn interval.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "road_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original curve or crest classification and terrain geometry.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "approaching_vehicle_routes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lane directions, participant identity and approach motion.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-frame body-point rays and terrain hits from both directions.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized CARLA and video frame identities.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "qualified_road_and_vehicle",
+            "unit": "structured record",
+            "method": "Original highway, vehicle and driver context."
+          },
+          {
+            "name": "actual_driver_view_context",
+            "unit": "structured record",
+            "method": "Original other-driver position and perceptual context, if present."
+          }
+        ],
+        "limitations": [
+          "Planned capture does not establish another driver\u2019s legal visibility.",
+          "Original map and participant routes must be source verified before any recording is selected."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
+      ]
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "Planned physical distance probe for the statute\u2019s 500-foot wording; original measured distance and visibility remain unresolved.",
+      "paired_probe_id": "distance_500ft",
+      "deliberate_differences": [
+        "approaching_vehicle_distance"
+      ],
+      "variable_assignments": {
+        "turn_location_class": {
+          "kind": "world_setup",
+          "value": "curve",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "ahead_opposing",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "road_sight_geometry": {
+          "kind": "world_setup",
+          "value": "original-mountain-road-geometry-pending",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "reversal_controller": {
+          "kind": "controller",
+          "value": "source-gated-original-heading-reversal",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approaching_vehicle_distance": {
+          "kind": "world_setup",
+          "value": 500,
+          "note": "planned physical setup, pending Native source confirmation"
+        }
+      },
+      "probe": {
+        "primary_variable": "approaching_vehicle_distance",
+        "comparison_or_standard": "statutory 500-foot distance wording, without a driver-visibility verdict",
+        "target_value_or_branch": "at",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "feet",
+        "test_value": 500
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "feet",
+        "reason": "engineering spacing for three planned source measurements, not a legal tolerance"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original timestamped position, heading and turn interval.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "road_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original curve or crest classification and terrain geometry.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "approaching_vehicle_routes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lane directions, participant identity and approach motion.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-frame body-point rays and terrain hits from both directions.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized CARLA and video frame identities.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "qualified_road_and_vehicle",
+            "unit": "structured record",
+            "method": "Original highway, vehicle and driver context."
+          },
+          {
+            "name": "actual_driver_view_context",
+            "unit": "structured record",
+            "method": "Original other-driver position and perceptual context, if present."
+          }
+        ],
+        "limitations": [
+          "Planned capture does not establish another driver\u2019s legal visibility.",
+          "Original map and participant routes must be source verified before any recording is selected."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
+      ]
+    },
+    {
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "Planned physical distance probe for the statute\u2019s 500-foot wording; original measured distance and visibility remain unresolved.",
+      "paired_probe_id": "distance_500ft",
+      "deliberate_differences": [
+        "approaching_vehicle_distance"
+      ],
+      "variable_assignments": {
+        "turn_location_class": {
+          "kind": "world_setup",
+          "value": "curve",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "ahead_opposing",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "road_sight_geometry": {
+          "kind": "world_setup",
+          "value": "original-mountain-road-geometry-pending",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "reversal_controller": {
+          "kind": "controller",
+          "value": "source-gated-original-heading-reversal",
+          "note": "planned physical setup, pending Native source confirmation"
+        },
+        "approaching_vehicle_distance": {
+          "kind": "world_setup",
+          "value": 501,
+          "note": "planned physical setup, pending Native source confirmation"
+        }
+      },
+      "probe": {
+        "primary_variable": "approaching_vehicle_distance",
+        "comparison_or_standard": "statutory 500-foot distance wording, without a driver-visibility verdict",
+        "target_value_or_branch": "above",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "feet",
+        "test_value": 501
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "feet",
+        "reason": "engineering spacing for three planned source measurements, not a legal tolerance"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original timestamped position, heading and turn interval.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "road_geometry",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original curve or crest classification and terrain geometry.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "approaching_vehicle_routes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lane directions, participant identity and approach motion.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original per-frame body-point rays and terrain hits from both directions.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          },
+          {
+            "name": "frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized CARLA and video frame identities.",
+            "time_window": "original reversal interval and approaching-vehicle passage",
+            "reference_frame": "original CARLA frame/time and road world coordinates",
+            "uncertainty": "20 Hz sampling and original Native geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "qualified_road_and_vehicle",
+            "unit": "structured record",
+            "method": "Original highway, vehicle and driver context."
+          },
+          {
+            "name": "actual_driver_view_context",
+            "unit": "structured record",
+            "method": "Original other-driver position and perceptual context, if present."
+          }
+        ],
+        "limitations": [
+          "Planned capture does not establish another driver\u2019s legal visibility.",
+          "Original map and participant routes must be source verified before any recording is selected."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "visibility-source-sweep",
+      "target_law_id": "NRS-484B-407",
+      "judgment_refs": [
+        {
+          "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+          "note": "Source-bound geometric rays do not establish what a real other driver could see; retain the legal judgment unresolved."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative visibility judgment requires source-backed original physical sweep; accepted metadata cannot establish it.",
+      "missing_inputs": [
+        "verified original road and observer routes",
+        "original video, trace and Native ray packets for both approach directions",
+        "feasible map stations and actor clearance for the planned sweep"
+      ]
+    }
+  ]
+}

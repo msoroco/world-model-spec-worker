@@ -1,0 +1,91 @@
+{
+  "template_id": "NRS-484B-407@motor_vehicle_driver",
+  "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+  "note": "Source-bound geometric rays do not establish what a real other driver could see; retain the legal judgment unresolved.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "ego_motion",
+        "unit": "structured record",
+        "description": "Original timestamped position, heading and turn interval."
+      },
+      {
+        "name": "road_geometry",
+        "unit": "structured record",
+        "description": "Original curve or crest classification and terrain geometry."
+      },
+      {
+        "name": "approaching_vehicle_routes",
+        "unit": "structured record",
+        "description": "Original lane directions, participant identity and approach motion."
+      },
+      {
+        "name": "sight_rays",
+        "unit": "structured record",
+        "description": "Original per-frame body-point rays and terrain hits from both directions."
+      },
+      {
+        "name": "frame_map",
+        "unit": "structured record",
+        "description": "Original synchronized CARLA and video frame identities."
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "qualified_road_and_vehicle",
+        "unit": "structured record",
+        "description": "Original highway, vehicle and driver context."
+      },
+      {
+        "name": "actual_driver_view_context",
+        "unit": "structured record",
+        "description": "Original other-driver position and perceptual context, if present."
+      }
+    ],
+    "sweep_dimensions": [
+      {
+        "name": "approach_direction",
+        "unit": "categorical",
+        "description": "Both original approach directions without legal visibility label."
+      },
+      {
+        "name": "road_location_class",
+        "unit": "categorical",
+        "description": "Curve, approach to crest and near crest settings."
+      }
+    ],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "ego_motion",
+        "unit": "structured record",
+        "description": "Original timestamped position, heading and turn interval."
+      },
+      {
+        "name": "road_geometry",
+        "unit": "structured record",
+        "description": "Original curve or crest classification and terrain geometry."
+      },
+      {
+        "name": "approaching_vehicle_routes",
+        "unit": "structured record",
+        "description": "Original lane directions, participant identity and approach motion."
+      },
+      {
+        "name": "sight_rays",
+        "unit": "structured record",
+        "description": "Original per-frame body-point rays and terrain hits from both directions."
+      },
+      {
+        "name": "frame_map",
+        "unit": "structured record",
+        "description": "Original synchronized CARLA and video frame identities."
+      }
+    ],
+    "limitations": [
+      "A virtual 1.4 m observer and nine body-point rays are engineering evidence, not a legal driver-visibility verdict.",
+      "Original video, trace and sight sources require independent review before reuse."
+    ]
+  }
+}

@@ -21,6 +21,16 @@ class SelectedReuseManifestTests(unittest.TestCase):
         self.assertEqual(len(actual["comparisons"]), 7)
         self.assertEqual(actual["new_recordings_planned"], 0)
         self.assertEqual(actual["canonical_acceptance"], "not_performed_here")
+        for row in actual["candidates"]:
+            command = row["command_template"]
+            self.assertEqual(command[command.index("--case") + 1], row["case_id"])
+            self.assertEqual(command[command.index("--recording") + 1], row["recording_id"])
+            self.assertEqual(command[command.index("--sight-attempt") + 1],
+                             "{original_sight_attempt}")
+        for row in actual["comparisons"]:
+            command = row["command_template"]
+            self.assertEqual(command[command.index("--comparison") + 1],
+                             row["comparison_id"])
 
     def test_wrong_frozen_hash_or_pair_rejected(self):
         self.plan["sources"][3]["sha256"] = "0" * 64

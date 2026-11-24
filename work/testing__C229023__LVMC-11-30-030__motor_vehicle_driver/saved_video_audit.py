@@ -19,6 +19,14 @@ DEFAULT_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
                  "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _probe(path: Path) -> dict:
     run = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
                           "-show_entries", "stream=codec_name,width,height,avg_frame_rate",
@@ -93,7 +101,7 @@ def audit(*, directory: str | Path, case_id: str,
                 or stream.get("height") != height or stream.get("avg_frame_rate") != "20/1"):
             raise ValueError("original camera encoding/profile differs: " + name)
         decoded = _decode(path, width, height, expected_frames)
-        videos[name] = {"video_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), **decoded}
+        videos[name] = {"video_sha256": _file_sha256(path), **decoded}
     return {"case_id": case_id, "frame_map_sha256": capture["frame_map_sha256"],
             "first_native_frame": capture["first_native_frame"],
             "last_native_frame": capture["last_native_frame"], "videos": videos,

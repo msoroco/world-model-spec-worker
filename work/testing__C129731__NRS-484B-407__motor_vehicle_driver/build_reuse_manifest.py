@@ -12,7 +12,9 @@ from pathlib import Path
 ASSIGNMENT = "testing__C129731__NRS-484B-407__motor_vehicle_driver"
 SCRIPTS = ("selected_delivery.py", "original_source_acquisition.py",
            "saved_media_decode.py", "selected_media_audit.py",
-           "delivery_audit.py", "sight_measurement.py", "comparison_audit.py")
+           "delivery_audit.py", "sight_measurement.py", "comparison_audit.py",
+           "selected_pair_review.py", "native_sight_capture.py",
+           "distance_probe_audit.py")
 
 
 def _sha(path: Path) -> str:
@@ -21,6 +23,10 @@ def _sha(path: Path) -> str:
 
 def build(plan: dict, repository: Path, package: Path) -> dict:
     repository, package = Path(repository), Path(package)
+    try:
+        package_command = package.resolve().relative_to(repository.resolve())
+    except ValueError as exc:
+        raise ValueError("package escapes repository") from exc
     if plan.get("assignment_id") != ASSIGNMENT:
         raise ValueError("wrong exact reuse assignment")
     candidates = plan.get("accepted_reuse_candidates", [])
@@ -57,8 +63,8 @@ def build(plan: dict, repository: Path, package: Path) -> dict:
                          "source_review": "pending",
                          "selected_delivery_script": "selected_delivery.py",
                          "command_template": [
-                             ".venv-cpu/bin/python", str(package / "selected_delivery.py"),
-                             "--plan", str(package / "case-plan.json"),
+                             ".venv-cpu/bin/python", str(package_command / "selected_delivery.py"),
+                             "--plan", str(package_command / "case-plan.json"),
                              "--repository", ".", "--case", case_id,
                              "--recording", recording_id,
                              "--sight-attempt", "{original_sight_attempt}",
@@ -78,13 +84,16 @@ def build(plan: dict, repository: Path, package: Path) -> dict:
         pairs.append({"comparison_id": pair["comparison_id"],
                       "case_ids": cases, "recording_ids": recordings,
                       "source_review": "pending",
-                      "audit_script": "comparison_audit.py",
+                      "audit_script": "selected_pair_review.py",
                       "command_template": [
-                          ".venv-cpu/bin/python", str(package / "comparison_audit.py"),
-                          "--plan", str(package / "case-plan.json"),
+                          ".venv-cpu/bin/python", str(package_command / "selected_pair_review.py"),
+                          "--plan", str(package_command / "case-plan.json"),
+                          "--repository", ".",
                           "--comparison", pair["comparison_id"],
                           "--left-attempt", "{left_original_sight_attempt}",
                           "--right-attempt", "{right_original_sight_attempt}",
+                          "--left-bundle", "{scratch_left_source_bundle}",
+                          "--right-bundle", "{scratch_right_source_bundle}",
                           "--output", "{scratch_comparison_output}"]})
     if len(pairs) != 7 or len({row["comparison_id"] for row in pairs}) != 7:
         raise ValueError("seven exact comparisons required")

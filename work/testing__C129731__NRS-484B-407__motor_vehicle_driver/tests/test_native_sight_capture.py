@@ -1,5 +1,6 @@
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -7,6 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from native_sight_capture import capture
+from distance_probe_audit import audit as audit_distance
 from sight_measurement import ASSIGNMENT, measure
 
 
@@ -47,6 +49,24 @@ class NativeAdapter:
                 "observer_height_m": 1.4, "observer_lane_source": "Native lane waypoint",
                 "target_vehicle_id": "ego-1", "body_point_clear": [not blocked] * 9,
                 "terrain_hit_id": "Native terrain actor" if blocked else None}
+
+
+class DistanceProbeAdapter(NativeAdapter):
+    def __init__(self, distance_ft=500):
+        super().__init__()
+        self.distance_ft = distance_ft
+        self.wrong_approach = False
+
+    def geometry(self):
+        return dict(super().geometry(), approach_vehicle_id="approach-1")
+
+    def approach(self, frame):
+        return {"source_kind": "original_native", "frame": frame["frame"],
+                "time_s": frame["time_s"],
+                "vehicle_id": "wrong" if self.wrong_approach else "approach-1",
+                "ego_position": {"x": 0.0, "y": 0.0, "z": 0.0},
+                "approach_position": {"x": self.distance_ft * 0.3048,
+                                      "y": 0.0, "z": 0.0}}
 
 
 class NativeCaptureTests(unittest.TestCase):
@@ -91,6 +111,46 @@ class NativeCaptureTests(unittest.TestCase):
         adapter.wrong_vehicle = True
         with self.assertRaisesRegex(ValueError, "identity changed"):
             capture(adapter, CASE, self.out)
+        self.assertFalse(self.out.exists())
+
+    def test_source_measured_500_foot_probe_and_sealed_packet(self):
+        case = ASSIGNMENT + "__distance_at_500ft"
+        result = capture(DistanceProbeAdapter(), case, self.out)
+        self.assertEqual(result["approach_distance_probe"]["target_ft"], 500)
+        inventory = json.loads((self.out / "inventory.json").read_text())
+        self.assertEqual(inventory["approach_probe"]["path"], "approach_motion.json")
+        packet = json.loads((self.out / "approach_motion.json").read_text())
+        self.assertEqual(packet["probe_target_ft"], 500)
+        self.assertAlmostEqual(packet["first_turn_distance_m"], 152.4)
+        self.assertEqual(packet["legal_visibility_judgment"], "unresolved")
+        saved = audit_distance(self.out, case)
+        self.assertEqual(saved["target_ft"], 500)
+        self.assertEqual(saved["original_turn_samples"], 2)
+        cli_output = self.out.parent / "probe-cli.json"
+        script = Path(__file__).resolve().parents[1] / "distance_probe_audit.py"
+        subprocess.run([sys.executable, str(script), "--attempt", str(self.out),
+                        "--case", case, "--output", str(cli_output)],
+                       check=True, capture_output=True)
+        self.assertEqual(json.loads(cli_output.read_text())["target_ft"], 500)
+        packet["samples"][0]["approach_position"]["x"] = 100.0
+        (self.out / "approach_motion.json").write_text(json.dumps(packet) + "\n")
+        with self.assertRaisesRegex(ValueError, "source hash changed"):
+            audit_distance(self.out, case)
+        inventory["approach_probe"]["sha256"] = hashlib.sha256(
+            (self.out / "approach_motion.json").read_bytes()).hexdigest()
+        (self.out / "inventory.json").write_text(json.dumps(inventory) + "\n")
+        with self.assertRaisesRegex(ValueError, "saved measurement changed"):
+            audit_distance(self.out, case)
+
+    def test_distance_miss_and_identity_swap_rejected_without_attempt(self):
+        case = ASSIGNMENT + "__distance_below_500ft"
+        with self.assertRaisesRegex(ValueError, "distance misses probe target"):
+            capture(DistanceProbeAdapter(500), case, self.out)
+        self.assertFalse(self.out.exists())
+        adapter = DistanceProbeAdapter(499)
+        adapter.wrong_approach = True
+        with self.assertRaisesRegex(ValueError, "frame or identity mismatch"):
+            capture(adapter, case, self.out)
         self.assertFalse(self.out.exists())
 
 
