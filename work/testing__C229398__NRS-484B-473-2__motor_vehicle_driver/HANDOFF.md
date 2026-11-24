@@ -1,22 +1,9 @@
-# testing__C229398__NRS-484B-473-2__motor_vehicle_driver
+# C229398 NRS 484B.473(2) checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. The exact displayed-light branch now has six controlled capture probes in `parked_lamps.py`: undimmed and dimmed displayed lamps without auxiliary lamps, cowl-lamp use, parking-lamp use, daytime, and unlawful-parking prerequisite control. The lawful parking, highway, vehicle, nighttime, displayed-light, beam, auxiliary-light, curb and parking-context facts remain independently source gated. The constructor commands a real vehicle route and lamp states and cleans up on failure. The finalizer measures 900 original frames at 20 fps, requires continuous stopped parking after frame 100, stable identity and source hashes, lamp states and beam aim. It leaves legal judgment unset.
 
-Exact law: NRS 484B.473(2) — Whenever lights are displayed upon a vehicle lawfully parked at nighttime upon any highway, such lights shall be depressed or dimmed, in the event cowl or parking lamps are not used.
-Assigned branch(es): Displayed lights without cowl or parking lamps.
-Cell: C229398 (road, park, curb); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Physical risk: a simulator may not expose cowl/parking lamps or beam depression. A capture without original, source-backed lamp telemetry cannot satisfy these probes. There are no accepted exact recordings. No dimming cutoff is invented.
 
-## Next CPU actions
+Focused tests: six pass. Pinned CPU preflight and scoped static check pass. The exact scoped strict command exits 1 at `Preparation acceptance failed: partial/missing packages remain`, consistent with the truthful partial status. Successful proof receipts and SHA256 hashes are in `result.json`; the strict failure is in `cpu-strict-check.log`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C229398__NRS-484B-473-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
-
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Remaining CPU work: canonical runner/config/camera bundle and original case capture, source-shaped positive and negative compatibility, semantic proposals, saved-only processing, and independent delivery/comparison audits. Keep partial until these exact proofs pass.

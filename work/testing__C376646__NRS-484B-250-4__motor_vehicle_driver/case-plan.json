@@ -20,9 +20,146 @@
   "topic_inventory": {
     "exact-text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "kind": "delivery",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "inoperative_signal_probe.py",
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_prior_vehicle",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Physical stop line and sight line may be obscured at the blind approach."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "inoperative_signal_probe.py",
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_within_vehicle",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Other vehicle occupancy may be occluded by approach geometry."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "inoperative_signal_probe.py",
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_priority_vehicle",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A clear intersection may not establish that proceeding was cautious."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "inoperative_signal_probe.py",
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_vehicle",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Crosswalk marking and complete absence of stop line require survey."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "inoperative_signal_probe.py",
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__view_point_prior_vehicle",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Nearest-view point may change with geometry or actor-eye convention."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "inoperative_signal_probe.py",
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__late_stop",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Controller may stop after the surveyed reference despite signal inoperability."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "post_stop_vehicle_priority",
+      "case_ids": [
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_prior_vehicle",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_within_vehicle",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_priority_vehicle"
+      ],
+      "fixed_conditions": [
+        "installed uncovered inoperative signal at entry",
+        "marked stop line",
+        "blind approach geometry",
+        "ego stop policy",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "other vehicle prior completed stop, within-intersection state, or neither"
+      ]
+    },
+    {
+      "comparison_id": "stop_reference_hierarchy",
+      "case_ids": [
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_prior_vehicle",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_vehicle",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__view_point_prior_vehicle"
+      ],
+      "fixed_conditions": [
+        "installed uncovered inoperative signal at entry",
+        "blind approach",
+        "prior-stopped other vehicle",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "marked line presence, near-side crosswalk presence and surveyed nearest-view point"
+      ]
+    },
+    {
+      "comparison_id": "stop_position",
+      "case_ids": [
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_prior_vehicle",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__late_stop"
+      ],
+      "fixed_conditions": [
+        "installed uncovered inoperative signal at entry",
+        "marked stop line",
+        "other vehicle prior stop",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "ego complete-cessation location relative to stop line"
+      ]
+    }
+  ],
+  "observations": [
+    "Installed signal identity, uncovered vehicular heads, operation state at original entry frame and governed approach",
+    "Original-frame ego front position and complete cessation relative to surveyed stop line/crosswalk/view point",
+    "Original-frame other vehicle completed-stop history and within-intersection occupancy",
+    "Sight-line geometry and through-highway designation",
+    "Cautious proceeding remains a separate source-grounded judgment, not an engineering speed cutoff"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
@@ -47,17 +184,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CPU probe does not construct CARLA signal, stop geometry, sight lines or vehicle interactions.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual signal inoperability, motion, occlusion and camera evidence require later CARLA verification."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Source-bound inoperative-signal stop and post-stop interactions",
+        "source": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_inoperative_signal_probe",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",

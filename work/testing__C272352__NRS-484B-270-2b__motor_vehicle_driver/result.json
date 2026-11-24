@@ -2,11 +2,30 @@
   "assignment_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver",
   "input_sha256": "89722507ed1c3bd0ffd23b89edbd97c65a1c3ceb795aba29cb2e96bb122925e6",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "partial_cpu_body_clearance_probe",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "3ab87ec8c5a1d09e1b1318d4a932c654fae20cb853359cbe3dc57d1bd9fd92ab"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver -p 'test_*.py' -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "e27cb389cc654701783bb4ea5d9c708852e028a8c7f22e6ca010a54d75c61eb9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C272352__NRS-484B-270-2b__motor_vehicle_driver",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "f578921ccde69034aa40146ea36ec3ce45a87fe1e99a12e0dc574425bc514fd6"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Nine exact case alternatives and four comparisons planned; source-bound CPU body-clearance/return probe passes, but exact CARLA construction, offline/compatibility, saved processing, semantic proposals and independent audits remain CPU work."
 }

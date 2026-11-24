@@ -1,22 +1,9 @@
-# testing__C229439__LVMC-11-52-340__vehicle_parker
+# C229439 LVMC 11.52.340 checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Five exact municipal-space parking probes are implemented in `city_space.py`: non-City vehicle in a designated and duly posted City space; City vehicle control; missing Council designation; missing official posting; and parking outside the governed space. The constructor places an exact parking device and vehicle route, and cleans up both on failure. The finalizer requires an original 900-frame 20 fps capture with stable participants, device text, source hashes, parked interval and governed-space occupancy. Legal judgment and unresolved City-vehicle scope remain unset.
 
-Exact law: LVMC 11.52.340 — The City Council may designate parking spaces upon City streets or in City parking facilities for the parking of City vehicles. It is unlawful to park a vehicle other than a City vehicle in any such space that has been duly posted or marked.
-Assigned branch(es): Person parking in a posted City-vehicle space.
-Cell: C229439 (road, park, parking_restriction_device); actor: vehicle_parker.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Source boundary: City location, Council designation, authoritative vehicle status, official device instruction and posting, governed-space geometry, parking purpose, loading and NRS definition scope require separate source hashes. A City-looking livery or plate cannot substitute for authority. No accepted exact recording exists.
 
-## Next CPU actions
+Focused tests, pinned CPU preflight and scoped static check pass. Exact scoped strict check fails on truthful partial status; see `cpu-strict-check.log`. Successful receipt commands and hashes appear in `result.json`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C229439__LVMC-11-52-340__vehicle_parker --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
-
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Remaining CPU: canonical runner/config/camera capture, source-shaped positive/negative compatibility, semantic proposals, saved-only processing, and independent delivery/comparison audits.

@@ -28,3 +28,20 @@ The exact LVMC 11.30.030 text covers a vehicle stopped at a marked crosswalk or 
 `crosswalk_measurements.py` reopens hash-sealed original context and trace bytes and rejects diagnostic receipts. It requires an actual road intersection, marked-source or unmarked sidewalk/curb source references, a separate stopped-purpose source, three actor identities, a unit road axis, 20 Hz ordered frames, and eight original world-space body vertices per vehicle. It records sampled rear approach only when ego front is behind lead rear and sampled full pass only when ego rear is ahead of lead front. It also reports stopped lead frames and pedestrian-in-polygon frames separately. It does not infer purpose from the pedestrian motion, establish legal crosswalk applicability, or render a legal judgment. The CLI writes replayable JSON only after successful measurement.
 
 Eight focused CPU tests passed in `cpu-crosswalk-tests.log`, including CLI replay and negative missing geometry, purpose source, marked source, changed bytes, dropped frames, missing vertices and diagnostic provenance. `.venv-cpu/bin/python worker_check.py --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver --complete` passed in `assignment-check.log`; exact scoped strict failed because status remains partial in `strict-gate.log`. Proof hashes are current in `result.json`. Next CPU work: source-reviewed Native intersection/crosswalk packet and six executable scene bundles; actor controllers and synchronized four-camera acquisition; case finalization, semantic proposals, exact offline and positive/negative compatibility, saved-only delivery and independent media/comparison audits. Actual physical actor motion and camera visibility remain unverified.
+
+## 2026-11-23 geometry construction checkpoint
+
+`crosswalk_construction.py` now creates an unmarked crossing polygon from opposite sidewalk lateral lines and a curb/traveled-edge source, or accepts a source-marked polygon. It requires a qualifying road intersection rather than an alley junction, positions the lead before the crossing and the ego behind it, routes the pedestrian across the roadway, and builds either a wait route or a laterally clear pass route. It rejects missing sidewalk geometry, an alley junction and inadequate passing clearance. Six new synthetic construction tests bring the package to 14 passing focused tests. The six planned cases now identify this construction tool and the physical geometry risk. A blueprint does not establish an actual map intersection or stopped purpose.
+
+| File | SHA256 |
+| --- | --- |
+| `case-plan.json` | `eeb67c23f65639bb53ba04e322f2a147f100279525c3725d3d64fb76d1e09800` |
+| `crosswalk_construction.py` | `89290d61bc3cd82bc4f9116c9f4e3033f0857985fcd46e4f131c4ad90ae16c73` |
+| `tests/test_crosswalk_construction.py` | `8c0bc50ba4eb5723448e09c66f7ed96a48cd337d37460c398895b60a2757da00` |
+| `preflight.log` | `8d44a451750484a6bb4cee1ff67be8369823709670f3671d968a1c24324bf48f` |
+| `cpu-crosswalk-tests.log` | `d90660e0a51a73fd4eeebbb696783c0e949e76f647c85e19cba88d3979adfbe4` |
+| `assignment-check.log` | `cc0634d76bab4ebe7685f30ec47975c999d0a86e219581dad0d777a5d29ec680` |
+| `strict-gate.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
+| `result.json` | `ec2603c3e9724a3f232e4b8aba0cf2ca3a900d1e8afb2baaf4a99d9467fc294f` |
+
+Pinned preflight, 14 focused tests and scoped static exit 0. Exact scoped strict exits 1 on truthful partial status and is retained here and in `strict-gate.log`, outside successful `result.json.tests` receipts. Next CPU work: bind actual source intersection, sidewalk and crosswalk geometry; implement physical actor controllers, case finalizers and exact bundles; prove positive/negative compatibility, saved-only processing and independent delivery/comparison audits. CARLA motion and camera quality follow CPU readiness.

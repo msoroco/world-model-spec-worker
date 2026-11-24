@@ -24,9 +24,204 @@
   "topic_inventory": {
     "exact-text": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is only one lane for traffic proceeding in the same direction, pass to the left of the bicycle, electric bicycle or electric scooter at a safe distance, which must be not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, and shall not move again to the right side of the highway until the vehicle is safely clear of the overtaken bicycle, electric bicycle or electric scooter. Except as otherwise provided in NRS 484B.213 and 484B.217 [NRS-484B-213-1, NRS-484B-213-2a, NRS-484B-213-2b, NRS-484B-213-2c, NRS-484B-217-2], when passing to the left of a bicycle, electric bicycle or electric scooter at a safe distance of not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, this paragraph authorizes the driver, if it is safe, to pass: (1) To the left of the center of the highway. (2) In a no-passing zone."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bicycle body motion near statutory floor; controller may miss requested clearance."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At-floor target can be lost to actual body extent or controller tolerance."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Wider pass may interact with centerline or opposing traffic."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Return trajectory may overlap the cyclist body."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Return-right path may be clipped by lane geometry."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Electric bicycle classification needs actual actor verification."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Electric scooter classification and small body extent need actual verification."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Opposing traffic and incorporated exceptions may defeat a physically safe pass."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Single-lane left passing, clearance and return-right ordering",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "passing_probe.py",
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Zone controls and incorporated exceptions need source verification."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "three_foot_clearance",
+      "case_ids": [
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above"
+      ],
+      "fixed_conditions": [
+        "one same-direction lane",
+        "public highway",
+        "bicycle classification",
+        "same direction",
+        "left passing route",
+        "vehicle/bicycle dimensions",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "requested minimum body-to-body lateral separation"
+      ]
+    },
+    {
+      "comparison_id": "return_right_order",
+      "case_ids": [
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear"
+      ],
+      "fixed_conditions": [
+        "one same-direction lane",
+        "bicycle and vehicle dimensions",
+        "passing clearance",
+        "left passing route",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "return-right start relative to cyclist rear clearance"
+      ]
+    },
+    {
+      "comparison_id": "participant_alternatives",
+      "case_ids": [
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass"
+      ],
+      "fixed_conditions": [
+        "single same-direction lane",
+        "vehicle route and clearance",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "qualifying overtaken participant class"
+      ]
+    },
+    {
+      "comparison_id": "special_route_authorizations",
+      "case_ids": [
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized",
+        "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized"
+      ],
+      "fixed_conditions": [
+        "one same-direction lane",
+        "qualifying bicycle",
+        "passing clearance",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "left-of-center or no-passing-zone route/control context"
+      ]
+    }
+  ],
+  "observations": [
+    "Original-frame motor vehicle and bicycle body envelopes; shortest Euclidean separation during longitudinal overlap",
+    "Original-frame pass-left lateral position, first return-right frame and rear/front ordering",
+    "Public highway, one same-direction lane, surveyed centerline and no-passing control",
+    "Qualifying participant classification, direction and distinct identities",
+    "Opposing traffic and applicable NRS 484B.213/217 exceptions remain to be sourced; due care and safe distance are not reduced to the 3-foot floor"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/assignment.json",
@@ -51,17 +246,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CPU probe does not build CARLA participants or capture original packets.",
+    "Bicycle class, public highway, opposing traffic, zone controls and incorporated NRS 484B.213/217 exceptions need source-bound construction.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual passing motion, clearance and pixel evidence require later CARLA verification."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Single-lane left pass and clearance/return ordering for this assignment",
+        "source": "inputs/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_body_clearance_probe",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

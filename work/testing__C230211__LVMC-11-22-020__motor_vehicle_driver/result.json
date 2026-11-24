@@ -2,11 +2,30 @@
   "assignment_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver",
   "input_sha256": "15499f8bd127b06f69cd26433a8c274dd34b70b998e40ddf7f1136fbbf1c418a",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "barrier_route_geometry_and_original_motion_measurement",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "153997c3ee4ac237dce6234c3c40cad725c921e40fbf889c243ee14ee0a665d7"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "unittest.log",
+      "sha256": "284f6ee112107bdb69d018447c9b2a42b487c8e45e280336b8d6aee6ee9b8d27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C230211__LVMC-11-22-020__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "e2441bf50304d673e933b4b9854a35894449cea14a9aa51e52291468de8dbffb"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Two planned cases and a controlled comparison vary route clearance beside a physical barrier. Tested source-bound connected route construction and original-frame barrier distance measurement with six synthetic CPU tests. Actual highway and barrier source, original motion, exact bundles, compatibility, saved processing and independent audits remain CPU work; careless/imprudent judgment stays unresolved."
 }

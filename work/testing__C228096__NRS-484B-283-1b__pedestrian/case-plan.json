@@ -24,9 +24,137 @@
   "topic_inventory": {
     "exact-text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: A pedestrian shall not suddenly leave a curb or other place of safety and walk or run into the path of a vehicle which is so close that it is impossible for the driver to yield."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+      "target_law_id": "NRS-484B-283-1b",
+      "branch": "pedestrian leaves curb/safety and enters path of qualifying vehicle",
+      "action": "walk",
+      "vehicle_gap_probe": "close",
+      "route_kind": "path",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "curb_entry.construct: source-gated curb departure, walking/running route and distinct driver-controlled vehicle route",
+      "measurement": "curb_entry.measure_original: 900 synchronized original frames, road entry, distinct vehicle-path entry, proximity and motion",
+      "physical_risk": "Native pedestrian timing, vehicle proximity, route-path intersection and camera visibility require CARLA/original review",
+      "legal_judgment": "suddenness/impossibility and introductory exceptions unresolved"
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_run_into_path",
+      "target_law_id": "NRS-484B-283-1b",
+      "branch": "pedestrian leaves curb/safety and enters path of qualifying vehicle",
+      "action": "run",
+      "vehicle_gap_probe": "close",
+      "route_kind": "path",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "curb_entry.construct: source-gated curb departure, walking/running route and distinct driver-controlled vehicle route",
+      "measurement": "curb_entry.measure_original: 900 synchronized original frames, road entry, distinct vehicle-path entry, proximity and motion",
+      "physical_risk": "Native pedestrian timing, vehicle proximity, route-path intersection and camera visibility require CARLA/original review",
+      "legal_judgment": "suddenness/impossibility and introductory exceptions unresolved"
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__far_walk_into_path",
+      "target_law_id": "NRS-484B-283-1b",
+      "branch": "pedestrian leaves curb/safety and enters path of qualifying vehicle",
+      "action": "walk",
+      "vehicle_gap_probe": "far",
+      "route_kind": "path",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "curb_entry.construct: source-gated curb departure, walking/running route and distinct driver-controlled vehicle route",
+      "measurement": "curb_entry.measure_original: 900 synchronized original frames, road entry, distinct vehicle-path entry, proximity and motion",
+      "physical_risk": "Native pedestrian timing, vehicle proximity, route-path intersection and camera visibility require CARLA/original review",
+      "legal_judgment": "suddenness/impossibility and introductory exceptions unresolved"
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_road_only",
+      "target_law_id": "NRS-484B-283-1b",
+      "branch": "pedestrian leaves curb/safety and enters path of qualifying vehicle",
+      "action": "walk",
+      "vehicle_gap_probe": "close",
+      "route_kind": "road_only",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "curb_entry.construct: source-gated curb departure, walking/running route and distinct driver-controlled vehicle route",
+      "measurement": "curb_entry.measure_original: 900 synchronized original frames, road entry, distinct vehicle-path entry, proximity and motion",
+      "physical_risk": "Native pedestrian timing, vehicle proximity, route-path intersection and camera visibility require CARLA/original review",
+      "legal_judgment": "suddenness/impossibility and introductory exceptions unresolved"
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_remain_curb",
+      "target_law_id": "NRS-484B-283-1b",
+      "branch": "pedestrian leaves curb/safety and enters path of qualifying vehicle",
+      "action": "walk",
+      "vehicle_gap_probe": "close",
+      "route_kind": "curb",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "curb_entry.construct: source-gated curb departure, walking/running route and distinct driver-controlled vehicle route",
+      "measurement": "curb_entry.measure_original: 900 synchronized original frames, road entry, distinct vehicle-path entry, proximity and motion",
+      "physical_risk": "Native pedestrian timing, vehicle proximity, route-path intersection and camera visibility require CARLA/original review",
+      "legal_judgment": "suddenness/impossibility and introductory exceptions unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "walk_vs_run",
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_run_into_path"
+      ],
+      "fixed_conditions": "same curb, roadway, vehicle path/driver and camera/duration except declared variable",
+      "deliberate_differences": [
+        "pedestrian departure gait"
+      ]
+    },
+    {
+      "comparison_id": "close_vs_far",
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__far_walk_into_path"
+      ],
+      "fixed_conditions": "same curb, roadway, vehicle path/driver and camera/duration except declared variable",
+      "deliberate_differences": [
+        "vehicle proximity at road entry"
+      ]
+    },
+    {
+      "comparison_id": "path_vs_road",
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_road_only"
+      ],
+      "fixed_conditions": "same curb, roadway, vehicle path/driver and camera/duration except declared variable",
+      "deliberate_differences": [
+        "pedestrian route into vehicle path versus roadway only"
+      ]
+    },
+    {
+      "comparison_id": "path_vs_curb",
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_remain_curb"
+      ],
+      "fixed_conditions": "same curb, roadway, vehicle path/driver and camera/duration except declared variable",
+      "deliberate_differences": [
+        "actual departure from curb"
+      ]
+    }
+  ],
+  "observations": [
+    "pedestrian identity and sourced curb/other place of safety",
+    "qualifying control vehicle, driver identity and actual physical control",
+    "pedestrian predeparture, departure, road entry and path entry from original synchronized positions",
+    "vehicle actual route, speed, position and separation at pedestrian road entry",
+    "introductory NRS 484B.287/.290/.350 exceptions preserved as unresolved operative context",
+    "suddenness and impossibility to yield remain judgments without invented proximity cutoff"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C228096__NRS-484B-283-1b__pedestrian/assignment.json",
@@ -51,17 +179,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Native synchronized pedestrian and vehicle motion/camera visibility require CARLA/original review.",
+    "Canonical execution bundles, compatibility, saved processing, semantic and independent audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "source": "inputs/testing__C228096__NRS-484B-283-1b__pedestrian/evidence.json",
+        "source_sha256": "3f75c2007f5cb517a9acf8d5146533025d22598f81dc83a58773ec58566a660c",
+        "why_existing_insufficient": "Frozen evidence inventory has no accepted recording; actual curb departure, vehicle-path entry and vehicle proximity remain unproven."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_constructed_cpu_probe",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

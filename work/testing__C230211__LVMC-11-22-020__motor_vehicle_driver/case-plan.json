@@ -24,8 +24,66 @@
   "topic_inventory": {
     "exact-text": "It is unlawful for any person to drive or operate a vehicle of any kind or character in a careless or imprudent manner on any highway in the City."
   },
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+      "branch": "Manner of driving near a barrier",
+      "kind": "planned_controlled_construction",
+      "new_capture_selected": false,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "route_candidate": "wide",
+      "construction_tool": "barrier_route.construct",
+      "construction_status": "connected_clear_route_selector_tested; actual source site unresolved",
+      "required_original_packets": [
+        "city_highway_and_vehicle_identity",
+        "barrier_geometry_and_road_bounds",
+        "ego_body_motion_20hz",
+        "surrounding_conditions",
+        "four_camera_video"
+      ],
+      "physical_risk": "The real road may not provide a wide connected passage beside the barrier; source road bounds and realized body clearance require readback.",
+      "measurement": "Original barrier clearance, body motion, speed and surrounding conditions without inferring careless or imprudent."
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance",
+      "branch": "Manner of driving near a barrier",
+      "kind": "planned_controlled_construction",
+      "new_capture_selected": false,
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "route_candidate": "near",
+      "construction_tool": "barrier_route.construct",
+      "construction_status": "connected_clear_route_selector_tested; actual source site unresolved",
+      "required_original_packets": [
+        "city_highway_and_vehicle_identity",
+        "barrier_geometry_and_road_bounds",
+        "ego_body_motion_20hz",
+        "surrounding_conditions",
+        "four_camera_video"
+      ],
+      "physical_risk": "A near route may physically contact the barrier despite a positive planned centerline clearance; full vehicle body and motion need readback.",
+      "measurement": "Original barrier clearance, body motion, speed and surrounding conditions without inferring careless or imprudent."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "barrier_clearance",
+      "case_ids": [
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance"
+      ],
+      "fixed_conditions": [
+        "same driver, motor vehicle, city highway, physical barrier, speed controller, duration and cameras"
+      ],
+      "deliberate_differences": [
+        "planned route lateral distance and observed vehicle body clearance to the barrier"
+      ],
+      "status": "planned_unbuilt"
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -51,17 +109,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No accepted recording exists; real city-highway status, barrier geometry, road bounds and physical motion need original source readback.",
+    "Careless or imprudent remains an independent legal judgment with no invented numeric clearance cutoff."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Vehicle operation on a city highway with source-bound barrier, route and surrounding conditions",
+        "source": "inputs/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen accepted inventory lists no recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_two_cases_tested_barrier_route_and_source_observation",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

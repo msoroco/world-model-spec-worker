@@ -1,22 +1,20 @@
-# testing__C24751__NRS-484B-310-1__heavy_vehicle_driver
+# C24751 NRS 484B.310(1) heavy vehicle checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Exact frozen assignment SHA256 `45337737418c28885bb05ac8cc0b8e5310f20c77df61ea97274bc7ff5ecc008c`; no accepted recording is listed in frozen evidence.
 
-Exact law: NRS 484B.310(1) — Whenever an illuminated flashing red or yellow signal is used in conjunction with an official traffic-control device, it shall require obedience by vehicular traffic as follows: When a red lens is illuminated with rapid intermittent flashes, drivers of vehicles shall stop before entering the nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection, and the right to proceed shall be subject to the rules applicable after making a required stop.
-Assigned branch(es): Flashing red on a blind-intersection approach.
-Cell: C24751 (blind_intersection, travel, flashing_red_signal); actor: heavy_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed and tested
 
-## Next CPU actions
+`flashing_red_probe.py` selects surveyed crosswalk, marked limit line, or intersection entry alternatives for separate fixtures. It rejects a signal that governs a different approach, missing official device identity, missing actual occluder polygon, and a heavy vehicle too wide for the selected lane. Its rectangular sight-line segment test checks whether an occluder lies between the approach observer and target. Its original-frame probe requires bound motion and signal sources, monotone frame/time history, and intermittent red transitions, and records whether complete cessation occurred with the vehicle front before the surveyed reference. It does not infer a legal speed epsilon or a right to proceed.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C24751__NRS-484B-310-1__heavy_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now has four exact proposed cases and two comparisons: crosswalk stopping position, and the crosswalk/marked-line/unmarked-intersection reference alternatives. Each case has a physical risk assessment. The frozen evidence gap is explicit. These plans are not capture or delivery claims.
 
-## Proven checks and dependency boundary
+## Proofs
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `ca171cb5845c4c9bd7f8080afab15b00e66159dbbcc2623ea477973b1e77f2cf`.
+- `.venv-cpu/bin/python -m unittest discover -s work/testing__C24751__NRS-484B-310-1__heavy_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `57d30880e782825de024d74f46e6080ef0cea486591ad3045b96017d936eea70`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C24751__NRS-484B-310-1__heavy_vehicle_driver`: exit 0, `static.log` SHA256 `c42430852ee4e57935b2bbeb09a3aab2cd5010d674eb05c473c298c1ea0e8d17`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C24751__NRS-484B-310-1__heavy_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects the truthful partial result.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Next CPU work
+
+Implement exact CARLA construction for the surveyed official flashing signal, occluder, heavy vehicle, route and cameras; bind original packet capture/finalizer to each case. Resolve incorporated post-stop rules from their sources without substituting a yield-only rule. Add case-specific offline and positive/negative compatibility recipes, semantic proposals, saved-only processing, independent delivery and comparison audits, and exact manifest/queue entries. Recheck the full law, inputs, risk fallbacks and every exact case before marking ready. Physical occlusion, motion, pixel coverage and capture quality require a later CARLA run only after CPU preparation passes.

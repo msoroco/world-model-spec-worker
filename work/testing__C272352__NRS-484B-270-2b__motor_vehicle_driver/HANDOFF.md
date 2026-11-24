@@ -1,22 +1,20 @@
-# testing__C272352__NRS-484B-270-2b__motor_vehicle_driver
+# C272352 NRS 484B.270(2)(b) motor vehicle checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Frozen assignment SHA256 `89722507ed1c3bd0ffd23b89edbd97c65a1c3ceb795aba29cb2e96bb122925e6`. Frozen evidence has no accepted recording for this assignment.
 
-Exact law: NRS 484B.270(2)(b) — When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is only one lane for traffic proceeding in the same direction, pass to the left of the bicycle, electric bicycle or electric scooter at a safe distance, which must be not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, and shall not move again to the right side of the highway until the vehicle is safely clear of the overtaken bicycle, electric bicycle or electric scooter. Except as otherwise provided in NRS 484B.213 and 484B.217 [NRS-484B-213-1, NRS-484B-213-2a, NRS-484B-213-2b, NRS-484B-213-2c, NRS-484B-217-2], when passing to the left of a bicycle, electric bicycle or electric scooter at a safe distance of not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, this paragraph authorizes the driver, if it is safe, to pass: (1) To the left of the center of the highway. (2) In a no-passing zone.
-Assigned branch(es): Single-lane left passing, clearance and return-right ordering.
-Cell: C272352 (single_lane_per_direction, overtake_left, cyclist); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed and tested
 
-## Next CPU actions
+`passing_probe.py` measures the shortest body-envelope gap through original-frame longitudinal passing overlap, applies the express 3-foot (0.9144 m) floor, observes left-of-bicycle position and return-right ordering against the bicycle front, and rejects missing source bindings, non-monotone original frames, an absent actual pass, multiple same-direction lanes, invalid participant classes and invalid envelopes. This is an engineering measurement, not a conclusion about due care, safe distance, safely clear, or the incorporated NRS 484B.213/217 exceptions.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C272352__NRS-484B-270-2b__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now plans nine exact alternatives and four controlled comparisons for below/at/above three-foot clearance, return ordering, qualifying participant classes, and centerline/no-passing-zone route authorization. Every case states a physical risk. These plans do not claim capture or delivery readiness.
 
-## Proven checks and dependency boundary
+## Proofs
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `3ab87ec8c5a1d09e1b1318d4a932c654fae20cb853359cbe3dc57d1bd9fd92ab`.
+- `.venv-cpu/bin/python -m unittest discover -s work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `e27cb389cc654701783bb4ea5d9c708852e028a8c7f22e6ca010a54d75c61eb9`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C272352__NRS-484B-270-2b__motor_vehicle_driver`: exit 0, `static.log` SHA256 `f578921ccde69034aa40146ea36ec3ce45a87fe1e99a12e0dc574425bc514fd6`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C272352__NRS-484B-270-2b__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects the truthful partial result.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Next CPU work
+
+Build exact CARLA bicycle/electric bicycle/scooter actors, single-direction-lane public-highway route, measured participant extents, pass-left and return controllers, surveyed centerline and no-passing controls, opposing-traffic cases, packet capture and exact saved finalizer. Source the incorporated exceptions and safe-passing context without inventing a legal threshold beyond 3 feet. Add every exact offline construction receipt, positive/negative compatibility recipe, semantic proposal, saved-only processing proof, independent delivery/comparison audit, manifest and queue entry. Recheck the full law and contracts. Actual motion, realized separation and pixel visibility remain for later CARLA verification.

@@ -24,9 +24,121 @@
   "topic_inventory": {
     "exact-text": "Upon a highway designated and signposted for one-way traffic a vehicle shall be driven only in the direction designated."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+      "target_law_id": "NRS-484B-220-1",
+      "branch": "multilane designated and signposted one-way highway",
+      "lane": 1,
+      "travel_probe": "designated",
+      "recording_policy": "source_review_existing_accepted",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "one_way_direction.construct: authorized one-way sign, selected same-direction lane and ego route",
+      "measurement": "one_way_direction.measure_original: 900 source-linked frames of actual velocity projection on designated road vector, not heading",
+      "physical_risk": "Native sign governance, lane/route support and actual reverse travel/camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+      "target_law_id": "NRS-484B-220-1",
+      "branch": "multilane designated and signposted one-way highway",
+      "lane": 1,
+      "travel_probe": "opposed",
+      "recording_policy": "source_review_existing_accepted",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "one_way_direction.construct: authorized one-way sign, selected same-direction lane and ego route",
+      "measurement": "one_way_direction.measure_original: 900 source-linked frames of actual velocity projection on designated road vector, not heading",
+      "physical_risk": "Native sign governance, lane/route support and actual reverse travel/camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_designated",
+      "target_law_id": "NRS-484B-220-1",
+      "branch": "multilane designated and signposted one-way highway",
+      "lane": 2,
+      "travel_probe": "designated",
+      "recording_policy": "new_only_if_existing_source_insufficient",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "one_way_direction.construct: authorized one-way sign, selected same-direction lane and ego route",
+      "measurement": "one_way_direction.measure_original: 900 source-linked frames of actual velocity projection on designated road vector, not heading",
+      "physical_risk": "Native sign governance, lane/route support and actual reverse travel/camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_opposed_reverse",
+      "target_law_id": "NRS-484B-220-1",
+      "branch": "multilane designated and signposted one-way highway",
+      "lane": 2,
+      "travel_probe": "opposed",
+      "recording_policy": "new_only_if_existing_source_insufficient",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "construction": "one_way_direction.construct: authorized one-way sign, selected same-direction lane and ego route",
+      "measurement": "one_way_direction.measure_original: 900 source-linked frames of actual velocity projection on designated road vector, not heading",
+      "physical_risk": "Native sign governance, lane/route support and actual reverse travel/camera visibility require CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "actual_direction_lane1",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "actual lane-one motion direction"
+      ]
+    },
+    {
+      "comparison_id": "actual_direction_lane2",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_opposed_reverse"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "actual lane-two motion direction"
+      ]
+    },
+    {
+      "comparison_id": "lane1_vs_lane2_designated",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_designated"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "selected designated-direction lane"
+      ]
+    },
+    {
+      "comparison_id": "lane1_vs_lane2_opposed",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_opposed_reverse"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "selected opposing-direction lane"
+      ]
+    }
+  ],
+  "observations": [
+    "public dedicated highway and qualifying vehicle/driver in physical control",
+    "two sourced same-direction lanes and one-way designation extent",
+    "authorized direction sign instruction, orientation, placement and governance over ego route",
+    "900 source-linked original frame/time joins and actual velocity vector, not merely heading",
+    "retained accepted lane-one metadata IDs for source review; no automatic law-specific reuse"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
@@ -70,8 +182,8 @@
     "643b41645ad5344532a3dcba5e19486c0c8fe6ad71a631b4776d206063dd234b"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "The two accepted metadata entries lack original trace/video here; their physical direction and comparison remain unverified.",
+    "Canonical selected bundles, source-bound compatibility, saved processing and independent audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -121,7 +233,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_constructed_cpu_probe",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
