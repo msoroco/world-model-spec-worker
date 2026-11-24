@@ -1,0 +1,45 @@
+{
+  "template_id": "NRS-484B-257-1@motor_vehicle_driver",
+  "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+  "note": "Original camera review, officer identity, Native direction readback, ego-entry timing and authority source must be joined; a programmed gesture or visible person alone does not establish police control.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "officer_control_observed",
+        "unit": "boolean or unknown",
+        "description": "source-reviewed police officer traffic control at ego-body entry"
+      },
+      {
+        "name": "officer_direction_observed",
+        "unit": "categorical",
+        "description": "original camera stop, go or no direction joined to Native pose history"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "officer_context",
+        "unit": "structured record",
+        "description": "officer identity, authority-source and original four-view camera review"
+      }
+    ],
+    "sweep_dimensions": [
+      {
+        "name": "officer_control_state",
+        "unit": "categorical",
+        "description": "active stop/go, active hold, inactive presence or absent officer"
+      }
+    ],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "officer_context",
+        "unit": "structured record",
+        "description": "source-hashed officer identity, direction and complete-body entry review"
+      }
+    ],
+    "limitations": [
+      "CPU diagnostics do not establish actual police authority, control, or physical gesture visibility."
+    ]
+  }
+}

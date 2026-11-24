@@ -244,6 +244,60 @@
         "reference_frame": "Native source frame and through actor identity",
         "sampling_rate_hz": 20,
         "uncertainty": "speed alone does not establish immediate hazard or legal yield duty"
+      },
+      {
+        "name": "through_highway_sight_clear",
+        "unit": "count",
+        "method": "Independent four-camera through-highway sight review joined to original Native frames",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "source camera frame; original ego view",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Visibility is a reviewed diagnostic observation; human recognition and legally nearest view remain unresolved"
+      },
+      {
+        "name": "ego_distance_to_junction_m",
+        "unit": "m",
+        "method": "Original complete ego body minimum plan-view distance to sourced junction polygon",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native OpenDRIVE junction polygon",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Polygon distance does not establish a legally sufficient viewpoint"
+      },
+      {
+        "name": "through_vehicle_position",
+        "unit": "structured record",
+        "method": "Original through actor complete body polygon and centroid",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native plan view",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Synthetic fixture geometry cannot establish real hazard"
+      },
+      {
+        "name": "through_vehicle_speed",
+        "unit": "structured record",
+        "method": "Original through actor get_velocity magnitude joined to Native frame",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native actor velocity",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Speed does not define immediate hazard"
+      },
+      {
+        "name": "ego_crossing_body",
+        "unit": "structured record",
+        "method": "Original ego complete body polygon and junction overlap",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native plan view",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Overlap does not determine right of way"
+      },
+      {
+        "name": "ego_approach_speed",
+        "unit": "m/s",
+        "method": "Original ego get_velocity magnitude joined to Native frame",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native actor velocity",
+        "sampling_rate_hz": 20,
+        "uncertainty": "No statutory numeric slowing threshold is inferred"
       }
     ],
     "context_inputs": [
@@ -258,6 +312,22 @@
           "video_frames.jsonl"
         ],
         "uncertainty": "Physical police authority, proper sign erection and actual traffic control require original-source review"
+      },
+      {
+        "name": "yield_site_review",
+        "unit": "structured record",
+        "method": "Independent hash-bound original camera sign and sight review plus Native OpenDRIVE and body geometry; legal judgments unresolved",
+        "source_refs": [
+          "officer-site.xodr",
+          "officer_review.json",
+          "officer_history.jsonl",
+          "video_frames.jsonl",
+          "overview.mkv",
+          "approach.mkv",
+          "reference_corner.mkv",
+          "driver_reference.mkv"
+        ],
+        "uncertainty": "Physical sign propriety, human nearest view, immediate hazard and legal priority remain unresolved"
       }
     ],
     "limitations": [
@@ -266,6 +336,124 @@
   },
   "source_packets": [],
   "case": {
-    "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go"
+    "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "officer_control_observed",
+          "unit": "count",
+          "method": "Source-reviewed original camera frame and ego body entry join",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native source camera frames",
+          "sampling_rate_hz": 20,
+          "uncertainty": "police authority and legal control unresolved"
+        },
+        {
+          "name": "officer_direction_observed",
+          "unit": "text",
+          "method": "Independent review of original camera pixels",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native source camera frames",
+          "sampling_rate_hz": 20,
+          "uncertainty": "programmed bone pose is not an observation"
+        },
+        {
+          "name": "through_speed_mps",
+          "unit": "m/s",
+          "method": "Original through actor get_velocity joined to same Native frame",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native source frame and through actor identity",
+          "sampling_rate_hz": 20,
+          "uncertainty": "speed alone does not establish immediate hazard or legal yield duty"
+        },
+        {
+          "name": "through_highway_sight_clear",
+          "unit": "count",
+          "method": "Independent four-camera through-highway sight review joined to original Native frames",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "source camera frame; original ego view",
+          "sampling_rate_hz": 20,
+          "uncertainty": "Visibility is a reviewed diagnostic observation; human recognition and legally nearest view remain unresolved"
+        },
+        {
+          "name": "ego_distance_to_junction_m",
+          "unit": "m",
+          "method": "Original complete ego body minimum plan-view distance to sourced junction polygon",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native OpenDRIVE junction polygon",
+          "sampling_rate_hz": 20,
+          "uncertainty": "Polygon distance does not establish a legally sufficient viewpoint"
+        },
+        {
+          "name": "through_vehicle_position",
+          "unit": "structured record",
+          "method": "Original through actor complete body polygon and centroid",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native plan view",
+          "sampling_rate_hz": 20,
+          "uncertainty": "Synthetic fixture geometry cannot establish real hazard"
+        },
+        {
+          "name": "through_vehicle_speed",
+          "unit": "structured record",
+          "method": "Original through actor get_velocity magnitude joined to Native frame",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native actor velocity",
+          "sampling_rate_hz": 20,
+          "uncertainty": "Speed does not define immediate hazard"
+        },
+        {
+          "name": "ego_crossing_body",
+          "unit": "structured record",
+          "method": "Original ego complete body polygon and junction overlap",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native plan view",
+          "sampling_rate_hz": 20,
+          "uncertainty": "Overlap does not determine right of way"
+        },
+        {
+          "name": "ego_approach_speed",
+          "unit": "m/s",
+          "method": "Original ego get_velocity magnitude joined to Native frame",
+          "time_window": "original 20 Hz 30-second capture",
+          "reference_frame": "Native actor velocity",
+          "sampling_rate_hz": 20,
+          "uncertainty": "No statutory numeric slowing threshold is inferred"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "officer_context",
+          "unit": "structured record",
+          "method": "Saved finalizer joins original officer identity, route and junction sources to source-reviewed four-camera frames; authority and legal control unresolved",
+          "source_refs": [
+            "officer_context.json",
+            "officer_review.json",
+            "officer_history.jsonl",
+            "video_frames.jsonl"
+          ],
+          "uncertainty": "Physical police authority, proper sign erection and actual traffic control require original-source review"
+        },
+        {
+          "name": "yield_site_review",
+          "unit": "structured record",
+          "method": "Independent hash-bound original camera sign and sight review plus Native OpenDRIVE and body geometry; legal judgments unresolved",
+          "source_refs": [
+            "officer-site.xodr",
+            "officer_review.json",
+            "officer_history.jsonl",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "uncertainty": "Physical sign propriety, human nearest view, immediate hazard and legal priority remain unresolved"
+        }
+      ],
+      "limitations": [
+        "Synthetic software fixtures do not establish physical officer authority, gesture visibility, traffic control, nearest-view sufficiency or legal compliance."
+      ]
+    }
   }
 }

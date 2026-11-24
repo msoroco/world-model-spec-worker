@@ -11,7 +11,8 @@ SUFFIXES = ("officer_active_stop_then_go", "officer_active_hold",
 SOURCES = ("runner.py", "officer_native_capture.py", "officer_camera.py",
            "officer_capture_sources.py", "officer_direction.py",
            "officer_construction.py", "officer_site.py", "officer-site.xodr",
-           "officer_measurements.py", "comparison_audit.py", "finalizer.py",
+           "officer_measurements.py", "yield_site_measurements.py",
+           "comparison_audit.py", "finalizer.py",
            "build_primary_construction.py", "tests/test_officer.py")
 
 
@@ -21,7 +22,8 @@ def build(case_id=None):
     if case_id not in {ASSIGNMENT + "__" + suffix for suffix in SUFFIXES}:
         raise ValueError("Officer construction has wrong exact case")
     config["selected_case_id"] = case_id
-    config["case"] = {"case_id": case_id}
+    config["case"] = {"case_id": case_id,
+                      "recording_description": config["recording_description"]}
     if case_id.endswith("__no_officer_yield_nearest_view"):
         config["officer_context"]["authority_source"] = None
         config["officer_context"]["uniform_video_source"] = None

@@ -7,7 +7,7 @@
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "c72131e0c3e53c72c49b37ddc550d953ce93a8bc2e1912d175180f5e03873230",
+      "construction_sha256": "6a5d9bd182b81d844be1ecd873ac1e5f45348ebbe06a7e3996fea005a56a0184",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "officer_active_stop_then_go-fallback1-construction.json",
-          "construction_sha256": "4c056245296d08abcb55a23248c72add9a4023586a3e47b915f278efc39bf8a9",
+          "construction_sha256": "d63de8a3e208fb15b3109ba072c80d25d8eabde1b3c2cb451182180912712e98",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -25,30 +25,9 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-context-v3-officer_active_stop_then_go-fallback1 --candidate fallback1",
-            "construction_sha256": "4c056245296d08abcb55a23248c72add9a4023586a3e47b915f278efc39bf8a9",
-            "exit_code": 0,
-            "log": "construction-fallback1-officer_active_stop_then_go.log",
-            "log_sha256": "3325fa202602f7303688ff4d6b74fcdd1ff6bb35b6083ff5d2d39a749f8e0ac3"
-          },
-          "compatibility": {
-            "receipt": "compatibility-officer_active_stop_then_go-fallback1.json",
-            "sha256": "e4f483227eb22864a22da5c5b81a2489546ca45ea525a09f1cd2a745129cada1",
-            "log": "compatibility-analysis-officer_active_stop_then_go-fallback1.log",
-            "negative_log": "compatibility-negative-officer_active_stop_then_go-fallback1.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-compatibility-v3-officer_active_stop_then_go-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
+          ]
         }
       ],
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-context-v3-officer_active_stop_then_go-primary",
-        "construction_sha256": "c72131e0c3e53c72c49b37ddc550d953ce93a8bc2e1912d175180f5e03873230",
-        "exit_code": 0,
-        "log": "construction-primary-officer_active_stop_then_go.log",
-        "log_sha256": "6883fb8951ddf0af24a670b10fb6bbab84dd4394182ef9da1c142d59081af88d"
-      },
       "measurement_contract": "officer_active_stop_then_go-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalizer.py",
@@ -56,15 +35,8 @@
       },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/officer_active_stop_then_go-fixture-recipe.json",
       "negative": {
-        "log": "compatibility-negative-officer_active_stop_then_go-primary.log",
+        "log": "proof-compatibility-negative-officer_active_stop_then_go-primary.log",
         "error_contains": "Missing required source: officer_review.json"
-      },
-      "compatibility": {
-        "receipt": "compatibility-officer_active_stop_then_go-primary.json",
-        "sha256": "273d84e0076df24c3b420490aba13734621329df7098f81f5c7cae11e34cb537",
-        "log": "compatibility-analysis-officer_active_stop_then_go-primary.log",
-        "negative_log": "compatibility-negative-officer_active_stop_then_go-primary.log",
-        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-compatibility-v3-active --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
       },
       "acquisition": {
         "officer_control_observed": {
@@ -81,6 +53,36 @@
           "entrypoint": "finalizer.py",
           "method": "measure through vehicle speed from synchronized source trace at ego entry",
           "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
       }
     },
@@ -88,7 +90,7 @@
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
       "kind": "delivery",
       "construction": "officer_active_hold-construction.json",
-      "construction_sha256": "1864a04003ed21c629711ac52f905d90b56c7340e7c7c91f06a26753cd18b638",
+      "construction_sha256": "af22d2b9ce2692d497bd4b30746c387ddd5b17e616ca8c286d342e2031693225",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -97,7 +99,7 @@
         {
           "id": "fallback1",
           "construction": "officer_active_hold-fallback1-construction.json",
-          "construction_sha256": "f2e1ed329b28d9b8d78a5cd13e485557cfc390117dbabed0773c79624301884c",
+          "construction_sha256": "f9752ccc7c04ddf9363ffaff9ec95be0eebd06bcab810c40c062e34bc961aca0",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -106,30 +108,9 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-context-v3-officer_active_hold-fallback1 --candidate fallback1",
-            "construction_sha256": "f2e1ed329b28d9b8d78a5cd13e485557cfc390117dbabed0773c79624301884c",
-            "exit_code": 0,
-            "log": "construction-fallback1-officer_active_hold.log",
-            "log_sha256": "8216979aeb7c5334bf92e2c91f5a96e1bf3200b5240baf2579c44cf1406ec337"
-          },
-          "compatibility": {
-            "receipt": "compatibility-officer_active_hold-fallback1.json",
-            "sha256": "9a6aca0c3ea1dc8b1ec95c8e135629f2d8f46c294f7f212cd4f46ede0f1051f5",
-            "log": "compatibility-analysis-officer_active_hold-fallback1.log",
-            "negative_log": "compatibility-negative-officer_active_hold-fallback1.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-compatibility-v3-officer_active_hold-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
+          ]
         }
       ],
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-context-v3-officer_active_hold-primary",
-        "construction_sha256": "1864a04003ed21c629711ac52f905d90b56c7340e7c7c91f06a26753cd18b638",
-        "exit_code": 0,
-        "log": "construction-primary-officer_active_hold.log",
-        "log_sha256": "951249ad54f706de79cb6694e9b1d5b4b56ecae5fc6a4be4d11e6e71bf63e2e1"
-      },
       "measurement_contract": "officer_active_hold-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalizer.py",
@@ -137,15 +118,8 @@
       },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/officer_active_hold-fixture-recipe.json",
       "negative": {
-        "log": "compatibility-negative-officer_active_hold-primary.log",
+        "log": "proof-compatibility-negative-officer_active_hold-primary.log",
         "error_contains": "Missing required source: officer_review.json"
-      },
-      "compatibility": {
-        "receipt": "compatibility-officer_active_hold-primary.json",
-        "sha256": "a1e93cd9145163b3b47ac69aff6189d1f104b8657942d2f4feaec02bf1d131f6",
-        "log": "compatibility-analysis-officer_active_hold-primary.log",
-        "negative_log": "compatibility-negative-officer_active_hold-primary.log",
-        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-compatibility-v3-officer_active_hold-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
       },
       "acquisition": {
         "officer_control_observed": {
@@ -162,6 +136,36 @@
           "entrypoint": "finalizer.py",
           "method": "measure through vehicle speed from synchronized source trace at ego entry",
           "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
       }
     },
@@ -169,7 +173,7 @@
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
       "kind": "delivery",
       "construction": "officer_present_inactive-construction.json",
-      "construction_sha256": "17a698cc609f22954149aa7fb1b173cf0f8e3743d68b840b847c2dd4aeec89f8",
+      "construction_sha256": "0f9ee54430fc35098fc13a989dba86bfee7e29b73984af4498612ee8694ed745",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -178,7 +182,7 @@
         {
           "id": "fallback1",
           "construction": "officer_present_inactive-fallback1-construction.json",
-          "construction_sha256": "49628d594de378bbb3d12a302fd127f53ed1083956b2e60a284ca7315dabd43e",
+          "construction_sha256": "87621a6fd0c4ccdf8bb1e83c7e711ad12e63683054179b3abd556f8bb3f9afec",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -187,30 +191,9 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-context-v3-officer_present_inactive-fallback1 --candidate fallback1",
-            "construction_sha256": "49628d594de378bbb3d12a302fd127f53ed1083956b2e60a284ca7315dabd43e",
-            "exit_code": 0,
-            "log": "construction-fallback1-officer_present_inactive.log",
-            "log_sha256": "5283e9d00c2fe5364fd14c253e1ed9dbcc469fc62b15c29ae40251a3ea2ee6b0"
-          },
-          "compatibility": {
-            "receipt": "compatibility-officer_present_inactive-fallback1.json",
-            "sha256": "c0a40d912aa397fa2daad469f21982c4f5526df374a063610be780bfc3b23f23",
-            "log": "compatibility-analysis-officer_present_inactive-fallback1.log",
-            "negative_log": "compatibility-negative-officer_present_inactive-fallback1.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-compatibility-v3-officer_present_inactive-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
+          ]
         }
       ],
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-context-v3-officer_present_inactive-primary",
-        "construction_sha256": "17a698cc609f22954149aa7fb1b173cf0f8e3743d68b840b847c2dd4aeec89f8",
-        "exit_code": 0,
-        "log": "construction-primary-officer_present_inactive.log",
-        "log_sha256": "a7d7441dbb6ac4368ca6b35459ea7c8b092fd3608c2f09f9f3f68a57117e1353"
-      },
       "measurement_contract": "officer_present_inactive-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalizer.py",
@@ -218,15 +201,8 @@
       },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/officer_present_inactive-fixture-recipe.json",
       "negative": {
-        "log": "compatibility-negative-officer_present_inactive-primary.log",
+        "log": "proof-compatibility-negative-officer_present_inactive-primary.log",
         "error_contains": "Missing required source: officer_review.json"
-      },
-      "compatibility": {
-        "receipt": "compatibility-officer_present_inactive-primary.json",
-        "sha256": "4c393d32cf6a5e7145dbdb3dfaaf10243a58e41ef089da3c148a490533e72372",
-        "log": "compatibility-analysis-officer_present_inactive-primary.log",
-        "negative_log": "compatibility-negative-officer_present_inactive-primary.log",
-        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-compatibility-v3-officer_present_inactive-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
       },
       "acquisition": {
         "officer_control_observed": {
@@ -243,6 +219,36 @@
           "entrypoint": "finalizer.py",
           "method": "measure through vehicle speed from synchronized source trace at ego entry",
           "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
       }
     },
@@ -250,7 +256,7 @@
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
       "kind": "delivery",
       "construction": "no_officer_yield_nearest_view-construction.json",
-      "construction_sha256": "144feb2dd937919a922adfecb5e2c23ed6bf5e00d77fedbd936a46b70a7202b1",
+      "construction_sha256": "ba8a7b7a504ae568aabb4d6fe4dc3d6c80dc37b3add03503f4418a6632219b69",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -259,7 +265,7 @@
         {
           "id": "fallback1",
           "construction": "no_officer_yield_nearest_view-fallback1-construction.json",
-          "construction_sha256": "3370b7d29f707ed8bd2295934ad9c59b2ba911bd952c82cdf3ed3a8bb938821e",
+          "construction_sha256": "0812be937d75e730f127dd8a4c943d37252b5d9b6383cca9c3aa6c8170f92d34",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -268,30 +274,9 @@
           "changed_knobs": [
             "Raise and lower the look angle of the ego approach camera",
             "Raise and tilt the fixed reference-corner camera"
-          ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-context-v3-no_officer_yield_nearest_view-fallback1 --candidate fallback1",
-            "construction_sha256": "3370b7d29f707ed8bd2295934ad9c59b2ba911bd952c82cdf3ed3a8bb938821e",
-            "exit_code": 0,
-            "log": "construction-fallback1-no_officer_yield_nearest_view.log",
-            "log_sha256": "f883f6c57e3ff0ab84010fa440c367e06d2e7b3fd0e6753178a5dbc975ab2e17"
-          },
-          "compatibility": {
-            "receipt": "compatibility-no_officer_yield_nearest_view-fallback1.json",
-            "sha256": "c7417353caffc92a3096c97518b1b362d6700731fba8c1509fb3697c0f0972f7",
-            "log": "compatibility-analysis-no_officer_yield_nearest_view-fallback1.log",
-            "negative_log": "compatibility-negative-no_officer_yield_nearest_view-fallback1.log",
-            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-compatibility-v3-no_officer_yield_nearest_view-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
-          }
+          ]
         }
       ],
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-context-v3-no_officer_yield_nearest_view-primary",
-        "construction_sha256": "144feb2dd937919a922adfecb5e2c23ed6bf5e00d77fedbd936a46b70a7202b1",
-        "exit_code": 0,
-        "log": "construction-primary-no_officer_yield_nearest_view.log",
-        "log_sha256": "01d5f0aeb65113a2e68d82d6ec8859dda689b1dc4a9a0419f934bf498983a071"
-      },
       "measurement_contract": "no_officer_yield_nearest_view-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalizer.py",
@@ -299,15 +284,8 @@
       },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/no_officer_yield_nearest_view-fixture-recipe.json",
       "negative": {
-        "log": "compatibility-negative-no_officer_yield_nearest_view-primary.log",
+        "log": "proof-compatibility-negative-no_officer_yield_nearest_view-primary.log",
         "error_contains": "Missing required source: officer_review.json"
-      },
-      "compatibility": {
-        "receipt": "compatibility-no_officer_yield_nearest_view-primary.json",
-        "sha256": "941ebac91c4f909eb23cbad1659dc4c110672e8596112650748bb38c4bfe158c",
-        "log": "compatibility-analysis-no_officer_yield_nearest_view-primary.log",
-        "negative_log": "compatibility-negative-no_officer_yield_nearest_view-primary.log",
-        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-compatibility-v3-no_officer_yield_nearest_view-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
       },
       "acquisition": {
         "officer_control_observed": {
@@ -324,6 +302,36 @@
           "entrypoint": "finalizer.py",
           "method": "measure through vehicle speed from synchronized source trace at ego entry",
           "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "yield_site_measurements.py",
+          "method": "saved original officer history/body geometry and independent hash-bound four-camera site review",
+          "evidence": "officer_history.jsonl; officer_review.json; video_frames.jsonl; officer-site.xodr"
         }
       }
     }

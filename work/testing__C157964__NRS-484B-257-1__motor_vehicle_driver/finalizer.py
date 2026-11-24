@@ -16,6 +16,10 @@ SPEC = importlib.util.spec_from_file_location("c157964_saved_officer_measurement
                                                ROOT / "officer_measurements.py")
 MEASURE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MEASURE)
+SITE_SPEC = importlib.util.spec_from_file_location("c157964_saved_yield_site_measurements",
+                                                    ROOT / "yield_site_measurements.py")
+SITE = importlib.util.module_from_spec(SITE_SPEC)
+SITE_SPEC.loader.exec_module(SITE)
 CAMERAS = MEASURE.CAMERAS
 ASSIGNMENT = "testing__C157964__NRS-484B-257-1__motor_vehicle_driver"
 EXPECTED = {MEASURE.PREFIX + "officer_active_stop_then_go": (True, "go"),
@@ -43,7 +47,7 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
         raise ValueError("Retain previous saved officer finalization; choose a fresh attempt")
-    required = ("config.json", "officer_context.json", "officer_history.jsonl",
+    required = ("config.json", "officer-site.xodr", "officer_context.json", "officer_history.jsonl",
                 "officer_review.json", "video_frames.jsonl", "trace.jsonl",
                 "capture/evidence.jsonl", *(name + ".mkv" for name in CAMERAS))
     for name in required:
@@ -69,6 +73,9 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
                 motion.get("time_s") != frame["time_s"] or
                 event.get("original_frame") != frame["carla_frame"]):
             raise ValueError("Original officer trace or evidence frame join failed")
+    officer_history = _rows(attempt / "officer_history.jsonl")
+    officer_review = json.loads((attempt / "officer_review.json").read_text())
+    site_channels, site_context = SITE.analyze(attempt, config, officer_history, frames, officer_review)
     sources = {name: _sha(attempt / name) for name in required}
     requested_control, requested_direction = EXPECTED[case_id]
     entry = measured["first_ego_entry"]
@@ -105,6 +112,12 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
                 stream.write(json.dumps({"original_frame": row["frame"],
                                          "time_s": row["time_s"], "value": row[key]},
                                         allow_nan=False) + "\n")
+    for name, rows in site_channels.items():
+        with (channels / (name + ".jsonl")).open("x") as stream:
+            for row in rows:
+                stream.write(json.dumps(row, allow_nan=False) + "\n")
+    (channels / "yield_site_review.json").write_text(json.dumps(site_context, indent=2,
+                                                               allow_nan=False) + "\n")
     (channels / "officer_context.json").write_text(json.dumps({
         "officer_context": {"source": json.loads((attempt / "officer_context.json").read_text()),
                             "first_ego_entry": entry},
@@ -139,7 +152,17 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
                        "reference": "channels/through_speed_mps.jsonl"}]
                      if through_available else [])
                   + [{"name": "officer_context", "unit": "structured record",
-                      "reference": "channels/officer_context.json"}],
+                      "reference": "channels/officer_context.json"}]
+                  + [{"name": name, "unit": unit,
+                      "reference": "channels/" + name + ".jsonl"}
+                     for name, unit in (("through_highway_sight_clear", "count"),
+                                        ("ego_distance_to_junction_m", "m"),
+                                        ("through_vehicle_position", "structured record"),
+                                        ("through_vehicle_speed", "structured record"),
+                                        ("ego_crossing_body", "structured record"),
+                                        ("ego_approach_speed", "m/s"))]
+                  + [{"name": "yield_site_review", "unit": "structured record",
+                      "reference": "channels/yield_site_review.json"}],
               "source_evidence_hashes": sources,
               "realized_observables": {}}
     if physical_assessor is None or result_writer is None:

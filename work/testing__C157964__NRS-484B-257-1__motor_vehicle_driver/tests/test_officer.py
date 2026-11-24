@@ -167,11 +167,32 @@ class OfficerTests(unittest.TestCase):
             self.baseline_fixture(root,case_id)
         else:
             self.fixture(root)
-        config={"assignment_id":finalizer.ASSIGNMENT,
-                "selected_case_id":case_id,"law_id":"NRS-484B-257-1",
-                "cell_id":"C157964","actor":"motor_vehicle_driver",
-                "recording_description":{"channels":[{"name":"officer_control_observed"}]}}
+        config=json.loads((ROOT/"config.json").read_text())
+        config["selected_case_id"]=case_id
+        config["case"]["case_id"]=case_id
         (root/"config.json").write_text(json.dumps(config))
+        (root/"officer-site.xodr").write_bytes((ROOT/"officer-site.xodr").read_bytes())
+        context=json.loads((root/"officer_context.json").read_text())
+        context["through_actor_id"]=77
+        context["through_route_source"]="officer-site.xodr#157964,157965"
+        (root/"officer_context.json").write_text(json.dumps(context))
+        history=[json.loads(line) for line in (root/"officer_history.jsonl").read_text().splitlines()]
+        for row in history:
+            row["through"]={"actor_id":77,"speed_mps":3.0,
+                            "body_vertices_xy_m":[[-1,-1],[-1,1],[1,1],[1,-1]]*2}
+        (root/"officer_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in history))
+        review=json.loads((root/"officer_review.json").read_text())
+        review["officer_history_sha256"]=hashlib.sha256((root/"officer_history.jsonl").read_bytes()).hexdigest()
+        review["site_review"]={"sign_id":config["site"]["yield_sign_id"],
+                               "sign_face_observed":"unverified",
+                               "source_camera":"reference_corner.mkv",
+                               "stop_line_observed":False,"crosswalk_observed":False,
+                               "proper_sign_judgment":"unresolved",
+                               "nearest_view_judgment":"unresolved"}
+        for row in review["frames"]:
+            row["through_highway_sight_clear"]=True
+            row["sight_frame_source"]="driver_reference.mkv"
+        (root/"officer_review.json").write_text(json.dumps(review))
         frames=[json.loads(line) for line in (root/"video_frames.jsonl").read_text().splitlines()]
         (root/"trace.jsonl").write_text("".join(json.dumps({"frame":r["carla_frame"],
              "time_s":r["time_s"],"position_m":[i*2,0]})+"\n" for i,r in enumerate(frames)))

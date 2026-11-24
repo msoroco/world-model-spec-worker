@@ -61,9 +61,18 @@ def build(case_id, template):
     review = {"provenance_kind": "synthetic_fixture",
               "officer_history_sha256": digest(history), "video_frames_sha256": digest(frame_text),
               "camera_sha256": original_review["camera_sha256"],
+              "site_review": {"sign_id": json.loads((ROOT / "config.json").read_text())["site"]["yield_sign_id"],
+                              "sign_face_observed": "unverified",
+                              "source_camera": "reference_corner.mkv",
+                              "stop_line_observed": False,
+                              "crosswalk_observed": False,
+                              "proper_sign_judgment": "unresolved",
+                              "nearest_view_judgment": "unresolved"},
               "frames": [{"frame": frame, "video_frame": i,
                           "observed_direction": directions[i],
                           "traffic_control_observed": not (absent or inactive),
+                          "through_highway_sight_clear": True,
+                          "sight_frame_source": "driver_reference.mkv",
                           "direction_frame_source": "approach.mkv" if not absent else "four-original-camera-absence-review",
                           "officer_visible": not absent} for i, frame in enumerate(frames)]}
     files = {key: value for key, value in template["files"].items()
