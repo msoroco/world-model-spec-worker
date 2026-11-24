@@ -113,3 +113,7 @@ Native capture remains diagnostic unless both the adapter attests Native origin 
 ## 2026-11-23 decoded paired comparison checkpoint
 
 `audit_comparison` reopens the exact near/far original attempts, source-bound geometry, fixed context and all 7,200 camera PNGs before reporting their signed measured lateral difference. It rejects duplicate attempts, diagnostic sources by default and changed case/centerline identity. The 21 focused tests and scoped static check pass; exact strict still rejects truthful partial status. Physical completion and legal nearest-portion judgment remain unresolved.
+
+## 2026-11-23 embedded bundle synchronization
+
+All four exact construction bundles now embed the current source files; their construction hashes and offline command/output receipts were refreshed. All four pinned offline checks pass in new retained attempt directories. Scoped static passes; scoped strict rejects truthful partial status.

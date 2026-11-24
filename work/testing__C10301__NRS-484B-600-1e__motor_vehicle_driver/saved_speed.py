@@ -9,6 +9,7 @@ import math
 from pathlib import Path
 
 from speed_boundary import measure
+from delivery_audit import audit_decoded_media
 
 
 def process(attempt: Path, case_id: str, output: Path, *,
@@ -40,6 +41,29 @@ def process(attempt: Path, case_id: str, output: Path, *,
     output = Path(output)
     if output.exists():
         raise ValueError("saved speed output already exists")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n",
+                      encoding="utf-8")
+    return result
+
+
+def process_delivery(attempt: Path, case_id: str, output: Path, *,
+                     allow_diagnostic: bool = False) -> dict:
+    """Saved-only speed and fully decoded media, written after all checks pass."""
+    output = Path(output)
+    if output.exists():
+        raise ValueError("saved delivery output already exists")
+    media = audit_decoded_media(attempt, case_id,
+                                allow_diagnostic=allow_diagnostic)
+    speed = measure(attempt, case_id)
+    if (media["native_run_id"] != speed["native_run_id"] or
+            media["case_id"] != speed["case_id"]):
+        raise ValueError("saved speed and media run identity differ")
+    result = {"format": "c10301-saved-delivery-v1",
+              "case_id": case_id, "native_run_id": speed["native_run_id"],
+              "measurement": speed, "media_audit": media,
+              "physical_acceptance_claimed": False,
+              "legal_judgment": "unresolved"}
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n",
                       encoding="utf-8")

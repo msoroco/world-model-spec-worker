@@ -47,6 +47,47 @@ def _decode(path):
     return int(probe.stdout.strip())
 
 
+def _verify_original_pixels(path, expected_hashes, *, width, height):
+    """Compare every lossless video frame with the BGRA bytes received by Native."""
+    size = width * height * 4
+    process = subprocess.Popen(["ffmpeg", "-v", "error", "-i", str(path),
+                                "-f", "rawvideo", "-pix_fmt", "bgra", "pipe:1"],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        for index, expected in enumerate(expected_hashes):
+            raw = process.stdout.read(size)
+            if len(raw) != size or hashlib.sha256(raw).hexdigest() != expected:
+                raise ValueError("original camera pixel bytes differ: " + path.name +
+                                 " frame " + str(index))
+        if process.stdout.read(1):
+            raise ValueError("original camera has extra decoded pixel frames: " + path.name)
+        stderr = process.stderr.read()
+        if process.wait(timeout=120) != 0 or stderr:
+            raise ValueError("original camera pixel decode failed: " + path.name)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=10)
+        process.stdout.close()
+        process.stderr.close()
+
+
+def _verify_pixel_map(path, rows):
+    expected = {name: [] for name in CAMERAS}
+    for row in rows:
+        hashes = row.get("original_bgra_sha256")
+        if not isinstance(hashes, dict) or set(hashes) != set(CAMERAS):
+            raise ValueError("original camera pixel hash map missing")
+        for name in CAMERAS:
+            value = hashes[name]
+            if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+                raise ValueError("original camera pixel hash invalid: " + name)
+            expected[name].append(value)
+    for name in CAMERAS:
+        width, height = (1920, 1080) if name == "overview" else (1280, 720)
+        _verify_original_pixels(path / (name + ".mkv"), expected[name], width=width, height=height)
+
+
 def audit_attempt(path, *, diagnostic=False):
     path = Path(path)
     seal = _read(path / "capture-seal.json")
@@ -93,6 +134,8 @@ def audit_attempt(path, *, diagnostic=False):
     decoded = {name: _decode(path / (name + ".mkv")) for name in CAMERAS}
     if any(count != len(frames) for count in decoded.values()):
         raise ValueError("decoded original video frame count differs")
+    if not diagnostic:
+        _verify_pixel_map(path, camera_rows)
     report = build_report(path)
     suffix = _read(path / "scene.json").get("case_id", "").rsplit("__", 1)[-1]
     measured = report["measurements"]["red_x_bus_lane"]
@@ -112,5 +155,6 @@ def audit_attempt(path, *, diagnostic=False):
             "decoded_frames": decoded, "site_review": report["site_review"],
             "measurements": report["measurements"],
             "diagnostic_fixture": diagnostic,
+            "original_pixel_bytes_verified": not diagnostic,
             "actual_pixels_reviewed": False, "physical_acceptance_claimed": False,
             "legal_judgment": "unresolved"}

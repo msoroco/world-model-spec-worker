@@ -53,6 +53,25 @@ def process(*, case_id, map_path, trace_path, receipt_path):
             raise ValueError("original trace dropped or duplicated frames")
         if abs((second["time_s"] - first["time_s"]) - 0.05) > 0.002:
             raise ValueError("original trace timestamp cadence differs from 20 Hz")
+    if "frame_map_sha256" in receipt:
+        frame_map_path = Path(receipt_path).parent / "original-frame-map.json"
+        if _sha(frame_map_path) != receipt["frame_map_sha256"]:
+            raise ValueError("sealed camera frame map changed")
+        frame_map = _load(frame_map_path)
+        if frame_map.get("case_id") != case_id or len(frame_map.get("frames", [])) != len(samples):
+            raise ValueError("original camera frame map identity/count mismatch")
+        for sample, camera_row in zip(samples, frame_map["frames"]):
+            if sample["frame"] != camera_row.get("frame") or sample["time_s"] != camera_row.get("time_s"):
+                raise ValueError("original camera frame join mismatch")
+            cameras = camera_row.get("cameras", {})
+            if set(cameras) != {"front", "rear", "left", "right"}:
+                raise ValueError("four original cameras required")
+            for entry in cameras.values():
+                relative = Path(entry["path"])
+                if relative.is_absolute() or ".." in relative.parts:
+                    raise ValueError("original camera path escapes attempt")
+                if _sha(Path(receipt_path).parent / relative) != entry["sha256"]:
+                    raise ValueError("sealed original camera bytes changed")
     measured = measure(samples, map_packet["intersection_polygon"],
                        source_id=receipt["source_id"], map_sha256=map_packet["map_sha256"])
     measured.update({"assignment_id": ASSIGNMENT_ID, "case_id": case_id,

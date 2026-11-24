@@ -83,10 +83,11 @@ def audit_media_time(path, expected_frames):
     native_frames = [row["native_frame"] for row in frame_map]
     times = [row.get("time_s") for row in frame_map]
     if ([row["video_frame"] for row in frame_map] != list(range(expected_frames)) or
-            any(b <= a for a, b in zip(native_frames, native_frames[1:])) or
+            any(type(frame) is not int for frame in native_frames) or
+            any(b != a + 1 for a, b in zip(native_frames, native_frames[1:])) or
             any(type(t) not in (int, float) or not math.isfinite(t) for t in times) or
-            any(b <= a for a, b in zip(times, times[1:]))):
-        raise ValueError("original video frame map is not ordered")
+            any(abs((b - a) - .05) > 1e-4 for a, b in zip(times, times[1:]))):
+        raise ValueError("original video frame map is not contiguous at 20 Hz")
     for name in ("trace.jsonl", "ego-body-history.jsonl", "other-body-history.jsonl",
                  "controller-history.jsonl"):
         source_rows = rows(name)

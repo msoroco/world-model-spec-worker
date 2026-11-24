@@ -29,6 +29,8 @@ class CameraCapture:
     def __init__(self, world, bus, scene, output, carla):
         self.sensors, self.encoders, self.queues = [], {}, {}
         self.closed = False
+        self.callback_errors = []
+        self.dimensions = {}
         try:
             self._start(world, bus, scene, output, carla)
         except BaseException:
@@ -43,6 +45,7 @@ class CameraCapture:
             if bp is None:
                 raise ValueError("original RGB camera blueprint missing")
             width, height = (1920, 1080) if name == "overview" else (1280, 720)
+            self.dimensions[name] = (width, height)
             for attr, value in (("image_size_x", width), ("image_size_y", height), ("fov", 90)):
                 bp.set_attribute(attr, str(value))
             x, y, z = poses[name]
@@ -55,7 +58,12 @@ class CameraCapture:
             self.sensors.append(sensor)
             frames = queue.Queue(maxsize=8)
             self.queues[name] = frames
-            sensor.listen(lambda image, q=frames: q.put_nowait(image))
+            def on_image(image, *, camera=name, target=frames):
+                try:
+                    target.put_nowait(image)
+                except queue.Full:
+                    self.callback_errors.append(camera)
+            sensor.listen(on_image)
             process = subprocess.Popen(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
                 "-f", "rawvideo", "-pixel_format", "bgra", "-video_size", f"{width}x{height}",
                 "-framerate", str(RATE_HZ), "-i", "pipe:0", "-an", "-c:v", "ffv1",
@@ -64,11 +72,24 @@ class CameraCapture:
             self.encoders[name] = process
 
     def append(self, frame):
+        if self.callback_errors:
+            raise RuntimeError("original camera callback queue overflow: " + self.callback_errors[0])
+        hashes = {}
         for name in CAMERAS:
             image = self.queues[name].get(timeout=15)
             if image.frame != frame:
                 raise RuntimeError("camera/world frame mismatch: " + name)
-            self.encoders[name].stdin.write(image.raw_data)
+            width, height = self.dimensions[name]
+            raw = bytes(image.raw_data)
+            if (getattr(image, "width", None) != width or
+                    getattr(image, "height", None) != height or
+                    len(raw) != width * height * 4):
+                raise RuntimeError("original camera BGRA shape mismatch: " + name)
+            self.encoders[name].stdin.write(raw)
+            hashes[name] = hashlib.sha256(raw).hexdigest()
+        if self.callback_errors:
+            raise RuntimeError("original camera callback queue overflow: " + self.callback_errors[0])
+        return hashes
 
     def close(self):
         if self.closed:
@@ -192,7 +213,7 @@ def run_native(scene, road, site, output, host, port, packet_path):
                     raise RuntimeError("Native world frame mismatch")
                 time_s = snapshot.timestamp.elapsed_seconds
                 capture.capture(frame, time_s)
-                cameras.append(frame)
+                camera_hashes = cameras.append(frame)
                 frame_map.append(frame, time_s)
                 common = {"frame": frame, "elapsed_seconds": time_s}
                 state = site["native_display_state"]
@@ -213,7 +234,8 @@ def run_native(scene, road, site, output, host, port, packet_path):
                                       head.get_transform().location.y,
                                       head.get_transform().location.z]}, allow_nan=False) + "\n")
                 camera_file.write(json.dumps({**common, "source_path": "video_frames.jsonl",
-                    "camera_names": list(CAMERAS)}, allow_nan=False) + "\n")
+                    "camera_names": list(CAMERAS),
+                    "original_bgra_sha256": camera_hashes}, allow_nan=False) + "\n")
                 control_file.write(json.dumps({**common, "requested_control": request}, allow_nan=False) + "\n")
                 frames.append(frame)
         phase = "closing"

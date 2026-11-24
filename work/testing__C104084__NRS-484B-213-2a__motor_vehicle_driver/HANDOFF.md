@@ -105,3 +105,11 @@ with guaranteed cleanup and original camera acquisition, connect the saved
 join to runtime finalization, build four positive/negative diagnostic recipes,
 run offline/compatibility and saved-only delivery audits, and author proposals.
 The exact scoped `worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete` passed in `assignment-check.log`; the scoped `--require-delivery-ready` exited 1 in `strict-gate.log` because the package remains partial.
+
+### Capture and media delivery construction follow-up (2026-11-24)
+
+`native_capture.py` now acquires each exact crest case through a lazy Native adapter contract. It requires the original road/center/opposing-lane or one-way context at begin, 900 consecutive 20 Hz world frames by default, matched body/ray packets and four camera callback frame IDs per tick, then writes source-hashed original packet and video files. Its `finally` calls adapter cleanup on success and acquisition failures. Fake-adapter tests prove the capture-to-saved-observation join and cleanup on missing camera or lane packets. The adapter still needs a concrete CARLA implementation, map authority acquisition and world snapshot/restore.
+
+`saved_crest.py` now requires 900 original frames by default and an explicit complete frame list for each of the four cameras; three-frame fixtures override the count only in tests. `delivery_media.py` reopens byte-hashed original camera MP4s, ffprobes full frame counts/rates/dimensions and decodes every frame with ffmpeg. It reports neither origin nor physical visibility as verified. Its tests create small videos, then reject changed/missing originals, wrong frame counts and corrupt bodies. All 24 focused CPU tests pass in `cpu-tests.log` (hash in `result.json`).
+
+Remaining CPU work: implement the concrete Native adapter and source-bound original highway/one-way authority acquisition; bind the capture output to runtime finalization and exact offline/positive/negative compatibility checks; author semantic proposals and independent full delivery audit. The curve alternative needs a batch-level compatible cell. Actual CARLA motion, sight lines, and pixel visibility remain physical checks only after preparation.

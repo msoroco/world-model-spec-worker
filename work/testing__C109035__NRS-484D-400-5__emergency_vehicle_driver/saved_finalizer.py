@@ -1,0 +1,100 @@
+"""Saved-only measurement for exact C109035 warning-device cases.
+
+The receipt is observational. It never decides authorization, warning intent,
+500-foot audibility, recipient hearing, or statutory compliance.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+from emergency_scene import CASE_KNOBS
+from warning_audit import audit
+
+
+PREFIX = "testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__"
+SOURCES = {"device_trace", "camera_trace", "dispatch_context", "equipment_record"}
+
+
+def _read(folder: Path, reference: dict) -> bytes:
+    relative = reference.get("path")
+    if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or ".." in Path(relative).parts:
+        raise ValueError("Original source path invalid")
+    target = folder / relative
+    if target.is_symlink() or not target.is_file():
+        raise ValueError("Original source absent or symlinked")
+    data = target.read_bytes()
+    if hashlib.sha256(data).hexdigest() != reference.get("sha256"):
+        raise ValueError("Original source hash mismatch")
+    return data
+
+
+def finalize(folder: Path, *, case_id: str) -> dict:
+    """Reopen originals and measure case-specific temporal/device conditions."""
+    folder = Path(folder)
+    if not case_id.startswith(PREFIX) or case_id[len(PREFIX):] not in CASE_KNOBS:
+        raise ValueError("Unknown exact case")
+    receipt_file = folder / "capture_receipt.json"
+    if receipt_file.is_symlink():
+        raise ValueError("Capture receipt symlinked")
+    receipt_bytes = receipt_file.read_bytes()
+    receipt = json.loads(receipt_bytes)
+    if receipt.get("case_id") != case_id or receipt.get("source_kind") != "original_capture":
+        raise ValueError("Original capture case identity mismatch")
+    if receipt.get("physical_acceptance_claimed") is not False:
+        raise ValueError("Original capture receipt claims physical acceptance")
+    if set(receipt.get("sources", {})) != SOURCES or not receipt.get("site_packet_sha256"):
+        raise ValueError("Original capture source inventory incomplete")
+    originals = {key: _read(folder, ref) for key, ref in receipt["sources"].items()}
+    dispatch = json.loads(originals["dispatch_context"])
+    equipment = json.loads(originals["equipment_record"])
+    for kind, document in (("dispatch_context", dispatch), ("equipment_record", equipment)):
+        if document.get("case_id") != case_id or document.get("source_kind") != kind:
+            raise ValueError("Independent source case identity mismatch: " + kind)
+        if not document.get("reviewer") or not document.get("source_citation"):
+            raise ValueError("Independent source review missing: " + kind)
+    knobs = CASE_KNOBS[case_id[len(PREFIX):]]
+    if dispatch.get("event") != knobs["event"]:
+        raise ValueError("Documented event differs from exact construction")
+    interval = dispatch.get("event_interval_frames")
+    if (not isinstance(interval, list) or len(interval) != 2 or
+            any(type(value) is not int for value in interval) or
+            not 0 <= interval[0] <= interval[1] < 900):
+        raise ValueError("Documented event interval invalid")
+    rows = [json.loads(line) for line in originals["device_trace"].splitlines()]
+    cameras = [json.loads(line) for line in originals["camera_trace"].splitlines()]
+    if len(rows) != 900 or len(cameras) != 900:
+        raise ValueError("Original frame count incomplete")
+    first_native = receipt.get("native_first_frame")
+    if type(first_native) is not int or receipt.get("native_last_frame") != first_native + 899:
+        raise ValueError("Original native frame bounds invalid")
+    for tick, (row, camera) in enumerate(zip(rows, cameras)):
+        if row.get("frame") != tick or row.get("native_frame") != first_native + tick:
+            raise ValueError("Original native device frame gap")
+        if camera.get("frame") != tick or camera.get("native_frame") != first_native + tick:
+            raise ValueError("Original native camera frame gap")
+        if any(type(row.get(key)) is not bool for key in (
+                "siren_commanded", "warning_lamp_commanded", "siren_active", "warning_lamp_active")):
+            raise ValueError("Original command or device readback missing")
+        if row.get("device_source_type") in (None, "", "command_echo") or not row.get("device_source_citation"):
+            raise ValueError("Independent device readback source missing")
+        if set(camera.get("sources", {})) != {"front", "rear", "left", "right"} or not all(camera["sources"].values()):
+            raise ValueError("Four original camera references missing")
+    observed = audit(folder, receipt)
+    commanded_siren = sum(row["siren_commanded"] for row in rows)
+    commanded_lamps = sum(row["warning_lamp_commanded"] for row in rows)
+    if bool(commanded_siren) != knobs["siren"] or bool(commanded_lamps) != knobs["lamps"]:
+        raise ValueError("Recorded command differs from exact construction")
+    return {
+        "case_id": case_id,
+        "capture_receipt_sha256": hashlib.sha256(receipt_bytes).hexdigest(),
+        "source_sha256": {key: ref["sha256"] for key, ref in receipt["sources"].items()},
+        "native_frame_count": 900,
+        "commanded_siren_frames": commanded_siren,
+        "commanded_warning_lamp_frames": commanded_lamps,
+        "observed": observed,
+        "physical_completion": "unverified",
+        "actual_camera_pixels": "unverified",
+        "legal_conclusion": None,
+    }

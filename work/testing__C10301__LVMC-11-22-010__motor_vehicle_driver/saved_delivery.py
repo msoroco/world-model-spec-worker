@@ -54,10 +54,13 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
             raise ValueError("four original camera frames required")
         for camera in CAMERAS:
             image_path = directory / "camera-png" / f"{index:04d}-{camera}.png"
+            packet = row["cameras"][camera]
+            if not isinstance(packet, dict) or packet.get("native_frame") != original["native_frame"] or not packet.get("sensor_id"):
+                raise ValueError("original camera sensor or frame mismatch")
             if not image_path.is_file():
                 raise ValueError("missing original camera image")
             raw = image_path.read_bytes()
-            if hashlib.sha256(raw).hexdigest() != row["cameras"][camera]:
+            if hashlib.sha256(raw).hexdigest() != packet.get("sha256"):
                 raise ValueError("original camera image hash mismatch")
             with Image.open(image_path) as image:
                 if image.format != "PNG" or min(image.size) <= 0:
@@ -67,3 +70,20 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
             "original_frames": FRAMES, "decoded_original_pngs": FRAMES * len(CAMERAS),
             "source_sha256": digests, "diagnostic_fixture": meta["diagnostic_fixture"],
             "attention_state": "unobserved", "legal_judgment": "unresolved"}
+
+
+def audit_comparison(directories: dict, require_delivery: bool = False) -> dict:
+    """Reopen both exact saved attempts before comparing their fixed conditions."""
+    from attention_measurement import measure
+    from comparison_audit import audit as audit_pair
+
+    if set(directories) != set(CASE_PROFILES):
+        raise ValueError("both exact saved comparison cases required")
+    measurements, captures = {}, {}
+    for case_id, directory in directories.items():
+        audit(directory, case_id, require_delivery=require_delivery)
+        measurements[case_id] = measure(directory / "operation.jsonl", case_id)
+        captures[case_id] = json.loads((directory / "capture.json").read_text())
+    result = audit_pair(measurements, captures)
+    result["diagnostic_fixture"] = any(c["diagnostic_fixture"] for c in captures.values())
+    return result

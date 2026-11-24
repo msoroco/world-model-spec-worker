@@ -1,5 +1,6 @@
 import json
 import hashlib
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -8,9 +9,9 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from native_motion import capture_speed
-from saved_speed import process
+from saved_speed import process, process_delivery
 from speed_boundary import measure
-from delivery_audit import audit_integrity
+from delivery_audit import audit_integrity, audit_decoded_media
 from capture_finalizer import finalize_capture
 
 
@@ -237,6 +238,63 @@ class NativeMotionTests(unittest.TestCase):
         readback_path.write_text("{}")
         with self.assertRaisesRegex(ValueError, "camera readback hash differs"):
             audit_integrity(self.attempt, CASE, allow_diagnostic=True)
+
+    def test_media_audit_decodes_all_original_frames_and_rejects_truncation(self):
+        actor = FakeActor()
+        cameras = ("front", "front_left", "front_right", "rear")
+        capture_speed(FakeWorld(actor), actor, control, self.attempt,
+                      CASE, "native-video", 0.05, diagnostic_fixture=True,
+                      camera_frame_reader=lambda frame:
+                      {camera: frame for camera in cameras})
+        frames = json.loads((self.attempt / "camera-frame-readback.json")
+                            .read_text())["frames"]
+        video = self.attempt / "front.mkv"
+        subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i",
+                        "color=c=blue:s=16x16:r=20", "-frames:v", "900",
+                        "-c:v", "ffv1", str(video)], check=True,
+                       capture_output=True, timeout=120)
+        media = {"front": video}
+        for camera in cameras[1:]:
+            path = self.attempt / (camera + ".mkv")
+            path.write_bytes(video.read_bytes())
+            media[camera] = path
+        finalize_capture(self.attempt, CASE, frames, media)
+        result = audit_decoded_media(self.attempt, CASE,
+                                     allow_diagnostic=True)
+        self.assertTrue(result["full_video_decode"])
+        self.assertFalse(result["actual_pixels"])
+        self.assertEqual(set(result["decoded_cameras"]), set(cameras))
+        delivery_path = Path(self.tmp.name) / "saved-delivery.json"
+        delivery = process_delivery(self.attempt, CASE, delivery_path,
+                                    allow_diagnostic=True)
+        self.assertTrue(delivery["media_audit"]["full_video_decode"])
+        self.assertFalse(delivery["physical_acceptance_claimed"])
+        with self.assertRaisesRegex(ValueError, "already exists"):
+            process_delivery(self.attempt, CASE, delivery_path,
+                             allow_diagnostic=True)
+        short_video = self.attempt / "short.mkv"
+        subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i",
+                        "color=c=red:s=16x16:r=20", "-frames:v", "899",
+                        "-c:v", "ffv1", str(short_video)], check=True,
+                       capture_output=True, timeout=120)
+        media["rear"].write_bytes(short_video.read_bytes())
+        index_path = self.attempt / "capture-index.json"
+        index = json.loads(index_path.read_text())
+        index["cameras"]["rear"]["sha256"] = hashlib.sha256(
+            media["rear"].read_bytes()).hexdigest()
+        index_path.write_text(json.dumps(index))
+        with self.assertRaisesRegex(ValueError, "frames differ"):
+            audit_decoded_media(self.attempt, CASE,
+                                allow_diagnostic=True)
+        rejected_output = Path(self.tmp.name) / "rejected-delivery.json"
+        with self.assertRaisesRegex(ValueError, "frames differ"):
+            process_delivery(self.attempt, CASE, rejected_output,
+                             allow_diagnostic=True)
+        self.assertFalse(rejected_output.exists())
+        media["rear"].write_bytes(video.read_bytes()[:500])
+        with self.assertRaisesRegex(ValueError, "source hash differs"):
+            audit_decoded_media(self.attempt, CASE,
+                                allow_diagnostic=True)
 
 
 

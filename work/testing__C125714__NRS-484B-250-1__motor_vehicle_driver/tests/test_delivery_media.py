@@ -57,7 +57,7 @@ class NativeMediaAuditTests(unittest.TestCase):
             rows = [json.loads(line) for line in path.read_text().splitlines()]
             rows[3]["native_frame"] = 12
             path.write_text("".join(json.dumps(row) + "\n" for row in rows))
-            with self.assertRaisesRegex(ValueError, "original video frame map is not ordered"):
+            with self.assertRaisesRegex(ValueError, "not contiguous at 20 Hz"):
                 audit_media_time(tmp, 9)
             rows[3]["native_frame"] = 3
             path.write_text("".join(json.dumps(row) + "\n" for row in rows))
@@ -76,6 +76,23 @@ class NativeMediaAuditTests(unittest.TestCase):
             rows[4]["time_s"] += .01
             path.write_text("".join(json.dumps(row) + "\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "original timestamp join differs"):
+                audit_media_time(tmp, 9)
+
+    def test_skipped_native_frame_and_time_step_rejected(self):
+        with TemporaryDirectory() as tmp:
+            native_video_fixture(tmp)
+            path = Path(tmp) / "video_frames.jsonl"
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            for row in rows[4:]:
+                row["native_frame"] += 1
+            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "not contiguous at 20 Hz"):
+                audit_media_time(tmp, 9)
+            for row in rows[4:]:
+                row["native_frame"] -= 1
+                row["time_s"] += .05
+            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "not contiguous at 20 Hz"):
                 audit_media_time(tmp, 9)
 
 

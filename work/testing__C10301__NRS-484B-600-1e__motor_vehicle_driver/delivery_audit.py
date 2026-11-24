@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 from speed_boundary import EXPECTED_FRAMES, measure
@@ -102,3 +103,53 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
             "source_integrity_passed": True, "full_video_decode": False,
             "actual_pixels": False, "physical_completion": False,
             "legal_judgment": "unresolved"}
+
+
+def audit_decoded_media(attempt: Path, case_id: str, *,
+                        allow_diagnostic: bool = False) -> dict:
+    """Fully decode each sealed original camera stream at 20 Hz for 900 frames.
+
+    This validates file integrity and decodability, not scene content or legal
+    visibility. The source-index audit runs first and resolves the exact paths.
+    """
+    integrity = audit_integrity(attempt, case_id,
+                                allow_diagnostic=allow_diagnostic)
+    index = _read(Path(attempt) / "capture-index.json")
+    decoded = {}
+    for camera in CAMERAS:
+        path, digest = _sealed(Path(attempt), index["cameras"][camera], camera)
+        probe = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "v:0",
+             "-count_frames", "-show_entries",
+             "stream=codec_name,width,height,avg_frame_rate,nb_read_frames",
+             "-of", "json", str(path)], capture_output=True, text=True,
+            timeout=120, check=False)
+        if probe.returncode or not probe.stdout:
+            raise ValueError(f"{camera} media probe failed")
+        try:
+            streams = json.loads(probe.stdout)["streams"]
+            stream, = streams
+            numerator, denominator = map(int, stream["avg_frame_rate"].split("/"))
+            valid = (stream["codec_name"] in
+                     {"ffv1", "huffyuv", "png", "rawvideo"} and
+                     type(stream["width"]) is int and stream["width"] > 0 and
+                     type(stream["height"]) is int and stream["height"] > 0 and
+                     denominator > 0 and numerator == 20 * denominator and
+                     int(stream["nb_read_frames"]) == EXPECTED_FRAMES)
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            valid = False
+        if not valid:
+            raise ValueError(f"{camera} media codec, dimensions, rate or frames differ")
+        decode = subprocess.run(
+            ["ffmpeg", "-v", "error", "-xerror", "-i", str(path),
+             "-map", "0:v:0", "-f", "null", "-"],
+            capture_output=True, text=True, timeout=120, check=False)
+        if decode.returncode:
+            raise ValueError(f"{camera} full video decode failed")
+        decoded[camera] = {"sha256": digest, "frames": EXPECTED_FRAMES,
+                           "width": stream["width"],
+                           "height": stream["height"],
+                           "codec": stream["codec_name"]}
+    return {**integrity, "full_video_decode": True,
+            "decoded_cameras": decoded,
+            "actual_pixels": False, "physical_completion": False}

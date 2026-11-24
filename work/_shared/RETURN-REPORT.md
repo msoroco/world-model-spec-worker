@@ -1657,3 +1657,31 @@ C149555 added source-bound five-case comparisons, four-camera ffprobe and full-d
 ## 2026-11-23 decoded root comparison and owner rotation
 
 C109705 2a now recomputes a paired saved-source comparison after decoding 7,200 original camera PNG frames across the two exact attempts, while retaining diagnostic, physical and legal uncertainty. All 21 focused tests and scoped static pass; scoped strict rejects partial. Its nine proof hashes match. C158208 added source-bound capture identity and paired nearest-view comparison, rebuilt both pinned offline bundles and six physical fixture outcomes, and passed 33 focused tests and static. I verified all nine proof hashes and reran exact scoped strict; partial remains. C143687 added seven source joins, fixed case-condition comparison and four-camera saved integrity audit, with 17 focused tests and static passing. I verified both proof hashes and reran exact scoped strict; partial remains. New owners began C10301 LVMC-11-22-010 in partition 03 and C104084 NRS-484B-213-2a in partition 07. C104081 pedestrian owner continues in partition 06.
+
+## 2026-11-23 C104081 decode closeout
+
+C104081 added exact-case 900-frame saved-attempt source verification and an optional four-camera FFprobe frame/rate plus full FFmpeg decode branch. Its 62 focused tests, preflight and scoped static pass. I independently verified all four proof-log hashes and reran exact scoped strict; it rejects truthful partial status. Pixel visibility, participant coverage, physical completion and remaining adapter/map/semantic/compatibility/delivery proofs are unresolved CPU work. The full batch static check passed after current changes. C125714 began as a new partition 01 owner.
+
+## 2026-11-23 C10301 and C104084 213 closeouts
+
+C10301 LVMC-11-22-010 added 900-frame Native capture, four-camera source verification, all-frame saved PNG decode and two-case fixed-context comparison. Twenty-one focused tests and scoped static pass. I independently checked its three proof-log hashes and reran exact scoped strict; partial remains. C104084 NRS-484B-213-2a added a 900-tick Native capture orchestrator, frame/body/ray joins, source-hashed four-camera FFprobe/FFmpeg full decode, and tightened saved crest audit. Twenty-four focused tests and scoped static pass. I checked its proof-log hash and reran exact scoped strict; partial remains. The full strict batch recheck exited 1 on partial/missing packages, while full static passed. C102642 in partition 02 and C10301 NRS-484B-600-1e in partition 04 began as new owners; C125714 continues in partition 01.
+
+## 2026-11-23 C125714, C10301 speed and root bundle refresh
+
+C125714 strengthened saved audit against skipped Native world frames and non-20 Hz timestamps, refreshed seven primary/fallback diagnostic bundles, and passed 81 focused tests (one expected skip), all recorded offline/compatibility/saved proofs and scoped static. I verified 123 proof-log hashes and reran exact scoped strict; truthful partial remains pending reviewed real-road/source and nondiagnostic delivery. C10301 NRS-484B-600-1e added source-hashed four-camera FFprobe/FFmpeg full-decode audit and gated saved processing on it; 13 focused tests and scoped static pass. I verified four proof-log hashes and reran exact scoped strict; partial remains. Root C109705 2a resynced all four embedded construction bundles to current source files, refreshed construction and log hashes, and reran all four exact offline proofs successfully in retained new attempt directories. Its 21 tests and scoped static pass, scoped strict remains partial. New owners began C10307 in partition 05 and C109749 in partition 08; C102642 continues in partition 02.
+
+## 2026-11-23 returned-file hygiene
+
+A full manual scan of 11,518 current work files found zero size, UTF-8, trailing-whitespace or conflict-marker issues. Largest file is 1,846,854 bytes, under the 2 MiB limit. No Git command was run.
+
+## 2026-11-23 C102642 and C10307 closeouts
+
+C102642 added five-case 900-frame Native acquisition with act/actor and four-camera joins, independent all-3,600-PNG delivery audit, and a case-specific saved-only command that rejects valid-pixel tampering; 17 focused tests and scoped static pass. I verified its declared proof hash and exact scoped strict rejects partial. C10307 added 900-frame/20 Hz saved frame-map and four source-hashed FFV1 camera joins, FFprobe counts and full FFmpeg decode, with diagnostic, tamper and wrong-codec negatives; 38 focused tests and scoped static pass. I verified its proof hash and exact scoped strict rejects partial. C111125 NRS-484B-307-2a in partition 06 and C109749 NRS-484B-223-3c in partition 07 began as replacement owners. C109749 NRS-484B-253 in partition 08 continues.
+
+## 2026-11-23 C109749 pair closeouts
+
+C109749 NRS-484B-253 added sealed Native acquisition and independent five-pair comparison audit with source identity, case order, fixed map/frame/time and declared variable changes; 31 focused tests and scoped static pass. I verified its two proof hashes and reran exact scoped strict; partial remains. C109749 NRS-484B-223-3c added a source-bound saved finalizer that checks exact attempt and hash-bound site/map/highway sources, reopens saved audit and verifies branch-consistent merge; 37 focused tests and scoped static pass. I verified three proof hashes and reran exact scoped strict; partial remains. C147332 bus driver in partition 01 and C109035 emergency vehicle driver in partition 03 began as replacement owners. C111125 2a continues in partition 06.
+
+## 2026-11-23 C111125 2a closeout
+
+C111125 NRS-484B-307-2a added a source-bound four-camera saved delivery audit requiring 900 frames, the pinned 1080p/720p profile, source hashes, synchronized frame map, FFprobe 20 Hz counts, full FFmpeg decode and required participant context. Lower-resolution fixtures need explicit diagnostic mode. Sixteen focused tests and scoped static pass. I verified all three proof-log hashes and reran exact scoped strict; truthful partial remains pending bundles, proposals and compatibility. C109171 pedestrian in partition 04 began as replacement owner.
