@@ -1,6 +1,18 @@
+## 2026-11-23 fallback2 saved-processing log preservation
+
+The original `first-fallback2-saved-v1.log`, `third-fallback2-saved-v1.log`, and `fourth-fallback2-saved-v1.log` are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C125745's scoped nonready check passes and its status remains partial.
+
+## 2026-11-23 fallback1 saved-processing log preservation
+
+The original `first-fallback1-saved-v1.log`, `third-fallback1-saved-v1.log`, and `fourth-fallback1-saved-v1.log` are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C125745's scoped nonready check passes and its status remains partial.
+
+## 2026-11-23 saved-processing log preservation
+
+The original `primary-saved-v1.log`, `fourth-fallback3-saved-v1.log`, and `second-primary-saved-v1.log` are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C125745's scoped nonready check passes and its status remains partial.
+
 ## 2026-11-23 archived unbound primary fixture helper
 
-The unbound `physical_motion_fixture_primary.py` helper (SHA256 `d9693980ca39bfe38f238fb898d30b948099bc14d06864f35e209e8e50d61e60`) is preserved byte-exactly in `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `e8c16b8109114fddecc16931aa2052c20f2573a9394e467916215e5eff7994de`). Restore the helper before rerunning that experimental fixture command: `tar -xOf work/_shared/small-archives-consolidated-20261123.tar.xz work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture_primary.py > work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture_primary.py`. The active C125745 scoped nonready complete check passed after this archival. This does not establish its delivery readiness.
+The unbound `physical_motion_fixture_primary.py` helper (SHA256 `d9693980ca39bfe38f238fb898d30b948099bc14d06864f35e209e8e50d61e60`) is preserved byte-exactly in `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore the helper before rerunning that experimental fixture command: `tar -xOf work/_shared/small-archives-consolidated-20261123.tar.xz work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture_primary.py > work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture_primary.py`. The active C125745 scoped nonready complete check passed after this archival. This does not establish its delivery readiness.
 
 ## 2026-11-23 C125745 frame32 fallback2 CPU physical record
 

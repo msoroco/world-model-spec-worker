@@ -1,3 +1,19 @@
+## 2026-11-23 C144550 right-direction fallback1 CPU proof
+
+Right-direction fallback1 passed current source-bound positive compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. Its candidate/case identities and receipt SHA-256 values were checked; the scoped nonready complete check passed. All five primaries and thirteen of fifteen fallback proof sets now pass. Two right-direction fallback sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `6f7ccff655a7c1583167a235cfaf2fa1daeaa4a41ef9c238539812f46582a24e`. Synthetic CPU fixtures establish no Native physical or legal acceptance.
+
+## 2026-11-23 C144550 close-gap fallback completion
+
+Close-gap fallback3 passed current source-bound positive compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. Its candidate/case identities and receipt SHA-256 values were checked; the scoped nonready complete check passed. All five primaries and twelve of fifteen fallback proof sets now pass. The right-direction case's three fallback sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `6fbcb9a6232342c732424f67275db42a456fb75d09563f2e85d84049977b59bf`. Synthetic CPU fixtures establish no Native physical or legal acceptance.
+
+## 2026-11-23 C144550 close-gap fallback2 CPU proof
+
+Close-gap fallback2 passed current source-bound positive compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. Its candidate/case identities and receipt SHA-256 values were checked; the scoped nonready complete check passed. All five primaries and eleven of fifteen fallback proof sets now pass. Four fallback sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `e960d487f3336221e55173cb36bd94c7b0733d07aafdf12fe2a75063fd6d0626`. Synthetic CPU fixtures establish no Native physical or legal acceptance.
+
+## 2026-11-23 C144550 close-gap fallback1 CPU proof
+
+Close-gap fallback1 passed current source-bound positive compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. Its candidate/case identities and receipt hashes were checked; the scoped nonready complete check passed. All five primaries and ten of fifteen fallback proof sets now pass. Five fallback sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `e73be1743ed8520f8ceba3060690178d3c6b947f80229dece3050e62942473c9`. Synthetic CPU fixtures establish no Native physical or legal acceptance.
+
 ## 2026-11-23 C144550 wrong-direction fallback completion
 
 Wrong-direction fallback3 passed current source-bound positive compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. Its candidate/case identities and receipt SHA-256 values were checked; the scoped nonready complete check passed. All five exact primaries and the first three cases' nine fallbacks now pass current compatibility and saved processing. Six fallback proof sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `2837e5fa30de5c59d931536752eda7d6901e6cce6cf25c23056df4822188e644`. These CPU fixtures are synthetic and establish no Native physical or legal acceptance.

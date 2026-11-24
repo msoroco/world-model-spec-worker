@@ -1,16 +1,20 @@
+## 2026-11-23 additional partial proof log preservation
+
+The original `negative-analysis.log`, `cases/short-negative-analysis.log`, and `cases/current-offline.log` are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready check passes and its status remains partial.
+
 ## 2026-11-23 short fallback negative log preservation
 
-The `cases/short-fallback1-negative.log`, `cases/short-fallback2-negative.log` and `cases/short-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `e8c16b8109114fddecc16931aa2052c20f2573a9394e467916215e5eff7994de`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
+The `cases/short-fallback1-negative.log`, `cases/short-fallback2-negative.log` and `cases/short-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
 
 ## 2026-11-23 fallback negative log preservation
 
-The `cases/over-fallback1-negative.log`, `cases/over-fallback2-negative.log` and `cases/over-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `e8c16b8109114fddecc16931aa2052c20f2573a9394e467916215e5eff7994de`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
+The `cases/over-fallback1-negative.log`, `cases/over-fallback2-negative.log` and `cases/over-fallback3-negative.log` bytes are direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore their original paths using the shared HANDOFF index or rerun before strict readiness. C215286's scoped nonready complete check passes and its status remains partial.
 
 ## 2026-11-23 historical proof log preservation
 
-The byte-verified `physical-fixtures.log` and `semantic-proof.log` are now direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `e8c16b8109114fddecc16931aa2052c20f2573a9394e467916215e5eff7994de`). Restore them at their original member paths with `tar -xOf ARCHIVE MEMBER > MEMBER` or rerun both proofs before strict readiness. The scoped nonready complete check passed after archival; C215286 remains partial.
+The byte-verified `physical-fixtures.log` and `semantic-proof.log` are now direct members of `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`). Restore them at their original member paths with `tar -xOf ARCHIVE MEMBER > MEMBER` or rerun both proofs before strict readiness. The scoped nonready complete check passed after archival; C215286 remains partial.
 
-The archive named in the next section is now nested in `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `e8c16b8109114fddecc16931aa2052c20f2573a9394e467916215e5eff7994de`); extract it first with the shared HANDOFF command.
+The archive named in the next section is now nested in `work/_shared/small-archives-consolidated-20261123.tar.xz` (SHA256 `8b777e423f1a9eba0d8d98464fa3dd0edf4c4a3a515a76aa6ddf4862ffdb1eb0`); extract it first with the shared HANDOFF command.
 
 ## 2026-11-23 C215286 diagnostic physical fixture archive
 
