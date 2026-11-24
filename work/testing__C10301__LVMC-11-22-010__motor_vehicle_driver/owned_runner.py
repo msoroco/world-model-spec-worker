@@ -13,7 +13,8 @@ from native_capture import capture
 from native_operation import CASE_PROFILES, spawn_ego
 
 
-def capture_reviewed(session, site_path, case_id, output_dir):
+def capture_reviewed(session, site_path, case_id, output_dir, *, pipeline_factory=None,
+                     publisher=None):
     if case_id not in CASE_PROFILES:
         raise ValueError("Unknown exact alley case")
     site_path = Path(site_path)
@@ -31,15 +32,27 @@ def capture_reviewed(session, site_path, case_id, output_dir):
                 raise ValueError("Capture output already contains original acquisition: " + name)
     if not getattr(session, "person_id", None):
         raise ValueError("Original operator identity required")
+    if not getattr(session, "client", None):
+        raise ValueError("Original CARLA client required for PipelineCapture")
+    if pipeline_factory is None:
+        from pipeline_capture import PipelineCapture
+        pipeline_factory = PipelineCapture
+    if publisher is None:
+        from runtime_publication import publish_original
+        publisher = publish_original
     output_dir.mkdir(parents=True, exist_ok=True)
     actor = None
     try:
         actor = spawn_ego(session.world, session.carla, site, case_id)
-        result = capture(session.capture_adapter, actor, session.carla, site,
-                         case_id, session.person_id, output_dir)
+        with pipeline_factory(session.client, actor, output_dir, case_id,
+                              required_observations=()) as original:
+            result = capture(session.capture_adapter, actor, session.carla, site,
+                             case_id, session.person_id, output_dir,
+                             pipeline_capture=original)
         (output_dir / "site-source.json").write_bytes(source)
         result["site_packet_sha256"] = hashlib.sha256(source).hexdigest()
         (output_dir / "capture.json").write_text(json.dumps(result, sort_keys=True, indent=2) + "\n")
+        result["runtime_publication"] = publisher(output_dir, case_id)
         return result
     finally:
         if actor is not None:

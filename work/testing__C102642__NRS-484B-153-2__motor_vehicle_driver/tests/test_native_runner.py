@@ -49,8 +49,14 @@ class RunnerTests(TestCase):
             original_observer=lambda *args: None)
 
     def test_clock_and_world_restored_after_capture(self):
-        with mock.patch.object(native_runner, "capture", return_value={"frame_count": 900}) as run:
-            self.assertEqual(self.run_case(), {"frame_count": 900})
+        seal = self.root / "capture-seal.json"
+        seal.write_text('{"sealed":true}\n')
+        with mock.patch.object(native_runner, "capture", return_value={"frame_count": 900}) as run, \
+             mock.patch.object(native_runner, "publish", return_value=seal) as publish:
+            result = self.run_case()
+        self.assertEqual(result["frame_count"], 900)
+        self.assertEqual(result["capture_seal_sha256"], hashlib.sha256(seal.read_bytes()).hexdigest())
+        self.assertTrue(publish.call_args.kwargs["restoration_verified"])
         self.assertEqual(self.world.applied, [(True, .05), (False, None)])
         self.assertEqual(run.call_args.args[0].map_sha256(),
                          hashlib.sha256(self.map_bytes).hexdigest())

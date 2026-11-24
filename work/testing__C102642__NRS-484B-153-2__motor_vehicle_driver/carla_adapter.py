@@ -137,6 +137,50 @@ class CarlaDoorAdapter:
             raise ValueError("nonfinite original passing state")
         raw["passing_center_xy"] = [float(loc.x), float(loc.y)]
         raw["passing_speed_mps"] = math.hypot(vel.x, vel.y)
+        passing_transform = passing.get_transform()
+        passing_body = passing.bounding_box.get_world_vertices(passing_transform)
+        if len(passing_body) < 4:
+            raise ValueError("original passing body vertices are missing")
+        raw["passing_position_m"] = [float(passing_transform.location.x),
+                                       float(passing_transform.location.y),
+                                       float(passing_transform.location.z)]
+        raw["passing_heading_deg"] = float(passing_transform.rotation.yaw)
+        raw["passing_velocity_mps"] = [float(vel.x), float(vel.y), float(vel.z)]
+        raw["passing_body_vertices_m"] = [
+            [float(v.x), float(v.y), float(v.z)] for v in passing_body]
+        raw["passing_blueprint"] = passing.type_id
+        raw["parked_blueprint"] = parked.type_id
+        raw["passing_blueprint_attributes"] = dict(passing.attributes)
+        raw["parked_blueprint_attributes"] = dict(parked.attributes)
+        driver_transform = driver.get_transform()
+        driver_velocity = driver.get_velocity()
+        driver_body = driver.bounding_box.get_world_vertices(driver_transform)
+        if len(driver_body) < 4 or not driver.type_id.startswith("walker."):
+            raise ValueError("original selected driver body or pedestrian blueprint missing")
+        raw["driver_blueprint"] = driver.type_id
+        raw["driver_blueprint_attributes"] = dict(driver.attributes)
+        raw["driver_heading_deg"] = float(driver_transform.rotation.yaw)
+        raw["driver_velocity_mps"] = [float(driver_velocity.x), float(driver_velocity.y),
+                                      float(driver_velocity.z)]
+        raw["driver_speed_mps"] = math.sqrt(driver_velocity.x ** 2 + driver_velocity.y ** 2 +
+                                             driver_velocity.z ** 2)
+        raw["driver_body_vertices_m"] = [
+            [float(v.x), float(v.y), float(v.z)] for v in driver_body]
+        # Bind the ordinary trace and Core evidence to the same live parked
+        # actor observed by the door controller. No requested pose is reused.
+        transform = parked.get_transform()
+        parked_vel = parked.get_velocity()
+        body = parked.bounding_box.get_world_vertices(transform)
+        if len(body) < 4:
+            raise ValueError("original parked body vertices are missing")
+        raw["parked_position_m"] = [float(transform.location.x),
+                                      float(transform.location.y),
+                                      float(transform.location.z)]
+        raw["parked_heading_deg"] = float(transform.rotation.yaw)
+        raw["parked_speed_mps"] = math.sqrt(parked_vel.x ** 2 + parked_vel.y ** 2 + parked_vel.z ** 2)
+        raw["parked_velocity_mps"] = [float(parked_vel.x), float(parked_vel.y), float(parked_vel.z)]
+        raw["parked_body_vertices_m"] = [
+            [float(v.x), float(v.y), float(v.z)] for v in body]
         return raw
 
     def camera_frame(self, view, frame_id):

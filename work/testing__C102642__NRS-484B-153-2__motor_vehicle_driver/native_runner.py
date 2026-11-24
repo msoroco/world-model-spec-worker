@@ -12,6 +12,7 @@ from pathlib import Path
 
 from carla_adapter import CarlaDoorAdapter
 from native_capture import RATE_HZ, capture
+from native_output_bridge import publish
 from site_contract import read_packet
 
 
@@ -38,16 +39,28 @@ def run_capture(world, carla_module, *, survey_path: Path, survey_sha256: str,
         actor_factory=actor_factory,
         driver_act_controller=driver_act_controller,
         original_observer=original_observer)
+    result = None
     try:
         world.apply_settings(settings)
         readback = world.get_settings()
         if (readback.synchronous_mode is not True or
                 abs(readback.fixed_delta_seconds - 1 / RATE_HZ) > 1e-9):
             raise ValueError("Native 20 Hz synchronous clock readback failed")
-        return capture(adapter, survey_path=survey_path,
-                       survey_sha256=survey_sha256, case_id=case_id,
-                       output=output)
+        result = capture(adapter, survey_path=survey_path,
+                         survey_sha256=survey_sha256, case_id=case_id,
+                         output=output)
     finally:
         # CARLA world settings belong to the caller even when capture fails.
-        adapter.cleanup()
-        world.apply_settings(original)
+        try:
+            adapter.cleanup()
+        finally:
+            world.apply_settings(original)
+    restored = world.get_settings()
+    if (restored.synchronous_mode != original.synchronous_mode or
+            restored.fixed_delta_seconds != original.fixed_delta_seconds):
+        raise ValueError("Native world restoration readback failed")
+    source = map_reader(world)
+    if type(source) is not bytes or hashlib.sha256(source).hexdigest() != packet["map_sha256"]:
+        raise ValueError("loaded map bytes changed before publication")
+    seal = publish(output, map_bytes=source, restoration_verified=True)
+    return dict(result, capture_seal_sha256=hashlib.sha256(seal.read_bytes()).hexdigest())

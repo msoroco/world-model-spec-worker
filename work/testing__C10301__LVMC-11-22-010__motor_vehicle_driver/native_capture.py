@@ -21,7 +21,7 @@ def _sha(data: bytes) -> str:
 
 
 def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
-            output: Path, frames: int = FRAMES) -> dict:
+            output: Path, frames: int = FRAMES, pipeline_capture=None) -> dict:
     """Request control, tick, read original state/context and four same-tick PNGs.
 
     Adapter API: tick() -> world snapshot; image(camera, frame) -> same-tick
@@ -51,6 +51,10 @@ def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
         request_control(actor, carla, case_id, index / FPS)
         snapshot = adapter.tick()
         ego = sample_original(actor, snapshot, case_id, person_id)
+        if pipeline_capture is not None:
+            original = pipeline_capture.capture(ego["native_frame"], ego["native_time_s"])
+            if original.get("frame") != ego["native_frame"] or abs(original.get("time_s", -1) - ego["native_time_s"]) > .001:
+                raise ValueError("PipelineCapture original frame/time differs from alley capture")
         context = sample_from_native(actor, adapter.world, snapshot, case_id, site,
                                      adapter.marking_reader, adapter.parking_reader,
                                      adapter.signal_reader, adapter.conflict_reader)

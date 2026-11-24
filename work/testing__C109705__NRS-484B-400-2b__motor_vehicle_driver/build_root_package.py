@@ -9,6 +9,7 @@ HERE = Path(__file__).resolve().parent
 SOURCES = ('runner.py', 'construction.py', 'analysis.py',
            'native_map.py', 'native_capture.py', 'native_camera_source.py',
            'native_ego_adapter.py', 'native_seal.py', 'native_publication.py',
+           'original_graph.py',
            'departure_geometry.py',
            'saved_delivery.py', 'saved_pixels.py', 'finalize.py',
            'comparison_audit.py')

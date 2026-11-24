@@ -82,6 +82,36 @@ def context(*args):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_pipeline_collector_joins_same_original_ticks(self):
+        case_id = next(iter(native_capture.CASE_PROFILES))
+        carla = types.SimpleNamespace(VehicleControl=lambda **kwargs: kwargs)
+        calls = []
+        class Pipeline:
+            def capture(self, frame, time_s):
+                calls.append((frame, time_s))
+                return {"frame": frame, "time_s": time_s}
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch.object(native_capture, "FRAMES", 2), \
+                    patch.object(native_capture, "sample_from_native", side_effect=context):
+                native_capture.capture(Adapter(), Actor(), carla, SITE, case_id,
+                                       "person-test", Path(temporary), frames=2,
+                                       pipeline_capture=Pipeline())
+        self.assertEqual(calls, [(40, 2.0), (41, 2.05)])
+
+    def test_pipeline_collector_frame_mismatch_rejected(self):
+        case_id = next(iter(native_capture.CASE_PROFILES))
+        carla = types.SimpleNamespace(VehicleControl=lambda **kwargs: kwargs)
+        class Pipeline:
+            def capture(self, frame, time_s):
+                return {"frame": frame + 1, "time_s": time_s}
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch.object(native_capture, "FRAMES", 2), \
+                    patch.object(native_capture, "sample_from_native", side_effect=context):
+                with self.assertRaisesRegex(ValueError, "PipelineCapture original frame/time"):
+                    native_capture.capture(Adapter(), Actor(), carla, SITE, case_id,
+                                           "person-test", Path(temporary), frames=2,
+                                           pipeline_capture=Pipeline())
+
     def test_full_original_sources_and_fail_closed_saved_audit(self):
         case_id = next(iter(native_capture.CASE_PROFILES))
         carla = types.SimpleNamespace(VehicleControl=lambda **kwargs: kwargs)

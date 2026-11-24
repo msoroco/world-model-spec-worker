@@ -1,4 +1,5 @@
 import importlib.util
+from contextlib import nullcontext
 import json
 from pathlib import Path
 import tempfile
@@ -21,12 +22,14 @@ class OwnedRunnerTests(unittest.TestCase):
             source = {"diagnostic_fixture": False, "site_source_sha256": "1" * 64}
             site.write_text(json.dumps(source) + "\n")
             actor = Mock()
-            session = types.SimpleNamespace(world=object(), carla=object(),
+            session = types.SimpleNamespace(world=object(), carla=object(), client=object(),
                                              capture_adapter=object(), person_id="person-1")
             output = root / "attempt"
             with patch.object(MODULE, "spawn_ego", return_value=actor) as spawn, \
                     patch.object(MODULE, "capture", return_value={"case_id": CASE, "diagnostic_fixture": True}) as capture:
-                receipt = MODULE.capture_reviewed(session, site, CASE, output)
+                receipt = MODULE.capture_reviewed(session, site, CASE, output,
+                    pipeline_factory=lambda *args, **kwargs: nullcontext(object()),
+                    publisher=lambda *args: {"published": True})
             spawn.assert_called_once_with(session.world, session.carla, source, CASE)
             self.assertEqual(capture.call_args.args[3:6], (source, CASE, "person-1"))
             actor.destroy.assert_called_once()
@@ -40,12 +43,13 @@ class OwnedRunnerTests(unittest.TestCase):
             site = root / "site.json"
             site.write_text('{"diagnostic_fixture": false}\n')
             actor = Mock()
-            session = types.SimpleNamespace(world=object(), carla=object(),
+            session = types.SimpleNamespace(world=object(), carla=object(), client=object(),
                                              capture_adapter=object(), person_id="person-1")
             with patch.object(MODULE, "spawn_ego", return_value=actor), \
                     patch.object(MODULE, "capture", side_effect=ValueError("camera failure")):
                 with self.assertRaisesRegex(ValueError, "camera failure"):
-                    MODULE.capture_reviewed(session, site, CASE, root / "attempt")
+                    MODULE.capture_reviewed(session, site, CASE, root / "attempt",
+                        pipeline_factory=lambda *args, **kwargs: nullcontext(object()))
             actor.destroy.assert_called_once()
 
     def test_unsourced_or_existing_attempt_refused(self):
@@ -70,11 +74,13 @@ class OwnedRunnerTests(unittest.TestCase):
             (output / "config.json").write_text("{}\n")
             (output / "runner.py").write_text("# materialized\n")
             actor = Mock()
-            session = types.SimpleNamespace(world=object(), carla=object(),
+            session = types.SimpleNamespace(world=object(), carla=object(), client=object(),
                                              capture_adapter=object(), person_id="person-1")
             with patch.object(MODULE, "spawn_ego", return_value=actor), \
                     patch.object(MODULE, "capture", return_value={"case_id": CASE}):
-                MODULE.capture_reviewed(session, site, CASE, output)
+                MODULE.capture_reviewed(session, site, CASE, output,
+                    pipeline_factory=lambda *args, **kwargs: nullcontext(object()),
+                    publisher=lambda *args: {"published": True})
             actor.destroy.assert_called_once()
             self.assertTrue((output / "site-source.json").is_file())
             with self.assertRaisesRegex(ValueError, "already contains original acquisition"):

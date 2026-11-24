@@ -62,8 +62,18 @@ def main():
     if not hasattr(adapter, "open_session"):
         raise ValueError("Operator-owned Native adapter lacks open_session")
     from owned_runner import capture_reviewed
-    with adapter.open_session(case, site_packet, args.host, args.port) as session:
-        capture_reviewed(session, site_packet, case, args.output_dir)
+    try:
+        with adapter.open_session(case, site_packet, args.host, args.port) as session:
+            capture_reviewed(session, site_packet, case, args.output_dir)
+        from runtime_publication import seal_reviewed
+        seal_reviewed(Path(args.output_dir), getattr(session, "restoration_receipt", None))
+    except Exception as error:
+        status = Path(args.output_dir) / "native-run-status.json"
+        if not status.exists():
+            status.write_text(json.dumps({"case_id": case, "errors": [str(error)],
+                                          "capture_sealed": False,
+                                          "physical_acceptance_claimed": False}) + "\\n")
+        raise
 
 
 if __name__ == "__main__":
@@ -104,7 +114,8 @@ def build() -> None:
         config = {"law_id": "LVMC-11-22-010", "cell_id": "C10301",
                   "actor": "motor_vehicle_driver", "selected_case_id": case,
                   "profile": "steady" if kind == "steady_travel" else "variation",
-                  "fps": 20, "duration_s": 45, "diagnostic_only": True,
+                  "fps": 20, "rate_hz": 20, "duration_s": 45,
+                  "requested_speed_mps": 2.0, "diagnostic_only": True,
                   "scene_sha256": hashlib.sha256(scene.encode()).hexdigest(),
                   "cameras": ["overview", "alley_approach", "access_aisle", "driver_reference"],
                   "required_atoms": []}
@@ -114,6 +125,7 @@ def build() -> None:
                  "native_context.py": (HERE / "native_context.py").read_text(),
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
                  "owned_runner.py": (HERE / "owned_runner.py").read_text(),
+                 "runtime_publication.py": (HERE / "runtime_publication.py").read_text(),
                  "saved_delivery.py": (HERE / "saved_delivery.py").read_text(),
                  "saved_finalizer.py": (HERE / "saved_finalizer.py").read_text(),
                  "measurement_contract.py": (HERE / "measurement_contract.py").read_text(),
@@ -122,11 +134,11 @@ def build() -> None:
                  "alley-scene.json": scene,
                  "config.json": json.dumps(config, indent=2) + "\n",
                  "tests/test_bundle.py": TEST}
+        recording = next(item["recording_description"] for item in plan["cases"] if item["case_id"] == case)
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": case,
                         "entrypoint": "runner.py", "diagnostic_only": True,
-                        "recording_description": {"status": "diagnostic_only_original_source_pending",
-                                                  "channels": config["cameras"]},
+                        "recording_description": recording,
                         "files": [{"path": name, "content": content} for name, content in files.items()]}
         path = HERE / ("construction-" + kind + ".json")
         path.write_text(json.dumps(construction, indent=2) + "\n")

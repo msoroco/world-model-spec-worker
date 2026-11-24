@@ -10,6 +10,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "construction.py", "native_map.py", "native_capture.py", "native_camera_source.py",
     "native_ego_adapter.py", "native_seal.py", "native_publication.py",
+    "original_graph.py",
     "departure_geometry.py", "saved_delivery.py", "saved_pixels.py",
     "finalize.py", "comparison_audit.py", "analysis.py",
 )
@@ -96,7 +97,8 @@ def main():
         settings.fixed_delta_seconds = 0.05
         world.apply_settings(settings)
         try:
-            adapter = NativeEgoAdapter(world, carla, survey_path, survey_sha, case_id=case)
+            adapter = NativeEgoAdapter(world, carla, survey_path, survey_sha,
+                                       case_id=case, client=client, recorder_root=output)
             camera = NativeCameraSource(world, carla, survey_path, survey_sha,
                                         output / "original-cameras")
             receipt = capture(adapter, case, survey, map_source, output, camera_source=camera)

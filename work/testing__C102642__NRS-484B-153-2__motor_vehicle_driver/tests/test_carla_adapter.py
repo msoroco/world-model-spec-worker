@@ -17,6 +17,8 @@ class Actor:
         self.is_alive = True
         self.door = None
         self.destroyed = False
+        self.type_id = "vehicle.test.car"
+        self.attributes = {"base_type": "car"}
 
     def open_door(self, door):
         self.door = door
@@ -25,7 +27,20 @@ class Actor:
         return type("V", (), {"x": 4.0, "y": 2.0})()
 
     def get_velocity(self):
-        return type("V", (), {"x": 2.0, "y": 0.0})()
+        return type("V", (), {"x": 2.0, "y": 0.0, "z": 0.0})()
+
+    def get_transform(self):
+        return type("Transform", (), {
+            "location": type("V", (), {"x": 4.0, "y": 2.0, "z": 0.1})(),
+            "rotation": type("R", (), {"yaw": 0.0})()})()
+
+    @property
+    def bounding_box(self):
+        class Box:
+            def get_world_vertices(self, transform):
+                return [type("V", (), {"x": x, "y": y, "z": 0.1})()
+                        for x, y in ((3, 1), (5, 1), (5, 3), (3, 3))]
+        return Box()
 
     def destroy(self):
         self.destroyed = True
@@ -49,6 +64,9 @@ class AdapterTests(unittest.TestCase):
 
         def spawn(role, packet, variant):
             actor = Actor(len(self.actors) + 1)
+            if role == "driver":
+                actor.type_id = "walker.pedestrian.test"
+                actor.attributes = {"age": "adult"}
             self.actors.append(actor)
             return actor
 
@@ -80,6 +98,10 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual((frame, timestamp), (11, .55))
         row = self.adapter.observe(frame, self.driver, self.parked, self.passing)
         self.assertEqual((row["observed_act"], row["passing_speed_mps"]), ("open", 2))
+        self.assertEqual(row["parked_position_m"], [4.0, 2.0, 0.1])
+        self.assertEqual(len(row["parked_body_vertices_m"]), 4)
+        self.assertEqual(len(row["passing_body_vertices_m"]), 4)
+        self.assertEqual(row["passing_blueprint"], "vehicle.test.car")
 
     def test_board_and_alight_need_controller(self):
         self.adapter.command_act(self.driver, self.parked, "board", "right")

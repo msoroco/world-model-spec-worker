@@ -34,7 +34,8 @@ def _inside(point, polygon):
 
 
 class NativeEgoAdapter:
-    def __init__(self, world, carla, survey_path, survey_sha256, *, case_id):
+    def __init__(self, world, carla, survey_path, survey_sha256, *, case_id,
+                 client=None, recorder_root=None):
         raw = Path(survey_path).read_bytes()
         if hashlib.sha256(raw).hexdigest() != survey_sha256:
             raise ValueError('reviewed ego survey packet hash differs')
@@ -46,6 +47,9 @@ class NativeEgoAdapter:
                 actual_map.to_opendrive().encode('utf-8')).hexdigest() != survey.get('source_sha256'):
             raise ValueError('loaded Native map differs from reviewed ego survey')
         self.world, self.carla, self.survey, self.case_id = world, carla, survey, case_id
+        self.client = client
+        self.recorder_root = Path(recorder_root) if recorder_root is not None else None
+        self.recorder_active = False
         self.map = actual_map
         self.ego = None
         self.last_control = None
@@ -76,6 +80,20 @@ class NativeEgoAdapter:
             raise ValueError('reviewed Native ego spawn failed')
         ego.set_autopilot(False)
         self.ego = ego
+        try:
+            if self.client is not None:
+                if self.recorder_root is None:
+                    raise ValueError('Native recorder output missing')
+                path = self.recorder_root / 'carla_recorder.log'
+                if path.exists() or path.is_symlink():
+                    raise ValueError('refusing to overwrite Native recorder')
+                if self.client.start_recorder(str(path), True) is False:
+                    raise ValueError('Native recorder refused to start')
+                self.recorder_active = True
+        except BaseException:
+            ego.destroy()
+            self.ego = None
+            raise
         return ego
 
     def configure_cameras(self, ego, channels, fps):
@@ -150,6 +168,21 @@ class NativeEgoAdapter:
         ego.apply_control(self.carla.VehicleControl(throttle=0, brake=1, steer=0))
 
     def destroy(self, ego):
-        ego.destroy()
-        if ego is self.ego:
-            self.ego = None
+        try:
+            if self.recorder_active:
+                self.client.stop_recorder()
+                self.recorder_active = False
+                recorder = self.recorder_root / 'carla_recorder.log'
+                if not recorder.is_file() or not recorder.stat().st_size:
+                    raise ValueError('original CARLA recorder source missing')
+                info = self.client.show_recorder_file_info(str(recorder), False)
+                if not isinstance(info, str) or 'Create ' not in info:
+                    raise ValueError('original CARLA recorder census missing')
+                path = self.recorder_root / 'capture/recorder_info.txt'
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with path.open('x') as stream:
+                    stream.write(info.rstrip('\n') + '\n')
+        finally:
+            ego.destroy()
+            if ego is self.ego:
+                self.ego = None

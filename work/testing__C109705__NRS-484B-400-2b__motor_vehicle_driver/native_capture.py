@@ -136,11 +136,13 @@ def capture(adapter, case_id, survey, map_source_path, output_dir, *, camera_sou
                     raise ValueError('Native camera source binding missing')
                 cameras[name].append(camera)
             if getattr(adapter, 'world', None) is not None:
-                from original_graph import collect
+                from original_graph import collect, control_inventory
                 snapshot = adapter.world.get_snapshot()
+                observed = control_inventory(adapter.world, snapshot)
                 raw_graph = collect(adapter.world, ego, snapshot,
                                     expected_frame=frame,
-                                    expected_time_s=sample['elapsed_seconds'])
+                                    expected_time_s=sample['elapsed_seconds'],
+                                    observed_evidence=observed)
                 graph_path = output / 'graphs/abstract' / f'{frame:08d}.adapter.json'
                 graph_path.parent.mkdir(parents=True, exist_ok=True)
                 with graph_path.open('xb') as stream:

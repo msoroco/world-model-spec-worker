@@ -8,6 +8,25 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 KINDS = ("open_near_overlap", "open_near_clear", "open_far_side", "board_near", "alight_near")
+RECORDING_DESCRIPTION = {
+    "channels": [
+        {"name": name, "unit": unit, "sampling_rate_hz": 20,
+         "method": "source-sealed original Native actor and camera observation",
+         "time_window": "all 900 original world ticks",
+         "reference_frame": "original CARLA world frame",
+         "uncertainty": "physical visibility and legal interpretation pending"}
+        for name, unit in (
+            ("original_interaction", "structured"),
+            ("observed_driver_act", "structured"),
+            ("door_envelope_xy", "structured"),
+            ("passing_body_xy", "structured"),
+            ("passing_speed_mps", "m/s"),
+            ("passing_response", "structured"),
+            ("camera_frame_join", "structured"))],
+    "context_inputs": [
+        {"name": "hill_crest_loading_site", "unit": "structured",
+         "method": "source-hashed original map and loading-governance survey"}],
+    "limitations": ["Observed proximity and traffic response do not decide statutory interference."]}
 
 RUNNER = '''"""Exact door-action diagnostic entrypoint."""
 import argparse
@@ -154,6 +173,7 @@ def build() -> None:
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
                  "carla_adapter.py": (HERE / "carla_adapter.py").read_text(),
                  "native_runner.py": (HERE / "native_runner.py").read_text(),
+                 "native_output_bridge.py": (HERE / "native_output_bridge.py").read_text(),
                  "door_interaction.py": (HERE / "door_interaction.py").read_text(),
                  "delivery_measure.py": (HERE / "delivery_measure.py").read_text(),
                  "delivery_audit.py": (HERE / "delivery_audit.py").read_text(),
@@ -165,8 +185,7 @@ def build() -> None:
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": case,
                         "entrypoint": "runner.py", "diagnostic_only": True,
-                        "recording_description": {"status": "diagnostic_only_original_survey_pending",
-                                                  "channels": config["cameras"]},
+                        "recording_description": RECORDING_DESCRIPTION,
                         "files": [{"path": name, "content": content} for name, content in files.items()]}
         file = HERE / ("construction-" + kind + ".json")
         file.write_text(json.dumps(construction, indent=2) + "\n")
